@@ -2,6 +2,7 @@ package com.dgis.map.android_auto
 
 import android.location.Location
 import com.dgis.map.DgisMapInitializer
+import com.dgis.map.android_auto.settings.NotificationVolume
 import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
@@ -262,10 +263,7 @@ class CarMapController(
         }
 
         // Volume
-        val volumeLevels = listOf(10, 30, 60) // Minimum, Quiet, Standard
-        val volumeIndex = sharedPrefs.volumeValue
-        val volume = volumeLevels.getOrElse(volumeIndex) { 30 }
-        navigationHandler.setNavigatorVolume(volume)
+        navigationHandler.setNavigatorVolume(volumeValue.volume)
 
         // Better road
         navigationHandler.setBetterRouteEnabled(sharedPrefs.suggestBetterRoad)
@@ -318,15 +316,13 @@ class CarMapController(
     }
 
     // -- Volume
-    var volumeValue: Int
+    var volumeValue: NotificationVolume
         get() {
             return sharedPrefs.volumeValue
         }
         set(value) {
             sharedPrefs.volumeValue = value
-            val volumeLevels = listOf(10, 30, 60) // Minimum, Quiet, Standard
-            val volume = volumeLevels.getOrElse(value) { 30 }
-            navigationHandler.setNavigatorVolume(volume)
+            navigationHandler.setNavigatorVolume(value.volume)
         }
 
     // -- Route Settings

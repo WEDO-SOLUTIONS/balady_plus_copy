@@ -15,48 +15,47 @@ class VolumeSettingsScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
 ) : Screen(carContext) {
-    private var currentVolumeIndex: Int = 0
+    private var currentVolume: NotificationVolume = NotificationVolume.Quiet
 
     init {
-        currentVolumeIndex = mapController.volumeValue
+        currentVolume = mapController.volumeValue
+    }
+
+    private fun NotificationVolume.soundIcon(): Int {
+        return when(this) {
+            NotificationVolume.Minimum -> R.drawable.settings_volume_min
+            NotificationVolume.Quiet -> R.drawable.settings_volume_quiet
+            NotificationVolume.Standard -> R.drawable.settings_volume_standard
+        }
+    }
+
+    private fun NotificationVolume.title(): String {
+        return when(this) {
+            NotificationVolume.Minimum -> getString(R.string.volume_minimum)
+            NotificationVolume.Quiet -> getString(R.string.volume_quiet)
+            NotificationVolume.Standard -> getString(R.string.volume_standard)
+        }
     }
 
     override fun onGetTemplate(): Template {
         val itemListBuilder = ItemList.Builder()
-        
-        // Add volume options
-        itemListBuilder.addItem(
-            Row.Builder()
-                .setTitle(getString(R.string.volume_standard))
-                .setImage(
-                    buildCarIcon(R.drawable.settings_volume_standard),
-                    Row.IMAGE_TYPE_ICON
-                )
-                .build()
-        )
-        itemListBuilder.addItem(
-            Row.Builder()
-                .setTitle(getString(R.string.volume_quiet))
-                .setImage(
-                    buildCarIcon(R.drawable.settings_volume_quiet),
-                    Row.IMAGE_TYPE_ICON
-                )
-                .build()
-        )
-        itemListBuilder.addItem(
-            Row.Builder()
-                .setTitle(getString(R.string.volume_minimum))
-                .setImage(
-                    buildCarIcon(R.drawable.settings_volume_min),
-                    Row.IMAGE_TYPE_ICON
-                )
-                .build()
-        )
+        val entries = NotificationVolume.entries.reversed()
+        for (option in entries) {
+            itemListBuilder.addItem(
+                Row.Builder()
+                    .setTitle(option.title())
+                    .setImage(
+                        buildCarIcon(option.soundIcon()),
+                        Row.IMAGE_TYPE_ICON
+                    )
+                    .build()
+            )
+        }
 
         
-        itemListBuilder.setSelectedIndex(currentVolumeIndex)
+        itemListBuilder.setSelectedIndex(entries.indexOf(currentVolume))
         itemListBuilder.setOnSelectedListener { index ->
-            updateVolume(index)
+            updateVolume(entries[index])
         }
 
         // Return the template
@@ -67,9 +66,9 @@ class VolumeSettingsScreen(
             .build()
     }
 
-    private fun updateVolume(newIndex: Int) {
-        currentVolumeIndex = newIndex
-        mapController.volumeValue = newIndex
+    private fun updateVolume(value: NotificationVolume) {
+        currentVolume = value
+        mapController.volumeValue = value
         invalidate()
     }
 } 
