@@ -264,9 +264,6 @@ class CarMapController(
 
         // Volume
         navigationHandler.setNavigatorVolume(volumeValue.volume)
-
-        // Better road
-        navigationHandler.setBetterRouteEnabled(sharedPrefs.suggestBetterRoad)
     }
 
     // -- Voice Instructions
@@ -340,7 +337,6 @@ class CarMapController(
         }
         set(value) {
             sharedPrefs.suggestBetterRoad = value
-            navigationHandler.setBetterRouteEnabled(sharedPrefs.suggestBetterRoad)
         }
 
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
