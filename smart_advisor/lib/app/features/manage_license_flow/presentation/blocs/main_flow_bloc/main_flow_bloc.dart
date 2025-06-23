@@ -2,8 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_advisor/app/core/services/local/navigation_services.dart';
 import 'package:smart_advisor/app/core/services/services_exports.dart';
-import 'package:smart_advisor/app/features/manage_license_flow/data/model/license_details_model.dart'
-    hide MainActivity;
+import 'package:smart_advisor/app/features/manage_license_flow/data/model/license_details_model.dart' hide MainActivity;
 import 'package:smart_advisor/app/features/manage_license_flow/presentation/pages/guest/cancel_license_page.dart';
 import 'package:smart_advisor/app/features/manage_license_flow/presentation/pages/guest/edit_license_page.dart';
 import 'package:smart_advisor/app/features/manage_license_flow/presentation/pages/guest/renwe_license_page.dart';
@@ -37,8 +36,7 @@ import 'package:smart_advisor/app/features/select_activity/domain/entities/activ
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
-import '../../../../../core/utils/utils_exports.dart'
-    show BlocStatus, CommonFunctions, RouteName;
+import '../../../../../core/utils/utils_exports.dart' show BlocStatus, CommonFunctions, RouteName;
 import '../../../../_shared_feature_/domain/entities/lookUp_response.dart';
 import '../../../../details/data/models/entity_violation_activity_model.dart';
 import '../../../../details/data/models/violation_details_vd_model.dart';
@@ -46,7 +44,7 @@ import '../../../../details/domain/entities/entity_activity_details_response.dar
 import '../../../../details/domain/entities/entity_violation_activity_request_params.dart';
 import '../../../../details/domain/entities/regulation_request_params.dart';
 import '../../../../details/domain/entities/regulation_response.dart';
-import '../../../../details/domain/entities/violation_details_Vd_request_params.dart';
+import '../../../../details/domain/entities/violation_details_vd_request_params.dart';
 import '../../../../details/domain/use_cases/get_regulations.dart';
 import '../../../../details/domain/use_cases/get_violation_details.dart';
 import '../../../../details/domain/use_cases/get_violation_entity_activity_detailes.dart';
@@ -77,8 +75,7 @@ part 'main_flow_event.dart';
 
 part 'main_flow_state.dart';
 
-class ManageMainFlowBloc
-    extends Bloc<ManageMainFlowEvent, ManageMainFlowState> {
+class ManageMainFlowBloc extends Bloc<ManageMainFlowEvent, ManageMainFlowState> {
   ActivityDetailsPageParams? args;
 
   GetDelegators getDelegators;
@@ -86,8 +83,7 @@ class ManageMainFlowBloc
 
   final GetLicenseDetails getLicenseDetails;
   final GetRegulationsUc _getRegulationsUc;
-  final GetViolationEntityActivityDetailsUC
-      _getViolationEntityActivityDetailsUC;
+  final GetViolationEntityActivityDetailsUC _getViolationEntityActivityDetailsUC;
 
   final GetViolationDetailsUC _getViolationDetails;
 
@@ -144,8 +140,7 @@ class ManageMainFlowBloc
         _getActivityDetailsInfo = GetActivityDetailsInfo(repository: sl()),
         _getViolationVD = GetViolationVDUC(repository: sl()),
         _getRegulationsUc = GetRegulationsUc(repository: sl()),
-        _getViolationEntityActivityDetailsUC =
-            GetViolationEntityActivityDetailsUC(repository: sl()),
+        _getViolationEntityActivityDetailsUC = GetViolationEntityActivityDetailsUC(repository: sl()),
         _getViolationDetails = GetViolationDetailsUC(repository: sl()),
         _getGISDataUC = GetGISDataUC(repository: sl()),
         _renewCommercialDraft = RenewCommercialDraft(sl()),
@@ -182,29 +177,22 @@ class ManageMainFlowBloc
     print("INNNITS");
   }
 
-  void updatePermitsHandler(
-      UpdatePermitsInTransferEvent event, Emitter emit) async {
+  void updatePermitsHandler(UpdatePermitsInTransferEvent event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
     List<int> selectedAddetainalActivites = state.selectedTransferPermits ?? [];
 
     selectedAddetainalActivites.add(event.id);
-    emit(state.copyWith(
-        status: BlocStatus.success,
-        selectedTransferPermits: selectedAddetainalActivites));
+    emit(state.copyWith(status: BlocStatus.success, selectedTransferPermits: selectedAddetainalActivites));
   }
 
-  void addAddetionalActivity(
-      AddAddetionalActivityItemEvent event, Emitter emit) async {
+  void addAddetionalActivity(AddAddetionalActivityItemEvent event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    List<AddetionalActivityItem> selectedAddetainalActivites =
-        state.selectedAddetainalActivites ?? [];
+    List<AddetionalActivityItem> selectedAddetainalActivites = state.selectedAddetainalActivites ?? [];
 
     selectedAddetainalActivites.add(event.addetionalActivityItem);
-    emit(state.copyWith(
-        status: BlocStatus.success,
-        selectedAddetainalActivites: selectedAddetainalActivites));
+    emit(state.copyWith(status: BlocStatus.success, selectedAddetainalActivites: selectedAddetainalActivites));
   }
 
   void getGISDataHandler(GetGISDataEvent event, Emitter emit) async {
@@ -249,16 +237,13 @@ class ManageMainFlowBloc
         lat: args?.gisRequest?.lat ?? 0,
         lng: args?.gisRequest?.lon ?? 0,
         serviceType: 1004,
-        area: (args?.suggestedArea?.to ?? args?.suggestedArea?.from ?? 0)
-            .toDouble()));
+        area: (args?.suggestedArea?.to ?? args?.suggestedArea?.from ?? 0).toDouble()));
 
     result.fold((failure) {
       emit(state.copyWith(
-          regulationStatus: BlocStatus.failure,
-          regulationErrorMsg: (failure as ServerFailure).errorMessage));
+          regulationStatus: BlocStatus.failure, regulationErrorMsg: (failure as ServerFailure).errorMessage));
     }, (success) {
-      emit(state.copyWith(
-          regulationStatus: BlocStatus.success, regulationResponse: success));
+      emit(state.copyWith(regulationStatus: BlocStatus.success, regulationResponse: success));
     });
   }
 
@@ -274,16 +259,13 @@ class ManageMainFlowBloc
 
     result.fold((failure) {
       emit(state.copyWith(
-          vdViolationStatus: BlocStatus.failure,
-          regulationErrorMsg: (failure as ServerFailure).errorMessage));
+          vdViolationStatus: BlocStatus.failure, regulationErrorMsg: (failure as ServerFailure).errorMessage));
     }, (success) {
-      emit(state.copyWith(
-          vdViolationStatus: BlocStatus.success, vdViolationList: success));
+      emit(state.copyWith(vdViolationStatus: BlocStatus.success, vdViolationList: success));
     });
   }
 
-  void _getViolationDetailsHanlder(
-      GetViolationDetailsEvent event, Emitter emit) async {
+  void _getViolationDetailsHanlder(GetViolationDetailsEvent event, Emitter emit) async {
     showModalBottomSheet(
       backgroundColor: const Color(0xff000000),
       isScrollControlled: true,
@@ -298,30 +280,26 @@ class ManageMainFlowBloc
   void _getViolationsList(GetViolationsListEvent event, Emitter emit) async {
     if (state.violationStatus == BlocStatus.success) return;
     emit(state.copyWith(violationStatus: BlocStatus.loading));
-    final result = await _getViolationEntityActivityDetailsUC(
-        EntityViolationActivityRequestParams(
-            activityId: args?.activityId?.id ?? 0,
-            latitude: args?.gisRequest?.lat ?? 0,
-            longitude: args?.gisRequest?.lon ?? 0,
-            municipalityId: args?.gisData?.municipalityId ?? "",
-            submunicipalityId: args?.gisData?.subMunicipalityId ?? "",
-            isVillage: args?.gisData?.isVillage ?? false));
+    final result = await _getViolationEntityActivityDetailsUC(EntityViolationActivityRequestParams(
+        activityId: args?.activityId?.id ?? 0,
+        latitude: args?.gisRequest?.lat ?? 0,
+        longitude: args?.gisRequest?.lon ?? 0,
+        municipalityId: args?.gisData?.municipalityId ?? "",
+        submunicipalityId: args?.gisData?.subMunicipalityId ?? "",
+        isVillage: args?.gisData?.isVillage ?? false));
 
     result.fold((failure) {
       emit(state.copyWith(
-          violationStatus: BlocStatus.failure,
-          regulationErrorMsg: (failure as ServerFailure).errorMessage));
+          violationStatus: BlocStatus.failure, regulationErrorMsg: (failure as ServerFailure).errorMessage));
     }, (success) {
-      emit(state.copyWith(
-          violationStatus: BlocStatus.success, violations: success));
+      emit(state.copyWith(violationStatus: BlocStatus.success, violations: success));
     });
   }
 
   void getActivityDetails(GetActivityInfoDetails event, Emitter emit) async {
     emit(state.copyWith(activityDetailsStatus: BlocStatus.loading));
 
-    final failureOrSuccess =
-        await _getActivityDetailsInfo(state.selectedLicense?.activityId ?? 0);
+    final failureOrSuccess = await _getActivityDetailsInfo(state.selectedLicense?.activityId ?? 0);
     await failureOrSuccess.fold(
       (failure) async {
         print(failure);
@@ -332,20 +310,16 @@ class ManageMainFlowBloc
         ));
       },
       (success) async {
-        LookUpItem? selectedActivity = LookUpItem(
-            id: state.selectedLicense?.activityId ?? 0,
-            name: state.selectedLicense?.activityName ?? "");
+        LookUpItem? selectedActivity =
+            LookUpItem(id: state.selectedLicense?.activityId ?? 0, name: state.selectedLicense?.activityName ?? "");
 
         selectedActivity.isATM = success.isAtm;
         selectedActivity.maxArea = (success.maximumArea ?? 0).toDouble();
         selectedActivity.minArea = (success.minimumArea ?? 0).toDouble();
 
-        emit(state.copyWith(
-            activityDetailsStatus: BlocStatus.success,
-            selectedActivity: selectedActivity));
+        emit(state.copyWith(activityDetailsStatus: BlocStatus.success, selectedActivity: selectedActivity));
         args?.activityId = selectedActivity;
-        add(GetGISDataEvent(
-            lat: args?.gisRequest?.lat ?? 0, lon: args?.gisRequest?.lon ?? 0));
+        add(GetGISDataEvent(lat: args?.gisRequest?.lat ?? 0, lon: args?.gisRequest?.lon ?? 0));
       },
     );
   }
@@ -391,9 +365,7 @@ class ManageMainFlowBloc
           MaterialPageRoute(
             builder: (context) => BlocProvider.value(
               value: this,
-              child: RenewLicenseLastPage(
-                  isRejectRenew: false,
-                  args: ActivityDetailsPageParams(isFromHome: false)),
+              child: RenewLicenseLastPage(isRejectRenew: false, args: ActivityDetailsPageParams(isFromHome: false)),
             ),
           ),
         );
@@ -494,13 +466,11 @@ class ManageMainFlowBloc
     );
   }
 
-  void getAddetionalActivitesHandler(
-      GetAddetionalActivites event, Emitter emit) async {
+  void getAddetionalActivitesHandler(GetAddetionalActivites event, Emitter emit) async {
     print("GET Assetional ");
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getAddetionalActivites(
-        state.selectedLicense?.activityId.toString() ?? "");
+    final failureOrSuccess = await _getAddetionalActivites(state.selectedLicense?.activityId.toString() ?? "");
     await failureOrSuccess.fold(
       (failure) async {
         print(failure);
@@ -521,8 +491,7 @@ class ManageMainFlowBloc
   }
 
   void selectDelegatorHandler(SelectDelegatorEvent event, Emitter emit) async {
-    emit(state.copyWith(
-        status: BlocStatus.loading, clearDelegate: true, clearLicense: true));
+    emit(state.copyWith(status: BlocStatus.loading, clearDelegate: true, clearLicense: true));
 
     emit(state.copyWith(
       status: BlocStatus.success,
@@ -532,14 +501,12 @@ class ManageMainFlowBloc
   }
 
   void selectLicenseHandler(SelectLicenseEvent event, Emitter emit) async {
-    emit(state.copyWith(
-        licenseDetailsStatus: BlocStatus.loading, clearLicense: true));
+    emit(state.copyWith(licenseDetailsStatus: BlocStatus.loading, clearLicense: true));
 
     //  emit(state.copyWith(
     //    status: BlocStatus.success, selectedLicense: event.license));
 
-    final failureOrSuccess =
-        await getLicenseDetails(event.license.licenseNo.toString());
+    final failureOrSuccess = await getLicenseDetails(event.license.licenseNo.toString());
     await failureOrSuccess.fold(
       (failure) async {
         print(failure);
@@ -552,21 +519,16 @@ class ManageMainFlowBloc
       (success) async {
         print(success);
         emit(state.copyWith(
-            licenseDetailsStatus: BlocStatus.success,
-            selectedLicense: event.license,
-            selectedLicenseDetails: success));
+            licenseDetailsStatus: BlocStatus.success, selectedLicense: event.license, selectedLicenseDetails: success));
 
         args = ActivityDetailsPageParams(
             area: (success.mainActivityArea ?? 0).toDouble(),
             activityId: LookUpItem(
                 id: success.activityInfo?.mainActivity?.detailedActivityId ?? 0,
-                name:
-                    success.activityInfo?.mainActivity?.detailedActivityName ??
-                        ""),
+                name: success.activityInfo?.mainActivity?.detailedActivityName ?? ""),
             gisRequest: GISDataRequest(
                 lat: double.tryParse(success.locationInfo?.latitude ?? "") ?? 0,
-                lon: double.tryParse(success.locationInfo?.longitude ?? "") ??
-                    0),
+                lon: double.tryParse(success.locationInfo?.longitude ?? "") ?? 0),
             suggestedArea: SuggestedAreaModel(
                 from: success.mainActivityArea?.toInt(),
                 to: success.mainActivityArea?.toInt(),
@@ -611,8 +573,7 @@ class ManageMainFlowBloc
   void renewDraft(SaveRenewDraft event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess =
-        await _renewCommercialDraft(state.selectedLicense?.licenseNo ?? 0);
+    final failureOrSuccess = await _renewCommercialDraft(state.selectedLicense?.licenseNo ?? 0);
 
     failureOrSuccess.fold((l) {
       CommonFunctions.showError((l as ServerFailure).errorMessage);
@@ -627,8 +588,7 @@ class ManageMainFlowBloc
   void saveCencelDraft(SaveCencelDraft event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess =
-        await _cancelCommercialDraft(state.selectedLicense?.licenseNo ?? 0);
+    final failureOrSuccess = await _cancelCommercialDraft(state.selectedLicense?.licenseNo ?? 0);
 
     failureOrSuccess.fold((l) {
       CommonFunctions.showError((l as ServerFailure).errorMessage);
@@ -675,8 +635,7 @@ class ManageMainFlowBloc
     final failureOrSuccess = await _transferLicenseDraft((
       state.selectedLicense?.licenseNo ?? 0,
       CommercialLicenseModel(
-          crNumber: int.tryParse(state.newCRNumber ?? "") ?? 0,
-          permits: state.selectedTransferPermits
+          crNumber: int.tryParse(state.newCRNumber ?? "") ?? 0, permits: state.selectedTransferPermits
           /*  activities: Activities(
             addedActivities: state.selectedAddetainalActivites,
             isAtmFeesPaid:
