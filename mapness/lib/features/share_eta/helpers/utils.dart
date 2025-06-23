@@ -12,6 +12,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
+import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -111,6 +112,12 @@ class EtaUtils {
                 ),
               );
         }
+        final storedTokenId = EtaStreamStorage().state.streamToken;
+        if(tokenId == storedTokenId){
+          return true;
+        }
+
+
         await ref.read(shareEtaProvider.notifier).stopSharing();
 
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
