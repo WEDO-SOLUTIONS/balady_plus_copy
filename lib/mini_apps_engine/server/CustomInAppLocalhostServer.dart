@@ -104,13 +104,10 @@ class CustomInAppLocalhostServer {
               'Access-Control-Allow-Headers': '*',
               "Content-Type": content,
             };
-            return Response.ok(
-              body,
-              headers: corsHeaders,
-            );
+            return Response.ok(body, headers: corsHeaders);
           } else {
             var requestUrl = request.url.queryParameters['url'];
-            requestUrl ??= request.url.queryParameters['zip'];
+            // requestUrl ??= request.url.queryParameters['zip'];
             final client = HttpClient();
             final proxyRequest = await client.getUrl(Uri.parse(requestUrl!));
             final proxyResponse = await proxyRequest.close();
@@ -119,10 +116,7 @@ class CustomInAppLocalhostServer {
               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
               'Access-Control-Allow-Headers': '*',
             };
-            return Response.ok(
-              proxyResponse,
-              headers: corsHeaders,
-            );
+            return Response.ok(proxyResponse, headers: corsHeaders);
           }
         } catch (e) {
           return Response.internalServerError(body: 'Error: $e');

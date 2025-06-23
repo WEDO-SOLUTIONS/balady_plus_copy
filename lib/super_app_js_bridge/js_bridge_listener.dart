@@ -8,6 +8,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
@@ -38,6 +39,14 @@ import 'Requirement_enum.dart';
 import 'model/download_file_paths_model.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
+  MiniAppsEngineBloc miniAppsEngineBloc;
+  ValueNotifier<bool> isLoading;
+
+  JsBridgeListener({
+    required this.miniAppsEngineBloc,
+    required this.isLoading,
+  }) : super();
+
   @override
   void register() {
     registerFunction(getAccessToken);
@@ -201,26 +210,37 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAppPreferences(dynamic msg, CompletionHandler handler) {
-    BaseResponse response = BaseResponse(
-      code: 200,
-      message: "success",
-      eventName: "AppPreferences",
-      data: JsPreferencesModel(
-        language: 'locale'.tr(),
-        themeType: "dark",
-        colors: {
-          "primary": AppColor.primary900Light.value,
-          "secondary": AppColor.secondary900Light.value,
-          // "background": AppColor.backgroundColor,
-          // "text": AppColor.textColor,
-          // "error": AppColor.errorColor,
-          // "warning": AppColor.warningColor,
-          // "success": AppColor.successColor,
-        },
-      ),
-    );
-    var dataJsonString = response.jsonEncodeModel();
-    handler.complete(dataJsonString);
+   try{
+     BaseResponse response = BaseResponse(
+       code: 200,
+       message: "success",
+       eventName: "AppPreferences",
+       data: JsPreferencesModel(
+         language: 'locale'.tr(),
+         themeType: "dark",
+         colors: {
+           "primary": AppColor.primary900Light.value,
+           "secondary": AppColor.secondary900Light.value,
+           // "background": AppColor.backgroundColor,
+           // "text": AppColor.textColor,
+           // "error": AppColor.errorColor,
+           // "warning": AppColor.warningColor,
+           // "success": AppColor.successColor,
+         },
+       ),
+     );
+     var dataJsonString = response.jsonEncodeModel();
+     handler.complete(dataJsonString);
+   } catch (_) {
+     BaseResponse response = BaseResponse(
+       code: 500,
+       message: "Error occurred while getting app preferences",
+       eventName: "AppPreferences",
+       data: null,
+     );
+     handler.complete(response.jsonEncodeModel());
+   }
+   isLoading.value = false;
   }
 
   @pragma('vm:entry-point')
@@ -424,17 +444,16 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirment(serviceKey, RequirementEnum.camera.name) == true) {
       late BaseResponse response;
-      var fileData = await NavigationService.navigatorKey.currentState!.pushNamed(
+      var fileData =
+          await NavigationService.navigatorKey.currentState!.pushNamed(
         RouteName.vdCameraPage,
       );
-      if(fileData != null) {
+      if (fileData != null) {
         response = BaseResponse(
           code: 200,
           eventName: "openCameraWithUI",
           message: "success",
-          data: fileData is AttachmentItem
-              ? fileData
-              : null,
+          data: fileData is AttachmentItem ? fileData : null,
         );
       } else {
         response = BaseResponse(
