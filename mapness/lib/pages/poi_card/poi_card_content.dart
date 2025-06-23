@@ -273,7 +273,16 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 sliver: SliverAnimatedSwitcher(
                   duration: Durations.medium2,
                   child: switch (tabType) {
-                    PoiTabsType.info => PoiContentSliver(poiCardState: poiCardState),
+                    PoiTabsType.info => PoiContentSliver(
+                        poiCardState: poiCardState,
+                        onEntrancesTap: () {
+                          poiActions.toggleEntrances(
+                            widget.data,
+                            () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                            widget.closestPoint,
+                          );
+                        },
+                      ),
                     PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                     PoiTabsType.organizations => PoiOrganizationsSliver(
                         state: poiCardState,

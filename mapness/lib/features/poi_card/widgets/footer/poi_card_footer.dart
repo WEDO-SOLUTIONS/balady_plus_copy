@@ -75,6 +75,12 @@ class PoiCardFooter extends HookConsumerWidget {
     final callPhone = this.callPhone;
     final onEntranceTap = this.onEntranceTap;
 
+    final type = data?.types.firstOrNull?.type;
+    final hasMetro = type == ObjectTypeMessage.stationMetro ||
+        type == ObjectTypeMessage.station ||
+        type == ObjectTypeMessage.stationPlatform ||
+        type == ObjectTypeMessage.stationEntrance;
+
     final parkingPoi = objectId == parkingObjectId;
 
     return ThrottledCallbackWidget(
@@ -95,7 +101,7 @@ class PoiCardFooter extends HookConsumerWidget {
                 buttonType: ButtonType.secondary,
                 label: hasContactsAndHasEntrances ? null : context.l10n.call,
                 onPressed: callPhone),
-          if (hasEntrances && onEntranceTap != null)
+          if (hasEntrances && onEntranceTap != null && !hasMetro)
             ItemActionBar(
               icon: SystemIcons.turnRight,
               buttonType: ButtonType.secondary,
@@ -108,14 +114,12 @@ class PoiCardFooter extends HookConsumerWidget {
               label: hasContactsAndHasEntrances ? null : context.l10n.save,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
-          // BSA-2479: Hide share button for parking spot POI
-          if (!parkingPoi)
-            ItemActionBar(
-              icon: SystemIcons.share,
-              buttonType: ButtonType.secondary,
-              label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
-              onPressed: throttledShare,
-            ),
+          ItemActionBar(
+            icon: SystemIcons.share,
+            buttonType: ButtonType.secondary,
+            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
+            onPressed: throttledShare,
+          ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,

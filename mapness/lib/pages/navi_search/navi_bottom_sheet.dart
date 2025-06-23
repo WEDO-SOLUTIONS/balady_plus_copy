@@ -124,7 +124,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       ).notifier,
     );
     ref.listen(
-      searchProvider(SearchScopeEnum.map.value),
+      searchProvider(SearchScopeEnum.navi.value),
       (previous, next) {
         _drawSearchMarkers(next, previous, searchObjectManager);
       },

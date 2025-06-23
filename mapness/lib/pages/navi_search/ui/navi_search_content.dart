@@ -8,7 +8,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
-import 'package:mapness/pages/navi_search/ui/navi_search_empty.dart';
+import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_history.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_results.dart';
 import 'package:mapness/pages/navi_search/ui/navi_suggest_list.dart';
@@ -106,7 +106,7 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
         hasScrollBody: false,
         child: SafeArea(
           top: false,
-          child: NaviSearchEmpty(),
+          child: MapSearchEmpty(),
         ),
       ),
       history: () => SliverToBoxAdapter(

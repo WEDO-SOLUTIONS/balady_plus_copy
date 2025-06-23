@@ -65,7 +65,8 @@ extension MarkerTextStyleMessage {
             textOffset: self.textOffset.map {
                 LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),
-            fontName: self.fontName
+            fontName: self.fontName,
+            suppressOnOverlap: self.suppressOnOverlap ?? true
         )
     }
 }

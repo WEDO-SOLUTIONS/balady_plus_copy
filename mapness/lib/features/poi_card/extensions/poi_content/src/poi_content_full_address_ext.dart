@@ -27,6 +27,7 @@ extension PoiContentFullAddressExt on DirectoryObjectMessage {
       title: address?.buildingName ?? title,
       fullAddress: makeAddress(),
       entrances: entrances_,
+      types: types,
       floors: floors != null ? PoiContentFloorModel(title: l10n.floor, floors: floors) : null,
     );
   }

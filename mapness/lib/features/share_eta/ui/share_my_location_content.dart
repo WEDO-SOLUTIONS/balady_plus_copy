@@ -19,6 +19,7 @@ import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharin
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
@@ -39,6 +40,20 @@ class ShareMyLocationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    LatLng? closestPoint;
+    PoiCameraConfig? cameraConfig;
+
+    if (this.closestPoint == null || this.cameraConfig == null) {
+      final userLocation = ref.read(locationProvider);
+      if (userLocation != null) {
+        closestPoint = LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude);
+        cameraConfig = const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0);
+      }
+    } else {
+      closestPoint = this.closestPoint;
+      cameraConfig = this.cameraConfig;
+    }
+
     final _bottomHeightNotifier = useState(0.0);
     final _animationController = useAnimationController(
       duration: const Duration(milliseconds: 300),

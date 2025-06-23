@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
@@ -26,7 +28,10 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -34,13 +39,18 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
+import 'package:mapness/features/statistic/providers/statistics_provider.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
@@ -60,6 +70,9 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
+
+import 'features/search/providers/search.dart';
+import 'features/search/ui/search_scope.dart';
 
 Mixpanel? mixpanel;
 
@@ -327,6 +340,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
+  Future<void> _delayIfFirstRun(
+      {required bool isFirstRun, Duration duration = const Duration(milliseconds: 300)}) async {
+    // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
+    if (isFirstRun) {
+      await Future.delayed(duration);
+    }
+  }
+
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
     final decodeFull = Uri.decodeFull(uri.toString());
@@ -376,10 +397,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       if (id != null) {
         final location =
             (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
-        if (isFirstRun) {
-          // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
-          await Future.delayed(const Duration(milliseconds: 300));
-        }
+        await _delayIfFirstRun(isFirstRun: isFirstRun);
 
         await _poiDeeplinkById(id, location);
       }
@@ -387,21 +405,140 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
         _myLocationDeepLinkHandler(latitude, longitude);
       } else {
-        if (isFirstRun) {
-          await Future.delayed(const Duration(milliseconds: 300));
-        }
+        await _delayIfFirstRun(isFirstRun: isFirstRun);
         await _poiDeepLinkByCoords(latitude, longitude);
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
-      if (isFirstRun) {
-        await Future.delayed(const Duration(seconds: 8));
-      }
+      await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (url.toString().isNotEmpty) {
-      await ref.watch(appRouterProvider).pushNamed(url.toString());
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
+      final AppRouter router = await ref.watch(appRouterProvider);
+
+      final params = url.queryParameters;
+      if (url.path == '/stories' && params['id'] != null) {
+        final id = params['id'];
+        await _openStories(id!);
+      } else if (url.path == '/search' && params['filter'] != null) {
+        final filter = params['filter'];
+        await _openQuickFilter(filter!);
+      } else if (url.path == '/quickFeedback') {
+        await router.push(QuickFeedbackRoute());
+      } else if (url.path == '/freeRoam') {
+        await _freeRoam();
+      } else if (url.path == '/qibla') {
+        await _openQibla();
+      } else if (url.path == '/shareMyLocation') {
+        await _shareMyLocation();
+      } else if (url.path == '/athkar') {
+        await _openAthkar();
+      } else if (url.path == '/quran') {
+        await _openQuran();
+      } else if (url.path == '/snapSend') {
+        await _openSnapSend();
+      } else if (url.path == '/parking') {
+        _openParking();
+      } else {
+        await router.pushNamed(url.toString());
+      }
     }
+  }
+
+  void _openParking() {
+    ref.read(appAnalyticsProvider).quickActionSelected('parking');
+    ref.read(layersControlsProvider.notifier).enableParking();
+  }
+
+  Future<void> _freeRoam() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    ref.read(appAnalyticsProvider).quickActionSelected('free_roam');
+    await router.push(const FreeRoamRoute());
+  }
+
+  Future<void> _shareMyLocation() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    await router.push(ShareMyLocationRoute());
+  }
+
+  Future<void> _openQibla() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    ref.read(appAnalyticsProvider).quickActionSelected('qibla');
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.qibla,
+      action: MetricAction.tap.name,
+      group: MetricsConstants.exploreTag,
+    );
+    final location = ref.read(locationProvider.notifier);
+
+    await location.checkLocationPermission().then((allowed) async {
+      if (allowed) {
+        await router.push(const KiblahRoute());
+      }
+    });
+  }
+
+  Future<void> _openQuran() async {
+    ref.read(appAnalyticsProvider).quickActionSelected('quran');
+    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+  }
+
+  Future<void> _openAthkar() async {
+    ref.read(appAnalyticsProvider).quickActionSelected('athkar');
+    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+  }
+
+  Future<void> _openSnapSend() async {
+    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
+
+    await NavigationService.navigatorKey.currentState!.pushNamed(
+      RouteName.vDAllTypesScreen,
+    );
+  }
+
+  Future<void> _openQuickFilter(String filter) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    final quickFilter = QuickFilter.values.firstWhere(
+      (element) => element.name == filter,
+    );
+    unawaited(ref.read(urbiAnalyticsProvider).track(
+      'quickFilterSearch',
+      properties: {
+        'filter': quickFilter.name,
+      },
+    ));
+    ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+    final language = ref.read(appLanguageProvider);
+
+    final query = quickFilter.query[language];
+    if (query != null) {
+      unawaited(ref.read(SendStatisticProvider(query).future));
+    }
+    unawaited(router.push(SearchRoute(requestFocus: false)));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
+    });
+  }
+
+  Future<void> _openStories(String id) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.storyBanner,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+      props: {'id': id},
+    );
+
+    ref.read(storiesOpenStateProvider.notifier).open();
+
+    await router.push(StoriesRoute(
+      type: StoryTypes.network,
+      initialStoryId: id,
+      onClose: ref.read(storiesOpenStateProvider.notifier).close,
+    ));
   }
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
@@ -410,10 +547,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final isParkingPoi = dgisObjectId == parkingObjectId;
 
     if (isParkingPoi && storeParkingData == null) {
-      // BSA-2479: If the parking data is not available, we cannot open the parking spot.
-      // if (location != null) {
-      //   await _poiDeepLinkByCoords(location.latitude, location.longitude);
-      // }
+      if (location != null) {
+        await _poiDeepLinkByCoords(location.latitude, location.longitude);
+      }
       return;
     }
 

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -16,6 +17,7 @@ class ContentRowExpandableTmp extends StatelessWidget {
     this.supportTitleRTL = true,
     this.onTitleTap,
     this.padding,
+    this.count,
     super.key,
   });
 
@@ -27,6 +29,7 @@ class ContentRowExpandableTmp extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final void Function()? onTitleTap;
   final Widget content;
+  final int? count;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -34,40 +37,50 @@ class ContentRowExpandableTmp extends StatelessWidget {
         child: Stack(
           alignment: AlignmentDirectional.topEnd,
           children: [
-            ExpansionWidget(
-              duration: const Duration(milliseconds: 100),
-              titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRow(
-                text: const ContentRowTextOptions(title: ''),
-                trailing: ContentRowCustomTrailingOptions(
-                  builder: (context) => CupertinoButton(
-                    onPressed: toggleFunction,
-                    padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-                    minSize: 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        if (trailing != null) trailing!,
-                        Transform.rotate(
-                          angle: pi * animationValue,
-                          child: Icon(
-                            SystemIcons.arrowCornerDownSmall,
-                            size: AppSizes.xxs,
-                            color: expandIconColor,
+            Padding(
+              padding: const EdgeInsets.only(top: Spacing.$3x),
+              child: ExpansionWidget(
+                duration: const Duration(milliseconds: 100),
+                titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRow(
+                  text: const ContentRowTextOptions(title: ''),
+                  trailing: ContentRowCustomTrailingOptions(
+                    builder: (context) => CupertinoButton(
+                      onPressed: toggleFunction,
+                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+                      minSize: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (count != null)
+                            Text(
+                              count.toString(),
+                              style: context.textStyles.bodySmallSemiBold.copyWith(
+                                color: context.colors.foregroundMuted,
+                              ),
+                            ),
+                          if (trailing != null) trailing!,
+                          Transform.rotate(
+                            angle: pi * animationValue,
+                            child: Icon(
+                              SystemIcons.arrowCornerDownSmall,
+                              size: AppSizes.xxs,
+                              color: expandIconColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              content: Container(
-                width: double.infinity,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(RadiusBorder.baseSharp),
+                content: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(RadiusBorder.baseSharp),
+                    ),
                   ),
+                  child: content,
                 ),
-                child: content,
               ),
             ),
             Padding(

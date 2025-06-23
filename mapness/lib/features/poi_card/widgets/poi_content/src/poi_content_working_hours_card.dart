@@ -15,16 +15,18 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = this.data;
-    final days = data?.days;
-    if (data == null || days == null || days.isEmpty) {
+    if (data == null) {
       return const SizedBox.shrink();
     }
 
-    final workTimeDays = days.map((e) => _WorkTimeItemWidget(
-          workTimeDay: e,
-          showDivider: days.last != e,
-        ));
-    if (data.additionalInfo == null) {
+    final workTimeDays = data.days?.map(
+      (e) => _WorkTimeItemWidget(
+        workTimeDay: e,
+        showDivider: data.days?.last != e,
+      ),
+    );
+
+    if (workTimeDays == null && data.additionalInfo == null) {
       return ContentWrapper(
         color: context.color.surfaceBasePrimary,
         children: [
@@ -60,7 +62,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
           ),
           content: Column(
             children: <Widget>[
-              ...workTimeDays,
+              ...?workTimeDays,
               ContentRow(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 leading: GeneralIcons.infoSquare.icon(

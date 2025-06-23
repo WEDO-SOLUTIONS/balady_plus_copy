@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
@@ -18,9 +19,11 @@ import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
+import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
 class ParkingSpotPage extends ConsumerStatefulWidget {
@@ -286,27 +289,24 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     ToastOverlay.of(context).show(
       title: context.l10n.parkingSuccessfullySaved,
       firstText: context.l10n.feedbackBreaksSheetClose,
-
       iconAsset: Assets.icons.svg.parkingControl.keyName,
+      secondText: context.l10n.share,
+      onSecondTap: () async {
+        if (_latLng == null) {
+          return;
+        }
 
-      /// BSA-2479: Uncomment to enable sharing functionality
-      // secondText: context.l10n.share,
-      // onSecondTap: () async {
-      //   if (_latLng == null) {
-      //     return;
-      //   }
+        final baseUri = BaldayDeeplink.basePoiUri;
+        final query = <String, String>{};
 
-      //   final baseUri = BaldayDeeplink.basePoiUri;
-      //   final query = <String, String>{};
+        query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
 
-      //   query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
+        query[BaldayDeeplink.latitudeKey] = _latLng!.latitude.toString();
+        query[BaldayDeeplink.longitudeKey] = _latLng!.longitude.toString();
 
-      //   query[BaldayDeeplink.latitudeKey] = _latLng!.latitude.toString();
-      //   query[BaldayDeeplink.longitudeKey] = _latLng!.longitude.toString();
-
-      //   await Share.share(
-      //       '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
-      // },
+        await Share.share(
+            '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
+      },
     );
   }
 
