@@ -117,7 +117,6 @@ class EtaUtils {
           return true;
         }
 
-
         await ref.read(shareEtaProvider.notifier).stopSharing();
 
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
@@ -144,6 +143,11 @@ class EtaUtils {
           }
 
           await appRouter.navigate(const LandingRoute());
+        }
+
+        final storedTokenId = EtaStreamStorage().state.streamToken;
+        if(tokenId == storedTokenId){
+          return true;
         }
 
         await ref.read(shareEtaProvider.notifier).stopSharing();
