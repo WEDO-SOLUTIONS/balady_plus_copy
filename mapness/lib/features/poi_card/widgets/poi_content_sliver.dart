@@ -42,7 +42,7 @@ class PoiContentSliver extends ConsumerWidget {
     const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
 
     final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(poiCardState?.tradeLicense?.license.trim());
+    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
 
     final finishPoint = data != null
         ? RouteSearchPoint(
@@ -180,7 +180,7 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               if (hasOffers)
                 PoiContentOffersCard(
-                  offers: offers[poiCardState?.tradeLicense?.license.trim()] ?? [],
+                  offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
                   contentPadding: itemPadding,
                 ),
               if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
