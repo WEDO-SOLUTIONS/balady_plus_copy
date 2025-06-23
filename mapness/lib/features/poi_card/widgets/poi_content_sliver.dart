@@ -1,7 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
@@ -12,12 +13,16 @@ import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
+import 'package:mapness/features/poi_card/provider/poi_search_by_object.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:shimmer/shimmer.dart';
 
 class PoiContentSliver extends ConsumerWidget {
   final PoiCardState? poiCardState;
@@ -49,6 +54,17 @@ class PoiContentSliver extends ConsumerWidget {
         navType: RouteSearchOptionsMessage.car,
       ),
     );
+
+    final searchObjectFuture = ref.watch(poiSearchByObjectProvider(data));
+    final poiSearchObjectFuture = searchObjectFuture.valueOrNull?.$1;
+    final poiSearchByObjectEntrances = searchObjectFuture.valueOrNull?.$2 ?? [];
+    const colorShimmer = Color(0xFFE3E3E3);
+
+    final entrancesWidget = Padding(
+      padding: itemPadding,
+      child: PoiEntrancesMetro(entrancesDirectoryObject: poiSearchByObjectEntrances),
+    );
+
     return SliverPadding(
       padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$4x),
       sliver: SliverList(
@@ -76,6 +92,14 @@ class PoiContentSliver extends ConsumerWidget {
 
           // Accessibility info
           final accessibilityInfo = data.getAccessibility(context.l10n, poiCardState?.qrTradeLicense);
+
+          // Platforms lines info
+          final routeInfos = data.routeInfos;
+          final transportDirectoryRouteInfo = data.routeInfos.firstOrNull;
+          final currentRouteTransition = transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
+                  .firstWhereOrNull((e) => e.name == data.title)
+                  ?.transitions ??
+              [];
 
           // Favourite
           final favouritesState = ref.watch(favouriteCacheProvider);
@@ -151,7 +175,39 @@ class PoiContentSliver extends ConsumerWidget {
               // TODO: add offers
               // if (data.offers != null) //
               //   _PoiContentOffersWidget(offers: data.offers!, contentPadding: itemPadding),
-
+              if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
+                Shimmer.fromColors(
+                  baseColor: colorShimmer,
+                  highlightColor: Colors.white,
+                  child: entrancesWidget,
+                ),
+              if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
+              ...routeInfos
+                  .map((e) => Padding(
+                        padding: itemPadding,
+                        child: PoiLinesMetro(
+                          transportDirectoryRouteInfo: e,
+                          address: data.title,
+                        ),
+                      ))
+                  .toList(),
+              if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
+                Shimmer.fromColors(
+                  baseColor: colorShimmer,
+                  highlightColor: Colors.white,
+                  child: entrancesWidget,
+                ),
+              ...?poiSearchObjectFuture
+                  ?.map(
+                    (e) => Padding(
+                      padding: itemPadding,
+                      child: PoiLinesMetro(
+                        transportDirectoryRouteInfo: e.routeInfos.first,
+                        address: data.title,
+                      ),
+                    ),
+                  )
+                  .toList(),
               if (accessibilityInfo != null)
                 Padding(
                   padding: itemPadding,
