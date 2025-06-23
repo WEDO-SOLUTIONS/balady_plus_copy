@@ -243,11 +243,12 @@ class ElevatedButtonWidget extends _ElevatedButton {
           onPressed: onPressed,
         ));
 
-  ElevatedButtonWidget.startService({required VoidCallback onPressed})
+  ElevatedButtonWidget.startService({required VoidCallback onPressed,bool? isBtnDisabled})
       : super(CustomElevatedButtonWidget(
-          btnColor: AppColor.primary800Light,
+
+          btnColor:  isBtnDisabled ==true ? AppColor.black200 :  AppColor.primary800Light,
           textStyle: AppStyle.elevatedButtonStyle.copyWith(
-            color: AppColor.white,
+            color:  isBtnDisabled == true ? AppColor.black400 :  AppColor.white,
             fontWeight: FontWeight.w700,
             fontSize: 16,
           ),

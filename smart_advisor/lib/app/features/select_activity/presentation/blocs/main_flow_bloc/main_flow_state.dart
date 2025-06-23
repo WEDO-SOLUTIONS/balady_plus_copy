@@ -57,8 +57,22 @@ class MainFlowState extends Equatable {
   final List<ActivityCount>? detailedCount;
   final List<ActivityCount>? categoryCount;
   final int? step1Selection;
-
   final BlocStatus activityDetailsStatus;
+  final BlocStatus delegatorsStatus;
+  final List<DelegatorEntity>? delegators;
+  final DelegatorEntity? selectedDelegator;
+  final List<LicensesResponseItem>? licenses;
+  final LicensesResponseItem? selectedLicense;
+  final BlocStatus licenseStatus;
+  final int? raingSelectScenario;
+  final BlocStatus licenseDetailsStatus;
+  final LicenseDetails? selectedLicenseDetails;
+  final int? area;
+  final int? shopArea;
+
+  final String? unitCount;
+  final LookUpItem? acomodationType;
+  final LookUpItem? workerType;
 
   const MainFlowState(
       {this.step1Selection,
@@ -75,6 +89,7 @@ class MainFlowState extends Equatable {
       this.workFlowStatus = BlocStatus.initial,
       this.detailsStatus = BlocStatus.initial,
       this.activityDetailsStatus = BlocStatus.initial,
+      this.licenseDetailsStatus = BlocStatus.initial,
       this.cities,
       this.districts,
       this.selectedCity,
@@ -104,7 +119,20 @@ class MainFlowState extends Equatable {
       this.currentPage = 0,
       this.request,
       this.gisResponse,
-      this.atmOption});
+      this.atmOption,
+      this.delegatorsStatus = BlocStatus.initial,
+      this.delegators,
+      this.selectedDelegator,
+      this.licenses,
+      this.selectedLicense,
+      this.licenseStatus = BlocStatus.initial,
+      this.raingSelectScenario,
+      this.selectedLicenseDetails,
+      this.area,
+      this.shopArea,
+      this.unitCount,
+      this.acomodationType,
+      this.workerType});
 
   @override
   List<Object?> get props => [
@@ -154,6 +182,20 @@ class MainFlowState extends Equatable {
         request,
         citiesStatus,
         districtsStatus,
+        delegatorsStatus,
+        delegators,
+        selectedDelegator,
+        licenses,
+        selectedLicense,
+        licenseStatus,
+        raingSelectScenario,
+        licenseDetailsStatus,
+        selectedLicenseDetails,
+        area,
+        shopArea,
+        unitCount,
+        acomodationType,
+        workerType
       ];
 
   MainFlowState copyWith(
@@ -202,58 +244,86 @@ class MainFlowState extends Equatable {
       BlocStatus? citiesStatus,
       BlocStatus? districtsStatus,
       bool? clearDistrict,
-      String? locationOption}) {
+      String? locationOption,
+      final BlocStatus? delegatorsStatus,
+      final List<DelegatorEntity>? delegators,
+      final DelegatorEntity? selectedDelegator,
+      final List<LicensesResponseItem>? licenses,
+      final LicensesResponseItem? selectedLicense,
+      final BlocStatus? licenseStatus,
+      final int? raingSelectScenario,
+      final BlocStatus? licenseDetailsStatus,
+      final LicenseDetails? selectedLicenseDetails,
+      final int? area,
+      final int? shopArea,
+      final String? unitCount,
+      final LookUpItem? acomodationType,
+      final LookUpItem? workerType}) {
     return MainFlowState(
-      activityDetailsStatus:
-          activityDetailsStatus ?? this.activityDetailsStatus,
-      categoryCount: categoryCount ?? this.categoryCount,
-      step1Selection: step1Selection ?? this.step1Selection,
-      isicsCount: isicsCount ?? this.isicsCount,
-      detailedCount: detailedCount ?? this.detailedCount,
-      details: details ?? this.details,
-      detailsStatus: detailsStatus ?? this.detailsStatus,
-      workFlow: workFlow ?? this.workFlow,
-      workFlowStatus: workFlowStatus ?? this.workFlowStatus,
-      atmOption: atmOption ?? this.atmOption,
-      contractType: contractType ?? this.contractType,
-      contractOption: contractOption ?? this.contractOption,
-      locationOption: locationOption ?? this.locationOption,
-      citiesStatus: citiesStatus ?? this.citiesStatus,
-      districtsStatus: districtsStatus ?? this.districtsStatus,
-      selectedCity: selectedCity ?? this.selectedCity,
-      selectedDistrict: clearDistrict == true
-          ? null
-          : selectedDistrict ?? this.selectedDistrict,
-      cities: cities ?? this.cities,
-      districts: districts ?? this.districts,
-      selectedArea: selectedArea ?? this.selectedArea,
-      request: request ?? this.request,
-      gisResponse: gisResponse ?? this.gisResponse,
-      selectedSector: selectedSector ?? this.selectedSector,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
-      selectedRubric: selectedRubric ?? this.selectedRubric,
-      currentPage: currentPage ?? this.currentPage,
-      activitesStatus: activitesStatus ?? this.activitesStatus,
-      activites: activites ?? this.activites,
-      isicsStatus: isicsStatus ?? this.isicsStatus,
-      isics: isics ?? this.isics,
-      errorMessage: errorMessage,
-      addetionalActivitesStatus:
-          addetionalActivitesStatus ?? this.addetionalActivitesStatus,
-      addetionalActivitesResponse:
-          addetionalActivitesResponse ?? this.addetionalActivitesResponse,
-      status: status ?? this.status,
-      categoriesStatus: categoriesStatus ?? this.categoriesStatus,
-      categories: categories ?? this.categories,
-      permitsStatus: permitsStatus ?? this.permitsStatus,
-      permits: permits ?? this.permits,
-      rubricsStatus: rubricsStatus ?? this.rubricsStatus,
-      rubrics: rubrics ?? this.rubrics,
-      sectorStatus: sectorStatus ?? this.sectorStatus,
-      sectors: sectors ?? this.sectors,
-      selectedIsic: selectedIsic ?? this.selectedIsic,
-      selectedActivity: selectedActivity ?? this.selectedActivity,
-    );
+        workerType: workerType ?? this.workerType,
+        unitCount: unitCount ?? this.unitCount,
+        acomodationType: acomodationType ?? this.acomodationType,
+        delegatorsStatus: delegatorsStatus ?? this.delegatorsStatus,
+        delegators: delegators ?? this.delegators,
+        selectedDelegator: selectedDelegator ?? this.selectedDelegator,
+        licenses: licenses ?? this.licenses,
+        selectedLicense: selectedLicense ?? this.selectedLicense,
+        licenseStatus: licenseStatus ?? this.licenseStatus,
+        activityDetailsStatus:
+            activityDetailsStatus ?? this.activityDetailsStatus,
+        categoryCount: categoryCount ?? this.categoryCount,
+        step1Selection: step1Selection ?? this.step1Selection,
+        isicsCount: isicsCount ?? this.isicsCount,
+        detailedCount: detailedCount ?? this.detailedCount,
+        details: details ?? this.details,
+        detailsStatus: detailsStatus ?? this.detailsStatus,
+        workFlow: workFlow ?? this.workFlow,
+        workFlowStatus: workFlowStatus ?? this.workFlowStatus,
+        atmOption: atmOption ?? this.atmOption,
+        contractType: contractType ?? this.contractType,
+        contractOption: contractOption ?? this.contractOption,
+        locationOption: locationOption ?? this.locationOption,
+        citiesStatus: citiesStatus ?? this.citiesStatus,
+        districtsStatus: districtsStatus ?? this.districtsStatus,
+        selectedCity: selectedCity ?? this.selectedCity,
+        selectedDistrict: clearDistrict == true
+            ? null
+            : selectedDistrict ?? this.selectedDistrict,
+        cities: cities ?? this.cities,
+        districts: districts ?? this.districts,
+        selectedArea: selectedArea ?? this.selectedArea,
+        request: request ?? this.request,
+        gisResponse: gisResponse ?? this.gisResponse,
+        selectedSector: selectedSector ?? this.selectedSector,
+        selectedCategory: selectedCategory ?? this.selectedCategory,
+        selectedRubric: selectedRubric ?? this.selectedRubric,
+        currentPage: currentPage ?? this.currentPage,
+        activitesStatus: activitesStatus ?? this.activitesStatus,
+        activites: activites ?? this.activites,
+        isicsStatus: isicsStatus ?? this.isicsStatus,
+        isics: isics ?? this.isics,
+        errorMessage: errorMessage,
+        addetionalActivitesStatus:
+            addetionalActivitesStatus ?? this.addetionalActivitesStatus,
+        addetionalActivitesResponse:
+            addetionalActivitesResponse ?? this.addetionalActivitesResponse,
+        status: status ?? this.status,
+        categoriesStatus: categoriesStatus ?? this.categoriesStatus,
+        categories: categories ?? this.categories,
+        permitsStatus: permitsStatus ?? this.permitsStatus,
+        permits: permits ?? this.permits,
+        rubricsStatus: rubricsStatus ?? this.rubricsStatus,
+        rubrics: rubrics ?? this.rubrics,
+        sectorStatus: sectorStatus ?? this.sectorStatus,
+        sectors: sectors ?? this.sectors,
+        selectedIsic: selectedIsic ?? this.selectedIsic,
+        selectedActivity: selectedActivity ?? this.selectedActivity,
+        raingSelectScenario: raingSelectScenario ?? this.raingSelectScenario,
+        licenseDetailsStatus: licenseDetailsStatus ?? this.licenseDetailsStatus,
+        selectedLicenseDetails:
+            selectedLicenseDetails ?? this.selectedLicenseDetails,
+        area: area ?? this.area,
+        shopArea: shopArea ?? this.shopArea);
   }
 
   Map<String, List<PermitItem>> getPermits() {
@@ -272,10 +342,18 @@ class MainFlowState extends Equatable {
   }
 
   bool isNextDisabled() {
-    print("GGGGGGG ${currentPage}");
     if (workFlowStatus == BlocStatus.loading || status == BlocStatus.loading)
       return true;
     // if (currentPage == 1 && selectedSector == null) return true;
+    if (currentPage == 0 &&
+        raingSelectScenario == 1 &&
+        step1Selection == 1 &&
+        selectedDelegator == null) return true;
+    if (currentPage == 1 &&
+        step1Selection == 1 &&
+        raingSelectScenario == 1 &&
+        (selectedLicense != null)) return false;
+
     if (currentPage == 0 && step1Selection == null) return true;
     if (currentPage == 1 && selectedSector == null) return true;
     if (currentPage == 2 && selectedCategory == null) return true;
@@ -361,7 +439,7 @@ class MainFlowState extends Equatable {
             (selectedActivity?.minArea ?? 0).toInt(),
             (selectedActivity?.maxArea ?? 0).toInt()),
       ),
-    ];
+    ].where((e) => e.isActive == true).toList();
   }
 
   bool isRangeWithin(double start1, double end1, double start2, double end2) {
@@ -381,5 +459,16 @@ class MainFlowState extends Equatable {
     return (start >= rangeStart && start <= rangeEnd) ||
         (end >= rangeStart && end <= rangeEnd) ||
         (start <= rangeStart && end >= rangeEnd);
+  }
+
+  double getTotalArea() {
+    return (addetionalActivitesResponse?.isEmpty ?? true)
+        ? (double.tryParse(shopArea.toString() ?? "") ?? 0)
+        : (double.tryParse(shopArea.toString() ?? "") ?? 0) -
+            (addetionalActivitesResponse
+                    ?.map((e) =>
+                        (e.area ?? 0).toDouble()) // Convert each area to double
+                    .reduce((value, element) => value + element) ??
+                0);
   }
 }

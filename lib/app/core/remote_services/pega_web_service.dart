@@ -256,6 +256,7 @@ class PegaWebService {
       {String? relativePath,
       Map<String, dynamic>? queryParams,
       Map<String, String>? extraHeadersParams,
+      int? timeLimit,
       bool autoLogout = true}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
     String queryString = "";
@@ -299,7 +300,8 @@ class PegaWebService {
         var response = await http.get(
           Uri.parse(requestUrl),
           headers: headers,
-        );
+        )
+        .timeout(Duration(seconds: timeLimit ?? 5));
         print("url response: " + utf8.decode(response.bodyBytes).toString());
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);

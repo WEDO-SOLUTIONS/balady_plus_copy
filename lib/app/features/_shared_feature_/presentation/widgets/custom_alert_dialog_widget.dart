@@ -113,11 +113,11 @@ class CustomAlertDialogWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(
-                  titleMessageType.icon,
-                  color: titleMessageType.color,
-                  size: 25.0,
-                ),
+                // Icon(
+                //   titleMessageType.icon,
+                //   color: titleMessageType.color,
+                //   size: 25.0,
+                // ),
                 if (titleMessageType != MessageType.none) ...[
                   UIHelper.horizontalSmallSpace,
                   CustomTextWidget(
@@ -130,13 +130,13 @@ class CustomAlertDialogWidget extends StatelessWidget {
                     ),
                   )
                 ],
-                if (titleMessageType != MessageType.none)
-                  UIHelper.horizontalSmallSpace,
-                Icon(
-                  titleMessageType.icon,
-                  color: titleMessageType.color,
-                  size: 25.0,
-                ),
+                // if (titleMessageType != MessageType.none)
+                //   UIHelper.horizontalSmallSpace,
+                // Icon(
+                //   titleMessageType.icon,
+                //   color: titleMessageType.color,
+                //   size: 25.0,
+                // ),
               ],
             ),
           ),

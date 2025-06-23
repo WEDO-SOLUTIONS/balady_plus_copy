@@ -46,8 +46,10 @@ class _CRMapScreen extends State<CRMapScreen> {
           body: BlocConsumer<MapBloc, MapState>(
             listener: (context, state) {
               // TODO: implement listener
-              if (state.status == BlocStatus.failure)
-                CommonFunctions.showError(state.errorMessage ?? "");
+              if (state.status == BlocStatus.failure) {
+                CommonFunctions.showError(state.errorMessage ?? "",true);
+              }
+
             },
             builder: (context, state) {
               return Stack(

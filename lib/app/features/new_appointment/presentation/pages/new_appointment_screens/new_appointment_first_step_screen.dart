@@ -53,7 +53,7 @@ class _BaladyIncidentDetailsScreenState
                   body: Column(
                     children: [
                       // appointment body
-                      Expanded(child: NewAppointmentBody()),
+                      const Expanded(child: NewAppointmentBody()),
                       // submit button
                       PreviousNextButtons(
                         isFormValid: model.isFormValid,

@@ -17,7 +17,7 @@ class CrStep2ActivityDataState extends Equatable {
   final double? totalArea;
   final String? unitCount;
 
-  final WorkersTypes? workerType;
+  final WorkersTypesEnum? workerType;
 
   final List<AddetionalActivityItem>? addetionalActivityItems;
   final List<AddetionalActivityItemDetails>? addetionalActivityItemDetails;
@@ -81,6 +81,7 @@ class CrStep2ActivityDataState extends Equatable {
         addetionalDetails,
         atmFeesPaid,
         draftLoaded,
+        selectedAddetionalList,
         draftStatus
       ];
 
@@ -98,7 +99,7 @@ class CrStep2ActivityDataState extends Equatable {
       CrLookupsEntity? selectedAccommodationType,
       String? errorMessage,
       double? totalArea,
-      WorkersTypes? workerType,
+      WorkersTypesEnum? workerType,
       List<AddetionalActivityItem>? addetionalActivityItems,
       List<AddetionalActivityItemDetails>? addetionalActivityItemDetails,
       BlocStatus? additionalActivityListStatus,
@@ -136,7 +137,7 @@ class CrStep2ActivityDataState extends Equatable {
         addetionalActivityItemDetails:
             addetionalActivityItemDetails ?? this.addetionalActivityItemDetails,
         addetionalActivityListStatus:
-            additionalActivityListStatus ?? this.addetionalActivityListStatus,
+            additionalActivityListStatus ?? addetionalActivityListStatus,
         addetionalActivityDetailsListStatus:
             addetionalActivityDetailsListStatus ??
                 this.addetionalActivityDetailsListStatus,
@@ -190,7 +191,7 @@ class CrStep2ActivityDataState extends Equatable {
     return selectedIsicActivity?.atmActivity == true;
   }
 
-  double getTotalArea() {
+  double getMainActivityArea() {
     double total = totalArea ?? 0;
 
     selectedAddetionalList?.forEach((element) {

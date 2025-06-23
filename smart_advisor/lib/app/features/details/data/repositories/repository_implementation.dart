@@ -1,5 +1,3 @@
-import 'package:dartz/dartz.dart' show Either, Left, Right;
-
 import '/app/features/details/data/models/entity_violation_activity_details_model.dart';
 import '/app/features/details/data/models/entity_violation_activity_model.dart';
 import '/app/features/details/data/models/violation_details_vd_model.dart';
@@ -10,6 +8,8 @@ import '/app/features/details/domain/entities/entity_violation_activity_request_
 import '/app/features/details/domain/entities/regulation_request_params.dart';
 import '/app/features/details/domain/entities/regulation_response.dart';
 import '/app/features/details/domain/entities/violation_details_vd_request_params.dart';
+import 'package:dartz/dartz.dart' show Either, Left, Right;
+
 import '../../../../core/errors/errors_exports.dart' show Failure, ServerException, ServerFailure;
 import '../../domain/repositories/repository.dart';
 import '../data_sources/remote_data_source.dart';

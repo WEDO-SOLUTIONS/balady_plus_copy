@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:smart_advisor/app/core/utils/utils_exports.dart';
 import 'package:smart_advisor/app/features/shared_features/widgets/app_bar.dart';
 

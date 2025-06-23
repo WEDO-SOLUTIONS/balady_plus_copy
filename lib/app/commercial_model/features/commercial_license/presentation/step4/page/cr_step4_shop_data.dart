@@ -389,6 +389,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                     radioText: "ratio1".tr(),
                                     radioValue: CRContractType.deed),
                               ],
+
                               onChanged: (value) {
                                 context
                                     .read<CrStep4ShopDataCubit>()
