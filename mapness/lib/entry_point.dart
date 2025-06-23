@@ -438,14 +438,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else if (url.path == '/snapSend') {
         await _openSnapSend();
       } else if (url.path == '/parking') {
-        await _openParking();
+        _openParking();
       } else {
         await router.pushNamed(url.toString());
       }
     }
   }
 
-  Future<void> _openParking() async {
+  void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
       await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
