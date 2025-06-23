@@ -34,7 +34,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 class PoiEntrancesMetro extends StatelessWidget {
   final List<DirectoryObjectMessage> entrancesDirectoryObject;
 
-  PoiEntrancesMetro({
+  const PoiEntrancesMetro({
     required this.entrancesDirectoryObject,
     super.key,
   });
