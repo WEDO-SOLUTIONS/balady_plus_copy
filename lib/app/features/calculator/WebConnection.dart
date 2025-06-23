@@ -8,10 +8,11 @@ import '../../core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class WebServiceConnections {
-  // final String API_URL = RemoteConfig.baladyBaseUrl + '/apis/v1.0/Lookup/';
+  final String API_URL = RemoteConfig.baladyBaseUrl + '/apis/v1.0/Lookup/';
 
 // calculator
-//   final String CALCULATOR_API = RemoteConfig.baladyBaseUrl + "/Eservices/FeesCalculator";
+  final String CALCULATOR_API =
+      RemoteConfig.baladyBaseUrl + "/Eservices/FeesCalculator";
 
   //////===========================
   final String METHOD_TYPE_GET = "get";

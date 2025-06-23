@@ -3,16 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/utils/utils_exports.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart';
 
 class ForceUpdatePage extends StatefulWidget {
+  const ForceUpdatePage({super.key});
+
   @override
   _ForceUpdatePageState createState() => _ForceUpdatePageState();
 }
 
 class _ForceUpdatePageState extends State<ForceUpdatePage> {
+  Future<void> _openAppStore() async {
+    final appStoreUrl = Uri.parse("https://apps.apple.com/app/id1522185123");
+    if (await canLaunchUrl(appStoreUrl)) {
+      await launchUrl(appStoreUrl, mode: LaunchMode.externalApplication);
+    } else {
+      // Optional: handle error or fallback
+      debugPrint("Could not launch App Store.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -26,7 +39,7 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
 
   Widget body() {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 35),
+        padding: const EdgeInsets.symmetric(horizontal: 35),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,8 +82,7 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
                       androidAppId: "momra.balady.android",
                       iOSAppId: "1522185123");
                 } else {
-                  LaunchReview.launch(
-                      writeReview: false, iOSAppId: "1522185123");
+                  _openAppStore();
                 }
               },
             ),

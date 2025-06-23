@@ -11,25 +11,24 @@ class SubMunicipality {
     this.statusDetails,
     this.data,
   });
-
-  List<SubMunicipalityStatusDetail>? statusDetails;
+  
+  SubMunicipalityStatusDetail? statusDetails;
   SubMunicipalityData? data;
-
+  
   factory SubMunicipality.fromJson(Map<String, dynamic> json) =>
       SubMunicipality(
         statusDetails: json["statusDetails"] == null
             ? null
-            : List<SubMunicipalityStatusDetail>.from(json["statusDetails"]
-                .map((x) => SubMunicipalityStatusDetail.fromJson(x))),
+            : SubMunicipalityStatusDetail.fromJson(json["statusDetails"]),
         data: json["data"] == null
             ? null
             : SubMunicipalityData.fromJson(json["data"]),
       );
-
+  
   Map<String, dynamic> toJson() => {
         "statusDetails": statusDetails == null
             ? null
-            : List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
+            : statusDetails!.toJson(),
         "data": data == null ? null : data!.toJson(),
       };
 }

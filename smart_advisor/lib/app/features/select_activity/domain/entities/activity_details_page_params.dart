@@ -3,6 +3,7 @@ import 'package:smart_advisor/app/features/details/data/models/entity_activity_d
 import 'package:smart_advisor/app/features/map/data/models/gis_data_response_model.dart';
 import 'package:smart_advisor/app/features/select_activity/data/models/addetional_activites_response_model.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/entities/suggested_area_model.dart';
+import 'package:smart_advisor/app/features/select_activity/presentation/blocs/main_flow_bloc/main_flow_bloc.dart';
 
 import '../../data/models/work_flow_model.dart';
 import '/app/features/_shared_feature_/domain/entities/lookUp_response.dart';
@@ -26,6 +27,8 @@ class ActivityDetailsPageParams {
   List<WorkFlowModel>? workFlow;
   String? atmOption;
   bool? isFromHome;
+  int? licenseNo;
+  MainFlowBloc? mainFlowBloc;
 
   // Constructor
   ActivityDetailsPageParams(
@@ -40,7 +43,9 @@ class ActivityDetailsPageParams {
       this.suggestedArea,
       this.workFlow,
       this.isFromHome,
-      this.atmOption});
+      this.atmOption,
+      this.licenseNo,
+      this.mainFlowBloc});
 
   // copyWith method
   ActivityDetailsPageParams copyWith(
@@ -55,8 +60,11 @@ class ActivityDetailsPageParams {
       LookUpItem? sector,
       SuggestedAreaModel? suggestedArea,
       List<WorkFlowModel>? workFlow,
-      bool? isFromHome}) {
+      bool? isFromHome,
+      int? licenseNo,
+      MainFlowBloc? mainFlowBloc}) {
     return ActivityDetailsPageParams(
+        mainFlowBloc: mainFlowBloc ?? this.mainFlowBloc,
         atmOption: atmOption ?? this.atmOption,
         workFlow: workFlow ?? this.workFlow,
         sector: sector ?? this.sector,
@@ -69,7 +77,8 @@ class ActivityDetailsPageParams {
             entityActivityDetailsResponse ?? this.entityActivityDetailsResponse,
         suggestedArea: suggestedArea ?? this.suggestedArea,
         addetionalActivites: addetionalActivites ?? this.addetionalActivites,
-        isFromHome: isFromHome ?? this.isFromHome);
+        isFromHome: isFromHome ?? this.isFromHome,
+        licenseNo: licenseNo ?? this.licenseNo);
   }
 
   // toJson method

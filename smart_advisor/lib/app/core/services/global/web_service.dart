@@ -19,6 +19,7 @@ import '../../errors/errors_exports.dart'
 import '../../utils/utils_exports.dart' show CommonFunctions, EnvType, Log;
 import '../services_exports.dart' show SmartAdvisorNetworkConnection;
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 // Please using any technique to create singleton WebService (GetIt)
 class SmartAdvisorWebService {
@@ -29,7 +30,11 @@ class SmartAdvisorWebService {
     dio.options.connectTimeout = const Duration(milliseconds: 60000);
     dio.options.receiveTimeout = const Duration(milliseconds: 60000);
     dio.options.sendTimeout = const Duration(milliseconds: 60000);
-    dio.options.headers = {"Accept-Language": "ar"};
+    dio.options.headers = {
+      "Accept-Language": "ar",
+      "x-platform-id": "smart-advisor",
+      "x-channel-id": "mobile",
+    };
 
     //dio.options.headers = {"lang": "ar"};
     dio.interceptors.add(AppInterceptors());
@@ -53,7 +58,16 @@ class AppInterceptors extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
+    bool isAuth = false;
     "On-Sending-Request ${options.uri}".actionLog();
+    if (options.uri.path.contains("ext/") ||
+        options.uri.path.contains("delegation-services") ||
+        options.uri.path.contains("commercial/licenses") ||
+        options.uri.path.contains("license-details")) {
+      isAuth = true;
+      options.headers
+          .addAll({"Authorization": "Bearer ${BaladyServices.token}"});
+    }
 
     if (await smartAdvisorNetworkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();
@@ -63,11 +77,16 @@ class AppInterceptors extends Interceptor {
     String url = options.uri.toString();
     url = Uri.decodeQueryComponent(url);
 
-    final method = options.method;
-    final verifyingKEY = CommonFunctions.hashRequest(url, method,
-        body: (options.data != null ? options.data.toString() : null));
-
-    options.headers.putIfAbsent("verifyingKEY", () => verifyingKEY);
+    if (!options.headers.containsKey("verifyingKEY")) {
+      final method = options.method;
+      final verifyingKEY = CommonFunctions.hashRequest(
+        url, method,
+        authorization: isAuth,
+        body: (options.data != null ? options.data.toString() : null),
+        // authorization: BaladyServices.token.isNotEmpty ? true : false
+      );
+      options.headers.putIfAbsent("verifyingKEY", () => verifyingKEY);
+    }
 
     return handler.next(options);
   }

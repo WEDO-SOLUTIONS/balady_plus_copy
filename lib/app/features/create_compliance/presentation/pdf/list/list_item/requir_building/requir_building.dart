@@ -35,7 +35,7 @@ class RequirBuilding extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 18,
-                    fontFamily: 'Frutiger',
+                    fontFamily: 'packages/balady_uikit/Frutiger',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -59,7 +59,7 @@ class RequirBuilding extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 16,
-                    fontFamily: 'Frutiger',
+                    fontFamily: 'packages/balady_uikit/Frutiger',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -96,7 +96,7 @@ class RequirBuilding extends StatelessWidget {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 16,
-                    fontFamily: 'Frutiger',
+                    fontFamily: 'packages/balady_uikit/Frutiger',
                     fontWeight: FontWeight.w700,
                   ),
                 ),

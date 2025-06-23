@@ -15,7 +15,8 @@ class RequestsModel extends RequestEntity {
       super.redirectUrl,
       super.requestTypeId,
       super.requestMainTypeId,
-      super.serviceTypeId});
+      super.serviceTypeId,
+      super.hashingRequestNumber});
 
   factory RequestsModel.fromMap(Map<String, dynamic> json) {
     return RequestsModel(
@@ -32,6 +33,7 @@ class RequestsModel extends RequestEntity {
         redirectUrl: json['redirectUrl'] as String?,
         requestTypeId: json['requestTypeId'],
         requestMainTypeId: json["requestMainTypeId"],
+        hashingRequestNumber: json["hashingRequestNumber"],
         serviceTypeId: json["serviceTypeId"]);
   }
 }
