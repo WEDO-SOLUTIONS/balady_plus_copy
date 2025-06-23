@@ -46,12 +46,10 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
       body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
         builder: (contextBloc, state) {
           if (state is MiniAppsEngineInitialState) {
-            return const Center(child: Text('Loading ...'));
+            return const SizedBox.shrink();
           } else if (state is MiniAppsEngineLoadedState) {
-            return WebMiniAppsScreen(servicePath: state.servicePath);
-          } else if (state is MiniAppsEngineErrorState) {
-            return Center(child: Text(state.errorMessage));
-          } else if (state is FailedDownloadState) {
+            return const WebMiniAppsScreen();
+          }  else if (state is FailedDownloadState || state is MiniAppsEngineErrorState) {
             return ReloadWidget(
               errorMessage: "errors_server_error_1".tr(),
               onTab: () {
@@ -61,21 +59,29 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
               },
             );
           } else if (state is MiniAppsEngineLoadingState) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(
-                    state.progress,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+            return Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 10,
+                  child: LinearProgressIndicator(
+                    value: state.progress.isEmpty ? null : double.parse(state.progress),
+                    backgroundColor: Colors.grey[200],
+                    valueColor:
+                    const AlwaysStoppedAnimation<Color>(Colors.blue),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "loading".tr(),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             );
           }
           return const SizedBox.shrink();
