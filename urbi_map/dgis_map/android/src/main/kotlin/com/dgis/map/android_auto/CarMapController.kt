@@ -109,6 +109,11 @@ class CarMapController(
             layerId = "920277"
         )
 
+        val navigationState = getCurrentNavigationState()
+        if (navigationState == NavigationState.DISABLED) {
+            startFreeroam()
+        }
+
         setStyle()
         settingsInit()
     }
@@ -395,6 +400,10 @@ class CarMapController(
             ),
             trafficRoute = selectedRoute,
         )
+    }
+
+    fun startFreeroam() {
+        navigationHandler.startFreeroam()
     }
 
     fun getMyLocation(): Location? {
