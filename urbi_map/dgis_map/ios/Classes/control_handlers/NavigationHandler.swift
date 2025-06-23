@@ -264,10 +264,6 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             
-            if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-                FlutterCarPlaySceneDelegate.startNavigation()
-            }
-            
             // TODO: return back
             try self.navigationManager.start(
                 routeBuildOptions: RouteBuildOptions(
@@ -353,7 +349,6 @@ class NavigationHandler {
     
     func stopNavigation() {
         self.navigationManager.stop()
-        FlutterCarPlaySceneDelegate.stopNavigation()
         resetCamera()
     }
     

@@ -64,13 +64,6 @@ class DashboardControlModel {
             return
         }
         
-        FlutterCarPlaySceneDelegate.updateEstimates(
-            CarPlayEstimates(
-                distanceRemaining: distance,
-                timeRemaining: duration
-            )
-        )
-        
         eventChannel.success([
             "event": Events.dashboardEvent,
             "duration": Int(duration),

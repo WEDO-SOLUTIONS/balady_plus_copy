@@ -55,9 +55,6 @@ class PlaceListScreen(
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
                 mapController.removeAllMarkers()
-                mapController.setCameraPadding(
-                    Padding(0, 0, 0, 0)
-                )
             }
         })
     }
@@ -121,7 +118,7 @@ class PlaceListScreen(
                         }
                     }
                 } else {
-                    itemList.setNoItemsMessage(getString(R.string.searchNothingFound))
+                    itemList.setNoItemsMessage(getString(R.string.search_nothing_found))
                 }
                 template.setItemList(itemList.build())
             }
@@ -143,7 +140,6 @@ class PlaceListScreen(
             )
             Marker(options)
         }
-        mapController.setCameraPadding(Padding(128, 0, 0, 0))
         mapController.addMarkers(markers)
         val firstObject = directoryObjectsWithMarker.first()
         moveToMarker(firstObject.markerPosition!!)
@@ -187,7 +183,7 @@ class PlaceListScreen(
 }
 
 sealed class PlaceListScreenState {
-    object Loading : PlaceListScreenState()
-    object Error : PlaceListScreenState()
-    class Result(val items: List<DirectoryObject>) : PlaceListScreenState()
+    data object Loading : PlaceListScreenState()
+    data object Error : PlaceListScreenState()
+    data class Result(val items: List<DirectoryObject>) : PlaceListScreenState()
 }
