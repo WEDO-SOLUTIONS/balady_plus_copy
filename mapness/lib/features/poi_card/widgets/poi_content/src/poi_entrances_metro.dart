@@ -37,7 +37,7 @@ class PoiEntrancesMetro extends StatelessWidget {
   PoiEntrancesMetro({
     required this.entrancesDirectoryObject,
     super.key,
-  }) : assert(entrancesDirectoryObject.isNotEmpty, 'entrancesDirectoryObject must not be empty');
+  });
 
   @override
   Widget build(BuildContext context) {
