@@ -116,6 +116,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         case .navigation:
             if model.isFreeRoam { break }
 
+            navigationSessionManeuvers?.disable()
+            
             navigationSessionManeuvers = NavigationSessionManeuvers(
                 model: model,
                 mapTemplate: mapTemplate,
