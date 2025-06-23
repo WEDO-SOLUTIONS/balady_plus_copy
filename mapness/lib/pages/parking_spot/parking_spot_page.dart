@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -8,7 +6,8 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -26,7 +25,7 @@ import 'package:mapness/widgets/parking_spot/selected_images.dart';
 import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
-class ParkingSpotPage extends ConsumerStatefulWidget {
+class ParkingSpotPage extends HookConsumerWidget {
   final String? address;
   final GeoPointWithElevationMessage? markerPosition;
   final bool isEdit;
@@ -39,63 +38,87 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ParkingSpotPage> createState() => _ParkingSpotState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textController = useTextEditingController();
+    final addressNotifier = useState<String>(address ?? '');
+    final isDirty = useState<bool>(false);
+    final isValid = useState<bool>(true);
+    final latLng = useState<LatLng?>(
+      markerPosition != null
+          ? LatLng(
+              latitude: markerPosition!.latitude,
+              longitude: markerPosition!.longitude,
+            )
+          : null,
+    );
 
-class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
-  final _keyMapParkingSpot = 'ParkingSpotDGISMapKey';
-  late final TextEditingController _textEditingController = TextEditingController();
-  late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
-  final _isDirty = ValueNotifier(false);
-  LatLng? _latLng;
+    final maxLines = useState<int>(3);
+    final inputState = useState<BaladyInputState>(BaladyInputState.defaultValue);
+    final supportingText = useState<String?>(null);
 
-  @override
-  void initState() {
-    super.initState();
+    useEffect(() {
+      final stored = ref.read(parkingManageProvider).valueOrNull;
+      if (isEdit && stored != null) {
+        textController.text = stored.comment;
+        addressNotifier.value = stored.address;
+        latLng.value = LatLng(latitude: stored.lat, longitude: stored.lon);
+      }
 
-    final stored = ref.read(parkingManageProvider).valueOrNull;
+      void checkDirty() {
+        final stored = ref.read(parkingManageProvider).valueOrNull;
+        final images = ref.read(parkingImageProvider(isEdit: isEdit));
 
-    if (widget.isEdit && stored != null) {
-      _textEditingController.text = stored.comment;
-      _addressNotifier.value = stored.address;
-      _latLng = LatLng(latitude: stored.lat, longitude: stored.lon);
-    } else {
-      _textEditingController.text = '';
-      _addressNotifier.value = widget.address ?? '';
-      _latLng = LatLng(
-        latitude: widget.markerPosition?.latitude ?? 0,
-        longitude: widget.markerPosition?.longitude ?? 0,
-      );
-    }
+        final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
+        final textDirty = textController.text != stored?.comment;
+        final addressDirty = addressNotifier.value != stored?.address;
+        final latDirty = latLng.value?.latitude != stored?.lat;
+        final lonDirty = latLng.value?.longitude != stored?.lon;
 
-    _addressNotifier.addListener(_checkDirty);
-    _textEditingController.addListener(_checkDirty);
-    _checkDirty();
-  }
+        final dirty =
+            isEdit ? (textDirty || addressDirty || latDirty || lonDirty || imagesDirty) : latLng.value != null;
+        isDirty.value = dirty;
+      }
 
-  @override
-  void dispose() {
-    _isDirty.dispose();
-    _textEditingController.dispose();
-    _addressNotifier.dispose();
-    super.dispose();
-  }
+      addressNotifier.addListener(checkDirty);
+      textController.addListener(checkDirty);
+      checkDirty();
 
-  @override
-  Widget build(BuildContext context) {
+      return () {
+        addressNotifier.removeListener(checkDirty);
+        textController.removeListener(checkDirty);
+      };
+    }, []);
+
+    useEffect(() {
+      void calculateMaxLines() {
+        const averageCharWidth = 10.0;
+        final textFieldWidth = MediaQuery.sizeOf(context).width - (Spacing.$4x * 2);
+        final charsPerLine = (textFieldWidth / averageCharWidth).floor();
+        final lines = (textController.text.length / charsPerLine).ceil();
+        maxLines.value = lines.clamp(3, 7);
+
+        final isValidLength = textController.text.length <= 225;
+        inputState.value = isValidLength ? BaladyInputState.defaultValue : BaladyInputState.error;
+        supportingText.value = isValidLength ? null : context.l10n.appFeedbackCharacterLimitReached;
+        isValid.value = isValidLength;
+      }
+
+      textController.addListener(calculateMaxLines);
+      return () => textController.removeListener(calculateMaxLines);
+    }, [textController]);
+
     ref
       ..watch(parkingSpotMapProvider.notifier)
       ..watch(parkingManageProvider.notifier)
-      ..listen(parkingImageProvider(isEdit: widget.isEdit), (_, __) => _checkDirty());
+      ..listen(parkingImageProvider(isEdit: isEdit), (_, __) {});
+    final canSave = isDirty.value && isValid.value;
 
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-        textStyle: context.textStyles.bodyLargeSemiBold.copyWith(
-          color: context.colors.foregroundDefault,
-        ),
-        title: widget.isEdit ? context.l10n.edit : context.l10n.addParking,
+        textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+        title: isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
           padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
           alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
@@ -115,65 +138,88 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                   child: UrbiMap(
-                    onMapCreated: _onMapCreated,
-                    key: Key(_keyMapParkingSpot),
+                    onMapCreated: (controller) async {
+                      final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
+                      await dgisMapController.onMapCreated(controller);
+                      if (latLng.value != null) {
+                        await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
+                          latitude: latLng.value!.latitude,
+                          longitude: latLng.value!.longitude,
+                          elevation: 0,
+                        ));
+                        await dgisMapController.addMarker(Marker(
+                          id: parkingId,
+                          options: MarkerOptionsMessage(
+                            position: GeoPointWithElevationMessage(
+                              latitude: latLng.value!.latitude,
+                              longitude: latLng.value!.longitude,
+                              elevation: 0,
+                            ),
+                            icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+                          ),
+                        ));
+                      }
+                    },
+                    key: const Key('ParkingSpotDGISMapKey'),
                   ),
                 ),
               ),
               Spacing.$2x.heightBox,
-              ValueListenableBuilder(
-                  valueListenable: _addressNotifier,
-                  builder: (_, value, __) {
-                    if (value.isEmpty) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return Text(
-                      value,
-                      style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
-                    );
-                  }),
+              if (addressNotifier.value.isNotEmpty)
+                Text(
+                  addressNotifier.value,
+                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                ),
               Spacing.$3x.heightBox,
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonType: ButtonType.secondary,
                   primaryIcon: GeneralIcons.location,
                   primaryLabel: context.l10n.changeLocation,
                   iconColor: context.colors.accentSecondaryOnContainer,
                   textColor: context.colors.accentSecondaryOnContainer,
-                  onTap: () => _onTapChangeLocation(context),
+                  onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
                 ),
               ),
               Spacing.$4x.heightBox,
               BaladyTextInput(
+                controller: textController,
+                inputState: inputState.value,
                 label: BaladyInputLabel(
-                    text: context.l10n.comment,
-                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault)),
-                controller: _textEditingController,
+                  text: context.l10n.comment,
+                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
+                ),
                 config: BaladyInputConfig(
-                  isDisposed: false,
+                  autofocus: true,
                   hintText: context.l10n.feedbackCommentHint,
-                  background: BaladyInputBackground.color,
-                  fillColor: context.colors.neutralContainerDefault,
-                  autovalidateMode: AutovalidateMode.onUnfocus,
+                  maxLines: maxLines.value,
+                  isDisposed: false,
+                ),
+                supportingText: BaladySupportingText(
+                  text: supportingText.value,
                 ),
               ),
               Spacing.$4x.heightBox,
-              SelectedImages(
-                isEdit: widget.isEdit,
-              ),
+              SelectedImages(isEdit: isEdit),
               const Spacer(),
-              ValueListenableBuilder<bool>(
-                valueListenable: _isDirty,
-                builder: (_, canSave, __) => SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.accent,
-                    buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
-                    primaryLabel: context.l10n.save,
-                    onTap: canSave ? () => _onTapSave(context) : null,
-                  ),
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
+                  primaryLabel: context.l10n.save,
+                  onTap: canSave
+                      ? () => _handleSave(
+                            context,
+                            ref,
+                            textController,
+                            latLng,
+                            addressNotifier,
+                            isEdit,
+                          )
+                      : null,
                 ),
               ),
               Spacing.$0_5x.heightBox,
@@ -182,7 +228,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                   context.l10n.dataStoredFor,
                   style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -191,108 +237,79 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     );
   }
 
-  Future<void> _onTapChangeLocation(BuildContext context) async {
+  Future<void> _handleChangeLocation(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<LatLng?> latLng,
+    ValueNotifier<String> addressNotifier,
+  ) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
+    if (result is RoutePoint) {
+      latLng.value = LatLng(latitude: result.latitude!, longitude: result.longitude!);
+      addressNotifier.value = result is RoutePointCoordinates && result.label != null
+          ? result.label!
+          : 'latitude: ${result.latitude}, longitude:${result.longitude}';
 
-    if (result == null || result is! RoutePoint) {
-      return;
-    }
-
-    _latLng = LatLng(latitude: result.latitude!, longitude: result.longitude!);
-
-    if (result is RoutePointCoordinates && result.label != null) {
-      _addressNotifier.value = result.label!;
-    } else {
-      _addressNotifier.value = 'latitude: ${result.latitude}, longitude:${result.longitude}';
-    }
-
-    if (result.latitude != null && result.longitude != null) {
       final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-
-      await dgisMapController.setCameraPosition(
-        GeoPointWithElevationMessage(
-          latitude: result.latitude!,
-          longitude: result.longitude!,
-          elevation: 0,
-        ),
-      );
-
-      await ref.read(parkingSpotMapProvider.notifier).deleteMarkers();
-
-      await dgisMapController.addMarker(
-        Marker(
-          id: parkingId,
-          options: MarkerOptionsMessage(
-            position: GeoPointWithElevationMessage(
-              latitude: _latLng!.latitude,
-              longitude: _latLng!.longitude,
-              elevation: 0,
-            ),
-            icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+      await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
+        latitude: latLng.value!.latitude,
+        longitude: latLng.value!.longitude,
+        elevation: 0,
+      ));
+      await dgisMapController.deleteMarkers();
+      await dgisMapController.addMarker(Marker(
+        id: parkingId,
+        options: MarkerOptionsMessage(
+          position: GeoPointWithElevationMessage(
+            latitude: latLng.value!.latitude,
+            longitude: latLng.value!.longitude,
+            elevation: 0,
           ),
+          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
-      );
+      ));
     }
   }
 
-  Future<void> _onMapCreated(DgisMapController controller) async {
-    final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-    await dgisMapController.onMapCreated(controller);
-    if (_latLng != null) {
-      await dgisMapController.setCameraPosition(
-        GeoPointWithElevationMessage(
-          latitude: _latLng!.latitude,
-          longitude: _latLng!.longitude,
-          elevation: 0,
-        ),
-      );
-      await dgisMapController.addMarker(
-        Marker(
-          id: parkingId,
-          options: MarkerOptionsMessage(
-            position: GeoPointWithElevationMessage(
-              latitude: _latLng!.latitude,
-              longitude: _latLng!.longitude,
-              elevation: 0,
-            ),
-            icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
-          ),
-        ),
-      );
-    }
-  }
-
-  Future<void> _onTapSave(BuildContext context) async {
+  Future<void> _handleSave(
+    BuildContext context,
+    WidgetRef ref,
+    TextEditingController textController,
+    ValueNotifier<LatLng?> latLng,
+    ValueNotifier<String> addressNotifier,
+    bool isEdit,
+  ) async {
     final parkingManage = ref.read(parkingManageProvider.notifier);
-    final images = ref.read(parkingImageProvider(isEdit: widget.isEdit));
+    final images = ref.read(parkingImageProvider(isEdit: isEdit));
 
-    if (_latLng == null) {
+    if (latLng.value == null) {
       return;
     }
 
-    await parkingManage.saveStore(
-      ParkingStoreModel(
-        dateTime: DateTime.now(),
-        imagesPaths: images.map((e) => e.path).toList(),
-        comment: _textEditingController.text,
-        lat: _latLng!.latitude,
-        lon: _latLng!.longitude,
-        address: _addressNotifier.value,
-      ),
-    );
+    await parkingManage.saveStore(ParkingStoreModel(
+      dateTime: DateTime.now(),
+      imagesPaths: images.map((e) => e.path).toList(),
+      comment: textController.text,
+      lat: latLng.value!.latitude,
+      lon: latLng.value!.longitude,
+      address: addressNotifier.value,
+    ));
 
-    callToast();
+    callToast(context, latLng);
     context.router.popUntilRouteWithName(BottomMenuRoute.name);
   }
 
-  void callToast() {
+  void callToast(
+    BuildContext context,
+    ValueNotifier<LatLng?> latLng,
+  ) {
     ToastOverlay.of(context).show(
       title: context.l10n.parkingSuccessfullySaved,
       firstText: context.l10n.feedbackBreaksSheetClose,
-      iconAsset: Assets.icons.svg.parkingControl.keyName,
       secondText: context.l10n.share,
+      iconAsset: Assets.icons.svg.parkingControl.keyName,
       onSecondTap: () async {
-        if (_latLng == null) {
+        if (latLng.value == null) {
           return;
         }
 
@@ -301,30 +318,12 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
 
         query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
 
-        query[BaldayDeeplink.latitudeKey] = _latLng!.latitude.toString();
-        query[BaldayDeeplink.longitudeKey] = _latLng!.longitude.toString();
+        query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
+        query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
 
         await Share.share(
             '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
       },
     );
-  }
-
-  void _checkDirty() {
-    final stored = ref.read(parkingManageProvider).valueOrNull;
-    final images = ref.read(parkingImageProvider(isEdit: widget.isEdit));
-
-    final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
-
-    final textDirty = _textEditingController.text != stored?.comment;
-    final addressDirty = _addressNotifier.value != stored?.address;
-    final latDirty = _latLng?.latitude != stored?.lat;
-    final lonDirty = _latLng?.longitude != stored?.lon;
-
-    final dirty = widget.isEdit ? (textDirty || addressDirty || latDirty || lonDirty || imagesDirty) : _latLng != null;
-
-    if (_isDirty.value != dirty) {
-      _isDirty.value = dirty;
-    }
   }
 }

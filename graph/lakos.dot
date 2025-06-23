@@ -263,6 +263,7 @@ digraph "" {
   "/lib/shared/utils/text_utils/phone_number_formatter.dart" [label="phone_number_formatter"];
   "/lib/shared/utils/text_utils/voice_settings_utils.dart" [label="voice_settings_utils"];
   "/lib/shared/utils/copy_to_clipboard.dart" [label="copy_to_clipboard"];
+  "/lib/shared/utils/location_setup_helper.dart" [label="location_setup_helper"];
   "/lib/shared/utils/common_function.dart" [label="common_function"];
   "/lib/shared/extensions/date_time_ext.dart" [label="date_time_ext"];
   "/lib/shared/extensions/camera_position_message_ext.dart" [label="camera_position_message_ext"];
@@ -627,9 +628,11 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart" [label="poi_content_feedback_banner"];
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_data_incorrect_card.dart" [label="poi_content_data_incorrect_card"];
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_license_card.dart" [label="poi_content_license_card"];
+  "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart" [label="poi_entrances_metro"];
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_parking_card.dart" [label="poi_content_parking_card"];
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_full_address_card.dart" [label="poi_content_full_address_card"];
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart" [label="poi_content_about_card"];
+  "/lib/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart" [label="poi_lines_metro"];
   "/lib/features/poi_card/widgets/poi_content/tmp/content_row_expandable.dart" [label="content_row_expandable"];
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" [label="poi_content"];
   "/lib/features/poi_card/widgets/poi_card_header/subtitle.dart" [label="subtitle"];
@@ -686,6 +689,7 @@ digraph "" {
   "/lib/features/poi_card/provider/poi_photo_provider.dart" [label="poi_photo_provider"];
   "/lib/features/poi_card/provider/poi_card_provider.dart" [label="poi_card_provider"];
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" [label="poi_my_location_provider"];
+  "/lib/features/poi_card/provider/poi_search_by_object.dart" [label="poi_search_by_object"];
   "/lib/features/poi_card/data/qr_license_datasource.dart" [label="qr_license_datasource"];
   "/lib/features/poi_card/data/qr_license_service.dart" [label="qr_license_service"];
   "/lib/features/poi_card/data/poi_data_service.dart" [label="poi_data_service"];
@@ -1379,6 +1383,7 @@ digraph "" {
           label="utils";
           "/lib/shared/utils/language_detector.dart";
           "/lib/shared/utils/copy_to_clipboard.dart";
+          "/lib/shared/utils/location_setup_helper.dart";
           "/lib/shared/utils/common_function.dart";
           subgraph "cluster~/lib/shared/utils/text_utils" {
             label="text_utils";
@@ -2087,9 +2092,11 @@ digraph "" {
                 "/lib/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart";
                 "/lib/features/poi_card/widgets/poi_content/src/poi_content_data_incorrect_card.dart";
                 "/lib/features/poi_card/widgets/poi_content/src/poi_content_license_card.dart";
+                "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart";
                 "/lib/features/poi_card/widgets/poi_content/src/poi_content_parking_card.dart";
                 "/lib/features/poi_card/widgets/poi_content/src/poi_content_full_address_card.dart";
                 "/lib/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart";
+                "/lib/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart";
               }
               subgraph "cluster~/lib/features/poi_card/widgets/poi_content/tmp" {
                 label="tmp";
@@ -2181,6 +2188,7 @@ digraph "" {
             "/lib/features/poi_card/provider/poi_photo_provider.dart";
             "/lib/features/poi_card/provider/poi_card_provider.dart";
             "/lib/features/poi_card/provider/poi_my_location_provider.dart";
+            "/lib/features/poi_card/provider/poi_search_by_object.dart";
           }
           subgraph "cluster~/lib/features/poi_card/data" {
             label="data";
@@ -3170,7 +3178,10 @@ digraph "" {
   "/lib/entry_point.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/entry_point.dart" -> "/lib/app/auto_route/others/routes_observer.dart";
   "/lib/entry_point.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/entry_point.dart" -> "/lib/entities/quick_filters/quick_filter.dart";
   "/lib/entry_point.dart" -> "/lib/entities/search/models/search_history.dart";
+  "/lib/entry_point.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
+  "/lib/entry_point.dart" -> "/lib/features/app_analytics/app_analytics.dart";
   "/lib/entry_point.dart" -> "/lib/features/car/car_enable_free_roam.dart";
   "/lib/entry_point.dart" -> "/lib/features/favourites/data/models/favorite_cache_item.dart";
   "/lib/entry_point.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
@@ -3178,10 +3189,15 @@ digraph "" {
   "/lib/entry_point.dart" -> "/lib/features/path_nav/lib/extensions.dart";
   "/lib/entry_point.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
   "/lib/entry_point.dart" -> "/lib/features/share_eta/helpers/utils.dart";
+  "/lib/entry_point.dart" -> "/lib/features/statistic/providers/statistics_provider.dart";
+  "/lib/entry_point.dart" -> "/lib/features/stories/models/story_types.dart";
+  "/lib/entry_point.dart" -> "/lib/features/stories/providers/stories_open_state.dart";
   "/lib/entry_point.dart" -> "/lib/pages/debug_overlay/debug_overlay.dart";
   "/lib/entry_point.dart" -> "/lib/pages/path_nav/path_nav_page.dart";
   "/lib/entry_point.dart" -> "/lib/shared/constants/constants.dart";
+  "/lib/entry_point.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/entry_point.dart" -> "/lib/shared/lib/deeplink_functions.dart";
+  "/lib/entry_point.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/entry_point.dart" -> "/lib/shared/lib/urbi_metrics_utils.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/base_dio.dart";
@@ -3197,6 +3213,8 @@ digraph "" {
   "/lib/entry_point.dart" -> "/lib/shared/ui/loading/loading_overlay.dart";
   "/lib/entry_point.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
   "/lib/entry_point.dart" -> "/lib/widgets/scopes/global_scopes.dart";
+  "/lib/entry_point.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/entry_point.dart" -> "/lib/features/search/ui/search_scope.dart";
   "/lib/mapness.dart" -> "/lib/entry_point.dart" [style=dashed];
   "/lib/mapness.dart" -> "/lib/shared/lib/urbi_metrics_utils.dart" [style=dashed];
   "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
@@ -3326,12 +3344,12 @@ digraph "" {
   "/lib/shared/providers/dgis_http_network.dart" -> "/lib/shared/providers/dgis_environment.dart";
   "/lib/shared/providers/dgis_http_network.dart" -> "/lib/shared/providers/package_info.dart";
   "/lib/shared/providers/dgis_http_network.dart" -> "/lib/shared/providers/uuid_provider.dart";
-  "/lib/shared/providers/map/dgis_controller.dart" -> "/lib/_features/common/providers/permissions.dart";
   "/lib/shared/providers/map/dgis_controller.dart" -> "/lib/features/routing/providers/routes.dart";
   "/lib/shared/providers/map/dgis_controller.dart" -> "/lib/shared/constants/constants.dart";
   "/lib/shared/providers/map/dgis_controller.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/shared/providers/map/dgis_controller.dart" -> "/lib/shared/providers/dark_mode.dart";
   "/lib/shared/providers/map/dgis_controller.dart" -> "/lib/shared/providers/urbi_analytics.dart";
+  "/lib/shared/providers/map/dgis_controller.dart" -> "/lib/shared/utils/location_setup_helper.dart";
   "/lib/shared/providers/map/indoor_levels.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/shared/providers/map/navigator_route_settings.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/shared/providers/map/navigator_route_settings.dart" -> "/lib/entities/path_nav/models/navigation_parameters.dart";
@@ -3887,6 +3905,7 @@ digraph "" {
   "/lib/features/share_eta/ui/share_my_location_content.dart" -> "/lib/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart";
   "/lib/features/share_eta/ui/share_my_location_content.dart" -> "/lib/pages/routing/ui/routing_map_controls.dart";
   "/lib/features/share_eta/ui/share_my_location_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/features/share_eta/ui/share_my_location_content.dart" -> "/lib/shared/providers/location.dart";
   "/lib/features/share_eta/ui/share_my_location_content.dart" -> "/lib/shared/providers/map/selected_marker.dart";
   "/lib/features/share_eta/ui/share_my_location_content.dart" -> "/lib/shared/ui/loading/loading_overlay.dart";
   "/lib/features/share_eta/ui/share_my_location_content.dart" -> "/lib/shared/ui/measure_size.dart";
@@ -4032,7 +4051,10 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/features/poi_card/extensions/poi_content/poi_content_ext.dart";
   "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/features/poi_card/provider/poi_card_actions_provider.dart";
   "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/features/poi_card/provider/poi_card_provider.dart";
+  "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/features/poi_card/provider/poi_search_by_object.dart";
   "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/features/poi_card/widgets/poi_content/poi_content.dart";
+  "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart";
+  "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart";
   "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/pages/feedback/quick_feedback_page.dart";
   "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/features/poi_card/widgets/poi_content_sliver.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -4107,9 +4129,13 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_data_incorrect_card.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_license_card.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_license_card.dart" -> "/lib/shared/utils/copy_to_clipboard.dart";
+  "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart" -> "/lib/features/poi_card/widgets/poi_content/tmp/content_row_expandable.dart";
+  "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_parking_card.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_full_address_card.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
+  "/lib/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart" [style=dashed];
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_accessability_card.dart" [style=dashed];
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_contacts_card.dart" [style=dashed];
@@ -4120,6 +4146,7 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_license_card.dart" [style=dashed];
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_parking_card.dart" [style=dashed];
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_working_hours_card.dart" [style=dashed];
+  "/lib/features/poi_card/widgets/poi_card_header/subtitle.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/features/poi_card/widgets/poi_card_header/subtitle.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
   "/lib/features/poi_card/widgets/poi_card_header/subtitle.dart" -> "/lib/features/poi_card/widgets/poi_card_header/content_transition.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/_features/common/providers/ui_direction.dart";
@@ -4270,6 +4297,7 @@ digraph "" {
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/shared/providers/map/selected_marker.dart";
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/shared/ui/markers/markers.dart";
+  "/lib/features/poi_card/provider/poi_search_by_object.dart" -> "/lib/shared/providers/map/directory_object_from_dgis_id.dart";
   "/lib/features/poi_card/data/qr_license_datasource.dart" -> "/lib/features/poi_card/data/qr_license_service.dart";
   "/lib/features/poi_card/data/poi_data_service.dart" -> "/lib/features/poi_card/domain/model/organization_item.dart";
   "/lib/features/poi_card/data/poi_data_service.dart" -> "/lib/features/poi_card/domain/model/organizations_response.dart";
@@ -4652,6 +4680,7 @@ digraph "" {
   "/lib/pages/landing/landing_page.dart" -> "/lib/widgets/landing/dashboard/dashboard.dart";
   "/lib/pages/parking_spot/parking_dialog_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/_generated/assets/assets.gen.dart";
+  "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/entities/routing/route_point.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/features/lifestyle_layers/configs/layers_consts.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/features/parking_spot/model/parking_store_model.dart";
@@ -4659,6 +4688,7 @@ digraph "" {
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/features/parking_spot/parking_spot_map.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/shared/lib/deeplink_functions.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/shared/ui/urbi_map.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/widgets/parking_spot/selected_images.dart";
