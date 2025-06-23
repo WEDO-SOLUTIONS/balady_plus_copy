@@ -10,13 +10,34 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/tmp/content_row_expandable.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
+/// A widget that displays an expandable list of metro station entrances.
+///
+/// This widget is used to render a collapsible section showing multiple entrances
+/// for a metro station, where the first entrance is shown as the main title,
+/// and the rest are listed inside an expandable content area.
+///
+/// When the user taps on the title or an entrance item, it navigates
+/// to a detailed POI (Point of Interest) card page for that entrance.
+///
+/// The first entrance is shown as "Exit 1", and the rest are numbered
+/// incrementally ("Exit 2", "Exit 3", etc.).
+///
+/// The widget asserts that the [entrancesDirectoryObject] list is not empty,
+/// as at least one entrance is required for proper rendering.
+///
+/// Example usage:
+/// ```dart
+/// PoiEntrancesMetro(
+///   entrancesDirectoryObject: listOfEntrances,
+/// );
+/// ```
 class PoiEntrancesMetro extends StatelessWidget {
   final List<DirectoryObjectMessage> entrancesDirectoryObject;
 
-  const PoiEntrancesMetro({
+  PoiEntrancesMetro({
     required this.entrancesDirectoryObject,
     super.key,
-  });
+  }) : assert(entrancesDirectoryObject.isNotEmpty, 'entrancesDirectoryObject must not be empty');
 
   @override
   Widget build(BuildContext context) {

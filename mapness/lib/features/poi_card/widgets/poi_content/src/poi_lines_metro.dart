@@ -5,6 +5,22 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 
+/// A widget that renders a metro route with its platforms for a given POI (Point of Interest).
+///
+/// This widget displays the name of the route (e.g., metro line name) as an expandable section.
+/// Inside, it shows a vertical list of platforms (stations) on that route,
+/// including transition icons if the platform connects to other lines.
+///
+/// Each platform is rendered with a custom vertical metro line using [_StationLinePainter],
+/// visually connecting all stops and highlighting the currently active one.
+///
+/// Example usage:
+/// ```dart
+/// PoiLinesMetro(
+///   transportDirectoryRouteInfo: routeInfo,
+///   address: currentStationName,
+/// );
+/// ```
 class PoiLinesMetro extends StatelessWidget {
   final PublicTransportDirectoryRouteInfoMessage transportDirectoryRouteInfo;
   final String address;
@@ -58,7 +74,7 @@ class PoiLinesMetro extends StatelessWidget {
                           children: transitionRoute
                               .map(
                                 (e) => Padding(
-                                  padding: const EdgeInsets.only(left: 4),
+                                  padding: const EdgeInsets.only(left: Spacing.px),
                                   child: Assets.icons.svg.icMetroMarker.svg(
                                     colorFilter: ColorFilter.mode(Color(e.color ?? 0xFF000000), BlendMode.srcIn),
                                   ),
@@ -78,6 +94,15 @@ class PoiLinesMetro extends StatelessWidget {
   }
 }
 
+/// A custom painter used to draw the vertical metro line and circular station indicators.
+///
+/// This painter is used in [PoiLinesMetro] to visually represent the metro route
+/// with a vertical line connecting stations and a highlighted circle for the current station.
+///
+/// It draws:
+/// - A vertical line above and below the station (if not first or last).
+/// - A circle representing the station.
+/// - Larger circle and higher opacity if the station is selected.
 class _StationLinePainter extends CustomPainter {
   final bool isFirst;
   final bool isLast;
