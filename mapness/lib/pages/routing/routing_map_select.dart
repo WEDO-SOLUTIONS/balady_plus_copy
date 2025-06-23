@@ -72,9 +72,9 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     return SafeAreaPadding(
       child: uikit.StatelessBottomSheet(
         scrollController: scrollController,
-        backgroundColor: context.colorsV3.backgroundSurface4,
-        draggerColor: context.colorsV3.backgroundSurface4,
-        safeAreaColor: context.colorsV3.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface4,
+        draggerColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
         outside: Stack(
           children: [
             RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
@@ -99,13 +99,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                   children: [
                     Text(
                       context.l10n.pointToMap,
-                      style: context.textStyleV3.h4SemiBold,
+                      style: context.textStyles.h4SemiBold,
                     ),
                     uikit.Spacing.$1x.heightBox,
                     Text(
                       context.l10n.moveMap,
-                      style: context.textStyleV3.bodySmallRegular.copyWith(
-                        color: context.colorsV3.foregroundSoft,
+                      style: context.textStyles.bodySmallRegular.copyWith(
+                        color: context.colors.foregroundSoft,
                       ),
                     ),
                   ],
@@ -130,30 +130,30 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
               duration: Durations.medium1,
               child: nearestObject.when(
                 loading: () => SizedBox(
-                  key: const ValueKey(uikit.ButtonColorScheme.secondary),
+                  key: const ValueKey(uikit.ButtonColorScheme.accentSecondary),
                   width: double.infinity,
                   child: uikit.AppButton(
                     primaryLabel: context.l10n.done,
-                    buttonColorScheme: uikit.ButtonColorScheme.secondary,
+                    buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
                     buttonState: uikit.ButtonState.disabled,
                     onTap: null,
                   ),
                 ),
                 data: (data) => SizedBox(
-                  key: const ValueKey(uikit.ButtonColorScheme.primary),
+                  key: const ValueKey(uikit.ButtonColorScheme.accent),
                   width: double.infinity,
                   child: uikit.AppButton(
                     primaryLabel: context.l10n.done,
-                    buttonColorScheme: uikit.ButtonColorScheme.primary,
+                    buttonColorScheme: uikit.ButtonColorScheme.accent,
                     onTap: () => _onTap(data, context),
                   ),
                 ),
                 error: (error, stackTrace) => SizedBox(
-                  key: const ValueKey(uikit.ButtonColorScheme.secondary),
+                  key: const ValueKey(uikit.ButtonColorScheme.accentSecondary),
                   width: double.infinity,
                   child: uikit.AppButton(
                     primaryLabel: context.l10n.done,
-                    buttonColorScheme: uikit.ButtonColorScheme.secondary,
+                    buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
                     buttonState: uikit.ButtonState.disabled,
                     onTap: null,
                   ),
@@ -207,8 +207,8 @@ class _NearestObject extends StatelessWidget {
   Widget build(BuildContext context) {
     final leadingIcon = nearestObject.when(
       data: (_) => const Icon(uikit.GeneralIcons.pin),
-      error: (_, __) => uikit.Loading.small(color: context.colorsV3.accentSecondaryDefault),
-      loading: () => uikit.Loading.small(color: context.colorsV3.accentSecondaryDefault),
+      error: (_, __) => uikit.Loading.small(color: context.colors.accentSecondaryDefault),
+      loading: () => uikit.Loading.small(color: context.colors.accentSecondaryDefault),
     );
     final title = nearestObject.when(
       data: (object) => _buildTitle(object),
@@ -233,7 +233,7 @@ class _NearestObject extends StatelessWidget {
               child: uikit.ContentRow(
                 options: uikit.ContentRowOptions(
                   wrapperEnabled: true,
-                  wrapperColor: context.colorsV3.backgroundSurface1,
+                  wrapperColor: context.colors.backgroundSurface1,
                   leadingIcon: leadingIcon,
                   title: title,
                   subtitle: subtitle,

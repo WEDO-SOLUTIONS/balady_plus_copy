@@ -78,8 +78,8 @@ class AppFeedbackMain extends HookConsumerWidget {
                 ? context.l10n.appFeedbackNavigationExperience
                 : context.l10n.appFeedbackAppExperience,
             textAlign: TextAlign.center,
-            style: context.textStyleV3.h3SemiBold.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            style: context.textStyles.h3SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
             ),
           ),
         ),
@@ -101,8 +101,8 @@ class AppFeedbackMain extends HookConsumerWidget {
               _ratingText(context.l10n, rating.value),
               textAlign: TextAlign.center,
               maxLines: 1,
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundSoft,
+              style: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundSoft,
               ),
             ),
           ),
@@ -161,7 +161,7 @@ class AppFeedbackMain extends HookConsumerWidget {
               valueListenable: rating,
               builder: (context, ratingValue, _) {
                 final canSend = ratingValue > 0;
-                final buttonState = !canSend ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
+                final buttonState = !canSend ? ButtonColorScheme.neutral : ButtonColorScheme.accent;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(

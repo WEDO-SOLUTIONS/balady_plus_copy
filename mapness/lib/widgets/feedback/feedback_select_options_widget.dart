@@ -31,14 +31,14 @@ class FeedbackSelectOptionsWidget extends StatelessWidget {
               children: [
                 Text(poiDataValue.title, style: context.textStyle.callout),
                 const SizedBox(height: 5),
-                Text(poiDataValue.makeAddress(), style: context.textStyleV3.bodySmallRegular),
+                Text(poiDataValue.makeAddress(), style: context.textStyles.bodySmallRegular),
               ],
             ),
           ),
           const SizedBox(height: Spacing.$4x),
           Material(
             shape: smoothBorder(RadiusBorder.l),
-            color: context.colorsV2.backgroundSurface1,
+            color: context.colors.backgroundSurface1,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 6),
               shrinkWrap: true,
@@ -55,7 +55,7 @@ class FeedbackSelectOptionsWidget extends StatelessWidget {
                 );
               },
               separatorBuilder: (context, index) => Divider(
-                color: context.colorsV2.borderSoft,
+                color: context.colors.borderSoft,
                 height: 8,
                 thickness: 0.5,
                 indent: 52,

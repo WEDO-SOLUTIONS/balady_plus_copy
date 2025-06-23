@@ -60,7 +60,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
 
   late final StoryFrameThemeData storyTheme = _frame.themeFromId(
     colorTheme: context.colorsV2,
-    textTheme: context.textStyleV3,
+    textTheme: context.textStyles,
   );
   late final StoryArgsProvider storyArgs = StoryArgsProvider.of(context);
 
@@ -326,7 +326,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                 },
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
                 padding: EdgeInsets.zero,
-                buttonColorScheme: ButtonColorScheme.onColor,
+                buttonColorScheme: ButtonColorScheme.accentSecondary,
                 color: storyTheme.closeButtonTheme.backgroundColor,
                 iconColor: storyTheme.closeButtonTheme.iconColor,
               ),

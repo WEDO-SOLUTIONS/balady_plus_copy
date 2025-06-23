@@ -55,20 +55,6 @@ class _FeedbackSubChipsState extends State<FeedbackSubChips> {
           },
         ),
       );
-
-  ChipIconWidget iconBuilder({
-    required BuildContext context,
-    required String iconUrl,
-  }) =>
-      ChipIconWidget(
-        ({required isSelected}) => SvgPicture.network(
-          iconUrl,
-          colorFilter: ColorFilter.mode(
-            isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary,
-            BlendMode.srcIn,
-          ),
-        ),
-      );
 }
 
 class _FeedbackSubChipsSelector extends StatefulWidget {
@@ -86,7 +72,7 @@ class _FeedbackSubChipsSelector extends StatefulWidget {
         context: context,
         isScrollControlled: true,
         useSafeArea: true,
-        barrierColor: context.colorsV3.screenOverlayDimming40,
+        barrierColor: context.colors.screenOverlayDimming40,
         builder: (context) => _FeedbackSubChipsSelector(field: field),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -155,7 +141,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                 Expanded(
                   child: Text(
                     widget.field.label,
-                    style: context.textStyleV3.h2SemiBold,
+                    style: context.textStyles.h2SemiBold,
                   ),
                 ),
                 AppButton.close(
@@ -171,8 +157,8 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
               supportingText: variants.isEmpty
                   ? BaladySupportingText(
                       text: context.l10n.feedbackSubcategoryEmptyError,
-                      style: context.textStyleV3.bodySmallRegular.copyWith(
-                        color: context.colorsV3.errorDefault,
+                      style: context.textStyles.bodySmallRegular.copyWith(
+                        color: context.colors.errorDefault,
                       ),
                     )
                   : null,
@@ -196,14 +182,14 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                   if (search.isNotEmpty && variants.isNotEmpty)
                     for (final entry in variants.entries)
                       for (final item in entry.value)
-                        ContentRowV2(
+                        ContentRow(
                           onTap: () => Navigator.pop(context, item),
                           leading: SvgPicture.network(
                             entry.key.icon,
                             width: 24,
                             height: 24,
                             colorFilter: ColorFilter.mode(
-                              context.colorsV3.foregroundDisabled,
+                              context.colors.foregroundDisabled,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -220,7 +206,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                             width: 24,
                             height: 24,
                             colorFilter: ColorFilter.mode(
-                              context.colorsV3.foregroundDisabled,
+                              context.colors.foregroundDisabled,
                               BlendMode.srcIn,
                             ),
                           ),
@@ -228,8 +214,8 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                           Expanded(
                             child: Text(
                               entry.key.name,
-                              style: context.textStyleV3.bodySmallMedium.copyWith(
-                                color: context.colorsV3.foregroundMuted,
+                              style: context.textStyles.bodySmallMedium.copyWith(
+                                color: context.colors.foregroundMuted,
                               ),
                             ),
                           ),
@@ -249,7 +235,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                                     Expanded(
                                       child: Text(
                                         item.label,
-                                        style: context.textStyleV3.bodySmallRegular,
+                                        style: context.textStyles.bodySmallRegular,
                                       ),
                                     ),
                                   ],

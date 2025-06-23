@@ -20,8 +20,6 @@ import 'package:urbi_analytics/logger.dart';
 
 @RoutePage()
 class QuickFeedbackPhotoPage extends ConsumerWidget {
-  static const _maxImageResolution = 5000;
-
   final FeedbackObjectIdParams params;
 
   const QuickFeedbackPhotoPage({required this.params, super.key});
@@ -33,7 +31,7 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
       ..listen(feedbackImageSelectorProvider, (_, next) {});
 
     return Scaffold(
-      backgroundColor: context.colorsV3.screenOverlayDimming60,
+      backgroundColor: context.colors.screenOverlayDimming60,
       body: Align(
         alignment: Alignment.bottomCenter,
         child: FeedbackImageSelectorSheet(
@@ -115,7 +113,7 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
             onRetry: () {
               Navigator.of(context).pop();
             },
-            buttonColorScheme: ButtonColorScheme.primary,
+            buttonColorScheme: ButtonColorScheme.accent,
             onClose: () {
               Navigator.of(context).pop(false);
             },

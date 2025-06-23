@@ -59,8 +59,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
         snap: true,
         builder: (context, scrollController) {
           final l10n = context.l10n;
-          final colorsV2 = context.colorsV2;
-          final textStyleV3 = context.textStyleV3;
+          final colors = context.colors;
+          final textStyles = context.textStyles;
           final color = context.color;
 
           return Directionality(
@@ -70,14 +70,14 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
                 top: Radius.circular(RadiusBorder.xl),
               ),
               child: ColoredBox(
-                color: colorsV2.backgroundSurface4,
+                color: colors.backgroundSurface4,
                 child: CustomScrollView(
                   controller: scrollController,
                   physics: const ClampingScrollPhysics(),
                   slivers: [
                     SliverToBoxAdapter(
                       child: ColoredBox(
-                        color: colorsV2.backgroundSurface1,
+                        color: colors.backgroundSurface1,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
                           child: Row(
@@ -116,11 +116,11 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
                                 ContentRow(
                                   onTap: () => context.router.push(const SoundSettingsRoute()),
                                   options: ContentRowOptions(
-                                    subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                                    subtitleStyle: textStyles.bodySmallRegular.copyWith(
                                       color: color.textAndIconsBaseSecondary,
                                     ),
-                                    titleStyle: textStyleV3.bodyLargeMedium.copyWith(
-                                      color: colorsV2.foregroundDefault,
+                                    titleStyle: textStyles.bodyLargeMedium.copyWith(
+                                      color: colors.foregroundDefault,
                                     ),
                                     actionWidget: ContentRowActionOptions(
                                       actionIcon: AppIcons(
@@ -167,7 +167,7 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
                                   leadingIcon: Icon(
                                     SystemIcons.settings,
                                     size: Spacing.$6x,
-                                    color: colorsV2.foregroundMuted,
+                                    color: colors.foregroundMuted,
                                   ),
                                   title: l10n.navigatorSettings,
                                   actionWidget: ContentRowActionOptions(
@@ -182,7 +182,7 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
                             const SizedBox(height: Spacing.$5x),
                             AppButton(
                               buttonColorScheme: ButtonColorScheme.warning,
-                              color: colorsV2.errorDefault,
+                              color: colors.errorDefault,
                               primaryLabel: l10n.endTrip,
                               onTap: () =>
                                   ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
@@ -238,7 +238,7 @@ class ContentContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
-            color: context.colorsV2.backgroundSurface1, borderRadius: BorderRadius.circular(RadiusBorder.xl)),
+            color: context.colors.backgroundSurface1, borderRadius: BorderRadius.circular(RadiusBorder.xl)),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
           child: child,

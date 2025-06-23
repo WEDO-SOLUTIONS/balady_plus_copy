@@ -24,9 +24,9 @@ class _PoiCardNoInfo extends HookConsumerWidget {
 
     return SafeAreaPadding(
       child: StatelessBottomSheet(
-        safeAreaColor: context.colorsV2.backgroundSurface2,
-        draggerColor: context.colorsV2.backgroundSurface2,
-        backgroundColor: context.colorsV2.backgroundSurface2,
+        safeAreaColor: context.colors.backgroundSurface2,
+        draggerColor: context.colors.backgroundSurface2,
+        backgroundColor: context.colors.backgroundSurface2,
         header: PoiHeader(
           title:
               '${closestPoint?.longitude.roundDecimal(places: 6)}, ${closestPoint?.latitude.roundDecimal(places: 6)}',

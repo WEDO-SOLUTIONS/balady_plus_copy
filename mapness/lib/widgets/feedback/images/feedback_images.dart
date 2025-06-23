@@ -47,8 +47,8 @@ class FeedbackImages extends StatelessWidget {
                 child: WidgetLabel(
                   isRequired: field.isRequired,
                   label: field.label,
-                  labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  labelStyle: context.textStyles.captionMediumRegular.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                 ),
               ),
@@ -132,8 +132,8 @@ class FeedbackImages extends StatelessWidget {
               field.maxSize.formatAsFileSize(),
               field.acceptedFormats.formatAcceptedFormats(context.l10n),
             ),
-            style: context.textStyleV3.captionMediumRegular.copyWith(
-              color: context.colorsV2.foregroundSoft,
+            style: context.textStyles.captionMediumRegular.copyWith(
+              color: context.colors.foregroundSoft,
             ),
           ),
         ],
@@ -179,7 +179,7 @@ class FeedbackImages extends StatelessWidget {
           await _showImageActionErrorSheet(
             context,
             error: BaseErrorWidget(
-              buttonColorScheme: ButtonColorScheme.primary,
+              buttonColorScheme: ButtonColorScheme.accent,
               errorTitle: context.l10n.photoLimitExceeded,
               errorLabel: context.l10n.feedbackImageLimitsError(
                 field.maxImages.toString(),

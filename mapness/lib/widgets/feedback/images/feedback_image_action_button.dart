@@ -29,7 +29,7 @@ class ImageActionButton extends StatelessWidget {
           child: Center(
             child: Icon(
               icon,
-              color: context.colorsV2.backgroundSurface1,
+              color: context.colors.backgroundSurface1,
               size: iconSize,
             ),
           ),

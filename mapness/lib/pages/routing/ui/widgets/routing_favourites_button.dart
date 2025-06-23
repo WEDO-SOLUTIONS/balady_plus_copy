@@ -16,9 +16,9 @@ class _FavButton extends StatelessWidget {
   Widget build(BuildContext context) => Expanded(
         child: SizedBox(
           height: 48,
-          child: BaladyAppButton(
-            buttonColorScheme: BaladyButtonColorScheme.neutral,
-            buttonType: BaladyButtonType.secondary,
+          child: AppButton(
+            buttonColorScheme: ButtonColorScheme.neutral,
+            buttonType: ButtonType.secondary,
             primaryIcon: icon,
             onTap: onTap,
           ),

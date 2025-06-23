@@ -86,11 +86,11 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
       ..listen(parkingImageProvider(isEdit: widget.isEdit), (_, __) => _checkDirty());
 
     return Scaffold(
-      backgroundColor: context.colorsV3.backgroundSurface4,
+      backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-        textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-          color: context.colorsV3.foregroundDefault,
+        textStyle: context.textStyles.bodyLargeSemiBold.copyWith(
+          color: context.colors.foregroundDefault,
         ),
         title: widget.isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
@@ -127,18 +127,18 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
 
                     return Text(
                       value,
-                      style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                      style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                     );
                   }),
               Spacing.$3x.heightBox,
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.secondary,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
                   primaryIcon: GeneralIcons.location,
                   primaryLabel: context.l10n.changeLocation,
-                  iconColor: context.colorsV3.accentSecondaryOnContainer,
-                  textColor: context.colorsV3.accentSecondaryOnContainer,
+                  iconColor: context.colors.accentSecondaryOnContainer,
+                  textColor: context.colors.accentSecondaryOnContainer,
                   onTap: () => _onTapChangeLocation(context),
                 ),
               ),
@@ -146,14 +146,13 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               BaladyTextInput(
                 label: BaladyInputLabel(
                     text: context.l10n.comment,
-                    style:
-                        context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault)),
+                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault)),
                 controller: _textEditingController,
                 config: BaladyInputConfig(
                   isDisposed: false,
                   hintText: context.l10n.feedbackCommentHint,
                   background: BaladyInputBackground.color,
-                  fillColor: context.colorsV2.neutralContainerDefault,
+                  fillColor: context.colors.neutralContainerDefault,
                   autovalidateMode: AutovalidateMode.onUnfocus,
                 ),
               ),
@@ -167,8 +166,8 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                 builder: (_, canSave, __) => SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.primary,
-                    buttonState: canSave ? ButtonState.normal : ButtonState.disabled,
+                    buttonColorScheme: ButtonColorScheme.accent,
+                    buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
                     primaryLabel: context.l10n.save,
                     onTap: canSave ? () => _onTapSave(context) : null,
                   ),
@@ -178,7 +177,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               Center(
                 child: Text(
                   context.l10n.dataStoredFor,
-                  style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
               )
             ],

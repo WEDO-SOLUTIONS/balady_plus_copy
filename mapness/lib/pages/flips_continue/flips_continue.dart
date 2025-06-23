@@ -39,7 +39,7 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
   @override
   Widget build(BuildContext context) => Material(
         child: ColoredBox(
-          color: context.colorsV3.backgroundSurface4,
+          color: context.colors.backgroundSurface4,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -47,7 +47,7 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
               Spacing.$4x.heightBox,
               Text(
                 context.l10n.theScreenFlipsContinue,
-                style: context.textStyleV3.h3SemiBold,
+                style: context.textStyles.h3SemiBold,
                 textAlign: TextAlign.center,
               )
             ],

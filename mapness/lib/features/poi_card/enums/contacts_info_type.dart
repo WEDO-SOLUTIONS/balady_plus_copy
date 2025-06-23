@@ -1,4 +1,3 @@
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
 
 /// SDK values that we receive. Mainly we will not use all of it but we have to
@@ -85,4 +84,15 @@ extension ContactsInfoTypeExt on ContactsInfoType {
         ContactsInfoType.telegram => PoiContentSocialMediaTypes.telegram,
         _ => null
       };
+}
+
+enum PoiContentSocialMediaType {
+  email,
+  website,
+  instagram,
+  facebook,
+  youtube,
+  linkedin,
+  whatsapp,
+  telegram,
 }

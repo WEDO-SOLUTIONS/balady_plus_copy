@@ -10,14 +10,14 @@ class _PausedStateTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle =
-        context.textStyleV3.captionMediumRegular.copyWith(color: context.color.textAndIconsBaseInversePrimary);
+        context.textStyles.captionMediumRegular.copyWith(color: context.color.textAndIconsBaseInversePrimary);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
           context.l10n.continueTrip,
-          style: context.textStyleV3.h4SemiBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
+          style: context.textStyles.h4SemiBold.copyWith(color: context.color.textAndIconsBaseInversePrimary),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -93,7 +93,7 @@ class AddPhotoPage extends ConsumerWidget {
             onRetry: () {
               Navigator.of(context).pop();
             },
-            buttonColorScheme: ButtonColorScheme.primary,
+            buttonColorScheme: ButtonColorScheme.accent,
             onClose: () {
               Navigator.of(context).pop(false);
             },

@@ -25,8 +25,8 @@ class AppFeedbackSuccess extends StatelessWidget {
               ),
               child: Text(
                 context.l10n.appFeedbackThankYouV2,
-                style: context.textStyleV3.h3SemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                style: context.textStyles.h3SemiBold.copyWith(
+                  color: context.colors.foregroundDefault,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -38,8 +38,8 @@ class AppFeedbackSuccess extends StatelessWidget {
               ),
               child: Text(
                 context.l10n.appFeedbackHappy,
-                style: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.colorsV2.foregroundSoft,
+                style: context.textStyles.bodySmallRegular.copyWith(
+                  color: context.colors.foregroundSoft,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -52,7 +52,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                   horizontal: Spacing.$4x,
                   vertical: Spacing.$4x,
                 ),
-                buttonColorScheme: ButtonColorScheme.primary,
+                buttonColorScheme: ButtonColorScheme.accent,
                 primaryLabel: context.l10n.done,
                 onTap: context.router.popForced,
               ),

@@ -57,9 +57,9 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
         snap: true,
         builder: (context, scrollController) {
           final l10n = context.l10n;
-          final colorsV2 = context.colorsV2;
+          final colors = context.colors;
 
-          final textStyleV3 = context.textStyleV3;
+          final textStyles = context.textStyles;
           return Directionality(
             textDirection: direction,
             child: ClipRRect(
@@ -67,7 +67,7 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
                 top: Radius.circular(RadiusBorder.xl),
               ),
               child: ColoredBox(
-                color: colorsV2.backgroundSurface1,
+                color: colors.backgroundSurface1,
                 child: CustomScrollView(
                   controller: scrollController,
                   physics: const ClampingScrollPhysics(),
@@ -87,11 +87,11 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(context.l10n.autostartNavigator, style: textStyleV3.h4SemiBold),
+                                      Text(context.l10n.autostartNavigator, style: textStyles.h4SemiBold),
                                       Spacing.$1x.heightBox,
                                       Text(
                                         context.l10n.disableStartingTheNavigator,
-                                        style: textStyleV3.bodySmallRegular.copyWith(color: colorsV2.foregroundSoft),
+                                        style: textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
                                         maxLines: 2,
                                       ),
                                     ],
@@ -117,14 +117,14 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
                           [
                             Spacing.$4x.heightBox,
                             AppButton(
-                              buttonColorScheme: ButtonColorScheme.primary,
+                              buttonColorScheme: ButtonColorScheme.accent,
                               primaryLabel: l10n.switchOff,
                               onTap: switchOff,
                             ),
                             Spacing.$3x.heightBox,
                             AppButton(
-                              buttonColorScheme: ButtonColorScheme.tertiary,
-                              textColor: colorsV2.foregroundSoft,
+                              buttonColorScheme: ButtonColorScheme.neutral,
+                              textColor: colors.foregroundSoft,
                               primaryLabel: l10n.continueAutorun,
                               onTap: continueAutorun,
                             )
@@ -197,7 +197,7 @@ class ContentContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DecoratedBox(
         decoration: BoxDecoration(
-          color: context.colorsV2.backgroundSurface1,
+          color: context.colors.backgroundSurface1,
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
         ),
         child: Padding(

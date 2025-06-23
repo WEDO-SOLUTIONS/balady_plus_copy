@@ -45,7 +45,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
           child: AppButton(
             primaryLabel: context.l10n.appFeedbackAddNote,
             buttonState: isValid.value ? ButtonState.normal : ButtonState.disabled,
-            buttonColorScheme: ButtonColorScheme.primary,
+            buttonColorScheme: ButtonColorScheme.accent,
             onTap: () {
               context.router.popForced(textEditingController.text);
             },

@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentAbout;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
@@ -72,7 +72,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
               _maxWidth = constraints.maxWidth;
               _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
             }
-            return ContentRowV2(
+            return ContentRow(
               text: ContentRowTextOptions(
                 title: widget.data.aboutTitle,
                 titleOptions: const ContentRowTextOption(isBold: true),
@@ -95,14 +95,14 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                                   maxLines: 1,
                                   widget.data.showLessTitle,
                                   style: context.textStyle.footNoteBold.copyWith(
-                                    color: context.colorsV3.accentDefault.withOpacity(_animation.value),
+                                    color: context.colors.accentDefault.withOpacity(_animation.value),
                                   ),
                                 ),
                                 Text(
                                   maxLines: 1,
                                   widget.data.showMoreTitle,
                                   style: context.textStyle.footNoteBold.copyWith(
-                                    color: context.colorsV3.accentDefault.withOpacity(1 - _animation.value),
+                                    color: context.colors.accentDefault.withOpacity(1 - _animation.value),
                                   ),
                                 ),
                               ],
@@ -125,8 +125,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                             widget.data.text,
                             maxLines: truncateText ? widget.collapsedLinesCount : 99,
                             overflow: TextOverflow.ellipsis,
-                            style:
-                                context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                            style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                           ),
                         ),
                         if (_showExpandButton)
@@ -138,8 +137,8 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                                 // TODO: Change to gradientBackgroundSurface0 and gradientBackgroundSurface80
                                 // When this colors will be added to UIKit
                                 colors: [
-                                  context.colorsV3.gradientBackgroundCardGradient0,
-                                  context.colorsV3.gradientBackgroundCardGradient80
+                                  context.colors.gradientBackgroundCardGradient0,
+                                  context.colors.gradientBackgroundCardGradient80
                                 ],
                               ),
                             ),
@@ -162,7 +161,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
     final textDirection = Directionality.of(context);
     final span = TextSpan(
       text: text,
-      style: context.textStyleV3.bodySmallRegular.copyWith(
+      style: context.textStyles.bodySmallRegular.copyWith(
         color: context.color.textAndIconsBasePrimary,
       ),
     );

@@ -28,7 +28,7 @@ class AppFeedbackSheetHeader extends StatelessWidget {
               padding: EdgeInsets.zero,
               onTap: onBackTap,
               primaryIcon: SystemIcons.arrowCornerLeftLarge,
-              iconColor: context.colorsV2.foregroundDefault,
+              iconColor: context.colors.foregroundDefault,
             ),
           ),
           Positioned(
@@ -40,8 +40,8 @@ class AppFeedbackSheetHeader extends StatelessWidget {
               child: Text(
                 title,
                 textAlign: TextAlign.center,
-                style: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                style: context.textStyles.bodyLargeSemiBold.copyWith(
+                  color: context.colors.foregroundDefault,
                 ),
               ),
             ),

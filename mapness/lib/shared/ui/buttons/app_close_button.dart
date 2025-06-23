@@ -20,7 +20,7 @@ class AppCloseButton extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               child: Icon(
                 Icons.close,
-                color: context.colorsV3.neutralOnContainer,
+                color: context.colors.neutralOnContainer,
               ),
             ),
           ),
@@ -49,7 +49,7 @@ class CustomCloseButton extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.m),
-                  color: context.colorsV3.neutralContainerDefault.withOpacity(.12),
+                  color: context.colors.neutralContainerDefault.withOpacity(.12),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(Spacing.$2x),

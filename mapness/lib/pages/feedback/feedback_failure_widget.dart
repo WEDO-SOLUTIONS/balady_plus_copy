@@ -40,8 +40,8 @@ class FeedbackFailureWidget extends StatelessWidget {
               icon: SystemIcons.arrowCornerLeftLarge,
               onPressed: context.router.popForced,
             ),
-            colorEnabled: context.colorsV2.accentDefault,
-            colorDisabled: context.colorsV2.foregroundDefault,
+            colorEnabled: context.colors.accentDefault,
+            colorDisabled: context.colors.foregroundDefault,
           ),
           body: Center(
             child: child,

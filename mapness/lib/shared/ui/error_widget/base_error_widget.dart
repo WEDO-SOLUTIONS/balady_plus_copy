@@ -37,7 +37,7 @@ class BaseErrorWidget extends StatelessWidget {
   const BaseErrorWidget({
     required this.onRetry,
     this.withRetryButton = true,
-    this.buttonColorScheme = ButtonColorScheme.secondary,
+    this.buttonColorScheme = ButtonColorScheme.accentSecondary,
     this.buttonLabel,
     this.errorLabel,
     this.errorTitle,
@@ -82,7 +82,7 @@ class BaseErrorWidget extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: Spacing.$2x, top: Spacing.$1x),
                   child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.tertiary,
+                    buttonColorScheme: ButtonColorScheme.neutral,
                     primaryIcon: SystemIcons.close,
                     onTap: onClose,
                   ),
@@ -100,8 +100,8 @@ class BaseErrorWidget extends StatelessWidget {
                 child: Text(
                   errorTitle!,
                   textAlign: TextAlign.center,
-                  style: context.textStyleV3.h3SemiBold.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  style: context.textStyles.h3SemiBold.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                 ),
               )
@@ -112,8 +112,8 @@ class BaseErrorWidget extends StatelessWidget {
               child: Text(
                 errorText,
                 textAlign: TextAlign.center,
-                style: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: errorTitle != null ? context.colorsV2.foregroundSoft : context.colorsV2.foregroundDefault,
+                style: context.textStyles.bodyLargeRegular.copyWith(
+                  color: errorTitle != null ? context.colors.foregroundSoft : context.colors.foregroundDefault,
                 ),
               ),
             ),

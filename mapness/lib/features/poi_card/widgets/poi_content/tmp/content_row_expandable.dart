@@ -36,7 +36,7 @@ class ContentRowExpandableTmp extends StatelessWidget {
           children: [
             ExpansionWidget(
               duration: const Duration(milliseconds: 100),
-              titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRowV2(
+              titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRow(
                 text: const ContentRowTextOptions(title: ''),
                 trailing: ContentRowCustomTrailingOptions(
                   builder: (context) => CupertinoButton(
@@ -73,7 +73,7 @@ class ContentRowExpandableTmp extends StatelessWidget {
             Padding(
               // padding + text + icon + padding
               padding: const EdgeInsetsDirectional.only(end: Spacing.$4x + Spacing.$2x + AppSizes.xxs + Spacing.$4x),
-              child: ContentRowV2(
+              child: ContentRow(
                 supportTitleRTL: supportTitleRTL,
                 onTap: onTitleTap,
                 leading: leading,

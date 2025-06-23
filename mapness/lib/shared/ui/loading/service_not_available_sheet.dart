@@ -14,7 +14,7 @@ class ServiceNotAvailableSheetPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: context.colorsV2.backgroundSurface1,
+          color: context.colors.backgroundSurface1,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(RadiusBorder.xl),
             topRight: Radius.circular(RadiusBorder.xl),
@@ -34,14 +34,14 @@ class ServiceNotAvailableSheetPage extends StatelessWidget {
               ContentRow(
                 options: ContentRowOptions(
                   padding: EdgeInsets.zero,
-                  titleStyle: context.textStyleV3.h3SemiBold.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  titleStyle: context.textStyles.h3SemiBold.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                   customActionWidget: AppButton.close(
                     onTap: context.router.popForced,
                     padding: EdgeInsets.zero,
-                    textColor: context.colorsV2.neutralOnContainer,
-                    color: context.colorsV2.neutralContainerDefault,
+                    textColor: context.colors.neutralOnContainer,
+                    color: context.colors.neutralContainerDefault,
                     innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                   ),
                 ),
@@ -61,8 +61,8 @@ class ServiceNotAvailableSheetPage extends StatelessWidget {
                     Text(
                       context.l10n.baladyNavigationTitleKey.multilines,
                       textAlign: TextAlign.center,
-                      style: context.textStyleV3.h3SemiBold.copyWith(
-                        color: context.colorsV2.foregroundDefault,
+                      style: context.textStyles.h3SemiBold.copyWith(
+                        color: context.colors.foregroundDefault,
                       ),
                     ),
                     const SizedBox(
@@ -71,8 +71,8 @@ class ServiceNotAvailableSheetPage extends StatelessWidget {
                     Text(
                       context.l10n.baladyNavigationDescriptionKey.multilines,
                       textAlign: TextAlign.center,
-                      style: context.textStyleV3.bodyLargeRegular.copyWith(
-                        color: context.colorsV2.foregroundSoft,
+                      style: context.textStyles.bodyLargeRegular.copyWith(
+                        color: context.colors.foregroundSoft,
                       ),
                     ),
                   ],

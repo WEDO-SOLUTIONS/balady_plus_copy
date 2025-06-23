@@ -29,63 +29,63 @@ class EtaShareSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-      decoration: BoxDecoration(
-        color: context.colorsV2.backgroundSurface4,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(RadiusBorder.xl),
-          topRight: Radius.circular(RadiusBorder.xl),
+        decoration: BoxDecoration(
+          color: context.colors.backgroundSurface4,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(RadiusBorder.xl),
+            topRight: Radius.circular(RadiusBorder.xl),
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
-                child: SheetDragger(),
-              ),
-            ),
-            ContentRow(
-              options: ContentRowOptions(
-                padding: EdgeInsets.zero,
-                title: title,
-                titleStyle: context.textStyleV3.h3SemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+                  child: SheetDragger(),
                 ),
-                customActionWidget: AppButton.close(
-                  onTap: () => context.router.popForced(),
+              ),
+              ContentRow(
+                options: ContentRowOptions(
                   padding: EdgeInsets.zero,
-                  textColor: context.colorsV2.neutralOnContainer,
-                  color: context.colorsV2.neutralContainerDefault,
-                  innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
-                ),
-              ),
-            ),
-            if (timeLeft != null && subtitleBuilder != null) subtitleBuilder!.call(context, timeLeft!),
-            Spacing.$4x.heightBox,
-            ContentWrapper(
-              color: Colors.white,
-              children: contentBuilder?.call(context) ?? [],
-            ),
-            if (onConfirmTap != null && confirmBtnTitle != null)
-              Padding(
-                padding: const EdgeInsets.only(top: Spacing.$4x),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.primary,
-                    onTap: onConfirmTap,
-                    primaryLabel: confirmBtnTitle,
+                  title: title,
+                  titleStyle: context.textStyles.h3SemiBold.copyWith(
+                    color: context.colors.foregroundDefault,
+                  ),
+                  customActionWidget: AppButton.close(
+                    onTap: () => context.router.popForced(),
+                    padding: EdgeInsets.zero,
+                    textColor: context.colors.neutralOnContainer,
+                    color: context.colors.neutralContainerDefault,
+                    innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                   ),
                 ),
               ),
-            const SizedBox(
-              height: Spacing.$8x,
-            )
-          ],
+              if (timeLeft != null && subtitleBuilder != null) subtitleBuilder!.call(context, timeLeft!),
+              Spacing.$4x.heightBox,
+              ContentWrapper(
+                color: Colors.white,
+                children: contentBuilder?.call(context) ?? [],
+              ),
+              if (onConfirmTap != null && confirmBtnTitle != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$4x),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: AppButton(
+                      buttonColorScheme: ButtonColorScheme.accent,
+                      onTap: onConfirmTap,
+                      primaryLabel: confirmBtnTitle,
+                    ),
+                  ),
+                ),
+              const SizedBox(
+                height: Spacing.$8x,
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
 }

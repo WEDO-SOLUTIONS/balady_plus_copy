@@ -15,7 +15,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Material(
-          color: context.colorsV2.backgroundSurface4,
+          color: context.colors.backgroundSurface4,
           child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(top: Spacing.$4x),
@@ -23,8 +23,8 @@ class NavigatorSettingsPage extends ConsumerWidget {
                 appBar: BaladyTopBar.iconAndText(
                   systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                   title: context.l10n.navigatorSettings,
-                  textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  textStyle: context.textStyles.bodyLargeSemiBold.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                   leading: ActionModel(
                     onPressed: () => context.router.popForced(),

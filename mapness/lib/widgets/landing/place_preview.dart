@@ -128,8 +128,8 @@ class _PlaceCard extends StatelessWidget {
                       padding: const EdgeInsets.all(Spacing.$6x),
                       child: Text(
                         item?.titleOrFallback(locale: context.l10n) ?? '',
-                        style: context.textStyleV3.h2SemiBold.copyWith(
-                          color: context.colorsV2.staticWhite,
+                        style: context.textStyles.h2SemiBold.copyWith(
+                          color: context.colors.staticWhite,
                         ),
                       ),
                     ),

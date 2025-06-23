@@ -24,8 +24,8 @@ class EtaInprogressSheet extends StatelessWidget {
             Spacing.$1_5x.widthBox,
             Text(
               timeLeft,
-              style: context.textStyleV3.bodySmallRegular.copyWith(
-                color: context.colorsV2.foregroundSoft,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.foregroundSoft,
               ),
             ),
           ],
@@ -40,10 +40,10 @@ class EtaInprogressSheet extends StatelessWidget {
               ),
               dividerEnabled: true,
               title: context.l10n.shareMore,
-              titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundDefault,
+              titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundDefault,
               ),
-              leadingIcon: Icon(SystemIcons.share, color: context.colorsV2.foregroundSoft),
+              leadingIcon: Icon(SystemIcons.share, color: context.colors.foregroundSoft),
             ),
           ),
           ContentRow(
@@ -54,10 +54,10 @@ class EtaInprogressSheet extends StatelessWidget {
                 vertical: Spacing.$3x,
               ),
               title: context.l10n.stopSharing,
-              titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundDefault,
+              titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundDefault,
               ),
-              leadingIcon: Icon(GeneralIcons.clearCircle, color: context.colorsV2.foregroundSoft),
+              leadingIcon: Icon(GeneralIcons.clearCircle, color: context.colors.foregroundSoft),
             ),
           )
         ],

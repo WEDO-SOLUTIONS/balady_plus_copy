@@ -24,7 +24,7 @@ class RoadPanel extends ConsumerWidget {
             child: isLoading
                 ? DecoratedBox(
                     decoration: BoxDecoration(
-                      color: context.colorsV2.backgroundSurface1,
+                      color: context.colors.backgroundSurface1,
                       borderRadius: BorderRadius.circular(RadiusBorder.xl),
                     ),
                     child: Center(child: Loading.small()))
@@ -34,7 +34,7 @@ class RoadPanel extends ConsumerWidget {
                         onTap: onSearch,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: context.colorsV2.backgroundSurface1,
+                            color: context.colors.backgroundSurface1,
                             borderRadius: BorderRadius.circular(RadiusBorder.xl),
                           ),
                           child: const Padding(
@@ -49,11 +49,11 @@ class RoadPanel extends ConsumerWidget {
                           onTap: onEndTrip,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: context.colorsV2.backgroundSurface1,
+                              color: context.colors.backgroundSurface1,
                               borderRadius: BorderRadius.circular(RadiusBorder.xl),
                             ),
                             child: Center(
-                              child: Text(context.l10n.endTrip, style: context.textStyleV3.h4Medium),
+                              child: Text(context.l10n.endTrip, style: context.textStyles.h4Medium),
                             ),
                           ),
                         ),
@@ -63,7 +63,7 @@ class RoadPanel extends ConsumerWidget {
                         onTap: onOpenSheet,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: context.colorsV2.backgroundSurface1,
+                            color: context.colors.backgroundSurface1,
                             borderRadius: BorderRadius.circular(RadiusBorder.xl),
                           ),
                           child: const Padding(

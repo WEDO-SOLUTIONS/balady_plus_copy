@@ -16,7 +16,7 @@ class FeedbackBaladyBusiness extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(top: Spacing.$4x),
       child: Material(
-        color: context.colorsV2.backgroundSurface1,
+        color: context.colors.backgroundSurface1,
         borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: Padding(
           padding: const EdgeInsets.all(Spacing.$4x),
@@ -25,22 +25,22 @@ class FeedbackBaladyBusiness extends ConsumerWidget {
             children: [
               Text(
                 context.l10n.signInToBaladyBusiness,
-                style: context.textStyleV3.bodyLargeSemiBold,
+                style: context.textStyles.bodyLargeSemiBold,
               ),
               Spacing.$1x.heightBox,
               Text(
                 context.l10n.addMoreFeaturesToYourBusiness,
-                style: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.colorsV2.foregroundSoft,
+                style: context.textStyles.bodySmallRegular.copyWith(
+                  color: context.colors.foregroundSoft,
                 ),
               ),
               const SizedBox(height: Spacing.$3x),
               SizedBox(
                 width: double.infinity,
-                child: BaladyAppButton(
+                child: AppButton(
                   primaryLabel: context.l10n.signIn,
-                  buttonColorScheme: BaladyButtonColorScheme.accent,
-                  buttonType: BaladyButtonType.secondary,
+                  buttonColorScheme: ButtonColorScheme.accent,
+                  buttonType: ButtonType.secondary,
                   onTap: ref.read(feedbackBaladyBusinessProvider.notifier).openBaladyBusiness,
                 ),
               ),

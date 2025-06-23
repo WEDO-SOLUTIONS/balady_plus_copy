@@ -23,7 +23,7 @@ class BetterRouteSettingsWidget extends ConsumerWidget {
           Row(
             children: [
               AppButton(
-                buttonColorScheme: ButtonColorScheme.primary,
+                buttonColorScheme: ButtonColorScheme.accent,
                 size: ButtonSize.small,
                 primaryLabel: 'set prod',
                 onTap: () {
@@ -32,7 +32,7 @@ class BetterRouteSettingsWidget extends ConsumerWidget {
               ),
               const SizedBox(width: Spacing.$4x),
               AppButton(
-                buttonColorScheme: ButtonColorScheme.primary,
+                buttonColorScheme: ButtonColorScheme.accent,
                 size: ButtonSize.small,
                 primaryLabel: 'set test',
                 onTap: () {

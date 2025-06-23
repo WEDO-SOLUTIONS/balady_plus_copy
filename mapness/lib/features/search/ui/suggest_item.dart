@@ -76,11 +76,11 @@ class SuggestItem extends ConsumerWidget {
       }
     }
 
-    return ContentRowV2(
+    return ContentRow(
       crossAxisAlignment: CrossAxisAlignment.center,
       onTap: _onSuggestTap,
       isDividerEnabled: !isLast,
-      leading: SystemIcons.search.icon(color: iconColor ?? context.colorsV3.foregroundSoft),
+      leading: SystemIcons.search.icon(color: iconColor ?? context.colors.foregroundSoft),
       text: ContentRowTextOptions(
         title: suggest.title.text,
         titleOptions: ContentRowTextOption(
@@ -95,7 +95,7 @@ class SuggestItem extends ConsumerWidget {
           ? ContentRowTextTrailingOptions(
               text: (distanceKm * 1000).formatDistance(context.l10n),
               textStyle: tralingTextColor != null
-                  ? context.textStyleV3.bodySmallSemiBold.copyWith(color: tralingTextColor)
+                  ? context.textStyles.bodySmallSemiBold.copyWith(color: tralingTextColor)
                   : null,
             )
           : null,

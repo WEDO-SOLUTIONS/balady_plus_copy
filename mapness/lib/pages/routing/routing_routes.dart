@@ -127,12 +127,12 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                       children: <Widget>[
                         AppButton(
                           primaryIcon: SystemIcons.arrowLeft,
-                          buttonColorScheme: ButtonColorScheme.tertiary,
+                          buttonColorScheme: ButtonColorScheme.neutral,
                           onTap: _onClose,
                         ),
                         AppButton(
                           primaryIcon: TransportIcons.verticalChange,
-                          buttonColorScheme: ButtonColorScheme.tertiary,
+                          buttonColorScheme: ButtonColorScheme.neutral,
                           onTap: _onSwipeRoutes,
                         ),
                         Expanded(

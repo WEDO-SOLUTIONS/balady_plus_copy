@@ -53,8 +53,8 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
               alignment: AlignmentDirectional.topEnd,
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                child: BaladyAppButton.close(
-                  buttonType: BaladyButtonType.secondary,
+                child: AppButton.close(
+                  buttonType: ButtonType.secondary,
                   onTap: onClose,
                 ),
               ),
@@ -85,8 +85,8 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                         Text(
                           error.errorTitle,
                           textAlign: TextAlign.center,
-                          style: context.textStyleV3.h3SemiBold.copyWith(
-                            color: context.colorsV2.foregroundDefault,
+                          style: context.textStyles.h3SemiBold.copyWith(
+                            color: context.colors.foregroundDefault,
                           ),
                         ),
                         if (error.errorContent != null)
@@ -95,16 +95,16 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                             child: Text(
                               error.errorContent ?? '',
                               textAlign: TextAlign.center,
-                              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                                color: context.colorsV2.foregroundSoft,
+                              style: context.textStyles.bodyLargeRegular.copyWith(
+                                color: context.colors.foregroundSoft,
                               ),
                             ),
                           ),
                         Spacing.$6x.heightBox,
-                        BaladyAppButton(
+                        AppButton(
                           onTap: error.onRetry,
-                          buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                          size: BaladyButtonSize.large,
+                          buttonColorScheme: ButtonColorScheme.accentSecondary,
+                          size: ButtonSize.large,
                           primaryLabel: error.buttonLabel ?? context.l10n.tryAgain,
                         ),
                       ],

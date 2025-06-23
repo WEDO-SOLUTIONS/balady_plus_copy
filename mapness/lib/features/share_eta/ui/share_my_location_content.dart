@@ -145,7 +145,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
                     padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
                     child: Text(
                       text,
-                      style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),
+                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

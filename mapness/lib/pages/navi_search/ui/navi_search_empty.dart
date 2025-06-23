@@ -15,14 +15,14 @@ class NaviSearchEmpty extends StatelessWidget {
             const SizedBox(height: Spacing.$12x),
             Text(
               context.l10n.searchCouldNotFindAnything,
-              style: context.textStyleV3.bodyLargeSemiBold,
+              style: context.textStyles.bodyLargeSemiBold,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.$3x),
             Text(
               context.l10n.searchTryToSearchForADifferentLocation,
               textAlign: TextAlign.center,
-              style: context.textStyleV3.bodySmallRegular,
+              style: context.textStyles.bodySmallRegular,
             ),
           ],
         ),

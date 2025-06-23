@@ -47,14 +47,14 @@ class _ToastWidget extends ConsumerWidget {
                       Flexible(
                         child: Text(
                           _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
-                          style: titleStyle ?? context.textStyleV3.bodyLargeRegular,
+                          style: titleStyle ?? context.textStyles.bodyLargeRegular,
                         ),
                       ),
                       const SizedBox(width: Spacing.$2x),
                       if (iconData != null)
                         Icon(
                           iconData,
-                          color: iconColor ?? context.colorsV2.foregroundDefault,
+                          color: iconColor ?? context.colors.foregroundDefault,
                         )
                       else if (iconAsset != null)
                         SvgPicture.asset(iconAsset!),
@@ -72,8 +72,8 @@ class _ToastWidget extends ConsumerWidget {
                             ),
                             child: Text(
                               firstText!,
-                              style: context.textStyleV3.bodySmallSemiBold.copyWith(
-                                color: context.colorsV3.accentDefault,
+                              style: context.textStyles.bodySmallSemiBold.copyWith(
+                                color: context.colors.accentDefault,
                               ),
                             ),
                           ),
@@ -89,8 +89,8 @@ class _ToastWidget extends ConsumerWidget {
                             ),
                             child: Text(
                               secondText!,
-                              style: context.textStyleV3.bodySmallSemiBold.copyWith(
-                                color: context.colorsV3.accentDefault,
+                              style: context.textStyles.bodySmallSemiBold.copyWith(
+                                color: context.colors.accentDefault,
                               ),
                             ),
                           ),
@@ -115,7 +115,7 @@ class _ToastWidget extends ConsumerWidget {
           bottom: hasFirstAction || hasSecondAction ? 0.0 : Spacing.$3x + Spacing.$0_5x,
         ),
         decoration: BoxDecoration(
-          color: context.colorsV2.backgroundSurface1,
+          color: context.colors.backgroundSurface1,
           borderRadius: BorderRadius.circular(RadiusBorder.l),
           boxShadow: const [
             BoxShadow(

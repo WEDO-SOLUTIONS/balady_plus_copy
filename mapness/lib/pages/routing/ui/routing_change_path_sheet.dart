@@ -111,7 +111,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
                 children: [
                   Expanded(
                     child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.primary,
+                      buttonColorScheme: ButtonColorScheme.accent,
                       onTap: () {
                         widget.onConfirm(points);
                       },

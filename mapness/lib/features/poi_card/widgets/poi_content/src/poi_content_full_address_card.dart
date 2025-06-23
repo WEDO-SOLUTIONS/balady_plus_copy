@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentFullAddress;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +16,7 @@ class PoiContentFullAddressCard extends StatelessWidget {
     return ContentWrapper(
       color: context.color.surfaceBasePrimary,
       children: [
-        ContentRowV2(
+        ContentRow(
           text: ContentRowTextOptions(
             title: data.title,
             titleOptions: const ContentRowTextOption(isBold: true),
@@ -78,16 +78,16 @@ class _ActionButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => BaladyAppButton(
+  Widget build(BuildContext context) => AppButton(
         padding: EdgeInsets.zero,
         innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
         primaryLabel: title,
         trailing: Counter(
           count: count,
-          color: context.colorsV3.accentDefault,
+          color: context.colors.accentDefault,
         ),
-        buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-        buttonType: BaladyButtonType.secondary,
+        buttonColorScheme: ButtonColorScheme.accentSecondary,
+        buttonType: ButtonType.secondary,
         onTap: onTap,
       );
 }

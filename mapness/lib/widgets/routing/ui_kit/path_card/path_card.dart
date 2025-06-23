@@ -95,7 +95,7 @@ class PathCard extends StatelessWidget {
                   ),
                 ),
                 AppButton(
-                  buttonColorScheme: ButtonColorScheme.primary,
+                  buttonColorScheme: ButtonColorScheme.accent,
                   onTap: onStartTap,
                   size: ButtonSize.small,
                   primaryLabel: localizations.go,
