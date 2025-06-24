@@ -446,8 +446,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   void _openParking() {
-    ref.read(appAnalyticsProvider).quickActionSelected('parking');
-    ref.read(layersControlsProvider.notifier).enableParking();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(appAnalyticsProvider).quickActionSelected('parking');
+      await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
+    });
   }
 
   Future<void> _freeRoam() async {
