@@ -81,6 +81,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
       source: source,
       child: SafeAreaPadding(
         child: StatelessBottomSheet(
+          startConfig: BottomSheetStart.instant,
           scrollController: scrollController,
           safeAreaColor: context.colorsV3.backgroundSurface1,
           onWillPop: Future.value(false),
