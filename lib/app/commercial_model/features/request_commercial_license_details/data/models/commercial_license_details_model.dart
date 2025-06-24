@@ -17,6 +17,7 @@ class RequestCommercialLicenseDetailsModel {
   List<AttachmentsInfo>? attachmentsInfo;
   List<RequestNotesInfo>? requestNotesInfo;
   bool availableCloseDate;
+  bool isFromInitialApproval;
 
   RequestCommercialLicenseDetailsModel({
     required this.requestId,
@@ -35,6 +36,7 @@ class RequestCommercialLicenseDetailsModel {
     required this.attachmentsInfo,
     required this.requestNotesInfo,
     required this.availableCloseDate,
+    required this.isFromInitialApproval
   });
 
   factory RequestCommercialLicenseDetailsModel.fromJson(
@@ -56,6 +58,7 @@ class RequestCommercialLicenseDetailsModel {
             : null,
         licenseInfo: LicenseInfo.fromJson(json["licenseInfo"]),
         availableCloseDate: json["availableCloseDate"] ?? false,
+        isFromInitialApproval: json["hasInitialApproval"] ?? false,
         attachmentsInfo: json["attachmentsInfo"] != null
             ? List<AttachmentsInfo>.from(
                 json["attachmentsInfo"].map((x) => AttachmentsInfo.fromJson(x)))

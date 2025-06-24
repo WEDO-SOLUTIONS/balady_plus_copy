@@ -1,7 +1,4 @@
-import 'package:dio/dio.dart' show DioError, Options;
-
 import '/app/core/utils/constants/apis/apis_get.dart';
-import '/app/core/utils/constants/language.dart';
 import '/app/features/details/data/models/entity_activity_details_response_model.dart';
 import '/app/features/details/data/models/entity_violation_activity_details_model.dart';
 import '/app/features/details/data/models/entity_violation_activity_model.dart';
@@ -12,6 +9,9 @@ import '/app/features/details/domain/entities/entity_activity_details_response.d
 import '/app/features/details/domain/entities/entity_violation_activity_details_request_params.dart';
 import '/app/features/details/domain/entities/entity_violation_activity_request_params.dart';
 import '/app/features/details/domain/entities/violation_details_vd_request_params.dart';
+import 'package:dio/dio.dart' show DioError, Options;
+import '/app/core/utils/constants/language.dart';
+
 import '../../../../core/errors/errors_exports.dart' show ServerException;
 import '../../../../core/services/services_exports.dart' show SmartAdvisorWebService;
 import '../../../_shared_feature_/presentation/models/response_body_model.dart';

@@ -1,10 +1,11 @@
-import 'package:dartz/dartz.dart' show Either;
 import 'package:smart_advisor/app/features/details/domain/repositories/repository.dart';
 
-import '../../../../core/errors/errors_exports.dart' show Failure;
 import '../../../../core/services/local/use_case.dart';
 import '../../data/models/violation_details_vd_model.dart';
 import '../entities/violation_details_vd_request_params.dart';
+import 'package:dartz/dartz.dart' show Either;
+
+import '../../../../core/errors/errors_exports.dart' show Failure;
 
 class GetViolationVDUC extends UseCase<List<ViolationDetailsVdModel>, ViolationDetailsVdRequestParams> {
   final DetailsRepository repository;

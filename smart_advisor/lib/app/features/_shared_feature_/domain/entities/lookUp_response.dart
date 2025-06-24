@@ -59,4 +59,11 @@ class LookUpItem {
       isATM: json["atm"]);
 
   Map<String, dynamic> toJson() => {"id": id, "name": name, "isATM": isATM};
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || (other is LookUpItem && other.id == id);
+
+  @override
+  int get hashCode => super.hashCode;
 }

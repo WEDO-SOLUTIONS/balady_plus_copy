@@ -69,7 +69,7 @@ android {
                 //     'appAuthRedirectScheme': 'com.momra.balady',
                 'appAuthRedirectScheme': 'com.balady'
         ]
-        manifestPlaceholders = [partner:"baladyappuat"]
+        manifestPlaceholders = [partner:"baladyapp"]
 
     }
     signingConfigs {
@@ -105,7 +105,7 @@ android {
     productFlavors {
         stg {
             dimension "default"
-            resValue "string", "app_name", "Balady | بلدي"
+            resValue "string", "app_name", "Balady+بلدي"
             versionCode 1000 + android.defaultConfig.versionCode
 //            versionNameSuffix ".stg"
 //            applicationIdSuffix ".stg"
@@ -113,11 +113,11 @@ android {
         }
         prod {
             dimension "default"
-            resValue "string", "app_name", "Balady | بلدي"
+            resValue "string", "app_name", "Balady+بلدي"
         }
         pre {
             dimension "default"
-            resValue "string", "app_name", "Balady | بلدي"
+            resValue "string", "app_name", "Balady+بلدي"
         }
     }
 
@@ -141,9 +141,10 @@ dependencies {
     implementation 'com.android.installreferrer:installreferrer:2.2'
     implementation 'com.adjust.sdk:adjust-android-meta-referrer:5.0.1'
     implementation 'androidx.glance:glance-appwidget:1.0.0'
-    implementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
+    implementation 'com.huawei.agconnect:agconnect-core:1.6.5.300'
 
 
 
 }
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.huawei.agconnect'

@@ -12,7 +12,7 @@ class AppConfig {
 
   static String getCurrentLanguageCode() => translator.activeLanguageCode;
 
-  static const String somarFontType = 'SomarSans';
+  static const String somarFontType = 'packages/balady_uikit/Frutiger';
   static const String appFontType = somarFontType;
 
   static Future changeLang(BuildContext context) {

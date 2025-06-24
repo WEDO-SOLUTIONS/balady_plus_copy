@@ -14,23 +14,20 @@ class MyAppointmentsResponse {
     this.data,
   });
 
-  List<StatusDetail>? statusDetails;
+  StatusDetail? statusDetails;
   Data? data;
 
   factory MyAppointmentsResponse.fromJson(Map<String, dynamic> json) =>
       MyAppointmentsResponse(
         statusDetails: json["statusDetails"] == null
             ? null
-            : List<StatusDetail>.from(
-                json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
+            : StatusDetail.fromJson(json["statusDetails"]),
         data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "statusDetails": statusDetails == null
-            ? null
-            : List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
-        "data": data == null ? null : data!.toJson(),
+        "statusDetails": statusDetails?.toJson(),
+        "data": data?.toJson(),
       };
 }
 
@@ -50,8 +47,8 @@ class Data {
         responseMessage: json["responseMessage"],
         result: json["result"] == null
             ? null
-            : List<AppointmentItem>.from(
-                json["result"].map((x) => AppointmentItem.fromJson(x))),
+            : List<AppointmentItem>.from(json["result"]["items"]
+                .map((x) => AppointmentItem.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {

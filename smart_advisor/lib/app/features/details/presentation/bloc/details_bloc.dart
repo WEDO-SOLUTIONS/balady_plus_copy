@@ -1,6 +1,6 @@
-import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-
+import '../../../select_activity/domain/use_cases/get_work_flow.dart';
+import '../../domain/entities/violation_details_vd_request_params.dart';
+import '../../domain/use_cases/violation_details_vd.dart';
 import '/app/core/dependency_injection/dependency_injection_exports.dart';
 import '/app/core/errors/errors_exports.dart';
 import '/app/core/services/services_exports.dart';
@@ -12,13 +12,14 @@ import '/app/features/details/domain/use_cases/get_regulations.dart';
 import '/app/features/details/presentation/bloc/details_event.dart';
 import '/app/features/details/presentation/bloc/details_state.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
-import '../../../select_activity/domain/use_cases/get_work_flow.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+
+import '../../data/models/entity_violation_activity_details_model.dart';
 import '../../domain/entities/entity_violation_activity_details_request_params.dart';
 import '../../domain/entities/entity_violation_activity_request_params.dart';
-import '../../domain/entities/violation_details_vd_request_params.dart';
 import '../../domain/use_cases/get_violation_details.dart';
 import '../../domain/use_cases/get_violation_entity_activity_detailes.dart';
-import '../../domain/use_cases/violation_details_vd.dart';
 import '../widgets/tabs/third/Details.dart';
 //import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 

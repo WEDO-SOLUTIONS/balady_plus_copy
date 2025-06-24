@@ -286,16 +286,15 @@ class _MapViewState extends State<MapView> {
   void getLocationAddress() async {
     if (movedPosition != null) {
       selectedLocation?.selectedLocation = movedPosition;
-      if (isFirstLoad) EasyLoading.show();
+       EasyLoading.show();
       gisLocationResult = await locator<CustomerVoiceRepository>()
           .getApigeeGisLocation(movedPosition!);
-      if (isFirstLoad) EasyLoading.dismiss();
+       EasyLoading.dismiss();
       setState(() {
         gisAddress = null;
         isFirstLoad = false;
-
         if (gisLocationResult?.adminMunicipalityName != null) {
-          gisAddress = gisLocationResult!.adminMunicipalityName!;
+          gisAddress = gisLocationResult!.getFullAddress();
           selectedLocation?.selectedLocationAddress = gisAddress;
         }
       });

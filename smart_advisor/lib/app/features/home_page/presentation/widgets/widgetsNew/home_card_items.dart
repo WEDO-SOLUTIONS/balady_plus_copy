@@ -51,20 +51,19 @@ class HomeCardItems extends StatelessWidget {
         if (isDisabled)
           Positioned(
             bottom: 10,
-            left: 10,
+            right: 10,
             child: Container(
-                width: 65,
-                height: 30,
+                width: 58,
+                height: 25,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: Color(0xff1C252E),
+                  color: Color(0x57FFFFFF),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   "قريباً",
-                  style: AppStyle.textRegularRomanStyle.copyWith(
-                    color: AppColor.white,
-                  ),
+                  style: AppStyle.textRegularRomanStyle
+                      .copyWith(color: Color(0xff1E2A36), fontSize: 13),
                 )),
           )
       ],

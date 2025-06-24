@@ -66,21 +66,21 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, LookUpList?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, RequeestRealStateResponseModel?>>
       checkRealStateRequest(String id) async {
-    var res;
+    Response res;
 
     try {
       res = await sl<web.WebService>().dio.get(ApiUrl.validateRealEstate(id));
@@ -117,18 +117,29 @@ class AppointmentRepository {
   }
 
   Future<Tuple3<bool?, String?, Municipality?>> getMunicipalities() async {
-    final body = await webServices
-        .getApigeeRequest(ApiConstants.AppointmentMunicipalities);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    Municipality? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    Response res;
     try {
-      Municipality response = Municipality.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
+      res = await sl<web.WebService>()
+          .dio
+          .get(ApiConstants.AppointmentMunicipalities);
+      Municipality response = Municipality.fromJson(res.data);
+      return Tuple3<bool?, String?, Municipality?>(true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, Municipality?>(
+          false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -137,41 +148,36 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      //MM
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentMunicipalities,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, Municipality?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, Municipality?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, SubMunicipality?>> getSubMunicipalities(
       String municipalityId) async {
-    String query = municipalityId;
-    final body = await webServices.getApigeeRequest(
-        ApiConstants.AppointmentSubMunicipalities,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    SubMunicipality? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    Response res;
     try {
-      SubMunicipality response = SubMunicipality.fromJson(json.decode(data));
-      result = response;
-      if (!state || result.data?.responseCode == "2") {
-        error = result.data?.responseMessage ?? error;
-      }
+      res = await sl<web.WebService>()
+          .dio
+          .get(ApiConstants.AppointmentSubMunicipalities(municipalityId));
+      SubMunicipality response = SubMunicipality.fromJson(res.data);
+      return Tuple3<bool?, String?, SubMunicipality?>(true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, SubMunicipality?>(
+          false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -180,23 +186,9 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentSubMunicipalities,
-            qeuryParms: query,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, SubMunicipality?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, SubMunicipality?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, DepartmentList?>> getDepartments(
@@ -230,35 +222,43 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, DepartmentList?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, MainClassResponse?>> getMainClassifications(
       String subMunicipalityId) async {
-    String query = subMunicipalityId;
-    final body = await webServices.getApigeeRequest(
-        ApiConstants.AppointmentMainClasssifications,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    MainClassResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    Response res;
     try {
-      MainClassResponse response =
-          MainClassResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state || result.data?.responseCode == "2") {
-        error = result.data?.responseMessage ?? error;
-      }
+      res = await sl<web.WebService>()
+          .dio
+          .get(ApiConstants.AppointmentMainClasssifications(subMunicipalityId));
+      MainClassResponse response = MainClassResponse.fromJson(res.data);
+      return Tuple3<bool?, String?, MainClassResponse?>(true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, MainClassResponse?>(
+          false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -267,41 +267,36 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentMainClasssifications,
-            qeuryParms: query,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, MainClassResponse?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, MainClassResponse?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, SubClassResponse?>> getSubClassifications(
       String subMunicipalityId, String mainClassId) async {
-    String query = subMunicipalityId + "/" + mainClassId;
-    final body = await webServices.getApigeeRequest(
-        ApiConstants.AppointmentSubClasssifications,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    SubClassResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    Response res;
     try {
-      SubClassResponse response = SubClassResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state || result.data?.responseCode == "2") {
-        error = result.data?.responseMessage ?? error;
-      }
+      res = await sl<web.WebService>().dio.get(
+          ApiConstants.AppointmentSubClasssifications(
+              subMunicipalityId, mainClassId));
+      SubClassResponse response = SubClassResponse.fromJson(res.data);
+      return Tuple3<bool?, String?, SubClassResponse?>(true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, SubClassResponse?>(
+          false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -310,42 +305,35 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentSubClasssifications,
-            qeuryParms: query,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, SubClassResponse?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, SubClassResponse?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, ServiceConfigResponse?>> getServiceConfig(
       String subMunicipalityId, String subClassId) async {
-    String query = subMunicipalityId + "/" + subClassId;
-    final body = await webServices.getApigeeRequest(
-        ApiConstants.AppointmentServiceConfig,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    ServiceConfigResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+    Response res;
     try {
-      ServiceConfigResponse response =
-          ServiceConfigResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state || result.data?.responseCode == "2") {
-        error = result.data?.responseMessage ?? error;
-      }
+      res = await sl<web.WebService>().dio.get(
+          ApiConstants.AppointmentServiceConfig(subMunicipalityId, subClassId));
+      ServiceConfigResponse response = ServiceConfigResponse.fromJson(res.data);
+      return Tuple3<bool?, String?, ServiceConfigResponse?>(true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, ServiceConfigResponse?>(
+          false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -354,23 +342,9 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentServiceConfig,
-            qeuryParms: query,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, ServiceConfigResponse?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, ServiceConfigResponse?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, AvailableDatesResponse?>> getAppointmentDates(
@@ -407,14 +381,14 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, AvailableDatesResponse?>(
         state, error, result);
@@ -452,44 +426,51 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, AvailableTimesResponse?>(
         state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, MyAppointmentsResponse?>> getMyAppointments(
-      {int pageSize = 20,
-      int pageIndex = 0,
-      bool upcomingAppointments = true,
-      bool autoLogout = true}) async {
-    String searchText = upcomingAppointments
-        ? "&search=aptStatus.id==1,aptStatus.id==2,aptStatus.id==5"
-        : "" /*"&search=aptStatus.id==3,aptStatus.id==4"*/;
-    String query =
-        "${(CommonProperties.userInfo?.idNo ?? "")}/${(CommonProperties.userInfo?.getIdType() ?? "")}?size=$pageSize&page=$pageIndex$searchText";
-
-    final body = await webServices.getApigeeRequest(ApiConstants.MyAppointments,
-        relativePath: query, autoLogout: autoLogout);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    MyAppointmentsResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
+  Future<Tuple3<bool?, String?, MyAppointmentsResponse?>> getMyAppointments({
+    int pageSize = 20,
+    int pageIndex = 0,
+  }) async {
+    Response res;
 
     try {
+      res = await sl<web.WebService>()
+          .dio
+          .get(ApiConstants.MyAppointments, queryParameters: {
+        "size": pageSize,
+        "page": pageIndex,
+      });
+
       MyAppointmentsResponse response =
-          MyAppointmentsResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
+          MyAppointmentsResponse.fromJson(res.data);
+
+      return Tuple3<bool?, String?, MyAppointmentsResponse?>(
+          true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -498,31 +479,69 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.MyAppointments,
-            qeuryParms: query,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, MyAppointmentsResponse?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, MyAppointmentsResponse?>(
-        state, error, result);
   }
+
+  // Future<Tuple3<bool?, String?, MyAppointmentsResponse?>> getMyAppointments(
+  //     {int pageSize = 20,
+  //     int pageIndex = 0,
+  //     bool upcomingAppointments = true,
+  //     bool autoLogout = true}) async {
+  //   String searchText = upcomingAppointments
+  //       ? "&search=aptStatus.id==1,aptStatus.id==2,aptStatus.id==5"
+  //       : "" /*"&search=aptStatus.id==3,aptStatus.id==4"*/;
+  //   String query =
+  //       "${(CommonProperties.userInfo?.idNo ?? "")}/${(CommonProperties.userInfo?.getIdType() ?? "")}?size=$pageSize&page=$pageIndex$searchText";
+
+  //   final body = await webServices.getApigeeRequest(ApiConstants.MyAppointments,
+  //       relativePath: query, autoLogout: autoLogout);
+  //   bool state = body['state'];
+  //   dynamic data = body['data'];
+  //   MyAppointmentsResponse? result;
+  //   String error = body['error'] ?? ("errors_server_error_1").tr();
+
+  //   try {
+  //     MyAppointmentsResponse response =
+  //         MyAppointmentsResponse.fromJson(json.decode(data));
+  //     result = response;
+  //     if (!state) {
+  //       error = result.data?.responseMessage ?? error;
+  //     }
+  //   } catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     try {
+  //       Helpers.sendLog(
+  //           url: ApiConstants.MyAppointments,
+  //           qeuryParms: query,
+  //           data: data,
+  //           errorMsg: error.toString());
+  //     } catch (error, stackTrace) {
+  //       LogsViewModel().sendEventFromModel(
+  //         event: ErrorExceptionModel(
+  //           nameEvent: EventsName.handledException,
+  //           message: error.toString(),
+  //           stackTrace: stackTrace.toString(),
+  //         ),
+  //       );
+  //     }
+  //   }
+  //   return Tuple3<bool?, String?, MyAppointmentsResponse?>(
+  //       state, error, result);
+  // }
 
   Future<Tuple3<bool?, String?, AppointmentDetails?>> getAppointmentDetails(
       int appointmentId) async {
     String query = appointmentId.toString();
 
-    var res;
+    Response res;
 
     try {
       res =
@@ -589,14 +608,14 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -645,14 +664,14 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, CancelAppointmentResponse?>(
         state, error, result);
@@ -660,23 +679,31 @@ class AppointmentRepository {
 
   Future<Tuple3<bool?, String?, ConfirmAppointmentResponse?>>
       confirmAppointment(String requestId) async {
-    String query = "$requestId";
-
-    final body = await webServices.postApigeeRequest(
-        ApiConstants.ConfirmAppointment,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    ConfirmAppointmentResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
-
+    Response res;
     try {
+      res = await sl<web.WebService>()
+          .dio
+          .post(ApiConstants.ConfirmAppointment(requestId));
       ConfirmAppointmentResponse response =
-          ConfirmAppointmentResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
+          ConfirmAppointmentResponse.fromJson(res.data);
+      return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+          true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+          false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -685,29 +712,61 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.ConfirmAppointment,
-            qeuryParms: query,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
-        state, error, result);
   }
+
+  // Future<Tuple3<bool?, String?, ConfirmAppointmentResponse?>>
+  //     confirmAppointment(String requestId) async {
+  //   String query = requestId;
+
+  //   final body = await webServices.postApigeeRequest(
+  //       ApiConstants.ConfirmAppointmentNewAppointment(requestId),
+  //       relativePath: query);
+  //   bool state = body['state'];
+  //   dynamic data = body['data'];
+  //   ConfirmAppointmentResponse? result;
+  //   String error = body['error'] ?? ("errors_server_error_1").tr();
+
+  //   try {
+  //     ConfirmAppointmentResponse response =
+  //         ConfirmAppointmentResponse.fromJson(json.decode(data));
+  //     result = response;
+  //     if (!state) {
+  //       error = result.data?.responseMessage ?? error;
+  //     }
+  //   } catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     try {
+  //       Helpers.sendLog(
+  //           url: ApiConstants.ConfirmAppointment,
+  //           qeuryParms: query,
+  //           data: data,
+  //           errorMsg: error.toString());
+  //     } catch (error, stackTrace) {
+  //       LogsViewModel().sendEventFromModel(
+  //         event: ErrorExceptionModel(
+  //           nameEvent: EventsName.handledException,
+  //           message: error.toString(),
+  //           stackTrace: stackTrace.toString(),
+  //         ),
+  //       );
+  //     }
+  //   }
+  //   return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+  //       state, error, result);
+  // }
 
   Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> updateAppointment(
       var reqBody, int id) async {
-    var res;
+    Response res;
 
     try {
       res = await sl<web.WebService>()
@@ -742,58 +801,11 @@ class AppointmentRepository {
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           false, error.toString(), null);
     }
-
-    try {
-      final response = await sl<webService.WebService>()
-          .dio
-          .put(ApiConstants.AppointmentUpdate(id), data: reqBody);
-
-      return Tuple3<bool?, String?, SaveAppointmentResponse>(
-          true, "", SaveAppointmentResponse());
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      print(error);
-
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.AppointmentUpdate(id),
-            body: reqBody,
-            data: error,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
-    }
   }
 
   Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> saveAppointment(
       var reqBody) async {
-    var res;
+    Response res;
 
     try {
       res = await sl<web.WebService>()
@@ -871,28 +883,27 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, UploadFileResponse?>(state, error, result);
   }
 
-
-  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> deleteAttachment(String udid,) async {
-    var res;
+  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> deleteAttachment(
+    String udid,
+  ) async {
+    Response res;
     try {
-      res = await sl<web.WebService>()
-          .dio
-          .post(ApiUrl.deleteAppointment(udid));
+      res = await sl<web.WebService>().dio.post(ApiUrl.deleteAppointment(udid));
 
       SaveAppointmentResponse response =
-      SaveAppointmentResponse.fromJson(res.data);
+          SaveAppointmentResponse.fromJson(res.data);
 
       return Tuple3<bool?, String?, SaveAppointmentResponse?>(
           true, "", response);
@@ -923,5 +934,4 @@ class AppointmentRepository {
           false, error.toString(), null);
     }
   }
-
 }

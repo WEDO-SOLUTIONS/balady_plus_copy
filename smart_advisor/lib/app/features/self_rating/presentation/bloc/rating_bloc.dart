@@ -101,12 +101,12 @@ class RatingBloc extends Bloc<RatingEvent, RatingState> {
     }));
 
     final failureOrSuccess = await _submitSelfRatingUC(SubmitRatingRequest(
-      selfEvaluationType: "Awareness",
-      businessActivityId: (args.activityId?.id ?? 0).toString(),
-      municipalityId: args.gisData?.municipalityId,
-      subMunicipalityId: args.gisData?.subMunicipalityId,
-      inspectionSubClausesList: list,
-    ));
+        selfEvaluationType: "Awareness",
+        businessActivityId: (args.activityId?.id ?? 0).toString(),
+        municipalityId: args.gisData?.municipalityId,
+        subMunicipalityId: args.gisData?.subMunicipalityId,
+        inspectionSubClausesList: list,
+        licenseNumber: args?.licenseNo));
     await failureOrSuccess.fold(
       (failure) async {
         print(failure);

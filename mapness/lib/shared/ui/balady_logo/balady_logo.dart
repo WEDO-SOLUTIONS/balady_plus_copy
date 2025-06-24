@@ -22,7 +22,6 @@ class BaladyLogo extends StatelessWidget {
         width: width ?? 95,
         child: SvgPicture.asset(
           context.isLTR ? Assets.imagesSvg.enBaladyLogo.keyName : Assets.imagesSvg.arBaladyLogo.keyName,
-          fit: BoxFit.cover,
           colorFilter: color != null ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
         ),
       );

@@ -39,7 +39,6 @@ class _QuranDoaaPageState extends State<QuranDoaaPage> {
                       "quran_doaa".tr(),
                       fontWeight: AppFontWeight.medium,
                       fontSize: 26,
-                      fontFamily: "HafsSmart",
                       maxLines: 1000,
                       height: 1.6,
                       fontColor: AppColor.black,

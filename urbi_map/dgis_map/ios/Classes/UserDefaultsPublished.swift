@@ -5,6 +5,13 @@ class UserDefaultsPublished {
     private let userDefaults = UserDefaults.standard
 
     @Published var languageString: String?
+    
+    // CarPlay Settings Keys
+    private enum CarPlaySettingsKeys {
+        static let parkingEnabled = "carplay.parking.enabled"
+        static let soundEnabled = "carplay.sound.enabled"
+        static let trafficEnabled = "carplay.traffic.enabled"
+    }
 
     init() {
         self.languageString = userDefaults.languageString
@@ -26,6 +33,32 @@ class UserDefaultsPublished {
             Bundle.syncLanguage()
             languageString = userDefaults.languageString
         }
+    }
+    
+    // MARK: - CarPlay Settings Save/Restore
+    
+    func saveParkingEnabled(_ enabled: Bool) {
+        userDefaults.set(enabled, forKey: CarPlaySettingsKeys.parkingEnabled)
+    }
+    
+    func saveSoundEnabled(_ enabled: Bool) {
+        userDefaults.set(enabled, forKey: CarPlaySettingsKeys.soundEnabled)
+    }
+    
+    func saveTrafficEnabled(_ enabled: Bool) {
+        userDefaults.set(enabled, forKey: CarPlaySettingsKeys.trafficEnabled)
+    }
+    
+    func getParkingEnabled() -> Bool {
+        return userDefaults.bool(forKey: CarPlaySettingsKeys.parkingEnabled)
+    }
+    
+    func getSoundEnabled() -> Bool {
+        return userDefaults.bool(forKey: CarPlaySettingsKeys.soundEnabled)
+    }
+    
+    func getTrafficEnabled() -> Bool {
+        return userDefaults.bool(forKey: CarPlaySettingsKeys.trafficEnabled)
     }
 }
 

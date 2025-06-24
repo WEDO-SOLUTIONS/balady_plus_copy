@@ -16,7 +16,8 @@ class BottomSheetDialog {
       bool isScrollControlled = true,
       bool enableDrag = true,
       String? currentRouteName,
-      String? dialogKeyName}) async {
+      String? dialogKeyName}) async
+  {
     final screenHeight = context.screenHeight;
     final screenStatusBarHeight = context.topPadding + 20.0;
 

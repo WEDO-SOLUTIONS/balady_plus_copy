@@ -80,6 +80,7 @@ class CommercialRequestDetailsResponse {
   final dynamic observationProviderType;
   final List<Activity>? activities;
   final bool? insidePetrolStation;
+  final double? shopArea;
 
   CommercialRequestDetailsResponse(
       {this.requestId,
@@ -148,7 +149,9 @@ class CommercialRequestDetailsResponse {
       this.showTillActive,
       this.observationProviderType,
       this.activities,
-      this.insidePetrolStation});
+      this.insidePetrolStation,
+      this.shopArea
+      });
 
   factory CommercialRequestDetailsResponse.fromJson(
           Map<String, dynamic> json) =>
@@ -245,6 +248,7 @@ class CommercialRequestDetailsResponse {
             ? []
             : List<Activity>.from(
                 json["activities"]!.map((x) => Activity.fromJson(x))),
+                shopArea: json["shopArea"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -322,6 +326,7 @@ class CommercialRequestDetailsResponse {
         "activities": activities == null
             ? []
             : List<dynamic>.from(activities!.map((x) => x.toJson())),
+            "shopArea": shopArea,
       };
 }
 

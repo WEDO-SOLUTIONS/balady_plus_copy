@@ -5,10 +5,10 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
+// import 'package:flutter_google_places/flutter_google_places.dart';
 
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:google_maps_webservice/places.dart' as place;
+// import 'package:google_maps_webservice/places.dart' as place;
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show

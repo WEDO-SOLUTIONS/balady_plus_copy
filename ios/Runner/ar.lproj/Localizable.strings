@@ -5,3 +5,7 @@
 "anyScreenBackButton" = "رجوع";
 "historyScreenEmptyPlaceholderTitle" = "لا يوجد شيء هنا بعد";
 "historyScreenSearchBackButton" = "بحث";
+"settingsScreenTitle" = "الإعدادات";
+"settingsScreenTraffic" = "حركة المرور";
+"settingsScreenSound" = "الصوت";
+"settingsScreenParking" = "الموقف";

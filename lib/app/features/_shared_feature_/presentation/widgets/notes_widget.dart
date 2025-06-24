@@ -7,30 +7,35 @@ import '../../shared_feature_exports.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class NotesWidget extends StatelessWidget {
-  const NotesWidget({super.key, required this.notes, this.showText});
+  const NotesWidget({super.key, required this.notes, this.showText,this.marginBottom,this.padding,this.separatorHeight,this.BgColor});
 
   final List<String> notes;
   final bool? showText;
-
+  final double? marginBottom;
+  final double? padding;
+  final double? separatorHeight;
+  final Color? BgColor;
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-          decoration: const BoxDecoration(
+          padding:  EdgeInsets.symmetric(vertical:padding?? 12, horizontal:padding?? 10),
+          decoration:  BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(8)),
-            color: AppColor.primary50Light,
+            color: BgColor??AppColor.primary50Light,
           ),
           child: ListView.separated(
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
+            separatorBuilder: (_, __) =>  SizedBox(height:separatorHeight?? 8),
             itemCount: notes.length,
+            padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemBuilder: (_, index) => Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+
                 const Padding(
                   padding: EdgeInsets.only(top: 6),
                   child: Icon(Icons.circle,
@@ -38,6 +43,7 @@ class NotesWidget extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 if (showText == true)
+
                   Flexible(
                     child: Linkify(
                         onOpen: (link) =>
@@ -74,7 +80,7 @@ class NotesWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 24),
+         SizedBox(height: marginBottom??24),
       ],
     );
   }

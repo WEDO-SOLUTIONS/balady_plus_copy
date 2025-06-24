@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -96,6 +98,7 @@ class SoundSettingsModel {
 class SoundSettings extends _$SoundSettings {
   static const _soundToggleTypesList = SoundToggleType.values;
   static const _promptsVolumeList = [10, 30, 60];
+  StreamSubscription? _soundEventsSubscription;
 
   SoundToggleType get currentSoundToggleType => SoundToggleType.values[state.voiceInstructionIndex];
 
@@ -165,7 +168,26 @@ class SoundSettings extends _$SoundSettings {
     toggleNavigatorVolume(currentPromptVolumeIndex: _defaultSoundSettings.promptsVolumeIndex);
     toggleBackgroundNavigation(backgroundNavigation: _defaultSoundSettings.backgroundNavigation);
 
+    // Subscribe to sound events from CarPlay or Android Auto
+    _subscribeToSoundEvents();
+
+    ref.onDispose(() {
+      _soundEventsSubscription?.cancel();
+    });
+
     return _defaultSoundSettings;
+  }
+
+  Future<void> _subscribeToSoundEvents() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    await _soundEventsSubscription?.cancel();
+    _soundEventsSubscription = dgisController.soundOnEvents.listen(_handleSoundEvent);
+  }
+
+  Future<void> _handleSoundEvent(SoundOnEvent soundOn) async {
+    final index = SoundToggleType.values.indexOf(soundOn.value ? SoundToggleType.all : SoundToggleType.none);
+    await ref.read(sharedPrefsProvider).setInt(MapnessConstants.voiceInstructionIndexPrefsKey, index);
+    state = state.copyWith(voiceInstructionIndex: index);
   }
 
   Future<void> toggleRoadCameras({required bool roadCameras}) async {
