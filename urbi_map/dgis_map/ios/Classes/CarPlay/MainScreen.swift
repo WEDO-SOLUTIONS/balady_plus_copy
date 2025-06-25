@@ -109,6 +109,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
     private func navigatorStateListener(state: State) {
         switch state {
         case .disabled:
+            leadingNavigationBarButtonFactories = [
+                makeSearchButton
+            ]
             navigationSessionManeuvers?.disable()
             navigationSessionManeuvers = nil
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -117,10 +120,14 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
                 FlutterCarPlayDashboardSceneDelegate.mapView?.myLocation()
             }
         case .navigation:
+            leadingNavigationBarButtonFactories = [
+                makeFinishHeaderButton
+            ]
+
             if model.isFreeRoam { break }
 
             navigationSessionManeuvers?.disable()
-            
+
             navigationSessionManeuvers = NavigationSessionManeuvers(
                 model: model,
                 mapTemplate: mapTemplate,
@@ -156,12 +163,12 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         screen.createTemplate().show(with: interfaceController)
         currentSettingsScreen = screen
     }
-    
+
     func toggleSounds(toggleType: SoundToggleType) {
         // Update sound settings in the current settings screen if it exists
         currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
     }
-    
+
     private func onBackTap(_: CPBarButton) {
         interfaceController.popTemplate(animated: true, completion: nil)
         currentSettingsScreen = nil
@@ -194,6 +201,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
             makePanHeaderButton(),
             makeSettingsButton(),
         ]
+    }
+
+    private func onFinishBarTap(_: CPBarButton) {
+        navigationManager.stop()
     }
 
     private func onPanningBarTap(_: CPBarButton) {
@@ -307,6 +318,13 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         )
     }
 
+    private func makeFinishHeaderButton() -> CPBarButton {
+        return CPBarButton(
+            title: NSLocalizedString("mainScreenBarFinishButton", comment: ""),
+            handler: onFinishBarTap
+        )
+    }
+
     private func makePanHeaderButton() -> CPBarButton {
         let image = UIImage(named: "Pan")!.withRenderingMode(.alwaysOriginal)
         return CPBarButton(image: image, handler: onPanningBarTap)
@@ -321,7 +339,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
 
     private func makeSettingsButton() -> CPBarButton {
         return CPBarButton(
-            image: UIImage(named: "Settings")!.withRenderingMode(.alwaysOriginal),
+            image: UIImage(named: "Settings")!.withRenderingMode(
+                .alwaysOriginal),
             handler: onSettingsBarTap
         )
     }
