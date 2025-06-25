@@ -1,14 +1,22 @@
+// ignore_for_file: unused_import
+
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/road_events/ui/road_closed_page.dart';
+import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_wrapper.dart';
 
-class PathPublicCard extends StatelessWidget {
+class PathPublicCard extends ConsumerWidget {
   final BriefPublicTransportModel route;
   final PathCardLocalization localizations;
 
@@ -19,7 +27,7 @@ class PathPublicCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final duration = route.duration.formatDuration(context.l10n);
     final transfers = '${route.transferCount.toString()} transfers';
 
@@ -65,7 +73,7 @@ class PathPublicCard extends StatelessWidget {
             buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
             buttonType: BaladyButtonType.secondary,
             onTap: () {
-              // TODO: Push
+              context.router.push(RouteDetailsRoute(route: route));
             },
             primaryLabel: context.l10n.about,
           )
