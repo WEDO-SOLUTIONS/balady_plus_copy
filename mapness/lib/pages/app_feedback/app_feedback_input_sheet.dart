@@ -42,7 +42,8 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
           ),
         ],
         footer: Padding(
-          padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$8x),
+          padding: const EdgeInsets.all(Spacing.$4x)
+              .copyWith(bottom: Spacing.$8x + MediaQuery.of(context).viewInsets.bottom),
           child: SizedBox(
             width: double.infinity,
             child: BaladyAppButton(
