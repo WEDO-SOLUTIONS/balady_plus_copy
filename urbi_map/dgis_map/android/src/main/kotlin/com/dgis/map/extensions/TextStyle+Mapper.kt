@@ -42,7 +42,8 @@ fun MarkerTextStyleMessage.toTextStyle(): TextStyle {
         textOffset = this.textOffset?.let {
             LogicalPixel(it.toFloat())
         } ?: LogicalPixel(0f),
-        fontName = this.fontName
+        fontName = this.fontName,
+        suppressOnOverlap = this.suppressOnOverlap ?: true
     )
 }
 

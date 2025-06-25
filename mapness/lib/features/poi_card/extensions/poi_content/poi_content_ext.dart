@@ -1,0 +1,9 @@
+export 'src/poi_content_about_ext.dart';
+export 'src/poi_content_accessability_ext.dart';
+export 'src/poi_content_contacts.dart';
+export 'src/poi_content_favourites_ext.dart';
+export 'src/poi_content_feedback_ext.dart';
+export 'src/poi_content_full_address_ext.dart';
+export 'src/poi_content_license_ext.dart';
+export 'src/poi_content_parking_ext.dart';
+export 'src/poi_content_working_hours_ext.dart';

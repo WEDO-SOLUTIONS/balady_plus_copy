@@ -49,7 +49,7 @@
       "LegacyApplicationSettings/NetworkModule/RegionServerUrl14": "https://nsdk-s14.uss.urbi.ae/ver4/",
       "LegacyApplicationSettings/NetworkModule/RegionServerUrl15": "https://nsdk-s15.uss.urbi.ae/ver4/",
       "LegacyApplicationSettings/NetworkModule/RegionServerUrl16": "https://nsdk-s16.uss.urbi.ae/ver4/",
-      "dgis/native-sdk/routing/free_roam_server_url": "urbi-lifestyle.momrah.gov.sa/freeroam"
+      "dgis/native-sdk/routing/free_roam_server_url": "https://urbi-lifestyle.momrah.gov.sa/free_roam/2.0"
     }
   }
 ]

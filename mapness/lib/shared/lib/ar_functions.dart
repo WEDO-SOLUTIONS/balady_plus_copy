@@ -44,3 +44,21 @@ String brunch(int number, AppLocalizations l10n) {
       return l10n.brunchOther;
   }
 }
+
+String lots(int number, AppLocalizations l10n) {
+  final lotsLocalized = getPluralForAr(number);
+  switch (lotsLocalized) {
+    case Plurals.zero:
+      return l10n.lotsPluralZero;
+    case Plurals.one:
+      return l10n.lotsPluralOne;
+    case Plurals.two:
+      return l10n.lotsPluralTwo;
+    case Plurals.few:
+      return l10n.lotsPluralFew;
+    case Plurals.many:
+      return l10n.lotsPluralMany;
+    case Plurals.others:
+      return l10n.lotsPluralOther;
+  }
+}
