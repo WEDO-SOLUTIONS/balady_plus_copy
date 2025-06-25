@@ -125,6 +125,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
               left: uikit.Spacing.$4x,
               right: uikit.Spacing.$4x,
               top: uikit.Spacing.$3x,
+              bottom: uikit.Spacing.$3x,
             ),
             child: AnimatedSwitcher(
               duration: Durations.medium1,
