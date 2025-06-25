@@ -24,7 +24,6 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
     );
 
     final textEditingController = useTextEditingController(text: initialText);
-    final isValid = useState(false);
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -40,17 +39,15 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
           AppFeedbackInput(
             textController: textEditingController,
             textInputAction: TextInputAction.go,
-            isValid: (value) => isValid.value = value,
           ),
         ],
         footer: Padding(
           padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$8x),
           child: SizedBox(
             width: double.infinity,
-            child: AppButton(
+            child: BaladyAppButton(
               primaryLabel: context.l10n.appFeedbackAddNote,
-              buttonState: isValid.value ? ButtonState.normal : ButtonState.disabled,
-              buttonColorScheme: ButtonColorScheme.primary,
+              buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
               onTap: () {
                 context.router.popForced(textEditingController.text);
               },
