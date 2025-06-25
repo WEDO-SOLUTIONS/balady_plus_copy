@@ -7,6 +7,7 @@ extension RouteSearchOptionsMessageIcon on RouteSearchOptionsMessage {
         RouteSearchOptionsMessage.pedestrian =>
           Directionality.of(context) == TextDirection.ltr ? TransportIcons.pedestrianLTR : TransportIcons.pedestrianRTL,
         RouteSearchOptionsMessage.car => TransportIcons.car,
+        RouteSearchOptionsMessage.publicTransport => TransportIcons.tram,
         _ => TransportIcons.car,
       };
 }

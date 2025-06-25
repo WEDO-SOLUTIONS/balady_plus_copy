@@ -10,12 +10,14 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_failure.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_loading.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
 class RoutesCarousel extends ConsumerWidget {
   const RoutesCarousel({
     required this.pageController,
     required this.routes,
+    required this.publicTransportRoutes,
     required this.onActiveChanged,
     required this.startNavigation,
     required this.refresh,
@@ -26,60 +28,95 @@ class RoutesCarousel extends ConsumerWidget {
   final RouteSearchOptionsMessage navType;
   final PageController pageController;
   final AsyncValue<List<RouteInfo>> routes;
+  final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
   final ValueChanged<int> onActiveChanged;
   final Function(RouteInfo) startNavigation;
   final Function() refresh;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => routes.when(
-        data: (routes) {
-          final shortest = shortestIsOnlyOne(routes);
-          return _CarouselWrapper(
-            pageController: pageController,
-            routes: routes,
-            height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
-            onActiveChanged: onActiveChanged,
-            itemBuilder: (context, index) {
-              final route = routes[index];
-              final distanceInMeters = route.distance;
-              final durationInSeconds = route.duration;
-
-              const averageHumanStepsByKm = 1350;
-              const averageCaloriesPerMinute = 4.6;
-
-              final steps = ((distanceInMeters / 1000) * averageHumanStepsByKm).toInt();
-              final calories = ((durationInSeconds / 60.0) * averageCaloriesPerMinute).toInt();
-              return Padding(
-                padding: padding(
-                  index: index,
-                  length: routes.length,
-                  isLtr: Directionality.of(context) == TextDirection.ltr,
+  Widget build(BuildContext context, WidgetRef ref) {
+    if (navType == RouteSearchOptionsMessage.publicTransport) {
+      return publicTransportRoutes.when(
+        data: (routes) => _CarouselWrapper(
+          pageController: pageController,
+          routesCount: routes.length,
+          height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
+          onActiveChanged: onActiveChanged,
+          itemBuilder: (context, index) {
+            final route = routes[index];
+            return Padding(
+              padding: padding(
+                index: index,
+                length: routes.length,
+                isLtr: Directionality.of(context) == TextDirection.ltr,
+              ),
+              child: PathPublicCard(
+                route: route,
+                localizations: PathCardLocalization(
+                  calories: context.l10n.calories,
+                  steps: context.l10n.steps,
+                  go: context.l10n.go,
                 ),
-                child: PathCard(
-                  distance: distanceInMeters.formatDistance(context.l10n),
-                  isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
-                  localizations: PathCardLocalization(
-                    calories: context.l10n.calories,
-                    steps: context.l10n.steps,
-                    go: context.l10n.go,
-                  ),
-                  duration: durationInSeconds.formatDuration(context.l10n),
-                  steps: steps,
-                  calories: calories,
-                  onStartTap: () => startNavigation(route),
-                  additionalInfo: shortest != null && shortest == durationInSeconds
-                      ? PathCardStatus.shortest(context.l10n.shortest)
-                      : null,
-                ),
-              );
-            },
-          );
-        },
+              ),
+            );
+          },
+        ),
         error: (_, __) => PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound),
         loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
         skipLoadingOnRefresh: false,
         skipLoadingOnReload: false,
       );
+    }
+    return routes.when(
+      data: (routes) {
+        final shortest = shortestIsOnlyOne(routes);
+        return _CarouselWrapper(
+          pageController: pageController,
+          routesCount: routes.length,
+          height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
+          onActiveChanged: onActiveChanged,
+          itemBuilder: (context, index) {
+            final route = routes[index];
+            final distanceInMeters = route.distance;
+            final durationInSeconds = route.duration;
+
+            const averageHumanStepsByKm = 1350;
+            const averageCaloriesPerMinute = 4.6;
+
+            final steps = ((distanceInMeters / 1000) * averageHumanStepsByKm).toInt();
+            final calories = ((durationInSeconds / 60.0) * averageCaloriesPerMinute).toInt();
+            return Padding(
+              padding: padding(
+                index: index,
+                length: routes.length,
+                isLtr: Directionality.of(context) == TextDirection.ltr,
+              ),
+              child: PathCard(
+                distance: distanceInMeters.formatDistance(context.l10n),
+                isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
+                localizations: PathCardLocalization(
+                  calories: context.l10n.calories,
+                  steps: context.l10n.steps,
+                  go: context.l10n.go,
+                ),
+                duration: durationInSeconds.formatDuration(context.l10n),
+                steps: steps,
+                calories: calories,
+                onStartTap: () => startNavigation(route),
+                additionalInfo: shortest != null && shortest == durationInSeconds
+                    ? PathCardStatus.shortest(context.l10n.shortest)
+                    : null,
+              ),
+            );
+          },
+        );
+      },
+      error: (_, __) => PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound),
+      loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
+      skipLoadingOnRefresh: false,
+      skipLoadingOnReload: false,
+    );
+  }
 
   /// We use it to show the badge "Shortest" on only one shortest route
   /// If we have more then one shortest route we don't show the badge and return null
@@ -130,13 +167,13 @@ class RoutesCarousel extends ConsumerWidget {
 class _CarouselWrapper extends StatelessWidget {
   final double height;
   final PageController pageController;
-  final List<RouteInfo> routes;
+  final int routesCount;
   final ValueChanged<int> onActiveChanged;
   final Widget Function(BuildContext, int) itemBuilder;
 
   const _CarouselWrapper({
     required this.itemBuilder,
-    required this.routes,
+    required this.routesCount,
     required this.height,
     required this.pageController,
     required this.onActiveChanged,
@@ -144,7 +181,7 @@ class _CarouselWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (routes.length == 1) {
+    if (routesCount == 1) {
       return itemBuilder(context, 0);
     }
     return SizedBox(
@@ -154,7 +191,7 @@ class _CarouselWrapper extends StatelessWidget {
         onPageChanged: onActiveChanged,
         padEnds: false,
         itemBuilder: itemBuilder,
-        itemCount: routes.length,
+        itemCount: routesCount,
       ),
     );
   }

@@ -55,11 +55,16 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
   }
 
   Widget _getRouteSearchOptionsWidgets(BuildContext context) {
-    const chips = [RouteSearchOptionsMessage.car, RouteSearchOptionsMessage.pedestrian];
+    const chips = [
+      RouteSearchOptionsMessage.car,
+      RouteSearchOptionsMessage.publicTransport,
+      RouteSearchOptionsMessage.pedestrian,
+    ];
 
     return Expanded(
       child: TabsRow.v2(
         initialIndex: chips.indexOf(widget.active),
+        onIndexChanged: (index) => {},
         tabsContent: chips
             .map((chip) => TabsRowV2Content(
                   leadingIcon: TabsV2IconData(chip.icon(context)),

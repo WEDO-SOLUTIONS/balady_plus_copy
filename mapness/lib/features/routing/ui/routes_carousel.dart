@@ -78,10 +78,19 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       ),
     );
 
+    final publicTransportRoutes = ref.watch(
+      publicTransportRoutesProvider(
+        startPoint: widget.points[0]?.value,
+        finishPoint: widget.points[1]?.value,
+        navType: widget.navType,
+      ),
+    );
+
     return widgets.RoutesCarousel(
         navType: widget.navType,
         pageController: _pageController,
         routes: routes,
+        publicTransportRoutes: publicTransportRoutes,
         onActiveChanged: (index) {
           if (_animating) {
             return;
@@ -92,7 +101,9 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
         },
         refresh: () {
-          ref.invalidate(routesProvider);
+          ref
+            ..invalidate(routesProvider)
+            ..invalidate(publicTransportRoutesProvider);
         },
         startNavigation: (info) {
           final _routeType = widget.navType.toRouteType();
@@ -126,13 +137,15 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
                   label: widget.points[1]?.label,
                 );
 
-          ref.read(etaRouteInfoProvider.notifier).setRoute(eta.EtaRoute(
-                startPoint: startPointEta,
-                endPoint: finishPointEta,
-                type: _routeType,
-                routeIndex: _activeRoute,
-                createdAt: DateTime.now().toUtc().toIso8601String(),
-              ));
+          ref.read(etaRouteInfoProvider.notifier).setRoute(
+                eta.EtaRoute(
+                  startPoint: startPointEta,
+                  endPoint: finishPointEta,
+                  type: _routeType,
+                  routeIndex: _activeRoute,
+                  createdAt: DateTime.now().toUtc().toIso8601String(),
+                ),
+              );
           widget.startNavigation(info);
         });
   }
