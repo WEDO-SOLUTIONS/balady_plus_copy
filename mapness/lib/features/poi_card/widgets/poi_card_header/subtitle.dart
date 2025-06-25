@@ -46,7 +46,8 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
               (e) => Row(
                 children: [
                   Assets.icons.svg.icMetroMarker.svg(
-                    colorFilter: ColorFilter.mode(Color(e?.color ?? context.colorsV3.foregroundDefault.value), BlendMode.srcIn),
+                    colorFilter:
+                        ColorFilter.mode(Color(e?.color ?? context.colorsV3.foregroundDefault.value), BlendMode.srcIn),
                   ),
                   Spacing.$1x.widthBox,
                 ],
