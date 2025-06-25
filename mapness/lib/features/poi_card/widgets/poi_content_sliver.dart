@@ -136,7 +136,18 @@ class PoiContentSliver extends ConsumerWidget {
           );
           return Column(
             children: [
-              const PoiContentFeedbackCard(
+              PoiContentFeedbackCard(
+                onTap: () {
+                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
+                  if (objectIdInt == null) {
+                    return;
+                  }
+
+                  context.router.push(QuickFeedbackRoute(
+                    type: QuickFeedbackType.editCompany,
+                    params: FeedbackObjectIdParams(objectIdInt),
+                  ));
+                },
                 data: PoiContentFeedbackType.cityExpert,
                 padding: itemPadding,
               ),
