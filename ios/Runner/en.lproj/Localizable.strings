@@ -1,4 +1,5 @@
 "mainScreenBarAccept" = "Accept";
+"mainScreenBarFinishButton" = "Finish";
 "searchScreenGridHistory" = "History";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "Nothing was found";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "Try changing your query a little";

@@ -1,4 +1,5 @@
 "mainScreenBarAccept" = "قبول";
+"mainScreenBarFinishButton" = "إنهاء";
 "searchScreenGridHistory" = "تاريخ";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "لم يتم العثور على شيء";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "حاول تغيير استعلامك قليلاً";
