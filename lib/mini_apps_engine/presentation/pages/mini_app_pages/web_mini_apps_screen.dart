@@ -126,6 +126,8 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
         //DWebViewWidget
         DWebViewWidget(
           controller: _controller
+          //https://baladyapps.momra.gov.sa/tawakkalna/baladyplus
+          //https://services-dev.balady.gov.sa/miniapps/municipal
             ..loadRequest(Uri.parse(state.servicePath))
             ..addJavaScriptObject(
               JsBridgeListener(
@@ -134,40 +136,37 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
               ),
             ),
         ),
-
         /// When Open Url From Sevrver Side Not Show Loading Indicator
-        miniAppsEngineBloc.miniApp.latestVersion?.serviceUrl == null
-            ? ValueListenableBuilder(
-          valueListenable: _isLoading,
-          builder: (context, value, _) {
-            return value
-                ? Container(
-              height: double.infinity,
-              width: double.infinity,
-              color: Colors.white,
-              margin: EdgeInsets.zero,
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(
-                    "service_will_available_shortly".tr(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            )
-                : const SizedBox.shrink();
-          },
-        )
-            : const SizedBox(),
+        // ValueListenableBuilder(
+        //   valueListenable: _isLoading,
+        //   builder: (context, value, _) {
+        //     return value
+        //         ? Container(
+        //       height: double.infinity,
+        //       width: double.infinity,
+        //       color: Colors.white,
+        //       margin: EdgeInsets.zero,
+        //       padding: const EdgeInsets.all(24.0),
+        //       child: Column(
+        //         mainAxisSize: MainAxisSize.max,
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         crossAxisAlignment: CrossAxisAlignment.center,
+        //         children: [
+        //           const CircularProgressIndicator(),
+        //           const SizedBox(height: 16),
+        //           Text(
+        //             "service_will_available_shortly".tr(),
+        //             style: const TextStyle(
+        //               fontSize: 16,
+        //               fontWeight: FontWeight.bold,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     )
+        //         : const SizedBox.shrink();
+        //   },
+        // ),
       ],
     );
       // PopScope(

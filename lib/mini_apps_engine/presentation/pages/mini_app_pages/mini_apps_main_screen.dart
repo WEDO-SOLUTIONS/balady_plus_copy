@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
@@ -20,98 +19,82 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
     MiniAppModel data =
         ModalRoute.of(context)?.settings.arguments as MiniAppModel;
-
-    HomeMiniAppsListSuccessState state =
-        BlocProvider.of<HomeMiniAppsListCubit>(context).state
-            as HomeMiniAppsListSuccessState;
-
-    Widget body = Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(data.serviceName ?? ""),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.of(context).pop();
+    return BlocProvider<MiniAppsEngineBloc>(
+      create: (context) {
+        return MiniAppsEngineBloc(
+          miniApp: data,
+        );
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(data.serviceName ?? ""),
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ),
+        body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
+          builder: (contextBloc, state) {
+            if (state is MiniAppsEngineInitialState) {
+              return const SizedBox.shrink();
+            } else if (state is MiniAppsEngineLoadedState) {
+              return const WebMiniAppsScreen();
+            } else if (state is FailedDownloadState ||
+                state is MiniAppsEngineErrorState) {
+              return ReloadWidget(
+                errorMessage: "errors_server_error_1".tr(),
+                onTab: () {
+                  BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
+                    DownloadMiniAppsEngineEvent(miniApp: data),
+                  );
+                },
+              );
+            } else if (state is MiniAppsEngineLoadingState) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                      child: LinearProgressIndicator(
+                        value: state.progress.isEmpty
+                            ? null
+                            : (double.parse(state.progress) / 100),
+                        backgroundColor: Colors.grey[200],
+                        valueColor:
+                            const AlwaysStoppedAnimation<Color>(Colors.blue),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      "loading".tr(),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return const SizedBox.shrink();
           },
         ),
       ),
-      body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
-        builder: (contextBloc, state) {
-          if (state is MiniAppsEngineInitialState) {
-            return const SizedBox.shrink();
-          } else if (state is MiniAppsEngineLoadedState) {
-            return const WebMiniAppsScreen();
-          }  else if (state is FailedDownloadState || state is MiniAppsEngineErrorState) {
-            return ReloadWidget(
-              errorMessage: "errors_server_error_1".tr(),
-              onTab: () {
-                BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
-                  DownloadMiniAppsEngineEvent(miniApp: data),
-                );
-              },
-            );
-          } else if (state is MiniAppsEngineLoadingState) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 10,
-                    child: LinearProgressIndicator(
-                      value: state.progress.isEmpty ? null : (double.parse(state.progress) / 100),
-                      backgroundColor: Colors.grey[200],
-                      valueColor:
-                      const AlwaysStoppedAnimation<Color>(Colors.blue),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "loading".tr(),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
     );
-
-    //(state.municipalAppBloc != null &&  state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && state.municipalAppBloc!.state is! MiniAppsEngineLoadedState)
-    //         ? BlocProvider.value(
-    //             value: state.municipalAppBloc!
-    //               ..add(
-    //                 OpenServerEngineEvent(miniApp: data),
-    //               ),
-    //             child: body,
-    //           )
-    //         :
-
-
-    return BlocProvider<MiniAppsEngineBloc>(
-            create: (context)  {
-              if(state.municipalAppBloc != null &&  state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && !state.municipalAppBloc!.isClosed) {
-               state.municipalAppBloc!.close();
-              }
-              return MiniAppsEngineBloc(miniApp: data,);//serverPath: state.serverPath
-            },
-            child: body,
-          );
   }
 
   @override
