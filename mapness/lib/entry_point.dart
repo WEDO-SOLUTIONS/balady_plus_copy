@@ -326,15 +326,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
-      final isNavPage = currentRouteName == PathNavRoute.name || currentRouteName == FreeRoamRoute.name;
+      final isNavPage = currentRouteName == PathNavRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
-      if (navigation && !isNavPage) {
-        final navStateMessage = await dgisController.getCurrentNavigationState();
-        await ref.read(appRouterProvider).push(
+      final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
+      final isFreeroam = navigation && routeSearchOptions == null;
+      if (navigation && !isFreeroam && !isNavPage) {
+        await ref.read(appRouterProvider).pushAndPopUntil(
               PathNavRoute(
-                navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                navType: routeSearchOptions ?? RouteSearchOptionsMessage.car,
                 initAction: null,
               ),
+              predicate: (route) => route.settings.name == BottomMenuRoute.name,
             );
       }
     });
