@@ -292,8 +292,8 @@ class RouteName {
   static const ekramSelectRequestTypeScreen = 'ekramSelectRequestTypeScreen';
   static const ekramRequestTransportationScreen =
       'RequestsTransportingAndPreparingDeceased_Create_Details_Page';
-  static const ekramTransportationDetailsScreen =
-      'RequestsTransportingAndPreparingDeceased_Details_Page';
+  static const IdenticalListPage =
+      'IdenticalListPage';
   static const driverEkramTransportationDetailsScreen =
       'FuneralDriver_Details_Page';
 
@@ -345,7 +345,7 @@ class RouteName {
   static const commercialLicenseQueryDetails =
       'QueryCommercialLicense_query_details_Screen';
 
-  static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
+  // static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
   static const surveyReportInquery = 'SurveyReportInquery_Screen';
   static const surveyReportInqueryDetails = 'SurveyReportInqueryDetails_Screen';
 
