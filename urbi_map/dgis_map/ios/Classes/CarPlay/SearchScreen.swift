@@ -2,19 +2,22 @@ import CarPlay
 import Combine
 import DGis
 
-class SearchScreen: SearchNavigation {
+class SearchScreen {
     private let interfaceController: CPInterfaceController
     private let map: Map
     private let userDefaultsPublished: UserDefaultsPublished
+    private let searchNavigation: SearchNavigation
 
     init(
         interfaceController: CPInterfaceController,
         map: Map,
-        userDefaultsPublished: UserDefaultsPublished
+        userDefaultsPublished: UserDefaultsPublished,
+        searchNavigation: SearchNavigation
     ) {
         self.interfaceController = interfaceController
         self.map = map
         self.userDefaultsPublished = userDefaultsPublished
+        self.searchNavigation = searchNavigation
         let sdk = DgisMapInitializer.shared.getSdkContainer()
         self.searchManager = try! SearchManager.createOnlineManager(
             context: try! sdk.context
@@ -69,7 +72,7 @@ class SearchScreen: SearchNavigation {
         let screen = HistoryScreen(
             interfaceController: interfaceController,
             searchHistory: searchHistory,
-            searchNavigation: self,
+            searchNavigation: searchNavigation,
             userDefaultsPublished: userDefaultsPublished
         )
         screen.createTemplate().show(with: interfaceController)
@@ -80,7 +83,7 @@ class SearchScreen: SearchNavigation {
             interfaceController: interfaceController,
             searchManager: searchManager,
             searchHistory: searchHistory,
-            searchNavigation: self,
+            searchNavigation: searchNavigation,
             map: map
         )
         let searchTemplate = CPSearchTemplate()
@@ -104,25 +107,6 @@ class SearchScreen: SearchNavigation {
                 handler: onHistoryTap
             ),
         ]
-    }
-
-    func navigate(to directoryObject: DirectoryObject) {
-        guard let geoPoint = directoryObject.markerPosition?.point else {
-            return
-        }
-
-        let finishPoint = RouteSearchPoint(coordinates: geoPoint)
-
-        let carRouteSearchOptions = CarRouteSearchOptions()
-
-        let routeSearchOptions = RouteSearchOptions.car(carRouteSearchOptions)
-
-        let routeBuildOptions = RouteBuildOptions.init(
-            finishPoint: finishPoint,
-            routeSearchOptions: routeSearchOptions
-        )
-
-        try! navigationManager.start(routeBuildOptions: routeBuildOptions)
     }
 }
 

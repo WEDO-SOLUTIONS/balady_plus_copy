@@ -2,7 +2,7 @@ import CarPlay
 import Combine
 import DGis
 
-class MainScreen: NSObject, CPMapTemplateDelegate {
+class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let map: Map
     private let interfaceController: CPInterfaceController
     private let dgisCarPlayMapView: DgisCarPlayMapView
@@ -147,7 +147,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         let screen = SearchScreen(
             interfaceController: interfaceController,
             map: map,
-            userDefaultsPublished: userDefaultsPublished
+            userDefaultsPublished: userDefaultsPublished,
+            searchNavigation: self
         )
         screen.createTemplate().show(with: interfaceController)
     }
@@ -343,5 +344,24 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
                 .alwaysOriginal),
             handler: onSettingsBarTap
         )
+    }
+    
+    func navigate(to directoryObject: DirectoryObject) {
+        guard let geoPoint = directoryObject.markerPosition?.point else {
+            return
+        }
+
+        let finishPoint = RouteSearchPoint(coordinates: geoPoint)
+
+        let carRouteSearchOptions = CarRouteSearchOptions()
+
+        let routeSearchOptions = RouteSearchOptions.car(carRouteSearchOptions)
+
+        let routeBuildOptions = RouteBuildOptions.init(
+            finishPoint: finishPoint,
+            routeSearchOptions: routeSearchOptions
+        )
+
+        try! navigationManager.start(routeBuildOptions: routeBuildOptions)
     }
 }
