@@ -90,6 +90,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
           safeAreaColor: context.colorsV3.backgroundSurface1,
           backgroundColor: backgroundColor,
           draggerColor: backgroundColor,
+          startConfig: BottomSheetStart.instant,
           onWillPop: Future.value(source is FeedbackSourceOffer),
           backgroundColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,
           content: [
