@@ -25,11 +25,12 @@ import './app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import './app/core/services/services_exports.dart'
     show HiveManager, NotificationService;
-import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
+import './app/core/utils/utils_exports.dart' show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
 import 'app/core/services/local/notification_hawaii.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
@@ -39,7 +40,7 @@ abstract class AppEnv {
     WidgetsFlutterBinding.ensureInitialized();
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
     AdjustConfig config = AdjustConfig(
-      'tung4x27vt34',
+      await CommonFunctions.isHuaweiDevice()?'je5w29fx8y68':'tung4x27vt34',
       (type == EnvType.prod)
           ? AdjustEnvironment.production
           : AdjustEnvironment.sandbox,
