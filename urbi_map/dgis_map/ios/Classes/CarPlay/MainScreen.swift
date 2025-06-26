@@ -11,8 +11,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let userDefaultsPublished: UserDefaultsPublished
     private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler?
+    private let urbiAnalyticsFlutterApi: UrbiAnalyticsFlutterApi
 
     init(
+        urbiAnalyticsFlutterApi: UrbiAnalyticsFlutterApi,
         map: Map,
         interfaceController: CPInterfaceController,
         dgisCarPlayMapView: DgisCarPlayMapView,
@@ -22,6 +24,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         userDefaultsPublished: UserDefaultsPublished,
         eventChannel: DgisStreamHandler?
     ) {
+        self.urbiAnalyticsFlutterApi = urbiAnalyticsFlutterApi
         self.map = map
         self.dgisCarPlayMapView = dgisCarPlayMapView
         self.interfaceController = interfaceController
@@ -209,13 +212,17 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onPanningBarTap(_: CPBarButton) {
-        mapTemplate.showPanningInterface(animated: true)
-        mapTemplate.trailingNavigationBarButtons = [
-            makeMyLocationHeaderButton()
-        ]
-        leadingNavigationBarButtonFactories = [
-            makeAcceptHeaderButton
-        ]
+        print("===== MainScreen onPanningBarTap()")
+        urbiAnalyticsFlutterApi.track(event: "car_play_start") { result in
+            print("===== urbiAnalyticsFlutterApi.track \(String(describing: result))")
+        }
+//        mapTemplate.showPanningInterface(animated: true)
+//        mapTemplate.trailingNavigationBarButtons = [
+//            makeMyLocationHeaderButton()
+//        ]
+//        leadingNavigationBarButtonFactories = [
+//            makeAcceptHeaderButton
+//        ]
     }
 
     private func processDirectEvent(event: DGis.Event) {

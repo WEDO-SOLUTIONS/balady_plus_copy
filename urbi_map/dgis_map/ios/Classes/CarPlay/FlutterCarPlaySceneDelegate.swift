@@ -3,19 +3,37 @@ import CarPlay
 import DGis
 import AVFoundation
 
-final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     static private(set) var map: Map?
     static var delegate: CarPlayConnectionSceneDelegate?
     static var eventChannel: DgisStreamHandler?
     static private var mainScreen: MainScreen?
     
-    func templateApplicationScene(
+    public static var flutterEngine: FlutterEngine? {
+        didSet {
+            guard let flutterEngine = flutterEngine else { return }
+            api = UrbiAnalyticsFlutterApi(binaryMessenger: flutterEngine.binaryMessenger)
+        }
+    }
+    private static var api: UrbiAnalyticsFlutterApi?
+    
+    public static func runApp() {
+        guard let api = api else { return }
+        api.runMain { result in print("========= runApp() \(String(describing: result))") }
+    }
+    
+    public func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
+        guard let flutterEngine = Self.flutterEngine else { return }
         Bundle.swizzleLocalization()
         Bundle.syncLanguage()
+
+        print("===================== FlutterCarPlaySceneDelegate isRunning")
+
+        let api = UrbiAnalyticsFlutterApi(binaryMessenger: flutterEngine.binaryMessenger)
         
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
@@ -29,6 +47,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         let map = mapFactory.map
         let dgisCarPlayMapView = DgisCarPlayMapView(map: map, mapView: mapFactory.mapView)
         let mainScreen = MainScreen(
+            urbiAnalyticsFlutterApi: api,
             map: map,
             interfaceController: interfaceController,
             dgisCarPlayMapView: dgisCarPlayMapView,
@@ -53,7 +72,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         FlutterCarPlaySceneDelegate.map = map
     }
     
-    func templateApplicationScene(
+    public func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow

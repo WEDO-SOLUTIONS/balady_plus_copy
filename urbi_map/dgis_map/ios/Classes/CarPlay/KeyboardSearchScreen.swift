@@ -68,7 +68,12 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
                     )
                     continuation.resume(returning: cpListItems)
                 case .failure(let error):
-                    continuation.resume(returning: [])
+                    continuation.resume(returning: [
+                        CPListItem(
+                            text: "Error",
+                            detailText: error.localizedDescription
+                        )
+                    ])
                 }
             }
         }

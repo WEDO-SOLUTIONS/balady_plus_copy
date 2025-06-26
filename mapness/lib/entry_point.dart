@@ -835,6 +835,31 @@ Future<void> runMapnessApp(FutureOr<void> Function() main) async {
     WidgetsFlutterBinding.ensureInitialized();
     await MapnessLogger.init();
 
+    final api = _UrbiAnalyticsFlutterApi();
+    UrbiAnalyticsFlutterApi.setUp(api);
+    await api.appRunCompleter.future;
+
     await main();
   });
+}
+
+class _UrbiAnalyticsFlutterApi extends UrbiAnalyticsFlutterApi {
+  final appRunCompleter = Completer();
+
+  _UrbiAnalyticsFlutterApi();
+
+  bool isAppRun = false;
+
+  @override
+  void track(String event) {
+    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    print("==================== >>>>>>>>>>>> $runtimeType.track($event)");
+  }
+
+  @override
+  void runMain() {
+    isAppRun = true;
+    print("==================== runMain()");
+    appRunCompleter.complete();
+  }
 }
