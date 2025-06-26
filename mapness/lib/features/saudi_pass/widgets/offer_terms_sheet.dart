@@ -55,6 +55,7 @@ class OfferTermsSheet extends HookWidget {
       ],
       footer: Container(
         padding: const EdgeInsets.all(Spacing.$4x),
+        margin: const EdgeInsets.only(bottom: Spacing.$4x),
         color: context.colorsV3.backgroundSurface1,
         child: AppButton(
           buttonColorScheme: ButtonColorScheme.secondary,
