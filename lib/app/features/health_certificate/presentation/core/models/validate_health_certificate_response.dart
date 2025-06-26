@@ -68,7 +68,8 @@ class Result {
       this.terms,
       this.isSaudi,
       this.notPermitLiceTerm,
-      this.showHealthCenters});
+      this.showHealthCenters,
+      this.showProfessions});
 
   String? linkType;
   bool? showCommercialNo;
@@ -78,6 +79,7 @@ class Result {
   bool? isSaudi;
   String? notPermitLiceTerm;
   bool? showHealthCenters;
+  bool? showProfessions;
 
   factory Result.fromJson(Map<String, dynamic> json) => Result(
       linkType: json["linkType"],
@@ -89,7 +91,8 @@ class Result {
           : List<String>.from(json["terms"].map((x) => x)),
       isSaudi: json["isSaudi"],
       notPermitLiceTerm: json["notPermitLiceTerm"],
-      showHealthCenters: json["showHealthCenters"]);
+      showHealthCenters: json["showHealthCenters"],
+      showProfessions: json["showProfessions"]);
 
   Map<String, dynamic> toJson() => {
         "linkType": linkType,
@@ -100,7 +103,8 @@ class Result {
             terms == null ? null : List<dynamic>.from(terms!.map((x) => x)),
         "isSaudi": isSaudi,
         "notPermitLiceTerm": notPermitLiceTerm,
-        "showHealthCenters": showHealthCenters
+        "showHealthCenters": showHealthCenters,
+        "showProfessions": showProfessions
       };
 }
 

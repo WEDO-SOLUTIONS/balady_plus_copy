@@ -268,36 +268,36 @@ class SuccessBody extends StatelessWidget {
               //   height: 48,
               // ),
 
-
-              successScreenArgs?.idNumber != null && successScreenArgs?.type == PAGE_TYPE.ekramCemetry?
-              CustomElevatedButtonWidget(
-                btnColor: Colors.transparent,
-                textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                  color: AppColor.blueSkyLight800,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
-                ),
-                btnHeight: 56,
-                text: "service_evaluation".tr(),
-                onPressed: () {
-                  BottomSheetDialog.showSheet(
-                    context,
-                    child: SubmitRatingSheet(
-                      title: 'service_evaluation'.tr(),
-                      ratingRequest: RatingRequest(
-                        requestId: int.parse(successScreenArgs!.idNumber!),
+              successScreenArgs?.idNumber != null &&
+                      successScreenArgs?.type == PAGE_TYPE.ekramCemetry
+                  ? CustomElevatedButtonWidget(
+                      btnColor: Colors.transparent,
+                      textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                        color: AppColor.blueSkyLight800,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                        decoration: TextDecoration.underline,
                       ),
-                    ),
-                    isFullHeight: false,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.white,
-                    height: MediaQuery.of(context).size.height * 0.6,
-                  );
-                },
-              ):Container(),
-
-
+                      btnHeight: 56,
+                      text: "service_evaluation".tr(),
+                      onPressed: () {
+                        BottomSheetDialog.showSheet(
+                          context,
+                          child: SubmitRatingSheet(
+                            title: 'service_evaluation'.tr(),
+                            ratingRequest: RatingRequest(
+                              requestId:
+                                  int.parse(successScreenArgs!.idNumber!),
+                            ),
+                          ),
+                          isFullHeight: false,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.white,
+                          height: MediaQuery.of(context).size.height * 0.6,
+                        );
+                      },
+                    )
+                  : Container(),
             ],
           ),
         ),
@@ -455,7 +455,7 @@ class SuccessButtons extends StatelessWidget {
                     onPressWhiteButton(context, requestId: requestId);
                   },
                   text: getWhiteBtnText()),
-            CustomVerticalSpace(height: 16),
+            const CustomVerticalSpace(height: 16),
             CustomElevatedButtonWidget(
               onPressed: () {
                 onPressGreenButton(context);
@@ -614,12 +614,14 @@ class SuccessButtons extends StatelessWidget {
   void onPressWhiteButton(BuildContext context, {String? requestId}) {
     switch (pageType) {
       case PAGE_TYPE.emtethal:
-        Navigator.pushNamed(context, RouteName.complianceDetailsPage,
-            arguments: {
-              "requestNumber": requestId,
-              "redirectUrl": "",
-            },
-            );
+        Navigator.pushNamed(
+          context,
+          RouteName.complianceDetailsPage,
+          arguments: {
+            "requestNumber": requestId,
+            "redirectUrl": "",
+          },
+        );
         break;
 
       /*
@@ -696,7 +698,7 @@ class SuccessButtons extends StatelessWidget {
 class CustomHtmlTextWidget extends StatelessWidget {
   final String data;
 
-  CustomHtmlTextWidget(
+  const CustomHtmlTextWidget(
     this.data, {
     Key? key,
   }) : super(key: key);
@@ -711,38 +713,48 @@ class CustomHtmlTextWidget extends StatelessWidget {
       padding: const EdgeInsetsDirectional.only(
         start: 16,
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 13.0, bottom: 13),
-            child: SvgPicture.asset(
-                "assets/images/feedbackMessageItemIconPartiallyDetected.svg"),
-          ),
-          Flexible(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 3.0),
-              child: Html(
-                data: data,
-                style: {
-                  "body": Style(
-                      fontSize: FontSize(13.0),
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.black400,
-                      lineHeight: const LineHeight(2),
-                      fontFamily: Constants.appFontType),
-                },
-                onLinkTap: (
-                  url,
-                  _,
-                  __,
-                ) {
-                  CommonFunctions.externalLaunch(url!);
-                },
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight:
+              MediaQuery.of(context).size.height * 0.4, // adjust as needed
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 13.0, bottom: 13),
+              child: SvgPicture.asset(
+                  "assets/images/feedbackMessageItemIconPartiallyDetected.svg"),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 3.0),
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Html(
+                    data: data,
+                    style: {
+                      "body": Style(
+                        fontSize: FontSize(13.0),
+                        fontWeight: FontWeight.w500,
+                        color: AppColor.black400,
+                        lineHeight: const LineHeight(2),
+                        fontFamily: Constants.appFontType,
+                      ),
+                    },
+                    onLinkTap: (
+                      url,
+                      _,
+                      __,
+                    ) {
+                      CommonFunctions.externalLaunch(url!);
+                    },
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

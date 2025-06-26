@@ -649,6 +649,7 @@ class ApiUrl {
 
 
 
+  static  String getProfessions = 'v1/mobile-health-certificates/professions/search';
 
 
 
