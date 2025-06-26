@@ -387,6 +387,7 @@ void changeFavorite(BuildContext context, WidgetRef ref, bool favorite, String o
 Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, String offerId) async {
   await showDialog(
     context: context,
+    useSafeArea: false,
     builder: (_) => OfferFavoritesRemovingSheet(
       title: context.l10n.removeFromFavorites,
       description: context.l10n.removeFromFavoritesDescription,
