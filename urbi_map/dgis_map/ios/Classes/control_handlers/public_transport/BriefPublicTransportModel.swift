@@ -40,6 +40,7 @@ class BriefPublicTransportModel {
     let transports: [Transport]
     let transferCount: Int
     let onFootDuration: Int
+    let publicTransportTransferRouteLongEntry: Array<[String: Any?]>
     
     init(route: TrafficRoute) {
         self.transfers = route.route.publicTransportTransfers.entries
@@ -58,6 +59,7 @@ class BriefPublicTransportModel {
         }
         self.transferCount = transfers.transferCount
         self.onFootDuration = route.onFootDuration
+        self.publicTransportTransferRouteLongEntry = transfers.map { $0.toMap }
     }
     
     func toMap() -> [String: Any?]  {
@@ -66,6 +68,7 @@ class BriefPublicTransportModel {
             "transports": transports.map { $0.toMap() },
             "transferCount": transferCount,
             "onFootDuration": onFootDuration,
+            "publicTransportTransferRouteLongEntry": transfers.map { $0.toMap }
         ]
     }
 }
@@ -210,5 +213,90 @@ extension PublicTransportType {
 extension [PublicTransportTransferRouteLongEntry] {
     var transferCount: Int {
         Swift.max(0, filter { !$0.value.onFoot }.count - 1)
+    }
+}
+
+// - PUBLIC TRANSPORT FOR ROUTE
+
+extension PublicTransportTransferRouteLongEntry {
+    var toMessage: PublicTransportTransferRouteLongEntryMessage {
+        let length = RouteDistanceMessage(millimeters: self.length.millimeters)
+        let point = RoutePointMessage(
+            distance: RouteDistanceMessage(millimeters: self.point.distance.millimeters)
+        )
+        
+        let value = PublicTransportTransferMessage(
+            startPointName: self.value.startPointName,
+            finishPointName: self.value.finishPointName,
+            routeParts: self.value.routeParts.map {
+                PublicRoutePartMessage(
+                    transports: $0.transports.map { $0.toMessage },
+                    intermediateStops: $0.intermediateStops.map {
+                        PublicTransportStopMessage(
+                            coordinates: $0.coordinates.toMessage(),
+                            name: $0.name
+                        )
+                    }
+                )
+            }
+        )
+        return PublicTransportTransferRouteLongEntryMessage(point: point, length: length, value: value)
+    }
+    
+    var toMap: [String: Any?] {
+        let point = [
+            "distance": [
+                "millimeters": self.point.distance.millimeters
+            ]
+        ]
+        let length = [
+            "millimeters": self.length.millimeters
+        ]
+        do {
+            let value : [String: Any?] = [
+                "startPointName": self.value.startPointName,
+                "finishPointName": self.value.finishPointName,
+                //            "routeParts": self.value.routeParts.map {parts in [
+                //                "transports": parts.transports.map {t in
+                //                    [
+                //                    "type": t.type,
+                //                    "names": t.names,
+                //                    "suggestedCarNumbers": t.suggestedCarNumbers.map { Int64.init(bitPattern: UInt64($0)) },
+                //                    "boardingSuggest": t.boardingSuggest,
+                //                    "routeLogo": t.routeLogo
+                //                    ]
+                //                },
+                //                "intermediateStops": parts.intermediateStops.map { t in
+                //                    [
+                //                        "coordinates": [
+                //                            "latitude": t.coordinates.latitude,
+                //                            "longitude": t.coordinates.longitude
+                //                        ],
+                //                        "name": t.name
+                //                    ]
+                //                }
+                //            ]
+                //            }
+            ]
+            return [
+                "point": point,
+                "length": length,
+                "value": value
+            ]
+        } catch (_) {
+                return [:]
+            }
+    }
+}
+
+extension PublicTransportInfo {
+    var toMessage: PublicTransportInfoMessage {
+        return PublicTransportInfoMessage(
+            type: self.type.toMessage,
+            names: self.names,
+            suggestedCarNumbers: self.suggestedCarNumbers.map { Int64.init(bitPattern: UInt64($0)) },
+            boardingSuggest: self.boardingSuggest,
+            routeLogo: self.routeLogo
+        )
     }
 }

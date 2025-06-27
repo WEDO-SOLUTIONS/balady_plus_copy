@@ -70,14 +70,15 @@ class Transport {
 
 class BriefPublicTransportModel {
   factory BriefPublicTransportModel.fromMap(Map<dynamic, dynamic> map) {
+    final transfers = map['publicTransportTransferRouteLongEntry'] as List<dynamic>?;
     return BriefPublicTransportModel(
       duration: map['duration'],
       transports: List<Transport>.from(
-        (map['transports'] as List<dynamic>)
-            .map((x) => Transport.fromMap(x as Map<dynamic, dynamic>)),
+        (map['transports'] as List<dynamic>).map((x) => Transport.fromMap(x as Map<dynamic, dynamic>)),
       ),
       transferCount: map['transferCount'],
       onFootDuration: map['onFootDuration'],
+      publicTransportTransferRouteLongEntry: map['publicTransportTransferRouteLongEntry'],
     );
   }
 
@@ -86,18 +87,19 @@ class BriefPublicTransportModel {
     required this.transports,
     required this.transferCount,
     required this.onFootDuration,
+    required this.publicTransportTransferRouteLongEntry,
   });
 
   final int duration;
   final List<Transport> transports;
   final int transferCount;
   final int onFootDuration;
+  final List<Map<String, dynamic>> publicTransportTransferRouteLongEntry;
 }
 
 enum TransferDescriptionType { onFoot, metro, ofType, finish }
 
 class TransferDescription {
-
   TransferDescription({
     required this.type,
     required this.color,
@@ -144,7 +146,6 @@ class TransferDescription {
 enum TextColorType { normal, highlighted, withValue }
 
 class TextColor {
-
   const TextColor({
     required this.type,
     this.value,
@@ -184,7 +185,6 @@ enum RouteColorType {
 }
 
 class RouteColor {
-
   RouteColor({
     required this.type,
     this.value,
@@ -225,7 +225,6 @@ enum TransferIconType {
 }
 
 class TransferIcon {
-
   TransferIcon({
     required this.type,
     this.value,
@@ -262,7 +261,6 @@ class TransferIcon {
 }
 
 class Car {
-
   Car({
     required this.highlighted,
   });
@@ -276,7 +274,6 @@ class Car {
 }
 
 class Transfer {
-
   Transfer({
     this.title,
     this.duration,
@@ -297,26 +294,16 @@ class Transfer {
       title: map['title'],
       duration: map['duration'],
       icon: TransferIcon.fromMap(map['icon']),
-      lineColor: map['lineColor'] != null
-          ? RouteColor.fromMap(map['lineColor'])
-          : null,
-      description: map['description'] != null
-          ? TransferDescription.fromMap(map['description'])
-          : null,
-      transports: map['transports'] != null
-          ? List<Transport>.from(
-              map['transports'].map((x) => Transport.fromMap(x)))
-          : null,
+      lineColor: map['lineColor'] != null ? RouteColor.fromMap(map['lineColor']) : null,
+      description: map['description'] != null ? TransferDescription.fromMap(map['description']) : null,
+      transports:
+          map['transports'] != null ? List<Transport>.from(map['transports'].map((x) => Transport.fromMap(x))) : null,
       stopCount: map['stopCount'],
       useStationsInsteadOfStops: map['useStationsInsteadOfStops'],
       getOffAfter: map['getOffAfter'],
-      stops: map['stops'] != null
-          ? List<String>.from(map['stops'].map((x) => x as String))
-          : null,
+      stops: map['stops'] != null ? List<String>.from(map['stops'].map((x) => x as String)) : null,
       boardingDescription: map['boardingDescription'],
-      cars: map['cars'] != null
-          ? List<Car>.from(map['cars'].map((x) => Car.fromMap(x)))
-          : null,
+      cars: map['cars'] != null ? List<Car>.from(map['cars'].map((x) => Car.fromMap(x))) : null,
     );
   }
   final String? title;
@@ -338,8 +325,7 @@ class PublicTransportModel {
     return PublicTransportModel(
       brief: BriefPublicTransportModel.fromMap(map['brief']),
       transfers: List<Transfer>.from(
-        (map['transfers'] as List<dynamic>)
-            .map((x) => Transfer.fromMap(x as Map<dynamic, dynamic>)),
+        (map['transfers'] as List<dynamic>).map((x) => Transfer.fromMap(x as Map<dynamic, dynamic>)),
       ),
     );
   }
