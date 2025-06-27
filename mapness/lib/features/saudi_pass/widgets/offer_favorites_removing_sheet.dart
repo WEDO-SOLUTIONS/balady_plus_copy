@@ -28,69 +28,66 @@ class OfferFavoritesRemovingSheet extends HookWidget {
     );
     return StatelessBottomSheet(
       content: [
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
-                          ),
-                          Spacing.$1x.heightBox,
-                          Text(
-                            description,
-                            style:
-                                context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
-                          ),
-                        ],
-                      ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+                        ),
+                        Spacing.$1x.heightBox,
+                        Text(
+                          description,
+                          style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                        ),
+                      ],
                     ),
-                    Spacing.$3x.widthBox,
-                    AppButton(
+                  ),
+                  Spacing.$3x.widthBox,
+                  AppButton(
+                    buttonColorScheme: ButtonColorScheme.secondary,
+                    size: ButtonSize.small,
+                    onTap: () => bottomSheetController.close(),
+                    primaryIcon: SystemIcons.close,
+                    iconColor: context.colorsV3.neutralOnContainer,
+                  ),
+                ],
+              ),
+              Spacing.$5x.heightBox,
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      primaryLabel: cancel,
                       buttonColorScheme: ButtonColorScheme.secondary,
-                      size: ButtonSize.small,
-                      onTap: () => bottomSheetController.close(),
-                      primaryIcon: SystemIcons.close,
-                      iconColor: context.colorsV3.neutralOnContainer,
+                      onTap: bottomSheetController.close,
                     ),
-                  ],
-                ),
-                Spacing.$5x.heightBox,
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppButton(
-                        primaryLabel: cancel,
-                        buttonColorScheme: ButtonColorScheme.secondary,
-                        onTap: bottomSheetController.close,
-                      ),
+                  ),
+                  Spacing.$3x.widthBox,
+                  Expanded(
+                    child: AppButton(
+                      primaryLabel: remove,
+                      buttonColorScheme: ButtonColorScheme.primary,
+                      onTap: () {
+                        onRemove();
+                        bottomSheetController.close();
+                      },
                     ),
-                    Spacing.$3x.widthBox,
-                    Expanded(
-                      child: AppButton(
-                        primaryLabel: remove,
-                        buttonColorScheme: ButtonColorScheme.primary,
-                        onTap: () {
-                          onRemove();
-                          bottomSheetController.close();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                Spacing.$4x.heightBox,
-              ],
-            ),
+                  ),
+                ],
+              ),
+              Spacing.$2x.heightBox,
+            ],
           ),
-        ),
+        )
       ],
       scrollController: bottomSheetController,
     );
