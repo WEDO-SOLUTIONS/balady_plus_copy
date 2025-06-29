@@ -20,6 +20,16 @@ class PegaWebService {
   static String baseURL = RemoteConfig.apigeeURL;
   // static String pegaBaseURL = RemoteConfig.pegaURL;
 
+  String idTypeHandling(String idType) {
+    if (idType == '3' || idType == '4') {
+      return '9';
+    } else if (idType == '2') {
+      return '3';
+    } else {
+      return idType;
+    }
+  }
+
   Future<Map<String, dynamic>> getNewApigeeRequest(String url,
       {String? relativePath,
       Map<String, dynamic>? queryParams,
@@ -30,11 +40,11 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
-    print("url: " + requestUrl);
+    print("url: $requestUrl");
     Map<String, dynamic> result = {};
     try {
       var headers = {
@@ -50,7 +60,7 @@ class PegaWebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      print("url response: " + utf8.decode(response.bodyBytes).toString());
+      print("url response: ${utf8.decode(response.bodyBytes)}");
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -257,6 +267,7 @@ class PegaWebService {
       Map<String, dynamic>? queryParams,
       Map<String, String>? extraHeadersParams,
       int? timeLimit,
+      bool isHealthLicense = false,
       bool autoLogout = true}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
     String queryString = "";
@@ -265,11 +276,11 @@ class PegaWebService {
     }
 
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
-    print("url: " + requestUrl);
+    print("url: $requestUrl");
     Map<String, dynamic> result = {};
     if (isSuccess) {
       try {
@@ -284,7 +295,9 @@ class PegaWebService {
           'Authorization':
               'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
           "loginIdentityId": loginIdentityId,
-          "loginIdentityType": loginIdentityType,
+          "loginIdentityType": isHealthLicense
+              ? idTypeHandling(CommonProperties.userInfo?.idType ?? "")
+              : loginIdentityType,
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
@@ -297,12 +310,13 @@ class PegaWebService {
         print(headers);
         if (extraHeadersParams != null) headers.addAll(extraHeadersParams);
 
-        var response = await http.get(
-          Uri.parse(requestUrl),
-          headers: headers,
-        )
-        .timeout(Duration(seconds: timeLimit ?? 5));
-        print("url response: " + utf8.decode(response.bodyBytes).toString());
+        var response = await http
+            .get(
+              Uri.parse(requestUrl),
+              headers: headers,
+            )
+            .timeout(Duration(seconds: timeLimit ?? 5));
+        print("url response: ${utf8.decode(response.bodyBytes)}");
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
           result.putIfAbsent(
@@ -411,6 +425,7 @@ class PegaWebService {
       {String? relativePath,
       Map<String, dynamic>? queryParams,
       Map<String, String>? extraHeadersParams,
+      bool isHealthLicense = false,
       dynamic body}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
@@ -421,8 +436,8 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" +
-          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
+      queryString =
+          "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
     }
     var requestUrl = baseURL + url + queryString;
     print(requestUrl);
@@ -440,7 +455,9 @@ class PegaWebService {
         'Authorization':
             'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
         "loginIdentityId": loginIdentityId,
-        "loginIdentityType": loginIdentityType,
+        "loginIdentityType": isHealthLicense
+            ? idTypeHandling(CommonProperties.userInfo?.idType ?? "")
+            : loginIdentityType,
         'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
         "Content-Type": "application/json",
         "verifyingKEY": verifyingKEY,
@@ -543,9 +560,8 @@ class PegaWebService {
       {String? body, String? loginIdentityId, String? loginIdentityType}) {
     //var encodedURL = Uri.encodeComponent(url);
     String message = "";
-    message = url +
-        method +
-        'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
+    message =
+        '$url${method}Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
     if (body != null) {
       message += body.replaceAll(RegExp(r'^/\\n/g'), "");
     }
@@ -580,8 +596,8 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" +
-          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
+      queryString =
+          "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
     }
     var requestUrl = baseURL + url + queryString;
 
@@ -1246,7 +1262,9 @@ class PegaWebService {
   // }
 
   Future<Map<String, dynamic>> getApigeeRequestWithoutUTF(String url,
-      {String? relativePath, Map<String, dynamic>? queryParams}) async {
+      {String? relativePath,
+      Map<String, dynamic>? queryParams,
+      bool isHealthLicense = false}) async {
     bool isSuccess = await sl<EntryPointCubit>().refreshAPIGeeToken();
 
     String queryString = "";
@@ -1254,7 +1272,7 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
@@ -1274,7 +1292,9 @@ class PegaWebService {
           'Authorization':
               'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
           "loginIdentityId": loginIdentityId,
-          "loginIdentityType": loginIdentityType,
+          "loginIdentityType": isHealthLicense
+              ? idTypeHandling(CommonProperties.userInfo?.idType ?? "")
+              : loginIdentityType,
           'Cookie': sl<EntryPointCubit>().state.token?.appCookie ?? "",
           "Content-Type": "application/json",
           "verifyingKEY": verifyingKEY,
@@ -1357,7 +1377,7 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;

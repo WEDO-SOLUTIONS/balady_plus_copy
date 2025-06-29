@@ -60,6 +60,7 @@ class _UrbiMapSectionState extends State<UrbiMapSection> {
   Widget build(BuildContext context) {
     return UrbiMap(onMapCreated: (DgisMapController controller) {
       controller.initialize().then((_) {
+
         // Setup listeners and initialize map
         // context.read<Step2ActivityDataExportCubit>().mapController = controller;
         if (widget.currentUserLocation != null) {
@@ -67,6 +68,7 @@ class _UrbiMapSectionState extends State<UrbiMapSection> {
             CameraPositionMessage(
               point: GeoPointMessage(
                   latitude: widget.currentUserLocation!.latitude, longitude: widget.currentUserLocation!.longitude),
+
               zoom: 16.0,
               tilt: 0.0,
               bearing: 0.0,
@@ -87,8 +89,10 @@ class _UrbiMapSectionState extends State<UrbiMapSection> {
           }
         });
         _cameraPositionListener = controller.cameraPositionEvents.listen((event) {
+
           // Handle camera position updates
           widget.updateMovedPosition(LatLng(latitude: event.point.latitude, longitude: event.point.longitude));
+
         });
       });
     });
@@ -111,7 +115,7 @@ class _UrbiMapSectionState extends State<UrbiMapSection> {
 
 class PinMarkerSection extends StatelessWidget {
   bool isLocationAllowed = true;
-  PinMarkerSection({this.isLocationAllowed = true});
+  PinMarkerSection({super.key, this.isLocationAllowed = true});
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +157,7 @@ class MapSearchSection extends StatelessWidget {
 
   MapSearchSection(
       {Key? key, this.showBigPaddingScreen = false, required this.onSearchResult, required this.currentUserLocation})
+
       : super(key: key);
 
   @override
@@ -230,9 +235,11 @@ class MapSearchSection extends StatelessWidget {
   }
 
   Future<List<UrbiLocationModel>> suggestionsCallback(String pattern, LatLng? location) async {
+
     query = pattern;
     UrbiSearchProvider? provider = sl();
     return provider.search(pattern, location ?? const LatLng(latitude: 24.694163, longitude: 46.722667));
+
   }
 }
 
@@ -267,6 +274,7 @@ class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
       // },
       fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController,
           FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+
         // Implement the text field UI
 
         return TextField(
@@ -274,6 +282,11 @@ class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
           focusNode: fieldFocusNode,
           decoration: InputDecoration(
             labelText: 'lbl_search_for_place'.tr(),
+            labelStyle: TextStyle(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.grey[300] // light color for dark theme
+                  : Colors.teal, // darker gray for light theme
+            ),
           ),
           onChanged: (text) {
             setState(() {
@@ -292,6 +305,7 @@ class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
 
       optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<UrbiLocationModel> onSelected,
           Iterable<UrbiLocationModel> options) {
+
         // Implement the UI for displaying the suggestion options
 
         if (widget.query != null && widget.query!.isNotEmpty)
@@ -299,6 +313,7 @@ class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
               ? Padding(
                   padding: EdgeInsets.only(
                       left: CommonFunctions.isAppAR ? 30.0 : 0, bottom: 180, right: CommonFunctions.isAppAR ? 0.0 : 30),
+
                   child: Material(
                     child: ListView(
                       padding: EdgeInsets.zero,
@@ -309,12 +324,15 @@ class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
                           List? districtArea = model.admDiv!.where((item) => item.type == "district_area").toList();
 
                           if (districtArea.isNotEmpty) {
+
                             area = districtArea.first.name;
                           }
+
 
                           List? districtRegion = model.admDiv!.where((item) => item.type == "region").toList();
 
                           if (districtRegion.isNotEmpty) {
+
                             region = districtRegion.first.name;
                           }
                         }
@@ -336,14 +354,17 @@ class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
 
                                   widget.onSearchResult(
                                       LatLng(latitude: model.point!.lat!, longitude: model.point!.lon!));
+
                                 }
                               },
                               title: Text(Type + (model.searchAttributes?.suggestedText ?? "")),
                               subtitle: Text("${area!},${region}"),
+
                             ),
                             Divider(
                               thickness: 1,
                             )
+
                           ],
                         );
                       }).toList(),
@@ -363,6 +384,7 @@ class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
       UrbiSearchProvider? provider = sl();
       provider.search(pattern, location ?? const LatLng(latitude: 24.694163, longitude: 46.722667)).then((value) {
         widget.lstSuggestedLocation = value;
+
       });
     } else {
       widget.lstSuggestedLocation = [];

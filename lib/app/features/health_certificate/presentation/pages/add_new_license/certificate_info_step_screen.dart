@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/health_certificate/presentation/widgets/new_health_certificate_widgets/profession_search_dropdown.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -61,58 +62,71 @@ class _CertificateInfoStepScreenState extends State<CertificateInfoStepScreen> {
       builder: (context, state) {
         bool isLastPage = context.read<NewHealthCertificateBloc>().isLastPage();
 
-        return BaseView<NewTermsHealthLicenseViewModel>(
-            onModelReady: (model) {},
-            builder: (context, pledgeModel, child) {
-              return BaseView<NewDetailsHealthLicenseViewModel>(
-                  onModelReady: (model) {},
-                  builder: (context, model, child) {
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            child: Container(
-                              padding: const EdgeInsets.only(bottom: 85),
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 24),
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    //personal info Section
-                                    PersonalInfoSection(),
-                                    //location section
-                                    JobLocationSection(),
-                                  ]),
-                            ),
-                          ),
+        return BaseView<NewTermsHealthLicenseViewModel>(onModelReady: (model) {
+          print("isRenew ${model.dataModel.isRenew}");
+          if (model.dataModel.isRenew) {}
+        }, builder: (context, pledgeModel, child) {
+          return BaseView<NewDetailsHealthLicenseViewModel>(
+              onModelReady: (model) {},
+              builder: (context, model, child) {
+                return Column(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        controller: scrollController,
+                        child: Container(
+                          padding: const EdgeInsets.only(bottom: 85),
+                          margin: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //personal info Section
+                                const PersonalInfoSection(),
+                                //location section
+                                const JobLocationSection(),
+                                if (model.showProfessionsList())
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: ProfessionSearchDropdown(
+                                      label: 'Profession'.tr(),
+                                      hintText:
+                                          'Search_for_a_profession...'.tr(),
+                                      initialValue: model.selectedProfession,
+                                      onChanged: (profession) {
+                                        model.selectedProfession = profession;
+                                        model.validateForm();
+                                      },
+                                    ),
+                                  )
+                              ]),
                         ),
-                        //MM
+                      ),
+                    ),
+                    //MM
 
-                        PreviousNextButtons(
-                          isFormValid: model.isFormValid,
-                          onConfirm: () async {
-                            final model = locator<HealthLicenseViewModel>();
-
-                            List<String>? terms = await model.getTerms();
-                            print("terms $terms");
-                            if (terms == null) return;
-                            model.hideKeyboard();
-                            if (!isLastPage && terms.isNotEmpty) {
-                              context
-                                  .read<NewHealthCertificateBloc>()
-                                  .add(GoToNextPageEvent());
-                            } else {
-                              model.hideKeyboard();
-                              pledgeModel.submit().then((value) {});
-                            }
-                          },
-                        )
-                      ],
-                    );
-                  });
-            });
+                    PreviousNextButtons(
+                      isFormValid: model.isFormValid,
+                      onConfirm: () async {
+                        final model = locator<HealthLicenseViewModel>();                        
+                        List<String>? terms = await model.getTerms();
+                        print("terms $terms");
+                        if (terms == null) return;
+                        model.hideKeyboard();
+                        if (!isLastPage && terms.isNotEmpty) {
+                          context
+                              .read<NewHealthCertificateBloc>()
+                              .add(GoToNextPageEvent());
+                        } else {
+                          model.hideKeyboard();
+                          pledgeModel.submit().then((value) {});
+                        }
+                      },
+                    )
+                  ],
+                );
+              });
+        });
       },
     );
   }
@@ -148,7 +162,7 @@ class _PersonalInfoSectionState extends State<PersonalInfoSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         VdHeaderDesc(
           header: ("moreSectionAccountPersonalInfoWord").tr(),
           desc: Helpers.translatingWord('check_info_desc'),
@@ -176,6 +190,15 @@ class JobLocationSection extends StatefulWidget {
 class _JobLocationSectionState extends State<JobLocationSection> {
   final model = locator<NewDetailsHealthLicenseViewModel>();
 
+  String _getLocationField(String? locationInfoValue, String? gisValue) {
+    if (locationInfoValue != null &&
+        locationInfoValue.isNotEmpty &&
+        locationInfoValue.toLowerCase() != "null") {
+      return locationInfoValue;
+    }
+    return gisValue ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseView<NewDetailsHealthLicenseViewModel>(
@@ -184,7 +207,7 @@ class _JobLocationSectionState extends State<JobLocationSection> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              CustomVerticalSpace(height: 16),
+              const CustomVerticalSpace(height: 16),
               VdHeaderDesc(
                 header: ("job_location").tr(),
                 desc: Helpers.translatingWord('job_location_desc'),
@@ -193,35 +216,26 @@ class _JobLocationSectionState extends State<JobLocationSection> {
               CustomHeaderAndDescOnTapWidget(
                 label: Helpers.translatingWord("job_address"),
                 hintText: Helpers.translatingWord("select_address_from_map"),
-                textValue: model.getAddress(),
+                textValue: model.currentAddress,
                 materialIconDirection: Helpers.isArabic(context)
                     ? MATERIAL_ICON_DIRECTION.left
                     : MATERIAL_ICON_DIRECTION.right,
                 onTap: () {
                   model.hideKeyboard();
-                  /* setState(() {
-                          showLocationInfo = true;
-                          // showCommercialSection = true;
-                          showLicenseSection = true;
-                        });
-
-                        WidgetsBinding.instance
-                            ?.addPostFrameCallback((_) => _scrollToEnd());*/
 
                   model.navigateToMapScreen(context).then((value) {
                     WidgetsBinding.instance
-                        ?.addPostFrameCallback((_) => _scrollToEnd());
+                        .addPostFrameCallback((_) => _scrollToEnd());
                     model.validateForm();
-                    setState(() {});
                   });
                 },
                 icon: const Icon(Icons.location_on,
                     color: AppColor.primary900Light),
               ),
 
-              // location info section
+              // location info section - Uses GIS data only
               Visibility(
-                visible: model.getAddress() != null,
+                visible: model.gisLocationResult != null,
                 child: LocationInfoSection(
                   district: model.gisLocationResult?.Balady_DistrictName ?? "",
                   municipality:
@@ -231,16 +245,23 @@ class _JobLocationSectionState extends State<JobLocationSection> {
                   region: model.gisLocationResult?.region ?? "",
                 ),
               ),
-              HealthCentersSection(),
+              // Health Centers Section - Visibility controlled by parent BaseView
+              if (model.isCenterRequired()) const HealthCentersSection(),
               // Commercial Register Section
               Visibility(
                 visible: model.showCommercialNo(),
-                child: CommercialRegisterSection(),
+                child: const CommercialRegisterSection(),
               ),
-              Visibility(visible: model.showLicense(), child: LicenseSection()),
+              Visibility(
+                  visible: model.showLicense(), child: const LicenseSection()),
             ],
           );
         });
+  }
+
+  void _scrollToEnd() {
+    scrollController.animateTo(scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
   }
 }
 
@@ -250,7 +271,7 @@ class LocationInfoSection extends StatelessWidget {
   final String municipality;
   final String subMunicipality;
 
-  LocationInfoSection(
+  const LocationInfoSection(
       {Key? key,
       required this.district,
       required this.municipality,
@@ -263,7 +284,7 @@ class LocationInfoSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         VdHeaderDesc(
           header: ("address_details").tr(),
           desc: Helpers.translatingWord('check_location_info'),
@@ -286,25 +307,25 @@ class LocationInfoSection extends StatelessWidget {
 }
 
 class HealthCentersSection extends StatelessWidget {
-  HealthCentersSection({
+  const HealthCentersSection({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = locator<NewDetailsHealthLicenseViewModel>();
-    return Visibility(
-      visible: model.isCenterRequired(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          CustomVerticalSpace(height: 16),
-          /* CustomSectionHeaderWithImg(
-              title: Helpers.translatingWord('address_details'),
-              img: "titleItemsIconLocation@3x.png",
-              desc: Helpers.translatingWord('check_location_info')),*/
+    return BaseView<NewDetailsHealthLicenseViewModel>(
+      onModelReady: (model) {},
+      builder: (context, model, child) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const CustomVerticalSpace(height: 16),
+            /* CustomSectionHeaderWithImg(
+                title: Helpers.translatingWord('address_details'),
+                img: "titleItemsIconLocation@3x.png",
+                desc: Helpers.translatingWord('check_location_info')),*/
 
-          if (model.dataModel.cities.isNotEmpty)
+            // if (model.dataModel.cities.isNotEmpty)
             CustomHeaderAndDescOnTapWidget(
               label: Helpers.translatingWord("city"),
               hintText: Helpers.translatingWord("city_select"),
@@ -342,7 +363,7 @@ class HealthCentersSection extends StatelessWidget {
                 );
               },
             ),
-          if (model.dataModel.healthCentres.isNotEmpty)
+            // if (model.dataModel.healthCentres.isNotEmpty)
             CustomHeaderAndDescOnTapWidget(
               label: Helpers.translatingWord("health_center"),
               hintText: Helpers.translatingWord("health_center_select"),
@@ -373,14 +394,15 @@ class HealthCentersSection extends StatelessWidget {
                 );
               },
             ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }
 
 class CommercialRegisterSection extends StatefulWidget {
-  CommercialRegisterSection({Key? key}) : super(key: key);
+  const CommercialRegisterSection({Key? key}) : super(key: key);
 
   @override
   State<CommercialRegisterSection> createState() =>
@@ -432,7 +454,7 @@ class _CommercialRegisterSection extends State<CommercialRegisterSection> {
             children: [
               if (model.isCrVerified)
                 Image.asset(
-                  Constants.imgPath + "circle_check@3x.png",
+                  "${Constants.imgPath}circle_check@3x.png",
                   height: 12,
                   width: 12,
                 ),
@@ -446,7 +468,7 @@ class _CommercialRegisterSection extends State<CommercialRegisterSection> {
                                 .then((value) {
                               if (value) {
                                 FocusScope.of(context).unfocus();
-                                WidgetsBinding.instance?.addPostFrameCallback(
+                                WidgetsBinding.instance.addPostFrameCallback(
                                     (_) => _scrollToEnd());
                                 setState(() {});
                                 model.validateForm();
@@ -469,7 +491,7 @@ class _CommercialRegisterSection extends State<CommercialRegisterSection> {
             ],
           ),
         ),
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         Visibility(
           visible: model.isCrVerified,
           child: CommercialRegisterationInfoSection(
@@ -518,7 +540,7 @@ class CommercialRegisterationInfoSection extends StatelessWidget {
 }
 
 class LicenseSection extends StatefulWidget {
-  LicenseSection({Key? key}) : super(key: key);
+  const LicenseSection({Key? key}) : super(key: key);
 
   @override
   _LicenseSectionState createState() => _LicenseSectionState();
@@ -532,7 +554,7 @@ class _LicenseSectionState extends State<LicenseSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         VdHeaderDesc(
           header: ("registered_license").tr(),
           desc: Helpers.translatingWord('registered_license_info'),
@@ -566,15 +588,15 @@ class _LicenseSectionState extends State<LicenseSection> {
             value: "2",
             currentSelected: model.shopHasLicense,
             onChange: onItemChanged),
-        CustomVerticalSpace(height: 16),
-        if (model.shopHasLicense == "1") LicenseNumberSection(),
+        const CustomVerticalSpace(height: 16),
+        if (model.shopHasLicense == "1") const LicenseNumberSection(),
         if (model.shopHasLicense == "2") const NoLicenseSection()
       ],
     );
   }
 
   void onItemChanged(String id) {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => _scrollToEnd());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
     model.hideKeyboard();
     model.changeCRAndLicenseValidation();
     // model.validateForm;
@@ -594,7 +616,7 @@ _scrollToEnd() async {
 }
 
 class LicenseNumberSection extends StatefulWidget {
-  LicenseNumberSection({Key? key}) : super(key: key);
+  const LicenseNumberSection({Key? key}) : super(key: key);
 
   @override
   State<LicenseNumberSection> createState() => _LicenseNumberSection();
@@ -627,7 +649,7 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
               context,
               child: GenericBottomSheetList<LicenseType>(
                 title: "health_license_type".tr(),
-                items: [
+                items: const [
                   LicenseType(value: "COMMERCIAL"),
                   LicenseType(value: "STREET_VENDOR"),
                   LicenseType(value: "VEHICLE"),
@@ -667,7 +689,7 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
             children: [
               if (model.isLicenseVerified)
                 Image.asset(
-                  Constants.imgPath + "circle_check@3x.png",
+                  "${Constants.imgPath}circle_check@3x.png",
                   height: 12,
                   width: 12,
                 ),
@@ -683,7 +705,7 @@ class _LicenseNumberSection extends State<LicenseNumberSection> {
                                 .then((value) {
                               if (value) {
                                 FocusScope.of(context).unfocus();
-                                WidgetsBinding.instance?.addPostFrameCallback(
+                                WidgetsBinding.instance.addPostFrameCallback(
                                     (_) => _scrollToEnd());
                                 setState(() {});
                                 model.validateForm();
@@ -725,7 +747,7 @@ class LicenseInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         VdHeaderDesc(
           header: Helpers.translatingWord('license_info'),
           desc: Helpers.translatingWord('license_info_desc'),
@@ -810,13 +832,17 @@ class _NoLicenseSection extends State<NoLicenseSection> {
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(2)),
+            border: Border.all(color: AppColor.redBrown, width: 1),
+            color: AppColor.red200),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomTextWidget(
               Helpers.translatingWord("no_license_issue_error_title"),
-              fontColor: Color(0xff9a1111),
+              fontColor: const Color(0xff9a1111),
               fontSize: 13,
               textAlign: TextAlign.start,
             ),
@@ -826,16 +852,16 @@ class _NoLicenseSection extends State<NoLicenseSection> {
                 children: [
                   TextSpan(
                       text: "no_license_issue_error_subtitle".tr(),
-                      style: TextStyle(
-                        color: const Color.fromRGBO(153, 153, 153, 1),
+                      style: const TextStyle(
+                        color: Color.fromRGBO(153, 153, 153, 1),
                         fontWeight: FontWeight.w500,
                         fontFamily: GeneralKey.appFontType,
                         fontSize: 13,
                         height: 1.6,
                       )),
                   TextSpan(
-                    text: " " + "click_here".tr() + " ",
-                    style: TextStyle(
+                    text: " ${"click_here".tr()} ",
+                    style: const TextStyle(
                       color: AppColor.primary900Light,
                       fontFamily: GeneralKey.appFontType,
                       fontSize: 13,
@@ -850,9 +876,9 @@ class _NoLicenseSection extends State<NoLicenseSection> {
                   ),
                   TextSpan(
                       text: "no_license_issue_error_subtitle2".tr(),
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: GeneralKey.appFontType,
-                        color: const Color.fromRGBO(153, 153, 153, 1),
+                        color: Color.fromRGBO(153, 153, 153, 1),
                         fontWeight: FontWeight.w500,
                         fontSize: 13,
                         height: 1.6,
@@ -861,15 +887,11 @@ class _NoLicenseSection extends State<NoLicenseSection> {
               ),
             ),
           ],
-        ),
-        decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(2)),
-            border: Border.all(color: AppColor.redBrown, width: 1),
-            color: AppColor.red200));
+        ));
   }
 
   void onItemChanged(String id) {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => _scrollToEnd());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToEnd());
     model.hideKeyboard();
     setState(() {
       model.noLicenseReason = id;
