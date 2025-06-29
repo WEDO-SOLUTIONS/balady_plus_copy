@@ -234,13 +234,7 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
   String get branchName => offer.branchName;
 
   @override
-  num? get ratio {
-    final ratio = offer.typeDetails.ratio;
-    if (ratio != null) {
-      return ratio / 100;
-    }
-    return null;
-  }
+  num? get ratio => offer.typeDetails.ratio;
 
   @override
   OffersGroup get offersGroup => offer.offerGroup;
