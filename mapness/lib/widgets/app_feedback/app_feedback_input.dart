@@ -5,11 +5,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AppFeedbackInput extends HookWidget {
   final ValueChanged<bool>? isValid;
+  final TextInputAction? textInputAction;
   final TextEditingController textController;
 
   const AppFeedbackInput({
     required this.textController,
     this.isValid,
+    this.textInputAction,
     super.key,
   });
 
@@ -68,6 +70,7 @@ class AppFeedbackInput extends HookWidget {
           inputState: inputState.value,
           config: BaladyInputConfig(
             background: BaladyInputBackground.color,
+            textInputAction: textInputAction,
             focusNode: focusNode,
             autofocus: true,
             hintText: context.l10n.appFeedbackTellUsMore,
