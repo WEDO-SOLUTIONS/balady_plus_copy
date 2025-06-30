@@ -59,7 +59,7 @@ class PoiContentFeedbackCard extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 2,
-                    child: Container(
+                    child: DecoratedBox(
                       decoration: BoxDecoration(
                         image: DecorationImage(
                           fit: BoxFit.fitHeight,
