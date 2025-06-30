@@ -41,7 +41,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
             textInputAction: TextInputAction.go,
           ),
         ],
-        TODO: What this is temporally solution, and will be removed as the bottom sheet fixes be added
+        // TODO: What this is temporally solution, and will be removed as the bottom sheet fixes be added
         footer: Padding(
           padding: const EdgeInsets.all(Spacing.$4x)
               .copyWith(bottom: Spacing.$8x + MediaQuery.of(context).viewInsets.bottom),
