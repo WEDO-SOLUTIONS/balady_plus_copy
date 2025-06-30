@@ -244,48 +244,52 @@ extension PublicTransportTransferRouteLongEntry {
     }
     
     var toMap: [String: Any?] {
-        let point = [
+        // Point property - RoutePoint with distance
+        let point: [String: Any?] = [
             "distance": [
                 "millimeters": self.point.distance.millimeters
             ]
         ]
-        let length = [
+        
+        // Length property - RouteDistance
+        let length: [String: Any?] = [
             "millimeters": self.length.millimeters
         ]
-        do {
-            let value : [String: Any?] = [
-                "startPointName": self.value.startPointName,
-                "finishPointName": self.value.finishPointName,
-                //            "routeParts": self.value.routeParts.map {parts in [
-                //                "transports": parts.transports.map {t in
-                //                    [
-                //                    "type": t.type,
-                //                    "names": t.names,
-                //                    "suggestedCarNumbers": t.suggestedCarNumbers.map { Int64.init(bitPattern: UInt64($0)) },
-                //                    "boardingSuggest": t.boardingSuggest,
-                //                    "routeLogo": t.routeLogo
-                //                    ]
-                //                },
-                //                "intermediateStops": parts.intermediateStops.map { t in
-                //                    [
-                //                        "coordinates": [
-                //                            "latitude": t.coordinates.latitude,
-                //                            "longitude": t.coordinates.longitude
-                //                        ],
-                //                        "name": t.name
-                //                    ]
-                //                }
-                //            ]
-                //            }
-            ]
-            return [
-                "point": point,
-                "length": length,
-                "value": value
-            ]
-        } catch (_) {
-                return [:]
+        
+        // Value property - PublicTransportTransfer
+        let value: [String: Any?] = [
+            "startPointName": self.value.startPointName,
+            "finishPointName": self.value.finishPointName,
+            "routeParts": self.value.routeParts.map { routePart in
+                [
+                    "transports": routePart.transports.map { transport in
+                        [
+                            "type": transport.type.kotlinName,
+                            "names": transport.names,
+//                            "suggestedCarNumbers": transport.suggestedCarNumbers,
+//                            "boardingSuggest": transport.boardingSuggest,
+                            "routeLogo": transport.routeLogo,
+                            "color": transport.color
+                        ] as [String: Any?]
+                    },
+                    "intermediateStops": routePart.intermediateStops.map { stop in
+                        [
+//                            "coordinates": [
+//                                "latitude": stop.coordinates.latitude,
+//                                "longitude": stop.coordinates.longitude
+//                            ] as [String: Any?],
+                            "name": stop.name
+                        ] as [String: Any?]
+                    }
+                ] as [String: Any?]
             }
+        ]
+        
+        return [
+            "point": point,
+            "length": length,
+            "value": value
+        ]
     }
 }
 
