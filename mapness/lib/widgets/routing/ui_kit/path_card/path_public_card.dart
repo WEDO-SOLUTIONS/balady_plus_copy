@@ -1,16 +1,13 @@
-// ignore_for_file: unused_import
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
+import 'package:dgis_map_platform_interface/src/utils/public_transport_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/road_events/ui/road_closed_page.dart';
-import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
@@ -64,9 +61,17 @@ class PathPublicCard extends ConsumerWidget {
           ),
           Spacing.$4x.heightBox,
           Row(
-            children: route.transports
-                .map((e) => _TransportIcon(name: e.names.join(', '), isLast: e == route.transports.last))
-                .toList(),
+            children: route.transports.mapIndexed((index, e) {
+              final pub = route.publicTransportTransferRouteLongEntry[index];
+              final isPedestrian = pub.value.routeParts.isEmpty;
+              return _TransportIcon(
+                name: e.names.join(', '),
+                time: pub.distanceToPedestrianTime(
+                  isPedestrian ? pub.length.millimeters : null,
+                ),
+                isLast: e == route.transports.last,
+              );
+            }).toList(),
           ),
           Spacing.$4x.heightBox,
           BaladyAppButton(
@@ -93,20 +98,31 @@ class PathPublicCard extends ConsumerWidget {
 
 class _TransportIcon extends StatelessWidget {
   final String name;
+  final int? time;
   final bool isLast;
 
-  const _TransportIcon({required this.name, this.isLast = false});
+  const _TransportIcon({required this.name, this.time, this.isLast = false});
 
   @override
   Widget build(BuildContext context) => Row(
         children: [
           _buildIcon(name, context),
-          Spacing.$1x.widthBox,
+          if (time != null) ...[
+            Text(
+              '$time',
+              style: context.textStyleV3.bodyLargeRegular.copyWith(
+                color: context.colorsV3.neutralOnContainer,
+              ),
+            ),
+          ],
           if (!isLast)
-            Icon(
-              SystemIcons.arrowCornerRightSmall,
-              size: 16,
-              color: context.colorsV3.neutralOnContainer,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$1x),
+              child: Icon(
+                SystemIcons.arrowCornerRightSmall,
+                size: 16,
+                color: context.colorsV3.foregroundMuted,
+              ),
             ),
         ],
       );

@@ -266,15 +266,15 @@ extension PublicTransportTransferRouteLongEntry {
                         [
                             "type": transport.type.kotlinName,
                             "names": transport.names,
-//                            "suggestedCarNumbers": transport.suggestedCarNumbers,
-//                            "boardingSuggest": transport.boardingSuggest,
+                            "suggestedCarNumbers": transport.suggestedCarNumbers,
+                            "boardingSuggest": transport.boardingSuggest,
                             "routeLogo": transport.routeLogo,
                             "color": transport.color
                         ] as [String: Any?]
                     },
                     "intermediateStops": routePart.intermediateStops.map { stop in
                         [
-//                            "coordinates": [
+//                            "coordinates": [ "latitude": 1, "longitude" : 1] as [String: Any?],
 //                                "latitude": stop.coordinates.latitude,
 //                                "longitude": stop.coordinates.longitude
 //                            ] as [String: Any?],

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dgis_map_platform_interface/library.dart';
 import '../utils/public_transport_ext.dart';
 
@@ -74,12 +76,17 @@ class Transport {
 class BriefPublicTransportModel {
   factory BriefPublicTransportModel.fromMap(Map<dynamic, dynamic> map) {
     final transfers = map['publicTransportTransferRouteLongEntry'];
-    List<PublicTransportInfoMessage> transferRouteEntries = [];
+    log(transfers.toString());
+    List<PublicTransportTransferRouteLongEntryMessage> transferRouteEntries = [];
 
     // Handle the case where transfers might be a List or other type
     if (transfers is List) {
-      transferRouteEntries =
-          transfers.whereType<Map<String, dynamic>>().map((x) => PublicTransportInfoMessageExt.fromJson(x)).toList();
+      final transferRouteEntries1 = transfers.whereType<Map>();
+      transferRouteEntries = transferRouteEntries1.map((x) {
+        final map = x as Map<dynamic, dynamic>;
+
+        return PublicTransportTransferRouteLongEntryMessageExt.fromJson(Map<String, dynamic>.from(map));
+      }).toList();
     }
 
     return BriefPublicTransportModel(
@@ -105,7 +112,7 @@ class BriefPublicTransportModel {
   final List<Transport> transports;
   final int transferCount;
   final int onFootDuration;
-  final List<PublicTransportInfoMessage> publicTransportTransferRouteLongEntry;
+  final List<PublicTransportTransferRouteLongEntryMessage> publicTransportTransferRouteLongEntry;
 }
 
 enum TransferDescriptionType { onFoot, metro, ofType, finish }
