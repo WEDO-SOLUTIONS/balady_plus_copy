@@ -5,26 +5,43 @@ import 'package:balady_plus/super_app_js_bridge/js_bridge_listener.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
-class WebMiniAppsScreen extends StatefulWidget {
+class WebMiniAppsScreen extends ConsumerStatefulWidget {
   const WebMiniAppsScreen({super.key});
 
   @override
-  State<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
+  ConsumerState<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
 }
 
-class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
+class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
   late final DWebViewController _controller;
   final ValueNotifier<bool> _isLoading = ValueNotifier(true);
+
+  String _currentLanguage = '';
+  String? _cachedMiniAppsLanguage = '';
 
   @override
   void initState() {
     super.initState();
+    bool clearCache = false;
+
+    _currentLanguage = translator.activeLanguageCode;
+    _cachedMiniAppsLanguage = ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
+
+    if(_currentLanguage != _cachedMiniAppsLanguage){
+      clearCache = true;
+
+      ref.read(appLanguageProvider.notifier).updateCachedMiniAppsLanguage(
+        _currentLanguage,
+      );
+    }
 
     // _controller = WebViewController()
     //   ..loadRequest(Uri.parse(widget.servicePath))
@@ -71,7 +88,6 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
 
     controller
       ..setBackgroundColor(Colors.white)
-      ..clearCache()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onProgress: (progress) {
@@ -92,6 +108,10 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
     // if(miniAppsEngineBloc.miniApp.latestVersion?.serviceUrl != null) {
     //   controller.clearCache();
     // }
+
+    if(clearCache) {
+      controller.clearCache();
+    }
 
     _injectPermissionHandlingScript();
 
