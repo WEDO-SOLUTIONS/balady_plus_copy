@@ -16,10 +16,12 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_wrapper.dart'
 class PathPublicCard extends ConsumerWidget {
   final BriefPublicTransportModel route;
   final PathCardLocalization localizations;
+  final Function()? onStartNavigation;
 
   const PathPublicCard({
     required this.route,
     required this.localizations,
+    this.onStartNavigation,
     super.key,
   });
 
@@ -51,7 +53,7 @@ class PathPublicCard extends ConsumerWidget {
               ),
               BaladyAppButton(
                 buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                onTap: () {},
+                onTap: onStartNavigation,
                 primaryLabel: localizations.go.toUpperCase(),
                 innerPadding: const EdgeInsets.symmetric(
                   horizontal: Spacing.$5x,
@@ -64,7 +66,7 @@ class PathPublicCard extends ConsumerWidget {
             children: route.transports.mapIndexed((index, e) {
               final pub = route.publicTransportTransferRouteLongEntry[index];
               final isPedestrian = pub.value.routeParts.isEmpty;
-              return _TransportIcon(
+              return TransportIconWidget(
                 name: e.names.join(', '),
                 time: pub.distanceToPedestrianTime(
                   isPedestrian ? pub.length.millimeters : null,
@@ -96,12 +98,19 @@ class PathPublicCard extends ConsumerWidget {
   }
 }
 
-class _TransportIcon extends StatelessWidget {
+class TransportIconWidget extends StatelessWidget {
   final String name;
   final int? time;
   final bool isLast;
+  final bool isLarge;
 
-  const _TransportIcon({required this.name, this.time, this.isLast = false});
+  const TransportIconWidget({
+    required this.name,
+    this.time,
+    this.isLast = false,
+    this.isLarge = false,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => Row(
@@ -117,7 +126,7 @@ class _TransportIcon extends StatelessWidget {
           ],
           if (!isLast)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$1x),
+              padding: EdgeInsets.symmetric(horizontal: isLarge ? Spacing.$1_5x : Spacing.$1x),
               child: Icon(
                 SystemIcons.arrowCornerRightSmall,
                 size: 16,
@@ -131,7 +140,7 @@ class _TransportIcon extends StatelessWidget {
     if (line.isEmpty) {
       return Icon(
         TransportIcons.pedestrianLTR,
-        size: 16,
+        size: isLarge ? 24 : 16,
         color: context.colorsV3.neutralOnContainer,
       );
     }
@@ -145,7 +154,7 @@ class _TransportIcon extends StatelessWidget {
     }
     return Icon(
       TransportIcons.metroStation,
-      size: 16,
+      size: isLarge ? 24 : 16,
       color: color,
     );
   }

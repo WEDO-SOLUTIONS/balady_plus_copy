@@ -20,6 +20,7 @@ class RoutesCarousel extends ConsumerWidget {
     required this.publicTransportRoutes,
     required this.onActiveChanged,
     required this.startNavigation,
+    required this.startPublicTransportNavigation,
     required this.refresh,
     required this.navType,
     super.key,
@@ -31,6 +32,7 @@ class RoutesCarousel extends ConsumerWidget {
   final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
   final ValueChanged<int> onActiveChanged;
   final Function(RouteInfo) startNavigation;
+  final Function(BriefPublicTransportModel) startPublicTransportNavigation;
   final Function() refresh;
 
   @override
@@ -57,6 +59,7 @@ class RoutesCarousel extends ConsumerWidget {
                   steps: context.l10n.steps,
                   go: context.l10n.go,
                 ),
+                onStartNavigation: () => startPublicTransportNavigation(route),
               ),
             );
           },
