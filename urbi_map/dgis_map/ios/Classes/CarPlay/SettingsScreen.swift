@@ -153,7 +153,7 @@ class SettingsScreen: NSObject {
         
         let trafficButton = CPGridButton(
             titleVariants: [title],
-            image: UIImage(named: imageName)!.withRenderingMode(.alwaysOriginal),
+            image: UIImage(named: imageName)!,
             handler: onTrafficBarTap
         )
         
@@ -171,7 +171,7 @@ class SettingsScreen: NSObject {
         let title = NSLocalizedString("settingsScreenSound", comment: "")
         let button = CPGridButton(
             titleVariants: [title],
-            image: UIImage(named: imageName)!.withRenderingMode(.alwaysOriginal),
+            image: UIImage(named: imageName)!,
             handler: toggleSounds
         )
         return button
@@ -243,7 +243,7 @@ class SettingsScreen: NSObject {
         let title = NSLocalizedString("settingsScreenParking", comment: "")
         let button = CPGridButton(
             titleVariants: [title],
-            image: UIImage(named: imageName)!.withRenderingMode(.alwaysOriginal),
+            image: UIImage(named: imageName)!,
             handler: toggleParking
         )
         return button
