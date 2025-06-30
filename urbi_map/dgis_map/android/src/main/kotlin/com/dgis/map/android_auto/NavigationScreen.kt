@@ -173,8 +173,8 @@ class NavigationScreen(
                 tripBuilder.setLoading(true)
                 try {
                     navigationManager.updateTrip(tripBuilder.build())
-                } catch (e: Exception) {
-                    // TODO: Add logging here
+                } catch (_: Exception) {
+                    // skip (when state is rerouting in freeroam, but navigation on route is not started)
                 }
             }
 
@@ -262,7 +262,11 @@ class NavigationScreen(
         }
         tripBuilder.setLoading(false)
         tripBuilder.setCurrentRoad(maneuver.roadName)
-        navigationManager.updateTrip(tripBuilder.build())
+        try {
+            navigationManager.updateTrip(tripBuilder.build())
+        } catch (_: Exception) {
+            // skip (when maneuver update is performed before navigation state is updated)
+        }
 
         val unitString =
             when (unit) {

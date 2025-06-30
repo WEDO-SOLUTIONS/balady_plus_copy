@@ -835,6 +835,29 @@ Future<void> runMapnessApp(FutureOr<void> Function() main) async {
     WidgetsFlutterBinding.ensureInitialized();
     await MapnessLogger.init();
 
+    final hostFlutterApi = _HostFlutterApi();
+    HostFlutterApi.setUp(hostFlutterApi);
+    await hostFlutterApi.appRunCompleter.future;
+
     await main();
   });
+}
+
+class _HostFlutterApi extends HostFlutterApi {
+  final appRunCompleter = Completer();
+
+  _HostFlutterApi();
+
+  bool isAppRun = false;
+
+  @override
+  void analyticsTrack(String event) {
+    analyticsClient.track(event, properties: {"app_run": isAppRun});
+  }
+
+  @override
+  void runMain() {
+    isAppRun = true;
+    appRunCompleter.complete();
+  }
 }

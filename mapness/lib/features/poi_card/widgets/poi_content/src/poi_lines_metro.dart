@@ -71,7 +71,7 @@ class PoiLinesMetro extends StatelessWidget {
                           children: transitionRoute
                               .map(
                                 (e) => Padding(
-                                  padding: const EdgeInsets.only(left: Spacing.px),
+                                  padding: const EdgeInsetsDirectional.only(start: Spacing.px),
                                   child: Assets.icons.svg.icMetroMarker.svg(
                                     colorFilter: ColorFilter.mode(Color(e.color ?? 0xFF000000), BlendMode.srcIn),
                                   ),
