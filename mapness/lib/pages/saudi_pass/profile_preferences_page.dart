@@ -55,7 +55,7 @@ class ProfilePreferencesPage extends ConsumerWidget {
         child: SafeArea(
           child: Scaffold(
             appBar: BaladyTopBar.iconAndText(
-              title: context.l10n.preferencesPageTitle,
+              title: context.l10n.preferences,
               textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
                 color: colors.foregroundDefault,
               ),
