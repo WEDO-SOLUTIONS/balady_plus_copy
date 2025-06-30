@@ -99,6 +99,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
     <application
+        android:name=".App"
         android:usesCleartextTraffic="true"
         android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"

@@ -1907,6 +1907,13 @@ abstract class FlutterMapApi {
   );
 }
 
+@FlutterApi()
+abstract class HostFlutterApi {
+  void analyticsTrack(String event);
+
+  void runMain();
+}
+
 @HostApi()
 abstract class PluginApi {
   @async

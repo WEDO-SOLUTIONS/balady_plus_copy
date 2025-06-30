@@ -3,20 +3,42 @@ import CarPlay
 import DGis
 import AVFoundation
 
-final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
+public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     static private(set) var map: Map?
     static var delegate: CarPlayConnectionSceneDelegate?
     static var eventChannel: DgisStreamHandler?
     static private var mainScreen: MainScreen?
     
-    func templateApplicationScene(
+    public static var flutterEngine: FlutterEngine? {
+        didSet {
+            guard let flutterEngine = flutterEngine else { return }
+            hostFlutterApi = HostFlutterApi(binaryMessenger: flutterEngine.binaryMessenger)
+        }
+    }
+    private static var hostFlutterApi: HostFlutterApi?
+    
+    public static func runApp() {
+        guard let api = hostFlutterApi else { return }
+        api.runMain { _ in  }
+    }
+    
+    private static var sentCarPlayStart = false
+    
+    public func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
+        guard let hostFlutterApi = Self.hostFlutterApi else { return }
+        
+        if (!Self.sentCarPlayStart) {
+            hostFlutterApi.analyticsTrack(event: "car_play_start") { _ in }
+            Self.sentCarPlayStart = true
+        }
+        
         Bundle.swizzleLocalization()
         Bundle.syncLanguage()
-        
+
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
         
@@ -53,7 +75,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         FlutterCarPlaySceneDelegate.map = map
     }
     
-    func templateApplicationScene(
+    public func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
