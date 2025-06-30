@@ -11,10 +11,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let userDefaultsPublished: UserDefaultsPublished
     private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler?
-    private let urbiAnalyticsFlutterApi: UrbiAnalyticsFlutterApi
+    private let hostFlutterApi: HostFlutterApi
 
     init(
-        urbiAnalyticsFlutterApi: UrbiAnalyticsFlutterApi,
+        urbiAnalyticsFlutterApi: HostFlutterApi,
         map: Map,
         interfaceController: CPInterfaceController,
         dgisCarPlayMapView: DgisCarPlayMapView,
@@ -24,7 +24,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         userDefaultsPublished: UserDefaultsPublished,
         eventChannel: DgisStreamHandler?
     ) {
-        self.urbiAnalyticsFlutterApi = urbiAnalyticsFlutterApi
+        self.hostFlutterApi = urbiAnalyticsFlutterApi
         self.map = map
         self.dgisCarPlayMapView = dgisCarPlayMapView
         self.interfaceController = interfaceController
@@ -213,7 +213,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func onPanningBarTap(_: CPBarButton) {
         print("===== MainScreen onPanningBarTap()")
-        urbiAnalyticsFlutterApi.track(event: "car_play_start") { result in
+        hostFlutterApi.analyticsTrack(event: "car_play_start") { result in
             print("===== urbiAnalyticsFlutterApi.track \(String(describing: result))")
         }
 //        mapTemplate.showPanningInterface(animated: true)

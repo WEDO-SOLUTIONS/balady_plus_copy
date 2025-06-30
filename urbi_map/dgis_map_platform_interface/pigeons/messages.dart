@@ -1908,8 +1908,9 @@ abstract class FlutterMapApi {
 }
 
 @FlutterApi()
-abstract class UrbiAnalyticsFlutterApi {
-  void track(String event);
+abstract class HostFlutterApi {
+  void analyticsTrack(String event);
+
   void runMain();
 }
 

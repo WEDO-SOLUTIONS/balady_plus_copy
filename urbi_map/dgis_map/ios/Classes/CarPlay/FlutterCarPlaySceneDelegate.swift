@@ -12,13 +12,13 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
     public static var flutterEngine: FlutterEngine? {
         didSet {
             guard let flutterEngine = flutterEngine else { return }
-            api = UrbiAnalyticsFlutterApi(binaryMessenger: flutterEngine.binaryMessenger)
+            hostFlutterApi = HostFlutterApi(binaryMessenger: flutterEngine.binaryMessenger)
         }
     }
-    private static var api: UrbiAnalyticsFlutterApi?
+    private static var hostFlutterApi: HostFlutterApi?
     
     public static func runApp() {
-        guard let api = api else { return }
+        guard let api = hostFlutterApi else { return }
         api.runMain { result in print("========= runApp() \(String(describing: result))") }
     }
     
@@ -27,14 +27,12 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
-        guard let flutterEngine = Self.flutterEngine else { return }
+        guard let flutterEngine = Self.flutterEngine, let hostFlutterApi = Self.hostFlutterApi else { return }
         Bundle.swizzleLocalization()
         Bundle.syncLanguage()
 
-        print("===================== FlutterCarPlaySceneDelegate isRunning")
+        NSLog("===================== FlutterCarPlaySceneDelegate isRunning")
 
-        let api = UrbiAnalyticsFlutterApi(binaryMessenger: flutterEngine.binaryMessenger)
-        
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
         
@@ -47,7 +45,7 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         let map = mapFactory.map
         let dgisCarPlayMapView = DgisCarPlayMapView(map: map, mapView: mapFactory.mapView)
         let mainScreen = MainScreen(
-            urbiAnalyticsFlutterApi: api,
+            urbiAnalyticsFlutterApi: hostFlutterApi,
             map: map,
             interfaceController: interfaceController,
             dgisCarPlayMapView: dgisCarPlayMapView,

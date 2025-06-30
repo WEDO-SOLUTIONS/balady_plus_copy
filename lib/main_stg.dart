@@ -15,9 +15,9 @@ import 'package:flutter/material.dart';
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
-  AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(() async {
+      AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.stg);
       await setupMapness(EnvType.stg);
       await SentryFlutter.init(
