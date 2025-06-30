@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.dgis.FlutterProvider
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.R
 import com.dgis.map.map_api.*
@@ -22,6 +23,8 @@ import com.dgis.map.map_api.*
 /** Entry point for the car app */
 class NavigationCarAppService : CarAppService() {
     override fun onCreateSession(sessionInfo: SessionInfo): Session {
+        FlutterProvider.getHostFlutterApi(this)
+            .analyticsTrack("android_auto_start") { }
         DgisMapInitializer.init(applicationContext, VendorConfigMessage.MOMRAH_PROD)
         startForegroundNotification()
         val session = NavigationCarAppSession(sessionInfo, applicationContext)
@@ -69,7 +72,8 @@ class NavigationCarAppService : CarAppService() {
 
         fun getDefaultNotification(context: Context): NotificationCompat.Builder {
             return NotificationCompat.Builder(context, channelId)
-                .setContentTitle(context.getString(R.string.driving_notification_title)).setSmallIcon(
+                .setContentTitle(context.getString(R.string.driving_notification_title))
+                .setSmallIcon(
                     IconCompat.createWithResource(context, R.drawable.logo_notification)
                 )
 //                .setPriority(NotificationCompat.PRIORITY_HIGH) // todo
