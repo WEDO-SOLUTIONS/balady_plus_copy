@@ -33,6 +33,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         self.model = navigationManager.uiModel
         self.eventChannel = eventChannel
         self.mapTemplate = CPMapTemplate()
+        self.navigationSessionManeuvers = NavigationSessionManeuvers(
+            model: model,
+            mapTemplate: mapTemplate
+        )
     }
 
     private let mapTemplate: CPMapTemplate
@@ -42,7 +46,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var trafficStateCancellable: DGis.Cancellable?
     private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancelable: DGis.Cancellable?
-    private var navigationSessionManeuvers: NavigationSessionManeuvers?
+    private let navigationSessionManeuvers: NavigationSessionManeuvers
     private var currentSettingsScreen: SettingsScreen?
 
     deinit {
@@ -112,8 +116,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             leadingNavigationBarButtonFactories = [
                 makeSearchButton
             ]
-            navigationSessionManeuvers?.disable()
-            navigationSessionManeuvers = nil
+            navigationSessionManeuvers.disable()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.dgisCarPlayMapView.myLocation()
                 // await for following to be disabled in SDK when navigation is stopped
@@ -124,20 +127,11 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 makeFinishHeaderButton
             ]
 
-            if model.isFreeRoam { break }
-
-            navigationSessionManeuvers?.disable()
-
-            navigationSessionManeuvers = NavigationSessionManeuvers(
-                model: model,
-                mapTemplate: mapTemplate,
-                routeInfo: model.route
-            )
-            navigationSessionManeuvers?.navigate()
+            navigationSessionManeuvers.navigate()
         case .routeSearch:
             break
         case .finished:
-            navigationSessionManeuvers?.finish()
+            navigationSessionManeuvers.finish()
         @unknown default:
             break
         }
@@ -345,7 +339,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             handler: onSettingsBarTap
         )
     }
-    
+
     func navigate(to directoryObject: DirectoryObject) {
         guard let geoPoint = directoryObject.markerPosition?.point else {
             return

@@ -4,58 +4,67 @@ import DGis
 class NavigationSessionManeuvers {
     private let model: Model
     private let mapTemplate: CPMapTemplate
-    private let routeInfo: RouteInfo
-    private let navigationSession: CPNavigationSession
+    private var navigationSession: CPNavigationSession?
 
     init(
         model: Model,
-        mapTemplate: CPMapTemplate,
-        routeInfo: RouteInfo
+        mapTemplate: CPMapTemplate
     ) {
         self.model = model
         self.mapTemplate = mapTemplate
-        self.routeInfo = routeInfo
-        self.navigationSession = mapTemplate.startNavigationSession(
-            for: routeInfo.trip
-        )
     }
 
-    var routePositionChannelCancellable: Cancellable?
+    private var routePositionChannelCancellable: Cancellable?
+    private var routeChannelCancelable: DGis.Cancellable?
 
-    deinit {
+    private func cancel() {
         routePositionChannelCancellable?.cancel()
-        routePositionChannelCancellable = nil
+        routeChannelCancelable?.cancel()
+        navigationSession = nil
     }
 
     func navigate() {
+        routeChannelCancelable?.cancel()
+        routeChannelCancelable = model.routeChannel.sink(
+            receiveValue: receiveRouteInfo
+        )
+    }
+
+    private func receiveRouteInfo(routeInfo: RouteInfo) {
         if model.isFreeRoam { return }
 
         let cpManeuvers = routeInfo.route.instructions.entries.map(
             mapCPManeuver
         )
 
+        self.navigationSession?.cancelTrip()
+        let navigationSession = mapTemplate.startNavigationSession(
+            for: model.route.trip
+        )
+        self.navigationSession = navigationSession
+
         navigationSession.upcomingManeuvers = cpManeuvers
 
-        routePositionChannelCancellable = model.routePositionChannel.sink(
-            receiveValue: receivedRoutePosition
-        )
+        routePositionChannelCancellable?.cancel()
+        routePositionChannelCancellable = model.routePositionChannel.sink {
+            [self] routePosition in
+            updateTripEstimates(navigationSession)
+            guard let routePosition else { return }
+            updateNextManeuver(with: routePosition, navigationSession)
+        }
     }
 
     func finish() {
-        navigationSession.finishTrip()
+        navigationSession?.finishTrip()
+        cancel()
     }
 
     func disable() {
-        navigationSession.cancelTrip()
+        navigationSession?.cancelTrip()
+        cancel()
     }
 
-    private func receivedRoutePosition(_ routePosition: RoutePoint?) {
-        updateTripEstimates()
-        guard let routePosition else { return }
-        updateNextManeuver(with: routePosition)
-    }
-
-    private func updateTripEstimates() {
+    private func updateTripEstimates(_ navigationSession: CPNavigationSession) {
         let tripDistanceRemaining =
             model.distance ?? Measurement(value: -1, unit: .millimeters)
         let tripTimeRemaining = model.duration ?? TimeInterval(-1)
@@ -69,7 +78,9 @@ class NavigationSessionManeuvers {
         )
     }
 
-    private func updateNextManeuver(with routePoint: RoutePoint) {
+    private func updateNextManeuver(
+        with routePoint: RoutePoint, _ navigationSession: CPNavigationSession
+    ) {
         guard let nextManeuver = navigationSession.upcomingManeuvers.first,
             let instructionRouteEntry = nextManeuver.userInfo
                 as? InstructionRouteEntry
