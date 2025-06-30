@@ -19,19 +19,25 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
     
     public static func runApp() {
         guard let api = hostFlutterApi else { return }
-        api.runMain { result in print("========= runApp() \(String(describing: result))") }
+        api.runMain { _ in  }
     }
+    
+    private static var sentCarPlayStart = false
     
     public func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
-        guard let flutterEngine = Self.flutterEngine, let hostFlutterApi = Self.hostFlutterApi else { return }
+        guard let hostFlutterApi = Self.hostFlutterApi else { return }
+        
+        if (!Self.sentCarPlayStart) {
+            hostFlutterApi.analyticsTrack(event: "car_play_start") { _ in }
+            Self.sentCarPlayStart = true
+        }
+        
         Bundle.swizzleLocalization()
         Bundle.syncLanguage()
-
-        NSLog("===================== FlutterCarPlaySceneDelegate isRunning")
 
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
@@ -45,7 +51,6 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         let map = mapFactory.map
         let dgisCarPlayMapView = DgisCarPlayMapView(map: map, mapView: mapFactory.mapView)
         let mainScreen = MainScreen(
-            urbiAnalyticsFlutterApi: hostFlutterApi,
             map: map,
             interfaceController: interfaceController,
             dgisCarPlayMapView: dgisCarPlayMapView,
