@@ -46,20 +46,23 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var trafficStateCancellable: DGis.Cancellable?
     private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancelable: DGis.Cancellable?
+    private var routeChannelCancelable: DGis.Cancellable?
     private let navigationSessionManeuvers: NavigationSessionManeuvers
     private var currentSettingsScreen: SettingsScreen?
 
     deinit {
         rebuildUiCancellable?.cancel()
         navigatorStateCancelable?.cancel()
+        routeChannelCancelable?.cancel()
     }
 
-    private var leadingNavigationBarButtonFactories = [() -> CPBarButton]() {
-        didSet {
-            mapTemplate.leadingNavigationBarButtons =
-                leadingNavigationBarButtonFactories.map { make in make() }
-        }
-    }
+    private lazy var mainLeadFactories: [() -> CPBarButton] = [
+        makeSearchButton
+    ]
+
+    private lazy var panningLeadFactories: [() -> CPBarButton] = [
+        makeAcceptHeaderButton
+    ]
 
     func createTemplate() -> CPMapTemplate {
         if let maneuverColor = UIColor(named: "CarPlayManueverBackgroung") {
@@ -78,9 +81,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             makeMyLocationButton(),
         ]
 
-        leadingNavigationBarButtonFactories = [
-            makeSearchButton
-        ]
+        buildLeadButtons()
 
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
@@ -96,26 +97,48 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         navigatorStateCancelable = model.stateChannel.sink(
             receiveValue: navigatorStateListener
         )
+        
+        routeChannelCancelable = model.routeChannel.sink(
+            receiveValue: receiveRouteInfo
+        )
 
         return mapTemplate
     }
 
-    private func whenLanguageUpdated(language: String?) {
-        let value = leadingNavigationBarButtonFactories
-        leadingNavigationBarButtonFactories = value
+    private func receiveRouteInfo(routeInfo: RouteInfo) {
+        composeMainLeadFactories()
+    }
+    
+    private func composeMainLeadFactories() {
+        if (model.state == .disabled) {
+            mainLeadFactories = [
+                makeSearchButton
+            ]
+        } else if !model.isFreeRoam {
+            mainLeadFactories = [
+                makeFinishHeaderButton
+            ]
+        }
+        buildLeadButtons()
     }
 
-    private func buildFromFactories() {
-        mapTemplate.leadingNavigationBarButtons =
-            leadingNavigationBarButtonFactories.map { make in make() }
+    private func whenLanguageUpdated(language: String?) {
+        buildLeadButtons()
+    }
+
+    private func buildLeadButtons() {
+        let functions =
+            mapTemplate.isPanningInterfaceVisible
+            ? panningLeadFactories : mainLeadFactories
+        mapTemplate.leadingNavigationBarButtons = functions.map { function in
+            function()
+        }
     }
 
     private func navigatorStateListener(state: State) {
+        composeMainLeadFactories()
         switch state {
         case .disabled:
-            leadingNavigationBarButtonFactories = [
-                makeSearchButton
-            ]
             navigationSessionManeuvers.disable()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.dgisCarPlayMapView.myLocation()
@@ -123,10 +146,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 FlutterCarPlayDashboardSceneDelegate.mapView?.myLocation()
             }
         case .navigation:
-            leadingNavigationBarButtonFactories = [
-                makeFinishHeaderButton
-            ]
-
             navigationSessionManeuvers.navigate()
         case .routeSearch:
             break
@@ -188,14 +207,12 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onAcceptBarTap(_: CPBarButton) {
-        mapTemplate.dismissPanningInterface(animated: true)
-        leadingNavigationBarButtonFactories = [
-            makeSearchButton
-        ]
+        mapTemplate.dismissPanningInterface(animated: false)
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
             makeSettingsButton(),
         ]
+        buildLeadButtons()
     }
 
     private func onFinishBarTap(_: CPBarButton) {
@@ -207,9 +224,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mapTemplate.trailingNavigationBarButtons = [
             makeMyLocationHeaderButton()
         ]
-        leadingNavigationBarButtonFactories = [
-            makeAcceptHeaderButton
-        ]
+        buildLeadButtons()
     }
 
     private func processDirectEvent(event: DGis.Event) {
