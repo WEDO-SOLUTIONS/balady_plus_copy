@@ -4,12 +4,15 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
+import 'package:mapness/features/saudi_pass/functions/create_amount_or_ratio_text_span.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 /// The [_PoiContentOffersWidget] widget is used to display a offers in the POI content.
 class PoiContentOffersCard extends StatelessWidget {
@@ -18,7 +21,7 @@ class PoiContentOffersCard extends StatelessWidget {
   final List<Offer> offers;
   final EdgeInsets contentPadding;
 
-  const PoiContentOffersCard({required this.offers, required this.contentPadding});
+  const PoiContentOffersCard({required this.offers, required this.contentPadding, super.key});
 
   @override
   Widget build(BuildContext context) => offers.length == 1
@@ -48,7 +51,7 @@ class PoiContentOffersCard extends StatelessWidget {
         );
 }
 
-class _OfferCard extends StatelessWidget {
+class _OfferCard extends HookConsumerWidget {
   final Offer offer;
   final double height;
   final double width;
@@ -57,12 +60,26 @@ class _OfferCard extends StatelessWidget {
     required this.offer,
     required this.height,
     required this.width,
-    Key? key,
-  }) : super(key: key);
+  });
+
+  TextSpan? _getDiscount(Offer offer, Language language, BuildContext context) {
+    final locale = Localizations.localeOf(context);
+
+    return createAmountOrRatioTextSpan(
+      language: language,
+      locale: locale,
+      amount: offer.typeDetails.amount,
+      ratio: offer.typeDetails.ratio,
+      iconSize: 22,
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasDiscount = offer.discount != null;
+
+    final language = ref.watch(appLanguageProvider);
+    final discount = _getDiscount(offer, language, context);
 
     return GestureDetector(
       onTap: () => context.router.push(OfferRoute(offerId: offer.id)),
@@ -95,8 +112,8 @@ class _OfferCard extends StatelessWidget {
                           ),
                         ),
                         if (offer.discount != null)
-                          Text(
-                            '${offer.discount!}',
+                          Text.rich(
+                            discount!,
                             maxLines: 1,
                             style: context.textStyleV3.h1SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
                           ),
