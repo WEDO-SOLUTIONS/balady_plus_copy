@@ -325,6 +325,7 @@ class _Content extends HookConsumerWidget {
   Future<void> _showTerms(BuildContext context, String terms) async {
     await showDialog(
       context: context,
+      useSafeArea: false,
       builder: (_) => OfferTermsSheet(
         terms: terms,
         title: context.l10n.termAndConditions,
@@ -348,6 +349,7 @@ class _Content extends HookConsumerWidget {
 
         final redeemed = await showDialog(
           context: context,
+          useSafeArea: false,
           builder: (_) => OfferCodeSheet(
             code: code,
             offerId: offerId,
