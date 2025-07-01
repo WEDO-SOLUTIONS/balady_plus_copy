@@ -28,4 +28,10 @@ object FlutterProvider {
         }
         return api!!
     }
+
+    fun destroyFlutterEngine() {
+        flutterEngine?.destroy()
+        flutterEngine = null
+        api = null
+    }
 }

@@ -38,6 +38,20 @@ class NavigationCarAppService : CarAppService() {
         return HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        connectionState = CarAppConnectionState.CONNECTED
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectionState = CarAppConnectionState.DISCONNECTED
+
+        if (MainAppScreenStateNotifier.state == MainAppScreenState.DESTROYED) {
+            FlutterProvider.destroyFlutterEngine()
+        }
+    }
+
     private fun startForegroundNotification() {
         try {
             createNotificationChannel()
@@ -70,6 +84,8 @@ class NavigationCarAppService : CarAppService() {
         const val notificationId = 1
         private const val tag = "NavigationCarAppService"
 
+        var connectionState: CarAppConnectionState = CarAppConnectionState.DISCONNECTED
+
         fun getDefaultNotification(context: Context): NotificationCompat.Builder {
             return NotificationCompat.Builder(context, channelId)
                 .setContentTitle(context.getString(R.string.driving_notification_title))
@@ -79,4 +95,8 @@ class NavigationCarAppService : CarAppService() {
 //                .setPriority(NotificationCompat.PRIORITY_HIGH) // todo
         }
     }
+}
+
+enum class CarAppConnectionState {
+    CONNECTED, DISCONNECTED
 }
