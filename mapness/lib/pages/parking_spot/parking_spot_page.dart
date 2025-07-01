@@ -56,6 +56,20 @@ class ParkingSpotPage extends HookConsumerWidget {
     final inputState = useState<BaladyInputState>(BaladyInputState.defaultValue);
     final supportingText = useState<String?>(null);
 
+    void checkDirty() {
+      final stored = ref.read(parkingManageProvider).valueOrNull;
+      final images = ref.read(parkingImageProvider(isEdit: isEdit));
+
+      final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
+      final textDirty = textController.text != stored?.comment;
+      final addressDirty = addressNotifier.value != stored?.address;
+      final latDirty = latLng.value?.latitude != stored?.lat;
+      final lonDirty = latLng.value?.longitude != stored?.lon;
+
+      final dirty = isEdit ? (textDirty || addressDirty || latDirty || lonDirty || imagesDirty) : latLng.value != null;
+      isDirty.value = dirty;
+    }
+
     useEffect(() {
       final stored = ref
           .read(parkingManageProvider)
@@ -64,23 +78,6 @@ class ParkingSpotPage extends HookConsumerWidget {
         textController.text = stored.comment;
         addressNotifier.value = stored.address;
         latLng.value = LatLng(latitude: stored.lat, longitude: stored.lon);
-      }
-
-      void checkDirty() {
-        final stored = ref
-            .read(parkingManageProvider)
-            .valueOrNull;
-        final images = ref.read(parkingImageProvider(isEdit: isEdit));
-
-        final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
-        final textDirty = textController.text != stored?.comment;
-        final addressDirty = addressNotifier.value != stored?.address;
-        final latDirty = latLng.value?.latitude != stored?.lat;
-        final lonDirty = latLng.value?.longitude != stored?.lon;
-
-        final dirty =
-        isEdit ? (textDirty || addressDirty || latDirty || lonDirty || imagesDirty) : latLng.value != null;
-        isDirty.value = dirty;
       }
 
       addressNotifier.addListener(checkDirty);
@@ -115,7 +112,9 @@ class ParkingSpotPage extends HookConsumerWidget {
 
     ref
       ..watch(parkingSpotMapProvider.notifier)..watch(parkingManageProvider.notifier)
-      ..listen(parkingImageProvider(isEdit: isEdit), (_, __) {});
+      ..listen(parkingImageProvider(isEdit: isEdit), (_, __) {
+        checkDirty();
+      });
     final canSave = isDirty.value && isValid.value;
 
     return Scaffold(

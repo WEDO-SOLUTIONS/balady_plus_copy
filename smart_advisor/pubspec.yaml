@@ -72,7 +72,7 @@ dependencies:
   enhance_stepper: ^1.0.1
   cupertino_stepper:
   flutter_riverpod: ^2.4.1
-  syncfusion_flutter_pdfviewer:
+  syncfusion_flutter_pdfviewer: 26.2.14
 
 dev_dependencies:
   flutter_lints: ^2.0.1
@@ -87,6 +87,7 @@ dependency_overrides:
   archive: ^3.6.1
   dio: ^5.0.0
   json_serializable: ^6.7.1
+  flutter_pdfview: 1.4.0
   # curl_logger_dio_interceptor: ^1.0.0
 
 # For information on the generic Dart part of this file, see the

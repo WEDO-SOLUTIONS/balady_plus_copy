@@ -2,7 +2,7 @@ import CarPlay
 import Combine
 import DGis
 
-class MainScreen: NSObject, CPMapTemplateDelegate {
+class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let map: Map
     private let interfaceController: CPInterfaceController
     private let dgisCarPlayMapView: DgisCarPlayMapView
@@ -33,6 +33,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         self.model = navigationManager.uiModel
         self.eventChannel = eventChannel
         self.mapTemplate = CPMapTemplate()
+        self.navigationSessionManeuvers = NavigationSessionManeuvers(
+            model: model,
+            mapTemplate: mapTemplate
+        )
     }
 
     private let mapTemplate: CPMapTemplate
@@ -42,7 +46,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
     private var trafficStateCancellable: DGis.Cancellable?
     private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancelable: DGis.Cancellable?
-    private var navigationSessionManeuvers: NavigationSessionManeuvers?
+    private let navigationSessionManeuvers: NavigationSessionManeuvers
     private var currentSettingsScreen: SettingsScreen?
 
     deinit {
@@ -109,28 +113,25 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
     private func navigatorStateListener(state: State) {
         switch state {
         case .disabled:
-            navigationSessionManeuvers?.disable()
-            navigationSessionManeuvers = nil
+            leadingNavigationBarButtonFactories = [
+                makeSearchButton
+            ]
+            navigationSessionManeuvers.disable()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.dgisCarPlayMapView.myLocation()
                 // await for following to be disabled in SDK when navigation is stopped
                 FlutterCarPlayDashboardSceneDelegate.mapView?.myLocation()
             }
         case .navigation:
-            if model.isFreeRoam { break }
+            leadingNavigationBarButtonFactories = [
+                makeFinishHeaderButton
+            ]
 
-            navigationSessionManeuvers?.disable()
-            
-            navigationSessionManeuvers = NavigationSessionManeuvers(
-                model: model,
-                mapTemplate: mapTemplate,
-                routeInfo: model.route
-            )
-            navigationSessionManeuvers?.navigate()
+            navigationSessionManeuvers.navigate()
         case .routeSearch:
             break
         case .finished:
-            navigationSessionManeuvers?.finish()
+            navigationSessionManeuvers.finish()
         @unknown default:
             break
         }
@@ -140,7 +141,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         let screen = SearchScreen(
             interfaceController: interfaceController,
             map: map,
-            userDefaultsPublished: userDefaultsPublished
+            userDefaultsPublished: userDefaultsPublished,
+            searchNavigation: self
         )
         screen.createTemplate().show(with: interfaceController)
     }
@@ -156,12 +158,12 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         screen.createTemplate().show(with: interfaceController)
         currentSettingsScreen = screen
     }
-    
+
     func toggleSounds(toggleType: SoundToggleType) {
         // Update sound settings in the current settings screen if it exists
         currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
     }
-    
+
     private func onBackTap(_: CPBarButton) {
         interfaceController.popTemplate(animated: true, completion: nil)
         currentSettingsScreen = nil
@@ -194,6 +196,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
             makePanHeaderButton(),
             makeSettingsButton(),
         ]
+    }
+
+    private func onFinishBarTap(_: CPBarButton) {
+        navigationManager.stop()
     }
 
     private func onPanningBarTap(_: CPBarButton) {
@@ -307,6 +313,13 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         )
     }
 
+    private func makeFinishHeaderButton() -> CPBarButton {
+        return CPBarButton(
+            title: NSLocalizedString("mainScreenBarFinishButton", comment: ""),
+            handler: onFinishBarTap
+        )
+    }
+
     private func makePanHeaderButton() -> CPBarButton {
         let image = UIImage(named: "Pan")!.withRenderingMode(.alwaysOriginal)
         return CPBarButton(image: image, handler: onPanningBarTap)
@@ -321,8 +334,28 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
 
     private func makeSettingsButton() -> CPBarButton {
         return CPBarButton(
-            image: UIImage(named: "Settings")!.withRenderingMode(.alwaysOriginal),
+            image: UIImage(named: "Settings")!.withRenderingMode(
+                .alwaysOriginal),
             handler: onSettingsBarTap
         )
+    }
+
+    func navigate(to directoryObject: DirectoryObject) {
+        guard let geoPoint = directoryObject.markerPosition?.point else {
+            return
+        }
+
+        let finishPoint = RouteSearchPoint(coordinates: geoPoint)
+
+        let carRouteSearchOptions = CarRouteSearchOptions()
+
+        let routeSearchOptions = RouteSearchOptions.car(carRouteSearchOptions)
+
+        let routeBuildOptions = RouteBuildOptions.init(
+            finishPoint: finishPoint,
+            routeSearchOptions: routeSearchOptions
+        )
+
+        try! navigationManager.start(routeBuildOptions: routeBuildOptions)
     }
 }

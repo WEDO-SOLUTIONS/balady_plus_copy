@@ -13,8 +13,8 @@ import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   unhandledExceptionBaladyLogs(() async {
-    AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
     await runMapnessApp(() async {
+      AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
       await SentryFlutter.init(
