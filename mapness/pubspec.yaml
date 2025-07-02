@@ -159,6 +159,7 @@ dependency_overrides:
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
   sentry_dio: 8.14.2
+  flutter_hms_gms_availability: ^3.10.0
 
 dev_dependencies:
   flutter_test:
