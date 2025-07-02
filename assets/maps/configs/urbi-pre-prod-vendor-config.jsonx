@@ -2,7 +2,7 @@
     "name": "Mobile SDK for Balady App URBI Pre-Prod overrides",
     "comment": "",
     "overrides": {
-        "dgis/native-sdk/keys/user_web_api_key_for_on_premise": "dfdd94df-49f9-45df-84ec-e8870ebdb9a0",
+        "dgis/native-sdk/keys/user_web_api_key_for_on_premise": "461ff8c8-9e61-41fc-848f-5a87a4498e3a",
         "dgis/native-sdk/map/tileserver_url": "https://momrah-tiles-api.iaas.urbi-sa.com",
         "dgis/native-sdk/map/tileserver_tileset": "native",
         "dgis/native-sdk/map/OnlineIndoorBuildingFetcher/indoor_base_url": "https://momrah-catalog-api.iaas.urbi-sa.com",
