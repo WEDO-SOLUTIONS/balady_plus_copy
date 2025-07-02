@@ -36,7 +36,7 @@
   <string name="settings_voice_instructions">تعليمات صوتية</string>
   <string name="settings_traffic">وقت الوصول</string>
   <string name="settings_parking">مواقف</string>
-  <string name="settings_route">المسار</string>
+  <string name="settings_route">الطريق</string>
   <string name="settings_prompts_volume">مستوى التعليمات الصوتية</string>
 
   <!-- Voice Instructions -->
