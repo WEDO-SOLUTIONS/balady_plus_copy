@@ -17,17 +17,36 @@ class LicensesModel extends LicenseEntity {
 
   factory LicensesModel.fromMap(Map<String, dynamic> json) {
     return LicensesModel(
-        licenseNumber: int.parse(json['licenseNumber'].toString()),
-        licenseStatusId: int.parse(json['licenseStatusId'].toString()),
-        licenseStatusName: json['licenseStatusName'] as String,
-        licenseTypeName: json['licenseName'] as String,
-        requestTypeName: json['requestTypeName'] as String? ?? '',
-        municipalityName: json['municipalityName'] as String,
-        subMunicipalityName: json['subMunicipalityName'] as String? ?? '',
-        licenseEndDate: DateTime.parse(json['licenseEndDate'] as String),
-        updateTime: DateTime.tryParse(json['updateTime'] as String? ?? ''),
-        redirectUrl: json["redirectUrl"],
-        requestMainTypeId: json["requestMainTypeId"],
-        requestNumber: json["requestNumber"]);
+      licenseNumber: _parseInt(json['licenseNumber']),
+      licenseStatusId: _parseInt(json['licenseStatusId']),
+      licenseStatusName: json['licenseStatusName']?.toString() ?? '',
+      licenseTypeName: json['licenseName']?.toString() ?? '',
+      requestTypeName: json['requestTypeName']?.toString() ?? '',
+      municipalityName: json['municipalityName']?.toString() ?? '',
+      subMunicipalityName: json['subMunicipalityName']?.toString() ?? '',
+      licenseEndDate: _parseDate(json['licenseEndDate']),
+      updateTime: _tryParseDate(json['updateTime']),
+      redirectUrl: json["redirectUrl"],
+      requestMainTypeId: json["requestMainTypeId"],
+      requestNumber: json["requestNumber"],
+    );
+  }
+
+  static int _parseInt(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    return int.tryParse(value.toString()) ?? 0;
+  }
+
+  static DateTime _parseDate(dynamic value) {
+    if (value == null) return DateTime(1970, 1, 1);
+    if (value is DateTime) return value;
+    return DateTime.tryParse(value.toString()) ?? DateTime(1970, 1, 1);
+  }
+
+  static DateTime? _tryParseDate(dynamic value) {
+    if (value == null) return null;
+    if (value is DateTime) return value;
+    return DateTime.tryParse(value.toString());
   }
 }

@@ -4601,5 +4601,8 @@
   "open_momtathl_app": "Proceed to the Compliant Application",
   "Activies": "Activies",
   "municipal_services_title": "Welcome to Municipal Services on Balady+",
-  "municipal_services_message": "We are a smart gate that facilitates services — not the executing entity."
+  "municipal_services_message": "We are a smart gate that facilitates services — not the executing entity.",
+  "Profession":"Profession",
+  "Search_for_a_profession...":"Search for a profession...",
+  "No_professions_found":"No professions found"
 }

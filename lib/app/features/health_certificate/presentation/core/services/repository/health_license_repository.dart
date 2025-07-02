@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/features/health_certificate/presentation/core/models/profession.dart';
 import 'package:dgis_map/library.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:smart_advisor/app/core/errors/exceptions.dart';
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
@@ -28,11 +31,89 @@ import '../../models/submit_new_request_response.dart';
 import '../../models/update_photo_response.dart';
 import '../../models/validate_health_certificate_response.dart';
 import '../../models/verify_otp_certificate.dart';
+import '../../models/location_info_response.dart';
 import '../../../../../../core/services/global/web_service.dart' as web;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HealthLicenseRepository {
   final webServices = locator<PegaWebService>();
+  final webService = locator<web.WebService>();
+
+  String idTypeHandling(String idType) {
+    if (idType == '3' || idType == '4') {
+      return '9';
+    } else if (idType == '2') {
+      return '3';
+    } else {
+      return idType;
+    }
+  }
+
+  Future<List<Profession>> searchProfessions({
+    required String query,
+    int page = 0,
+    int size = 20,
+  }) async {
+    try {
+      final response = await webService.dio.get(
+        ApiUrl.getProfessions,
+        queryParameters: {
+          'page': page,
+          'size': size,
+          'name': query,
+        },
+      );
+
+      final responseData = response.data as Map<String, dynamic>?;
+
+      if (responseData == null) {
+        throw Exception('Invalid response data');
+      }
+
+      final data = responseData['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw Exception('No data in response');
+      }
+
+      final responseCode = data['responseCode'] as String?;
+      if (responseCode != '1') {
+        final errorMessage =
+            data['responseMessage'] as String? ?? 'Unknown error';
+        throw Exception('Failed to load professions: $errorMessage');
+      }
+
+      final result = data['result'] as List<dynamic>? ?? [];
+      return result
+          .map<Profession>(
+              (e) => Profession.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
   Future<Tuple3<bool?, String?, GisLocationResult?>> getGisLocation(
       LatLng location) async {
     var res = await sl<web.WebService>().dio.get(ApiUrl.gis,
@@ -104,9 +185,10 @@ class HealthLicenseRepository {
     String url = isRenew
         ? ApiConstants.ValidateRenewHelathCertificatesRequest
         : ApiConstants.ValidateHelathCertificatesRequest;
-    final body = await webServices.postApigeeRequest(url, body: {
+    final body =
+        await webServices.postApigeeRequest(url, isHealthLicense: true, body: {
       "employeeIdentityNumber": userId,
-      "employeeIdentityType": idType,
+      "employeeIdentityType": idTypeHandling(idType),
       "employeeBirthDate": birthDate,
       "submitterBirthDate": birthDate,
       "submitterType": "HIMSELF",
@@ -144,30 +226,27 @@ class HealthLicenseRepository {
           errorMsg: error.toString(),
         );
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, ValidateHealthCertificateResponse?>(
         state, error, result);
   }
 
   Future<Tuple3<bool?, String?, List<String>?>> getTerms(
-      String userId,
-      String idType,
-      String birthDate,
-      String municipalityId,
-      bool showAreaNoLicencePermit,
+      String birthDate, String municipalityId, bool showAreaNoLicencePermit,
       {bool isRenew = false}) async {
     String url = ApiConstants.healthTerms;
     int requestType = isRenew ? 1303 : 1301;
     print("HGG");
-    final body = await webServices.getApigeeRequest(url, queryParams: {
+    final body = await webServices
+        .getApigeeRequest(url, isHealthLicense: true, queryParams: {
       "birthDate": birthDate,
       "gisCode": municipalityId,
       "requestTypeId": requestType.toString(),
@@ -205,14 +284,14 @@ class HealthLicenseRepository {
           errorMsg: error.toString(),
         );
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, List<String>?>(state, error, result);
   }
@@ -230,6 +309,7 @@ class HealthLicenseRepository {
       String? crNumber,
       String? licenseId,
       bool areaNoLicencePermit,
+      String? professionCode,
       int? healthCenterId,
       String? licenseType,
       String? districtCode,
@@ -237,7 +317,8 @@ class HealthLicenseRepository {
     final String url = isRenew
         ? ApiConstants.ApplyRenewHelathCertificatesRequest
         : ApiConstants.ApplyHelathCertificatesRequest;
-    final body = await webServices.postApigeeRequest(url, body: {
+    final body =
+        await webServices.postApigeeRequest(url, isHealthLicense: true, body: {
       "submitterBirthDate": birthDate,
       "submitterType": "HIMSELF",
       "mobileNumber": mobile,
@@ -249,10 +330,10 @@ class HealthLicenseRepository {
       if (licenseType != null) "licenseType": licenseType,
       "areaNoLicencePermit": areaNoLicencePermit,
       "employeeIdentityNumber": userId,
-      "employeeIdentityType": idType,
+      "employeeIdentityType": idTypeHandling(idType),
       "employeeBirthDate": birthDate,
       "employeeMobileNumber": mobile,
-      "": "",
+      if (professionCode != null) "professionCode": professionCode,
       if (healthCenterId != null) "healthCenterId": healthCenterId,
       "x": x.toString(),
       "y": y.toString(),
@@ -281,33 +362,33 @@ class HealthLicenseRepository {
       try {
         Helpers.sendLog(url: url, data: data, errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, ApplyNewHealthRequest?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, CancelHealthCertificateResponse?>>
       cancelHealthCertificate(
-    String userId,
-    String idType,
     String birthDate,
     String mobile,
     int? certificateNumber,
   ) async {
-    final body = await webServices
-        .postApigeeRequest(ApiConstants.CancelHelathCertificatesRequest, body: {
-      "certificateNumber": certificateNumber,
-      "submitterBirthDate": birthDate,
-      "submitterMobileNumber": mobile,
-      "submitterType": "HIMSELF"
-    });
+    final body = await webServices.postApigeeRequest(
+        ApiConstants.CancelHelathCertificatesRequest,
+        isHealthLicense: true,
+        body: {
+          "certificateNumber": certificateNumber,
+          "submitterBirthDate": birthDate,
+          "submitterMobileNumber": mobile,
+          "submitterType": "HIMSELF"
+        });
     bool state = body['state'];
     dynamic data = body['data'];
     String error =
@@ -335,14 +416,14 @@ class HealthLicenseRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, CancelHealthCertificateResponse?>(
         state, error, result);
@@ -355,7 +436,7 @@ class HealthLicenseRepository {
         ? ApiConstants.SubmitRenewRequest
         : ApiConstants.SubmitNewRequest;
     final body = await webServices.postApigeeRequest(url,
-        relativePath: requestId.toString());
+        isHealthLicense: true, relativePath: requestId.toString());
     bool state = body['state'];
     dynamic data = body['data'];
     String error =
@@ -384,14 +465,14 @@ class HealthLicenseRepository {
             qeuryParms: requestId.toString(),
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, SubmitNewRequestResponse?>(
         state, error, result);
@@ -402,7 +483,7 @@ class HealthLicenseRepository {
     String query = crNumber;
 
     final body = await webServices.postApigeeRequest(ApiConstants.CrInfoService,
-        relativePath: query);
+        isHealthLicense: true, relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
     CrInformationResponse? result;
@@ -431,14 +512,14 @@ class HealthLicenseRepository {
             qeuryParms: query,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, CrInformationResponse?>(state, error, result);
   }
@@ -449,8 +530,8 @@ class HealthLicenseRepository {
     String licenseType,
   ) async {
     final body = await webServices.getApigeeRequest(
-      ApiConstants.LicenseInfoService(licenseType, licenseId),
-    );
+        ApiConstants.LicenseInfoService(licenseType, licenseId),
+        isHealthLicense: true);
     bool state = body['state'];
     dynamic data = body['data'];
     LicenseForHealthInformationResponse? result;
@@ -479,14 +560,14 @@ class HealthLicenseRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, LicenseForHealthInformationResponse?>(
         state, error, result);
@@ -498,6 +579,7 @@ class HealthLicenseRepository {
 
     final body = await webServices.getApigeeRequest(
         ApiConstants.healthRequestDetails,
+        isHealthLicense: true,
         relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
@@ -513,14 +595,14 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, HealthRequestDetails?>(state, error, result);
   }
 
@@ -529,7 +611,7 @@ class HealthLicenseRepository {
     String query = "$requestId";
 
     final body = await webServices.postApigeeRequest(ApiConstants.deleteRequest,
-        relativePath: query);
+        isHealthLicense: true, relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
     DeleteRequestResponse? result;
@@ -544,23 +626,24 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, DeleteRequestResponse?>(state, error, result);
   }
 
   Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadAttachments(
       String id) async {
-    String query = "$id";
+    String query = id;
 
     final body = await webServices.getApigeeRequestWithoutUTF(
         ApiConstants.downLoadAttachments,
+        isHealthLicense: true,
         relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
@@ -578,24 +661,25 @@ class HealthLicenseRepository {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
 
   Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadLicense(
       String id) async {
-    String query = "$id";
+    String query = id;
 
     final body = await webServices.getApigeeRequestWithoutUTF(
         ApiConstants.downLoadLicense,
+        isHealthLicense: true,
         relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
@@ -611,14 +695,14 @@ class HealthLicenseRepository {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
@@ -626,9 +710,10 @@ class HealthLicenseRepository {
   Future<Tuple4<bool?, String?, Uint8List?, String?>>
       downloadLicenseClientImage() async {
     String query =
-        "${(CommonProperties.userInfo?.idNo ?? "")}/${(CommonProperties.userInfo?.getIdType() ?? "")}";
+        "${(CommonProperties.userInfo?.idNo ?? "")}/${idTypeHandling(CommonProperties.userInfo?.getIdType() ?? "")}";
     final body = await webServices.getApigeeRequestWithoutUTF(
         ApiConstants.downLoadHealthCertificateImageProfile,
+        isHealthLicense: true,
         relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
@@ -644,24 +729,25 @@ class HealthLicenseRepository {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
 
   Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadCanceledLicense(
       String id) async {
-    String query = "$id";
+    String query = id;
 
     final body = await webServices.getApigeeRequestWithoutUTF(
         ApiConstants.downLoadCanceledLicense,
+        isHealthLicense: true,
         relativePath: query);
     bool state = body['state'];
     dynamic data = body['data'];
@@ -679,24 +765,24 @@ class HealthLicenseRepository {
         //   error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
   }
 
   Future<Tuple3<bool?, String?, RatingInfoResponse?>> getRatingInfo(
       String serviceId) async {
-    String query = "$serviceId";
+    String query = serviceId;
 
     final body = await webServices.getApigeeRequest(ApiConstants.RatingInfo,
-        relativePath: query, autoLogout: false);
+        isHealthLicense: true, relativePath: query, autoLogout: false);
     bool state = body['state'];
     dynamic data = body['data'];
     RatingInfoResponse? result;
@@ -711,23 +797,24 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, ListResponse?>> getCities(
       String baladiyahID) async {
-    String query = "$baladiyahID";
+    String query = baladiyahID;
 
     final body = await webServices.getApigeeRequest(
         ApiConstants.healthCertificatesCities.replaceAll("{}", query),
+        isHealthLicense: true,
         autoLogout: false);
     bool state = body['state'];
     dynamic data = body['data'];
@@ -746,23 +833,24 @@ class HealthLicenseRepository {
         error = "لا توجد مدن مفعله للخدمة في الموقع الذي قمت باختياره";
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, ListResponse?>(state, error, result);
   }
 
   Future<Tuple3<bool?, String?, ListResponse?>> getHealthCenters(
       String baladiyahID) async {
-    String query = "$baladiyahID";
+    String query = baladiyahID;
 
     final body = await webServices.getApigeeRequest(
         ApiConstants.healthCertificatesCenters,
+        isHealthLicense: true,
         relativePath: query,
         autoLogout: false);
     bool state = body['state'];
@@ -778,14 +866,14 @@ class HealthLicenseRepository {
         error = result.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, ListResponse?>(state, error, result);
   }
 
@@ -793,6 +881,7 @@ class HealthLicenseRepository {
       int requestId) async {
     final body = await webServices.getApigeeRequest(
         ApiConstants.updatedPersonalPhoto(requestId),
+        isHealthLicense: true,
         autoLogout: false);
     bool state = body['state'];
     dynamic data = body['data'];
@@ -808,14 +897,14 @@ class HealthLicenseRepository {
         error = response.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, CheckUpdateClientPhoto?>(
         state, error, result);
   }
@@ -824,6 +913,7 @@ class HealthLicenseRepository {
       String requestId) async {
     final body = await webServices.postApigeeRequest(
       ApiConstants.sendOTPCertificate(requestId),
+      isHealthLicense: true,
     );
     bool state = body['state'];
     dynamic data = body['data'];
@@ -839,14 +929,14 @@ class HealthLicenseRepository {
         error = response.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, SendOtpCertificateResult?>(
         state, error, result);
   }
@@ -857,6 +947,7 @@ class HealthLicenseRepository {
       required String otpKey}) async {
     final body = await webServices.postApigeeRequest(
         ApiConstants.verifyOTPCertificate(requestId),
+        isHealthLicense: true,
         body: {"otp": otp, "otpKey": otpKey});
     bool state = body['state'];
     dynamic data = body['data'];
@@ -872,15 +963,70 @@ class HealthLicenseRepository {
         error = response.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, bool?>(state, error, result);
+  }
+
+  Future<Tuple3<bool?, String?, LocationInfoResponse?>>
+      getLocationInfo() async {
+    try {
+      final response = await webService.dio.get(
+        ApiConstants.locationInfo,
+      );
+
+      final responseData = response.data as Map<String, dynamic>?;
+
+      if (responseData == null) {
+        throw Exception('Invalid response data');
+      }
+
+      final data = responseData['data'] as Map<String, dynamic>?;
+      if (data == null) {
+        throw Exception('No data in response');
+      }
+
+      final responseCode = data['responseCode'] as String?;
+      if (responseCode != '1') {
+        final errorMessage =
+            data['responseMessage'] as String? ?? 'Unknown error';
+        throw Exception('Failed to load location info: $errorMessage');
+      }
+
+      final result = LocationInfoResponse.fromJson(responseData);
+      return Tuple3<bool?, String?, LocationInfoResponse?>(true, "", result);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception: error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        return Tuple3<bool?, String?, LocationInfoResponse?>(
+            false, ("errors_server_error_2").tr(), null);
+      }
+    }
   }
 
   Future<Tuple3<bool?, String?, UpdatePhotoResponse?>> updatePhoto(
@@ -888,13 +1034,15 @@ class HealthLicenseRepository {
       required String birthDate,
       required String otpToken,
       required int versionNo}) async {
-    final body = await webServices
-        .postApigeeRequest(ApiConstants.updateCertificatePhoto, body: {
-      "birthDate": birthDate,
-      "licenseNo": licenseNo,
-      "otpToken": otpToken,
-      "versionNo": versionNo
-    });
+    final body = await webServices.postApigeeRequest(
+        ApiConstants.updateCertificatePhoto,
+        isHealthLicense: true,
+        body: {
+          "birthDate": birthDate,
+          "licenseNo": licenseNo,
+          "otpToken": otpToken,
+          "versionNo": versionNo
+        });
     bool state = body['state'];
     dynamic data = body['data'];
     UpdatePhotoResponse? result;
@@ -909,14 +1057,14 @@ class HealthLicenseRepository {
         error = response.data?.responseMessage ?? error;
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return Tuple3<bool?, String?, UpdatePhotoResponse?>(state, error, result);
   }
 }

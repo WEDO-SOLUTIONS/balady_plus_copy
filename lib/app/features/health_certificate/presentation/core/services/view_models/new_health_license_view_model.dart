@@ -9,6 +9,7 @@ import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/selected_location.dart';
 import '../../models/apply_new_health_request.dart';
+import '../../models/location_info_response.dart';
 import '../../models/cancel_health_certificate_response.dart';
 import '../../models/cr_information.dart';
 import '../../models/delete_request_response.dart';
@@ -19,6 +20,8 @@ import '../../models/submit_new_request_response.dart';
 import '../../models/validate_health_certificate_response.dart';
 import '../repository/health_license_repository.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import '../../models/profession.dart';
+import 'new_details_health_license_view_model.dart';
 
 class HealthLicenseViewModel extends BaseViewModel {
   final _rpository = locator<HealthLicenseRepository>();
@@ -34,10 +37,16 @@ class HealthLicenseViewModel extends BaseViewModel {
   String? crNumber;
   bool isLicenseVerified = false;
   String? licenseNumber;
+  Profession? _selectedProfession;
+  Profession? get selectedProfession => _selectedProfession;
+  set selectedProfession(Profession? value) {
+    _selectedProfession = value;
+    notifyListeners();
+  }
 
   String shopHasLicense = "0";
   String noLicenseReason = "0";
-  LicenseType? selectedLicesnseType = null;
+  LicenseType? selectedLicesnseType;
 
   ValidateHealthCertificateResponse? validateHealthCertificateResponse;
 
@@ -70,6 +79,7 @@ class HealthLicenseViewModel extends BaseViewModel {
     healthCentres = [];
     cities = [];
     selectedLicesnseType = null;
+    _selectedProfession = null;
   }
 
   Future<Tuple3<bool?, String?, GisLocationResult?>> getGisInfo(
@@ -91,12 +101,12 @@ class HealthLicenseViewModel extends BaseViewModel {
 
   Future<bool> validateHealthCertificate(GisLocationResult? result) async {
     String userId = CommonProperties.userInfo?.idNo ?? "";
-    String idType = CommonProperties.userInfo?.getIdType() ?? "";
+    String idType = CommonProperties.userInfo?.idType ?? "";
     String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
     bool isSaudi = userId.startsWith("1");
 
     showLoading();
-    String muncipalityid = result?.MUNICIPALITYUNIQUECODE ?? "";
+    String muncipalityid = result?.municipalityId ?? "";
     // muncipalityid = "013001002";
     Tuple3<bool?, String?, ValidateHealthCertificateResponse?> response =
         await _rpository.validateHealthCertificate(
@@ -126,11 +136,9 @@ class HealthLicenseViewModel extends BaseViewModel {
       String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
 
       showLoading();
-      String muncipalityid = gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "";
+      String muncipalityid = gisLocationResult?.municipalityId ?? "";
       Tuple3<bool?, String?, List<String>?> response =
           await _rpository.getTerms(
-              userId,
-              idType,
               birthDate,
               muncipalityid,
               noLicenseReason == "2" &&
@@ -158,6 +166,7 @@ class HealthLicenseViewModel extends BaseViewModel {
       );
       print(error);
     }
+    return null;
   }
 
   Future<ApplyNewHealthRequest?> applyHealthCertificate() async {
@@ -167,12 +176,16 @@ class HealthLicenseViewModel extends BaseViewModel {
     String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
     bool isSaudi = userId.startsWith("1");
     String mobile = CommonProperties.userInfo?.phone ?? "";
-    double x = selectedLocation!.selectedLocation!.longitude;
-    double y = selectedLocation!.selectedLocation!.latitude;
+
+    // Get coordinates from cached LocationInfo or fallback to selectedLocation
+    final detailsModel = locator<NewDetailsHealthLicenseViewModel>();
+    final coordinates = await detailsModel.getCoordinates();
+    double x = coordinates.item1;
+    double y = coordinates.item2;
 
     String? crType = "CR";
 
-    String muncipalityid = gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "";
+    String muncipalityid = gisLocationResult?.municipalityId ?? "";
     //muncipalityid = "003201";
 
     if (validateHealthCertificateResponse?.data?.result?.showLicense ??
@@ -193,6 +206,7 @@ class HealthLicenseViewModel extends BaseViewModel {
             crNumber,
             licenseNumber,
             areaNoLicencePermit,
+            selectedProfession?.id,
             selectedHealthCentres?.idNumber,
             selectedLicesnseType?.value,
             gisLocationResult?.Balady_DistrictID,
@@ -214,8 +228,6 @@ class HealthLicenseViewModel extends BaseViewModel {
 
   Future<CancelHealthCertificateResponse?> cancelHealthCertificate(
       int certificateNumber) async {
-    String userId = CommonProperties.userInfo?.idNo ?? "";
-    String idType = CommonProperties.userInfo?.idType ?? "";
     String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
     String mobile = CommonProperties.userInfo?.phone ?? "";
 
@@ -223,7 +235,7 @@ class HealthLicenseViewModel extends BaseViewModel {
 
     Tuple3<bool?, String?, CancelHealthCertificateResponse?> response =
         await _rpository.cancelHealthCertificate(
-            userId, idType, birthDate, mobile, certificateNumber);
+            birthDate, mobile, certificateNumber);
     hideLoading();
     if (response.item3 != null &&
         response.item3?.data != null &&
@@ -392,5 +404,18 @@ class HealthLicenseViewModel extends BaseViewModel {
       showError(response.item2 ?? "");
     }
     return false;
+  }
+
+  Future<Tuple3<bool?, String?, LocationInfoResponse?>>
+      getLocationInfo() async {
+    showLoading();
+    try {
+      final response = await _rpository.getLocationInfo();
+      hideLoading();
+      return response;
+    } catch (e) {
+      hideLoading();
+      rethrow;
+    }
   }
 }
