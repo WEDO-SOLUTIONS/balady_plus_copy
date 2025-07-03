@@ -283,14 +283,17 @@ class NavigationHandler(
                         )
                 }
 
-                navigationManager.start(
-                        routeBuildOptions =
-                                RouteBuildOptions(
-                                        finishPoint = finishPoint,
-                                        routeSearchOptions = options,
-                                ),
-                        trafficRoute = route
-                )
+                val isPublicTransport = options is RouteSearchOptions.PublicTransport
+                if (!isPublicTransport) {
+                        navigationManager.start(
+                                routeBuildOptions =
+                                        RouteBuildOptions(
+                                                finishPoint = finishPoint,
+                                                routeSearchOptions = options,
+                                        ),
+                                trafficRoute = route
+                        )
+                }
 
                 callback(Result.success(Unit))
         }
@@ -319,14 +322,18 @@ class NavigationHandler(
                 }
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
-                navigationManager.startSimulation(
-                        routeBuildOptions =
-                                RouteBuildOptions(
-                                        finishPoint = finishPoint,
-                                        routeSearchOptions = options,
-                                ),
-                        trafficRoute = route
-                )
+
+                val isPublicTransport = options is RouteSearchOptions.PublicTransport
+                if (!isPublicTransport) {
+                        navigationManager.startSimulation(
+                                routeBuildOptions =
+                                        RouteBuildOptions(
+                                                finishPoint = finishPoint,
+                                                routeSearchOptions = options,
+                                        ),
+                                trafficRoute = route
+                        )
+                }
 
                 callback(Result.success(Unit))
         }

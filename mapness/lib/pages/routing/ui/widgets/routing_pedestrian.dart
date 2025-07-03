@@ -1,0 +1,58 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/material.dart';
+import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+
+class RoutingPedestrian extends StatelessWidget {
+  final RouteDetailsPublicTransportPedestrian data;
+  const RoutingPedestrian({
+    required this.data,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorLine = context.colorsV3.neutralDefault;
+    final textStyle = context.textStyleV3.bodyLargeRegular;
+    return SizedBox(
+      height: 48,
+      child: Row(
+        children: [
+          Spacing.$3x.widthBox,
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: 2,
+                height: 48,
+                color: colorLine,
+              ),
+              Container(
+                width: 24,
+                height: 24,
+                color: context.colorsV3.backgroundSurface4,
+                child: Icon(TransportIcons.pedestrianLTR, color: colorLine, size: 16),
+              ),
+            ],
+          ),
+          Spacing.$3x.widthBox,
+          Row(
+            children: [
+              Text(
+                '${data.lengthInMeters} ${context.l10n.meters} ${context.l10n.onFoot}',
+                style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
+              ),
+              Text(' · ', style: textStyle.copyWith(color: context.colorsV3.foregroundSoft)),
+              Text(
+                '${data.duration} ${context.l10n.minutes}',
+                style: textStyle.copyWith(color: context.colorsV3.foregroundSoft),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

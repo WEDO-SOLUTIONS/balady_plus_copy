@@ -4,20 +4,30 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
-import 'package:dgis_map_platform_interface/src/utils/public_transport_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
+import 'package:mapness/pages/routing/ui/models/roution_details_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/lib/ar_functions.dart';
+import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
+import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
 class RouteDetailsPage extends HookConsumerWidget {
+  final String? destination;
   final BriefPublicTransportModel route;
+  final void Function()? onPressed;
+  final String buttonLabel;
 
   const RouteDetailsPage({
     required this.route,
+    required this.buttonLabel,
+    this.destination,
+    this.onPressed,
     super.key,
   });
 
@@ -31,7 +41,27 @@ class RouteDetailsPage extends HookConsumerWidget {
     );
 
     final duration = route.duration.formatDuration(context.l10n);
-    final transfers = '${route.transferCount.toString()} transfers';
+    final transfers = ArPlurals.transfers(route.transferCount, context.l10n);
+
+    final List<RouteDetailsPublicTransport> transports = [];
+    for (var e in route.publicTransportTransferRouteLongEntry) {
+      if (e.value.routeParts.isEmpty) {
+        transports.add(RouteDetailsPublicTransportPedestrian(length: e.length.millimeters));
+      } else {
+        final routeParts = <RoutePart>[];
+
+        // TODO: Probably not right
+        for (var routePart in e.value.routeParts) {
+          final part = RoutePart(stations: [
+            e.value.startPointName,
+            ...routePart.intermediateStops.map((e) => e.name),
+            e.value.finishPointName,
+          ]);
+          routeParts.add(part);
+        }
+        transports.add(RouteDetailsPublicTransportMetro(length: e.length.millimeters, routeParts: routeParts));
+      }
+    }
 
     return StatelessBottomSheet(
       scrollController: scrollController,
@@ -40,6 +70,7 @@ class RouteDetailsPage extends HookConsumerWidget {
           color: context.colorsV3.backgroundSurface1,
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const SizedBox(width: 64),
@@ -65,9 +96,7 @@ class RouteDetailsPage extends HookConsumerWidget {
                       return TransportIconWidget(
                         isLarge: true,
                         name: e.names.join(', '),
-                        time: pub.distanceToPedestrianTime(
-                          isPedestrian ? pub.length.millimeters : null,
-                        ),
+                        time: isPedestrian ? durationByFoot(pub.length.millimeters) : null,
                         isLast: e == route.transports.last,
                       );
                     }).toList(),
@@ -88,6 +117,7 @@ class RouteDetailsPage extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ContentWrapper(
+                color: context.colorsV3.backgroundSurface1,
                 children: [
                   ContentRowV2(
                     leading: Icon(
@@ -101,92 +131,41 @@ class RouteDetailsPage extends HookConsumerWidget {
                   ),
                 ],
               ),
-              _buildInfoRow(
-                context,
-                icon: Icons.access_time,
-                title: 'Duration',
-                value: duration,
-              ),
-              Spacing.$3x.heightBox,
-              _buildInfoRow(
-                context,
-                icon: Icons.swap_horiz,
-                title: 'Transfers',
-                value: transfers,
-              ),
-              Spacing.$3x.heightBox,
-              _buildInfoRow(
-                context,
-                icon: Icons.route,
-                title: context.l10n.route,
-                value: route.transports.map((e) => e.names.join(', ')).join(' → '),
-              ),
               Spacing.$4x.heightBox,
-              Text(
-                'Route Details',
-                style: context.textStyleV3.h4SemiBold.copyWith(
-                  color: context.colorsV3.foregroundDefault,
+              ...transports.map((e) => e.toWidget(context)).insertBetween(Spacing.$2x.heightBox),
+              if (destination != null) ...[
+                Spacing.$4x.heightBox,
+                ContentWrapper(
+                  color: context.colorsV3.backgroundSurface1,
+                  children: [
+                    ContentRowV2(
+                      leading: Icon(
+                        GeneralIcons.bulletCircleSolid,
+                        color: context.colorsV3.accentDefault,
+                        size: 24,
+                      ),
+                      text: ContentRowTextOptions(
+                        title: destination,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              ],
               Spacing.$2x.heightBox,
-              Text(
-                'This route uses public transportation including ${route.transports.where((t) => t.names.isNotEmpty).length} different transport lines.',
-                style: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.colorsV3.foregroundSoft,
+              if (onPressed != null)
+                SizedBox(
+                  width: double.infinity,
+                  child: BaladyAppButton(
+                    padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                    buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+                    size: BaladyButtonSize.large,
+                    primaryLabel: buttonLabel,
+                    onTap: () {
+                      context.router.popForced();
+                      onPressed?.call();
+                    },
+                  ),
                 ),
-              ),
-              Spacing.$2x.heightBox,
-              Text(
-                'The journey includes ${route.transferCount} transfer${route.transferCount > 1 ? 's' : ''} between different transport modes.',
-                style: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.colorsV3.foregroundSoft,
-                ),
-              ),
-              Spacing.$2x.heightBox,
-              Text(
-                'Total travel time is approximately $duration.',
-                style: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.colorsV3.foregroundSoft,
-                ),
-              ),
-              Spacing.$6x.heightBox,
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildInfoRow(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String value,
-  }) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 20,
-          color: context.colorsV3.foregroundSoft,
-        ),
-        Spacing.$2x.widthBox,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.colorsV3.foregroundSoft,
-                ),
-              ),
-              Text(
-                value,
-                style: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                  color: context.colorsV3.foregroundDefault,
-                ),
-              ),
             ],
           ),
         ),

@@ -20,9 +20,9 @@ class RoutesCarousel extends ConsumerWidget {
     required this.publicTransportRoutes,
     required this.onActiveChanged,
     required this.startNavigation,
-    required this.startPublicTransportNavigation,
     required this.refresh,
     required this.navType,
+    this.destination,
     super.key,
   });
 
@@ -32,9 +32,8 @@ class RoutesCarousel extends ConsumerWidget {
   final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
   final ValueChanged<int> onActiveChanged;
   final Function(RouteInfo) startNavigation;
-  final Function(BriefPublicTransportModel) startPublicTransportNavigation;
   final Function() refresh;
-
+  final String? destination;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {
@@ -59,7 +58,8 @@ class RoutesCarousel extends ConsumerWidget {
                   steps: context.l10n.steps,
                   go: context.l10n.go,
                 ),
-                onStartNavigation: () => startPublicTransportNavigation(route),
+                onStartNavigation: () => startNavigation(getRouteInfo(route)),
+                destination: destination,
               ),
             );
           },
@@ -163,6 +163,14 @@ class RoutesCarousel extends ConsumerWidget {
     }
     return isLtr ? result : result.flipped;
   }
+
+  RouteInfo getRouteInfo(BriefPublicTransportModel route) => RouteInfo(
+        route.publicTransportTransferRouteLongEntry.fold(0, (acc, e) => acc + e.length.millimeters) / 1000,
+        route.duration,
+        0,
+        0,
+        [],
+      );
 }
 
 /// This widget is used to wrap in [PageView] cards if amount of cards is more then one

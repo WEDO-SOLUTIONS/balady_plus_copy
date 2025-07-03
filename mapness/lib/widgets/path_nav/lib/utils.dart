@@ -8,3 +8,14 @@ String formatDistance(String distanceEtaKm) {
   }
   return distanceEtaKm;
 }
+
+/// In minutes
+int durationByFoot(int distanceMillimeters) {
+  // km / h
+  const speed = 5.0;
+  const speedInMetersPerMinute = speed * 1000 / 60;
+  final lengthInMeters = (distanceMillimeters / 1000).round();
+
+  final time = lengthInMeters / speedInMetersPerMinute;
+  return time.round();
+}

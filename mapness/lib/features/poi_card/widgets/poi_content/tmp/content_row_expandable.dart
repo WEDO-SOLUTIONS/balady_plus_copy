@@ -16,7 +16,8 @@ class ContentRowExpandableTmp extends StatelessWidget {
     this.trailing,
     this.supportTitleRTL = true,
     this.onTitleTap,
-    this.padding,
+    this.margin = const EdgeInsets.all(0),
+    this.padding = const EdgeInsets.only(top: Spacing.$3x),
     this.count,
     super.key,
   });
@@ -26,19 +27,20 @@ class ContentRowExpandableTmp extends StatelessWidget {
   final Widget? trailing;
   final Color? expandIconColor;
   final bool supportTitleRTL;
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry margin;
+  final EdgeInsetsGeometry padding;
   final void Function()? onTitleTap;
   final Widget content;
   final int? count;
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: padding ?? EdgeInsets.zero,
+        padding: margin,
         child: Stack(
           alignment: AlignmentDirectional.topEnd,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: Spacing.$3x),
+              padding: padding,
               child: ExpansionWidget(
                 duration: const Duration(milliseconds: 100),
                 titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRow(

@@ -161,56 +161,31 @@ class RouteHandler {
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
         
-        let showOnlyActiveRoute: Bool
-        
-        if let showOnlyActive = params.showOnlyActiveRoute {
-            showOnlyActiveRoute = showOnlyActive
-        } else {
-            showOnlyActiveRoute = params.options == .publicTransport
-        }
+        let showOnlyActiveRoute = params.showOnlyActiveRoute ?? false
         
         routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: showOnlyActiveRoute)
     }
     
     private func getRouteSearchOptions(opts: RouteSearchOptionsMessage, searchParams: CarRouteSearchOptionParamsMessage?) -> RouteSearchOptions {
+        let avoidTollRoads = searchParams?.avoidTollRoads ?? false
+        let avoidUnpavedRoads = searchParams?.avoidUnpavedRoads ?? false
+        let carOptions = CarRouteSearchOptions(avoidTollRoads: avoidTollRoads, avoidUnpavedRoads: avoidUnpavedRoads)
+
         switch opts {
         case .car:
-            let carOptions:CarRouteSearchOptions;
-            if (searchParams != nil) {
-                carOptions =
-                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
-            } else {
-                carOptions = CarRouteSearchOptions()
-            }
-            return RouteSearchOptions.car(carOptions)
+            return .car(carOptions)
         case .bicycle:
-            return RouteSearchOptions.bicycle(BicycleRouteSearchOptions())
+            return .bicycle(BicycleRouteSearchOptions())
         case .pedestrian:
-            return RouteSearchOptions.pedestrian(PedestrianRouteSearchOptions())
+            return .pedestrian(PedestrianRouteSearchOptions())
         case .truck:
-            let carOptions:CarRouteSearchOptions;
-            if (searchParams != nil) {
-                carOptions =
-                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
-            } else {
-                carOptions = CarRouteSearchOptions()
-            }
-            return RouteSearchOptions.truck(TruckRouteSearchOptions(car: carOptions))
+            return .truck(TruckRouteSearchOptions(car: carOptions))
         case .scooter:
-            return RouteSearchOptions.scooter(ScooterRouteSearchOptions())
+            return .scooter(ScooterRouteSearchOptions())
         case .publicTransport:
-            return RouteSearchOptions.publicTransport(PublicTransportRouteSearchOptions(
-                transportTypes: .init()
-            ))
+            return .publicTransport(PublicTransportRouteSearchOptions())
         case .taxi:
-            let carOptions:CarRouteSearchOptions;
-            if (searchParams != nil) {
-                carOptions =
-                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
-            } else {
-                carOptions = CarRouteSearchOptions()
-            }
-            return RouteSearchOptions.taxi(TaxiRouteSearchOptions(car: carOptions))
+            return .taxi(TaxiRouteSearchOptions(car: carOptions))
         }
     }
     

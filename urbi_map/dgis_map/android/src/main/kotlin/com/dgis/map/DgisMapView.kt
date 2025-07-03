@@ -790,7 +790,10 @@ class DgisMapView(
                             callback(Result.failure(Exception("RouteHandler not initialized")))
                             return
                         }
-        routeHandler.setRoutesVisible(false)
+        val isPublicTransport = routeHandler.options is RouteSearchOptions.PublicTransport
+        if (!isPublicTransport) {
+            routeHandler.setRoutesVisible(false)
+        }
         navigationHandler.startNavigation(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,

@@ -201,7 +201,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
               RoutesCarousel(
                 points: widget.pointsWithLabel,
                 startNavigation: (route) => _startNavigation(route, navigatingType),
-                startPublicTransportNavigation: (route) => _startNavigationForPublicTransport(route, navigatingType),
+                destination: widget.pointsWithLabel.lastOrNull?.label,
                 navType: navigatingType,
               ),
               Spacing.$4x.heightBox,
@@ -257,64 +257,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       properties: {
         'duration': route.duration,
         'distance': route.distance,
-      },
-    );
-
-    context.router.pushAndPopUntil(
-        PathNavRoute(
-          navType: navigatingType,
-          isHomeOrWork: widget.isHomeOrWork,
-          initAction: PathNavPageInitAction.startNavigation,
-        ),
-        predicate: (route) => route.settings.name == BottomMenuRoute.name);
-  }
-
-  void _startNavigationForPublicTransport(BriefPublicTransportModel route, RouteSearchOptionsMessage navigatingType) {
-    final mapSetting = MapObjectManagerSettings.search();
-    final markerSettings = MapObjectManagerSettings.selectedMarker();
-
-    for (final settings in [mapSetting, markerSettings]) {
-      ref
-          .read(
-            mapObjectManagerProvider(
-              named: settings.name,
-              layerId: settings.layerId,
-            ).notifier,
-          )
-          .removeAllMarkers();
-    }
-
-    Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.routeSelectionGoButton,
-      group: MetricsConstants.routesTag,
-      action: MetricAction.tap.toString(),
-    );
-
-    // log advert analytics event
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
-    ref.read(advertMetricsProvider.notifier).sendEvent(
-          AdvertMetricsKeys.journeyStartedUnique,
-          isUniquePerSession: true,
-        );
-
-    // Calculate total distance by summing up all segment lengths
-    final totalDistanceInMillimeters =
-        route.publicTransportTransferRouteLongEntry.fold<int>(0, (sum, entry) => sum + entry.length.millimeters);
-    final totalDistanceInMeters = totalDistanceInMillimeters / 1000.0;
-
-    ref.read(appAnalyticsProvider).navigationStarted(
-          originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
-          destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
-          estimateTime: route.duration,
-          estimateDistance: totalDistanceInMeters,
-        );
-
-    ref.read(urbiAnalyticsProvider).track(
-      'startNavigation',
-      properties: {
-        'duration': route.duration,
-        'transferCount': route.transferCount,
-        'onFootDuration': route.onFootDuration,
       },
     );
 

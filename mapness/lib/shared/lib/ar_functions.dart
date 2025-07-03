@@ -62,3 +62,45 @@ String lots(int number, AppLocalizations l10n) {
       return l10n.lotsPluralOther;
   }
 }
+
+class ArPlurals {
+  /// IMPORTANT: zero, one, two is not used with the number (it integrated into the translation)
+  /// This is because of the arabic language and specific rules for plurals
+  static String stations(int number, AppLocalizations l10n) {
+    final stationsLocalized = getPluralForAr(number);
+    switch (stationsLocalized) {
+      case Plurals.zero:
+        return l10n.stationsZero;
+      case Plurals.one:
+        return l10n.stationsOne;
+      case Plurals.two:
+        return l10n.stationsTwo;
+      case Plurals.few:
+        return '$number ${l10n.stationsFew}';
+      case Plurals.many:
+        return '$number ${l10n.stationsMany}';
+      case Plurals.others:
+        return '$number ${l10n.stationsOther}';
+    }
+  }
+
+  /// IMPORTANT: zero, one, two is not used with the number (it integrated into the translation)
+  /// This is because of the arabic language and specific rules for plurals
+  static String transfers(int number, AppLocalizations l10n) {
+    final transfersLocalized = getPluralForAr(number);
+    switch (transfersLocalized) {
+      case Plurals.zero:
+        return l10n.transfersZero;
+      case Plurals.one:
+        return l10n.transfersOne;
+      case Plurals.two:
+        return l10n.transfersTwo;
+      case Plurals.few:
+        return '$number ${l10n.transfersFew}';
+      case Plurals.many:
+        return '$number ${l10n.transfersMany}';
+      case Plurals.others:
+        return '$number ${l10n.transfersOther}';
+    }
+  }
+}

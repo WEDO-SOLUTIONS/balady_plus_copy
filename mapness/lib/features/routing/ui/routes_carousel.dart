@@ -17,7 +17,7 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.da
 class RoutesCarousel extends StatelessWidget {
   const RoutesCarousel({
     required this.startNavigation,
-    required this.startPublicTransportNavigation,
+    this.destination,
     required this.points,
     required this.navType,
     super.key,
@@ -27,14 +27,13 @@ class RoutesCarousel extends StatelessWidget {
 
   final List<RouteParamsPointWithLabel?> points;
   final Function(RouteInfo) startNavigation;
-  final Function(BriefPublicTransportModel) startPublicTransportNavigation;
-
+  final String? destination;
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) => _RoutesCarousel(
           points: points,
           startNavigation: startNavigation,
-          startPublicTransportNavigation: startPublicTransportNavigation,
+          destination: destination,
           biggestWidth: constraints.biggest.width,
           navType: navType,
         ),
@@ -46,14 +45,14 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.navType,
     required this.points,
     required this.startNavigation,
-    required this.startPublicTransportNavigation,
+    required this.destination,
     required this.biggestWidth,
   });
 
   final RouteSearchOptionsMessage navType;
   final double biggestWidth;
   final Function(RouteInfo) startNavigation;
-  final Function(BriefPublicTransportModel) startPublicTransportNavigation;
+  final String? destination;
   final List<RouteParamsPointWithLabel?> points;
 
   @override
@@ -110,6 +109,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           ..invalidate(routesProvider)
           ..invalidate(publicTransportRoutesProvider);
       },
+      destination: widget.destination,
       startNavigation: (info) {
         final _routeType = widget.navType.toRouteType();
 
@@ -152,49 +152,6 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
               ),
             );
         widget.startNavigation(info);
-      },
-      startPublicTransportNavigation: (route) {
-        final _routeType = widget.navType.toRouteType();
-
-        final location = ref.read(locationProvider);
-        if (location == null && widget.points[0]?.etaPoint == null) {
-          return;
-        }
-
-        final finishLocation =
-            widget.points[1]?.value ?? RouteParamsPoint(latitude: location!.latitude, longitude: location.longitude);
-
-        // Set finish point for ETA stream
-        EtaStreamStorage()
-          ..setLatitude(finishLocation.latitude)
-          ..setLongitude(finishLocation.longitude);
-
-        final startPointEta = (widget.points[0]?.etaPoint.lat != null && widget.points[0]?.etaPoint.lon != null)
-            ? widget.points[0]!.etaPoint
-            : EtaRoutePoint(
-                lat: location!.latitude,
-                lon: location.longitude,
-                label: widget.points[0]?.label,
-              );
-
-        final finishPointEta = (widget.points[1]?.etaPoint.lat != null && widget.points[1]?.etaPoint.lon != null)
-            ? widget.points[1]!.etaPoint
-            : EtaRoutePoint(
-                lat: finishLocation.latitude,
-                lon: finishLocation.longitude,
-                label: widget.points[1]?.label,
-              );
-
-        ref.read(etaRouteInfoProvider.notifier).setRoute(
-              eta.EtaRoute(
-                startPoint: startPointEta,
-                endPoint: finishPointEta,
-                type: _routeType,
-                routeIndex: _activeRoute,
-                createdAt: DateTime.now().toUtc().toIso8601String(),
-              ),
-            );
-        widget.startPublicTransportNavigation(route);
       },
     );
   }

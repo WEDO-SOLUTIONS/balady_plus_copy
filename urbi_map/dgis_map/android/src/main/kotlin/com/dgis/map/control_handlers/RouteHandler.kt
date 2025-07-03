@@ -166,14 +166,13 @@ class RouteHandler(
         opts: RouteSearchOptionsMessage,
         searchParams: CarRouteSearchOptionParamsMessage?,
     ): RouteSearchOptions {
+        val avoidTollRoads = searchParams?.avoidTollRoads ?: false
+        val avoidUnpavedRoads = searchParams?.avoidUnpavedRoads ?: false
+        val carOptions = CarRouteSearchOptions(avoidTollRoads = avoidTollRoads, avoidUnpavedRoads = avoidUnpavedRoads)
+
         return when (opts) {
-            RouteSearchOptionsMessage.CAR -> {
-                if (searchParams != null) {
-                    RouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads))
-                } else {
-                    RouteSearchOptions(CarRouteSearchOptions())
-                }
-            }
+            RouteSearchOptionsMessage.CAR -> 
+                RouteSearchOptions(carOptions)
 
             RouteSearchOptionsMessage.BICYCLE ->
                 RouteSearchOptions(BicycleRouteSearchOptions())
@@ -181,13 +180,8 @@ class RouteHandler(
             RouteSearchOptionsMessage.PEDESTRIAN ->
                 RouteSearchOptions(PedestrianRouteSearchOptions())
 
-            RouteSearchOptionsMessage.TRUCK -> {
-                if (searchParams != null) {
-                    RouteSearchOptions(TruckRouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads)))
-                } else {
-                    RouteSearchOptions(TruckRouteSearchOptions(CarRouteSearchOptions()))
-                }
-            }
+            RouteSearchOptionsMessage.TRUCK -> 
+                RouteSearchOptions(TruckRouteSearchOptions(carOptions))
 
             RouteSearchOptionsMessage.SCOOTER ->
                 RouteSearchOptions(ScooterRouteSearchOptions())
@@ -195,13 +189,8 @@ class RouteHandler(
             RouteSearchOptionsMessage.PUBLIC_TRANSPORT ->
                 RouteSearchOptions(PublicTransportRouteSearchOptions())
 
-            RouteSearchOptionsMessage.TAXI -> {
-                if (searchParams != null) {
-                    RouteSearchOptions(TaxiRouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads)))
-                } else {
-                    RouteSearchOptions(TaxiRouteSearchOptions(CarRouteSearchOptions()))
-                }
-            }
+            RouteSearchOptionsMessage.TAXI -> 
+                RouteSearchOptions(TaxiRouteSearchOptions(carOptions))
         }
     }
 

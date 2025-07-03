@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_wrapper.dart';
@@ -17,18 +18,20 @@ class PathPublicCard extends ConsumerWidget {
   final BriefPublicTransportModel route;
   final PathCardLocalization localizations;
   final Function()? onStartNavigation;
+  final String? destination;
 
   const PathPublicCard({
     required this.route,
     required this.localizations,
     this.onStartNavigation,
+    this.destination,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final duration = route.duration.formatDuration(context.l10n);
-    final transfers = '${route.transferCount.toString()} transfers';
+    final transfers = ArPlurals.transfers(route.transferCount, context.l10n);
 
     return PathCardWrapper(
       child: Column(
@@ -80,9 +83,16 @@ class PathPublicCard extends ConsumerWidget {
             buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
             buttonType: BaladyButtonType.secondary,
             onTap: () {
-              context.router.push(RouteDetailsRoute(route: route));
+              context.router.push(
+                RouteDetailsRoute(
+                  route: route,
+                  destination: destination,
+                  onPressed: onStartNavigation,
+                  buttonLabel: context.l10n.go.toUpperCase(),
+                ),
+              );
             },
-            primaryLabel: context.l10n.about,
+            primaryLabel: context.l10n.aboutRoute,
           )
         ],
       ),
