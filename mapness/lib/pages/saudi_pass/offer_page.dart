@@ -126,7 +126,8 @@ class _Content extends HookConsumerWidget {
     final offer = offerProvider.requireValue;
     final redeemed = offer.redeemed;
     final code = offer.code;
-    final offerImage = offer.images.firstOrNull;
+    // todo[amr] there no images came form the BE, so we will use the logo for now as moma said
+    // final offerImage = offer.images.firstOrNull;
     final showCode = useState(code != null && redeemed);
     final discount = _getDiscount(offer, language, context);
     final duration = offer.briefDurationTo;
@@ -151,20 +152,21 @@ class _Content extends HookConsumerWidget {
                       color: colors.backgroundSurface1,
                       child: Column(
                         children: [
-                          if (offerImage != null)
-                            _OfferPreviewByBusiness(
-                              imageId: offerImage,
-                              description: offer.description,
-                              discount: discount,
-                              offer: offer,
-                            )
-                          else
-                            _OfferPreviewByGroup(
-                              offersGroup: offer.offerGroup,
-                              description: offer.description,
-                              discount: discount,
-                              companyLogoId: offer.provider.logo,
-                            ),
+                          // todo[amr] there no images came form the BE, so we will use the logo for now as moma said
+                          // if (offerImage != null)
+                          //   _OfferPreviewByBusiness(
+                          //     imageId: offerImage,
+                          //     description: offer.description,
+                          //     discount: discount,
+                          //     offer: offer,
+                          //   )
+                          // else
+                          _OfferPreviewByGroup(
+                            offersGroup: offer.offerGroup,
+                            description: offer.description,
+                            discount: discount,
+                            companyLogoId: offer.provider.logo,
+                          ),
                           Padding(
                             padding: const EdgeInsets.only(
                               left: Spacing.$4x,
