@@ -33,7 +33,8 @@ class PoiLinesMetro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _platformsInfo = transportDirectoryRouteInfo.directions.firstOrNull?.platforms ?? [];
+    final _platformsInfo = (transportDirectoryRouteInfo.directions.firstOrNull?.platforms ?? []).reversed.toList();
+
     final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colorsV3.foregroundDefault.value);
 
     return ContentWrapper(
