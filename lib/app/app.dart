@@ -27,6 +27,9 @@ import 'features/location/presentation/bloc/location_bloc.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
 class App extends StatelessWidget {
@@ -229,6 +232,7 @@ class AppWidgetState extends State<AppWidget> {
             ),
             builder: EasyLoading.init(builder: BotToastInit()),
             navigatorObservers: [
+              SentryNavigatorObserver(),
               BotToastNavigatorObserver(),
               FlutterUxcamNavigatorObserver(),
               MapnessRouteObserver(),
