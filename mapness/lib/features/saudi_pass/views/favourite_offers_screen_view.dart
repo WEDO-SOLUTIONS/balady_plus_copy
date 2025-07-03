@@ -11,5 +11,5 @@ abstract class FavouriteOffersScreenView implements OffersView {
 
   void tapBack(BuildContext context);
 
-  void tapGotoAllOffers(BuildContext context);
+  Future<T?> tapGotoAllOffers<T>(BuildContext context);
 }

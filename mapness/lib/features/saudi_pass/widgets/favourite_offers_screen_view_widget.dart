@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/saudi_pass/providers/favourite_offers_screen_view_riverpod.dart';
 import 'package:mapness/features/saudi_pass/views/favourite_offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_view_widget.dart';
@@ -29,13 +28,12 @@ class FavouriteOffersScreenViewWidget extends ConsumerWidget {
                   buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
                   buttonType: BaladyButtonType.secondary,
                   onTap: () async {
-                    final result = await context.router.push(OffersScreenViewRoute());
+                    final result = await favouriteOffersScreenView.tapGotoAllOffers(context);
 
                     if (result is bool && result) {
                       ref.invalidate(favouriteOffersScreenViewRiverpodProvider);
                     }
                   },
-                  onTap: () => favouriteOffersScreenView.tapGotoAllOffers(context),
                 ),
               ),
             ],
