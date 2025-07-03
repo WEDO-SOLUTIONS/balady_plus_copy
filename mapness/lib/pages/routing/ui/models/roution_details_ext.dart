@@ -5,10 +5,12 @@ import 'package:mapness/pages/routing/ui/widgets/routing_collapsible_list.dart';
 import 'package:mapness/pages/routing/ui/widgets/routing_pedestrian.dart';
 
 extension RouteDetailsPublicTransportExt on RouteDetailsPublicTransport {
-  Widget toWidget(BuildContext context) => switch (this) {
+  Widget toWidget(BuildContext context, {Color? lineColor}) => switch (this) {
         RouteDetailsPublicTransportPedestrian() =>
           RoutingPedestrian(data: this as RouteDetailsPublicTransportPedestrian),
         RouteDetailsPublicTransportMetro() => RoutingCollapsibleList(
-            stations: (this as RouteDetailsPublicTransportMetro).routeParts.map((e) => e.stations).flattened.toList()),
+            stations: (this as RouteDetailsPublicTransportMetro).routeParts.map((e) => e.stations).flattened.toList(),
+            lineColor: lineColor,
+          ),
       };
 }

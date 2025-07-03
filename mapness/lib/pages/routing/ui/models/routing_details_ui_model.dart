@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
 
 sealed class RouteDetailsPublicTransport {
@@ -20,10 +22,12 @@ class RouteDetailsPublicTransportPedestrian extends RouteDetailsPublicTransport 
 
 class RouteDetailsPublicTransportMetro extends RouteDetailsPublicTransport {
   final List<RoutePart> routeParts;
+  final Color? lineColor;
 
   const RouteDetailsPublicTransportMetro({
     required super.length,
     required this.routeParts,
+    this.lineColor,
   });
 }
 

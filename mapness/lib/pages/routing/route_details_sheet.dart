@@ -42,9 +42,21 @@ class RouteDetailsPage extends HookConsumerWidget {
 
     final duration = route.duration.formatDuration(context.l10n);
     final transfers = ArPlurals.transfers(route.transferCount, context.l10n);
+    Color? getLineColor(String line) {
+      Color? color;
+      if (line.contains('Blue')) {
+        color = Colors.blue;
+      } else if (line.contains('Red')) {
+        color = context.colorsV3.errorDefault;
+      } else if (line.contains('Green')) {
+        color = context.colorsV3.successDefault;
+      }
+      return color;
+    }
 
     final List<RouteDetailsPublicTransport> transports = [];
-    for (var e in route.publicTransportTransferRouteLongEntry) {
+    for (var i = 0; i < route.publicTransportTransferRouteLongEntry.length; i++) {
+      final e = route.publicTransportTransferRouteLongEntry[i];
       if (e.value.routeParts.isEmpty) {
         transports.add(RouteDetailsPublicTransportPedestrian(length: e.length.millimeters));
       } else {
@@ -59,7 +71,11 @@ class RouteDetailsPage extends HookConsumerWidget {
           ]);
           routeParts.add(part);
         }
-        transports.add(RouteDetailsPublicTransportMetro(length: e.length.millimeters, routeParts: routeParts));
+        transports.add(RouteDetailsPublicTransportMetro(
+          length: e.length.millimeters,
+          routeParts: routeParts,
+          lineColor: route.transports[i].names.isNotEmpty ? getLineColor(route.transports[i].names.first) : null,
+        ));
       }
     }
 
@@ -69,45 +85,50 @@ class RouteDetailsPage extends HookConsumerWidget {
       header: Container(
           color: context.colorsV3.backgroundSurface1,
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              const SizedBox(width: 64),
-              Column(
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    duration,
-                    style: context.textStyleV3.h4SemiBold.copyWith(
-                      color: context.colorsV3.foregroundDefault,
-                    ),
+                  const SizedBox(width: 64),
+                  Column(
+                    children: [
+                      Text(
+                        duration,
+                        style: context.textStyleV3.h4SemiBold.copyWith(
+                          color: context.colorsV3.foregroundDefault,
+                        ),
+                      ),
+                      Text(
+                        transfers,
+                        style: context.textStyleV3.bodySmallRegular.copyWith(
+                          color: context.colorsV3.foregroundSoft,
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.$3x),
+                    ],
                   ),
-                  Text(
-                    transfers,
-                    style: context.textStyleV3.bodySmallRegular.copyWith(
-                      color: context.colorsV3.foregroundSoft,
-                    ),
+                  BaladyAppButton.close(
+                    buttonType: BaladyButtonType.secondary,
+                    onTap: context.router.popForced,
                   ),
-                  const SizedBox(height: Spacing.$3x),
-                  Row(
-                    children: route.transports.mapIndexed((index, e) {
-                      final pub = route.publicTransportTransferRouteLongEntry[index];
-                      final isPedestrian = pub.value.routeParts.isEmpty;
-                      return TransportIconWidget(
-                        isLarge: true,
-                        name: e.names.join(', '),
-                        time: isPedestrian ? durationByFoot(pub.length.millimeters) : null,
-                        isLast: e == route.transports.last,
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: Spacing.$4x),
                 ],
               ),
-              BaladyAppButton.close(
-                buttonType: BaladyButtonType.secondary,
-                onTap: context.router.popForced,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: route.transports.mapIndexed((index, e) {
+                  final pub = route.publicTransportTransferRouteLongEntry[index];
+                  final isPedestrian = pub.value.routeParts.isEmpty;
+                  return TransportIconWidget(
+                    isLarge: true,
+                    name: e.names.join(', '),
+                    time: isPedestrian ? durationByFoot(pub.length.millimeters) : null,
+                    isLast: e == route.transports.last,
+                  );
+                }).toList(),
               ),
+              const SizedBox(height: Spacing.$4x),
             ],
           )),
       content: [
@@ -132,7 +153,10 @@ class RouteDetailsPage extends HookConsumerWidget {
                 ],
               ),
               Spacing.$4x.heightBox,
-              ...transports.map((e) => e.toWidget(context)).insertBetween(Spacing.$2x.heightBox),
+              ...transports
+                  .map(
+                      (e) => e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
+                  .insertBetween(Spacing.$2x.heightBox),
               if (destination != null) ...[
                 Spacing.$4x.heightBox,
                 ContentWrapper(

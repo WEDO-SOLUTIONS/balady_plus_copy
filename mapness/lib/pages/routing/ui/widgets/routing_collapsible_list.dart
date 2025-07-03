@@ -7,8 +7,10 @@ import 'package:mapness/shared/lib/ar_functions.dart';
 
 class RoutingCollapsibleList extends StatelessWidget {
   final List<String> stations;
+  final Color? lineColor;
   const RoutingCollapsibleList({
     required this.stations,
+    this.lineColor,
     super.key,
   });
 
@@ -18,11 +20,14 @@ class RoutingCollapsibleList extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    // Not possible to have only one station but we have to handle this case
     if (stations.length == 1) {
       return ContentWrapper.single(
         color: context.colorsV3.backgroundSurface1,
         child: ContentRowV2(
-          leading: const _StationItem(),
+          leading: _StationItem(
+            lineColor: lineColor ?? context.colorsV3.neutralDefault,
+          ),
           text: ContentRowTextOptions(title: stations.first),
         ),
       );
@@ -38,13 +43,13 @@ class RoutingCollapsibleList extends StatelessWidget {
             bottom: 16,
             child: Container(
               width: 2,
-              color: context.colorsV3.successDefault.withOpacity(0.5),
+              color: (lineColor ?? context.colorsV3.neutralDefault).withOpacity(0.5),
             ),
           ),
           Column(
             children: [
               ContentRowV2(
-                leading: const _StationItem(),
+                leading: _StationItem(lineColor: lineColor ?? context.colorsV3.neutralDefault),
                 text: ContentRowTextOptions(title: stations.first),
               ),
               if (stations.length > 2)
@@ -58,7 +63,7 @@ class RoutingCollapsibleList extends StatelessWidget {
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: context.colorsV3.successDefault.withOpacity(0.5),
+                        color: (lineColor ?? context.colorsV3.neutralDefault).withOpacity(0.5),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -92,7 +97,9 @@ class RoutingCollapsibleList extends StatelessWidget {
                 ),
               if (stations.length <= 2) const SizedBox(height: Spacing.$4x),
               ContentRowV2(
-                leading: const _StationItem(),
+                leading: _StationItem(
+                  lineColor: lineColor ?? context.colorsV3.neutralDefault,
+                ),
                 text: ContentRowTextOptions(title: stations.last),
               ),
             ],
@@ -120,14 +127,17 @@ class RoutingCollapsibleList extends StatelessWidget {
 }
 
 class _StationItem extends StatelessWidget {
-  const _StationItem();
+  final Color lineColor;
+  const _StationItem({
+    required this.lineColor,
+  });
 
   @override
   Widget build(BuildContext context) => Container(
         width: 14,
         height: 14,
         decoration: BoxDecoration(
-          color: context.colorsV3.successDefault,
+          color: lineColor,
           shape: BoxShape.circle,
           boxShadow: Shadows.m,
         ),
