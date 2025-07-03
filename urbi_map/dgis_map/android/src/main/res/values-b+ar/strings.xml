@@ -33,11 +33,11 @@
 
   <!-- Settings -->
   <string name="settings_title">الإعدادات</string>
-  <string name="settings_voice_instructions">تعليمات صوتية</string>
-  <string name="settings_traffic">وقت الوصول</string>
-  <string name="settings_parking">مواقف</string>
+  <string name="settings_voice_instructions">الإرشادات الصوتية</string>
+  <string name="settings_traffic">حركة المرور</string>
+  <string name="settings_parking">موقف السيارات</string>
   <string name="settings_route">الطريق</string>
-  <string name="settings_prompts_volume">مستوى التعليمات الصوتية</string>
+  <string name="settings_prompts_volume">مستوى صوت التنبيهات</string>
 
   <!-- Voice Instructions -->
   <string name="voice_instructions_all">جميع الأحداث</string>
