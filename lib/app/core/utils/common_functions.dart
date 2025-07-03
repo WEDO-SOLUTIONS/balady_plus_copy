@@ -1818,7 +1818,7 @@ class CommonProperties {
 
   static Uuid uuidInstance = const Uuid();
   static List<String> allowedSHAFingerprints = [
-    "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
+    "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15"
   ];
 
   //static String get token =>

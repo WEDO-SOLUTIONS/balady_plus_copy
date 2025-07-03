@@ -5,26 +5,43 @@ import 'package:balady_plus/super_app_js_bridge/js_bridge_listener.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
-class WebMiniAppsScreen extends StatefulWidget {
+class WebMiniAppsScreen extends ConsumerStatefulWidget {
   const WebMiniAppsScreen({super.key});
 
   @override
-  State<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
+  ConsumerState<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
 }
 
-class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
+class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
   late final DWebViewController _controller;
   final ValueNotifier<bool> _isLoading = ValueNotifier(true);
+
+  String _currentLanguage = '';
+  String? _cachedMiniAppsLanguage = '';
 
   @override
   void initState() {
     super.initState();
+    bool clearCache = false;
+
+    _currentLanguage = translator.activeLanguageCode;
+    _cachedMiniAppsLanguage = ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
+
+    if(_currentLanguage != _cachedMiniAppsLanguage){
+      clearCache = true;
+
+      ref.read(appLanguageProvider.notifier).updateCachedMiniAppsLanguage(
+        _currentLanguage,
+      );
+    }
 
     // _controller = WebViewController()
     //   ..loadRequest(Uri.parse(widget.servicePath))
@@ -68,9 +85,9 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
         DWebViewController.fromPlatformCreationParams(params);
     _controller = controller;
 
+
     controller
       ..setBackgroundColor(Colors.white)
-      // ..clearCache()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onProgress: (progress) {
@@ -86,6 +103,15 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
         },
         onWebResourceError: (WebResourceError error) {},
       ));
+
+    // MiniAppsEngineBloc miniAppsEngineBloc = context.watch<MiniAppsEngineBloc>();
+    // if(miniAppsEngineBloc.miniApp.latestVersion?.serviceUrl != null) {
+    //   controller.clearCache();
+    // }
+
+    if(clearCache) {
+      controller.clearCache();
+    }
 
     _injectPermissionHandlingScript();
 
@@ -117,8 +143,11 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
 
     return Stack(
       children: [
-        WebViewWidget(
+        //DWebViewWidget
+        DWebViewWidget(
           controller: _controller
+          //https://baladyapps.momra.gov.sa/tawakkalna/baladyplus
+          //https://services-dev.balady.gov.sa/miniapps/municipal
             ..loadRequest(Uri.parse(state.servicePath))
             ..addJavaScriptObject(
               JsBridgeListener(
@@ -127,38 +156,61 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
               ),
             ),
         ),
-        ValueListenableBuilder(
-          valueListenable: _isLoading,
-          builder: (context, value, _) {
-            return value
-                ? Container(
-                    height: double.infinity,
-                    width: double.infinity,
-                    color: Colors.white,
-                    margin: EdgeInsets.zero,
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const CircularProgressIndicator(),
-                        const SizedBox(height: 16),
-                        Text(
-                          "service_will_available_shortly".tr(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : const SizedBox.shrink();
-          },
-        ),
+        /// When Open Url From Sevrver Side Not Show Loading Indicator
+        // ValueListenableBuilder(
+        //   valueListenable: _isLoading,
+        //   builder: (context, value, _) {
+        //     return value
+        //         ? Container(
+        //       height: double.infinity,
+        //       width: double.infinity,
+        //       color: Colors.white,
+        //       margin: EdgeInsets.zero,
+        //       padding: const EdgeInsets.all(24.0),
+        //       child: Column(
+        //         mainAxisSize: MainAxisSize.max,
+        //         mainAxisAlignment: MainAxisAlignment.center,
+        //         crossAxisAlignment: CrossAxisAlignment.center,
+        //         children: [
+        //           const CircularProgressIndicator(),
+        //           const SizedBox(height: 16),
+        //           Text(
+        //             "service_will_available_shortly".tr(),
+        //             style: const TextStyle(
+        //               fontSize: 16,
+        //               fontWeight: FontWeight.bold,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     )
+        //         : const SizedBox.shrink();
+        //   },
+        // ),
       ],
     );
+      // PopScope(
+      // canPop: false,
+      // onPopInvokedWithResult: (didPop, result) async {
+      //   bool canGoBack = await _controller.canGoBack();
+      //   if (canGoBack) {
+      //     await _controller.goBack();
+      //     return;
+      //   } else {
+      //     Navigator.of(context).pop();
+      //   }
+      // },
+      // onPopInvoked: (didPop) async {
+      //   bool canGoBack = await _controller.canGoBack();
+      //   if (canGoBack) {
+      //     await _controller.goBack();
+      //   } else {
+      //     Navigator.of(context).pop();
+      //   }
+      //
+      // },
+      // child: ,
+    // );
   }
 
   void _injectPermissionHandlingScript() {
