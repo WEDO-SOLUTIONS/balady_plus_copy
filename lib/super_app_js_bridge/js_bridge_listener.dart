@@ -116,16 +116,29 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void getUserProfile(dynamic msg, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
+
     if (checkAppRequirment(serviceKey, RequirementEnum.userProfile.name) ==
         true) {
       if (CommonProperties.isLoggedIn) {
-        BaseResponse response = BaseResponse(
-          code: 200,
-          message: "success",
-          eventName: "getUserProfile",
-          data: UserProfileModel.fromJson(CommonProperties.userInfo!.toJson()),
-        );
-        handler.complete(response.jsonEncodeModel());
+        try {
+          BaseResponse response = BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "getUserProfile",
+            data:
+                UserProfileModel.fromJson(CommonProperties.userInfo!.toJson()),
+          );
+          handler.complete(response.jsonEncodeModel());
+        } catch (e) {
+          BaseResponse response = BaseResponse(
+            code: 401,
+            message: "Profile not found",
+            eventName: "getUserProfile",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+           // rethrow;
+        }
       } else {
         BaseResponse response = BaseResponse(
           code: 401,
@@ -210,37 +223,37 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAppPreferences(dynamic msg, CompletionHandler handler) {
-   try{
-     BaseResponse response = BaseResponse(
-       code: 200,
-       message: "success",
-       eventName: "AppPreferences",
-       data: JsPreferencesModel(
-         language: 'locale'.tr(),
-         themeType: "dark",
-         colors: {
-           "primary": AppColor.primary900Light.value,
-           "secondary": AppColor.secondary900Light.value,
-           // "background": AppColor.backgroundColor,
-           // "text": AppColor.textColor,
-           // "error": AppColor.errorColor,
-           // "warning": AppColor.warningColor,
-           // "success": AppColor.successColor,
-         },
-       ),
-     );
-     var dataJsonString = response.jsonEncodeModel();
-     handler.complete(dataJsonString);
-   } catch (_) {
-     BaseResponse response = BaseResponse(
-       code: 500,
-       message: "Error occurred while getting app preferences",
-       eventName: "AppPreferences",
-       data: null,
-     );
-     handler.complete(response.jsonEncodeModel());
-   }
-   isLoading.value = false;
+    try {
+      BaseResponse response = BaseResponse(
+        code: 200,
+        message: "success",
+        eventName: "AppPreferences",
+        data: JsPreferencesModel(
+          language: 'locale'.tr(),
+          themeType: "dark",
+          colors: {
+            "primary": AppColor.primary900Light.value,
+            "secondary": AppColor.secondary900Light.value,
+            // "background": AppColor.backgroundColor,
+            // "text": AppColor.textColor,
+            // "error": AppColor.errorColor,
+            // "warning": AppColor.warningColor,
+            // "success": AppColor.successColor,
+          },
+        ),
+      );
+      var dataJsonString = response.jsonEncodeModel();
+      handler.complete(dataJsonString);
+    } catch (_) {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "Error occurred while getting app preferences",
+        eventName: "AppPreferences",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+    isLoading.value = false;
   }
 
   @pragma('vm:entry-point')
