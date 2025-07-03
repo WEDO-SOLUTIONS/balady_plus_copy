@@ -46,11 +46,11 @@ class Routes {
   static Map<String, Widget Function(BuildContext)> routesApp = {
     RouteName.bottomNavigation: (context) => const b.BottomNavigationPage(),
     RouteName.splashScreen: (context) => const SplashPage(),
-    RouteName.vdCameraPage: (context) => VDCameraPage(),
+    RouteName.vdCameraPage: (context) => const VDCameraPage(),
 
 
 
-    RouteName.forceUpdateRoute: (context) => ForceUpdatePage(),
+    RouteName.forceUpdateRoute: (context) => const ForceUpdatePage(),
 
 
     RouteName.inappWebview: (context) => const InAppWebViewPage(),
