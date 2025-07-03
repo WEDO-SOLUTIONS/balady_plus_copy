@@ -20,7 +20,7 @@ final GeoPointMessage _kingdomTower = GeoPointMessage(latitude: 24.712301, longi
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
-
+  late LocationSetupHelper locationHelper;
   final _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
@@ -94,8 +94,8 @@ class DgisController extends _$DgisController {
   Future<void> _setupLocation(DgisMapController controller) async {
     await _setDefaultLocation(controller);
 
-    final helper = LocationSetupHelper(controller);
-    await helper.run();
+    locationHelper = LocationSetupHelper(controller);
+    await locationHelper.run();
 
     // at this point, geolocation is either activated,
     // or the user has definitively denied it (the helper will timeout
