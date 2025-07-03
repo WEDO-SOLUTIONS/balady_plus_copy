@@ -20,14 +20,17 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
+import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -132,6 +135,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _initNavigation();
     startControlsDisapearTimer();
     WakelockPlus.enable();
+
+    // Turn off metro layers for public transport navigation
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      ref.read(metroLayerProvider.notifier).hideMetro();
+    }
   }
 
   @override
@@ -234,6 +242,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   Widget build(BuildContext context) {
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      final route = ref.watch(activePublicTransportRouteProvider);
+      if (route != null) {
+        return RouteDetailsPage(
+          route: route,
+          onPressed: _endTripAndShowHome,
+          buttonLabel: context.l10n.endTrip,
+        );
+      }
+    }
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
     sheetController = useToggleSheetController(
@@ -452,6 +470,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           );
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
+    }
+
+    // Remove route from the map for public transport
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      await ref.read(dgisControllerProvider).value?.hideRoutes();
     }
 
     await clearNavigationState();

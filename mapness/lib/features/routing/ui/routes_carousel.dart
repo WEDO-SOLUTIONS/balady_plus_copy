@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
@@ -89,6 +90,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         navType: widget.navType,
       ),
     );
+    ref.watch(activePublicTransportRouteProvider);
 
     return widgets.RoutesCarousel(
       navType: widget.navType,

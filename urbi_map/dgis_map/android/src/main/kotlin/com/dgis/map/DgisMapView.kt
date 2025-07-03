@@ -791,9 +791,8 @@ class DgisMapView(
                             return
                         }
         val isPublicTransport = routeHandler.options is RouteSearchOptions.PublicTransport
-        if (!isPublicTransport) {
-            routeHandler.setRoutesVisible(false)
-        }
+        routeHandler.setRoutesVisible(isPublicTransport)
+        
         navigationHandler.startNavigation(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
