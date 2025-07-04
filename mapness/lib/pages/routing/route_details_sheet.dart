@@ -134,9 +134,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                 BaladyAppButton.close(
                   buttonType: BaladyButtonType.secondary,
                   onTap: () async {
-                    _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
                     await widget.onClose?.call();
-                    context.router.popForced();
                   },
                 ),
               ],
@@ -202,24 +200,22 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                   .map(
                       (e) => e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
                   .insertBetween(Spacing.$2x.heightBox),
-              if (widget.destination != null) ...[
-                Spacing.$2x.heightBox,
-                ContentWrapper(
-                  color: context.colorsV3.backgroundSurface1,
-                  children: [
-                    ContentRowV2(
-                      leading: Icon(
-                        GeneralIcons.bulletCircleSolid,
-                        color: context.colorsV3.accentDefault,
-                        size: 24,
-                      ),
-                      text: ContentRowTextOptions(
-                        title: widget.destination,
-                      ),
+              Spacing.$2x.heightBox,
+              ContentWrapper(
+                color: context.colorsV3.backgroundSurface1,
+                children: [
+                  ContentRowV2(
+                    leading: Icon(
+                      GeneralIcons.bulletCircleSolid,
+                      color: context.colorsV3.accentDefault,
+                      size: 24,
                     ),
-                  ],
-                ),
-              ],
+                    text: ContentRowTextOptions(
+                      title: widget.destination ?? context.l10n.destination,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

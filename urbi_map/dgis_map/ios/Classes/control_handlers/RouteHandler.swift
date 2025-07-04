@@ -93,6 +93,10 @@ class RouteHandler {
         self.routeEditorSource.setRoutesVisible(visible: visible)
     }
     
+    func setShowOnlyActiveRoute(_ visible: Bool) {
+        self.routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: visible)
+    }
+    
     func setRouteParams(_ params: RouteEditorRouteParamsMessage) {
         let startPoint: RouteSearchPoint? = {
             if let pStartPoint = params.startPoint {
@@ -161,7 +165,7 @@ class RouteHandler {
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
         
-        let showOnlyActiveRoute = params.showOnlyActiveRoute ?? false
+        let showOnlyActiveRoute = params.showOnlyActiveRoute ?? true
         
         routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: showOnlyActiveRoute)
     }

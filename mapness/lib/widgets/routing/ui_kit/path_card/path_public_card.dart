@@ -65,11 +65,7 @@ class PathPublicCard extends ConsumerWidget {
                           ),
                           PathBadge(additionalInfo!),
                         ],
-                      ]
-                          .insertBetween(
-                            Spacing.$1x.widthBox,
-                          )
-                          .toList(),
+                      ].insertBetween(Spacing.$1x.widthBox).toList(),
                     )
                   ],
                 ),
@@ -85,20 +81,22 @@ class PathPublicCard extends ConsumerWidget {
             ],
           ),
           Spacing.$4x.heightBox,
-          Row(
-            children: route.transports.mapIndexed((index, e) {
-              final pub = route.publicTransportTransferRouteLongEntry[index];
-              final isPedestrian = pub.value.routeParts.isEmpty;
-              return TransportIconWidget(
-                name: e.names.join(', '),
-                time: pub.distanceToPedestrianTime(
-                  isPedestrian ? pub.length.millimeters : null,
-                ),
-                isLast: e == route.transports.last,
-              );
-            }).toList(),
-          ),
-          Spacing.$4x.heightBox,
+          if (route.transports.length > 1) ...[
+            Row(
+              children: route.transports.mapIndexed((index, e) {
+                final pub = route.publicTransportTransferRouteLongEntry[index];
+                final isPedestrian = pub.value.routeParts.isEmpty;
+                return TransportIconWidget(
+                  name: e.names.join(', '),
+                  time: pub.distanceToPedestrianTime(
+                    isPedestrian ? pub.length.millimeters : null,
+                  ),
+                  isLast: e == route.transports.last,
+                );
+              }).toList(),
+            ),
+            Spacing.$4x.heightBox,
+          ],
           BaladyAppButton(
             buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
             buttonType: BaladyButtonType.secondary,
@@ -108,6 +106,7 @@ class PathPublicCard extends ConsumerWidget {
                   route: route,
                   destination: destination,
                   onPressed: () async => onStartNavigation?.call(),
+                  onClose: () async => context.router.popForced(),
                   buttonLabel: context.l10n.go.toUpperCase(),
                 ),
               );

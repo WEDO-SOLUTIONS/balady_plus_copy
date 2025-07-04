@@ -36,6 +36,9 @@ class RoutesCarousel extends ConsumerWidget {
   final String? destination;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO: Because public transport can't build navigation, we can improve experience
+    // for pedestrian routes that was found for public transport
+    // Add method that call [startNavigation] for the same pedestrian route (need to get data from pedestrian route tab)
     if (navType == RouteSearchOptionsMessage.publicTransport) {
       return publicTransportRoutes.when(
         data: (routes) {

@@ -963,6 +963,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         let isPublicTransport = routeHandler.options == .publicTransport(PublicTransportRouteSearchOptions())
         self.routeHandler?.setRoutesVisible(isPublicTransport)
+        if (isPublicTransport) {
+            self.routeHandler?.setShowOnlyActiveRoute(true)
+        }
+        
         
         self.navigationHandler?.startNavigation(
             finishPoint: routeHandler.finishPoint,
