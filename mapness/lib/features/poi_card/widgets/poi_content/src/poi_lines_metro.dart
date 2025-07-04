@@ -31,9 +31,29 @@ class PoiLinesMetro extends StatelessWidget {
     super.key,
   });
 
+  List<PublicTransportPlatformMessage> _getPlatformsInfo() {
+    final directions = transportDirectoryRouteInfo.directions;
+
+    if (directions.isEmpty) {
+      return [];
+    }
+
+    if (directions.length == 1) {
+      return directions.first.platforms;
+    }
+
+    return directions
+            .firstWhereOrNull(
+              (direction) => direction.type == PublicTransportRouteDirectionTypeMessage.forward,
+            )
+            ?.platforms ??
+        directions.first.platforms;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _platformsInfo = transportDirectoryRouteInfo.directions.firstOrNull?.platforms ?? [];
+    final _platformsInfo = _getPlatformsInfo();
+
     final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colorsV3.foregroundDefault.value);
 
     return ContentWrapper(
