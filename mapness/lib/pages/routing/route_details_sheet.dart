@@ -194,13 +194,13 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                   ),
                 ],
               ),
-              Spacing.$4x.heightBox,
+              Spacing.$2x.heightBox,
               ...transports
                   .map(
                       (e) => e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
                   .insertBetween(Spacing.$2x.heightBox),
               if (widget.destination != null) ...[
-                Spacing.$4x.heightBox,
+                Spacing.$2x.heightBox,
                 ContentWrapper(
                   color: context.colorsV3.backgroundSurface1,
                   children: [
@@ -217,22 +217,6 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                   ],
                 ),
               ],
-              Spacing.$2x.heightBox,
-              // if (widget.onPressed != null)
-              //   SizedBox(
-              //     width: double.infinity,
-              //     child: BaladyAppButton(
-              //       padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-              //       buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-              //       size: BaladyButtonSize.large,
-              //       primaryLabel: widget.buttonLabel,
-              //       onTap: () {
-              //         _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-              //         context.router.popForced();
-              //         widget.onPressed?.call();
-              //       },
-              //     ),
-              //   ),
             ],
           ),
         ),

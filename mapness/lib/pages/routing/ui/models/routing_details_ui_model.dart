@@ -17,6 +17,7 @@ class RouteDetailsPublicTransportPedestrian extends RouteDetailsPublicTransport 
   });
 
   int get lengthInMeters => (length / 1000).round();
+  double get lengthInKm => lengthInMeters / 1000;
   int get duration => durationByFoot(length);
 }
 

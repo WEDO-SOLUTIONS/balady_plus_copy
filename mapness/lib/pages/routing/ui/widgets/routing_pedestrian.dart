@@ -41,12 +41,12 @@ class RoutingPedestrian extends StatelessWidget {
           Row(
             children: [
               Text(
-                '${data.lengthInMeters} ${context.l10n.meters} ${context.l10n.onFoot}',
+                '${_getLengthText(context, data.lengthInMeters)} ${context.l10n.onFoot}',
                 style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
               ),
               Text(' · ', style: textStyle.copyWith(color: context.colorsV3.foregroundSoft)),
               Text(
-                '${data.duration} ${context.l10n.minutes}',
+                '${data.duration} ${context.l10n.min}',
                 style: textStyle.copyWith(color: context.colorsV3.foregroundSoft),
               ),
             ],
@@ -54,5 +54,12 @@ class RoutingPedestrian extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getLengthText(BuildContext context, int lengthInMeters) {
+    if (lengthInMeters > 1000) {
+      return '${(lengthInMeters / 1000).toStringAsFixed(1)} ${context.l10n.km}';
+    }
+    return '${lengthInMeters.round()} ${context.l10n.meter}';
   }
 }
