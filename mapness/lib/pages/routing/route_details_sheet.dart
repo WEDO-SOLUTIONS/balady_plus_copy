@@ -21,7 +21,8 @@ import 'package:urbi_utils/urbi_utils.dart';
 class RouteDetailsPage extends ConsumerStatefulWidget {
   final String? destination;
   final BriefPublicTransportModel route;
-  final void Function()? onPressed;
+  final Future<void> Function()? onPressed;
+  final Future<void> Function()? onClose;
   final String buttonLabel;
 
   const RouteDetailsPage({
@@ -29,6 +30,7 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
     required this.buttonLabel,
     this.destination,
     this.onPressed,
+    this.onClose,
     super.key,
   });
 
@@ -131,8 +133,9 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                 ),
                 BaladyAppButton.close(
                   buttonType: BaladyButtonType.secondary,
-                  onTap: () {
+                  onTap: () async {
                     _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+                    await widget.onClose?.call();
                     context.router.popForced();
                   },
                 ),

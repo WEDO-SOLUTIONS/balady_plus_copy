@@ -38,32 +38,39 @@ class RoutesCarousel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {
       return publicTransportRoutes.when(
-        data: (routes) => _CarouselWrapper(
-          pageController: pageController,
-          routesCount: routes.length,
-          height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
-          onActiveChanged: onActiveChanged,
-          itemBuilder: (context, index) {
-            final route = routes[index];
-            return Padding(
-              padding: padding(
-                index: index,
-                length: routes.length,
-                isLtr: Directionality.of(context) == TextDirection.ltr,
-              ),
-              child: PathPublicCard(
-                route: route,
-                localizations: PathCardLocalization(
-                  calories: context.l10n.calories,
-                  steps: context.l10n.steps,
-                  go: context.l10n.go,
+        data: (routes) {
+          final shortest = shortestIsOnlyOnePublicTransport(routes);
+          return _CarouselWrapper(
+            pageController: pageController,
+            routesCount: routes.length,
+            height: PathCardSize.getCardHeight(type: navType),
+            onActiveChanged: onActiveChanged,
+            itemBuilder: (context, index) {
+              final route = routes[index];
+              final durationInSeconds = route.duration;
+              return Padding(
+                padding: padding(
+                  index: index,
+                  length: routes.length,
+                  isLtr: Directionality.of(context) == TextDirection.ltr,
                 ),
-                onStartNavigation: () => startNavigation(getRouteInfo(route)),
-                destination: destination,
-              ),
-            );
-          },
-        ),
+                child: PathPublicCard(
+                  route: route,
+                  localizations: PathCardLocalization(
+                    calories: context.l10n.calories,
+                    steps: context.l10n.steps,
+                    go: context.l10n.go,
+                  ),
+                  onStartNavigation: () => startNavigation(getRouteInfo(route)),
+                  destination: destination,
+                  additionalInfo: shortest != null && shortest == durationInSeconds
+                      ? PathCardStatus.shortest(context.l10n.shortest)
+                      : null,
+                ),
+              );
+            },
+          );
+        },
         error: (_, __) => PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound),
         loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
         skipLoadingOnRefresh: false,
@@ -76,7 +83,7 @@ class RoutesCarousel extends ConsumerWidget {
         return _CarouselWrapper(
           pageController: pageController,
           routesCount: routes.length,
-          height: PathCardSize.getCardHeight(isPedestrian: navType == RouteSearchOptionsMessage.pedestrian),
+          height: PathCardSize.getCardHeight(type: navType),
           onActiveChanged: onActiveChanged,
           itemBuilder: (context, index) {
             final route = routes[index];
@@ -124,6 +131,19 @@ class RoutesCarousel extends ConsumerWidget {
   /// We use it to show the badge "Shortest" on only one shortest route
   /// If we have more then one shortest route we don't show the badge and return null
   int? shortestIsOnlyOne(List<RouteInfo> routes) {
+    if (routes.length == 1) {
+      return routes.first.duration;
+    }
+    final durations = routes.map((e) => e.duration).sorted((a, b) => a.compareTo(b));
+
+    final shortestDuration = durations.first;
+    if (durations[1] == shortestDuration) {
+      return null;
+    }
+    return shortestDuration;
+  }
+
+  int? shortestIsOnlyOnePublicTransport(List<BriefPublicTransportModel> routes) {
     if (routes.length == 1) {
       return routes.first.duration;
     }

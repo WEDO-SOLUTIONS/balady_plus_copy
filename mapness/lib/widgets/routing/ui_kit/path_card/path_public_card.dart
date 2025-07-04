@@ -12,19 +12,24 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_wrapper.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_status.dart';
+import 'package:urbi_utils/urbi_utils.dart';
 
 class PathPublicCard extends ConsumerWidget {
   final BriefPublicTransportModel route;
   final PathCardLocalization localizations;
   final Function()? onStartNavigation;
   final String? destination;
+  final PathCardStatus? additionalInfo;
 
   const PathPublicCard({
     required this.route,
     required this.localizations,
     this.onStartNavigation,
     this.destination,
+    this.additionalInfo,
     super.key,
   });
 
@@ -47,10 +52,25 @@ class PathPublicCard extends ConsumerWidget {
                   children: [
                     Text(duration, style: context.textStyleV3.bodyLargeSemiBold),
                     const SizedBox(height: Spacing.$1x),
-                    Text(
-                      transfers,
-                      style: context.textStyleV3.captionMediumRegular,
-                    ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          transfers,
+                          style: context.textStyleV3.captionMediumRegular,
+                        ),
+                        if (additionalInfo != null) ...[
+                          Text(
+                            '·',
+                            style: context.textStyle.caption,
+                          ),
+                          PathBadge(additionalInfo!),
+                        ],
+                      ]
+                          .insertBetween(
+                            Spacing.$1x.widthBox,
+                          )
+                          .toList(),
+                    )
                   ],
                 ),
               ),
@@ -87,7 +107,7 @@ class PathPublicCard extends ConsumerWidget {
                 RouteDetailsRoute(
                   route: route,
                   destination: destination,
-                  onPressed: onStartNavigation,
+                  onPressed: () async => onStartNavigation?.call(),
                   buttonLabel: context.l10n.go.toUpperCase(),
                 ),
               );
