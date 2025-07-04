@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_address_action_button.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class PoiContentFullAddressCard extends StatelessWidget {
@@ -54,12 +55,12 @@ class PoiContentFullAddressCard extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 if (data.floors != null)
-                  _ActionButton(
+                  ActionButton(
                     title: data.floors!.title,
                     count: data.floors!.floors,
                   ),
                 if (data.entrances != null && data.entrances!.count > 0)
-                  _ActionButton(
+                  ActionButton(
                     title: data.entrances!.title,
                     count: data.entrances!.count,
                     onTap: data.entrances?.onTap,
@@ -70,30 +71,4 @@ class PoiContentFullAddressCard extends StatelessWidget {
       ],
     );
   }
-}
-
-class _ActionButton extends StatelessWidget {
-  final String title;
-  final int? count;
-  final void Function()? onTap;
-
-  const _ActionButton({
-    required this.title,
-    this.count,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) => BaladyAppButton(
-        padding: EdgeInsets.zero,
-        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
-        primaryLabel: title,
-        trailing: Counter(
-          count: count,
-          color: context.colorsV3.accentDefault,
-        ),
-        buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-        buttonType: BaladyButtonType.secondary,
-        onTap: onTap,
-      );
 }
