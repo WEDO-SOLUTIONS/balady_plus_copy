@@ -74,23 +74,6 @@ class ParkingContent extends ConsumerWidget {
               ],
             ),
           ),
-          Spacing.$4x.heightBox,
-          ContentWrapper(
-            color: context.color.surfaceBasePrimary,
-            children: [
-              ContentRowV2(
-                text: ContentRowTextOptions(
-                  title: context.l10n.location,
-                  titleOptions: const ContentRowTextOption(isBold: true),
-                  subtitle: parkingManage?.address,
-                  subtitleOptions: const ContentRowTextOption(
-                    maxLines: 99,
-                  ),
-                ),
-                crossAxisAlignment: CrossAxisAlignment.start,
-              )
-            ],
-          ),
           const Spacer(),
           Text(
             context.l10n.dataStoredFor,
