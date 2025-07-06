@@ -120,24 +120,27 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     if (checkAppRequirment(serviceKey, RequirementEnum.userProfile.name) ==
         true) {
       if (CommonProperties.isLoggedIn) {
-        try {
-          BaseResponse response = BaseResponse(
-            code: 200,
-            message: "success",
-            eventName: "getUserProfile",
-            data:
-                UserProfileModel.fromJson(CommonProperties.userInfo!.toJson()),
-          );
-          handler.complete(response.jsonEncodeModel());
-        } catch (e) {
-          BaseResponse response = BaseResponse(
-            code: 401,
-            message: "Profile not found",
-            eventName: "getUserProfile",
-            data: null,
-          );
-          handler.complete(response.jsonEncodeModel());
-           // rethrow;
+        if (CommonProperties.userInfo == null) {
+          throw Exception("User not found");
+        } else {
+          try {
+            BaseResponse response = BaseResponse(
+              code: 200,
+              message: "success",
+              eventName: "getUserProfile",
+              data: UserProfileModel.fromJson(
+                  CommonProperties.userInfo!.toJson()),
+            );
+            handler.complete(response.jsonEncodeModel());
+          } catch (e) {
+            BaseResponse response = BaseResponse(
+              code: 404,
+              message: "Profile not found",
+              eventName: "getUserProfile",
+              data: null,
+            );
+            handler.complete(response.jsonEncodeModel());
+          }
         }
       } else {
         BaseResponse response = BaseResponse(
