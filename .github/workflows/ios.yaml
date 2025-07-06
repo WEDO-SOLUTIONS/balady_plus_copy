@@ -139,7 +139,7 @@ jobs:
           echo "Created pre-production channel with ID: $PRE_CHANNEL_ID"
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_prod.dart --flavor prod  --dart-define=CI_BUILD_NAME="${CI_ARTIFACT_SUFFIX}" --dart-define=CI_RELEASE_VERSION="${CI_RELEASE_VERSION}"
-          RESPONSE=$(curl -s -X POST "https://baladyapp-builds.urbi.ae/api/channels/$PROD_CHANNEL_ID/builds" \
+          RESPONSE=$(curl -X POST "https://baladyapp-builds.urbi.ae/api/channels/$PROD_CHANNEL_ID/builds" \
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}" \
             -F "expiration_type=on_push" \
@@ -150,7 +150,7 @@ jobs:
           echo "BUILD_URL_PROD=${BUILD_URL}" >> ${GITHUB_ENV}
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_stg.dart --flavor stg
-          RESPONSE=$(curl -s -X POST "https://baladyapp-builds.urbi.ae/api/channels/$STG_CHANNEL_ID/builds" \
+          RESPONSE=$(curl -X POST "https://baladyapp-builds.urbi.ae/api/channels/$STG_CHANNEL_ID/builds" \
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-stg" \
             -F "expiration_type=on_push" \
@@ -161,7 +161,7 @@ jobs:
           echo "BUILD_URL_STAGE=${BUILD_URL}" >> ${GITHUB_ENV}
 
           fvm flutter build ipa --release --export-options-plist ios/ad_hoc_options.plist --target lib/main_urbi_pre.dart --flavor pre
-          RESPONSE=$(curl -s -X POST "https://baladyapp-builds.urbi.ae/api/channels/$PRE_CHANNEL_ID/builds" \
+          RESPONSE=$(curl -X POST "https://baladyapp-builds.urbi.ae/api/channels/$PRE_CHANNEL_ID/builds" \
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-pre" \
             -F "expiration_type=on_push" \
