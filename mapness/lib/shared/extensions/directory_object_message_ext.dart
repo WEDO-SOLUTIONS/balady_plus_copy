@@ -21,6 +21,8 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
       return json;
     }).toList();
     final tradeLicenseJson = tradeLicense?.toJson();
+    final routeInfosList = routeInfos.map((item) => item.toJson()).toList();
+    final groupList = group.map((item) => item.toJson()).toList();
     return {
       'types': typesList,
       'title': title,
@@ -46,6 +48,8 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
       'entrances': entrancesList,
       'tradeLicense': tradeLicenseJson,
       'rubricIds': rubricIds,
+      'routeInfos': routeInfosList,
+      'group': groupList,
     };
   }
 
@@ -101,6 +105,14 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
             ? TradeLicenseMessageExt.fromJson(json['tradeLicense'] as Map<String, dynamic>)
             : null,
         rubricIds: (json['rubricIds'] as List<dynamic>).map((e) => e as int).toList(),
+        routeInfos: (json['routeInfos'] as List<dynamic>?)
+                ?.map((e) => PublicTransportDirectoryRouteInfoMessageExt.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+        group: (json['group'] as List<dynamic>?)
+                ?.map((e) => GroupItemMessageExt.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
       );
 }
 
@@ -784,5 +796,164 @@ extension ParkingTypeMessageExtension on ParkingTypeMessage {
   static ParkingTypeMessage fromJson(String json) => ParkingTypeMessage.values.firstWhere(
         (e) => e.toString().split('.').last == json,
         orElse: () => ParkingTypeMessage.none,
+      );
+}
+
+extension PublicTransportDirectoryRouteInfoMessageExt on PublicTransportDirectoryRouteInfoMessage {
+  Map<String, dynamic> toJson() => {
+        'id': id.toJson(),
+        'name': name,
+        'color': color,
+        'fromToStationNames': fromToStationNames?.toJson(),
+        'directions': directions.map((e) => e.toJson()).toList(),
+      };
+
+  static PublicTransportDirectoryRouteInfoMessage fromJson(Map<String, dynamic> json) =>
+      PublicTransportDirectoryRouteInfoMessage(
+        id: DgisObjectIdMessageExt.fromJson(json['id'] as Map<String, dynamic>),
+        name: json['name'] as String,
+        color: json['color'] as int?,
+        fromToStationNames: json['fromToStationNames'] != null
+            ? PublicTransportDirectoryRouteDirectionNamesInfoMessageExt.fromJson(
+                json['fromToStationNames'] as Map<String, dynamic>)
+            : null,
+        directions: (json['directions'] as List<dynamic>?)
+                ?.map((e) => PublicTransportRouteDirectionMessageExt.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
+}
+
+extension PublicTransportDirectoryRouteDirectionNamesInfoMessageExt
+    on PublicTransportDirectoryRouteDirectionNamesInfoMessage {
+  Map<String, dynamic> toJson() => {
+        'fromName': fromName,
+        'toName': toName,
+      };
+
+  static PublicTransportDirectoryRouteDirectionNamesInfoMessage fromJson(Map<String, dynamic> json) =>
+      PublicTransportDirectoryRouteDirectionNamesInfoMessage(
+        fromName: json['fromName'] as String,
+        toName: json['toName'] as String,
+      );
+}
+
+extension PublicTransportRouteDirectionMessageExt on PublicTransportRouteDirectionMessage {
+  Map<String, dynamic> toJson() => {
+        'id': id.toJson(),
+        'type': type.toString().split('.').last,
+        'geometry': geometry?.toJson(),
+        'platforms': platforms.map((e) => e.toJson()).toList(),
+      };
+
+  static PublicTransportRouteDirectionMessage fromJson(Map<String, dynamic> json) =>
+      PublicTransportRouteDirectionMessage(
+        id: PublicTransportRouteDirectionIdMessageExt.fromJson(json['id'] as Map<String, dynamic>),
+        type: PublicTransportRouteDirectionTypeMessage.values
+            .firstWhere((e) => e.toString().split('.').last == json['type']),
+        geometry: json['geometry'] != null
+            ? PublicTransportRouteGeometryMessageExt.fromJson(json['geometry'] as Map<String, dynamic>)
+            : null,
+        platforms: (json['platforms'] as List<dynamic>?)
+                ?.map((e) => PublicTransportPlatformMessageExt.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
+}
+
+extension PublicTransportRouteDirectionIdMessageExt on PublicTransportRouteDirectionIdMessage {
+  Map<String, dynamic> toJson() => {
+        'value': value,
+      };
+
+  static PublicTransportRouteDirectionIdMessage fromJson(Map<String, dynamic> json) =>
+      PublicTransportRouteDirectionIdMessage(
+        value: json['value'] as int,
+      );
+}
+
+extension PublicTransportRouteGeometryMessageExt on PublicTransportRouteGeometryMessage {
+  Map<String, dynamic> toJson() => {
+        'line': line.toJson(),
+        'centroid': centroid?.toJson(),
+      };
+
+  static PublicTransportRouteGeometryMessage fromJson(Map<String, dynamic> json) => PublicTransportRouteGeometryMessage(
+        line: PolylineGeometryMessageExt.fromJson(json['line'] as Map<String, dynamic>),
+        centroid: json['centroid'] != null
+            ? GeoPointMessageExtension.fromJson(json['centroid'] as Map<String, dynamic>)
+            : null,
+      );
+}
+
+extension PolylineGeometryMessageExt on PolylineGeometryMessage {
+  Map<String, dynamic> toJson() => {
+        'points': points.map((e) => e.toJson()).toList(),
+      };
+
+  static PolylineGeometryMessage fromJson(Map<String, dynamic> json) => PolylineGeometryMessage(
+        points: (json['points'] as List<dynamic>?)
+                ?.map((e) => GeoPointMessageExtension.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
+}
+
+extension PublicTransportPlatformMessageExt on PublicTransportPlatformMessage {
+  Map<String, dynamic> toJson() => {
+        'id': id.toJson(),
+        'stationId': stationId.toJson(),
+        'name': name,
+        'description': description,
+        'transitions': transitions.map((e) => e.toJson()).toList(),
+        'position': position?.toJson(),
+      };
+
+  static PublicTransportPlatformMessage fromJson(Map<String, dynamic> json) => PublicTransportPlatformMessage(
+        id: DgisObjectIdMessageExt.fromJson(json['id'] as Map<String, dynamic>),
+        stationId: DgisObjectIdMessageExt.fromJson(json['stationId'] as Map<String, dynamic>),
+        name: json['name'] as String,
+        description: json['description'] as String?,
+        transitions: (json['transitions'] as List<dynamic>?)
+                ?.map((e) => PublicTransportPlatformTransitionMessageExt.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+        position: json['position'] != null
+            ? GeoPointMessageExtension.fromJson(json['position'] as Map<String, dynamic>)
+            : null,
+      );
+}
+
+extension PublicTransportPlatformTransitionMessageExt on PublicTransportPlatformTransitionMessage {
+  Map<String, dynamic> toJson() => {
+        'routeId': routeId.toJson(),
+        'routeName': routeName,
+        'routeType': routeType.toString().split('.').last,
+        'color': color,
+        'stationId': stationId.toJson(),
+        'stationName': stationName,
+      };
+
+  static PublicTransportPlatformTransitionMessage fromJson(Map<String, dynamic> json) =>
+      PublicTransportPlatformTransitionMessage(
+        routeId: DgisObjectIdMessageExt.fromJson(json['routeId'] as Map<String, dynamic>),
+        routeName: json['routeName'] as String,
+        routeType:
+            PublicTransportRouteTypeMessage.values.firstWhere((e) => e.toString().split('.').last == json['routeType']),
+        color: json['color'] as int?,
+        stationId: DgisObjectIdMessageExt.fromJson(json['stationId'] as Map<String, dynamic>),
+        stationName: json['stationName'] as String,
+      );
+}
+
+extension GroupItemMessageExt on GroupItemMessage {
+  Map<String, dynamic> toJson() => {
+        'id': DgisObjectIdMessageExt(id).toJson(),
+        'type': type.toString().split('.').last,
+      };
+
+  static GroupItemMessage fromJson(Map<String, dynamic> json) => GroupItemMessage(
+        id: DgisObjectIdMessageExt.fromJson(json['id'] as Map<String, dynamic>),
+        type: ObjectTypeMessage.values.firstWhere((e) => e.toString().split('.').last == json['type']),
       );
 }

@@ -184,15 +184,6 @@ class ManeuverControlModel {
 
         let instructionType = getInstructionManeuver(extraInstructionInfo: instruction.extraInstructionInfo)
         
-        FlutterCarPlaySceneDelegate.updateManeuver(
-            CarPlayManeuver(
-                roadName: instruction.roadName,
-                instruction: instructionEntry,
-                distanceRemaining: Measurement(value: Double(distance), unit: .millimeters),
-                timeRemaining: 0
-            )
-        )
-        
         return eventChannel.success([
             "event": ManeuverEvents.maneuverEvent,
             "type": ManeuverEvents.nextManeuver,

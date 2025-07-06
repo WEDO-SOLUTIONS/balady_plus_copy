@@ -7,14 +7,13 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class PoiOrganizationsSliver extends ConsumerStatefulWidget {
@@ -74,11 +73,8 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
-              child: FeedbackBannerCard(
-                title: context.l10n.addPlace,
-                subtitle: context.l10n.addNewPlace,
-                path: Assets.images.addCompany.keyName,
-                gradientColors: const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
+              child: PoiContentFeedbackCard(
+                data: PoiContentFeedbackType.addPlace,
                 onTap: () => context.router.push(QuickFeedbackRoute()),
               ),
             ),

@@ -8,7 +8,6 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
-import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
@@ -25,6 +24,7 @@ import 'package:mapness/features/share_eta/providers/websocket_type_provider.dar
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -255,10 +255,9 @@ class ShareEta extends _$ShareEta {
     }
   }
 
-  void checkExistStream([int? durationInMinutes]) {
+  void shareIfExistingStream([int? durationInMinutes]) {
     final existingToken = EtaStreamStorage().state.streamToken;
     final existingStreamId = EtaStreamStorage().state.streamId;
-
     if (existingToken != null && existingStreamId != null) {
       if (durationInMinutes == null) {
         shareCurrentStream(EtaStreamType.eta);
@@ -270,7 +269,7 @@ class ShareEta extends _$ShareEta {
   }
 
   Future<void> startSharingLiveLocation(int durationInMinutes) async {
-    checkExistStream(durationInMinutes);
+    shareIfExistingStream(durationInMinutes);
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
       state = _streamType = EtaStreamType.geo;
@@ -291,8 +290,6 @@ class ShareEta extends _$ShareEta {
   }
 
   Future<void> startSharingEta() async {
-    checkExistStream();
-
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
 

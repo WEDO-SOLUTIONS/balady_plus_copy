@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
-import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
+import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/widgets/feedback/feedback_type_item_widget.dart';
 
 class FeedbackSelectOptionsWidget extends StatelessWidget {

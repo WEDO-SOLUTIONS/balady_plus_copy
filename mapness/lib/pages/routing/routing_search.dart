@@ -105,7 +105,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
               child: StatefulBottomSheet<ThreeStateBottomSheet>(
                 keepContentBehindFooter: true,
                 scrollController: _statefulBottomSheetController,
-                outsideOpacityDelegate: StatefulSheetDelegateFunction(
+                outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
                   function: (controller) {
                     final aspectRatio = controller.aspectRatio;
                     final interpolation = controller.interpolation;

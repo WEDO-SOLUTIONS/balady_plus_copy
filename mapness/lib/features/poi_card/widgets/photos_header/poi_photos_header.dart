@@ -3,9 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/header_component.dart';
 
-const photosMinHeight = 96.0;
-const photosMaxHeight = 156.0;
-
 class PoiPhotosHeader extends ConsumerWidget {
   final int objectId;
 
@@ -21,8 +18,8 @@ class PoiPhotosHeader extends ConsumerWidget {
     final isPhotosLoading = photos.isLoading;
 
     return HeaderComponent(
-      isPhotosEmpty: isPhotosEmpty,
-      isPhotosLoading: isPhotosLoading,
+      photosEmpty: isPhotosEmpty,
+      photosAreLoading: isPhotosLoading,
       objectId: objectId,
     );
   }

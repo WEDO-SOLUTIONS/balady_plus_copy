@@ -28,8 +28,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       StatefulBottomSheetController(
     behavior: MultiSnappingBehavior(
       models: [
-        AspectRatioSnappingModel({0.0, 1.0}),
-        OffsetSnappingModel({photosMaxHeight + Spacing.$2x}),
+        AspectRatioSnappingModel({0.0, .931}),
+        OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
             a: const SnapComponent.size(component: Components.header),
@@ -149,7 +149,12 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     return Directionality(
       textDirection: Directionality.of(context),
       child: SafeArea(
+        top: false,
         child: StatefulBottomSheet(
+          displayDragger: false,
+          // We use it to explicitly set corner radius for bottom sheet and use it in header component
+          // ignore: avoid_redundant_argument_values
+          cornerRadius: PoiHeader.poiHeaderBorderRadius,
           scrollController: _bottomSheetController,
           offsetOutsideWidgetByTopheader: !isPhotosNotEmpty,
           safeAreaColor: context.colorsV2.backgroundSurface2,
@@ -161,6 +166,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               // we should not use objectIdForIndoorLevels if POI has levelId
               objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId),
           topHeader: PoiPhotosHeader(objectId: widget.objectId),
+          topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
           footer: PoiCardFooter(
             closestPoint: widget.closestPoint,
             bottomSheetController: _bottomSheetController,
@@ -187,9 +193,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     'objectId': widget.objectId,
                   });
 
-              final phoneNumber = widget.data.getContactsInfoModels().firstWhereOrNull(
-                    (element) => element.type == ContactsInfoType.phone,
-                  );
+              final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
+                (element) => element.type == ContactsInfoType.phone,
+              );
               if (phoneNumber?.value != null) {
                 poiActions.callPhone(phoneNumber!.value!);
               }
@@ -261,39 +267,21 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             builder: (context, tabType, _) => DecoratedSliver(
               decoration: BoxDecoration(
                 color: context.colorsV2.backgroundSurface4,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(PoiHeader.poiHeaderBorderRadius)),
               ),
               sliver: SliverFillAfter(
                 sliver: SliverAnimatedSwitcher(
                   duration: Durations.medium2,
                   child: switch (tabType) {
-                    PoiTabsType.info => SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            const SizedBox(height: Spacing.$4x),
-                            FeedbackBannerCard(
-                              path: Assets.images.cityExpert.keyName,
-                              title: context.l10n.cityExpert,
-                              subtitle: context.l10n.cityExpertDescription,
-                              gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
-                              onTap: () {
-                                context.router.push(QuickFeedbackRoute(
-                                  type: QuickFeedbackType.editCompany,
-                                  params: FeedbackObjectIdParams(widget.objectId),
-                                ));
-                              },
-                            ),
-                            InfoWidget(
-                              objectInfo: poiCardState?.gisObjectIdMessage,
-                              qrTradeLicense: poiCardState?.qrTradeLicense,
-                              onEntrancesTap: () => poiActions.toggleEntrances(
-                                widget.data,
-                                () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                                widget.closestPoint,
-                              ),
-                            ),
-                          ],
-                        ),
+                    PoiTabsType.info => PoiContentSliver(
+                        poiCardState: poiCardState,
+                        onEntrancesTap: () {
+                          poiActions.toggleEntrances(
+                            widget.data,
+                            () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                            widget.closestPoint,
+                          );
+                        },
                       ),
                     PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                     PoiTabsType.organizations => PoiOrganizationsSliver(

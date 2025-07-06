@@ -22,10 +22,10 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-    <key>NSSpeechRecognitionUsageDescription</key>
-    <string>speech</string>
-    <key>NSMotionUsageDescription</key>
-    <string>motion</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>speech</string>
+	<key>NSMotionUsageDescription</key>
+	<string>motion</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -36,6 +36,7 @@
 				<string>com.momra.balady</string>
 				<string>com.balady</string>
 				<string>apps.balady.gov.sa</string>
+				<string>plus.balady.sa</string>
 			</array>
 		</dict>
 		<dict>
@@ -148,10 +149,10 @@
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-        <string>UIInterfaceOrientationPortrait</string>
-        <string>UIInterfaceOrientationLandscapeLeft</string>
-        <string>UIInterfaceOrientationLandscapeRight</string>
-    </array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
