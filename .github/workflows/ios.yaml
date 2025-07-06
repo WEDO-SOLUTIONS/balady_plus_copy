@@ -143,6 +143,7 @@ jobs:
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}" \
             -F "expiration_type=on_push" \
+            -F "expire_days=-1" \
             -F "file=@build/ios/ipa/balady_plus.ipa")
           BUILD_UUID=$(echo $RESPONSE | jq -r '.id')
           BUILD_URL="https://baladyapp-builds.urbi.ae/install/${BUILD_UUID}"
@@ -153,6 +154,7 @@ jobs:
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-stg" \
             -F "expiration_type=on_push" \
+            -F "expire_days=-1" \
             -F "file=@build/ios/ipa/balady_plus.ipa")
           BUILD_UUID=$(echo $RESPONSE | jq -r '.id')
           BUILD_URL="https://baladyapp-builds.urbi.ae/install/${BUILD_UUID}"
@@ -163,6 +165,7 @@ jobs:
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-pre" \
             -F "expiration_type=on_push" \
+            -F "expire_days=-1" \
             -F "file=@build/ios/ipa/balady_plus.ipa")
           BUILD_UUID=$(echo $RESPONSE | jq -r '.id')
           BUILD_URL="https://baladyapp-builds.urbi.ae/install/${BUILD_UUID}"
