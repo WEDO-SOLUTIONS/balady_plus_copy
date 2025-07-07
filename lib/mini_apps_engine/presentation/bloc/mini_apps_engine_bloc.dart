@@ -28,8 +28,10 @@ class MiniAppsEngineBloc
   late String basePathService;
   // String serverPath;
 
-  MiniAppsEngineBloc({required this.miniApp, })//required this.serverPath
-      : super(const MiniAppsEngineInitialState()) {
+  MiniAppsEngineBloc({
+    required this.miniApp,
+  }) //required this.serverPath
+  : super(const MiniAppsEngineInitialState()) {
     on<CheckMiniAppsEngineEvent>(_checkMiniAppsEngine);
 
     on<DownloadMiniAppsEngineEvent>(_downloadMiniAppsEngine);
@@ -137,15 +139,16 @@ class MiniAppsEngineBloc
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
-      if(state is MiniAppsEngineLoadingState) {
-        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
-        if(!tempState.progress.contains("100")) {
+      if (state is MiniAppsEngineLoadingState) {
+        MiniAppsEngineLoadingState tempState =
+            state as MiniAppsEngineLoadingState;
+        if (!tempState.progress.contains("100")) {
           return;
         }
       }
       String pathService =
           '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
-      CommonProperties.currentLocalServerDirectory=pathService;
+      CommonProperties.currentLocalServerDirectory = pathService;
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
@@ -172,7 +175,6 @@ class MiniAppsEngineBloc
     }
   }
 
-
   Future<File?> _downloadFile(
     String urlDownload,
     String downloadPath,
@@ -184,7 +186,7 @@ class MiniAppsEngineBloc
     try {
       Response response = await webService.dio.get(
         urlDownload,
-        // "https://drive.usercontent.google.com/download?id=1oJm5SMQe9xsTUIp6wEI0n0bYV-rxMGuV&export=download&authuser=0&confirm=t&uuid=dbcd2ee5-7489-4088-a00b-0b9a4536b22f&at=AN8xHop7Ib8Es6qW92exzajrG_ky:1750675435222",
+        // "https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=f6f2f357-7c5e-476b-aeed-aaf72b283264&at=AN8xHopEyCm07QgbfLvkLMHP6vm2:1751807713656",
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(

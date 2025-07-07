@@ -9,7 +9,6 @@ import 'package:http/http.dart' as http;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../dependency_injection/injection_container.dart';
-import '../services/global/web_service.dart';
 import '../services/local/helpers.dart';
 import '../utils/common_functions.dart';
 import '../utils/constants/remote_config.dart';
@@ -28,11 +27,11 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
-    print("url: " + requestUrl);
+    print("url: $requestUrl");
     Map<String, dynamic> result = {};
     try {
       var headers = {
@@ -48,7 +47,7 @@ class PegaWebService {
         Uri.parse(requestUrl),
         headers: headers,
       );
-      print("url response: " + utf8.decode(response.bodyBytes).toString());
+      print("url response: ${utf8.decode(response.bodyBytes)}");
       if (response.statusCode == HttpStatus.ok) {
         result.putIfAbsent("state", () => true);
         result.putIfAbsent(
@@ -57,10 +56,11 @@ class PegaWebService {
         result.putIfAbsent("state", () => false);
         result.putIfAbsent(
             "data", () => utf8.decode(response.bodyBytes).toString());
-        if (autoLogout)
+        if (autoLogout) {
           result.putIfAbsent("error", () => ('session_ended_error').tr());
-        else
+        } else {
           result.putIfAbsent("error", () => ('errors_server_error_1').tr());
+        }
 
         try {
           Helpers.sendLog(
@@ -263,11 +263,11 @@ class PegaWebService {
     }
 
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
-    print("url: " + requestUrl);
+    print("url: $requestUrl");
     Map<String, dynamic> result = {};
     if (isSuccess) {
       try {
@@ -300,7 +300,7 @@ class PegaWebService {
           headers: headers,
         )
         .timeout(Duration(seconds: timeLimit ?? 5));
-        print("url response: " + utf8.decode(response.bodyBytes).toString());
+        print("url response: ${utf8.decode(response.bodyBytes)}");
         if (response.statusCode == HttpStatus.ok) {
           result.putIfAbsent("state", () => true);
           result.putIfAbsent(
@@ -309,10 +309,11 @@ class PegaWebService {
           result.putIfAbsent("state", () => false);
           result.putIfAbsent(
               "data", () => utf8.decode(response.bodyBytes).toString());
-          if (autoLogout)
+          if (autoLogout) {
             result.putIfAbsent("error", () => ('session_ended_error').tr());
-          else
+          } else {
             result.putIfAbsent("error", () => ('errors_server_error_1').tr());
+          }
 
           try {
             Helpers.sendLog(
@@ -419,8 +420,7 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" +
-          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
+      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
     }
     var requestUrl = baseURL + url + queryString;
     print(requestUrl);
@@ -541,9 +541,7 @@ class PegaWebService {
       {String? body, String? loginIdentityId, String? loginIdentityType}) {
     //var encodedURL = Uri.encodeComponent(url);
     String message = "";
-    message = url +
-        method +
-        'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
+    message = '$url${method}Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}';
     if (body != null) {
       message += body.replaceAll(RegExp(r'^/\\n/g'), "");
     }
@@ -578,8 +576,7 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" +
-          Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query);
+      queryString = "?${Uri.decodeQueryComponent(Uri(queryParameters: queryParams).query)}";
     }
     var requestUrl = baseURL + url + queryString;
 
@@ -688,7 +685,7 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;
@@ -791,7 +788,7 @@ class PegaWebService {
       queryString = relativePath;
     }
     if (queryParams != null) {
-      queryString = "?" + Uri(queryParameters: queryParams).query;
+      queryString = "?${Uri(queryParameters: queryParams).query}";
     }
 
     var requestUrl = baseURL + url + queryString;

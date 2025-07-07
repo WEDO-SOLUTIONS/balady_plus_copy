@@ -2,9 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
-import 'package:balady_plus/app/events_logs/controller/logs_controller.dart';
-import 'package:balady_plus/app/events_logs/events_names.dart';
-import 'package:balady_plus/app/events_logs/models/error_exception_model.dart';
 import 'package:curl_logger_dio_interceptor/curl_logger_dio_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -30,7 +27,7 @@ import '../../errors/errors_exports.dart'
         NoInternetConnectionException,
         RequestNotFoundException;
 import '../../utils/utils_exports.dart'
-    show ApiHeader, ApiPOST, CommonFunctions, CommonProperties, EnvType, Log;
+    show ApiHeader, CommonFunctions, CommonProperties, EnvType, Log;
 import '../services_exports.dart' show NetworkConnection;
 
 // Please using any technique to create singleton WebService (GetIt)
@@ -78,9 +75,7 @@ class AppCertificatePinningInterceptor extends Interceptor {
     List<String>? allowedSHAFingerprints,
     int timeout = 0,
     this.callFollowingErrorInterceptor = false,
-  })  : _allowedSHAFingerprints = allowedSHAFingerprints != null
-            ? allowedSHAFingerprints
-            : <String>[],
+  })  : _allowedSHAFingerprints = allowedSHAFingerprints ?? <String>[],
         _timeout = timeout;
 
   @override
@@ -112,18 +107,17 @@ class AppCertificatePinningInterceptor extends Interceptor {
         final secureString = await secure ?? '';
         secure?.whenComplete(() => secure = null);
 
-          if (secureString.contains('CONNECTION_SECURE')) {
-            return super.onRequest(options, handler);
-          } else {
-            handler.reject(
-              DioException(
-                  requestOptions: options,
-                  error: CertificateNotVerifiedException(),
-                  type: DioExceptionType.badCertificate),
-              callFollowingErrorInterceptor,
-            );
-          }
-
+        if (secureString.contains('CONNECTION_SECURE')) {
+          return super.onRequest(options, handler);
+        } else {
+          handler.reject(
+            DioException(
+                requestOptions: options,
+                error: const CertificateNotVerifiedException(),
+                type: DioExceptionType.badCertificate),
+            callFollowingErrorInterceptor,
+          );
+        }
       } else {
         return super.onRequest(options, handler);
       }
@@ -171,8 +165,6 @@ class AppInterceptors extends Interceptor {
     options.headers[ApiHeader.language.eName] = languageCode;
     options.headers["Accept-Language"] = languageCode;
 
-
-
     String? xCorrelationId;
 
     if (options.uri.toString().toLowerCase().contains("validate-license") ||
@@ -216,10 +208,12 @@ class AppInterceptors extends Interceptor {
       url = options.baseUrl + options.path;
       url += "?CompanyID=${options.queryParameters["CompanyID"]}";
     }
-    if (options.headers[ApiHeader.requiresToken.eName] == false)
+    if (options.headers[ApiHeader.requiresToken.eName] == false) {
       options.headers.remove("Authorization");
+    }
     if (options.data is! FormData) {
-      final verifyingKEY = CommonFunctions.hashRequest(Uri.decodeQueryComponent(url), method,
+      final verifyingKEY = CommonFunctions.hashRequest(
+          Uri.decodeQueryComponent(url), method,
           body: (options.data != null &&
                   !options.uri.toString().contains("bcg/upload-file"))
               ? json.encode(options.data)
@@ -241,22 +235,22 @@ class AppInterceptors extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
     sendAPIEvents(
       nameEvent: EventsName.requestAPIError,
-      responseData:  err.response?.data?.toString() ?? "",
+      responseData: err.response?.data?.toString() ?? "",
       requestOptions: err.requestOptions,
       statusCode: err.response?.statusCode,
     );
 
     switch (err.type) {
-      case DioErrorType.connectionTimeout:
-      case DioErrorType.sendTimeout:
-      case DioErrorType.receiveTimeout:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
         throw DeadlineExceededException(err.requestOptions);
-      case DioErrorType.badResponse:
+      case DioExceptionType.badResponse:
         switch (err.response?.statusCode) {
           case 400:
             if (err.response?.data['data']['responseCode'] == '2') {
@@ -291,17 +285,17 @@ class AppInterceptors extends Interceptor {
             throw BadRequestException(err.requestOptions, err.response);
         }
         break;
-      case DioErrorType.cancel:
+      case DioExceptionType.cancel:
         break;
-      case DioErrorType.badCertificate:
+      case DioExceptionType.badCertificate:
         CommonFunctions.showError("badCerifcation".tr());
 
         throw BadRequestException(err.requestOptions, err.response);
-        break;
-      case DioErrorType.connectionError:
+
+      case DioExceptionType.connectionError:
         throw NoInternetConnectionException(err.requestOptions);
-        break;
-      case DioErrorType.unknown:
+
+      case DioExceptionType.unknown:
         throw BadRequestException(err.requestOptions, err.response);
 
       default:
@@ -316,11 +310,10 @@ class AppInterceptors extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (response.statusCode == 200 || response.statusCode == 201) {
       sendAPIEvents(
-        nameEvent: EventsName.requestAPISuccessful,
-        requestOptions: response.requestOptions,
-        responseData:  response.data?.toString() ?? "",
-        statusCode: response.statusCode
-      );
+          nameEvent: EventsName.requestAPISuccessful,
+          requestOptions: response.requestOptions,
+          responseData: response.data?.toString() ?? "",
+          statusCode: response.statusCode);
     }
     return handler.next(response);
   }
