@@ -74,24 +74,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
-    String serviceKey = "municipalservice"; //for testing only
-    //String serviceKey =  msg["serviceKey"];
     late BaseResponse response;
-    if (CommonProperties.isLoggedIn) {
-      await sl<HomeMiniAppsListCubit>()
-          .getMiniAppAcessToken(serviceKey)
-          .then((result) {
-        response = result!;
-        handler.complete(response.jsonEncodeModel());
-      });
-    } else {
+    if(miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' && !CommonProperties.isLoggedInMunicipality){
       await showDialog(
         context: NavigationService.navigatorKey.currentContext!,
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
               await sl<HomeMiniAppsListCubit>()
-                  .getMiniAppAcessToken(serviceKey)
+                  .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
                   .then((result) {
                 response = result!;
 
@@ -108,7 +99,18 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           },
         ),
       );
+    } else if(miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true && !CommonProperties.isLoggedIn) {
+      CommonFunctions.onLogin();
+    } else {
+      await sl<HomeMiniAppsListCubit>()
+          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+          .then((result) {
+        response = result!;
+
+        handler.complete(response.jsonEncodeModel());
+      });
     }
+
     handler.complete(response.jsonEncodeModel());
   }
 
