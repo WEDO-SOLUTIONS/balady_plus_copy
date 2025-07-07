@@ -117,7 +117,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         width: double.infinity,
         child: BaladyAppButton(
           padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).padding.bottom,
+            bottom: MediaQuery.of(context).padding.bottom + Spacing.$2x,
             left: Spacing.$4x,
             right: Spacing.$4x,
             top: Spacing.$3x,

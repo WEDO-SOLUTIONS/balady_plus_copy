@@ -135,22 +135,57 @@ class TransportIconsRow extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Row(
+  Widget build(BuildContext context) {
+    final transportsWithoutTransfers = transports.whereIndexed((index, e) => !isTransfer(pubs, index));
+    if (!isLarge && transportsWithoutTransfers.length > 5) {
+      return Row(
         mainAxisAlignment: mainAxisAlignment,
-        children: transports
-            .mapIndexed((index, e) {
-              final pub = pubs[index];
-              final isPedestrian = pub.value.routeParts.isEmpty;
-              return TransportIconWidget(
+        children: [
+          ...transportsWithoutTransfers.take(2).map((e) => TransportIconWidget(
                 name: e.names.join(', '),
-                time: isPedestrian ? durationByFoot(pub.length.millimeters) : null,
-                isLast: e == transports.last,
                 isLarge: isLarge,
-              );
-            })
-            .whereIndexed((index, e) => !isTransfer(pubs, index))
-            .toList(),
+              )),
+          Row(
+            children: [
+              Text(
+                '...',
+                style: context.textStyleV3.bodyLargeRegular.copyWith(
+                  color: context.colorsV3.neutralOnContainer,
+                ),
+              ),
+              Spacing.$1x.widthBox,
+              Icon(
+                SystemIcons.arrowCornerRightSmall,
+                size: 16,
+                color: context.colorsV3.foregroundMuted,
+              ),
+            ],
+          ),
+          ...transportsWithoutTransfers.skip(transportsWithoutTransfers.length - 2).map((e) => TransportIconWidget(
+                name: e.names.join(', '),
+                isLast: e == transportsWithoutTransfers.last,
+                isLarge: isLarge,
+              )),
+        ],
       );
+    }
+    return Row(
+      mainAxisAlignment: mainAxisAlignment,
+      children: transports
+          .mapIndexed((index, e) {
+            final pub = pubs[index];
+            final isPedestrian = pub.value.routeParts.isEmpty;
+            return TransportIconWidget(
+              name: e.names.join(', '),
+              time: isPedestrian ? durationByFoot(pub.length.millimeters) : null,
+              isLast: e == transports.last,
+              isLarge: isLarge,
+            );
+          })
+          .whereIndexed((index, e) => !isTransfer(pubs, index))
+          .toList(),
+    );
+  }
 }
 
 class TransportIconWidget extends StatelessWidget {
@@ -168,29 +203,35 @@ class TransportIconWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          Icon(
-            TransportIcons.metroStation,
-            size: isLarge ? 24 : 16,
-            color: getMetroLineColor(name, context),
+  Widget build(BuildContext context) {
+    final isLTR = Directionality.of(context) == TextDirection.ltr;
+    final icon = name.isEmpty
+        ? (isLTR ? TransportIcons.pedestrianLTR : TransportIcons.pedestrianRTL)
+        : TransportIcons.metroStation;
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: isLarge ? 24 : 16,
+          color: getMetroLineColor(name, context),
+        ),
+        if (time != null)
+          Text(
+            '$time',
+            style: context.textStyleV3.bodyLargeRegular.copyWith(
+              color: context.colorsV3.neutralOnContainer,
+            ),
           ),
-          if (time != null)
-            Text(
-              '$time',
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV3.neutralOnContainer,
-              ),
+        if (!isLast)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: isLarge ? Spacing.$1_5x : Spacing.$1x),
+            child: Icon(
+              SystemIcons.arrowCornerRightSmall,
+              size: 16,
+              color: context.colorsV3.foregroundMuted,
             ),
-          if (!isLast)
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: isLarge ? Spacing.$1_5x : Spacing.$1x),
-              child: Icon(
-                SystemIcons.arrowCornerRightSmall,
-                size: 16,
-                color: context.colorsV3.foregroundMuted,
-              ),
-            ),
-        ],
-      );
+          ),
+      ],
+    );
+  }
 }
