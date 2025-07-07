@@ -42,9 +42,17 @@ class PoiLinesMetro extends StatelessWidget {
       return directions.first.platforms;
     }
 
+    const blueColor = -16736046;
+    const greenColor = -12672206;
+
+    final isGreenOrBlue = [blueColor, greenColor].contains(transportDirectoryRouteInfo.color);
     return directions
             .firstWhereOrNull(
-              (direction) => direction.type == PublicTransportRouteDirectionTypeMessage.forward,
+              (direction) =>
+                  direction.type ==
+                  (isGreenOrBlue
+                      ? PublicTransportRouteDirectionTypeMessage.backward
+                      : PublicTransportRouteDirectionTypeMessage.forward),
             )
             ?.platforms ??
         directions.first.platforms;
