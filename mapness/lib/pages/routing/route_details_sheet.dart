@@ -23,12 +23,10 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
   final Future<void> Function()? onPressed;
   final Future<void> Function()? onClose;
   final String buttonLabel;
-  final List<RouteDetailsPublicTransport> transports;
 
   const RouteDetailsPage({
     required this.route,
     required this.buttonLabel,
-    required this.transports,
     this.destination,
     this.onPressed,
     this.onClose,
