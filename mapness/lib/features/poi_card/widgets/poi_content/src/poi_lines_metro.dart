@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A widget that renders a metro route with its platforms for a given POI (Point of Interest).
 ///
@@ -58,6 +59,25 @@ class PoiLinesMetro extends StatelessWidget {
         directions.first.platforms;
   }
 
+  String getTitle(BuildContext context) {
+    switch (transportDirectoryRouteInfo.name.split(' ').first.toLowerCase()) {
+      case 'orange':
+        return context.l10n.orangeLine;
+      case 'yellow':
+        return context.l10n.yellowLine;
+      case 'blue':
+        return context.l10n.blueLine;
+      case 'red':
+        return context.l10n.redLine;
+      case 'purple':
+        return context.l10n.purpleLine;
+      case 'green':
+        return context.l10n.greenLine;
+      default:
+        return context.l10n.notFounded;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final _platformsInfo = _getPlatformsInfo();
@@ -71,7 +91,7 @@ class PoiLinesMetro extends StatelessWidget {
           expandIconColor: context.colorsV3.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
-            title: transportDirectoryRouteInfo.name,
+            title: getTitle(context),
             leadingIcon: Assets.icons.svg.icMetroMarker.svg(
               colorFilter: ColorFilter.mode(_colorLine, BlendMode.srcIn),
             ),
