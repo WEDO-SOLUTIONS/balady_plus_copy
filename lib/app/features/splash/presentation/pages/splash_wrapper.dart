@@ -21,44 +21,31 @@ class SplashWrapper extends StatefulWidget {
 
 class _SplashWrapperState extends State<SplashWrapper> {
   bool _isInitialized = false;
+  bool _navigated = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeApp();
-
-    // this is for testing purposes, you can remove it
-    // _testForceUpdate();
+    _checkInitialForceUpdate();
   }
 
-  // void _testForceUpdate() {
-  //   Future.delayed(const Duration(milliseconds: 1000), () {
-  //     sl<ForceUpdateCubit>().emit(HaveForceUpdateState());
-  //   });
-  // }
-
-  Future<void> _initializeApp() async {
+  void _checkInitialForceUpdate() {
     final forceUpdateState = sl<ForceUpdateCubit>().state;
-
     if (forceUpdateState is HaveForceUpdateState) {
-      NavigationService.pushAndReplaceForceUpdate();
-      return;
-    }
-
-    if (forceUpdateState is NotHaveForceUpdateState) {
+      _navigateToForceUpdate();
+    } else if (forceUpdateState is NotHaveForceUpdateState) {
       _checkAuthentication();
-      return;
     }
+    // Otherwise, wait for BlocListener to handle state changes
+  }
 
-    sl<ForceUpdateCubit>().stream.listen((state) {
-      if (!_isInitialized) {
-        if (state is HaveForceUpdateState) {
-          NavigationService.pushAndReplaceForceUpdate();
-        } else if (state is NotHaveForceUpdateState) {
-          _checkAuthentication();
-        }
-      }
-    });
+  void _navigateToForceUpdate() {
+    if (!_navigated) {
+      _navigated = true;
+      Future.microtask(() {
+        if (mounted) NavigationService.pushAndReplaceForceUpdate();
+      });
+    }
   }
 
   void _checkAuthentication() {
@@ -74,9 +61,7 @@ class _SplashWrapperState extends State<SplashWrapper> {
     return BlocListener<ForceUpdateCubit, ForceUpdateState>(
       listener: (context, state) {
         if (state is HaveForceUpdateState) {
-          Future.delayed(const Duration(milliseconds: 100), () {
-            if (mounted) NavigationService.pushAndReplaceForceUpdate();
-          });
+          _navigateToForceUpdate();
         } else if (state is NotHaveForceUpdateState) {
           _checkAuthentication();
         }
