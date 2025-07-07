@@ -36,24 +36,21 @@ class _SplashWrapperState extends State<SplashWrapper> {
     } else if (forceUpdateState is NotHaveForceUpdateState) {
       _checkAuthentication();
     }
-    // Otherwise, wait for BlocListener to handle state changes
   }
 
   void _navigateToForceUpdate() {
-    if (!_navigated) {
-      _navigated = true;
-      Future.microtask(() {
-        if (mounted) NavigationService.pushAndReplaceForceUpdate();
-      });
-    }
+    if (_navigated) return;
+    _navigated = true;
+    Future.microtask(() {
+      if (mounted) NavigationService.pushAndReplaceForceUpdate();
+    });
   }
 
   void _checkAuthentication() {
-    if (!_isInitialized) {
-      _isInitialized = true;
-      sl<EntryPointCubit>().hideSplash();
-      sl<AuthenticationBloc>().add(CheckLoginAuthentication());
-    }
+    if (_isInitialized) return;
+    _isInitialized = true;
+    sl<EntryPointCubit>().hideSplash();
+    sl<AuthenticationBloc>().add(CheckLoginAuthentication());
   }
 
   @override
