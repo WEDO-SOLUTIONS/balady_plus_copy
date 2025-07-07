@@ -46,7 +46,7 @@ class RoutesCarousel extends ConsumerWidget {
           return _CarouselWrapper(
             pageController: pageController,
             routesCount: routes.length,
-            height: PathCardSize.getCardHeight(type: navType),
+            height: navType.cardHeight,
             onActiveChanged: onActiveChanged,
             itemBuilder: (context, index) {
               final route = routes[index];
@@ -86,7 +86,7 @@ class RoutesCarousel extends ConsumerWidget {
         return _CarouselWrapper(
           pageController: pageController,
           routesCount: routes.length,
-          height: PathCardSize.getCardHeight(type: navType),
+          height: navType.cardHeight,
           onActiveChanged: onActiveChanged,
           itemBuilder: (context, index) {
             final route = routes[index];

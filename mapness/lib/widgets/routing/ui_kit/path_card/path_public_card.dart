@@ -4,12 +4,13 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
-import 'package:dgis_map_platform_interface/src/utils/public_transport_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
+import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status.dart';
@@ -82,18 +83,9 @@ class PathPublicCard extends ConsumerWidget {
           ),
           Spacing.$4x.heightBox,
           if (route.transports.length > 1) ...[
-            Row(
-              children: route.transports.mapIndexed((index, e) {
-                final pub = route.publicTransportTransferRouteLongEntry[index];
-                final isPedestrian = pub.value.routeParts.isEmpty;
-                return TransportIconWidget(
-                  name: e.names.join(', '),
-                  time: pub.distanceToPedestrianTime(
-                    isPedestrian ? pub.length.millimeters : null,
-                  ),
-                  isLast: e == route.transports.last,
-                );
-              }).toList(),
+            TransportIconsRow(
+              transports: route.transports,
+              pubs: route.publicTransportTransferRouteLongEntry,
             ),
             Spacing.$4x.heightBox,
           ],
@@ -125,6 +117,39 @@ class PathPublicCard extends ConsumerWidget {
       return TransportIcons.pedestrianRTL;
     }
   }
+}
+
+class TransportIconsRow extends StatelessWidget {
+  final List<Transport> transports;
+  final List<PublicTransportTransferRouteLongEntryMessage> pubs;
+  final bool isLarge;
+  final MainAxisAlignment mainAxisAlignment;
+
+  const TransportIconsRow({
+    required this.transports,
+    required this.pubs,
+    this.isLarge = false,
+    this.mainAxisAlignment = MainAxisAlignment.start,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Row(
+        mainAxisAlignment: mainAxisAlignment,
+        children: transports
+            .mapIndexed((index, e) {
+              final pub = pubs[index];
+              final isPedestrian = pub.value.routeParts.isEmpty;
+              return TransportIconWidget(
+                name: e.names.join(', '),
+                time: isPedestrian ? durationByFoot(pub.length.millimeters) : null,
+                isLast: e == transports.last,
+                isLarge: isLarge,
+              );
+            })
+            .whereIndexed((index, e) => !isTransfer(pubs, index))
+            .toList(),
+      );
 }
 
 class TransportIconWidget extends StatelessWidget {
@@ -180,6 +205,12 @@ class TransportIconWidget extends StatelessWidget {
       color = context.colorsV3.errorDefault;
     } else if (line.contains('Green')) {
       color = context.colorsV3.successDefault;
+    } else if (line.contains('Yellow')) {
+      color = Colors.yellow;
+    } else if (line.contains('Orange')) {
+      color = Colors.orange;
+    } else if (line.contains('Purple')) {
+      color = Colors.purple;
     }
     return Icon(
       TransportIcons.metroStation,

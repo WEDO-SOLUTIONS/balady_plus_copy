@@ -7,9 +7,9 @@ import 'package:dgis_map/library.dart';
 ///
 /// See also:
 /// * [Figma] https://www.figma.com/design/owbsr9Pf0mQSEHXlbiPGOv/Balady-%E2%80%93-Components-Library?m=dev&node-id=7165-36707
-class PathCardSize {
-  static double getCardHeight({required RouteSearchOptionsMessage type}) {
-    switch (type) {
+extension PathCardSizeExt on RouteSearchOptionsMessage {
+  double get cardHeight {
+    switch (this) {
       case RouteSearchOptionsMessage.pedestrian:
         return 96;
       case RouteSearchOptionsMessage.publicTransport:
@@ -24,5 +24,5 @@ class PathCardSize {
   }
 
   static const fixedCardWidth = 264.0;
-  static double get fixedCardWidthWithPadding => fixedCardWidth + 2 * Spacing.$2x;
+  double get cardWidthWithPadding => fixedCardWidth + 2 * Spacing.$2x;
 }

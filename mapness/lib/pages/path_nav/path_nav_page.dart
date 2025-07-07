@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   late StreamSubscription? _naviEventsListener;
   bool wasSetActive = true;
   Timer? timer;
-  bool prevMetroState = false;
 
   late ToggleSheetController sheetController;
 
@@ -129,6 +129,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
         ]);
+        await _metroOnInit();
       })
       ..addObserver(this);
 
@@ -567,8 +568,20 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       final layersControls = ref.read(layersControlsProvider.notifier);
       if (ref.read(activeLayerProvider) == LayerType.parkingLots) {
         await layersControls.hideActiveLayer();
-      } else if (ref.read(activeLayerProvider) == LayerType.metro &&
-          widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      }
+    }
+  }
+
+  // We hide metro layer on init of navigation because public transport goes thought the metro lines
+  // and we don't want to mix it together with the route
+  // TODO: Create `_metroOnDispose` to show metro layer when navigation is stopped
+  // For this you have to change `layersControls` provider and detect previous state of layerControls
+  //
+  // For now we just hide layer
+  Future<void> _metroOnInit() async {
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      final layersControls = ref.read(layersControlsProvider.notifier);
+      if (ref.read(layersControlsProvider).selectedType == LayerType.metro) {
         await layersControls.hideActiveLayer();
       }
     }
@@ -626,16 +639,39 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
 
     await dgisController.startFollowNavigation();
+
     if (position != null) {
-      await cameraProvider.animateTo(
-        CameraPositionMessage(
-          point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-          zoom: 17.5,
-          tilt: 0,
-          bearing: 0,
-        ),
-      );
+      if (_isLocationAccuracyAcceptable(position.latitude, position.longitude)) {
+        await cameraProvider.animateTo(
+          CameraPositionMessage(
+            point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
+            zoom: 17.5,
+            tilt: 0,
+            bearing: 0,
+          ),
+        );
+      }
     }
+  }
+
+  /// Checks if the distance between current position and route start point is reasonable
+  bool _isLocationAccuracyAcceptable(double latitude, double longitude) {
+    final routeStartPoint = ref.read(etaRouteInfoProvider).startPoint;
+    if (routeStartPoint != null) {
+      final distance = CommonFunctions.calculateDistance(
+        latitude,
+        longitude,
+        routeStartPoint.lat,
+        routeStartPoint.lon,
+      );
+
+      // If the calculated distance is more than 100 meters, the calculation error is too big
+      if (distance > 70) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   // Set padding to the camera to avoid the sheet overlaying the map

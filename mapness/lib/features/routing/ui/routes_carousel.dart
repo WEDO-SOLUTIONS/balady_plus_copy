@@ -69,7 +69,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: PathCardSize.fixedCardWidthWithPadding / widget.biggestWidth,
+      viewportFraction: widget.navType.cardWidthWithPadding / widget.biggestWidth,
     );
   }
 

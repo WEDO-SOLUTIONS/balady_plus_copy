@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:dgis_map/library.dart';
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
 
 sealed class RouteDetailsPublicTransport {
@@ -12,8 +13,10 @@ sealed class RouteDetailsPublicTransport {
 }
 
 class RouteDetailsPublicTransportPedestrian extends RouteDetailsPublicTransport {
+  final bool isTransfer;
   const RouteDetailsPublicTransportPedestrian({
     required super.length,
+    this.isTransfer = false,
   });
 
   int get lengthInMeters => (length / 1000).round();
@@ -47,4 +50,15 @@ class RoutePart {
   const RoutePart({
     required this.stations,
   });
+}
+
+// Main idea here is if the next and previous routes have parts, then it is a public transport segments
+// So the pars between is a transfer
+bool isTransfer(List<PublicTransportTransferRouteLongEntryMessage> pub, int index) {
+  final next = pub.length > index + 1 ? pub[index + 1] : null;
+  final prev = index - 1 >= 0 ? pub[index - 1] : null;
+  if (next == null || prev == null) {
+    return false;
+  }
+  return next.value.routeParts.isNotEmpty && prev.value.routeParts.isNotEmpty;
 }

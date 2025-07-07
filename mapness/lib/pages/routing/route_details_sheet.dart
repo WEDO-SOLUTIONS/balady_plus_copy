@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -12,7 +11,6 @@ import 'package:mapness/pages/routing/ui/models/roution_details_ext.dart';
 import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
-import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -78,7 +76,12 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     for (var i = 0; i < widget.route.publicTransportTransferRouteLongEntry.length; i++) {
       final e = widget.route.publicTransportTransferRouteLongEntry[i];
       if (e.value.routeParts.isEmpty) {
-        transports.add(RouteDetailsPublicTransportPedestrian(length: e.length.millimeters));
+        transports.add(RouteDetailsPublicTransportPedestrian(
+            length: e.length.millimeters,
+            isTransfer: isTransfer(
+              widget.route.publicTransportTransferRouteLongEntry,
+              i,
+            )));
       } else {
         final routeParts = <RoutePart>[];
 
@@ -139,18 +142,11 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                 ),
               ],
             ),
-            Row(
+            TransportIconsRow(
+              transports: widget.route.transports,
+              pubs: widget.route.publicTransportTransferRouteLongEntry,
+              isLarge: true,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: widget.route.transports.mapIndexed((index, e) {
-                final pub = widget.route.publicTransportTransferRouteLongEntry[index];
-                final isPedestrian = pub.value.routeParts.isEmpty;
-                return TransportIconWidget(
-                  isLarge: true,
-                  name: e.names.join(', '),
-                  time: isPedestrian ? durationByFoot(pub.length.millimeters) : null,
-                  isLast: e == widget.route.transports.last,
-                );
-              }).toList(),
             ),
             const SizedBox(height: Spacing.$4x),
           ],

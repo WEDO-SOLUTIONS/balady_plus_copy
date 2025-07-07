@@ -38,17 +38,6 @@ extension PublicTransportTransferRouteLongEntryMessageExt on PublicTransportTran
       value: PublicTransportTransferMessageExt.fromJson(value),
     );
   }
-
-  /// In minutes
-  int? distanceToPedestrianTime(int? distanceMillimeters) {
-    if (distanceMillimeters == null) {
-      return null;
-    }
-    final meters = distanceMillimeters / 1000;
-    const pedestrianSpeed = 100; // meter per minute
-    final time = meters / pedestrianSpeed;
-    return time.round();
-  }
 }
 
 extension PublicTransportInfoMessageExt on PublicTransportInfoMessage {

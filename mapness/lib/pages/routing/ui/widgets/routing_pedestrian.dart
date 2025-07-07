@@ -40,10 +40,16 @@ class RoutingPedestrian extends StatelessWidget {
           Spacing.$3x.widthBox,
           Row(
             children: [
-              Text(
-                '${_getLengthText(context, data.lengthInMeters)} ${context.l10n.onFoot}',
-                style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
-              ),
+              if (data.isTransfer)
+                Text(
+                  context.l10n.changeLine,
+                  style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
+                )
+              else
+                Text(
+                  '${_getLengthText(context, data.lengthInMeters)} ${context.l10n.onFoot}',
+                  style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
+                ),
               Text(' · ', style: textStyle.copyWith(color: context.colorsV3.foregroundSoft)),
               Text(
                 '${data.duration} ${context.l10n.min}',
