@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:developer';
 
 import 'package:dgis_map_platform_interface/library.dart';

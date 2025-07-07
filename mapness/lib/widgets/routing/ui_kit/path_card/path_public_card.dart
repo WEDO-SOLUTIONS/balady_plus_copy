@@ -16,6 +16,7 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_locali
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_wrapper.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_status.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class PathPublicCard extends ConsumerWidget {
@@ -172,7 +173,7 @@ class TransportIconWidget extends StatelessWidget {
           Icon(
             TransportIcons.metroStation,
             size: isLarge ? 24 : 16,
-            color: getColor(name, context),
+            color: getMetroLineColor(name, context),
           ),
           if (time != null)
             Text(
@@ -192,14 +193,4 @@ class TransportIconWidget extends StatelessWidget {
             ),
         ],
       );
-
-  Color getColor(String line, BuildContext context) => switch (line) {
-        'Blue' => Colors.blue,
-        'Red' => context.colorsV3.errorDefault,
-        'Green' => context.colorsV3.successDefault,
-        'Yellow' => Colors.yellow,
-        'Orange' => Colors.orange,
-        'Purple' => Colors.purple,
-        _ => Colors.black,
-      };
 }

@@ -197,7 +197,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
       } else {
         // If route part is not empty, it means that we have to show metro transport
         final routeParts = <RoutePart>[];
-        for (var routePart in e.value.routeParts) {
+        for (final routePart in e.value.routeParts) {
           final part = RoutePart(stations: [
             e.value.startPointName,
             ...routePart.intermediateStops.map((e) => e.name),

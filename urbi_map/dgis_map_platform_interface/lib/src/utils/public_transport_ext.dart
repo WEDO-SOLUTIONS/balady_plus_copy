@@ -1,6 +1,15 @@
 import 'package:dgis_map_platform_interface/library.dart';
 
+/// This extension is used to convert [PublicTransportTransferRouteLongEntryMessage] from JSON.
+/// It is used to convert [PublicTransportTransferRouteLongEntryMessage] to [PublicTransportTransferRouteLongEntryMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportTransferRouteLongEntryMessage] to [PublicTransportTransferRouteLongEntryMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportTransferRouteLongEntryMessage] to [PublicTransportTransferRouteLongEntryMessage]
 extension PublicTransportTransferRouteLongEntryMessageExt on PublicTransportTransferRouteLongEntryMessage {
+  /// This method is used to convert [PublicTransportTransferRouteLongEntryMessage] from JSON.
   static PublicTransportTransferRouteLongEntryMessage fromJson(Map<String, dynamic> transfer) {
     final point = transfer['point'] as Map?;
     if (point == null) {
@@ -40,7 +49,16 @@ extension PublicTransportTransferRouteLongEntryMessageExt on PublicTransportTran
   }
 }
 
+/// This extension is used to convert [PublicTransportInfoMessage] from JSON.
+/// It is used to convert [PublicTransportInfoMessage] to [PublicTransportInfoMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportInfoMessage] to [PublicTransportInfoMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportInfoMessage] to [PublicTransportInfoMessage]
 extension PublicTransportInfoMessageExt on PublicTransportInfoMessage {
+  /// This method is used to convert [PublicTransportInfoMessage] from JSON.
   static PublicTransportInfoMessage fromJson(Map<String, dynamic> transport) {
     final type = _parseRouteType(transport['type']);
     return PublicTransportInfoMessage(
@@ -54,7 +72,16 @@ extension PublicTransportInfoMessageExt on PublicTransportInfoMessage {
   }
 }
 
+/// This extension is used to convert [PublicTransportStopMessage] from JSON.
+/// It is used to convert [PublicTransportStopMessage] to [PublicTransportStopMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportStopMessage] to [PublicTransportStopMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportStopMessage] to [PublicTransportStopMessage]
 extension PublicTransportStopMessageExt on PublicTransportStopMessage {
+  /// This method is used to convert [PublicTransportStopMessage] from JSON.
   static PublicTransportStopMessage fromJson(Map<String, dynamic> stop) {
     final coordinates = stop['coordinates'] as Map?;
     return PublicTransportStopMessage(
@@ -67,7 +94,16 @@ extension PublicTransportStopMessageExt on PublicTransportStopMessage {
   }
 }
 
+/// This extension is used to convert [PublicTransportTransferMessage] from JSON.
+/// It is used to convert [PublicTransportTransferMessage] to [PublicTransportTransferMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportTransferMessage] to [PublicTransportTransferMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicTransportTransferMessage] to [PublicTransportTransferMessage]
 extension PublicTransportTransferMessageExt on PublicTransportTransferMessage {
+  /// This method is used to convert [PublicTransportTransferMessage] from JSON.
   static PublicTransportTransferMessage fromJson(Map<String, dynamic> routes) => PublicTransportTransferMessage(
         startPointName: routes['startPointName'] as String? ?? '',
         finishPointName: routes['finishPointName'] as String? ?? '',
@@ -78,7 +114,16 @@ extension PublicTransportTransferMessageExt on PublicTransportTransferMessage {
       );
 }
 
+/// This extension is used to convert [PublicRoutePartMessage] from JSON.
+/// It is used to convert [PublicRoutePartMessage] to [PublicRoutePartMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicRoutePartMessage] to [PublicRoutePartMessage]
+/// and vice versa.
+///
+/// It is used to convert [PublicRoutePartMessage] to [PublicRoutePartMessage]
 extension PublicRoutePartMessageExt on PublicRoutePartMessage {
+  /// This method is used to convert [PublicRoutePartMessage] from JSON.
   static PublicRoutePartMessage fromJson(Map<String, dynamic> routePart) {
     final transports = (routePart['transports'] as List<dynamic>?)?.cast<Map>() ?? [];
     final intermediateStops = (routePart['intermediateStops'] as List<dynamic>?)?.cast<Map>() ?? [];
