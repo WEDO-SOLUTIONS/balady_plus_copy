@@ -13,6 +13,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
@@ -22,10 +23,12 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
   final Future<void> Function()? onPressed;
   final Future<void> Function()? onClose;
   final String buttonLabel;
+  final List<RouteDetailsPublicTransport> transports;
 
   const RouteDetailsPage({
     required this.route,
     required this.buttonLabel,
+    required this.transports,
     this.destination,
     this.onPressed,
     this.onClose,
@@ -38,6 +41,7 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
 
 class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController;
+  List<RouteDetailsPublicTransport>? _transports;
 
   @override
   void initState() {
@@ -60,48 +64,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     final duration = widget.route.duration.formatDuration(context.l10n);
     final transfers = ArPlurals.transfers(widget.route.transferCount, context.l10n);
 
-    Color? getLineColor(String line) {
-      Color? color;
-      if (line.contains('Blue')) {
-        color = Colors.blue;
-      } else if (line.contains('Red')) {
-        color = context.colorsV3.errorDefault;
-      } else if (line.contains('Green')) {
-        color = context.colorsV3.successDefault;
-      }
-      return color;
-    }
-
-    final List<RouteDetailsPublicTransport> transports = [];
-    for (var i = 0; i < widget.route.publicTransportTransferRouteLongEntry.length; i++) {
-      final e = widget.route.publicTransportTransferRouteLongEntry[i];
-      if (e.value.routeParts.isEmpty) {
-        transports.add(RouteDetailsPublicTransportPedestrian(
-            length: e.length.millimeters,
-            isTransfer: isTransfer(
-              widget.route.publicTransportTransferRouteLongEntry,
-              i,
-            )));
-      } else {
-        final routeParts = <RoutePart>[];
-
-        // TODO: Probably not right
-        for (var routePart in e.value.routeParts) {
-          final part = RoutePart(stations: [
-            e.value.startPointName,
-            ...routePart.intermediateStops.map((e) => e.name),
-            e.value.finishPointName,
-          ]);
-          routeParts.add(part);
-        }
-        transports.add(RouteDetailsPublicTransportMetro(
-          length: e.length.millimeters,
-          routeParts: routeParts,
-          lineColor:
-              widget.route.transports[i].names.isNotEmpty ? getLineColor(widget.route.transports[i].names.first) : null,
-        ));
-      }
-    }
+    _transports ??= _getTransports(context);
 
     return StatefulBottomSheet<ThreeStateBottomSheet>(
       scrollController: _bottomSheetController,
@@ -192,7 +155,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                 ],
               ),
               Spacing.$2x.heightBox,
-              ...transports
+              ...(_transports ?? [])
                   .map(
                       (e) => e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
                   .insertBetween(Spacing.$2x.heightBox),
@@ -217,5 +180,42 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         ),
       ],
     );
+  }
+
+  List<RouteDetailsPublicTransport> _getTransports(BuildContext context) {
+    final transports = <RouteDetailsPublicTransport>[];
+    for (var i = 0; i < widget.route.publicTransportTransferRouteLongEntry.length; i++) {
+      final e = widget.route.publicTransportTransferRouteLongEntry[i];
+      // If route part is empty, it means that we have to show pedestrian transport
+      if (e.value.routeParts.isEmpty) {
+        transports.add(
+          RouteDetailsPublicTransportPedestrian(
+            length: e.length.millimeters,
+            isTransfer: isTransfer(widget.route.publicTransportTransferRouteLongEntry, i),
+          ),
+        );
+      } else {
+        // If route part is not empty, it means that we have to show metro transport
+        final routeParts = <RoutePart>[];
+        for (var routePart in e.value.routeParts) {
+          final part = RoutePart(stations: [
+            e.value.startPointName,
+            ...routePart.intermediateStops.map((e) => e.name),
+            e.value.finishPointName,
+          ]);
+          routeParts.add(part);
+        }
+        transports.add(
+          RouteDetailsPublicTransportMetro(
+            length: e.length.millimeters,
+            routeParts: routeParts,
+            lineColor: widget.route.transports[i].names.isNotEmpty
+                ? getMetroLineColor(widget.route.transports[i].names.first, context)
+                : null,
+          ),
+        );
+      }
+    }
+    return transports;
   }
 }

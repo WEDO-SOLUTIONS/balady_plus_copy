@@ -14,6 +14,10 @@ class RoutingCollapsibleList extends StatelessWidget {
     super.key,
   });
 
+  static const contentRowStartPadding = Spacing.$4x;
+  static const linePointCircleSize = 14.0;
+  static const connectedLineWidth = 2.0;
+
   @override
   Widget build(BuildContext context) {
     if (stations.isEmpty) {
@@ -37,12 +41,14 @@ class RoutingCollapsibleList extends StatelessWidget {
       color: context.colorsV3.backgroundSurface1,
       child: Stack(
         children: [
+          // This is line between first and last station. We have to position it correctly
+          // to make it look like it is connected to the stations.
           PositionedDirectional(
-            start: 16 + (14 / 2) - (2 / 2),
+            start: lineStartPosition,
             top: 16,
             bottom: 16,
             child: Container(
-              width: 2,
+              width: connectedLineWidth,
               color: (lineColor ?? context.colorsV3.neutralDefault).withOpacity(0.5),
             ),
           ),
@@ -56,7 +62,7 @@ class RoutingCollapsibleList extends StatelessWidget {
                 ContentRowExpandableTmp(
                   padding: EdgeInsets.zero,
                   leading: Container(
-                    width: 14,
+                    width: linePointCircleSize,
                     color: context.colorsV3.backgroundSurface1,
                     padding: const EdgeInsets.all(3),
                     child: Container(
@@ -75,7 +81,8 @@ class RoutingCollapsibleList extends StatelessWidget {
                     ),
                   ),
                   content: Padding(
-                    padding: const EdgeInsetsDirectional.only(start: 16 + 14 + 12 + 1),
+                    padding: const EdgeInsetsDirectional.only(
+                        start: contentRowStartPadding + linePointCircleSize + 12 + connectedLineWidth / 2),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: _getStationsNames()
@@ -94,8 +101,9 @@ class RoutingCollapsibleList extends StatelessWidget {
                           [],
                     ),
                   ),
-                ),
-              if (stations.length <= 2) const SizedBox(height: Spacing.$4x),
+                )
+              else
+                const SizedBox(height: Spacing.$4x),
               ContentRowV2(
                 leading: _StationItem(
                   lineColor: lineColor ?? context.colorsV3.neutralDefault,
@@ -109,6 +117,11 @@ class RoutingCollapsibleList extends StatelessWidget {
     );
   }
 
+  // All this positions are according to the `ContentRowV2` widget.
+  // If we change paddings inside `ContentRowV2` we have to change this function also
+  double get lineStartPosition => contentRowStartPadding + (linePointCircleSize / 2) - (connectedLineWidth / 2);
+
+  // This is count of stations that are between first and last station.
   String _getStationsCount(BuildContext context) {
     if (stations.length <= 2) {
       return '-';
@@ -117,6 +130,9 @@ class RoutingCollapsibleList extends StatelessWidget {
     return ArPlurals.stations(stations.length - 2, context.l10n);
   }
 
+  // This is names between first and last station. UI for fist (start) and last (finish)
+  // is different than the middle ones
+  // We will show them according to the design inside expanded list.
   List<String>? _getStationsNames() {
     if (stations.length <= 2) {
       return null;

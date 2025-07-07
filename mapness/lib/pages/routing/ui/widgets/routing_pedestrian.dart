@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 
 class RoutingPedestrian extends StatelessWidget {
   final RouteDetailsPublicTransportPedestrian data;
@@ -47,7 +48,7 @@ class RoutingPedestrian extends StatelessWidget {
                 )
               else
                 Text(
-                  '${_getLengthText(context, data.lengthInMeters)} ${context.l10n.onFoot}',
+                  '${(data.lengthInMeters / 1000).formatDistance(context.l10n)} ${context.l10n.onFoot}',
                   style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
                 ),
               Text(' · ', style: textStyle.copyWith(color: context.colorsV3.foregroundSoft)),
@@ -60,12 +61,5 @@ class RoutingPedestrian extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String _getLengthText(BuildContext context, int lengthInMeters) {
-    if (lengthInMeters > 1000) {
-      return '${(lengthInMeters / 1000).toStringAsFixed(1)} ${context.l10n.km}';
-    }
-    return '${lengthInMeters.round()} ${context.l10n.meter}';
   }
 }

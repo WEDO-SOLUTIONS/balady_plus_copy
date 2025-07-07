@@ -169,15 +169,18 @@ class TransportIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
         children: [
-          _buildIcon(name, context),
-          if (time != null) ...[
+          Icon(
+            TransportIcons.metroStation,
+            size: isLarge ? 24 : 16,
+            color: getColor(name, context),
+          ),
+          if (time != null)
             Text(
               '$time',
               style: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV3.neutralOnContainer,
               ),
             ),
-          ],
           if (!isLast)
             Padding(
               padding: EdgeInsets.symmetric(horizontal: isLarge ? Spacing.$1_5x : Spacing.$1x),
@@ -190,32 +193,13 @@ class TransportIconWidget extends StatelessWidget {
         ],
       );
 
-  Widget _buildIcon(String line, BuildContext context) {
-    if (line.isEmpty) {
-      return Icon(
-        TransportIcons.pedestrianLTR,
-        size: isLarge ? 24 : 16,
-        color: context.colorsV3.neutralOnContainer,
-      );
-    }
-    Color? color;
-    if (line.contains('Blue')) {
-      color = Colors.blue;
-    } else if (line.contains('Red')) {
-      color = context.colorsV3.errorDefault;
-    } else if (line.contains('Green')) {
-      color = context.colorsV3.successDefault;
-    } else if (line.contains('Yellow')) {
-      color = Colors.yellow;
-    } else if (line.contains('Orange')) {
-      color = Colors.orange;
-    } else if (line.contains('Purple')) {
-      color = Colors.purple;
-    }
-    return Icon(
-      TransportIcons.metroStation,
-      size: isLarge ? 24 : 16,
-      color: color,
-    );
-  }
+  Color getColor(String line, BuildContext context) => switch (line) {
+        'Blue' => Colors.blue,
+        'Red' => context.colorsV3.errorDefault,
+        'Green' => context.colorsV3.successDefault,
+        'Yellow' => Colors.yellow,
+        'Orange' => Colors.orange,
+        'Purple' => Colors.purple,
+        _ => Colors.black,
+      };
 }
