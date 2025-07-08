@@ -42,7 +42,7 @@ import kotlin.math.max
 class CarNavigationHandler(
     private val navigationManager: NavigationManager,
     private val searchHandler: CarSearchHandler,
-    private val sharedPrefs: SharedPrefs
+    private val sharedPrefs: SharedPrefs,
 ) : AutoCloseable {
 
     interface NavigationListener {
@@ -125,6 +125,16 @@ class CarNavigationHandler(
     }
 
     private fun routeListener(routeInfo: RouteInfo) {
+        val navigationState = navigationManager.uiModel.state.toNavigationState(
+            routeInfo.routeBuildOptions != null
+        )
+
+        // SDK sometimes doesn't send navigation state to stateChannel when navigation on route is started after freeroam,
+        // therefore we should call onNavigationStateChanged with NAVIGATION here
+        if (navigationState == NavigationState.NAVIGATION) {
+            navigationListener?.onNavigationStateChanged(navigationState)
+        }
+
         // Speed limits
         speedLimits = routeInfo.route.maxSpeedLimits
 
@@ -174,7 +184,7 @@ class CarNavigationHandler(
     }
 
     private fun betterRouteListener(routeInfo: BetterRouteInfo?) {
-        if(!sharedPrefs.suggestBetterRoad) {
+        if (!sharedPrefs.suggestBetterRoad) {
             navigationListener?.onBetterRouteFound(durationProfit = null)
             return
         }
@@ -191,7 +201,7 @@ class CarNavigationHandler(
 
 
     private fun updateManeuverInfo(
-        routePosition: RoutePoint, instructions: InstructionRouteAttribute
+        routePosition: RoutePoint, instructions: InstructionRouteAttribute,
     ) {
         if (navigationManager.uiModel.state != State.NAVIGATION) {
             navigationListener?.onManeuverUpdate(null, null)
@@ -211,7 +221,7 @@ class CarNavigationHandler(
     }
 
     private fun handleInstructionForPosition(
-        instructionEntry: InstructionRouteEntry, routePosition: RoutePoint
+        instructionEntry: InstructionRouteEntry, routePosition: RoutePoint,
     ) {
         val maneuver = getManeuver(routePosition, instructionEntry)
         if (maneuver == null) {
@@ -223,7 +233,7 @@ class CarNavigationHandler(
     }
 
     private fun getNextManeuver(
-        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry
+        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry,
     ): ManeuverModel? {
         val instruction = instructionEntry.value
         val instructionManeuver = getInstructionManeuver(instruction.extraInstructionInfo)
@@ -252,7 +262,7 @@ class CarNavigationHandler(
     }
 
     private fun getManeuver(
-        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry
+        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry,
     ): ManeuverModel? {
         val instruction = instructionEntry.value
         val instructionManeuver = getInstructionManeuver(instruction.extraInstructionInfo)
@@ -368,7 +378,8 @@ class CarNavigationHandler(
     }
 
     fun toggleVoiceInstruction(toggleType: SoundToggleType) {
-        val currentCategories = this.navigationManager.soundNotificationSettings.enabledSoundCategories
+        val currentCategories =
+            this.navigationManager.soundNotificationSettings.enabledSoundCategories
 
         val updatedCategories = when (toggleType) {
             SoundToggleType.NONE -> {
@@ -377,11 +388,13 @@ class CarNavigationHandler(
                     removeAll(EnumSet.allOf(SoundCategory::class.java))
                 }
             }
+
             SoundToggleType.ALL -> {
                 EnumSet.allOf(SoundCategory::class.java).apply {
                     addAll(currentCategories)
                 }
             }
+
             SoundToggleType.IMPORTANT -> {
                 EnumSet.copyOf(currentCategories).apply {
                     remove(SoundCategory.INSTRUCTIONS)
