@@ -3006,6 +3006,7 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_accessability_card.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_content_data_incorrect_card.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart" -> "/lib/_generated/assets/assets.gen.dart";
+  "/lib/features/poi_card/widgets/poi_content/src/poi_lines_metro.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart" -> "/lib/features/poi_card/widgets/poi_content/tmp/content_row_expandable.dart";
   "/lib/features/poi_card/widgets/poi_content/src/poi_entrances_metro.dart" -> "/lib/shared/extensions/build_context_ext.dart";
