@@ -60,9 +60,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    _checkLocationPermission(state);
-  }
+  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
 
   ///This method is intended for handling location permission requests
   /// if it's triggered by someone before Mapness starts.

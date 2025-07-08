@@ -21,7 +21,7 @@ class LocationSetupHelper with WidgetsBindingObserver {
       await _tryActivate();
       // wait until activate() says "done"
       await _completer.future;
-    } catch(e) {
+    } catch (e) {
       _log('$e');
     }
   }
