@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A widget that renders a metro route with its platforms for a given POI (Point of Interest).
 ///
@@ -42,12 +43,46 @@ class PoiLinesMetro extends StatelessWidget {
       return directions.first.platforms;
     }
 
+    const blueColor = -16736046;
+    const blueColorIOS = 4278231250;
+    const greenColor = -12672206;
+    const greenColorIOS = 4282295090;
+
+    final isGreenOrBlue = [
+      blueColor,
+      blueColorIOS,
+      greenColor,
+      greenColorIOS,
+    ].contains(transportDirectoryRouteInfo.color);
     return directions
             .firstWhereOrNull(
-              (direction) => direction.type == PublicTransportRouteDirectionTypeMessage.forward,
+              (direction) =>
+                  direction.type ==
+                  (isGreenOrBlue
+                      ? PublicTransportRouteDirectionTypeMessage.backward
+                      : PublicTransportRouteDirectionTypeMessage.forward),
             )
             ?.platforms ??
         directions.first.platforms;
+  }
+
+  String getTitle(BuildContext context) {
+    switch (transportDirectoryRouteInfo.name.split(' ').first.toLowerCase()) {
+      case 'orange':
+        return context.l10n.orangeLine;
+      case 'yellow':
+        return context.l10n.yellowLine;
+      case 'blue':
+        return context.l10n.blueLine;
+      case 'red':
+        return context.l10n.redLine;
+      case 'purple':
+        return context.l10n.purpleLine;
+      case 'green':
+        return context.l10n.greenLine;
+      default:
+        return transportDirectoryRouteInfo.name;
+    }
   }
 
   @override
@@ -63,7 +98,7 @@ class PoiLinesMetro extends StatelessWidget {
           expandIconColor: context.colorsV3.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
-            title: transportDirectoryRouteInfo.name,
+            title: getTitle(context),
             leadingIcon: Assets.icons.svg.icMetroMarker.svg(
               colorFilter: ColorFilter.mode(_colorLine, BlendMode.srcIn),
             ),
