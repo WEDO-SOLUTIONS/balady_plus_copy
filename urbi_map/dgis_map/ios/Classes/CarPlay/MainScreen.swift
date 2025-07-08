@@ -49,6 +49,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var routeChannelCancelable: DGis.Cancellable?
     private let navigationSessionManeuvers: NavigationSessionManeuvers
     private var currentSettingsScreen: SettingsScreen?
+    private var isPanningInterfaceVisible: Bool = false
 
     deinit {
         rebuildUiCancellable?.cancel()
@@ -128,7 +129,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func buildLeadButtons() {
         let functions =
-            mapTemplate.isPanningInterfaceVisible
+            isPanningInterfaceVisible
             ? panningLeadFactories : mainLeadFactories
         mapTemplate.leadingNavigationBarButtons = functions.map { function in
             function()
@@ -207,7 +208,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onAcceptBarTap(_: CPBarButton) {
-        mapTemplate.dismissPanningInterface(animated: false)
+        isPanningInterfaceVisible = false
+        mapTemplate.dismissPanningInterface(animated: true)
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
             makeSettingsButton(),
@@ -220,6 +222,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onPanningBarTap(_: CPBarButton) {
+        isPanningInterfaceVisible = true
         mapTemplate.showPanningInterface(animated: true)
         mapTemplate.trailingNavigationBarButtons = [
             makeMyLocationHeaderButton()
