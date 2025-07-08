@@ -74,7 +74,7 @@ class PoiLinesMetro extends StatelessWidget {
       case 'green':
         return context.l10n.greenLine;
       default:
-        return context.l10n.notFounded;
+        return transportDirectoryRouteInfo.name;
     }
   }
 
