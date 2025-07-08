@@ -24,9 +24,6 @@ class BaseErrorWidget extends StatelessWidget {
   /// Displayed at fullscreen error widget.
   final String? errorTitle;
 
-  /// The color scheme for the retry button.
-  final ButtonColorScheme buttonColorScheme;
-
   /// The padding for the image.
   final EdgeInsetsGeometry paddingForImage;
 
@@ -40,7 +37,6 @@ class BaseErrorWidget extends StatelessWidget {
   const BaseErrorWidget({
     required this.onRetry,
     this.withRetryButton = true,
-    this.buttonColorScheme = ButtonColorScheme.secondary,
     this.buttonLabel,
     this.errorLabel,
     this.errorTitle,
@@ -122,12 +118,16 @@ class BaseErrorWidget extends StatelessWidget {
               ),
             ),
             if (withRetryButton)
-              Padding(
-                padding: const EdgeInsets.only(top: Spacing.$6x, bottom: Spacing.$3x),
-                child: AppButton(
-                  onTap: onRetry,
-                  buttonColorScheme: buttonColorScheme,
-                  primaryLabel: buttonLabel ?? context.l10n.tryAgain,
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$6x),
+                  child: BaladyAppButton(
+                    onTap: onRetry,
+                    buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+                    size: BaladyButtonSize.large,
+                    primaryLabel: buttonLabel ?? context.l10n.tryAgain,
+                  ),
                 ),
               ),
           ],

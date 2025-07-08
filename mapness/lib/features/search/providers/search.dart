@@ -177,16 +177,14 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final result = await searchOperation.value;
-
-      state = result.suggests.isEmpty
-          ? SearchStateEmpty(searchText: query)
-          : SearchStateSuggest(
-              suggest: result,
-              searchText: query,
-            );
       // BSA-1931: We need to start full search if we don't get any results
       // and user types more than 2 symbols
-      if (query.length > 2 && state is SearchStateEmpty) {
+      if (result.suggests.isNotEmpty) {
+        state = SearchStateSuggest(
+          suggest: result,
+          searchText: query,
+        );
+      } else if (query.length > 2) {
         await ref
             .read(urbiAnalyticsProvider.notifier)
             .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
