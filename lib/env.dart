@@ -4,7 +4,6 @@ import 'package:adjust_sdk/adjust.dart';
 import 'package:adjust_sdk/adjust_config.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
-import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart' as diEtmam
     show initialize;
 import 'package:flutter/foundation.dart';

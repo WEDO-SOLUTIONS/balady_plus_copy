@@ -145,6 +145,7 @@ dependencies:
     version: 1.1.7
   equatable: 2.0.7
   flutter_insider: ^3.15.2
+  flutter_hms_gms_availability: ^3.10.0
 
 dependency_overrides:
   # for dio_http_cache
@@ -159,7 +160,6 @@ dependency_overrides:
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
   sentry_dio: 8.14.2
-  flutter_hms_gms_availability: ^3.10.0
 
 dev_dependencies:
   flutter_test:
