@@ -1,10 +1,19 @@
 package momra.balady.android
 
+import android.os.Bundle
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.oaid.AdjustOaid
 import com.dgis.map.android_auto.MainAppScreenStateNotifier
 import io.flutter.embedding.android.FlutterFragmentActivity
 
-
 class MainActivity : FlutterFragmentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Initialize Adjust OAID
+        AdjustOaid.readOaid(applicationContext)
+    }
+
     override fun onStart() {
         super.onStart()
         MainAppScreenStateNotifier.screenShown()
