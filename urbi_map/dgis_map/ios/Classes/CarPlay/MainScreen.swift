@@ -43,7 +43,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private lazy var zoomControlModel = ZoomControlModel(map: map)
     private let trafficControlModel: TrafficControlModel
     private let model: Model
-    private var trafficStateCancellable: DGis.Cancellable?
     private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancelable: DGis.Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
@@ -51,10 +50,15 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var currentSettingsScreen: SettingsScreen?
     private var isPanningInterfaceVisible: Bool = false
 
-    deinit {
+    func dispose() {
         rebuildUiCancellable?.cancel()
         navigatorStateCancelable?.cancel()
         routeChannelCancelable?.cancel()
+        mapTemplate.leadingNavigationBarButtons = []
+        mapTemplate.trailingNavigationBarButtons = []
+        mapTemplate.mapButtons = []
+        mainLeadFactories = []
+        panningLeadFactories = []
     }
 
     private lazy var mainLeadFactories: [() -> CPBarButton] = [

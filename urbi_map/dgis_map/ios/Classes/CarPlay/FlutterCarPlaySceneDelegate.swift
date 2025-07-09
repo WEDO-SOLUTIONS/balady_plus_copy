@@ -80,6 +80,7 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
+        Self.mainScreen?.dispose()
         FlutterCarPlaySceneDelegate.mainScreen = nil
         FlutterCarPlaySceneDelegate.map = nil
         Self.delegate?.onConnectionStateChanged(connected: false)
