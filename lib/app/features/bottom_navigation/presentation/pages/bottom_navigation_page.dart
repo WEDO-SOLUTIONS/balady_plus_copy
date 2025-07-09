@@ -55,12 +55,14 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           sl<EntryPointCubit>().onLoginV2(data: data);
           Navigator.of(context).popUntil(
             ModalRoute.withName(
-              RouteName.bottomNavigation,
+              sl<EntryPointCubit>().mainPage ?? RouteName.bottomNavigation,
             ),
           );
+          sl<EntryPointCubit>().mainPage = null;
         },
         unAuthenticatedState: (data) {
           sl<EntryPointCubit>().clearAuth(loginData: data);
+          sl<EntryPointCubit>().mainPage = null;
         },
         linkWithNafaz: () {
           sl<EntryPointCubit>().onLoginNfaaz();

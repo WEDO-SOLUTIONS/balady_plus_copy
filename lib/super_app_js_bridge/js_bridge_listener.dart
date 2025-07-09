@@ -97,6 +97,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               );
             }
           },
+          mainPage: RouteName.miniAppsMainScreen
         ),
       );
     } else if(miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true && !CommonProperties.isLoggedIn) {

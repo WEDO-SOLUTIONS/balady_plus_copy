@@ -771,8 +771,8 @@ class CommonFunctions {
 
   // add isMunicipality to check if the user is access municipality services
   // or life style services, make teh default value is false for life style services
-  static Future<bool> onLogin({bool isMunicipality = false}) async =>
-      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
+  static Future<bool> onLogin({bool isMunicipality = false, String? mainPage}) async =>
+      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality,mainPage:mainPage,);
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");

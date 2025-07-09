@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 class NeedLoginWidget extends StatefulWidget {
   final String? img;
   final String? title;
   final String? desc;
+  final String? mainPage;
   final Function(bool isSuccess)? onSuccessLogin;
 
   const NeedLoginWidget({
@@ -17,6 +17,7 @@ class NeedLoginWidget extends StatefulWidget {
     this.desc,
     this.img,
     this.title,
+    this.mainPage,
     this.onSuccessLogin,
   }) : super(key: key);
 
@@ -67,7 +68,10 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
               const SizedBox(height: 16),
               EnhancedCustomElevatedButtonWidget(
                 btnPressed: () {
-                  CommonFunctions.onLogin(isMunicipality: true);
+                  CommonFunctions.onLogin(
+                    isMunicipality: true,
+                    mainPage: widget.mainPage,
+                  );
                 },
                 btnText: ("signInButton").tr(),
                 btnTextSize: 18,
