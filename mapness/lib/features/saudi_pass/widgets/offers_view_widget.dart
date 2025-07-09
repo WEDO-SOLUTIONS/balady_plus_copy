@@ -7,8 +7,9 @@ import 'package:mapness/features/saudi_pass/widgets/set_preferences_placeholder_
 
 class OffersViewWidget extends StatelessWidget {
   final OffersView offersView;
+  final void Function()? onChangeOffers;
 
-  const OffersViewWidget(this.offersView, {super.key});
+  const OffersViewWidget(this.offersView, {super.key, this.onChangeOffers});
 
   @override
   Widget build(BuildContext context) => FutureBuilder(

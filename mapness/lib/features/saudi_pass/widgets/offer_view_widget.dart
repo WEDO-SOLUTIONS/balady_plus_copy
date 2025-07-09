@@ -8,6 +8,7 @@ import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/functions/create_amount_or_ratio_text_span.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_view_decoration_widget.dart';
+import 'package:mapness/features/saudi_pass/widgets/offers_view_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -131,7 +132,10 @@ class _HeartIconWidget extends StatelessWidget {
     return ListenableBuilder(
       listenable: offerView,
       builder: (context, _) => InkWell(
-        onTap: offerView.onHeartTap,
+        onTap: () {
+          offerView.onHeartTap();
+          context.findAncestorWidgetOfExactType<OffersViewWidget>()?.onChangeOffers?.call();
+        },
         child: Icon(
           offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
           color: offerView.isHeartRedAndFilled ? colors.extra01Default : colors.neutralMuted,

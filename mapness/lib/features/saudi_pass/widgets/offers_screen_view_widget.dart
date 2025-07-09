@@ -8,35 +8,42 @@ import 'package:mapness/features/saudi_pass/widgets/prefs_content_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_scaffold.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class OffersScreenViewWidget extends ConsumerWidget {
-  const OffersScreenViewWidget(this.offersScreenView, {super.key});
-
+class OffersScreenViewWidget extends ConsumerStatefulWidget {
   final OffersScreenView offersScreenView;
 
-  int get filtersIndex => offersScreenView.isByPreferencesElseAll ? 0 : 1;
+  const OffersScreenViewWidget(this.offersScreenView, {super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
+  OffersScreenViewWidgetState createState() => OffersScreenViewWidgetState();
+}
+
+class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> {
+  int get _filtersIndex => widget.offersScreenView.isByPreferencesElseAll ? 0 : 1;
+
+  bool _hasChangeFavorites = false;
+
+  @override
+  Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: SaudiPassScaffold(
-          onBackButton: ()=> context.router.popForced(),
+          onBackButton: () => context.router.popForced(_hasChangeFavorites),
           title: context.l10n.saudiPassOffersPageTitle,
           body: ListenableBuilder(
-            listenable: offersScreenView,
+            listenable: widget.offersScreenView,
             builder: (context, _) => Column(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
                   child: SegmentTabsButton(
-                    initialIndex: filtersIndex,
+                    initialIndex: _filtersIndex,
                     tabsContent: [
                       TabsRowV2Content(
                         title: context.l10n.saudiPassOffersPageByPreferences,
-                        onTap: offersScreenView.tapByPreferences,
+                        onTap: widget.offersScreenView.tapByPreferences,
                       ),
                       TabsRowV2Content(
                         title: context.l10n.saudiPassOffersPageAll,
-                        onTap: offersScreenView.tapAll,
+                        onTap: widget.offersScreenView.tapAll,
                       ),
                     ],
                     onIndexChanged: (index) {},
@@ -44,13 +51,16 @@ class OffersScreenViewWidget extends ConsumerWidget {
                 ),
                 Expanded(
                   child: IndexedStack(
-                    index: filtersIndex,
+                    index: _filtersIndex,
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                        child: PrefsContentWidget(offersScreenView),
+                        child: PrefsContentWidget(widget.offersScreenView),
                       ),
-                      OffersViewWidget(offersScreenView),
+                      OffersViewWidget(
+                        widget.offersScreenView,
+                        onChangeOffers: () => _hasChangeFavorites = true,
+                      ),
                     ],
                   ),
                 ),
