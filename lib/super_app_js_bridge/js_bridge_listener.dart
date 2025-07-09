@@ -85,11 +85,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                   .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
                   .then((result) {
                 response = result!;
-
-                handler.complete(response.jsonEncodeModel());
               });
             } else {
-              BaseResponse response = BaseResponse(
+              response = BaseResponse(
                 code: 401,
                 eventName: "getAccessToken",
                 message: "Unauthorized",
@@ -102,16 +100,19 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
     } else if(miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true && !CommonProperties.isLoggedIn) {
       CommonFunctions.onLogin();
+      response = BaseResponse(
+        code: 401,
+        eventName: "getAccessToken",
+        message: "Unauthorized",
+        data: null,
+      );
     } else {
       await sl<HomeMiniAppsListCubit>()
           .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
           .then((result) {
         response = result!;
-
-        handler.complete(response.jsonEncodeModel());
       });
     }
-
     handler.complete(response.jsonEncodeModel());
   }
 
