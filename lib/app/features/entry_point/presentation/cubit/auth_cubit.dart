@@ -137,7 +137,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         state: sl<AuthenticationBloc>().state,
         isMunicipality: isMunicipality,
       );
-      this.mainPage = mainPage;
+      // this.mainPage = mainPage;
     } catch (e) {
       print("object");
     }
