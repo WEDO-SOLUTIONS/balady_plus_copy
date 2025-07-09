@@ -24,6 +24,7 @@ class RoutesCarousel extends ConsumerWidget {
     required this.refresh,
     required this.navType,
     this.destination,
+    this.startPoint,
     super.key,
   });
 
@@ -35,6 +36,8 @@ class RoutesCarousel extends ConsumerWidget {
   final Function(RouteInfo) startNavigation;
   final Function() refresh;
   final String? destination;
+  final String? startPoint;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: Because public transport can't build navigation, we can improve experience
@@ -67,6 +70,7 @@ class RoutesCarousel extends ConsumerWidget {
                   ),
                   onStartNavigation: () => startNavigation(getRouteInfo(route)),
                   destination: destination,
+                  startPoint: startPoint,
                   additionalInfo: shortest != null && shortest == durationInSeconds
                       ? PathCardStatus.shortest(context.l10n.shortest)
                       : null,

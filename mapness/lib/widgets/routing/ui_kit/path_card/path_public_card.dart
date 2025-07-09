@@ -24,6 +24,7 @@ class PathPublicCard extends ConsumerWidget {
   final PathCardLocalization localizations;
   final Function()? onStartNavigation;
   final String? destination;
+  final String? startPoint;
   final PathCardStatus? additionalInfo;
 
   const PathPublicCard({
@@ -31,6 +32,7 @@ class PathPublicCard extends ConsumerWidget {
     required this.localizations,
     this.onStartNavigation,
     this.destination,
+    this.startPoint,
     this.additionalInfo,
     super.key,
   });
@@ -98,6 +100,7 @@ class PathPublicCard extends ConsumerWidget {
                 RouteDetailsRoute(
                   route: route,
                   destination: destination,
+                  startPoint: startPoint,
                   onPressed: () async => onStartNavigation?.call(),
                   onClose: () async => context.router.popForced(),
                   buttonLabel: context.l10n.go.toUpperCase(),

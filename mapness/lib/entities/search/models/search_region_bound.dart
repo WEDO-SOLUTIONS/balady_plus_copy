@@ -7,17 +7,16 @@ class SearchRegionPolygon {
   final String id;
   final String type;
   final String name;
-  final List<Coordinate> polygon;
+  final List<Coordinate>? polygon;
 
   const SearchRegionPolygon({
     required this.id,
     required this.type,
     required this.name,
-    required this.polygon,
+    this.polygon,
   });
 
-  factory SearchRegionPolygon.fromJson(Map<String, dynamic> json) =>
-      _$SearchRegionPolygonFromJson(json);
+  factory SearchRegionPolygon.fromJson(Map<String, dynamic> json) => _$SearchRegionPolygonFromJson(json);
 
   Map<String, dynamic> toJson() => _$SearchRegionPolygonToJson(this);
 }
@@ -32,8 +31,11 @@ class Coordinate {
     required this.lng,
   });
 
-  factory Coordinate.fromJson(Map<String, dynamic> json) =>
-      _$CoordinateFromJson(json);
+  factory Coordinate.fromJson(Map<String, dynamic> json) => _$CoordinateFromJson(json);
 
   Map<String, dynamic> toJson() => _$CoordinateToJson(this);
+}
+
+extension SearchRegionPolygonExtension on SearchRegionPolygon {
+  bool get isRiyadh => id == '216';
 }

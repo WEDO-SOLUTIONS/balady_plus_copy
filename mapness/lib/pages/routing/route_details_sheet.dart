@@ -23,6 +23,7 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
   final Future<void> Function()? onPressed;
   final Future<void> Function()? onClose;
   final String buttonLabel;
+  final String? startPoint;
 
   const RouteDetailsPage({
     required this.route,
@@ -30,6 +31,7 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
     this.destination,
     this.onPressed,
     this.onClose,
+    this.startPoint,
     super.key,
   });
 
@@ -147,7 +149,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                       size: 24,
                     ),
                     text: ContentRowTextOptions(
-                      title: context.l10n.myLocation,
+                      title: widget.startPoint ?? context.l10n.myLocation,
                     ),
                   ),
                 ],

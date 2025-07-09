@@ -11,6 +11,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
@@ -175,6 +176,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   @override
   Widget build(BuildContext context) {
+    final publicTransportVisibility = ref.watch(publicTransportVisibilityProvider(
+      startPoint: widget.points[0],
+      finishPoint: widget.points[1],
+    ));
     ref.listen(carConnectionProvider, (_, next) {
       final connected = next.valueOrNull ?? false;
       if (connected) {
@@ -201,7 +206,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
               RoutesCarousel(
                 points: widget.pointsWithLabel,
                 startNavigation: (route) => _startNavigation(route, navigatingType),
-                destination: widget.pointsWithLabel.lastOrNull?.label,
                 navType: navigatingType,
               ),
               Spacing.$4x.heightBox,
@@ -209,6 +213,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                 active: navigatingType,
                 onChanged: _onChanged,
                 points: widget.points,
+                publicTransportVisibility: publicTransportVisibility,
               ),
             ],
           ),

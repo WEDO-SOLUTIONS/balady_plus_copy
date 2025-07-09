@@ -25,26 +25,31 @@ enum TransportIconType { ofType, combined, special }
 
 class TransportIcon {
   factory TransportIcon.fromMap(Map<dynamic, dynamic> map) {
-    final String typeString = map['type'];
-    TransportIconType type;
-    switch (typeString) {
-      case 'ofType':
-        type = TransportIconType.ofType;
-        break;
-      case 'combined':
-        type = TransportIconType.combined;
-        break;
-      case 'special':
-        type = TransportIconType.special;
-        break;
-      default:
-        throw ArgumentError('Invalid TransportIconType: $typeString');
+    try {
+      final String typeString = map['type'] as String? ?? 'ofType';
+      TransportIconType type;
+      switch (typeString) {
+        case 'ofType':
+          type = TransportIconType.ofType;
+          break;
+        case 'combined':
+          type = TransportIconType.combined;
+          break;
+        case 'special':
+          type = TransportIconType.special;
+          break;
+        default:
+          type = TransportIconType.ofType; // Default fallback
+      }
+      return TransportIcon(
+        type: type,
+        value: map['value'] as String? ?? '',
+        color: map['color'] as int?,
+      );
+    } catch (e) {
+      log('Error parsing TransportIcon: $e');
+      rethrow;
     }
-    return TransportIcon(
-      type: type,
-      value: map['value'],
-      color: map['color'],
-    );
   }
 
   TransportIcon({
@@ -60,10 +65,15 @@ class TransportIcon {
 
 class Transport {
   factory Transport.fromMap(Map<dynamic, dynamic> map) {
-    return Transport(
-      icon: TransportIcon.fromMap(map['icon']),
-      names: List<String>.from(map['names']),
-    );
+    try {
+      return Transport(
+        icon: TransportIcon.fromMap(map['icon'] as Map<dynamic, dynamic>),
+        names: List<String>.from(map['names'] as List<dynamic>? ?? []),
+      );
+    } catch (e) {
+      log('Error parsing Transport: $e');
+      rethrow;
+    }
   }
 
   Transport({
@@ -77,29 +87,39 @@ class Transport {
 
 class BriefPublicTransportModel {
   factory BriefPublicTransportModel.fromMap(Map<dynamic, dynamic> map) {
-    final transfers = map['publicTransportTransferRouteLongEntry'];
-    log(transfers.toString());
-    List<PublicTransportTransferRouteLongEntryMessage> transferRouteEntries = [];
+    try {
+      final transfers = map['publicTransportTransferRouteLongEntry'];
+      log(transfers.toString());
+      List<PublicTransportTransferRouteLongEntryMessage> transferRouteEntries = [];
 
-    // Handle the case where transfers might be a List or other type
-    if (transfers is List) {
-      final transferRouteEntries1 = transfers.whereType<Map>();
-      transferRouteEntries = transferRouteEntries1.map((x) {
-        final map = x as Map<dynamic, dynamic>;
+      // Handle the case where transfers might be a List or other type
+      if (transfers is List) {
+        final transferRouteEntries1 = transfers.whereType<Map>();
+        transferRouteEntries = transferRouteEntries1.map((x) {
+          try {
+            final map = x as Map<dynamic, dynamic>;
+            return PublicTransportTransferRouteLongEntryMessageExt.fromJson(Map<String, dynamic>.from(map));
+          } catch (e) {
+            log('Error parsing transfer route entry: $e');
+            // Return a default entry or skip this one
+            rethrow;
+          }
+        }).toList();
+      }
 
-        return PublicTransportTransferRouteLongEntryMessageExt.fromJson(Map<String, dynamic>.from(map));
-      }).toList();
+      return BriefPublicTransportModel(
+        duration: map['duration'] as int? ?? 0,
+        transports: List<Transport>.from(
+          (map['transports'] as List<dynamic>?)?.map((x) => Transport.fromMap(x as Map<dynamic, dynamic>)) ?? [],
+        ),
+        transferCount: map['transferCount'] as int? ?? 0,
+        onFootDuration: map['onFootDuration'] as int? ?? 0,
+        publicTransportTransferRouteLongEntry: transferRouteEntries,
+      );
+    } catch (e) {
+      log('Error parsing BriefPublicTransportModel: $e');
+      rethrow;
     }
-
-    return BriefPublicTransportModel(
-      duration: map['duration'],
-      transports: List<Transport>.from(
-        (map['transports'] as List<dynamic>).map((x) => Transport.fromMap(x as Map<dynamic, dynamic>)),
-      ),
-      transferCount: map['transferCount'],
-      onFootDuration: map['onFootDuration'],
-      publicTransportTransferRouteLongEntry: transferRouteEntries,
-    );
   }
 
   const BriefPublicTransportModel({

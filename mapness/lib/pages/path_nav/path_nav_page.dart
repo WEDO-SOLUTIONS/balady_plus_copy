@@ -22,7 +22,6 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
-import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -358,6 +357,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               ),
             if (widget.navType == RouteSearchOptionsMessage.publicTransport && publicRoute != null)
               RouteDetailsPage(
+                startPoint: ref.read(etaRouteInfoProvider).startPoint?.label,
+                destination: ref.read(etaRouteInfoProvider).endPoint?.label,
                 route: publicRoute,
                 onPressed: () async {
                   // Remove route from the map for public transport

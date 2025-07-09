@@ -25,12 +25,14 @@ part 'search_region_bound_provider.g.dart';
 /// representing the regional bounds around the given coordinates.
 ///
 /// Returns a [SearchRegionPolygon] representing the bounds.
-final searchRegionBoundProvider = _searchRegionBoundProvider;
 
 @riverpod
-class _SearchRegionBound extends _$SearchRegionBound {
+class SearchRegionBound extends _$SearchRegionBound {
   @override
-  Future<SearchRegionPolygon> build() async {
+  Future<SearchRegionPolygon> build({
+    required double longitude,
+    required double latitude,
+  }) async {
     try {
       final vendorConfig = await ref.read(vendorConfigProvider.future);
       final dio = ref.read(baseDioProvider);
@@ -39,12 +41,18 @@ class _SearchRegionBound extends _$SearchRegionBound {
       final key = vendorConfig[BaldayDeeplink.vendorConfigKey];
 
       final geocodeUrl = BaldayDeeplink.searchBoundRegion(catalogApi);
-      final location = ref.read(locationProvider);
+      var lon = longitude;
+      var lat = latitude;
+      if (lon == 0 || lat == 0) {
+        final location = ref.read(locationProvider);
+        lon = location?.longitude ?? longitude;
+        lat = location?.latitude ?? latitude;
+      }
 
       final response = await dio.get(
         geocodeUrl,
         queryParameters: {
-          BaldayDeeplink.qKey: '${location?.longitude},${location?.latitude}',
+          BaldayDeeplink.qKey: '$lon,$lat',
           BaldayDeeplink.fieldsKey: BaldayDeeplink.fieldsValueBounds,
           BaldayDeeplink.keyKey: key,
         },
@@ -52,10 +60,13 @@ class _SearchRegionBound extends _$SearchRegionBound {
 
       final data = response.data as Map<String, dynamic>;
       final result = data['result'] as Map<String, dynamic>;
+      final firstItem = result['items'][0] as Map<String, dynamic>;
 
-      return SearchRegionPolygon.fromJson(result);
+      return SearchRegionPolygon.fromJson(firstItem);
     } catch (e) {
       rethrow;
     }
   }
+
+  bool get isRiyadh => state.value?.id == '216';
 }

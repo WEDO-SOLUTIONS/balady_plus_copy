@@ -48,7 +48,7 @@ class RoutingPedestrian extends StatelessWidget {
                 )
               else
                 Text(
-                  '${(data.lengthInMeters / 1000).formatDistance(context.l10n)} ${context.l10n.onFoot}',
+                  '${data.lengthInMeters.formatDistance(context.l10n)} ${context.l10n.onFoot}',
                   style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
                 ),
               Text(' · ', style: textStyle.copyWith(color: context.colorsV3.foregroundSoft)),

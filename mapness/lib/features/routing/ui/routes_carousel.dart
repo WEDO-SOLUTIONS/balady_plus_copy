@@ -18,7 +18,6 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.da
 class RoutesCarousel extends StatelessWidget {
   const RoutesCarousel({
     required this.startNavigation,
-    this.destination,
     required this.points,
     required this.navType,
     super.key,
@@ -28,13 +27,12 @@ class RoutesCarousel extends StatelessWidget {
 
   final List<RouteParamsPointWithLabel?> points;
   final Function(RouteInfo) startNavigation;
-  final String? destination;
+
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) => _RoutesCarousel(
           points: points,
           startNavigation: startNavigation,
-          destination: destination,
           biggestWidth: constraints.biggest.width,
           navType: navType,
         ),
@@ -46,14 +44,12 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.navType,
     required this.points,
     required this.startNavigation,
-    required this.destination,
     required this.biggestWidth,
   });
 
   final RouteSearchOptionsMessage navType;
   final double biggestWidth;
   final Function(RouteInfo) startNavigation;
-  final String? destination;
   final List<RouteParamsPointWithLabel?> points;
 
   @override
@@ -111,7 +107,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           ..invalidate(routesProvider)
           ..invalidate(publicTransportRoutesProvider);
       },
-      destination: widget.destination,
+      destination: widget.points.lastOrNull?.label,
+      startPoint: widget.points.firstOrNull?.label,
       startNavigation: (info) {
         final _routeType = widget.navType.toRouteType();
 

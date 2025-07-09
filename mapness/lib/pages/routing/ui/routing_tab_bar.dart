@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -14,11 +15,13 @@ class RouteTabBar extends ConsumerStatefulWidget {
   final void Function(RouteSearchOptionsMessage) onChanged;
   final RouteSearchOptionsMessage active;
   final List<RouteParamsPoint?> points;
+  final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
 
   const RouteTabBar({
     required this.onChanged,
     required this.active,
     required this.points,
+    required this.publicTransportVisibility,
     super.key,
   });
 
@@ -29,6 +32,8 @@ class RouteTabBar extends ConsumerStatefulWidget {
 class _RouteTabBarState extends ConsumerState<RouteTabBar> {
   @override
   Widget build(BuildContext context) {
+    final showPublicTransport = widget.publicTransportVisibility.value?.isPublicTransportAvailable == true;
+
     final carConnected = ref.watch(carConnectionProvider).maybeWhen(
           data: (connected) => connected,
           orElse: () => false,
@@ -47,17 +52,17 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
               primaryIcon: SystemIcons.tuning,
             ),
             // when car connected, choice of route search options shouldn't be available to user
-            if (!carConnected) _getRouteSearchOptionsWidgets(context),
+            if (!carConnected) _getRouteSearchOptionsWidgets(context, showPublicTransport),
           ].insertBetween(Spacing.$2x.widthBox).toList(),
         ),
       ),
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(BuildContext context) {
-    const chips = [
+  Widget _getRouteSearchOptionsWidgets(BuildContext context, bool showPublicTransport) {
+    final chips = [
       RouteSearchOptionsMessage.car,
-      RouteSearchOptionsMessage.publicTransport,
+      if (showPublicTransport) RouteSearchOptionsMessage.publicTransport,
       RouteSearchOptionsMessage.pedestrian,
     ];
 

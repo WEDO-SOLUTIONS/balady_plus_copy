@@ -76,6 +76,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
+    Duration? timeout,
   }) async {
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
@@ -110,7 +111,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
 
     await dgisController.value?.setRouteParams(params);
     return await cancelableCompleter.operation.value.timeout(
-      const Duration(seconds: 30),
+      timeout ?? const Duration(seconds: 30),
       onTimeout: () => throw TimeoutException('Timeout while waiting for public transport routes'),
     );
   }
