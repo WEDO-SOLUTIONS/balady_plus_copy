@@ -23,6 +23,13 @@ class NavigationSessionManeuvers {
         navigationSession = nil
     }
 
+    func routeSearch() {
+        navigationSession?.pauseTrip(
+            for: .rerouting,
+            description: NSLocalizedString("navigationRerouting", comment: "")
+        )
+    }
+
     func navigate() {
         routeChannelCancelable?.cancel()
         routeChannelCancelable = model.routeChannel.sink(
@@ -46,12 +53,13 @@ class NavigationSessionManeuvers {
         navigationSession.upcomingManeuvers = cpManeuvers
 
         routePositionChannelCancellable?.cancel()
-        routePositionChannelCancellable = model.routePositionChannel.sink {
-            [self] routePosition in
-            updateTripEstimates(navigationSession)
-            guard let routePosition else { return }
-            updateNextManeuver(with: routePosition, navigationSession)
-        }
+        routePositionChannelCancellable = model.routePositionChannel
+            .sinkOnMainThread {
+                [self] routePosition in
+                updateTripEstimates(navigationSession)
+                guard let routePosition else { return }
+                updateNextManeuver(with: routePosition, navigationSession)
+            }
     }
 
     func finish() {

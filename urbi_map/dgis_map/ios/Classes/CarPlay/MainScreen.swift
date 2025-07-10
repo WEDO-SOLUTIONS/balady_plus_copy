@@ -99,10 +99,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             receiveValue: whenLanguageUpdated
         )
 
-        navigatorStateCancelable = model.stateChannel.sink(
-            receiveValue: navigatorStateListener
+        navigatorStateCancelable = model.stateChannel.sinkOnMainThread(
+            navigatorStateListener
         )
-        
+
         routeChannelCancelable = model.routeChannel.sink(
             receiveValue: receiveRouteInfo
         )
@@ -113,9 +113,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private func receiveRouteInfo(routeInfo: RouteInfo) {
         composeMainLeadFactories()
     }
-    
+
     private func composeMainLeadFactories() {
-        if (model.state == .disabled) {
+        if model.state == .disabled {
             mainLeadFactories = [
                 makeSearchButton
             ]
@@ -153,7 +153,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         case .navigation:
             navigationSessionManeuvers.navigate()
         case .routeSearch:
-            break
+            navigationSessionManeuvers.routeSearch()
         case .finished:
             navigationSessionManeuvers.finish()
         @unknown default:
