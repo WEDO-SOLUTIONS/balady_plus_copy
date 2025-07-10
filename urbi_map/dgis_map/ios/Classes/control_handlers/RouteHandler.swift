@@ -387,4 +387,64 @@ class RouteHandler {
             })
         )
     }
+    
+    
+    func findRoute(
+        startPoint: RouteSearchPoint,
+        finishPoint: RouteSearchPoint,
+        routeSearchOptions: RouteSearchOptions,
+        completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void
+    ) {
+        let routesFuture = trafficRouter.findRoute(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            routeSearchOptions: routeSearchOptions
+        )
+        
+        self.cancelable.append(routesFuture.sink { (response: [TrafficRoute]) in
+            let routeInfoMessages = response.map(self.routeInfoMessages)
+            let result = FindRouteResultMessage(routes: routeInfoMessages)
+            completion(Result.success(result))
+        } failure: { error in
+            completion(
+                Result.failure(
+                    FlutterError(
+                        code: "FindRoute error",
+                        message: error.description,
+                        details: nil
+                    )))
+            }
+        )
+    }
+    
+    func routeInfoMessages(route: TrafficRoute) -> RouteInfoMessage {
+        let distance = Double(route.route.geometry.last?.point.distance.millimeters ?? 0) / 1000.0
+        
+        var duration = 0.0
+        if let first = route.route.geometry.first {
+            duration = Double(route.traffic.durations.calculateDuration(routePoint: first.point))
+        }
+        
+        let (stairwayCount, gateCount, altitudes) = RouteHandler.getPedestrianRouteData(route.route)
+        
+        let geometry = route.route.geometry.entries.map { entry in
+            GeoPointMessage(
+                latitude: entry.value.latitude.value,
+                longitude: entry.value.longitude.value
+            )
+        }
+        
+        let publicTransportTransfers = route.route.publicTransportTransfers.entries.map { transfer in
+            transfer.toMessage.value
+        }
+        
+        return RouteInfoMessage(
+            distance: distance,
+            duration: duration,
+            stairwayCount: Int64(stairwayCount),
+            gateCount: Int64(gateCount),
+            altitudes:  altitudes.map { Int64($0)},
+            publicTransportTransfers: publicTransportTransfers,
+        )
+    }
 }

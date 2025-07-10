@@ -1056,6 +1056,15 @@ class DgisMapPlugin extends FlutterMapApi {
     );
   }
 
+  /// Find Route.
+  Future<FindRouteResultMessage> findRoute(
+    RouteSearchPointMessage startPoint,
+    RouteSearchPointMessage finishPoint,
+    RouteSearchOptionsMessage routeSearchOptions,
+  ) {
+    return _api.findRoute(startPoint, finishPoint, routeSearchOptions);
+  }
+
   /// Retrieves a list of available packages.
   ///
   /// Returns:

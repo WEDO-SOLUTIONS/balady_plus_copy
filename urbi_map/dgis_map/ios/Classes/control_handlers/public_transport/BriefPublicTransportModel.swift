@@ -304,3 +304,32 @@ extension PublicTransportInfo {
         )
     }
 }
+
+extension PublicTransportTransfer {
+    func toMessage() -> PublicTransportTransferMessage {
+        return PublicTransportTransferMessage(
+            startPointName: self.startPointName,
+            finishPointName: self.finishPointName,
+            routeParts: self.routeParts.map { routePart in
+                PublicRoutePartMessage(
+                    transports: routePart.transports.map { $0.toMessage },
+                    intermediateStops: routePart.intermediateStops.map { stop in
+                        PublicTransportStopMessage(
+                            coordinates: stop.coordinates.toMessage(),
+                            name: stop.name
+                        )
+                    }
+                )
+            }
+        )
+    }
+}
+
+extension PublicTransportStop {
+    func toMessage() -> PublicTransportStopMessage {
+        return PublicTransportStopMessage(
+            coordinates: self.coordinates.toMessage(),
+            name: self.name
+        )
+    }
+}

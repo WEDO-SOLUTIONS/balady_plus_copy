@@ -1122,6 +1122,20 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
 
+    func findRoute(startPoint: RouteSearchPointMessage, finishPoint: RouteSearchPointMessage, navType: RouteSearchOptionsMessage, completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void) {
+        let routeSearchOptions = navType.toRouteSearchOptions()
+        
+        let startSearchPoint = startPoint.toRouteSearchPoint()
+        let finishSearchPoint = finishPoint.toRouteSearchPoint()
+        
+        routeHandler?.findRoute(
+            startPoint: startSearchPoint,
+            finishPoint: finishSearchPoint,
+            routeSearchOptions: routeSearchOptions,
+            completion: completion
+        )
+    }
+
     func listPackages(completion: @escaping (Result<[PackageMessage], any Error>) -> Void) {
         packagesHandler?.listPackages(completion: completion)
     }

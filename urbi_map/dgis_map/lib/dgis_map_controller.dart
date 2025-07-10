@@ -632,6 +632,15 @@ class DgisMapController {
     );
   }
 
+  /// Find route
+  Future<FindRouteResultMessage> findRoute({
+    required RouteSearchOptionsMessage options,
+    required RouteSearchPointMessage startPoint,
+    required RouteSearchPointMessage finishPoint,
+  }) {
+    return _instance.findRoute(startPoint, finishPoint, options);
+  }
+
   ///toggle heatmap
   Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
 

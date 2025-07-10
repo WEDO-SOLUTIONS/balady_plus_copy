@@ -1393,6 +1393,34 @@ class BriefRouteInfoMessage {
   final BriefExtraRouteInfoMessage extraInfo;
 }
 
+/// Represents detailed route information returned by findRoute method
+class RouteInfoMessage {
+  RouteInfoMessage({
+    required this.distance,
+    required this.duration,
+    required this.stairwayCount,
+    required this.gateCount,
+    required this.altitudes,
+    this.geometry,
+    this.publicTransportTransfers,
+  });
+
+  final double distance;
+  final double duration;
+  final int stairwayCount;
+  final int gateCount;
+  final List<int> altitudes;
+  final List<GeoPointMessage>? geometry;
+  final List<PublicTransportTransferMessage>? publicTransportTransfers;
+}
+
+/// Represents a list of routes returned by findRoute method
+class FindRouteResultMessage {
+  FindRouteResultMessage(this.routes);
+
+  final List<RouteInfoMessage> routes;
+}
+
 class VoiceMessage {
   const VoiceMessage(this.language, this.packageMessage);
 
@@ -1973,6 +2001,13 @@ abstract class MapApi {
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
     RouteSearchPointMessage? finishPoint,
+  );
+
+  @async
+  FindRouteResultMessage findRoute(
+    RouteSearchPointMessage startPoint,
+    RouteSearchPointMessage finishPoint,
+    RouteSearchOptionsMessage navType,
   );
 
   @async
