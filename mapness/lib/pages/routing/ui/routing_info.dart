@@ -11,6 +11,8 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
@@ -48,6 +50,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(RouteSearchOptionsMessage.car);
 
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
+  bool _navigationStarted = false;
 
   @override
   void initState() {
@@ -57,9 +60,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         unawaited(_calculateNavigationType(null));
       } else {
         Position? location = ref.read(locationProvider);
-        if (location != null) {
-          unawaited(_calculateNavigationType(location));
-        } else {
+        if (location == null) {
           // TODO(Ayat) rewriting to human form is a temporary fix
           final isGranded = await Permission.location.isGranted;
 
@@ -70,10 +71,11 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           // Due to the addition of checks on Huawei, it was not possible to get the provider's
           // location during the first installation, I made this method so as not to catch a crash
           location = await Geolocator.getCurrentPosition();
-          unawaited(_calculateNavigationType(location));
         }
+        unawaited(_calculateNavigationType(location));
       }
       setCameraPadding();
+      hideActiveLayer();
     });
   }
 
@@ -94,6 +96,24 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             bottomPadding: (physicalPixelsHeight / 3).ceil(),
           ),
         );
+  }
+
+  void hideActiveLayer() {
+    ref.read(layersControlsProvider.notifier).hideLayer(LayerType.metro);
+  }
+
+  void restoreActiveLayer() {
+    // If navigation started, we don't need to restore the active layer and keep it hidden
+    // Else if we go back from this screen, we need to restore the active layer
+    if (!_navigationStarted) {
+      ref.read(layersControlsProvider.notifier).restorePreviousLayer();
+    }
+  }
+
+  @override
+  void deactivate() {
+    restoreActiveLayer();
+    super.deactivate();
   }
 
   @override
@@ -223,6 +243,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   void _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) {
+    _navigationStarted = true;
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
 

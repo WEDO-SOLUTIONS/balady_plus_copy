@@ -128,12 +128,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
         ]);
-        await _metroOnInit();
       })
       ..addObserver(this);
 
     _initNavigation();
     startControlsDisapearTimer();
+    ref.read(layersControlsProvider.notifier).hideLayer(LayerType.metro);
     WakelockPlus.enable();
   }
 
@@ -144,6 +144,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (!appRouter.isRouteActive(PathNavRoute.name)) {
       ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
     }
+
+    // Restore the active layer if we go back from the routing info screen
+    ref.read(layersControlsProvider.notifier).restorePreviousLayer();
     super.deactivate();
   }
 
@@ -568,21 +571,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (isParkingEnabledByFreeRoam) {
       final layersControls = ref.read(layersControlsProvider.notifier);
       if (ref.read(activeLayerProvider) == LayerType.parkingLots) {
-        await layersControls.hideActiveLayer();
-      }
-    }
-  }
-
-  // We hide metro layer on init of navigation because public transport goes thought the metro lines
-  // and we don't want to mix it together with the route
-  // TODO: Create `_metroOnDispose` to show metro layer when navigation is stopped
-  // For this you have to change `layersControls` provider and detect previous state of layerControls
-  //
-  // For now we just hide layer
-  Future<void> _metroOnInit() async {
-    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
-      final layersControls = ref.read(layersControlsProvider.notifier);
-      if (ref.read(layersControlsProvider).selectedType == LayerType.metro) {
         await layersControls.hideActiveLayer();
       }
     }
