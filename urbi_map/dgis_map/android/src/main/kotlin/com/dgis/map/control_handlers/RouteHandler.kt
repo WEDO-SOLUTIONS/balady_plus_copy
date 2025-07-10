@@ -2,6 +2,7 @@ package com.dgis.map.control_handlers
 
 import com.dgis.map.FusedLocationSource
 import com.dgis.map.control_handlers.public_transport.PublicTransportHandler
+import com.dgis.map.extensions.toMessage
 import com.dgis.map.map_api.*
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
@@ -140,14 +141,15 @@ class RouteHandler(
         val routeEditorParams =
                 RouteEditorRouteParams(startPoint, finishPoint, options!!, mutableListOf())
         routesEditor.setRouteParams(routeEditorParams)
-        routeEditorSource.setShowOnlyActiveRoute(
-                params.showOnlyActiveRoute
-                        ?: routeEditorParams.routeSearchOptions.isPublicTransport
-        )
+        setShowOnlyActiveRoute(params.showOnlyActiveRoute ?: true)
     }
 
     fun setRoutesVisible(visible: Boolean) {
         routeEditorSource.setRoutesVisible(visible)
+    }
+
+    fun setShowOnlyActiveRoute(visible: Boolean) {
+        routeEditorSource.setShowOnlyActiveRoute(visible)
     }
 
     fun setActiveRouteIndex(index: Long) {
@@ -304,6 +306,57 @@ class RouteHandler(
             routeSearchOptions: RouteSearchOptions
     ): Future<List<BriefRouteInfo?>> {
         return trafficRouter.findBriefRouteInfos(searchPoints, routeSearchOptions)
+    }
+
+    fun findRoute(
+        startPoint: RouteSearchPoint,
+        finishPoint: RouteSearchPoint,
+        routeSearchOptions: RouteSearchOptions,
+        callback: (Result<FindRouteResultMessage>)->Unit
+    ) {
+        val routesFuture =  trafficRouter.findRoute(
+            startPoint = startPoint,
+            finishPoint = finishPoint,
+            routeSearchOptions = routeSearchOptions
+        )
+
+
+
+        closeables.add(
+            routesFuture.apply {
+            onResult { response ->
+                val routeInfoMessages = response.map { route -> routeInfoMessages(route) }
+                val result = FindRouteResultMessage(routes = routeInfoMessages)
+                callback(Result.success(result))
+            }
+            onError { error ->
+                callback(Result.failure(error))
+            }
+        })
+    }
+
+    private fun routeInfoMessages(route: TrafficRoute): RouteInfoMessage {
+        val distance = (route.route.geometry.last?.point?.distance?.millimeters ?: 0) / 1000.0
+        
+        var duration = 0.0
+        route.route.geometry.first?.let { first ->
+            duration = route.traffic.durations.calculateDuration(first.point).inSeconds.toDouble()
+        }
+        
+        val (stairwayCount, gateCount, altitudes) = getPedestrianRouteData(route.route)
+        
+        val publicTransportTransfers = route.route.publicTransportTransfers.entries.map { transfer ->
+            transfer.toMessage().value
+        }
+        
+        return RouteInfoMessage(
+            distance = distance,
+            duration = duration,
+            stairwayCount = stairwayCount.toLong(),
+            gateCount = gateCount.toLong(),
+            altitudes = altitudes.map { it.toLong() },
+            publicTransportTransfers = publicTransportTransfers,
+        )
     }
 
     fun getLastLocation(): GeoPointMessage? {

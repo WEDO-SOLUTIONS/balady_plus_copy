@@ -427,13 +427,6 @@ class RouteHandler {
         
         let (stairwayCount, gateCount, altitudes) = RouteHandler.getPedestrianRouteData(route.route)
         
-        let geometry = route.route.geometry.entries.map { entry in
-            GeoPointMessage(
-                latitude: entry.value.latitude.value,
-                longitude: entry.value.longitude.value
-            )
-        }
-        
         let publicTransportTransfers = route.route.publicTransportTransfers.entries.map { transfer in
             transfer.toMessage.value
         }
