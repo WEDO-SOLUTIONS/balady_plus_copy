@@ -67,12 +67,6 @@ class SettingsScreen: NSObject {
         setParkingOn(isParkingEnabled)
     }
     
-    private func saveSettings() {
-        userDefaultsPublished.saveTrafficEnabled(isTrafficEnabled)
-        userDefaultsPublished.saveSoundEnabled(isSoundEnabled)
-        userDefaultsPublished.saveParkingEnabled(isParkingEnabled)
-    }
-    
     func createTemplate() -> CPTemplate {
         let trafficBtn = createTrafficButton()
         let soundBtn = createSoundButton()
