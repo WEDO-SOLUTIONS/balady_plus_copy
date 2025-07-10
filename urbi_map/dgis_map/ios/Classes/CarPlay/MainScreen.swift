@@ -43,17 +43,22 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private lazy var zoomControlModel = ZoomControlModel(map: map)
     private let trafficControlModel: TrafficControlModel
     private let model: Model
-    private var trafficStateCancellable: DGis.Cancellable?
     private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancelable: DGis.Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
     private let navigationSessionManeuvers: NavigationSessionManeuvers
     private var currentSettingsScreen: SettingsScreen?
+    private var isPanningInterfaceVisible: Bool = false
 
-    deinit {
+    func dispose() {
         rebuildUiCancellable?.cancel()
         navigatorStateCancelable?.cancel()
         routeChannelCancelable?.cancel()
+        mapTemplate.leadingNavigationBarButtons = []
+        mapTemplate.trailingNavigationBarButtons = []
+        mapTemplate.mapButtons = []
+        mainLeadFactories = []
+        panningLeadFactories = []
     }
 
     private lazy var mainLeadFactories: [() -> CPBarButton] = [
@@ -128,7 +133,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func buildLeadButtons() {
         let functions =
-            mapTemplate.isPanningInterfaceVisible
+            isPanningInterfaceVisible
             ? panningLeadFactories : mainLeadFactories
         mapTemplate.leadingNavigationBarButtons = functions.map { function in
             function()
@@ -207,7 +212,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onAcceptBarTap(_: CPBarButton) {
-        mapTemplate.dismissPanningInterface(animated: false)
+        isPanningInterfaceVisible = false
+        mapTemplate.dismissPanningInterface(animated: true)
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
             makeSettingsButton(),
@@ -220,6 +226,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onPanningBarTap(_: CPBarButton) {
+        isPanningInterfaceVisible = true
         mapTemplate.showPanningInterface(animated: true)
         mapTemplate.trailingNavigationBarButtons = [
             makeMyLocationHeaderButton()
