@@ -485,13 +485,15 @@ class LayersControls extends _$LayersControls {
 
   // We need to store the previous layer to restore it when we go back
   LayerType? _previousLayer;
-  void hideLayer(LayerType layer) {
+  void hideLayer(LayerType layer, {bool restorable = true}) {
     // Do not hide the same layer twice, it is already hidden
     if (layer == _previousLayer) {
       return;
     }
     if (state.selectedType == layer) {
-      _previousLayer = state.selectedType;
+      if (restorable) {
+        _previousLayer = state.selectedType;
+      }
       handleTap(layer);
     }
   }
