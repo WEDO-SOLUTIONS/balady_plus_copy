@@ -32,8 +32,8 @@ class NavigationSessionManeuvers {
 
     func navigate() {
         routeChannelCancelable?.cancel()
-        routeChannelCancelable = model.routeChannel.sink(
-            receiveValue: receiveRouteInfo
+        routeChannelCancelable = model.routeChannel.sinkOnMainThread(
+            receiveRouteInfo
         )
     }
 
