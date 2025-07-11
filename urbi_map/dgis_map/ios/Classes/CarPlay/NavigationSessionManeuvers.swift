@@ -44,8 +44,7 @@ class NavigationSessionManeuvers {
             mapCPManeuver
         )
 
-        self.navigationSession?.cancelTrip()
-        let navigationSession = mapTemplate.startNavigationSession(
+        let navigationSession = self.navigationSession ?? mapTemplate.startNavigationSession(
             for: model.route.trip
         )
         self.navigationSession = navigationSession
