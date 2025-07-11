@@ -29,10 +29,10 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         );
       }
       if (finishPoint == null) {
-        return const PublicTransportVisibilityResult(
-          isBothInRiyadh: true,
-          hasPublicTransportRoutes: false,
-          reason: 'No start or finish point',
+        final location = ref.read(locationProvider);
+        finishPoint = RouteParamsPoint(
+          longitude: location?.longitude ?? 0,
+          latitude: location?.latitude ?? 0,
         );
       }
       final dgisController = await ref.read(dgisControllerProvider.future);
