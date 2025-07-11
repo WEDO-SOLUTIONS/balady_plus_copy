@@ -43,11 +43,19 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       );
 
       if (publicTransportRoutes.routes.isEmpty) {
-        return const PublicTransportVisibilityResult(
-          isBothInRiyadh: true,
-          hasPublicTransportRoutes: false,
-          reason: 'No public transport routes available for this route',
+        await Future.delayed(const Duration(milliseconds: 1200));
+        final publicTransportRoutesRetry = await dgisController.findRoute(
+          options: RouteSearchOptionsMessage.publicTransport,
+          startPoint: startPoint.routeSearchPointMessage,
+          finishPoint: finishPoint.routeSearchPointMessage,
         );
+        if (publicTransportRoutesRetry.routes.isEmpty) {
+          return const PublicTransportVisibilityResult(
+            isBothInRiyadh: true,
+            hasPublicTransportRoutes: false,
+            reason: 'No public transport routes available for this route',
+          );
+        }
       }
 
       // Check if both points are in Riyadh region

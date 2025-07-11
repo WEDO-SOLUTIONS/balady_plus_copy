@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,6 @@ class RouteTabBar extends ConsumerStatefulWidget {
 class _RouteTabBarState extends ConsumerState<RouteTabBar> {
   @override
   Widget build(BuildContext context) {
-    final showPublicTransport = widget.publicTransportVisibility.value?.isPublicTransportAvailable == true;
-
     final carConnected = ref.watch(carConnectionProvider).maybeWhen(
           data: (connected) => connected,
           orElse: () => false,
@@ -52,14 +51,16 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
               primaryIcon: SystemIcons.tuning,
             ),
             // when car connected, choice of route search options shouldn't be available to user
-            if (!carConnected) _getRouteSearchOptionsWidgets(context, showPublicTransport),
+            if (!carConnected) _getRouteSearchOptionsWidgets(context, widget.publicTransportVisibility),
           ].insertBetween(Spacing.$2x.widthBox).toList(),
         ),
       ),
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(BuildContext context, bool showPublicTransport) {
+  Widget _getRouteSearchOptionsWidgets(
+      BuildContext context, AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility) {
+    final showPublicTransport = publicTransportVisibility.value?.isPublicTransportAvailable == true;
     final chips = [
       RouteSearchOptionsMessage.car,
       if (showPublicTransport) RouteSearchOptionsMessage.publicTransport,
