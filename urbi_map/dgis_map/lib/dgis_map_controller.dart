@@ -63,6 +63,9 @@ class DgisMapController {
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
 
+  /// Sound on events
+  Stream<SoundOnEvent> get soundOnEvents => _instance.soundOnEvents;
+
   /// Events of visible rect changes.
   Stream<VisibleRectEvent> get visibleRectEvents => _instance.visibleRectEvents;
 

@@ -2,17 +2,28 @@ import 'dart:async';
 
 import 'package:dgis_map_platform_interface/src/events/navigation_event.dart';
 import 'package:dgis_map_platform_interface/src/events/route_options_event.dart';
+import 'package:dgis_map_platform_interface/src/events/sound_on_events.dart';
 
+/// Handles navigation events from DGisMapPlugin
 class NavigationEventHandler {
+  /// Constructor
   NavigationEventHandler();
 
+  /// Broadcast stream for navigation event
   Stream<NavigationEvent> get navigationEvents => _controller.stream;
 
+  /// Broadcast stream for route options event
   Stream<RouteOptionsEvent> get routeOptionEvents => _routeOptionsController.stream;
+
+  /// Broadcast stream for sound on/off event
+  /// If you want to listen to sound on/off event from CarPlay or Android Auto, use this stream
+  Stream<SoundOnEvent> get soundOnEvents => _soundOnController.stream;
 
   final _controller = StreamController<NavigationEvent>.broadcast();
   final _routeOptionsController = StreamController<RouteOptionsEvent>.broadcast();
+  final _soundOnController = StreamController<SoundOnEvent>.broadcast();
 
+  /// Handles navigation event
   void handleNavigationEvent(Map<dynamic, dynamic> map) {
     final value = map["state"];
 
@@ -33,6 +44,7 @@ class NavigationEventHandler {
     }
   }
 
+  /// Handles route options event
   void routeOptionsEvent(Map<dynamic, dynamic> map) {
     final hasOptions = map["hasOptions"];
 
@@ -41,7 +53,18 @@ class NavigationEventHandler {
     );
   }
 
-  Future<void> dispose() {
-    return _controller.close();
+  /// Handles sound on/off event
+  void soundOnEvent(Map<dynamic, dynamic> map) {
+    final value = map["value"];
+    if (value is bool) {
+      _soundOnController.sink.add(SoundOnEvent(value: value));
+    }
+  }
+
+  /// Disposes the handler and closes all streams
+  Future<void> dispose() async {
+    await _soundOnController.close();
+    await _routeOptionsController.close();
+    await _controller.close();
   }
 }

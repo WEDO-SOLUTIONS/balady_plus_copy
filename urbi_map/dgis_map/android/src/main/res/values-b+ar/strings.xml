@@ -11,18 +11,46 @@
   <string name="location_signal_lost_message">فقدنا الاتصال بك…</string>
   <string name="end_trip_alert_title">لقد وصلت</string>
   <string name="end_trip_alert_action">إنهاء الرحلة</string>
-  <string name="start_navigation_message">من فضلك أوقف السيارة وقم بتشغيل الملاحة في تطبيق بلدي على هاتفك</string>
 
   <!-- Permission request -->
   <string name="location_permission_request_message">يرجى إيقاف السيارة والسماح لتطبيق بلدي بالوصول إلى موقعك على هاتفك</string>
   <string name="grant_access_action">السماح بالوصول</string>
 
   <!-- Search -->
-  <string name="searchNothingFound">لم يتم العثور على شيء. حاول تغيير البحث أو تغيير الموقع</string>
+  <string name="search_history">تاريخ</string>
+  <string name="search_hint">كافيه</string>
+  <string name="search_suggestion">أدخل عنوانًا أو اسم مكان مثل مركز تجاري أو مطعم</string>
+  <string name="search_nothing_found">لم يتم العثور على شيء</string>
+  <string name="enter_from_keyboard">لوحة المفاتيح</string>
+  <string name="empty_trips_history_message">هنا ستجد قائمة برحلاتك</string>
 
   <!-- Common -->
   <string name="driving_notification_title">التنقل باستخدام خرائط بلدي</string>
   <string name="you_dont_seem_to_have_internet_description">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
   <string name="meter">م</string>
   <string name="kilometer">كم</string>
+  <string name="back">رجوع</string>
+
+  <!-- Settings -->
+  <string name="settings_title">الإعدادات</string>
+  <string name="settings_voice_instructions">الإرشادات الصوتية</string>
+  <string name="settings_traffic">حركة المرور</string>
+  <string name="settings_parking">موقف السيارات</string>
+  <string name="settings_route">الطريق</string>
+  <string name="settings_prompts_volume">مستوى صوت التنبيهات</string>
+
+  <!-- Voice Instructions -->
+  <string name="voice_instructions_all">جميع الأحداث</string>
+  <string name="voice_instructions_important">الهامة فقط</string>
+  <string name="voice_instructions_none">إيقاف</string>
+
+  <!-- Volume Settings -->
+  <string name="volume_minimum">الحد الأدنى</string>
+  <string name="volume_quiet">هادئ</string>
+  <string name="volume_standard">قياسي</string>
+
+  <!-- Route Settings -->
+  <string name="route_avoid_toll_roads">تجنب الطرق ذات الرسوم</string>
+  <string name="route_avoid_unpaved_roads">تجنب الطرق الغير ممهدة</string>
+  <string name="route_suggest_better_route">اقتراح مسار أفضل</string>
 </resources>

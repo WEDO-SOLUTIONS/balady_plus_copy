@@ -3,7 +3,7 @@ name: Update PR Target Branches for Release
 on:
   push:
     branches:
-      - 'urbi-release-*'
+      - "urbi-release-*"
 
 permissions:
   pull-requests: write
@@ -36,6 +36,12 @@ jobs:
               // 3) Skip if the PR already targets the current branch
               if (pr.base.ref === currentBranch) {
                 console.log(`✅ PR #${pr.number} already targets ${currentBranch}. Skipping.`);
+                continue;
+              }
+
+              // 3.1) Skip if PR has label 'feature-branch'
+              if (pr.labels && pr.labels.some(label => label.name === 'feature-branch')) {
+                console.log(`🚫 PR #${pr.number} has label 'feature-branch'. Skipping.`);
                 continue;
               }
 

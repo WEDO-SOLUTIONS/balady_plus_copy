@@ -13,6 +13,7 @@ class CarPlayHandler: CarPlayConnectionSceneDelegate {
     init(eventChannel: DgisStreamHandler) {
         self.eventChannel = eventChannel
         FlutterCarPlaySceneDelegate.delegate = self
+        FlutterCarPlaySceneDelegate.eventChannel = eventChannel
     }
     
     func getConnectionState(completion: @escaping (Result<Bool, any Error>) -> Void) {
@@ -26,4 +27,12 @@ class CarPlayHandler: CarPlayConnectionSceneDelegate {
             "connected": connected,
         ])
     }
+    
+    // We want to pass params from mobile to CarPlay
+    // It could be expandable but for now it works only with sound settings
+    func toggleSounds(toggleType: SoundToggleType) {
+        FlutterCarPlaySceneDelegate.toggleSounds(toggleType: toggleType)
+    }
+
+    
 }

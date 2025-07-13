@@ -33,6 +33,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
+import com.dgis.map.android_auto.settings.SettingsScreen
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
@@ -73,7 +74,6 @@ class NavigationScreen(
         )
     }
 
-    private var isTrafficEnabled: Boolean = false
     private var isEndTripShown: Boolean = false
 
     private var navigationState = NavigationState.DISABLED
@@ -96,31 +96,14 @@ class NavigationScreen(
 
     override fun onGetTemplate(): Template {
         val actionStrip = ActionStrip.Builder()
-        val trafficAction =
-            Action.Builder()
-                .setIcon(
-                    CarIcon.Builder(
-                        IconCompat.createWithResource(
-                            carContext,
-                            if (isTrafficEnabled)
-                                R.drawable.traffic_active
-                            else R.drawable.traffic
-                        )
-                    )
-                        .build()
-                )
-                .setOnClickListener { toggleTrafficControl() }
-                .build()
-        actionStrip.addAction(trafficAction)
         if (!isNavigation) {
             //            TODO(Sergei): add favourite screen
             //            actionStrip.addAction(favouriteAction)
         } else {
             actionStrip.addAction(routeOverviewAction)
         }
-        //        TODO(Sergei): add search and settings screens
-        //        actionStrip.addAction(searchAction)
-        //        actionStrip.addAction(settingsAction)
+        actionStrip.addAction(searchAction)
+        actionStrip.addAction(settingsAction)
         if (isNavigation) {
             actionStrip.addAction(buildStopNavigationAction())
         }
@@ -167,7 +150,6 @@ class NavigationScreen(
         navigationState = state
         when (state) {
             NavigationState.NAVIGATION -> {
-                tryPopStartNavigationMessageScreen()
                 navigationManager.navigationStarted()
             }
 
@@ -184,7 +166,6 @@ class NavigationScreen(
             }
 
             NavigationState.REROUTING -> {
-                tryPopStartNavigationMessageScreen()
                 val tripBuilder = Trip.Builder()
                 if (destination != null && destinationTravelEstimate != null) {
                     tripBuilder.addDestination(destination!!, destinationTravelEstimate!!)
@@ -192,8 +173,8 @@ class NavigationScreen(
                 tripBuilder.setLoading(true)
                 try {
                     navigationManager.updateTrip(tripBuilder.build())
-                } catch (e: Exception) {
-                    // TODO: Add logging here
+                } catch (_: Exception) {
+                    // skip (when state is rerouting in freeroam, but navigation on route is not started)
                 }
             }
 
@@ -202,13 +183,6 @@ class NavigationScreen(
             }
         }
         invalidate()
-    }
-
-    private fun tryPopStartNavigationMessageScreen() {
-        val topScreen = carContext.getCarService(ScreenManager::class.java).top
-        if (topScreen is StartNavigationMessageScreen) {
-            topScreen.finish()
-        }
     }
 
     override fun onEtaUpdated(eta: EtaModel?) {
@@ -288,7 +262,11 @@ class NavigationScreen(
         }
         tripBuilder.setLoading(false)
         tripBuilder.setCurrentRoad(maneuver.roadName)
-        navigationManager.updateTrip(tripBuilder.build())
+        try {
+            navigationManager.updateTrip(tripBuilder.build())
+        } catch (_: Exception) {
+            // skip (when maneuver update is performed before navigation state is updated)
+        }
 
         val unitString =
             when (unit) {
@@ -363,17 +341,11 @@ class NavigationScreen(
     }
 
     private fun openSearch() {
-        // TODO(Sergei): open search screen
+        screenManager.push(CategorySearchScreen(carContext, mapController))
     }
 
     private fun openSettings() {
-        // TODO(Sergei): open settings screen
-    }
-
-    private fun toggleTrafficControl() {
-        mapController.toggleTrafficControl()
-        isTrafficEnabled = !isTrafficEnabled
-        invalidate()
+        screenManager.push(SettingsScreen(carContext, mapController))
     }
 
     private fun showEndTrip() {

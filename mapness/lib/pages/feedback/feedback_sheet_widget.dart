@@ -107,7 +107,6 @@ class FeedbackSheetWidget extends HookWidget {
                     child: switch (state) {
                       FeedbackSheetState.failure => BaseErrorWidget(
                           onRetry: onRetry,
-                          buttonColorScheme: ButtonColorScheme.primary,
                           errorLabel: context.l10n.appFeedbackConnectionIssueV2,
                           paddingForImage: const EdgeInsets.symmetric(vertical: AppSizes.$3xs),
                         ),

@@ -31,7 +31,7 @@ class EndTripModal extends HookWidget {
           child: StatelessBottomSheet(
             safeAreaColor: context.colorsV3.backgroundSurface1,
             scrollController: bottomsheetController,
-            backgroundColorDelegate: StatelessSheetDelegateFunction(
+            backgroundColorDelegate: StatelessSheetDelegateFunction<Color?>(
               function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
             ),
             content: [

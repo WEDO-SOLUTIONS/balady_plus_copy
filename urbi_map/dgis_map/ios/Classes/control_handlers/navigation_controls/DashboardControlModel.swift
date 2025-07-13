@@ -10,7 +10,7 @@ class DashboardControlModel {
     private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler
     private var cancelable: Array<Cancellable> = []
-    private static let allCategories: SoundCategoryOptionSet = [
+    public static let allCategories: SoundCategoryOptionSet = [
         .crossroadCameras,
         .laneCameras,
         .noStoppingControlCameras,
@@ -63,13 +63,6 @@ class DashboardControlModel {
         guard let duration = self.model.duration, let distance = self.model.distance else {
             return
         }
-        
-        FlutterCarPlaySceneDelegate.updateEstimates(
-            CarPlayEstimates(
-                distanceRemaining: distance,
-                timeRemaining: duration
-            )
-        )
         
         eventChannel.success([
             "event": Events.dashboardEvent,

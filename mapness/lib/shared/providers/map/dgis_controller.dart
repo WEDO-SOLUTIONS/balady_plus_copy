@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:mapness/_features/common/providers/permissions.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:mapness/shared/utils/location_setup_helper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -91,32 +91,15 @@ class DgisController extends _$DgisController {
     }
   }
 
-  /// Setups initial camera location on map.
   Future<void> _setupLocation(DgisMapController controller) async {
-    var locationPermission = await ref.read(
-      permissionsProvider(Permission.location).future,
-    );
-    final locationNotifier = ref.read(permissionsProvider(Permission.location).notifier);
-
     await _setDefaultLocation(controller);
 
-    try {
-      if (!locationPermission.isGranted) {
-        locationPermission = await locationNotifier.request();
-      }
-      if (locationPermission.isGranted) {
-        await controller.onLocationPermissionGranted(
-          desiredAccuracy: DesiredAccuracyMessage.high,
-        );
-        await Future.delayed(
-          const Duration(milliseconds: 100),
-          () => controller.toggleFollowState(),
-        );
-      }
-    } on Exception catch (e) {
-      // TODO: store it to analytics
-      debugPrint('Location permission error: $e');
-    }
+    final helper = LocationSetupHelper(controller);
+    await helper.run();
+
+    // at this point, geolocation is either activated,
+    // or the user has definitively denied it (the helper will timeout
+    // if you add it inside _LocationSetupHelper).
   }
 
   /// Moves camera on Riyadh Tower

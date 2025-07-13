@@ -204,7 +204,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+380"
+    version: "3.12.8+278"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -2141,10 +2141,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: "614cbaecdc9629ac1beb79fe9b2b9a2b9c0206b95edf5c08892aaaf52c94007e"
+      sha256: "412e219bedd7be5895491fe44a15164b84c38348c0366ac6e82ebe1a6b925b3d"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.1.6"
+    version: "1.1.7"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
@@ -2414,26 +2414,26 @@ packages:
     dependency: "direct main"
     description:
       name: permission_handler
-      sha256: "18bf33f7fefbd812f37e72091a15575e72d5318854877e0e4035a24ac1113ecb"
+      sha256: "2d070d8684b68efb580a5997eb62f675e8a885ef0be6e754fb9ef489c177470f"
       url: "https://pub.dev"
     source: hosted
-    version: "11.3.1"
+    version: "12.0.0+1"
   permission_handler_android:
     dependency: transitive
     description:
       name: permission_handler_android
-      sha256: "71bbecfee799e65aff7c744761a57e817e73b738fedf62ab7afd5593da21f9f1"
+      sha256: "1e3bc410ca1bf84662104b100eb126e066cb55791b7451307f9708d4007350e6"
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.13"
+    version: "13.0.1"
   permission_handler_apple:
     dependency: transitive
     description:
       name: permission_handler_apple
-      sha256: e6f6d73b12438ef13e648c4ae56bd106ec60d17e90a59c4545db6781229082a0
+      sha256: f000131e755c54cf4d84a5d8bd6e4149e262cc31c5a8b1d698de1ac85fa41023
       url: "https://pub.dev"
     source: hosted
-    version: "9.4.5"
+    version: "9.4.7"
   permission_handler_html:
     dependency: transitive
     description:
@@ -2446,10 +2446,10 @@ packages:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
-      sha256: e9c8eadee926c4532d0305dff94b85bf961f16759c3af791486613152af4b4f9
+      sha256: eb99b295153abce5d683cac8c02e22faab63e50679b937fa1bf67d58bb282878
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.3"
+    version: "4.3.0"
   permission_handler_windows:
     dependency: transitive
     description:

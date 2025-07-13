@@ -328,6 +328,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_marker_m_new.svg
   SvgGenImage get icMarkerMNew => const SvgGenImage('assets/icons/svg/ic_marker_m_new.svg');
 
+  /// File path: assets/icons/svg/ic_metro_marker.svg
+  SvgGenImage get icMetroMarker => const SvgGenImage('assets/icons/svg/ic_metro_marker.svg');
+
   /// File path: assets/icons/svg/ic_notification.svg
   SvgGenImage get icNotification => const SvgGenImage('assets/icons/svg/ic_notification.svg');
 
@@ -450,6 +453,7 @@ class $AssetsIconsSvgGen {
         icLangEn,
         icLanguageChange,
         icMarkerMNew,
+        icMetroMarker,
         icNotification,
         icParkingSpot,
         icPhone,
