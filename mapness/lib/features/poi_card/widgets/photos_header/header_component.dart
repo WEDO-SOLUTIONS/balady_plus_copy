@@ -8,61 +8,68 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
-import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
-import 'package:mapness/features/poi_card/widgets/poi_photos_row.dart';
+import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
+import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
-  final bool isPhotosEmpty;
-  final bool isPhotosLoading;
+  static const photosMinHeight = 96.0;
+  static const photosMaxHeight = 156.0 + PoiHeader.poiHeaderBorderRadius;
+
+  final bool photosEmpty;
+  final bool photosAreLoading;
   final int objectId;
 
   const HeaderComponent({
-    required this.isPhotosEmpty,
-    required this.isPhotosLoading,
+    required this.photosEmpty,
+    required this.photosAreLoading,
     required this.objectId,
     super.key,
   }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
-    final transformPhotoSize = _transformPhotoSize(state, interpolation);
-    final hideTransform = min(1.0, transformPhotoSize / photosMinHeight);
-    final _parkingObjectId = objectId == parkingObjectId;
+    final photosSizeTransform = _transformPhotoSize(state, interpolation);
+    final topHeaderHeightTransform = min(1.0, photosSizeTransform / photosMinHeight);
+    final isItParkingSpot = objectId == parkingObjectId;
 
-    final isNoPhotos = isPhotosEmpty && !isPhotosLoading && !_parkingObjectId;
+    final showPhotos = !photosEmpty || photosAreLoading || isItParkingSpot;
 
     return Directionality(
-      textDirection: isPhotosEmpty ? TextDirection.ltr : Directionality.of(context),
+      textDirection: photosEmpty ? TextDirection.ltr : Directionality.of(context),
       child: Opacity(
         opacity: _resolveOpacity(state, interpolation),
         child: Align(
-          heightFactor: hideTransform,
-          alignment: isPhotosEmpty ? AlignmentDirectional.topStart : Alignment.topCenter,
+          heightFactor: topHeaderHeightTransform,
+          alignment: photosEmpty ? AlignmentDirectional.topStart : Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: isNoPhotos ? Spacing.$3x : 0.0),
-            child: isNoPhotos
-                ? BaladyAppButton(
-                    buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                    onTap: () => context.router.push(
-                      QuickFeedbackPhotoRoute(
-                        params: FeedbackObjectIdParams(objectId),
-                      ),
-                    ),
-                    color: context.colorsV3.staticWhite,
-                    size: BaladyButtonSize.small,
-                    primaryIcon: GeneralIcons.plusCircleFilled,
-                    primaryLabel: context.l10n.addPhoto,
-                    textColor: context.colorsV3.accentDefault,
-                    iconColor: context.colorsV3.accentDefault,
-                  )
-                : SizedBox(
-                    height: transformPhotoSize,
-                    child: PoiPhotosRow(
-                      objectId: objectId,
-                    ),
+            padding: topHeaderPaddingDelegate(state, interpolation, showPhotos: !showPhotos),
+            child: Builder(builder: (context) {
+              if (showPhotos) {
+                return SizedBox(
+                  height: photosSizeTransform,
+                  child: PoiPhotosRow(
+                    objectId: objectId,
+                    state: state,
+                    interpolation: interpolation,
                   ),
+                );
+              }
+              return BaladyAppButton(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                buttonColorScheme: BaladyButtonColorScheme.accent,
+                buttonType: BaladyButtonType.secondary,
+                onTap: () => context.router.push(
+                  QuickFeedbackPhotoRoute(
+                    params: FeedbackObjectIdParams(objectId),
+                  ),
+                ),
+                primaryIcon: GeneralIcons.photoSolid,
+                primaryLabel: context.l10n.addPhoto,
+                color: context.colorsV3.backgroundSurface2,
+              );
+            }),
           ),
         ),
       ),
@@ -86,15 +93,32 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
 
     final _parkingObjectId = objectId == parkingObjectId;
 
-    final isNoPhotos = isPhotosEmpty && !isPhotosLoading && !_parkingObjectId;
-    if (isNoPhotos && state == PoiCardBottomSheetState.halfOpen) {
+    final hidePhotos = photosEmpty && !photosAreLoading && !_parkingObjectId;
+    if (hidePhotos && state == PoiCardBottomSheetState.halfOpen) {
       return photosMinHeight * (1 - interpolation);
     }
-    if (isNoPhotos && state == PoiCardBottomSheetState.open) {
+    if (hidePhotos && state == PoiCardBottomSheetState.open) {
       return 0.0;
     }
 
     return MathHelper.lerpBetween(state.index + interpolation, photosMinHeight, photosMaxHeight,
         PoiCardBottomSheetState.halfOpen.index.toDouble(), PoiCardBottomSheetState.open.index.toDouble());
+  }
+
+  EdgeInsets topHeaderPaddingDelegate(PoiCardBottomSheetState state, double interpolation, {bool showPhotos = true}) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
+      return EdgeInsets.zero;
+    }
+    if (state == PoiCardBottomSheetState.hidden) {
+      return EdgeInsets.only(
+        bottom: Spacing.$3x,
+        top: showPhotos ? 0.0 : Spacing.$3x,
+      );
+    }
+
+    return EdgeInsets.only(
+      bottom: Spacing.$3x * (1 - interpolation),
+      top: showPhotos ? 0.0 : Spacing.$3x,
+    );
   }
 }

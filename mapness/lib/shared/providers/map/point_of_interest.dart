@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -61,7 +62,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         elevation: 1,
       ),
       text: title,
-      textStyle: textStyle,
+      textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: mapMarkerMapper?.iconPath.bigIconPath,
       id: poiPinId,
     ),

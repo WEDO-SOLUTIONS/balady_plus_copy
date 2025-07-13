@@ -11,6 +11,8 @@ class NavigationHandler {
         // event values
         static let stateFinished = "finished"
         static let stateDisabled = "disabled"
+        static let stateNavigation = "navigation"
+        static let stateRouteSearch = "routeSearch"
     }
     
     private let map: Map
@@ -95,8 +97,16 @@ class NavigationHandler {
             self.isNavigating = false
             stopNavigation()
         case State.navigation:
+            self.eventChannel.success([
+                "event": Events.navigationEvent,
+                "state": Events.stateNavigation
+            ])
             self.isNavigating = true
         case State.routeSearch:
+            self.eventChannel.success([
+                "event": Events.navigationEvent,
+                "state": Events.stateRouteSearch
+            ])
             self.isNavigating = true
         }
     }
@@ -264,10 +274,6 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             
-            if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-                FlutterCarPlaySceneDelegate.startNavigation()
-            }
-            
             // TODO: return back
             try self.navigationManager.start(
                 routeBuildOptions: RouteBuildOptions(
@@ -353,7 +359,6 @@ class NavigationHandler {
     
     func stopNavigation() {
         self.navigationManager.stop()
-        FlutterCarPlaySceneDelegate.stopNavigation()
         resetCamera()
     }
     

@@ -13,8 +13,8 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 void main() async {
   unhandledExceptionBaladyLogs(() async {
-    AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
     await runMapnessApp(() async {
+      AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.dev);
       // to observe all blocs movements
       // Bloc.observer = SimpleBlocObserver();

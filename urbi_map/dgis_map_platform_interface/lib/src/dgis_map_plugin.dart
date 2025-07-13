@@ -104,6 +104,9 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Navigation events stream.
   Stream<NavigationEvent> get navigationEvents => _navigationEventHandler.navigationEvents;
 
+  /// Sound on events stream.
+  Stream<SoundOnEvent> get soundOnEvents => _navigationEventHandler.soundOnEvents;
+
   /// Android Auto connection events stream.
   Stream<bool> get androidAutoConnectionEvents => _androidAutoHandler.androidAutoEvents;
 
@@ -285,6 +288,8 @@ class DgisMapPlugin extends FlutterMapApi {
             return _compassEventHandler.compassBearingChangedEvent(map);
           case RouteOptionsEvent.name:
             return _navigationEventHandler.routeOptionsEvent(map);
+          case SoundOnEvent.name:
+            return _navigationEventHandler.soundOnEvent(map);
           case NaviMessageEvent.name:
             return _naviMessageEventHandler.handleMessageEvent(map);
           case ManeuverEvent.name:

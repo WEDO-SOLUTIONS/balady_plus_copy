@@ -22,6 +22,7 @@ export 'src/events/route_changed_events.dart'
     show ActiveRouteChangedEvent, RoutesInfoChangedEvent, RouteInfo, BetterRouteInfoEvent;
 export 'src/events/car_connection_event.dart';
 export 'src/events/route_options_event.dart';
+export 'src/events/sound_on_events.dart';
 export 'src/events/traffic_state_event.dart' show TrafficStateEvent, TrafficControlStatus;
 export 'src/events/visible_rect_events.dart' show VisibleRectEvent, VisibleRect;
 export 'src/events/zoom_control_events.dart' show ZoomControlType, ZoomControlEnabledEvent;

@@ -94,53 +94,52 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
 
     final objectId = data?.id?.objectId;
 
-    /// loading progress indicator
-    if (state.isLoading && widget.objectId.objectId != parkingObjectId) {
-      return Align(
-        alignment: Alignment.bottomCenter,
-        child: PoiLoadingSheet(
-          objectId: widget.objectId,
-        ),
-      );
-    }
+    final dataAndError = () {
+      if (state.isLoading && widget.objectId.objectId != parkingObjectId) {
+        return const PoiLoading();
+      }
+      if ((state.hasError && widget.objectId.objectId != parkingObjectId) || objectId == null) {
+        // sometimes error code is in message and sometimes in code, idk, probably changed in releases
+        final isPlatformException = state.error is PlatformException &&
+            ((state.error! as PlatformException).code == PoiError.platformExceptionCode ||
+                (state.error! as PlatformException).message == 'NotFoundException');
 
-    /// error handling or invalid data
-    if ((state.hasError && widget.objectId.objectId != parkingObjectId) || objectId == null) {
-      if (state.error is PlatformException &&
-
-          /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
-          ((state.error! as PlatformException).code == 'NotFoundException' ||
-              (state.error! as PlatformException).message == 'NotFoundException')) {
-        return Column(
-          children: [
-            const Spacer(flex: 3),
-            ErrorSheetV2(
-              errorTitle: context.l10n.somethingWentWrong,
-              errorContent: context.l10n.saudiPassSomethingWentWrongHint,
-              buttonLabel: context.l10n.complete,
-              assetImage: Assets.imagesSvg.illustrationError.keyName,
-              onRetry: () => context.router.popForced(),
-            )
-          ],
+        if (isPlatformException) {
+          return PoiError(
+            errorTitle: context.l10n.somethingWentWrong,
+            errorContent: context.l10n.saudiPassSomethingWentWrongHint,
+            buttonLabel: context.l10n.complete,
+            onClose: () async {
+              await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+              context.router.popForced();
+            },
+            onRetry: () {
+              if (!state.isRefreshing) {
+                ref.invalidate(viewModelProvider);
+              }
+            },
+          );
+        }
+        return PoiError(
+          errorTitle: context.l10n.somethingWentWrong,
+          errorContent: context.l10n.saudiPassSomethingWentWrongHint,
+          buttonLabel: context.l10n.complete,
+          onRetry: () => context.router.popForced(),
         );
       }
-      return ErrorSheetWidget(
-        onClose: (controller) async {
-          await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-          await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-          context.router.popForced();
-        },
-        onRetry: () {
-          if (!state.isRefreshing) {
-            ref.invalidate(viewModelProvider);
-          }
-        },
+    }();
+    if (dataAndError != null) {
+      return PoiLoadingOrErrorSheet(
+        sheetHeight: 360,
+        contentHeight: 300,
+        data: dataAndError,
       );
     }
 
     if (data == null) {
       return _PoiCardNoInfo(
-        objectId: objectId,
+        objectId: objectId!,
         poiCardState: poiCardState,
         closestPoint: widget.closestPoint,
         cameraConfig: widget.cameraConfig,
@@ -148,7 +147,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     }
 
     return _PoiCardContent(
-      objectId: objectId,
+      objectId: objectId!,
       data: data,
       poiCardState: poiCardState,
       closestPoint: widget.closestPoint,

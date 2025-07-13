@@ -9,7 +9,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/poi_card/domain/poi_card_state_mapper.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
-import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
+import 'package:mapness/features/poi_card/widgets/photos_header/header_component.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -36,7 +36,7 @@ class _HajjPoiCardPageState extends ConsumerState<HajjPoiCardPage> with SingleTi
     behavior: MultiSnappingBehavior(
       models: [
         AspectRatioSnappingModel({0.0, 1.0}),
-        OffsetSnappingModel({photosMaxHeight + Spacing.$2x}),
+        OffsetSnappingModel({HeaderComponent.photosMaxHeight + Spacing.$2x}),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
             a: const SnapComponent.size(component: Components.header),
