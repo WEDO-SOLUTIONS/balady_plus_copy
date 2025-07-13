@@ -4414,5 +4414,6 @@
   "SaveAsDraft": "حفظ مسودة",
   "municipal_services_message": "نساعدك في الوصول إلى الخدمات بكل سهولة، بينما تتولى الجهات الشريكة تنفيذها",
   "loading": "جاري التحميل .....",
-  "service_will_available_shortly":"سيتم فتح الخدمة خلال لحظات قليلة."
+  "service_will_available_shortly":"سيتم فتح الخدمة خلال لحظات قليلة.",
+  "closeService":"هل ترغب في الخروج من الخدمة؟ "
 }

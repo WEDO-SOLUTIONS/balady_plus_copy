@@ -4635,6 +4635,8 @@
   "SaveAsDraft": "Save As Draft",
   "municipal_services_message": "We are a smart gate that facilitates services — not the executing entity.",
   "loading": "Loading .....",
-  "service_will_available_shortly": "The service will be available shortly."
+  "service_will_available_shortly": "The service will be available shortly.",
+  "closeService": "Are you sure you want to close this service?"
+
 
 }
