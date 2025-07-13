@@ -5,21 +5,24 @@ class UserProfileModel implements BaseData {
   String name;
   String phone;
   String nameAr;
+  String token;
+
 
   UserProfileModel({
     required this.email,
     required this.name,
     required this.phone,
     required this.nameAr,
+    required this.token,
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
-
     return UserProfileModel(
-      email: json['mail'] as String,
-      name: json['en_name'] as String,
+      email: json['email'] as String,
+      name: json['name'] as String,
       phone: json['phone'] as String,
-      nameAr: json['ar_name'] as String,
+      nameAr: json['nameAr'] as String,
+      token: json['token'] as String,
     );
   }
 
@@ -29,7 +32,8 @@ class UserProfileModel implements BaseData {
     data['email'] = email;
     data['name'] = name;
     data['phone'] = phone;
-    data['name_ar'] = nameAr;
+    data['nameAr'] = nameAr;
+    data['token'] = token;
     return data;
   }
 }

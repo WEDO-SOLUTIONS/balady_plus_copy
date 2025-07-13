@@ -75,30 +75,32 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
-    if(miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' && !CommonProperties.isLoggedInMunicipality){
+    if (miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' &&
+        !CommonProperties.isLoggedInMunicipality) {
       await showDialog(
         context: NavigationService.navigatorKey.currentContext!,
         builder: (ctx) => NeedLoginDialog(
-          onSuccessLogin: (bool? isSuccess) async {
-            if (isSuccess ?? false) {
-              await sl<HomeMiniAppsListCubit>()
-                  .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
-                  .then((result) {
-                response = result!;
-              });
-            } else {
-              response = BaseResponse(
-                code: 401,
-                eventName: "getAccessToken",
-                message: "Unauthorized",
-                data: null,
-              );
-            }
-          },
-          mainPage: RouteName.miniAppsMainScreen
-        ),
+            onSuccessLogin: (bool? isSuccess) async {
+              if (isSuccess ?? false) {
+                await sl<HomeMiniAppsListCubit>()
+                    .getMiniAppAcessToken(
+                        miniAppsEngineBloc.miniApp.serviceKey!)
+                    .then((result) {
+                  response = result!;
+                });
+              } else {
+                response = BaseResponse(
+                  code: 401,
+                  eventName: "getAccessToken",
+                  message: "Unauthorized",
+                  data: null,
+                );
+              }
+            },
+            mainPage: RouteName.miniAppsMainScreen),
       );
-    } else if(miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true && !CommonProperties.isLoggedIn) {
+    } else if (miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true &&
+        !CommonProperties.isLoggedIn) {
       CommonFunctions.onLogin();
       response = BaseResponse(
         code: 401,
@@ -120,12 +122,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void getUserProfile(dynamic msg, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-
     if (checkAppRequirment(serviceKey, RequirementEnum.userProfile.name) ==
         true) {
       if (CommonProperties.isLoggedIn) {
         if (CommonProperties.userInfo == null) {
-          throw Exception("User not found");
+          BaseResponse response = BaseResponse(
+            code: 401,
+            message: "Unauthorized",
+            eventName: "getUserProfile",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
         } else {
           try {
             BaseResponse response = BaseResponse(
@@ -133,7 +140,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               message: "success",
               eventName: "getUserProfile",
               data: UserProfileModel.fromJson(
-                  CommonProperties.userInfo!.toJson()),
+                CommonProperties.userInfo!.toJson(),
+              ),
             );
             handler.complete(response.jsonEncodeModel());
           } catch (e) {
@@ -445,7 +453,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
-
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -483,7 +490,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
-      // String data = response.jsonEncodeModel();
+      String data = response.jsonEncodeModel();
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
