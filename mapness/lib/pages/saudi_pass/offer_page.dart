@@ -422,7 +422,6 @@ class _OfferPreviewByGroup extends StatelessWidget {
     final hasDiscount = discount != null;
     return SizedBox(
       width: double.infinity,
-      height: 141,
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -459,14 +458,9 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            description,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: hasDiscount ? 4 : 6,
-                            style:
-                                context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
-                          ),
+                        Text(
+                          description,
+                          style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
                         ),
                         if (hasDiscount)
                           Padding(
@@ -536,7 +530,6 @@ class _OfferPreviewByBusiness extends StatelessWidget {
             ),
             fit: BoxFit.contain,
           )),
-      height: 141,
       padding: const EdgeInsets.all(Spacing.$4x),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -546,13 +539,9 @@ class _OfferPreviewByBusiness extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    description,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: hasDiscount ? 4 : 6,
-                    style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
-                  ),
+                Text(
+                  description,
+                  style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
                 ),
                 if (hasDiscount)
                   Padding(
