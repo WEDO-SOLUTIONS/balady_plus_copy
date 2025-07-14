@@ -642,7 +642,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         true) {
       if (dataUri != null && dataUri is Map) {
         if (dataUri["url"] != null) {
-          CommonFunctions.openBaladyWebView(dataUri["url"]);
+
+          CommonFunctions.openBaladyWebView(dataUri["url"], needLogin:dataUri["needLogin"]??true);
         } else {
           BaseResponse response = BaseResponse(
             code: 400,

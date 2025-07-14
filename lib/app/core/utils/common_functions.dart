@@ -988,40 +988,55 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url,
-      {bool isObjections = false}) async {
-    if (CommonProperties.isLoggedIn) {
-      EasyLoading.show();
-      GetCookie getCookie = GetCookie(repository: sl());
-      final failureOrSuccessForCookie = await getCookie(true);
-      EasyLoading.dismiss();
-      failureOrSuccessForCookie.fold(
-        (l) {
-          CommonFunctions.showError("server_error_1".tr());
-        },
-        (r) async {
-          Navigator.of(NavigationService.navigatorKey.currentContext!)
-              .pushNamed(
-            RouteName.inappWebview,
-            arguments: (
-              requestNum: ''.tr(),
-              url: url,
-              isObjections: isObjections
-            ),
-          );
-        },
-      );
-    } else {
-      await showDialog(
-        context: NavigationService.navigatorKey.currentContext!,
-        builder: (ctx) => NeedLoginDialog(
-          onSuccessLogin: (bool? isSuccess) async {
-            if (isSuccess ?? false) {
-              openBaladyWebView(url, isObjections: isObjections);
-            }
-          },
+  static void openBaladyWebView(String? url ,
+      {bool isObjections = false,bool needLogin = true}) async {
+
+    if(needLogin==false) {
+      Navigator.of(NavigationService.navigatorKey.currentContext!)
+          .pushNamed(
+        RouteName.inappWebview,
+        arguments: (
+        requestNum: ''.tr(),
+        url: url,
+        isObjections: isObjections
         ),
       );
+    }
+    else {
+
+      if (CommonProperties.isLoggedIn) {
+        EasyLoading.show();
+        GetCookie getCookie = GetCookie(repository: sl());
+        final failureOrSuccessForCookie = await getCookie(true);
+        EasyLoading.dismiss();
+        failureOrSuccessForCookie.fold(
+          (l) {
+            CommonFunctions.showError("server_error_1".tr());
+          },
+          (r) async {
+            Navigator.of(NavigationService.navigatorKey.currentContext!)
+                .pushNamed(
+              RouteName.inappWebview,
+              arguments: (
+                requestNum: ''.tr(),
+                url: url,
+                isObjections: isObjections
+              ),
+            );
+          },
+        );
+      } else {
+        await showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) => NeedLoginDialog(
+            onSuccessLogin: (bool? isSuccess) async {
+              if (isSuccess ?? false) {
+                openBaladyWebView(url, isObjections: isObjections);
+              }
+            },
+          ),
+        );
+      }
     }
   }
 
