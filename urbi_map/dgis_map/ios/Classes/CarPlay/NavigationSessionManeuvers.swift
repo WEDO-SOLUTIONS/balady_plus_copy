@@ -17,7 +17,7 @@ class NavigationSessionManeuvers {
     private var routePositionChannelCancellable: Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
 
-    private func cancel() {
+    func cancel() {
         routePositionChannelCancellable?.cancel()
         routeChannelCancelable?.cancel()
         navigationSession = nil
