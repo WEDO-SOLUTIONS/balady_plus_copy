@@ -97,8 +97,7 @@ class BriefPublicTransportModel {
         final transferRouteEntries1 = transfers.whereType<Map>();
         transferRouteEntries = transferRouteEntries1.map((x) {
           try {
-            final map = x as Map<dynamic, dynamic>;
-            return PublicTransportTransferRouteLongEntryMessageExt.fromJson(Map<String, dynamic>.from(map));
+            return PublicTransportTransferRouteLongEntryMessageExt.fromJson(Map<String, dynamic>.from(x));
           } catch (e) {
             log('Error parsing transfer route entry: $e');
             // Return a default entry or skip this one

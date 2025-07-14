@@ -110,7 +110,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     });
 
     await dgisController.value?.setRouteParams(params);
-    return await cancelableCompleter.operation.value.timeout(
+    return cancelableCompleter.operation.value.timeout(
       timeout ?? const Duration(seconds: 30),
       onTimeout: () => throw TimeoutException('Timeout while waiting for public transport routes'),
     );

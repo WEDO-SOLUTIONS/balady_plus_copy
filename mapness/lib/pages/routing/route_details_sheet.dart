@@ -228,7 +228,6 @@ class _Header extends ConsumerStatefulWidget {
     required this.showArrival,
     this.destination,
     this.onClose,
-    super.key,
   });
 
   @override

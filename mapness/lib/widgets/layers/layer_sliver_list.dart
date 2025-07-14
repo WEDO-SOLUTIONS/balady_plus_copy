@@ -63,6 +63,7 @@ class LayerSliverList extends ConsumerWidget {
               }
             }
           },
+          // ignore: deprecated_member_use
           options: ContentRowOptions(
             padding: EdgeInsets.zero,
             wrapperEnabled: true,

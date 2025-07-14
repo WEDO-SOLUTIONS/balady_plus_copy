@@ -60,7 +60,7 @@ class SearchRegionBound extends _$SearchRegionBound {
 
       final data = response.data as Map<String, dynamic>;
       final result = data['result'] as Map<String, dynamic>;
-      final firstItem = result['items'][0] as Map<String, dynamic>;
+      final firstItem = (result['items'] as List)[0] as Map<String, dynamic>;
 
       return SearchRegionPolygon.fromJson(firstItem);
     } catch (e) {
