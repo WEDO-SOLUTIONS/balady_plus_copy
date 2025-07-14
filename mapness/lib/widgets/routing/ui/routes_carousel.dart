@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui/route_carusel_wrapper.dart';
@@ -35,8 +36,8 @@ class RoutesCarousel extends ConsumerWidget {
   final ValueChanged<int> onActiveChanged;
   final Function(RouteInfo) startNavigation;
   final Function() refresh;
-  final String? destination;
-  final String? startPoint;
+  final RouteParamsPointWithLabel? destination;
+  final RouteParamsPointWithLabel? startPoint;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,6 +75,9 @@ class RoutesCarousel extends ConsumerWidget {
                   additionalInfo: shortest != null && shortest == durationInSeconds
                       ? PathCardStatus.shortest(context.l10n.shortest)
                       : null,
+                  publicTransportRoutes: publicTransportRoutes.value,
+                  activeIndex: pageController.initialPage,
+                  onActiveChanged: onActiveChanged,
                 ),
               );
             },

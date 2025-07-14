@@ -16,6 +16,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
@@ -360,22 +361,42 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     : const SizedBox.shrink(),
               ),
             if (widget.navType == RouteSearchOptionsMessage.publicTransport && publicRoute != null)
-              RouteDetailsPage(
-                startPoint: ref.read(etaRouteInfoProvider).startPoint?.label,
-                destination: ref.read(etaRouteInfoProvider).endPoint?.label,
-                route: publicRoute,
-                onPressed: () async {
-                  // Remove route from the map for public transport
-                  await ref.read(dgisControllerProvider).value?.hideRoutes();
-                  await _endTripAndShowFeedback(context);
-                },
-                onClose: () async {
-                  await ref.read(dgisControllerProvider).value?.hideRoutes();
-                  await _endTripAndShowHome();
-                },
-                buttonLabel: context.l10n.endTrip,
-                initialState: ThreeStateBottomSheet.hidden,
-              ),
+              Builder(builder: (context) {
+                final startPoint = ref.read(etaRouteInfoProvider).startPoint;
+                final destination = ref.read(etaRouteInfoProvider).endPoint;
+                if (startPoint == null || destination == null) {
+                  return const SizedBox.shrink();
+                }
+                return RouteDetailsPage(
+                  showArrival: true,
+                  startPoint: RouteParamsPointWithLabel(
+                    label: startPoint.label ?? '',
+                    value: RouteParamsPoint(
+                      latitude: startPoint.lat ?? 0,
+                      longitude: startPoint.lon ?? 0,
+                    ),
+                  ),
+                  destination: RouteParamsPointWithLabel(
+                    label: destination.label ?? '',
+                    value: RouteParamsPoint(
+                      latitude: destination.lat ?? 0,
+                      longitude: destination.lon ?? 0,
+                    ),
+                  ),
+                  publicTransportRoutes: [publicRoute],
+                  onPressed: () async {
+                    // Remove route from the map for public transport
+                    await ref.read(dgisControllerProvider).value?.hideRoutes();
+                    await _endTripAndShowFeedback(context);
+                  },
+                  onClose: () async {
+                    await ref.read(dgisControllerProvider).value?.hideRoutes();
+                    await _endTripAndShowHome();
+                  },
+                  buttonLabel: context.l10n.endTrip,
+                  initialState: ThreeStateBottomSheet.hidden,
+                );
+              }),
             if (widget.navType != RouteSearchOptionsMessage.publicTransport)
               PathNavWrapper(
                 isPortrait: isPortrait,

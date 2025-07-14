@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -18,14 +17,15 @@ class PublicTransportArrived extends _$PublicTransportArrived {
 
   @override
   Future<bool> build({
-    required BriefPublicTransportModel route,
-    required String? destination,
+    required (double?, double?) destination,
   }) async {
     // Start the timer to check arrival every 30 seconds
-    _startTimer();
-
+    final hasArrived = await _isUserAtDestination();
+    if (!hasArrived) {
+      _startTimer();
+    }
     // Return false initially (not arrived yet)
-    return false;
+    return hasArrived;
   }
 
   void _startTimer() {
@@ -53,8 +53,7 @@ class PublicTransportArrived extends _$PublicTransportArrived {
     }
 
     // Get the final destination coordinates
-    final destinationCoords = _getFinalDestinationCoordinates();
-    if (destinationCoords == null) {
+    if (destination.$1 == null || destination.$2 == null) {
       // Because if destination is null, this is my location
       return true;
     }
@@ -63,8 +62,8 @@ class PublicTransportArrived extends _$PublicTransportArrived {
     final distance = CommonFunctions.distance(
       currentLocation.latitude,
       currentLocation.longitude,
-      destinationCoords.latitude,
-      destinationCoords.longitude,
+      destination.$1!,
+      destination.$2!,
     );
 
     // Convert distance from km to meters
@@ -74,37 +73,6 @@ class PublicTransportArrived extends _$PublicTransportArrived {
 
     // Check if user is within the arrival threshold
     return distanceInMeters <= _arrivalThreshold;
-  }
-
-  /// Extract the final destination coordinates from the route
-  GeoPointMessage? _getFinalDestinationCoordinates() {
-    try {
-      final transfers = route.publicTransportTransferRouteLongEntry;
-      if (transfers.isEmpty) {
-        return null;
-      }
-
-      // Get the last transfer which should contain the final destination
-      final lastTransfer = transfers.last;
-      final lastTransferValue = lastTransfer.value;
-
-      // If the last transfer has route parts, get the final stop coordinates
-      if (lastTransferValue.routeParts.isNotEmpty) {
-        final lastRoutePart = lastTransferValue.routeParts.last;
-        if (lastRoutePart.intermediateStops.isNotEmpty) {
-          final finalStop = lastRoutePart.intermediateStops.last;
-          return finalStop.coordinates;
-        }
-      }
-
-      // If no route parts or intermediate stops, try to get coordinates from the finish point
-      // This might require additional logic depending on how the route data is structured
-      // For now, we'll return null and rely on the destination parameter
-      return null;
-    } catch (e) {
-      debugPrint('Error extracting final destination coordinates: $e');
-      return null;
-    }
   }
 
   void _stopTimer() {

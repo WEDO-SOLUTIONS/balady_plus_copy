@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
@@ -23,10 +24,12 @@ class PathPublicCard extends ConsumerWidget {
   final BriefPublicTransportModel route;
   final PathCardLocalization localizations;
   final Function()? onStartNavigation;
-  final String? destination;
-  final String? startPoint;
+  final RouteParamsPointWithLabel? destination;
+  final RouteParamsPointWithLabel? startPoint;
   final PathCardStatus? additionalInfo;
-
+  final List<BriefPublicTransportModel>? publicTransportRoutes;
+  final int? activeIndex;
+  final ValueChanged<int>? onActiveChanged;
   const PathPublicCard({
     required this.route,
     required this.localizations,
@@ -34,6 +37,9 @@ class PathPublicCard extends ConsumerWidget {
     this.destination,
     this.startPoint,
     this.additionalInfo,
+    this.publicTransportRoutes,
+    this.activeIndex,
+    this.onActiveChanged,
     super.key,
   });
 
@@ -98,12 +104,14 @@ class PathPublicCard extends ConsumerWidget {
             onTap: () {
               context.router.push(
                 RouteDetailsRoute(
-                  route: route,
                   destination: destination,
                   startPoint: startPoint,
                   onPressed: () async => onStartNavigation?.call(),
                   onClose: () async => context.router.popForced(),
                   buttonLabel: context.l10n.go.toUpperCase(),
+                  publicTransportRoutes: publicTransportRoutes ?? [],
+                  initialIndex: activeIndex ?? 0,
+                  onActiveChanged: onActiveChanged,
                 ),
               );
             },

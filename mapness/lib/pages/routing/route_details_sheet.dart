@@ -7,6 +7,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/public_transport_arrived.dart';
 import 'package:mapness/pages/routing/route_details_state_mapper.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
@@ -21,22 +22,28 @@ import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
 class RouteDetailsPage extends ConsumerStatefulWidget {
-  final String? destination;
-  final BriefPublicTransportModel route;
+  final RouteParamsPointWithLabel? destination;
+  final RouteParamsPointWithLabel? startPoint;
   final Future<void> Function()? onPressed;
   final Future<void> Function()? onClose;
   final String buttonLabel;
-  final String? startPoint;
   final ThreeStateBottomSheet initialState;
+  final List<BriefPublicTransportModel> publicTransportRoutes;
+  final int initialIndex;
+  final void Function(int index)? onActiveChanged;
+  final bool showArrival;
 
   const RouteDetailsPage({
-    required this.route,
+    required this.publicTransportRoutes,
     required this.buttonLabel,
+    this.initialIndex = 0,
+    this.onActiveChanged,
     this.destination,
     this.onPressed,
     this.onClose,
     this.startPoint,
     this.initialState = ThreeStateBottomSheet.open,
+    this.showArrival = false,
     super.key,
   });
 
@@ -47,6 +54,8 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
 class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController;
   List<RouteDetailsPublicTransport>? _transports;
+  int _activeIndex = 0;
+  BriefPublicTransportModel? _route;
 
   @override
   void initState() {
@@ -56,6 +65,17 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
       stateMapper: const RouteDetailsStateMapper(),
       initialState: widget.initialState,
     );
+    _activeIndex = widget.initialIndex;
+  }
+
+  bool get _hasPublicTransportRoutes => widget.publicTransportRoutes.isNotEmpty && widget.onActiveChanged != null;
+
+  @override
+  void didUpdateWidget(RouteDetailsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialIndex != widget.initialIndex) {
+      _activeIndex = widget.initialIndex;
+    }
   }
 
   @override
@@ -66,25 +86,32 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final duration = widget.route.duration.formatDuration(context.l10n);
-    final transfers = ArPlurals.transfers(widget.route.transferCount, context.l10n);
-
-    _transports ??= _getTransports(context);
-
-    // Watch the arrival detection provider
-    final arrivalState = ref.watch(publicTransportArrivedProvider(
-      route: widget.route,
-      destination: widget.destination,
-    ));
+    final topHeaderOffset = _hasPublicTransportRoutes ? const StatefulSheetDelegateValue(value: 16.0) : null;
+    _route = widget.publicTransportRoutes[_activeIndex];
+    _transports = _getTransports(context, _route!);
 
     return StatefulBottomSheet<ThreeStateBottomSheet>(
       scrollController: _bottomSheetController,
       backgroundColor: context.colorsV3.backgroundSurface4,
       outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
+      topHeaderOffset: topHeaderOffset,
+      topHeader: _hasPublicTransportRoutes
+          ? _PublicTransportRoutes(
+              routes: widget.publicTransportRoutes,
+              activeIndex: _activeIndex,
+              onActiveChanged: (index) {
+                setState(() {
+                  _activeIndex = index;
+                });
+                widget.onActiveChanged?.call(index);
+              },
+            )
+          : null,
       header: _Header(
-        route: widget.route,
+        route: _route!,
         destination: widget.destination,
         onClose: () => widget.onClose?.call(),
+        showArrival: widget.showArrival,
       ),
       footer: SizedBox(
         width: double.infinity,
@@ -120,7 +147,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                       size: 24,
                     ),
                     text: ContentRowTextOptions(
-                      title: widget.startPoint ?? context.l10n.myLocation,
+                      title: widget.startPoint?.label ?? context.l10n.myLocation,
                     ),
                   ),
                 ],
@@ -141,7 +168,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                       size: 24,
                     ),
                     text: ContentRowTextOptions(
-                      title: widget.destination ?? context.l10n.destination,
+                      title: widget.destination?.label ?? context.l10n.destination,
                     ),
                   ),
                 ],
@@ -153,16 +180,16 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     );
   }
 
-  List<RouteDetailsPublicTransport> _getTransports(BuildContext context) {
+  List<RouteDetailsPublicTransport> _getTransports(BuildContext context, BriefPublicTransportModel route) {
     final transports = <RouteDetailsPublicTransport>[];
-    for (var i = 0; i < widget.route.publicTransportTransferRouteLongEntry.length; i++) {
-      final e = widget.route.publicTransportTransferRouteLongEntry[i];
+    for (var i = 0; i < route.publicTransportTransferRouteLongEntry.length; i++) {
+      final e = route.publicTransportTransferRouteLongEntry[i];
       // If route part is empty, it means that we have to show pedestrian transport
       if (e.value.routeParts.isEmpty) {
         transports.add(
           RouteDetailsPublicTransportPedestrian(
             length: e.length.millimeters,
-            isTransfer: isTransfer(widget.route.publicTransportTransferRouteLongEntry, i),
+            isTransfer: isTransfer(route.publicTransportTransferRouteLongEntry, i),
           ),
         );
       } else {
@@ -180,8 +207,8 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
           RouteDetailsPublicTransportMetro(
             length: e.length.millimeters,
             routeParts: routeParts,
-            lineColor: widget.route.transports[i].names.isNotEmpty
-                ? getMetroLineColor(widget.route.transports[i].names.first, context)
+            lineColor: route.transports[i].names.isNotEmpty
+                ? getMetroLineColor(route.transports[i].names.first, context)
                 : null,
           ),
         );
@@ -193,13 +220,15 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
 class _Header extends ConsumerStatefulWidget {
   final BriefPublicTransportModel route;
-  final String? destination;
+  final RouteParamsPointWithLabel? destination;
   final VoidCallback? onClose;
+  final bool showArrival;
   const _Header({
-    super.key,
     required this.route,
+    required this.showArrival,
     this.destination,
     this.onClose,
+    super.key,
   });
 
   @override
@@ -212,8 +241,7 @@ class _HeaderState extends ConsumerState<_Header> {
     final duration = widget.route.duration.formatDuration(context.l10n);
     final transfers = ArPlurals.transfers(widget.route.transferCount, context.l10n);
     final p = publicTransportArrivedProvider(
-      route: widget.route,
-      destination: widget.destination,
+      destination: (widget.destination?.value?.latitude, widget.destination?.value?.longitude),
     );
     final arrivalProvider = ref.watch(p.notifier).checkArrivalNow();
     final arrivalState = ref.watch(p);
@@ -221,7 +249,7 @@ class _HeaderState extends ConsumerState<_Header> {
     return Container(
       color: context.colorsV3.backgroundSurface1,
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-      child: arrivalState.value == true
+      child: widget.showArrival && arrivalState.value == true
           ? YouArrivedHeader(onClose: () => widget.onClose?.call())
           : Column(
               children: [
@@ -315,6 +343,69 @@ class YouArrivedHeader extends StatelessWidget {
               onTap: onClose,
             ),
           ],
+        ),
+      );
+}
+
+class _PublicTransportRoutes extends StatelessWidget {
+  final List<BriefPublicTransportModel> routes;
+  final int activeIndex;
+  final void Function(int index) onActiveChanged;
+
+  const _PublicTransportRoutes({
+    required this.routes,
+    required this.activeIndex,
+    required this.onActiveChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        height: 74,
+        child: ListView.separated(
+          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
+          scrollDirection: Axis.horizontal,
+          itemCount: routes.length,
+          itemBuilder: (context, index) {
+            final transfers = ArPlurals.transfers(routes[index].transferCount, context.l10n);
+            final isActive = index == activeIndex;
+            return InkWell(
+              onTap: () {
+                onActiveChanged(index);
+              },
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 110),
+                padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? context.colorsV3.accentSecondaryDefault
+                      : context.colorsV3.accentSecondaryOnAccentSecondary,
+                  borderRadius: BorderRadius.circular(RadiusBorder.l),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      routes[index].duration.formatDuration(context.l10n),
+                      style: context.textStyleV3.bodyLargeRegular.copyWith(
+                        color: isActive
+                            ? context.colorsV3.accentSecondaryOnAccentSecondary
+                            : context.colorsV3.foregroundDefault,
+                      ),
+                    ),
+                    Spacing.$1x.heightBox,
+                    Text(
+                      transfers,
+                      style: context.textStyleV3.bodySmallRegular.copyWith(
+                        color: isActive ? context.colorsV3.accentSecondaryMuted : context.colorsV3.foregroundSoft,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => Spacing.$2x.widthBox,
         ),
       );
 }

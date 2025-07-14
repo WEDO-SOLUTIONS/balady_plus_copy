@@ -107,8 +107,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           ..invalidate(routesProvider)
           ..invalidate(publicTransportRoutesProvider);
       },
-      destination: widget.points.lastOrNull?.label,
-      startPoint: widget.points.firstOrNull?.label,
+      destination: widget.points.lastOrNull,
+      startPoint: widget.points.firstOrNull,
       startNavigation: (info) {
         final _routeType = widget.navType.toRouteType();
 
