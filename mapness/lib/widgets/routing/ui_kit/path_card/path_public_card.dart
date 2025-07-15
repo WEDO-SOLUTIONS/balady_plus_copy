@@ -29,17 +29,17 @@ class PathPublicCard extends ConsumerWidget {
   final RouteParamsPointWithLabel? startPoint;
   final PathCardStatus? additionalInfo;
   final List<BriefPublicTransportModel>? publicTransportRoutes;
-  final int? activeIndex;
+  final int activeIndex;
   final ValueChanged<int>? onActiveChanged;
   const PathPublicCard({
     required this.route,
     required this.localizations,
+    required this.activeIndex,
     this.onStartNavigation,
     this.destination,
     this.startPoint,
     this.additionalInfo,
     this.publicTransportRoutes,
-    this.activeIndex,
     this.onActiveChanged,
     super.key,
   });
@@ -112,7 +112,7 @@ class PathPublicCard extends ConsumerWidget {
                   onClose: () async => context.router.popForced(),
                   buttonLabel: context.l10n.go.toUpperCase(),
                   publicTransportRoutes: publicTransportRoutes ?? [],
-                  initialIndex: activeIndex ?? 0,
+                  initialIndex: activeIndex,
                   onActiveChanged: onActiveChanged,
                 ),
               );

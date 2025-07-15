@@ -58,13 +58,18 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   int _activeIndex = 0;
   late BriefPublicTransportModel? _route;
 
+  bool get _hasPublicTransportRoutes => widget.publicTransportRoutes.isNotEmpty && widget.onActiveChanged != null;
+  StatefulSheetDelegate<double>? get topHeaderOffset =>
+      _hasPublicTransportRoutes ? const StatefulSheetDelegateValue(value: 16.0) : null;
+
   @override
   void initState() {
     super.initState();
     _bottomSheetController = StatefulBottomSheetController(
       behavior: MultiSnappingBehavior(
         models: [
-          AspectRatioSnappingModel({0.0, 0.85}),
+          OffsetSnappingModel({_PublicTransportRoutes.height + (topHeaderOffset?.getStaticValue() ?? 0.0) + 58.0}),
+          AspectRatioSnappingModel({0.0}),
           if (_showFooter)
             ComponentsSnappingModel(componentsDescriptions: [
               SnapComponent.merge(
@@ -82,8 +87,6 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     _route = widget.publicTransportRoutes[_activeIndex];
   }
 
-  bool get _hasPublicTransportRoutes => widget.publicTransportRoutes.isNotEmpty && widget.onActiveChanged != null;
-
   @override
   void didUpdateWidget(RouteDetailsPage oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -100,97 +103,101 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final topHeaderOffset = _hasPublicTransportRoutes ? const StatefulSheetDelegateValue(value: 16.0) : null;
     _route = widget.publicTransportRoutes[_activeIndex];
     _transports = _getTransports(context, _route!);
 
-    return StatefulBottomSheet<ThreeStateBottomSheet>(
-      scrollController: _bottomSheetController,
-      backgroundColor: context.colorsV3.backgroundSurface4,
-      outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
-      topHeaderOffset: topHeaderOffset,
-      topHeader: _hasPublicTransportRoutes
-          ? _PublicTransportRoutes(
-              routes: widget.publicTransportRoutes,
-              activeIndex: _activeIndex,
-              onActiveChanged: (index) {
-                setState(() {
-                  _activeIndex = index;
-                });
-                widget.onActiveChanged?.call(index);
-              },
-            )
-          : null,
-      header: _Header(
-        route: _route!,
-        destination: widget.destination,
-        onClose: () => widget.onClose?.call(),
-        type: widget.type,
-      ),
-      footer: SizedBox(
-        width: double.infinity,
-        child: BaladyAppButton(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).padding.bottom + Spacing.$2x,
-            left: Spacing.$4x,
-            right: Spacing.$4x,
-            top: Spacing.$3x,
-          ),
-          buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-          size: BaladyButtonSize.large,
-          primaryLabel: widget.buttonLabel,
-          onTap: () {
-            context.router.popForced();
-            widget.onPressed?.call();
-          },
+    final direction = Localizations.localeOf(context).languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr;
+
+    return Directionality(
+      textDirection: direction,
+      child: StatefulBottomSheet<ThreeStateBottomSheet>(
+        scrollController: _bottomSheetController,
+        backgroundColor: context.colorsV3.backgroundSurface4,
+        outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
+        topHeaderOffset: topHeaderOffset,
+        topHeader: _hasPublicTransportRoutes
+            ? _PublicTransportRoutes(
+                routes: widget.publicTransportRoutes,
+                activeIndex: _activeIndex,
+                onActiveChanged: (index) {
+                  setState(() {
+                    _activeIndex = index;
+                  });
+                  widget.onActiveChanged?.call(index);
+                },
+              )
+            : null,
+        header: _Header(
+          route: _route!,
+          destination: widget.destination,
+          onClose: () => widget.onClose?.call(),
+          type: widget.type,
         ),
-      ),
-      content: [
-        Padding(
-          padding: const EdgeInsets.all(Spacing.$4x),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ContentWrapper(
-                color: context.colorsV3.backgroundSurface1,
-                children: [
-                  ContentRowV2(
-                    leading: Icon(
-                      TransportIcons.locationFullLTR,
-                      color: context.colorsV3.accentDefault,
-                      size: 24,
-                    ),
-                    text: ContentRowTextOptions(
-                      title: widget.startPoint?.label ?? context.l10n.myLocation,
-                    ),
-                  ),
-                ],
-              ),
-              Spacing.$2x.heightBox,
-              ...(_transports ?? [])
-                  .map(
-                      (e) => e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
-                  .insertBetween(Spacing.$2x.heightBox),
-              Spacing.$2x.heightBox,
-              ContentWrapper(
-                color: context.colorsV3.backgroundSurface1,
-                children: [
-                  ContentRowV2(
-                    leading: Icon(
-                      GeneralIcons.bulletCircleSolid,
-                      color: context.colorsV3.accentDefault,
-                      size: 24,
-                    ),
-                    text: ContentRowTextOptions(
-                      title: widget.destination?.label ?? context.l10n.destination,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+        footer: SizedBox(
+          width: double.infinity,
+          child: BaladyAppButton(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).padding.bottom + Spacing.$2x,
+              left: Spacing.$4x,
+              right: Spacing.$4x,
+              top: Spacing.$3x,
+            ),
+            buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+            size: BaladyButtonSize.large,
+            primaryLabel: widget.buttonLabel,
+            onTap: () {
+              context.router.popForced();
+              widget.onPressed?.call();
+            },
           ),
         ),
-      ],
+        content: [
+          Padding(
+            padding: const EdgeInsets.all(Spacing.$4x),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ContentWrapper(
+                  color: context.colorsV3.backgroundSurface1,
+                  children: [
+                    ContentRowV2(
+                      leading: Icon(
+                        TransportIcons.locationFullLTR,
+                        color: context.colorsV3.accentDefault,
+                        size: 24,
+                      ),
+                      text: ContentRowTextOptions(
+                        title: widget.startPoint?.label ?? context.l10n.myLocation,
+                      ),
+                    ),
+                  ],
+                ),
+                Spacing.$2x.heightBox,
+                ...(_transports ?? [])
+                    .map((e) =>
+                        e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
+                    .insertBetween(Spacing.$2x.heightBox),
+                Spacing.$2x.heightBox,
+                ContentWrapper(
+                  color: context.colorsV3.backgroundSurface1,
+                  children: [
+                    ContentRowV2(
+                      leading: Icon(
+                        GeneralIcons.bulletCircleSolid,
+                        color: context.colorsV3.accentDefault,
+                        size: 24,
+                      ),
+                      text: ContentRowTextOptions(
+                        title: widget.destination?.label ?? context.l10n.destination,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -376,6 +383,8 @@ class _PublicTransportRoutes extends StatelessWidget {
   final int activeIndex;
   final void Function(int index) onActiveChanged;
 
+  static const height = 74.0;
+
   const _PublicTransportRoutes({
     required this.routes,
     required this.activeIndex,
@@ -384,7 +393,7 @@ class _PublicTransportRoutes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: 74,
+        height: height,
         child: ListView.separated(
           padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
           scrollDirection: Axis.horizontal,

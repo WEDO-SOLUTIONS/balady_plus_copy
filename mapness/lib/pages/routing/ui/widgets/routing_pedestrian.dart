@@ -34,7 +34,7 @@ class RoutingPedestrian extends StatelessWidget {
                 width: 24,
                 height: 24,
                 color: context.colorsV3.backgroundSurface4,
-                child: Icon(TransportIcons.pedestrianLTR, color: colorLine, size: 16),
+                child: Icon(getStepIcon(context), color: colorLine, size: 16),
               ),
             ],
           ),
@@ -61,5 +61,13 @@ class RoutingPedestrian extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  IconData getStepIcon(BuildContext context) {
+    if (Directionality.of(context) == TextDirection.ltr) {
+      return TransportIcons.pedestrianLTR;
+    } else {
+      return TransportIcons.pedestrianRTL;
+    }
   }
 }

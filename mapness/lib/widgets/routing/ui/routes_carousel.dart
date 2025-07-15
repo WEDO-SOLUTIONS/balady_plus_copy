@@ -57,11 +57,7 @@ class RoutesCarousel extends ConsumerWidget {
               final route = routes[index];
               final durationInSeconds = route.duration;
               return Padding(
-                padding: padding(
-                  index: index,
-                  length: routes.length,
-                  isLtr: Directionality.of(context) == TextDirection.ltr,
-                ),
+                padding: padding(index: index, length: routes.length),
                 child: PathPublicCard(
                   route: route,
                   localizations: PathCardLocalization(
@@ -76,7 +72,7 @@ class RoutesCarousel extends ConsumerWidget {
                       ? PathCardStatus.shortest(context.l10n.shortest)
                       : null,
                   publicTransportRoutes: publicTransportRoutes.value,
-                  activeIndex: pageController.initialPage,
+                  activeIndex: index,
                   onActiveChanged: onActiveChanged,
                 ),
               );
@@ -108,11 +104,7 @@ class RoutesCarousel extends ConsumerWidget {
             final steps = ((distanceInMeters / 1000) * averageHumanStepsByKm).toInt();
             final calories = ((durationInSeconds / 60.0) * averageCaloriesPerMinute).toInt();
             return Padding(
-              padding: padding(
-                index: index,
-                length: routes.length,
-                isLtr: Directionality.of(context) == TextDirection.ltr,
-              ),
+              padding: padding(index: index, length: routes.length),
               child: PathCard(
                 distance: distanceInMeters.formatDistance(context.l10n),
                 isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
@@ -178,28 +170,28 @@ class RoutesCarousel extends ConsumerWidget {
   /// Because [PageView] doesn't have a separated constructor, we need to calculate padding manually
   ///
   /// Also we use it for single element in the list to unify the padding for all cases
-  EdgeInsets padding({required int index, required int length, required bool isLtr}) {
+  EdgeInsetsDirectional padding({required int index, required int length}) {
     if (length == 1) {
-      return const EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$4x,
+      return const EdgeInsetsDirectional.only(
+        start: Spacing.$4x,
+        end: Spacing.$4x,
       );
     }
-    EdgeInsets result;
+    EdgeInsetsDirectional result;
     if (index == 0) {
-      result = const EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$2x / 2,
+      result = const EdgeInsetsDirectional.only(
+        start: Spacing.$4x,
+        end: Spacing.$2x,
       );
     } else if (index == length - 1) {
-      result = const EdgeInsets.only(
-        left: Spacing.$2x / 2,
-        right: Spacing.$4x,
+      result = const EdgeInsetsDirectional.only(
+        start: Spacing.$2x,
+        end: Spacing.$4x,
       );
     } else {
-      result = const EdgeInsets.symmetric(horizontal: Spacing.$2x / 2);
+      result = const EdgeInsetsDirectional.only(start: Spacing.$2x);
     }
-    return isLtr ? result : result.flipped;
+    return result;
   }
 
   RouteInfo getRouteInfo(BriefPublicTransportModel route) => RouteInfo(
