@@ -9,7 +9,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let window: CPWindow
     private let eventProcessor: IMapEventProcessor
     private let userDefaultsPublished: UserDefaultsPublished
-    private let navigationManager: NavigationManager
+    unowned private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler?
 
     init(
@@ -59,6 +59,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mapTemplate.mapButtons = []
         mainLeadFactories = []
         panningLeadFactories = []
+        navigationSessionManeuvers.cancel()
     }
 
     private lazy var mainLeadFactories: [() -> CPBarButton] = [
@@ -99,10 +100,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             receiveValue: whenLanguageUpdated
         )
 
-        navigatorStateCancelable = model.stateChannel.sink(
-            receiveValue: navigatorStateListener
+        navigatorStateCancelable = model.stateChannel.sinkOnMainThread(
+            navigatorStateListener
         )
-        
+
         routeChannelCancelable = model.routeChannel.sink(
             receiveValue: receiveRouteInfo
         )
@@ -113,9 +114,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private func receiveRouteInfo(routeInfo: RouteInfo) {
         composeMainLeadFactories()
     }
-    
+
     private func composeMainLeadFactories() {
-        if (model.state == .disabled) {
+        if model.state == .disabled {
             mainLeadFactories = [
                 makeSearchButton
             ]
@@ -153,7 +154,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         case .navigation:
             navigationSessionManeuvers.navigate()
         case .routeSearch:
-            break
+            navigationSessionManeuvers.routeSearch()
         case .finished:
             navigationSessionManeuvers.finish()
         @unknown default:
@@ -173,7 +174,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func onSettingsBarTap(_: CPBarButton) {
         let screen = SettingsScreen(
-            onBackTap: onBackTap,
+            onBackTap: { [weak self] _ in self?.closeSettingsScreen() },
             userDefaultsPublished: userDefaultsPublished,
             eventChannel: eventChannel,
             map: map,
@@ -188,8 +189,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
     }
 
-    private func onBackTap(_: CPBarButton) {
+    private func closeSettingsScreen() {
         interfaceController.popTemplate(animated: true, completion: nil)
+        currentSettingsScreen?.dispose()
         currentSettingsScreen = nil
     }
 

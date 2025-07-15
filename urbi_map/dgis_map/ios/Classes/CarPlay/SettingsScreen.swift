@@ -42,7 +42,8 @@ class SettingsScreen: NSObject {
         restoreSettings()
     }
     
-    deinit {
+    func dispose() {
+        updateTemplate(title: nil, gridButtons: [])
         trafficStateCancellable?.cancel()
         languageCancellable?.cancel()
         languageCancellable = nil

@@ -17,16 +17,23 @@ class NavigationSessionManeuvers {
     private var routePositionChannelCancellable: Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
 
-    private func cancel() {
+    func cancel() {
         routePositionChannelCancellable?.cancel()
         routeChannelCancelable?.cancel()
         navigationSession = nil
     }
 
+    func routeSearch() {
+        navigationSession?.pauseTrip(
+            for: .rerouting,
+            description: NSLocalizedString("navigationRerouting", comment: "")
+        )
+    }
+
     func navigate() {
         routeChannelCancelable?.cancel()
-        routeChannelCancelable = model.routeChannel.sink(
-            receiveValue: receiveRouteInfo
+        routeChannelCancelable = model.routeChannel.sinkOnMainThread(
+            receiveRouteInfo
         )
     }
 
@@ -37,8 +44,7 @@ class NavigationSessionManeuvers {
             mapCPManeuver
         )
 
-        self.navigationSession?.cancelTrip()
-        let navigationSession = mapTemplate.startNavigationSession(
+        let navigationSession = self.navigationSession ?? mapTemplate.startNavigationSession(
             for: model.route.trip
         )
         self.navigationSession = navigationSession
@@ -46,12 +52,13 @@ class NavigationSessionManeuvers {
         navigationSession.upcomingManeuvers = cpManeuvers
 
         routePositionChannelCancellable?.cancel()
-        routePositionChannelCancellable = model.routePositionChannel.sink {
-            [self] routePosition in
-            updateTripEstimates(navigationSession)
-            guard let routePosition else { return }
-            updateNextManeuver(with: routePosition, navigationSession)
-        }
+        routePositionChannelCancellable = model.routePositionChannel
+            .sinkOnMainThread {
+                [self] routePosition in
+                updateTripEstimates(navigationSession)
+                guard let routePosition else { return }
+                updateNextManeuver(with: routePosition, navigationSession)
+            }
     }
 
     func finish() {
