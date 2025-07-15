@@ -55,7 +55,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController;
   List<RouteDetailsPublicTransport>? _transports;
   int _activeIndex = 0;
-  BriefPublicTransportModel? _route;
+  late BriefPublicTransportModel? _route;
 
   @override
   void initState() {
@@ -66,6 +66,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
       initialState: widget.initialState,
     );
     _activeIndex = widget.initialIndex;
+    _route = widget.publicTransportRoutes[_activeIndex];
   }
 
   bool get _hasPublicTransportRoutes => widget.publicTransportRoutes.isNotEmpty && widget.onActiveChanged != null;

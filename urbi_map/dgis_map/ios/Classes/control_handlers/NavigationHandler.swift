@@ -357,10 +357,11 @@ class NavigationHandler {
         }
         
         do {
-            setupCamera(speedRangeZoom: speedRangeZoom)
+            
 
             let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
             if !isPublicTransport {
+            setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,

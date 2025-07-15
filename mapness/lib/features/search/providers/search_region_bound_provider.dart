@@ -67,6 +67,4 @@ class SearchRegionBound extends _$SearchRegionBound {
       rethrow;
     }
   }
-
-  bool get isRiyadh => state.value?.id == '216';
 }
