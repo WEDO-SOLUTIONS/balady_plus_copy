@@ -334,7 +334,7 @@ class YouArrivedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.$8x, top: Spacing.$2x),
+        padding: const EdgeInsets.only(bottom: Spacing.$12x, top: Spacing.$2x),
         child: Row(
           children: [
             Container(
