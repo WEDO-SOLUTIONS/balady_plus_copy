@@ -125,7 +125,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         route: _route!,
         destination: widget.destination,
         onClose: () => widget.onClose?.call(),
-        showArrival: _showArrival,
+        type: widget.type,
       ),
       footer: SizedBox(
         width: double.infinity,
@@ -231,7 +231,6 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     return transports;
   }
 
-  bool get _showArrival => widget.type == RouteDetailsSheetType.driving;
   bool get _showFooter => widget.type == RouteDetailsSheetType.about;
   ThreeStateBottomSheet get _initialState => switch (widget.type) {
         RouteDetailsSheetType.about => ThreeStateBottomSheet.expanded,
@@ -243,10 +242,10 @@ class _Header extends ConsumerStatefulWidget {
   final BriefPublicTransportModel route;
   final RouteParamsPointWithLabel? destination;
   final VoidCallback? onClose;
-  final bool showArrival;
+  final RouteDetailsSheetType type;
   const _Header({
     required this.route,
-    required this.showArrival,
+    required this.type,
     this.destination,
     this.onClose,
   });
@@ -256,6 +255,7 @@ class _Header extends ConsumerStatefulWidget {
 }
 
 class _HeaderState extends ConsumerState<_Header> {
+  bool get _bottomSafeArea => widget.type == RouteDetailsSheetType.driving;
   @override
   Widget build(BuildContext context) {
     final duration = widget.route.duration.formatDuration(context.l10n);
@@ -264,51 +264,56 @@ class _HeaderState extends ConsumerState<_Header> {
       destination: (widget.destination?.value?.latitude, widget.destination?.value?.longitude),
     );
     final arrivalState = ref.watch(p);
+    final _showArrival = widget.type == RouteDetailsSheetType.driving && arrivalState.value == true;
 
     return Container(
       color: context.colorsV3.backgroundSurface1,
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-      child: widget.showArrival && arrivalState.value == true
-          ? YouArrivedHeader(onClose: () => widget.onClose?.call())
-          : Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(width: 64),
-                    Column(
-                      children: [
-                        Text(
-                          duration,
-                          style: context.textStyleV3.h4SemiBold.copyWith(
-                            color: context.colorsV3.foregroundDefault,
+      child: SafeArea(
+        top: false,
+        bottom: _bottomSafeArea,
+        child: _showArrival
+            ? YouArrivedHeader(onClose: () => widget.onClose?.call())
+            : Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 64),
+                      Column(
+                        children: [
+                          Text(
+                            duration,
+                            style: context.textStyleV3.h4SemiBold.copyWith(
+                              color: context.colorsV3.foregroundDefault,
+                            ),
                           ),
-                        ),
-                        Text(
-                          transfers,
-                          style: context.textStyleV3.bodySmallRegular.copyWith(
-                            color: context.colorsV3.foregroundSoft,
+                          Text(
+                            transfers,
+                            style: context.textStyleV3.bodySmallRegular.copyWith(
+                              color: context.colorsV3.foregroundSoft,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: Spacing.$4x),
-                      ],
-                    ),
-                    BaladyAppButton.close(
-                      buttonType: BaladyButtonType.secondary,
-                      onTap: widget.onClose,
-                    ),
-                  ],
-                ),
-                TransportIconsRow(
-                  transports: widget.route.transports,
-                  pubs: widget.route.publicTransportTransferRouteLongEntry,
-                  isLarge: true,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-                const SizedBox(height: Spacing.$4x),
-              ],
-            ),
+                          const SizedBox(height: Spacing.$4x),
+                        ],
+                      ),
+                      BaladyAppButton.close(
+                        buttonType: BaladyButtonType.secondary,
+                        onTap: widget.onClose,
+                      ),
+                    ],
+                  ),
+                  TransportIconsRow(
+                    transports: widget.route.transports,
+                    pubs: widget.route.publicTransportTransferRouteLongEntry,
+                    isLarge: true,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  const SizedBox(height: Spacing.$4x),
+                ],
+              ),
+      ),
     );
   }
 }
