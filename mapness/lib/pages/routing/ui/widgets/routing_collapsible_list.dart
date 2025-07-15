@@ -60,6 +60,8 @@ class RoutingCollapsibleList extends StatelessWidget {
               ),
               if (stations.length > 2)
                 ContentRowExpandableTmp(
+                  onTitleTapExpand: true,
+                  expandIconColor: context.colorsV3.foregroundMuted,
                   padding: EdgeInsets.zero,
                   leading: Container(
                     width: linePointCircleSize,
