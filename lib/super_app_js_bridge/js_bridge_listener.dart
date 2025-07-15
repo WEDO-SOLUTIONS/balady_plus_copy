@@ -26,6 +26,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app/core/dependency_injection/injection_container.dart';
@@ -642,8 +643,25 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         true) {
       if (dataUri != null && dataUri is Map) {
         if (dataUri["url"] != null) {
-
-          CommonFunctions.openBaladyWebView(dataUri["url"], needLogin:dataUri["needLogin"]??true);
+          if (dataUri["type"] == "pdf") {
+            NavigationService.navigatorKey.currentState!.push(
+              MaterialPageRoute(
+                builder: (_) {
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text("pdf_viewer".tr()),
+                    ),
+                    body: SfPdfViewer.network(
+                      dataUri["url"],
+                    ),
+                  );
+                },
+              ),
+            );
+          } else {
+            CommonFunctions.openBaladyWebView(dataUri["url"],
+                needLogin: dataUri["needLogin"] ?? true);
+          }
         } else {
           BaseResponse response = BaseResponse(
             code: 400,
