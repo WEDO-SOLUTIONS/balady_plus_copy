@@ -40,17 +40,17 @@
   <string name="settings_prompts_volume">مستوى صوت التنبيهات</string>
 
   <!-- Voice Instructions -->
-  <string name="voice_instructions_all">جميع الأحداث</string>
-  <string name="voice_instructions_important">الهامة فقط</string>
+  <string name="voice_instructions_all">جميع التنبيهات</string>
+  <string name="voice_instructions_important">التنبيهات الهامة فقط</string>
   <string name="voice_instructions_none">إيقاف</string>
 
   <!-- Volume Settings -->
-  <string name="volume_minimum">الحد الأدنى</string>
+  <string name="volume_minimum">أدنى</string>
   <string name="volume_quiet">هادئ</string>
   <string name="volume_standard">قياسي</string>
 
   <!-- Route Settings -->
   <string name="route_avoid_toll_roads">تجنب الطرق ذات الرسوم</string>
   <string name="route_avoid_unpaved_roads">تجنب الطرق الغير ممهدة</string>
-  <string name="route_suggest_better_route">اقتراح مسار أفضل</string>
+  <string name="route_suggest_better_route">اقترح طريقًا أفضل</string>
 </resources>
