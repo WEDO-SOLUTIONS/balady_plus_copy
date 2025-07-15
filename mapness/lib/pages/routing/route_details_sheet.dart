@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable, dead_code
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -20,6 +18,11 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+enum RouteDetailsSheetType {
+  about,
+  driving,
+}
+
 @RoutePage()
 class RouteDetailsPage extends ConsumerStatefulWidget {
   final RouteParamsPointWithLabel? destination;
@@ -27,23 +30,21 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
   final Future<void> Function()? onPressed;
   final Future<void> Function()? onClose;
   final String buttonLabel;
-  final ThreeStateBottomSheet initialState;
   final List<BriefPublicTransportModel> publicTransportRoutes;
   final int initialIndex;
   final void Function(int index)? onActiveChanged;
-  final bool showArrival;
+  final RouteDetailsSheetType type;
 
   const RouteDetailsPage({
     required this.publicTransportRoutes,
     required this.buttonLabel,
+    required this.type,
     this.initialIndex = 0,
     this.onActiveChanged,
     this.destination,
     this.onPressed,
     this.onClose,
     this.startPoint,
-    this.initialState = ThreeStateBottomSheet.open,
-    this.showArrival = false,
     super.key,
   });
 
@@ -61,9 +62,21 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   void initState() {
     super.initState();
     _bottomSheetController = StatefulBottomSheetController(
-      behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, 0.85}),
+      behavior: MultiSnappingBehavior(
+        models: [
+          AspectRatioSnappingModel({0.0, 0.85}),
+          if (_showFooter)
+            ComponentsSnappingModel(componentsDescriptions: [
+              SnapComponent.merge(
+                a: const SnapComponent.size(component: Components.header),
+                b: const SnapComponent.size(component: Components.footer),
+                merge: (a, b) => a + b,
+              ),
+            ])
+        ],
+      ),
       stateMapper: const RouteDetailsStateMapper(),
-      initialState: widget.initialState,
+      initialState: _initialState,
     );
     _activeIndex = widget.initialIndex;
     _route = widget.publicTransportRoutes[_activeIndex];
@@ -112,7 +125,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         route: _route!,
         destination: widget.destination,
         onClose: () => widget.onClose?.call(),
-        showArrival: widget.showArrival,
+        showArrival: _showArrival,
       ),
       footer: SizedBox(
         width: double.infinity,
@@ -217,6 +230,13 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     }
     return transports;
   }
+
+  bool get _showArrival => widget.type == RouteDetailsSheetType.driving;
+  bool get _showFooter => widget.type == RouteDetailsSheetType.about;
+  ThreeStateBottomSheet get _initialState => switch (widget.type) {
+        RouteDetailsSheetType.about => ThreeStateBottomSheet.expanded,
+        RouteDetailsSheetType.driving => ThreeStateBottomSheet.hidden,
+      };
 }
 
 class _Header extends ConsumerStatefulWidget {
@@ -243,7 +263,6 @@ class _HeaderState extends ConsumerState<_Header> {
     final p = publicTransportArrivedProvider(
       destination: (widget.destination?.value?.latitude, widget.destination?.value?.longitude),
     );
-    final arrivalProvider = ref.watch(p.notifier).checkArrivalNow();
     final arrivalState = ref.watch(p);
 
     return Container(

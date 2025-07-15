@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -368,7 +367,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                   return const SizedBox.shrink();
                 }
                 return RouteDetailsPage(
-                  showArrival: true,
+                  type: RouteDetailsSheetType.driving,
                   startPoint: RouteParamsPointWithLabel(
                     label: startPoint.label ?? '',
                     value: RouteParamsPoint(
@@ -394,7 +393,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     await _endTripAndShowHome();
                   },
                   buttonLabel: context.l10n.endTrip,
-                  initialState: ThreeStateBottomSheet.hidden,
                 );
               }),
             if (widget.navType != RouteSearchOptionsMessage.publicTransport)
