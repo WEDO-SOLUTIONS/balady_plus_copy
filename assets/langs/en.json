@@ -4636,8 +4636,5 @@
   "municipal_services_message": "We are a smart gate that facilitates services — not the executing entity.",
   "loading": "Loading .....",
   "service_will_available_shortly": "The service will be available shortly.",
-  "closeService": "Do you want to leave the service?",
-  "pdf_viewer": "PDF Viewer"
-
-
+  "closeService": "Do you want to leave the service?"
 }

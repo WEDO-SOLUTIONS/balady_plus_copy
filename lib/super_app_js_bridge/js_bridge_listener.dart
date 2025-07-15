@@ -649,7 +649,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                 builder: (_) {
                   return Scaffold(
                     appBar: AppBar(
-                      title: Text("pdf_viewer".tr()),
+                      title: Text(""),
                     ),
                     body: SfPdfViewer.network(
                       dataUri["url"],
