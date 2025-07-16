@@ -142,7 +142,7 @@ dependencies:
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.1.7
+    version: 1.1.8
   equatable: 2.0.7
   flutter_insider: ^3.15.2
 
