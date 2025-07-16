@@ -71,18 +71,21 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final startPoint = widget.points[0]?.value;
+    final finishPoint = widget.points[1]?.value;
+
     final routes = ref.watch(
       routesProvider(
-        startPoint: widget.points[0]?.value,
-        finishPoint: widget.points[1]?.value,
+        startPoint: startPoint,
+        finishPoint: finishPoint,
         navType: widget.navType,
       ),
     );
 
     final publicTransportRoutes = ref.watch(
       publicTransportRoutesProvider(
-        startPoint: widget.points[0]?.value,
-        finishPoint: widget.points[1]?.value,
+        startPoint: startPoint,
+        finishPoint: finishPoint,
         navType: widget.navType,
       ),
     );
@@ -93,65 +96,78 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       pageController: _pageController,
       routes: routes,
       publicTransportRoutes: publicTransportRoutes,
-      onActiveChanged: (index) {
-        if (_animating) {
-          return;
-        }
-
-        _activeRoute = index;
-
-        ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
-      },
-      refresh: () {
-        ref
-          ..invalidate(routesProvider)
-          ..invalidate(publicTransportRoutesProvider);
-      },
+      onActiveChanged: _onActiveChanged,
+      refresh: _refresh,
       destination: widget.points.lastOrNull,
       startPoint: widget.points.firstOrNull,
-      startNavigation: (info) {
-        final _routeType = widget.navType.toRouteType();
-
-        final location = ref.read(locationProvider);
-        if (location == null && widget.points[0]?.etaPoint == null) {
-          return;
-        }
-
-        final finishLocation =
-            widget.points[1]?.value ?? RouteParamsPoint(latitude: location!.latitude, longitude: location.longitude);
-
-        // Set finish point for ETA stream
-        EtaStreamStorage()
-          ..setLatitude(finishLocation.latitude)
-          ..setLongitude(finishLocation.longitude);
-
-        final startPointEta = (widget.points[0]?.etaPoint.lat != null && widget.points[0]?.etaPoint.lon != null)
-            ? widget.points[0]!.etaPoint
-            : EtaRoutePoint(
-                lat: location!.latitude,
-                lon: location.longitude,
-                label: widget.points[0]?.label,
-              );
-
-        final finishPointEta = (widget.points[1]?.etaPoint.lat != null && widget.points[1]?.etaPoint.lon != null)
-            ? widget.points[1]!.etaPoint
-            : EtaRoutePoint(
-                lat: finishLocation.latitude,
-                lon: finishLocation.longitude,
-                label: widget.points[1]?.label,
-              );
-
-        ref.read(etaRouteInfoProvider.notifier).setRoute(
-              eta.EtaRoute(
-                startPoint: startPointEta,
-                endPoint: finishPointEta,
-                type: _routeType,
-                routeIndex: _activeRoute,
-                createdAt: DateTime.now().toUtc().toIso8601String(),
-              ),
-            );
-        widget.startNavigation(info);
-      },
+      startNavigation: _startNavigation,
     );
+  }
+
+  void _onActiveChanged(int index) {
+    if (_animating) {
+      return;
+    }
+
+    _activeRoute = index;
+
+    ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
+  }
+
+  void _refresh() {
+    ref
+      ..invalidate(routesProvider)
+      ..invalidate(publicTransportRoutesProvider);
+  }
+
+  void _startNavigation(RouteInfo info) {
+    final _routeType = widget.navType.toRouteType();
+
+    final startPoint = widget.points[0];
+    final finishPoint = widget.points[1];
+
+    final location = ref.read(locationProvider);
+    if (location == null && startPoint?.etaPoint == null) {
+      return;
+    }
+
+    final finishLocation = finishPoint?.value ??
+        RouteParamsPoint(
+          latitude: location!.latitude,
+          longitude: location.longitude,
+        );
+
+    // Set finish point for ETA stream
+    EtaStreamStorage()
+      ..setLatitude(finishLocation.latitude)
+      ..setLongitude(finishLocation.longitude);
+
+    final startPointExists = startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
+    final startPointEta = startPointExists
+        ? startPoint!.etaPoint
+        : EtaRoutePoint(
+            lat: location!.latitude,
+            lon: location.longitude,
+            label: startPoint?.label,
+          );
+    final finishPointExists = finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
+    final finishPointEta = finishPointExists
+        ? finishPoint!.etaPoint
+        : EtaRoutePoint(
+            lat: finishLocation.latitude,
+            lon: finishLocation.longitude,
+            label: finishPoint?.label,
+          );
+
+    ref.read(etaRouteInfoProvider.notifier).setRoute(
+          eta.EtaRoute(
+            startPoint: startPointEta,
+            endPoint: finishPointEta,
+            type: _routeType,
+            routeIndex: _activeRoute,
+            createdAt: DateTime.now().toUtc().toIso8601String(),
+          ),
+        );
+    widget.startNavigation(info);
   }
 }

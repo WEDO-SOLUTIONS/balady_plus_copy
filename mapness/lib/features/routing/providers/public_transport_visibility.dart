@@ -1,6 +1,5 @@
-// ignore_for_file: unused_import
-
 import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_region_bound.dart';
 import 'package:mapness/features/search/providers/search_region_bound_provider.dart';
@@ -11,6 +10,47 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'public_transport_visibility.g.dart';
 
+/// Configuration constants for public transport visibility checks
+class PublicTransportVisibilityConfig {
+  static const Duration retryDelay = Duration(milliseconds: 1200);
+  static const int maxRetryAttempts = 1;
+}
+
+enum PublicTransportVisibilityReason {
+  noRoutes,
+  notInRiyadh,
+  noLocation,
+  findRouteError,
+  checkRiyadhRegionError,
+  unknownError,
+}
+
+class PublicTransportVisibilityException implements Exception {
+  final String message;
+  final PublicTransportVisibilityReason reason;
+
+  const PublicTransportVisibilityException({
+    required this.message,
+    required this.reason,
+  });
+}
+
+/// Result of public transport visibility check
+class PublicTransportVisibilityResult {
+  final bool isBothInRiyadh;
+  final bool hasPublicTransportRoutes;
+  final PublicTransportVisibilityReason? reason;
+
+  const PublicTransportVisibilityResult({
+    required this.isBothInRiyadh,
+    required this.hasPublicTransportRoutes,
+    this.reason,
+  });
+
+  bool get isPublicTransportAvailable => isBothInRiyadh && hasPublicTransportRoutes;
+}
+
+/// Provider that checks public transport route availability and regional constraints
 @riverpod
 class PublicTransportVisibility extends _$PublicTransportVisibility {
   @override
@@ -18,47 +58,114 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
   }) async {
-    // Check if public transport routes are available
-
     try {
-      if (startPoint == null) {
-        final location = ref.read(locationProvider);
-        startPoint = RouteParamsPoint(
-          longitude: location?.longitude ?? 0,
-          latitude: location?.latitude ?? 0,
+      final normalizedStartPoint = _normalizePoint(startPoint);
+      final normalizedFinishPoint = _normalizePoint(finishPoint);
+
+      final hasRoutes = await _checkPublicTransportRoutes(
+        normalizedStartPoint,
+        normalizedFinishPoint,
+      );
+
+      if (!hasRoutes) {
+        return const PublicTransportVisibilityResult(
+          isBothInRiyadh: true,
+          hasPublicTransportRoutes: false,
+          reason: PublicTransportVisibilityReason.noRoutes,
         );
       }
-      if (finishPoint == null) {
-        final location = ref.read(locationProvider);
-        finishPoint = RouteParamsPoint(
-          longitude: location?.longitude ?? 0,
-          latitude: location?.latitude ?? 0,
-        );
-      }
-      final dgisController = await ref.read(dgisControllerProvider.future);
-      final publicTransportRoutes = await dgisController.findRoute(
+
+      final isBothInRiyadh = await _checkRiyadhRegion(
+        normalizedStartPoint,
+        normalizedFinishPoint,
+      );
+
+      return PublicTransportVisibilityResult(
+        isBothInRiyadh: isBothInRiyadh,
+        hasPublicTransportRoutes: true,
+        reason: isBothInRiyadh ? null : PublicTransportVisibilityReason.notInRiyadh,
+      );
+    } on PublicTransportVisibilityException catch (e) {
+      return PublicTransportVisibilityResult(
+        isBothInRiyadh: false,
+        hasPublicTransportRoutes: false,
+        reason: e.reason,
+      );
+    } catch (error) {
+      return const PublicTransportVisibilityResult(
+        isBothInRiyadh: false,
+        hasPublicTransportRoutes: false,
+        reason: PublicTransportVisibilityReason.unknownError,
+      );
+    }
+  }
+
+  /// Normalizes start point using current location if null
+  RouteParamsPoint _normalizePoint(RouteParamsPoint? point) {
+    if (point != null) {
+      return point;
+    }
+
+    final location = ref.read(locationProvider);
+    if (location == null) {
+      debugPrint('User location is null. Check [locationProvider] and permissions');
+      throw const PublicTransportVisibilityException(
+        message: 'User location is null',
+        reason: PublicTransportVisibilityReason.noLocation,
+      );
+    }
+    return RouteParamsPoint(
+      longitude: location.longitude,
+      latitude: location.latitude,
+    );
+  }
+
+  /// Checks if public transport routes are available with retry logic
+  Future<bool> _checkPublicTransportRoutes(
+    RouteParamsPoint startPoint,
+    RouteParamsPoint finishPoint,
+  ) async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    try {
+      // Initial route search
+      final initialRoutes = await dgisController.findRoute(
         options: RouteSearchOptionsMessage.publicTransport,
         startPoint: startPoint.routeSearchPointMessage,
         finishPoint: finishPoint.routeSearchPointMessage,
       );
 
-      if (publicTransportRoutes.routes.isEmpty) {
-        await Future.delayed(const Duration(milliseconds: 1200));
-        final publicTransportRoutesRetry = await dgisController.findRoute(
-          options: RouteSearchOptionsMessage.publicTransport,
-          startPoint: startPoint.routeSearchPointMessage,
-          finishPoint: finishPoint.routeSearchPointMessage,
-        );
-        if (publicTransportRoutesRetry.routes.isEmpty) {
-          return const PublicTransportVisibilityResult(
-            isBothInRiyadh: true,
-            hasPublicTransportRoutes: false,
-            reason: 'No public transport routes available for this route',
-          );
-        }
+      if (initialRoutes.routes.isNotEmpty) {
+        return true;
       }
+    } catch (e) {
+      debugPrint('Error checking public transport routes: ${e.toString()}');
+    }
 
-      // Check if both points are in Riyadh region
+    // Retry with delay if no routes found
+    await Future.delayed(PublicTransportVisibilityConfig.retryDelay);
+
+    try {
+      final retryRoutes = await dgisController.findRoute(
+        options: RouteSearchOptionsMessage.publicTransport,
+        startPoint: startPoint.routeSearchPointMessage,
+        finishPoint: finishPoint.routeSearchPointMessage,
+      );
+
+      return retryRoutes.routes.isNotEmpty;
+    } catch (e) {
+      throw PublicTransportVisibilityException(
+        message: 'Error checking public transport routes: ${e.toString()}',
+        reason: PublicTransportVisibilityReason.findRouteError,
+      );
+    }
+  }
+
+  /// Checks if both points are within Riyadh region
+  Future<bool> _checkRiyadhRegion(
+    RouteParamsPoint startPoint,
+    RouteParamsPoint finishPoint,
+  ) async {
+    try {
       final startRegion = await ref.read(searchRegionBoundProvider(
         longitude: startPoint.longitude,
         latitude: startPoint.latitude,
@@ -69,33 +176,12 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         latitude: finishPoint.latitude,
       ).future);
 
-      final isBothInRiyadh = startRegion.isRiyadh == true && finishRegion.isRiyadh == true;
-
-      return PublicTransportVisibilityResult(
-        isBothInRiyadh: isBothInRiyadh,
-        hasPublicTransportRoutes: true,
-        reason: isBothInRiyadh ? null : 'Both points must be in Riyadh region',
-      );
+      return startRegion.isRiyadh == true && finishRegion.isRiyadh == true;
     } catch (e) {
-      return PublicTransportVisibilityResult(
-        isBothInRiyadh: true,
-        hasPublicTransportRoutes: false,
-        reason: 'Error checking public transport routes: ${e.toString()}',
+      throw PublicTransportVisibilityException(
+        message: 'Error checking Riyadh region: ${e.toString()}',
+        reason: PublicTransportVisibilityReason.checkRiyadhRegionError,
       );
     }
   }
-}
-
-class PublicTransportVisibilityResult {
-  final bool isBothInRiyadh;
-  final bool hasPublicTransportRoutes;
-  final String? reason;
-
-  const PublicTransportVisibilityResult({
-    required this.isBothInRiyadh,
-    required this.hasPublicTransportRoutes,
-    this.reason,
-  });
-
-  bool get isPublicTransportAvailable => isBothInRiyadh && hasPublicTransportRoutes;
 }

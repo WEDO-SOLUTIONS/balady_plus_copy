@@ -203,39 +203,70 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
   List<RouteDetailsPublicTransport> _getTransports(BuildContext context, BriefPublicTransportModel route) {
     final transports = <RouteDetailsPublicTransport>[];
+
     for (var i = 0; i < route.publicTransportTransferRouteLongEntry.length; i++) {
-      final e = route.publicTransportTransferRouteLongEntry[i];
-      // If route part is empty, it means that we have to show pedestrian transport
-      if (e.value.routeParts.isEmpty) {
-        transports.add(
-          RouteDetailsPublicTransportPedestrian(
-            length: e.length.millimeters,
-            isTransfer: isTransfer(route.publicTransportTransferRouteLongEntry, i),
-          ),
-        );
+      final transferEntry = route.publicTransportTransferRouteLongEntry[i];
+
+      if (_isPedestrianTransfer(transferEntry)) {
+        transports.add(_createPedestrianTransport(transferEntry, route, i));
       } else {
-        // If route part is not empty, it means that we have to show metro transport
-        final routeParts = <RoutePart>[];
-        for (final routePart in e.value.routeParts) {
-          final part = RoutePart(stations: [
-            e.value.startPointName,
-            ...routePart.intermediateStops.map((e) => e.name),
-            e.value.finishPointName,
-          ]);
-          routeParts.add(part);
-        }
-        transports.add(
-          RouteDetailsPublicTransportMetro(
-            length: e.length.millimeters,
-            routeParts: routeParts,
-            lineColor: route.transports[i].names.isNotEmpty
-                ? getMetroLineColor(route.transports[i].names.first, context)
-                : null,
-          ),
-        );
+        transports.add(_createMetroTransport(transferEntry, route, i, context));
       }
     }
+
     return transports;
+  }
+
+  /// Checks if the transfer is pedestrian (no route parts)
+  bool _isPedestrianTransfer(PublicTransportTransferRouteLongEntryMessage transferEntry) {
+    return transferEntry.value.routeParts.isEmpty;
+  }
+
+  /// Creates a pedestrian transport entry
+  RouteDetailsPublicTransport _createPedestrianTransport(
+    PublicTransportTransferRouteLongEntryMessage transferEntry,
+    BriefPublicTransportModel route,
+    int index,
+  ) {
+    return RouteDetailsPublicTransportPedestrian(
+      length: transferEntry.length.millimeters,
+      isTransfer: isTransfer(route.publicTransportTransferRouteLongEntry, index),
+    );
+  }
+
+  /// Creates a metro transport entry
+  RouteDetailsPublicTransport _createMetroTransport(
+    PublicTransportTransferRouteLongEntryMessage transferEntry,
+    BriefPublicTransportModel route,
+    int index,
+    BuildContext context,
+  ) {
+    final routeParts = _buildRouteParts(transferEntry);
+
+    return RouteDetailsPublicTransportMetro(
+      length: transferEntry.length.millimeters,
+      routeParts: routeParts,
+      lineColor: _getMetroLineColor(route, index, context),
+    );
+  }
+
+  /// Builds route parts from transfer entry
+  List<RoutePart> _buildRouteParts(PublicTransportTransferRouteLongEntryMessage transferEntry) {
+    return transferEntry.value.routeParts.map((routePart) {
+      return RoutePart(stations: [
+        transferEntry.value.startPointName,
+        ...routePart.intermediateStops.map((stop) => stop.name),
+        transferEntry.value.finishPointName,
+      ]);
+    }).toList();
+  }
+
+  /// Gets the metro line color for the transport
+  Color? _getMetroLineColor(BriefPublicTransportModel route, int index, BuildContext context) {
+    if (route.transports.length > index && route.transports[index].names.isNotEmpty) {
+      return getMetroLineColor(route.transports[index].names.first, context);
+    }
+    return null;
   }
 
   bool get _showFooter => widget.type == RouteDetailsSheetType.about;

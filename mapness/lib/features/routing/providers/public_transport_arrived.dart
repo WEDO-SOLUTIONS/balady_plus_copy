@@ -7,91 +7,115 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'public_transport_arrived.g.dart';
 
-/// Provider that checks every 30 seconds if the user has arrived at the final destination
-/// of a public transport route.
+/// Configuration constants for arrival detection
+class ArrivalConfig {
+  static const Duration checkInterval = Duration(seconds: 30);
+  static const double arrivalThresholdMeters = 100.0;
+  static const double metersPerKilometer = 1000.0;
+}
+
+/// Provider that monitors user arrival at public transport destinations.
+///
+/// Checks user location every 30 seconds and determines if they have arrived
+/// within 100 meters of the final destination.
 @riverpod
 class PublicTransportArrived extends _$PublicTransportArrived {
-  Timer? _timer;
-  static const _checkInterval = Duration(seconds: 30);
-  static const _arrivalThreshold = 100.0; // 100 meters threshold for arrival
+  Timer? _arrivalCheckTimer;
 
   @override
   Future<bool> build({
     required (double?, double?) destination,
   }) async {
-    // Start the timer to check arrival every 30 seconds
-    final hasArrived = await _isUserAtDestination();
+    final hasArrived = await _checkUserArrival();
+
     if (!hasArrived) {
-      _startTimer();
+      _startArrivalMonitoring();
     }
-    // Return false initially (not arrived yet)
+
+    ref.onDispose(() {
+      _stopArrivalMonitoring();
+    });
+
     return hasArrived;
   }
 
-  void _startTimer() {
-    _timer?.cancel();
-    _timer = Timer.periodic(_checkInterval, (_) => _checkArrival());
+  /// Starts periodic arrival monitoring
+  void _startArrivalMonitoring() {
+    _arrivalCheckTimer?.cancel();
+    _arrivalCheckTimer = Timer.periodic(
+      ArrivalConfig.checkInterval,
+      (_) => _performArrivalCheck(),
+    );
   }
 
-  Future<void> _checkArrival() async {
+  /// Performs a single arrival check
+  Future<void> _performArrivalCheck() async {
     try {
-      final hasArrived = await _isUserAtDestination();
+      final hasArrived = await _checkUserArrival();
       if (hasArrived && !state.isLoading) {
         state = const AsyncValue.data(true);
-        _stopTimer();
+        _stopArrivalMonitoring();
       }
-    } catch (e) {
-      debugPrint('Error checking arrival: $e');
+    } catch (error) {
+      debugPrint('Error during arrival check: $error');
+      // Don't update state on error to avoid disrupting UI
     }
   }
 
-  Future<bool> _isUserAtDestination() async {
-    // Get current user location
+  /// Checks if user has arrived at destination
+  Future<bool> _checkUserArrival() async {
     final currentLocation = ref.read(locationProvider);
     if (currentLocation == null) {
       return false;
     }
 
-    // Get the final destination coordinates
-    if (destination.$1 == null || destination.$2 == null) {
-      // Because if destination is null, this is my location
+    final (destLat, destLon) = destination;
+    if (destLat == null || destLon == null) {
+      // If destination is null, assume user is at their location
       return true;
     }
 
-    // Calculate distance between current location and destination
-    final distance = CommonFunctions.distance(
+    final distanceInMeters = _calculateDistanceInMeters(
       currentLocation.latitude,
       currentLocation.longitude,
-      destination.$1!,
-      destination.$2!,
+      destLat,
+      destLon,
     );
-
-    // Convert distance from km to meters
-    final distanceInMeters = distance * 1000;
 
     debugPrint('Distance to destination: ${distanceInMeters.toStringAsFixed(2)} meters');
 
-    // Check if user is within the arrival threshold
-    return distanceInMeters <= _arrivalThreshold;
+    return distanceInMeters <= ArrivalConfig.arrivalThresholdMeters;
   }
 
-  void _stopTimer() {
-    _timer?.cancel();
-    _timer = null;
+  /// Calculates distance between two points in meters
+  double _calculateDistanceInMeters(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
+    final distanceInKm = CommonFunctions.distance(lat1, lon1, lat2, lon2);
+    return distanceInKm * ArrivalConfig.metersPerKilometer;
   }
 
-  /// Manually check arrival (useful for immediate checks)
+  /// Stops arrival monitoring
+  void _stopArrivalMonitoring() {
+    _arrivalCheckTimer?.cancel();
+    _arrivalCheckTimer = null;
+  }
+
+  /// Manually triggers an immediate arrival check
   Future<void> checkArrivalNow() async {
-    await _checkArrival();
+    await _performArrivalCheck();
   }
 
-  /// Stop the automatic checking
-  void stopChecking() {
-    _stopTimer();
+  /// Stops automatic arrival monitoring
+  void stopMonitoring() {
+    _stopArrivalMonitoring();
   }
 
-  /// Restart the automatic checking
-  void restartChecking() {
-    _startTimer();
+  /// Restarts automatic arrival monitoring
+  void restartMonitoring() {
+    _startArrivalMonitoring();
   }
 }

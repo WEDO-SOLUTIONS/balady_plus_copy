@@ -52,8 +52,7 @@ class RoutePart {
   });
 }
 
-// Main idea here is if the next and previous routes have parts, then it is a public transport segments
-// So the pars between is a transfer
+// If the next and previous routes have parts, then it is a public transport transfer
 bool isTransfer(List<PublicTransportTransferRouteLongEntryMessage> pub, int index) {
   final next = pub.length > index + 1 ? pub[index + 1] : null;
   final prev = index - 1 >= 0 ? pub[index - 1] : null;
