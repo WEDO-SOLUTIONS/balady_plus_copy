@@ -18,6 +18,8 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+/// Type of the route details sheet
+/// Needed to show the correct header and footer
 enum RouteDetailsSheetType {
   about,
   driving,
@@ -218,21 +220,19 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   }
 
   /// Checks if the transfer is pedestrian (no route parts)
-  bool _isPedestrianTransfer(PublicTransportTransferRouteLongEntryMessage transferEntry) {
-    return transferEntry.value.routeParts.isEmpty;
-  }
+  bool _isPedestrianTransfer(PublicTransportTransferRouteLongEntryMessage transferEntry) =>
+      transferEntry.value.routeParts.isEmpty;
 
   /// Creates a pedestrian transport entry
   RouteDetailsPublicTransport _createPedestrianTransport(
     PublicTransportTransferRouteLongEntryMessage transferEntry,
     BriefPublicTransportModel route,
     int index,
-  ) {
-    return RouteDetailsPublicTransportPedestrian(
-      length: transferEntry.length.millimeters,
-      isTransfer: isTransfer(route.publicTransportTransferRouteLongEntry, index),
-    );
-  }
+  ) =>
+      RouteDetailsPublicTransportPedestrian(
+        length: transferEntry.length.millimeters,
+        isTransfer: isTransfer(route.publicTransportTransferRouteLongEntry, index),
+      );
 
   /// Creates a metro transport entry
   RouteDetailsPublicTransport _createMetroTransport(
@@ -251,15 +251,18 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   }
 
   /// Builds route parts from transfer entry
-  List<RoutePart> _buildRouteParts(PublicTransportTransferRouteLongEntryMessage transferEntry) {
-    return transferEntry.value.routeParts.map((routePart) {
-      return RoutePart(stations: [
-        transferEntry.value.startPointName,
-        ...routePart.intermediateStops.map((stop) => stop.name),
-        transferEntry.value.finishPointName,
-      ]);
-    }).toList();
-  }
+  List<RoutePart> _buildRouteParts(PublicTransportTransferRouteLongEntryMessage transferEntry) =>
+      transferEntry.value.routeParts
+          .map(
+            (routePart) => RoutePart(
+              stations: [
+                transferEntry.value.startPointName,
+                ...routePart.intermediateStops.map((stop) => stop.name),
+                transferEntry.value.finishPointName,
+              ],
+            ),
+          )
+          .toList();
 
   /// Gets the metro line color for the transport
   Color? _getMetroLineColor(BriefPublicTransportModel route, int index, BuildContext context) {

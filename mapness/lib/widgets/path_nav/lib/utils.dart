@@ -5,6 +5,7 @@ class PathNavConfig {
   static const double metersPerKilometer = 1000.0;
   static const double minutesPerHour = 60.0;
   static const double millimetersPerMeter = 1000.0;
+  static const double speedInMetersPerMinute = pedestrianSpeedKmh * metersPerKilometer / minutesPerHour;
 }
 
 /// Formats distance string by removing decimal details for cleaner display.
@@ -32,14 +33,10 @@ String formatDistance(String distanceEtaKm) {
 /// [distanceMillimeters] - Distance in millimeters
 /// Returns estimated walking time in minutes
 int durationByFoot(int distanceMillimeters) {
-  // Convert speed from km/h to meters per minute
-  final speedInMetersPerMinute =
-      PathNavConfig.pedestrianSpeedKmh * PathNavConfig.metersPerKilometer / PathNavConfig.minutesPerHour;
-
   // Convert distance from millimeters to meters
   final lengthInMeters = (distanceMillimeters / PathNavConfig.millimetersPerMeter).round();
 
   // Calculate time in minutes
-  final timeInMinutes = lengthInMeters / speedInMetersPerMinute;
+  final timeInMinutes = lengthInMeters / PathNavConfig.speedInMetersPerMinute;
   return timeInMinutes.round();
 }
