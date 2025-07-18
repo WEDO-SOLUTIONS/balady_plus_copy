@@ -56,7 +56,7 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
             searchHandler.fetchSuggests(
                 queryText: searchText,
                 allowedResultTypes: [],
-                searchGeoRect: nil,
+                searchGeoRect: map.camera.visibleRect,
                 locale: nil,
                 suggestorType: SuggestorTypeEnum.routeEndpoint,
                 limit: nil
