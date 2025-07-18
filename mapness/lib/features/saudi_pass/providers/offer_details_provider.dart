@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mapness/entities/saudi_pass/offer_feedback.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_favorites_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_redeem_provider.dart';
@@ -43,8 +44,10 @@ class _OfferDetails extends _$OfferDetails {
 
     final repository = await ref.read(saudiPassRepositoryProvider.future);
     final offerDetails = await repository.getOfferDetails(offerId: offerId);
+    final location = ref.refresh(locationProvider);
 
     final duration = await _getDuration(
+      location,
       double.tryParse(offerDetails.location.latitude) ?? 0.0,
       double.tryParse(offerDetails.location.longitude) ?? 0.0,
     );
@@ -76,7 +79,7 @@ class _OfferDetails extends _$OfferDetails {
     );
   }
 
-  Future<double?> _getDuration(double lat, double lon) async {
+  Future<double?> _getDuration(Position? location, double lat, double lon) async {
     try {
       final controller = await ref.read(dgisControllerProvider.future);
       final duration = await controller.findBriefRouteInfos(
@@ -93,7 +96,6 @@ class _OfferDetails extends _$OfferDetails {
       );
       return duration.firstOrNull?.extraInfo.distance.toDouble().toKilometers();
     } catch (_) {
-      final location = ref.read(locationProvider);
       if (location == null) {
         return null;
       }
