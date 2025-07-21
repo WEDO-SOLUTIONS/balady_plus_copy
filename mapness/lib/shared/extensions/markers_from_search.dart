@@ -65,7 +65,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
 
   Future<List<Marker>> getMarkers({
     required AppRouter router,
-    required MapMarkersType? Function(Set<int>) iconResolver,
+    required Future<MapMarkersType?> Function(Set<int>) iconResolver,
     required bool isDark,
     bool withLabel = true,
     bool isRtl = true,
@@ -86,7 +86,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
       final objectId = markerInfo.objectId?.objectId;
       final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
       final rubrics = Set<int>.from(cleanupRubrics);
-      final icon = iconResolver(rubrics)?.iconPath.markerIcon(size: 32);
+      final icon = (await iconResolver(rubrics))?.iconPath.markerIcon(size: 32);
 
       final text = withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null;
       markers.add(
@@ -134,41 +134,6 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
 
     return markers;
   }
-}
-
-/// According to the icons that we have in our pack and which we can show on the map as marker
-enum MapMarkersType {
-  markets,
-  beach,
-  gym,
-  gasStation,
-  events,
-  carServices,
-  hospitals,
-  hotels,
-  pharmacies,
-  mosques,
-  parks,
-  qibla,
-  restaurants,
-  wc,
-  dentalCenters,
-  schools,
-  shopping,
-  beauty,
-  barbershops,
-  recreationCenters,
-  medicalHelp,
-  healthCenter,
-  hospital,
-  fireStation,
-  policeStation,
-  waterPlaces,
-  lostAndFound,
-  hajjSupport,
-  kiosksRetail,
-  additional,
-  stairs,
 }
 
 extension IconPathFromMapMarkersType on MapMarkersType {

@@ -4,11 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
+import android.util.Log
 import androidx.car.app.CarContext
 import androidx.car.app.ScreenManager
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.CarColor
+import androidx.car.app.model.CarIcon
 import androidx.car.app.model.DistanceSpan
 import androidx.car.app.model.DurationSpan
 import androidx.car.app.model.Header
@@ -21,8 +23,10 @@ import androidx.car.app.navigation.model.MapTemplate
 import androidx.car.app.navigation.model.RoutePreviewNavigationTemplate
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.dgis.FlutterProvider
 import com.dgis.map.R
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import com.dgis.map.map_api.MapMarkersType
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.Latitude
 import ru.dgis.sdk.coordinates.Longitude
@@ -153,18 +157,25 @@ class RoutePreviewScreen(
             val text = SpannableString("  \n${directoryObject.makeAddressString()}")
             text.setSpan(distanceSpan, 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
-            val pane = Pane.Builder()
-            pane.addRow(
-                Row.Builder().setTitle(directoryObject.title).addText(text).build()
-            )
-            val phone = directoryObject.contactInfos.firstOrNull { it.type == "phone" }?.value
-            if (phone != null) {
-                pane.addAction(buildPhoneAction(phone))
-            }
-            pane.addAction(navigationAction)
+            FlutterProvider.getHostFlutterApi(carContext)
+                .getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+                    val pane = Pane.Builder()
+                    val row = Row.Builder().setTitle(directoryObject.title).addText(text)
+                    val icon = getPoiIcon(markerTypeResult.getOrNull())
+                    if (icon != null) {
+                        row.setImage(icon)
+                    }
+                    pane.addRow(row.build())
+                    val phone =
+                        directoryObject.contactInfos.firstOrNull { it.type == "phone" }?.value
+                    if (phone != null) {
+                        pane.addAction(buildPhoneAction(phone))
+                    }
+                    pane.addAction(navigationAction)
 
-            state = RoutePreviewScreenState.SingleRoute(pane.build(), routesInfo)
-            invalidate()
+                    state = RoutePreviewScreenState.SingleRoute(pane.build(), routesInfo)
+                    invalidate()
+                }
             return
         }
 
@@ -220,6 +231,16 @@ class RoutePreviewScreen(
                 carContext.startCarApp(intent)
             }
             .build()
+    }
+
+    private fun getPoiIcon(type: MapMarkersType?): CarIcon? {
+        if (type == null) return null
+
+        val resId = when (type) {
+            MapMarkersType.RESTAURANTS -> R.drawable.eat_36
+            else -> null
+        }
+        return if (resId != null) buildCarIcon(resId) else null
     }
 }
 

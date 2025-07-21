@@ -1475,6 +1475,41 @@ class VendorConfigContentMessage {
   final String content;
 }
 
+/// According to the icons that we have in our pack and which we can show on the map as marker
+enum MapMarkersType {
+  markets,
+  beach,
+  gym,
+  gasStation,
+  events,
+  carServices,
+  hospitals,
+  hotels,
+  pharmacies,
+  mosques,
+  parks,
+  qibla,
+  restaurants,
+  wc,
+  dentalCenters,
+  schools,
+  shopping,
+  beauty,
+  barbershops,
+  recreationCenters,
+  medicalHelp,
+  healthCenter,
+  hospital,
+  fireStation,
+  policeStation,
+  waterPlaces,
+  lostAndFound,
+  hajjSupport,
+  kiosksRetail,
+  additional,
+  stairs,
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1910,6 +1945,12 @@ abstract class FlutterMapApi {
 @FlutterApi()
 abstract class HostFlutterApi {
   void analyticsTrack(String event);
+
+  @async
+  MapMarkersType? getMarkerType(List<int> rubricIds);
+
+  @async
+  VendorConfigContentMessage getAppConfig();
 
   void runMain();
 }
