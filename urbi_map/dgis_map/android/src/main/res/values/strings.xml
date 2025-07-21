@@ -24,6 +24,11 @@
   <string name="enter_from_keyboard">Keyboard</string>
   <string name="empty_trips_history_message">Here you will find a list of your trips</string>
 
+  <!-- Route overview -->
+  <string name="route_overview_title">Route overview</string>
+  <string name="go_button">Go</string>
+  <string name="phone_button">Phone</string>
+
   <!-- Common -->
   <string name="driving_notification_title">Driving with Balady</string>
   <string name="you_dont_seem_to_have_internet_description">You don\'t seem to have internet connection. Please check the connection</string>

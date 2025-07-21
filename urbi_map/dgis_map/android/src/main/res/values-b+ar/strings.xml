@@ -24,6 +24,11 @@
   <string name="enter_from_keyboard">لوحة المفاتيح</string>
   <string name="empty_trips_history_message">هنا ستجد قائمة برحلاتك</string>
 
+  <!-- Route overview -->
+  <string name="route_overview_title">نظرة عامة على الطريق</string>
+  <string name="go_button">في الطريق</string>
+  <string name="phone_button">الهاتف</string>
+
   <!-- Common -->
   <string name="driving_notification_title">التنقل باستخدام خرائط بلدي</string>
   <string name="you_dont_seem_to_have_internet_description">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
