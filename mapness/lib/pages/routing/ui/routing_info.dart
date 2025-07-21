@@ -227,6 +227,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                 points: widget.pointsWithLabel,
                 startNavigation: (route) => _startNavigation(route, navigatingType),
                 navType: navigatingType,
+                publicTransportVisibility: publicTransportVisibility,
               ),
               Spacing.$4x.heightBox,
               RouteTabBar(

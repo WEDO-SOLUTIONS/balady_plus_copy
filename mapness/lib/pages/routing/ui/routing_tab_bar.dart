@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -58,12 +57,10 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(
-      BuildContext context, AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility) {
-    final showPublicTransport = publicTransportVisibility.value?.isPublicTransportAvailable == true;
+  Widget _getRouteSearchOptionsWidgets(BuildContext context, AsyncValue<PublicTransportVisibilityResult> pubState) {
     final chips = [
       RouteSearchOptionsMessage.car,
-      if (showPublicTransport) RouteSearchOptionsMessage.publicTransport,
+      RouteSearchOptionsMessage.publicTransport,
       RouteSearchOptionsMessage.pedestrian,
     ];
 

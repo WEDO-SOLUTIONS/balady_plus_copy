@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
+import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
@@ -20,6 +21,7 @@ class RoutesCarousel extends StatelessWidget {
     required this.startNavigation,
     required this.points,
     required this.navType,
+    required this.publicTransportVisibility,
     super.key,
   });
 
@@ -27,6 +29,7 @@ class RoutesCarousel extends StatelessWidget {
 
   final List<RouteParamsPointWithLabel?> points;
   final Function(RouteInfo) startNavigation;
+  final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -35,6 +38,7 @@ class RoutesCarousel extends StatelessWidget {
           startNavigation: startNavigation,
           biggestWidth: constraints.biggest.width,
           navType: navType,
+          publicTransportVisibility: publicTransportVisibility,
         ),
       );
 }
@@ -45,13 +49,14 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.points,
     required this.startNavigation,
     required this.biggestWidth,
+    required this.publicTransportVisibility,
   });
 
   final RouteSearchOptionsMessage navType;
   final double biggestWidth;
   final Function(RouteInfo) startNavigation;
   final List<RouteParamsPointWithLabel?> points;
-
+  final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();
 }
@@ -101,6 +106,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       destination: widget.points.lastOrNull,
       startPoint: widget.points.firstOrNull,
       startNavigation: _startNavigation,
+      publicTransportVisibility: widget.publicTransportVisibility,
     );
   }
 
