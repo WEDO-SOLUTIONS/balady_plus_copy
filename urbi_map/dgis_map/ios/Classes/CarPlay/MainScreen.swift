@@ -72,6 +72,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         routesInfoChannelCancellable?.cancel()
         activeRouteIndexCancellable?.cancel()
         routeChannelCancelable?.cancel()
+        betterRouteChannelCancellable?.cancel()
         mapTemplate.leadingNavigationBarButtons = []
         mapTemplate.trailingNavigationBarButtons = []
         mapTemplate.mapButtons = []
