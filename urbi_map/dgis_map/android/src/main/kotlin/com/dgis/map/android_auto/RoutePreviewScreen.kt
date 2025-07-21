@@ -67,6 +67,14 @@ class RoutePreviewScreen(
             .build()
     }
 
+    private val navigationActionInList by lazy {
+        Action.Builder()
+            .setTitle(getString(R.string.go_button))
+            .setBackgroundColor(CarColor.SECONDARY)
+            .setOnClickListener(::onNavigate)
+            .build()
+    }
+
     init {
         mapController.setRouteInfoListener(object : RouteInfoListener {
             override fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
@@ -111,7 +119,7 @@ class RoutePreviewScreen(
                     .setPanModeListener(panModeListener)
                     .setMapActionStrip(buildMapActionStrip())
                     .setHeader(headerRouteOverview)
-                    .setNavigateAction(navigationAction)
+                    .setNavigateAction(navigationActionInList)
                     .setItemList(state.itemList)
                     .build()
             }
