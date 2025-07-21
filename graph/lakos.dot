@@ -4596,6 +4596,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/sound_settings.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/landing/indoor_control.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/navi_sheet_panel.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart";
