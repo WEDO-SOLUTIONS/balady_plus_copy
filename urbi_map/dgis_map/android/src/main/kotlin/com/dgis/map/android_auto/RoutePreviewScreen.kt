@@ -4,11 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
-import android.util.Log
-import androidx.annotation.OptIn
 import androidx.car.app.CarContext
 import androidx.car.app.ScreenManager
-import androidx.car.app.annotations.ExperimentalCarApi
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.CarColor
@@ -93,7 +90,6 @@ class RoutePreviewScreen(
         }
     }
 
-    @OptIn(ExperimentalCarApi::class)
     override fun onGetTemplate(): Template {
         return when (val state = this.state) {
             RoutePreviewScreenState.Loading -> {
