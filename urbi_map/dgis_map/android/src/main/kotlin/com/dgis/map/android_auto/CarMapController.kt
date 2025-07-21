@@ -70,7 +70,7 @@ class CarMapController(
         )
     private val routeEditor = RouteEditor(sdkContext)
     private val routeEditorSource = RouteEditorSource(sdkContext, routeEditor).apply {
-        setShowOnlyActiveRoute(true)
+        setShowOnlyActiveRoute(false)
     }
 
     private var map: DgisMap? = null
