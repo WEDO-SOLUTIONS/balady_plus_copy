@@ -24,6 +24,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
     );
 
     return SafeAreaPadding(
+      bottom: false,
       child: StatelessBottomSheet(
         safeAreaColor: context.colorsV3.backgroundSurface4,
         backgroundColor: context.colorsV3.backgroundSurface4,

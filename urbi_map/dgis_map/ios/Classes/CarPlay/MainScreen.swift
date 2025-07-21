@@ -9,7 +9,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let window: CPWindow
     private let eventProcessor: IMapEventProcessor
     private let userDefaultsPublished: UserDefaultsPublished
-    private let navigationManager: NavigationManager
+    unowned private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler?
 
     init(
@@ -43,17 +43,24 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private lazy var zoomControlModel = ZoomControlModel(map: map)
     private let trafficControlModel: TrafficControlModel
     private let model: Model
-    private var trafficStateCancellable: DGis.Cancellable?
     private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancelable: DGis.Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
     private let navigationSessionManeuvers: NavigationSessionManeuvers
     private var currentSettingsScreen: SettingsScreen?
+    private var isPanningInterfaceVisible: Bool = false
 
-    deinit {
+    func dispose() {
         rebuildUiCancellable?.cancel()
         navigatorStateCancelable?.cancel()
         routeChannelCancelable?.cancel()
+        mapTemplate.leadingNavigationBarButtons = []
+        mapTemplate.trailingNavigationBarButtons = []
+        mapTemplate.mapButtons = []
+        mainLeadFactories = []
+        panningLeadFactories = []
+        navigationSessionManeuvers.cancel()
+        window.rootViewController = nil
     }
 
     private lazy var mainLeadFactories: [() -> CPBarButton] = [
@@ -94,10 +101,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             receiveValue: whenLanguageUpdated
         )
 
-        navigatorStateCancelable = model.stateChannel.sink(
-            receiveValue: navigatorStateListener
+        navigatorStateCancelable = model.stateChannel.sinkOnMainThread(
+            navigatorStateListener
         )
-        
+
         routeChannelCancelable = model.routeChannel.sink(
             receiveValue: receiveRouteInfo
         )
@@ -108,9 +115,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private func receiveRouteInfo(routeInfo: RouteInfo) {
         composeMainLeadFactories()
     }
-    
+
     private func composeMainLeadFactories() {
-        if (model.state == .disabled) {
+        if model.state == .disabled {
             mainLeadFactories = [
                 makeSearchButton
             ]
@@ -128,7 +135,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func buildLeadButtons() {
         let functions =
-            mapTemplate.isPanningInterfaceVisible
+            isPanningInterfaceVisible
             ? panningLeadFactories : mainLeadFactories
         mapTemplate.leadingNavigationBarButtons = functions.map { function in
             function()
@@ -148,7 +155,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         case .navigation:
             navigationSessionManeuvers.navigate()
         case .routeSearch:
-            break
+            navigationSessionManeuvers.routeSearch()
         case .finished:
             navigationSessionManeuvers.finish()
         @unknown default:
@@ -168,7 +175,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func onSettingsBarTap(_: CPBarButton) {
         let screen = SettingsScreen(
-            onBackTap: onBackTap,
+            onBackTap: { [weak self] _ in self?.closeSettingsScreen() },
             userDefaultsPublished: userDefaultsPublished,
             eventChannel: eventChannel,
             map: map,
@@ -183,8 +190,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
     }
 
-    private func onBackTap(_: CPBarButton) {
+    private func closeSettingsScreen() {
         interfaceController.popTemplate(animated: true, completion: nil)
+        currentSettingsScreen?.dispose()
         currentSettingsScreen = nil
     }
 
@@ -207,7 +215,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onAcceptBarTap(_: CPBarButton) {
-        mapTemplate.dismissPanningInterface(animated: false)
+        isPanningInterfaceVisible = false
+        mapTemplate.dismissPanningInterface(animated: true)
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
             makeSettingsButton(),
@@ -220,6 +229,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onPanningBarTap(_: CPBarButton) {
+        isPanningInterfaceVisible = true
         mapTemplate.showPanningInterface(animated: true)
         mapTemplate.trailingNavigationBarButtons = [
             makeMyLocationHeaderButton()

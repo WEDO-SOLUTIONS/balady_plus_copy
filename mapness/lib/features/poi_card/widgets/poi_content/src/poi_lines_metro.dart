@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A widget that renders a metro route with its platforms for a given POI (Point of Interest).
 ///
@@ -43,9 +44,16 @@ class PoiLinesMetro extends StatelessWidget {
     }
 
     const blueColor = -16736046;
+    const blueColorIOS = 4278231250;
     const greenColor = -12672206;
+    const greenColorIOS = 4282295090;
 
-    final isGreenOrBlue = [blueColor, greenColor].contains(transportDirectoryRouteInfo.color);
+    final isGreenOrBlue = [
+      blueColor,
+      blueColorIOS,
+      greenColor,
+      greenColorIOS,
+    ].contains(transportDirectoryRouteInfo.color);
     return directions
             .firstWhereOrNull(
               (direction) =>
@@ -56,6 +64,25 @@ class PoiLinesMetro extends StatelessWidget {
             )
             ?.platforms ??
         directions.first.platforms;
+  }
+
+  String getTitle(BuildContext context) {
+    switch (transportDirectoryRouteInfo.name.split(' ').first.toLowerCase()) {
+      case 'orange':
+        return context.l10n.orangeLine;
+      case 'yellow':
+        return context.l10n.yellowLine;
+      case 'blue':
+        return context.l10n.blueLine;
+      case 'red':
+        return context.l10n.redLine;
+      case 'purple':
+        return context.l10n.purpleLine;
+      case 'green':
+        return context.l10n.greenLine;
+      default:
+        return transportDirectoryRouteInfo.name;
+    }
   }
 
   @override
@@ -71,7 +98,7 @@ class PoiLinesMetro extends StatelessWidget {
           expandIconColor: context.colorsV3.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
-            title: transportDirectoryRouteInfo.name,
+            title: getTitle(context),
             leadingIcon: Assets.icons.svg.icMetroMarker.svg(
               colorFilter: ColorFilter.mode(_colorLine, BlendMode.srcIn),
             ),
@@ -79,7 +106,7 @@ class PoiLinesMetro extends StatelessWidget {
           content: Column(
             children: List.generate(_platformsInfo.length, (index) {
               final transitionRoute = _platformsInfo[index].transitions;
-              final routeCurrent = _platformsInfo[index].name == address;
+              final routeCurrent = _platformsInfo[index].name == address || (transitionRoute.isNotEmpty && transitionRoute.any((element) => element.stationName==address,));
               return CustomPaint(
                 painter: _StationLinePainter(
                   isFirst: index == 0,

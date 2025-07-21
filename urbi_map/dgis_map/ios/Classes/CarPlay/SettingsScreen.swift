@@ -42,7 +42,8 @@ class SettingsScreen: NSObject {
         restoreSettings()
     }
     
-    deinit {
+    func dispose() {
+        updateTemplate(title: nil, gridButtons: [])
         trafficStateCancellable?.cancel()
         languageCancellable?.cancel()
         languageCancellable = nil
@@ -65,12 +66,6 @@ class SettingsScreen: NSObject {
         // Restore parking state
         isParkingEnabled = userDefaultsPublished.getParkingEnabled()
         setParkingOn(isParkingEnabled)
-    }
-    
-    private func saveSettings() {
-        userDefaultsPublished.saveTrafficEnabled(isTrafficEnabled)
-        userDefaultsPublished.saveSoundEnabled(isSoundEnabled)
-        userDefaultsPublished.saveParkingEnabled(isParkingEnabled)
     }
     
     func createTemplate() -> CPTemplate {

@@ -212,7 +212,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 width: double.infinity,
                 child: BaladyAppButton(
                   buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                  buttonState: canSave ? BaladyButtonState.defaultState : BaladyButtonState.disabled,
+                  buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
                   primaryLabel: context.l10n.save,
                   onTap: canSave
                       ? () =>

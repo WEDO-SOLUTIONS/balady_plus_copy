@@ -193,7 +193,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                 );
               }),
         ),
-        const SizedBox(height: Spacing.$8x),
+        const SizedBox(height: Spacing.$4x),
       ],
     );
   }
