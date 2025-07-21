@@ -18,6 +18,11 @@
 
   <!-- Search -->
   <string name="search_history">تاريخ</string>
+  <string name="search_mosque">المساجد</string>
+  <string name="search_gas_station">محطات الوقود</string>
+  <string name="search_hypermarket">أماكن التسوق</string>
+  <string name="search_to_eat">المطاعم</string>
+  <string name="search_hotel">الفنادق</string>
   <string name="search_hint">بحث</string>
   <string name="search_suggestion">أدخل عنوانًا أو اسم مكان مثل مركز تجاري أو مطعم</string>
   <string name="search_nothing_found">لم يتم العثور على شيء</string>

@@ -361,6 +361,10 @@ class CarMapController(
             sharedPrefs.suggestBetterRoad = value
         }
 
+    fun getLanguage(): Language {
+        return sharedPrefs.getLanguage()
+    }
+
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
         val startPoint = locationSource.lastLocation?.let {
             RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
