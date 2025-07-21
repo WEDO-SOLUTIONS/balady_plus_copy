@@ -9,6 +9,7 @@ import androidx.car.app.CarContext
 import androidx.car.app.ScreenManager
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
+import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
 import androidx.car.app.model.DistanceSpan
@@ -21,10 +22,12 @@ import androidx.car.app.model.Template
 import androidx.car.app.navigation.model.MapController
 import androidx.car.app.navigation.model.MapTemplate
 import androidx.car.app.navigation.model.RoutePreviewNavigationTemplate
+import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.FlutterProvider
 import com.dgis.map.R
+import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import com.dgis.map.map_api.MapMarkersType
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -83,6 +86,24 @@ class RoutePreviewScreen(
             .build()
     }
 
+    private val actionStrip by lazy {
+        val settingsAction = Action.Builder()
+            .setIcon(
+                CarIcon.Builder(
+                    IconCompat.createWithResource(
+                        carContext,
+                        R.drawable.settings
+                    )
+                )
+                    .build()
+            )
+            .setOnClickListener {
+                screenManager.push(RouteSettingsScreen(carContext, mapController))
+            }
+            .build()
+        ActionStrip.Builder().addAction(settingsAction).build()
+    }
+
     init {
         mapController.setRouteInfoListener(object : RouteInfoListener {
             override fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
@@ -95,15 +116,17 @@ class RoutePreviewScreen(
                 mapController.resetRouteInfoListener()
                 mapController.hideRoutes()
             }
-        })
 
-        directoryObject.markerPosition?.let {
-            mapController.setRouteParams(
-                it.latitude.value,
-                it.longitude.value,
-                directoryObject.id
-            )
-        }
+            override fun onStart(owner: LifecycleOwner) {
+                directoryObject.markerPosition?.let {
+                    mapController.setRouteParams(
+                        it.latitude.value,
+                        it.longitude.value,
+                        directoryObject.id
+                    )
+                }
+            }
+        })
     }
 
     override fun onGetTemplate(): Template {
@@ -117,8 +140,9 @@ class RoutePreviewScreen(
             is RoutePreviewScreenState.SingleRoute -> {
                 val templateMapController = MapController.Builder()
                     .setMapActionStrip(buildMapActionStrip())
-                    .build();
+                    .build()
                 MapTemplate.Builder().setMapController(templateMapController)
+                    .setActionStrip(actionStrip)
                     .setHeader(headerBack).setPane(state.pane).build()
             }
 
@@ -127,6 +151,7 @@ class RoutePreviewScreen(
                     .setPanModeListener(panModeListener)
                     .setMapActionStrip(buildMapActionStrip())
                     .setHeader(headerRouteOverview)
+                    .setActionStrip(actionStrip)
                     .setNavigateAction(navigationActionInList)
                     .setItemList(state.itemList)
                     .build()
