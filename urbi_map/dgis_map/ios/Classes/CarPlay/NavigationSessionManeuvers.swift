@@ -78,7 +78,7 @@ class NavigationSessionManeuvers {
 
         mapTemplate.updateEstimates(
             CPTravelEstimates(
-                distanceRemaining: formatDistance(tripDistanceRemaining),
+                distanceRemaining: tripDistanceRemaining.formatDistance,
                 timeRemaining: tripTimeRemaining
             ),
             for: navigationSession.trip
@@ -144,7 +144,7 @@ class NavigationSessionManeuvers {
         _ distanceRemaining: Measurement<UnitLength>
     ) -> CPTravelEstimates {
         return CPTravelEstimates(
-            distanceRemaining: formatMeters(distanceRemaining),
+            distanceRemaining: distanceRemaining.formatMeters,
             timeRemaining: TimeInterval(-1)
         )
     }
@@ -205,22 +205,38 @@ class NavigationSessionManeuvers {
             nil
         }
     }
+}
+
+extension Measurement<UnitLength> {
+    var meters: Double {
+        converted(to: .meters).value
+    }
+
+    // meters rounded to decameters 420 410 400
+    var decametersRounded: Measurement<UnitLength> {
+        let tensOfMeters = max(1, meters / 10).rounded(.down)
+        let distanceM = tensOfMeters * 10
+        return Measurement(value: distanceM, unit: .meters)
+    }
+
+    var kilometersOneDecimalRounded: Measurement<UnitLength> {
+        let hundredsOfMeters = (meters / 100).rounded(.down)
+        let distanceKm = (hundredsOfMeters / 10)
+        return Measurement(value: distanceKm, unit: .kilometers)
+    }
 
     // correlated with Dart extension double.formatDistance()
     // mapness/lib/features/path_nav/lib/number_formatters.dart:6
-    private func formatDistance(_ measurement: Measurement<UnitLength>)
-        -> Measurement<UnitLength>
-    {
-        return measurement.meters >= 1000
-            ? measurement.converted(to: .kilometers)
-            : measurement.decametersRounded
+    var formatDistance: Measurement<UnitLength> {
+        return meters >= 1000
+            ? kilometersOneDecimalRounded
+            : decametersRounded
     }
 
     // correlated with Dart ManeuverEventHandler.formatMeters(int millis)
     // urbi_map/dgis_map_platform_interface/lib/src/control_handlers/navigation/maneuver_event_handler.dart:47
-    private func formatMeters(_ measurement: Measurement<UnitLength>)
-        -> Measurement<UnitLength>
-    {
+    var formatMeters: Measurement<UnitLength> {
+        let measurement = self
         let meters = measurement.meters
 
         if meters > 3000 {
@@ -231,10 +247,7 @@ class NavigationSessionManeuvers {
 
         if meters > 1000 {
             // We show in kilometers with an accuracy of one decimal place
-            let hundredsOfMeters = (meters / 100).rounded(.down)
-            let distanceKm = (hundredsOfMeters / 10).rounded(.down)
-            return Measurement(
-                value: distanceKm.rounded(.down), unit: .kilometers)
+            return kilometersOneDecimalRounded
         }
 
         if meters > 500 {
@@ -257,19 +270,6 @@ class NavigationSessionManeuvers {
 
         // We show with an accuracy of up to 10 m
         return measurement.decametersRounded
-    }
-}
-
-extension Measurement<UnitLength> {
-    var meters: Double {
-        converted(to: .meters).value
-    }
-
-    // meters rounded to decameters 420 410 400
-    var decametersRounded: Measurement<UnitLength> {
-        let tensOfMeters = max(1, meters / 10).rounded(.down)
-        let distanceM = tensOfMeters * 10
-        return Measurement(value: distanceM, unit: .meters)
     }
 }
 

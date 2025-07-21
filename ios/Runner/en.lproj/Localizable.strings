@@ -1,5 +1,12 @@
 "mainScreenBarAccept" = "Accept";
+"mainScreenBarCancelButton" = "Cancel";
 "mainScreenBarFinishButton" = "Finish";
+"betterRouteDialogTitle" = "Better route";
+"betterRouteDialogStartButton" = "Start";
+"betterRouteDialogCloseButton" = "Close";
+"tripPreviewStartButton" = "Start";
+"tripPreviewMoreRoutesButton" = "Route Options";
+"tripPreviewBackButton" = "Back";
 "searchScreenGridHistory" = "History";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "Nothing was found";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "Try changing your query a little";
