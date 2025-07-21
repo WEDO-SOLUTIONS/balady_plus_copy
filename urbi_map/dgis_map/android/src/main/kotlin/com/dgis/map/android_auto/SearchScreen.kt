@@ -20,7 +20,7 @@ import ru.dgis.sdk.directory.Suggest
 class SearchScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
-    private val initialQuery: String? = null
+    private val initialQuery: String? = null,
 ) : Screen(carContext) {
 
     private var state: SearchScreenState = SearchScreenState.Loading
@@ -117,17 +117,17 @@ class SearchScreen(
                 }
 
                 for (item in items) {
-                    val markerPosition = item.markerPosition!!
                     itemList.addItem(
                         Row.Builder().setTitle(item.title).addText(item.makeAddressString())
                             .setOnClickListener {
                                 searchHistory.addItem(SearchHistoryItem(item))
-                                mapController.setRouteParams(
-                                    markerPosition.latitude.value,
-                                    markerPosition.longitude.value,
-                                    item.id
+                                carContext.getCarService(ScreenManager::class.java).push(
+                                    RoutePreviewScreen(
+                                        carContext,
+                                        mapController,
+                                        item,
+                                    )
                                 )
-                                carContext.getCarService(ScreenManager::class.java).popToRoot()
                             }.build()
                     )
                 }
@@ -152,18 +152,18 @@ class SearchScreen(
         } else {
             for (item in items) {
                 val dgisObject = item.handler.asObjectHandler!!
-                val markerPosition = dgisObject.item.markerPosition!!
 
                 itemList.addItem(
                     Row.Builder().setTitle(item.title.text).addText(item.subtitle.text)
                         .setOnClickListener {
                             searchHistory.addItem(SearchHistoryItem(dgisObject.item))
-                            mapController.setRouteParams(
-                                markerPosition.latitude.value,
-                                markerPosition.longitude.value,
-                                dgisObject.item.id
+                            carContext.getCarService(ScreenManager::class.java).push(
+                                RoutePreviewScreen(
+                                    carContext,
+                                    mapController,
+                                    dgisObject.item,
+                                )
                             )
-                            carContext.getCarService(ScreenManager::class.java).popToRoot()
                         }.build()
                 )
             }

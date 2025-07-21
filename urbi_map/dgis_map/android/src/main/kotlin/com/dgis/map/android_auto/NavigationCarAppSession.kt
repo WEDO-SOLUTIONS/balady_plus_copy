@@ -180,14 +180,10 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     }
 
     private fun getLocale(): Locale {
-        val locale = when (sharedPrefs.getString(SharedPrefs.languageKey)) {
-            "english" -> Locale("en")
-            "arabic" -> Locale("ar")
-            else -> if (context.resources.configuration.locales.get(0).language.lowercase()
-                    .contains("en")
-            ) Locale("en") else Locale("ar")
+        return when (carMapController.getLanguage()) {
+            Language.ENGLISH -> Locale("en")
+            Language.ARABIC -> Locale("ar")
         }
-        return locale
     }
 
     private companion object {

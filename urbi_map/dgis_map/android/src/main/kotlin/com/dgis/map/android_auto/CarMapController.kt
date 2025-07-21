@@ -3,10 +3,12 @@ package com.dgis.map.android_auto
 import android.location.Location
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.android_auto.settings.NotificationVolume
+import com.dgis.map.android_auto.CarNavigationHandler.NavigationListener
 import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
+import ru.dgis.sdk.StatefulChannel
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.directory.DirectoryObject
@@ -43,6 +45,7 @@ import ru.dgis.sdk.routing.CarRouteSearchOptions
 import ru.dgis.sdk.routing.RouteEditor
 import ru.dgis.sdk.routing.RouteEditorRouteParams
 import ru.dgis.sdk.routing.RouteEditorRoutesInfo
+import ru.dgis.sdk.routing.RouteIndex
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.traffic.TrafficControlModel
@@ -67,7 +70,7 @@ class CarMapController(
         )
     private val routeEditor = RouteEditor(sdkContext)
     private val routeEditorSource = RouteEditorSource(sdkContext, routeEditor).apply {
-        setShowOnlyActiveRoute(true)
+        setShowOnlyActiveRoute(false)
     }
 
     private var map: DgisMap? = null
@@ -77,6 +80,7 @@ class CarMapController(
     private var myLocationControlModel: MyLocationControlModel? = null
     private var zoomControlModel: ZoomControlModel? = null
     private var trafficControlModel: TrafficControlModel? = null
+    private var routeInfoListener: RouteInfoListener? = null
 
     private val parkingAttrName = "parkingOn"
 
@@ -197,6 +201,14 @@ class CarMapController(
 
     fun resetNavigationListener() {
         navigationHandler.resetNavigationListener()
+    }
+
+    fun setRouteInfoListener(listener: RouteInfoListener) {
+        routeInfoListener = listener
+    }
+
+    fun resetRouteInfoListener() {
+        routeInfoListener = null
     }
 
     fun startNavigationSimulation() {
@@ -349,6 +361,10 @@ class CarMapController(
             sharedPrefs.suggestBetterRoad = value
         }
 
+    fun getLanguage(): Language {
+        return sharedPrefs.getLanguage()
+    }
+
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
         val startPoint = locationSource.lastLocation?.let {
             RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
@@ -386,9 +402,16 @@ class CarMapController(
                 it.camera.move(cameraPosition, animationType = CameraAnimationType.LINEAR)
             }
 
-            // TODO(Sergei): remove startNavigation call when route overview screen is implemented
-            startNavigation(routesInfo.routeParams)
+            routeInfoListener?.onRoutesInfoChanged(routesInfo)
         }
+    }
+
+    fun setActiveRouteIndex(index: Int) {
+        routeEditor.setActiveRouteIndex(RouteIndex(index.toLong()))
+    }
+
+    fun hideRoutes() {
+        routeEditorSource.setRoutesVisible(false)
     }
 
     fun startNavigation(routeParams: RouteEditorRouteParams) {
@@ -457,4 +480,8 @@ class CarMapController(
         closeables.forEach(AutoCloseable::close)
         map?.close()
     }
+}
+
+interface RouteInfoListener {
+    fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo)
 }
