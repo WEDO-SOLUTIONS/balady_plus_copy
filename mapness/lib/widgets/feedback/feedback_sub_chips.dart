@@ -55,20 +55,6 @@ class _FeedbackSubChipsState extends State<FeedbackSubChips> {
           },
         ),
       );
-
-  ChipIconWidget iconBuilder({
-    required BuildContext context,
-    required String iconUrl,
-  }) =>
-      ChipIconWidget(
-        ({required isSelected}) => SvgPicture.network(
-          iconUrl,
-          colorFilter: ColorFilter.mode(
-            isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary,
-            BlendMode.srcIn,
-          ),
-        ),
-      );
 }
 
 class _FeedbackSubChipsSelector extends StatefulWidget {
