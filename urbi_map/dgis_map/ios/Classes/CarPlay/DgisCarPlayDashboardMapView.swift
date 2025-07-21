@@ -8,6 +8,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
     private var map: Map?
     private var mapView: (UIView & IMapView)?
     private var myLocationControlModel: MyLocationControlModel?
+    private var myLocationSource: MyLocationMapObjectSource?
     
     private var cancellables = Set<Cancellable>()
     
@@ -25,13 +26,15 @@ class DgisCarPlayDashboardMapView: UIViewController {
         
         myLocationControlModel = MyLocationControlModel(map: map)
         
-        map.addSource(source: MyLocationMapObjectSource(
+        let myLocationSource = MyLocationMapObjectSource(
             context: context,
             controllerSettings: MyLocationControllerSettings(
                 bearingSource: .auto
             ),
             markerType: .model
-        ))
+        )
+        self.myLocationSource = myLocationSource
+        map.addSource(source: myLocationSource)
         
         if let location = try? sdk.locationService.lastLocation?.coordinates {
             try? map.camera.setPosition(
@@ -88,6 +91,18 @@ class DgisCarPlayDashboardMapView: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        if let map = self.map {
+            if let myLocationSource = self.myLocationSource {
+                map.removeSource(source: myLocationSource)
+                self.myLocationSource = nil
+            }
+            
+            DgisMapInitializer.shared.getNavigationManager().mapManager.removeMap(map: map)
+            self.map = nil
+        }
+        mapView?.subviews.forEach { $0.removeFromSuperview() }
+        mapView = nil
+        myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
     }
 }

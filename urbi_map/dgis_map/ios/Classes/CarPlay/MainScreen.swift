@@ -60,6 +60,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mainLeadFactories = []
         panningLeadFactories = []
         navigationSessionManeuvers.cancel()
+        window.rootViewController = nil
     }
 
     private lazy var mainLeadFactories: [() -> CPBarButton] = [
