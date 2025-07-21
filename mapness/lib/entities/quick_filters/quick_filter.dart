@@ -48,8 +48,8 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.eatOut => PlacesIcons.restaurant,
         QuickFilter.mosques => PlacesIcons.mosques,
         QuickFilter.markets => PlacesIcons.markets,
-        QuickFilter.hotels => PlacesIcons.hotels,
-        QuickFilter.fuel => PlacesIcons.gasstation,
+        QuickFilter.hotels => PlacesIcons.hotelsFilled,
+        QuickFilter.fuel => PlacesIcons.gasstationFilled,
       };
 
   MapMarkersType? get markerType => switch (this) {
