@@ -39,12 +39,6 @@ class _LandscapeLayout extends StatelessWidget {
                   children: [
                     maneuverAndLimitWidget,
                     const Spacer(),
-                    if (navType == RouteSearchOptionsMessage.pedestrian)
-                      Padding(
-                        padding: padding,
-                        child: const IndoorControl(),
-                      ),
-                    const Spacer(flex: 3),
                   ],
                 ),
               ),
