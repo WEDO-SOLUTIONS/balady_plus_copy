@@ -11,3 +11,8 @@
 "settingsScreenSound" = "Sound";
 "settingsScreenParking" = "Parking";
 "navigationRerouting" = "Rerouting…";
+"quickFilterEatOut" = "To eat";
+"quickFilterMosques" = "Mosque";
+"quickFilterMarkets" = "Hypermarket";
+"quickFilterHotels" = "Hotel";
+"quickFilterFuel" = "Gas station";

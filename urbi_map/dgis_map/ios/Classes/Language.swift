@@ -4,6 +4,17 @@ import Foundation
 enum Language: String {
     case en = "english"
     case ar = "arabic"
+
+    var identifier: String {
+        switch self {
+        case .en: "en_US"
+        case .ar: "ar_SA"
+        }
+    }
+
+    var locale: Locale {
+        Locale(identifier: identifier)
+    }
 }
 
 private var bundleKey: UInt8 = 0
@@ -15,13 +26,13 @@ extension Bundle {
         else { return }
         setBundle(for: language)
     }
-    
+
     static func setBundle(for language: Language) {
         localizedBundle = getBundle(
             languageString: String(describing: language)
         )
     }
-    
+
     static func swizzleLocalization() {
         guard self == Bundle.self else { return }
 

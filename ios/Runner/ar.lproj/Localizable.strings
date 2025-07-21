@@ -11,3 +11,8 @@
 "settingsScreenSound" = "الصوت";
 "settingsScreenParking" = "الموقف";
 "navigationRerouting" = "إعادة التوجيه…";
+"quickFilterEatOut" = "المطاعم";
+"quickFilterMosques" = "المساجد";
+"quickFilterMarkets" = "أماكن التسوق";
+"quickFilterHotels" = "الفنادق";
+"quickFilterFuel" = "محطات الوقود";
