@@ -23,7 +23,11 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.coordinates.Latitude
+import ru.dgis.sdk.coordinates.Longitude
 import ru.dgis.sdk.directory.DirectoryObject
+import ru.dgis.sdk.geometry.distance
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.routing.RouteEditorRoutesInfo
 import ru.dgis.sdk.routing.meters
@@ -146,18 +150,12 @@ class RoutePreviewScreen(
                 AndroidAutoUtils.createDistance(distanceInMeters)
             )
 
-            val title = SpannableString("${directoryObject.title}\n ")
-            val spanStart = title.length
-            title.setSpan(
-                distanceSpan,
-                spanStart - 1,
-                spanStart,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            val text = SpannableString("  \n${directoryObject.makeAddressString()}")
+            text.setSpan(distanceSpan, 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
             val pane = Pane.Builder()
             pane.addRow(
-                Row.Builder().setTitle(title).addText(directoryObject.makeAddressString()).build()
+                Row.Builder().setTitle(directoryObject.title).addText(text).build()
             )
             val phone = directoryObject.contactInfos.firstOrNull { it.type == "phone" }?.value
             if (phone != null) {
