@@ -24,6 +24,12 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
   final sortingSelected = <Sorting>{};
 
   @override
+  Set<Category> get categories => categoriesSelected;
+
+  @override
+  Set<RecommendedType> get recommendedTypes => recommendedTypesSelected;
+
+  @override
   late AsyncIterable<OfferView> asyncIterableOffers = createOffersAsyncIterable();
 
   AsyncIterable<OfferView> createOffersAsyncIterable() {

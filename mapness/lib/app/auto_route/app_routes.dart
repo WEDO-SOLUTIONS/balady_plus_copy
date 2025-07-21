@@ -238,6 +238,10 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_favourite_offers_screen',
               page: FavouriteOffersScreenViewRoute.page,
             ),
+            AppRoute(
+              path: 'saudi_pass_offers_on_map_screen',
+              page: OffersOnMapRoute.page,
+            ),
             CustomRoute(
               path: 'saudi_pass_type_selection_dialog',
               page: TypeSelectionDialogViewRoute.page,
