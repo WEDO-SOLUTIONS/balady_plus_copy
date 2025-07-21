@@ -144,7 +144,7 @@ class SearchScreen(
 
     private fun handleSearchResult(suggests: List<Suggest>) {
         val items =
-            suggests.filter { it.handler.asObjectHandler != null || it.handler.asObjectHandler!!.item.markerPosition != null }
+            suggests.filter { it.handler.asObjectHandler != null && it.handler.asObjectHandler!!.item.markerPosition != null }
         val itemList = ItemList.Builder()
 
         if (items.isEmpty()) {

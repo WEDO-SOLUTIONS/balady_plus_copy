@@ -59,9 +59,12 @@ class CarMapController(
     private val closeables = mutableListOf<AutoCloseable>()
     private val sdkContext = DgisMapInitializer.getSdkContext()
     private val locationSource = DgisMapInitializer.getLocationSource()
-    private val searchHandler = CarSearchHandler(SearchManager.createOnlineManager(sdkContext))
     private var navigationHandler =
-        CarNavigationHandler(DgisMapInitializer.getNavigationManager(), searchHandler, sharedPrefs)
+        CarNavigationHandler(
+            DgisMapInitializer.getNavigationManager(),
+            sharedPrefs,
+            ::searchByDirectoryObjectId
+        )
     private val routeEditor = RouteEditor(sdkContext)
     private val routeEditorSource = RouteEditorSource(sdkContext, routeEditor).apply {
         setShowOnlyActiveRoute(true)
@@ -69,6 +72,7 @@ class CarMapController(
 
     private var map: DgisMap? = null
 
+    private var searchHandler: CarSearchHandler? = null
     private var mapObjectManager: MapObjectManager? = null
     private var myLocationControlModel: MyLocationControlModel? = null
     private var zoomControlModel: ZoomControlModel? = null
@@ -91,6 +95,7 @@ class CarMapController(
         map.addSource(mapSource)
         map.setAttribute("camerasOn", AttributeValue(true))
 
+        searchHandler = CarSearchHandler(SearchManager.createOnlineManager(sdkContext), map)
         myLocationControlModel = MyLocationControlModel(map)
         zoomControlModel = ZoomControlModel(map)
         trafficControlModel = TrafficControlModel(map)
@@ -222,27 +227,27 @@ class CarMapController(
     fun searchByDirectoryObjectId(
         objectId: DgisObjectId,
         resultCallback: (result: DirectoryObject?) -> Unit,
-        errorCallback: ((exception: Exception) -> Unit)? = null
+        errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
-        searchHandler.searchByDirectoryObjectId(objectId, resultCallback, errorCallback)
+        searchHandler?.searchByDirectoryObjectId(objectId, resultCallback, errorCallback)
     }
 
     fun search(
         queryText: String,
         pageSize: Int,
         resultCallback: (result: List<DirectoryObject>) -> Unit,
-        errorCallback: ((exception: Exception) -> Unit)? = null
+        errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
-        searchHandler.search(queryText, pageSize, resultCallback, errorCallback)
+        searchHandler?.search(queryText, pageSize, resultCallback, errorCallback)
     }
 
     fun suggest(
         queryText: String,
         limit: Int,
         resultCallback: (result: List<Suggest>) -> Unit,
-        errorCallback: ((exception: Exception) -> Unit)? = null
+        errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
-        searchHandler.suggest(queryText, limit, resultCallback, errorCallback)
+        searchHandler?.suggest(queryText, limit, resultCallback, errorCallback)
     }
 
 
@@ -251,7 +256,8 @@ class CarMapController(
         navigationHandler.toggleVoiceInstruction(sharedPrefs.voiceInstructionsValue)
 
         // Traffic
-        val trafficStatus = trafficControlModel?.stateChannel?.value?.status ?: TrafficControlStatus.DISABLED
+        val trafficStatus =
+            trafficControlModel?.stateChannel?.value?.status ?: TrafficControlStatus.DISABLED
         val currentTrafficValue = trafficStatus == TrafficControlStatus.ENABLED
         if (sharedPrefs.trafficValue != currentTrafficValue) {
             trafficControlModel?.onClicked()
@@ -298,10 +304,10 @@ class CarMapController(
 
     val isParkingOnNow: Boolean?
         get() {
-          val value = map?.isParkingOn
-          if (value != sharedPrefs.parkingValue) {
-              sharedPrefs.parkingValue = value == true
-          }
+            val value = map?.isParkingOn
+            if (value != sharedPrefs.parkingValue) {
+                sharedPrefs.parkingValue = value == true
+            }
             return value
         }
 
@@ -325,11 +331,15 @@ class CarMapController(
     // -- Route Settings
     var avoidTollRoads: Boolean
         get() = sharedPrefs.avoidTollRoads
-        set(value) {  sharedPrefs.avoidTollRoads = value }
+        set(value) {
+            sharedPrefs.avoidTollRoads = value
+        }
 
     var avoidUnpavedRoads: Boolean
         get() = sharedPrefs.avoidUnpavedRoads
-        set(value) { sharedPrefs.avoidUnpavedRoads = value }
+        set(value) {
+            sharedPrefs.avoidUnpavedRoads = value
+        }
 
     var suggestBetterRoad: Boolean
         get() {
