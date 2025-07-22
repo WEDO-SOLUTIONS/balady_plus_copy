@@ -117,14 +117,13 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
                           [
                             Spacing.$4x.heightBox,
                             AppButton(
-                              buttonColorScheme: ButtonColorScheme.primary,
+                              buttonColorScheme: ButtonColorScheme.accent,
                               primaryLabel: l10n.switchOff,
                               onTap: switchOff,
                             ),
                             Spacing.$3x.heightBox,
                             AppButton(
-                              buttonColorScheme: ButtonColorScheme.tertiary,
-                              textColor: colorsV2.foregroundSoft,
+                              buttonColorScheme: ButtonColorScheme.neutral,
                               primaryLabel: l10n.continueAutorun,
                               onTap: continueAutorun,
                             )
