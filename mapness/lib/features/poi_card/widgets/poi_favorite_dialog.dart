@@ -34,7 +34,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
 
   void _withPop(Future<void> future) {
     unawaited(future);
-    scrollController.close();
+    context.router.popForced();
   }
 
   @override
