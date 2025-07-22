@@ -1,5 +1,12 @@
 "mainScreenBarAccept" = "Accept";
+"mainScreenBarCancelButton" = "Cancel";
 "mainScreenBarFinishButton" = "Finish";
+"betterRouteDialogTitle" = "Better route";
+"betterRouteDialogStartButton" = "Start";
+"betterRouteDialogCloseButton" = "Close";
+"tripPreviewStartButton" = "Start";
+"tripPreviewMoreRoutesButton" = "Route Options";
+"tripPreviewBackButton" = "Back";
 "searchScreenGridHistory" = "History";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "Nothing was found";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "Try changing your query a little";
@@ -11,3 +18,8 @@
 "settingsScreenSound" = "Sound";
 "settingsScreenParking" = "Parking";
 "navigationRerouting" = "Rerouting…";
+"quickFilterEatOut" = "To eat";
+"quickFilterMosques" = "Mosque";
+"quickFilterMarkets" = "Hypermarket";
+"quickFilterHotels" = "Hotel";
+"quickFilterFuel" = "Gas station";

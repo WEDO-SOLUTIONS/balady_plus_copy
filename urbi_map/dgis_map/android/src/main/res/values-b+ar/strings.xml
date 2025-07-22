@@ -18,11 +18,21 @@
 
   <!-- Search -->
   <string name="search_history">تاريخ</string>
+  <string name="search_mosque">المساجد</string>
+  <string name="search_gas_station">محطات الوقود</string>
+  <string name="search_hypermarket">أماكن التسوق</string>
+  <string name="search_to_eat">المطاعم</string>
+  <string name="search_hotel">الفنادق</string>
   <string name="search_hint">بحث</string>
   <string name="search_suggestion">أدخل عنوانًا أو اسم مكان مثل مركز تجاري أو مطعم</string>
   <string name="search_nothing_found">لم يتم العثور على شيء</string>
   <string name="enter_from_keyboard">لوحة المفاتيح</string>
   <string name="empty_trips_history_message">هنا ستجد قائمة برحلاتك</string>
+
+  <!-- Route overview -->
+  <string name="route_overview_title">نظرة عامة على الطريق</string>
+  <string name="go_button">في الطريق</string>
+  <string name="phone_button">الهاتف</string>
 
   <!-- Common -->
   <string name="driving_notification_title">التنقل باستخدام خرائط بلدي</string>

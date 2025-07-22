@@ -691,6 +691,7 @@ digraph "" {
   "/lib/shared/providers/dgis_network.dart" [label="dgis_network"];
   "/lib/shared/utils/location_setup_helper.dart" [label="location_setup_helper"];
   "/lib/shared/utils/language_detector.dart" [label="language_detector"];
+  "/lib/shared/utils/app_config_loader.dart" [label="app_config_loader"];
   "/lib/shared/utils/copy_to_clipboard.dart" [label="copy_to_clipboard"];
   "/lib/shared/utils/text_utils/voice_settings_utils.dart" [label="voice_settings_utils"];
   "/lib/shared/utils/text_utils/phone_number_formatter.dart" [label="phone_number_formatter"];
@@ -2230,6 +2231,7 @@ digraph "" {
           label="utils";
           "/lib/shared/utils/location_setup_helper.dart";
           "/lib/shared/utils/language_detector.dart";
+          "/lib/shared/utils/app_config_loader.dart";
           "/lib/shared/utils/copy_to_clipboard.dart";
           "/lib/shared/utils/common_function.dart";
           subgraph "cluster~/lib/shared/utils/text_utils" {
@@ -2757,7 +2759,13 @@ digraph "" {
   "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/providers/map/selected_marker.dart";
   "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/ui/markers/markers.dart";
   "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/domain/model/poi_content/src/poi_content_about.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/domain/model/poi_content/src/poi_content_full_address.dart";
   "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/provider/poi_card_actions_provider.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_contacts_card.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_full_address_card.dart";
   "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
   "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
@@ -3155,7 +3163,6 @@ digraph "" {
   "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/features/weather/provider/forecast_weather_provider.dart";
   "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/widgets/weather/weather_card_header.dart";
   "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/widgets/weather/weather_day_card.dart";
-  "/lib/entities/search/models/rubric_marker_info.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/entities/search/models/search_history.dart" -> "/lib/shared/lib/make_address.dart";
   "/lib/entities/app_feedback/app_feedback_tag_mapper.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/entities/path_nav/models/path_nav_eta.dart" -> "/lib/features/path_nav/lib/enums.dart";
@@ -3180,7 +3187,6 @@ digraph "" {
   "/lib/entities/feedback/dto/feedback_schedule_payload_dto.dart" -> "/lib/shared/lib/weekday_entity.dart";
   "/lib/entities/feedback/feedback_form_payload_entity.dart" -> "/lib/entities/feedback/dto/feedback_field_payload_dto.dart";
   "/lib/entities/profile/user_profile_data.dart" -> "/lib/shared/providers/app_language.dart";
-  "/lib/entities/quick_filters/quick_filter.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/entities/quick_filters/quick_filter.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/entities/city_contain/dto/city_rect.dart" -> "/lib/entities/city_contain/dto/location_point.dart";
   "/lib/entities/favourites/favourite_item.dart" -> "/lib/shared/entities/coordinates.dart";
@@ -3231,7 +3237,6 @@ digraph "" {
   "/lib/features/search/ui/suggest_item.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/features/search/ui/suggest_item.dart" -> "/lib/widgets/routing/lib/duration_distance_fmt.dart";
   "/lib/features/search/ui/add_place_item.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/features/search/models/search_state.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/features/search/providers/search_pagination.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/search/providers/search_history.dart" -> "/lib/entities/search/models/search_history.dart";
   "/lib/features/search/providers/search_history.dart" -> "/lib/shared/providers/hive.dart";
@@ -4200,12 +4205,14 @@ digraph "" {
   "/lib/entry_point.dart" -> "/lib/shared/providers/hive.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/location.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/entry_point.dart" -> "/lib/shared/providers/map/rubric_marker_type_mapper.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/map/selected_marker.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/media_query.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/entry_point.dart" -> "/lib/shared/providers/vendor_config.dart";
   "/lib/entry_point.dart" -> "/lib/shared/ui/loading/loading_overlay.dart";
   "/lib/entry_point.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
+  "/lib/entry_point.dart" -> "/lib/shared/utils/app_config_loader.dart";
   "/lib/entry_point.dart" -> "/lib/widgets/scopes/global_scopes.dart";
   "/lib/entry_point.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/entry_point.dart" -> "/lib/features/search/ui/search_scope.dart";
@@ -4358,8 +4365,7 @@ digraph "" {
   "/lib/shared/providers/map/directory_object_from_dgis_id.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/shared/providers/map/indoor_levels.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/shared/providers/map/rubric_marker_type_mapper.dart" -> "/lib/entities/search/models/rubric_marker_info.dart";
-  "/lib/shared/providers/map/rubric_marker_type_mapper.dart" -> "/lib/shared/constants/remote_config_constants.dart";
-  "/lib/shared/providers/map/rubric_marker_type_mapper.dart" -> "/lib/shared/extensions/markers_from_search.dart";
+  "/lib/shared/providers/map/rubric_marker_type_mapper.dart" -> "/lib/shared/utils/app_config_loader.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/extensions/change_marker_options_ext.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/extensions/string_ext.dart";
@@ -4415,6 +4421,8 @@ digraph "" {
   "/lib/shared/providers/dgis_network.dart" -> "/lib/shared/providers/dgis_environment.dart";
   "/lib/shared/providers/dgis_network.dart" -> "/lib/shared/providers/package_info.dart";
   "/lib/shared/providers/dgis_network.dart" -> "/lib/shared/providers/uuid_provider.dart";
+  "/lib/shared/utils/app_config_loader.dart" -> "/lib/shared/constants/constants.dart";
+  "/lib/shared/utils/app_config_loader.dart" -> "/lib/shared/constants/remote_config_constants.dart";
   "/lib/shared/utils/copy_to_clipboard.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/shared/utils/text_utils/voice_settings_utils.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/constants/info_mock.dart" -> "/lib/shared/constants/names_ar.dart";
@@ -4435,7 +4443,6 @@ digraph "" {
   "/lib/shared/extensions/parking_store_model_ext.dart" -> "/lib/features/parking_spot/model/parking_store_model.dart";
   "/lib/shared/extensions/parking_store_model_ext.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/shared/extensions/parking_store_model_ext.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/shared/extensions/int_extention.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/pages/landing/landing_state_mapper.dart";

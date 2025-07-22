@@ -127,14 +127,9 @@ class NavigationHandler {
     }
     
     private func betterRouteListener(_ routeInfo: BetterRouteInfo?) {
-        let activeRouteDuration = self.navigationManager.uiModel.duration
-        var betterRouteDuration: TimeInterval? = nil
         let durationProfit: Int
-        if let first = routeInfo?.trafficRoute.route.geometry.first {
-            betterRouteDuration = routeInfo!.trafficRoute.traffic.durations.calculateDuration(routePoint: first.point).rounded()
-        }
-        if let activeRouteDuration = activeRouteDuration, let betterRouteDuration = betterRouteDuration {
-            durationProfit = Int(activeRouteDuration - betterRouteDuration)
+        if let routeInfo = routeInfo {
+            durationProfit = calculateDurationProfit(navigationManager.uiModel, routeInfo)
         } else {
             durationProfit = 0
         }
@@ -489,4 +484,19 @@ class NavigationHandler {
             ))
         )
     }
+}
+
+func calculateDurationProfit(_ uiModel: Model,_ routeInfo: BetterRouteInfo) -> Int {
+    let activeRouteDuration = uiModel.duration
+    var betterRouteDuration: TimeInterval? = nil
+    let durationProfit: Int
+    if let first = routeInfo.trafficRoute.route.geometry.first {
+        betterRouteDuration = routeInfo.trafficRoute.traffic.durations.calculateDuration(routePoint: first.point).rounded()
+    }
+    if let activeRouteDuration = activeRouteDuration, let betterRouteDuration = betterRouteDuration {
+        durationProfit = Int(activeRouteDuration - betterRouteDuration)
+    } else {
+        durationProfit = 0
+    }
+    return durationProfit
 }

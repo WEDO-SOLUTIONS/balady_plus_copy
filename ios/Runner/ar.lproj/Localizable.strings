@@ -1,5 +1,12 @@
 "mainScreenBarAccept" = "قبول";
+"mainScreenBarCancelButton" = "إلغاء";
 "mainScreenBarFinishButton" = "إنهاء";
+"betterRouteDialogTitle" = "طريق أفضل";
+"betterRouteDialogStartButton" = "بدء";
+"betterRouteDialogCloseButton" = "إغلاق";
+"tripPreviewStartButton" = "بدء";
+"tripPreviewMoreRoutesButton" = "مسارات بديلة";
+"tripPreviewBackButton" = "رجوع";
 "searchScreenGridHistory" = "تاريخ";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "لم يتم العثور على شيء";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "حاول تغيير استعلامك قليلاً";
@@ -11,3 +18,8 @@
 "settingsScreenSound" = "الصوت";
 "settingsScreenParking" = "الموقف";
 "navigationRerouting" = "إعادة التوجيه…";
+"quickFilterEatOut" = "المطاعم";
+"quickFilterMosques" = "المساجد";
+"quickFilterMarkets" = "أماكن التسوق";
+"quickFilterHotels" = "الفنادق";
+"quickFilterFuel" = "محطات الوقود";

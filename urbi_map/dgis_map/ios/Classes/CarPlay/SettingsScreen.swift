@@ -80,10 +80,7 @@ class SettingsScreen: NSObject {
             gridButtons: [trafficBtn, soundBtn, parkingBtn]
         )
        
-        gridTemplate.backButton = CPBarButton(
-            title: NSLocalizedString("anyScreenBackButton", comment: ""),
-            handler: self.onBackTap
-        )
+        gridTemplate.backButton = CPBarButton.makeBack(self.onBackTap)
         
         languageCancellable = userDefaultsPublished.$languageString.sink { _ in
             let trafficBtn = self.createTrafficButton()
@@ -95,9 +92,8 @@ class SettingsScreen: NSObject {
                 gridButtons: [trafficBtn, soundBtn, parkingBtn]
             )
            
-            self.gridTemplate.backButton = CPBarButton(
-                title: NSLocalizedString("anyScreenBackButton", comment: ""),
-                handler: self.onBackTap
+            self.gridTemplate.backButton = CPBarButton.makeBack(
+                self.onBackTap
             )
         }
         

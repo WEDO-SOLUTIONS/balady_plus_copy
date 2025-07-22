@@ -38,6 +38,41 @@ extension DirectoryObject {
             group: self.group.map { $0.toMessage() }
         )
     }
+    
+    var addressString: String {
+        guard let address = address else { return "" }
+
+        let delimiter = ", "
+
+        let addressComponents = address.components.reduce("") {
+            partial, addressComponent in
+            let componentString =
+                switch addressComponent {
+                case .streetAddress(let addressStreet):
+                    addressStreet.number + delimiter + addressStreet.street
+                case .number(let number):
+                    number.number
+                case .location(let location):
+                    location.comment
+                @unknown default:
+                    ""
+                }
+            return partial + componentString + delimiter
+        }
+
+        let drillDownTypes: Set = ["city", "district"]
+
+        let drillDown = address.drillDown.filter {
+            addressAdmDiv in drillDownTypes.contains(addressAdmDiv.type)
+        }.reduce("") {
+            partial, addressAdmDiv in partial + addressAdmDiv.name + delimiter
+        }
+
+        let result = addressComponents + drillDown
+
+        return result.hasSuffix(delimiter)
+            ? String(result.dropLast(delimiter.count)) : result
+    }
 }
 
 extension Array where Element==ObjectType {
