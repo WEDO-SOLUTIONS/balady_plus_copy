@@ -408,6 +408,12 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/sa_flag.svg
   SvgGenImage get saFlag => const SvgGenImage('assets/icons/svg/sa_flag.svg');
 
+  /// File path: assets/icons/svg/tadalal_logo_ar.svg
+  SvgGenImage get tadalalLogoAr => const SvgGenImage('assets/icons/svg/tadalal_logo_ar.svg');
+
+  /// File path: assets/icons/svg/tadalal_logo_en.svg
+  SvgGenImage get tadalalLogoEn => const SvgGenImage('assets/icons/svg/tadalal_logo_en.svg');
+
   /// File path: assets/icons/svg/tag_arrival.svg
   SvgGenImage get tagArrival => const SvgGenImage('assets/icons/svg/tag_arrival.svg');
 
@@ -485,6 +491,8 @@ class $AssetsIconsSvgGen {
         percent,
         photoGallery,
         saFlag,
+        tadalalLogoAr,
+        tadalalLogoEn,
         tagArrival,
         tagDesign,
         tagDirections,
