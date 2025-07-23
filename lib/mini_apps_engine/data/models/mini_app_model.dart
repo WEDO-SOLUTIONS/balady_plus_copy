@@ -5,14 +5,17 @@ class MiniAppModel {
     this.description,
     this.entity,
     this.requirements,
+    this.cdnLogoRef,
     this.logoKey,
     this.latestVersion,});
+
 
   MiniAppModel.fromJson(dynamic json) {
     id = json['id'];
     serviceName = json['serviceName'];
     serviceKey = json['serviceKey'];
     description = json['description'];
+    cdnLogoRef = json['cdnLogoRef'];
     entity = json['entity'];
     logoKey = json['logoKey'];
     latestVersion = json['latestVersion'] != null ? LatestVersion.fromJson(json['latestVersion']) : null;
@@ -27,6 +30,7 @@ class MiniAppModel {
   String? serviceName;
   List<Requirements>? requirements;
   String? serviceKey;
+  String? cdnLogoRef;
   String? description;
   String? entity;
   String? logoKey;
@@ -34,6 +38,7 @@ class MiniAppModel {
   MiniAppModel copyWith({  String? id,
     String? serviceName,
     String? description,
+    String? cdnLogoRef,
     String? entity,
     String? logoKey,
     List<Requirements>? requirements,
@@ -42,6 +47,7 @@ class MiniAppModel {
     serviceName: serviceName ?? this.serviceName,
     description: description ?? this.description,
     entity: entity ?? this.entity,
+    cdnLogoRef: cdnLogoRef ?? this.cdnLogoRef,
     requirements:requirements??this.requirements,
     logoKey: logoKey ?? this.logoKey,
     latestVersion: latestVersion ?? this.latestVersion,
