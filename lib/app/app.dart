@@ -55,9 +55,9 @@ class App extends StatelessWidget {
         //       MapViewModel(layersRepositories: sl()),
         // ),
         // BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
+        // BlocProvider.value(value: sl<ForceUpdateCubit>()),
         BlocProvider.value(value: sl<LocationCubit>()),
         BlocProvider.value(value: sl<SplashCubit>()),
-        BlocProvider.value(value: sl<ForceUpdateCubit>()),
         BlocProvider.value(value: sl<HomeMiniAppsListCubit>()),
         // BlocProvider<DashboardBloc>(
         //   create: (_) => sl<DashboardBloc>()..add(DashboardEventInitial()),

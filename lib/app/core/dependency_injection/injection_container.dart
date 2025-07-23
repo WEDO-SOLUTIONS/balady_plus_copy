@@ -136,7 +136,7 @@ void initialize() {
 
   sl.registerLazySingleton(() => BaladyServices(webService: sl()));
 
-  sl.registerLazySingleton(() => ForceUpdateCubit());
+  // sl.registerLazySingleton(() => ForceUpdateCubit());
 
   sl.registerLazySingleton<UrbiSearchProvider>(() => UrbiSearchProvider());
 

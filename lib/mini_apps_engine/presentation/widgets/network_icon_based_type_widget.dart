@@ -9,6 +9,7 @@ import 'package:mapness/shared/utils/common_function.dart';
 
 class ImageIconBasedTypeWidget extends StatelessWidget {
   final String icon;
+  final String? type;
   final double iconSize;
   final Color? iconColor;
   final BoxFit fit;
@@ -16,6 +17,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
   const ImageIconBasedTypeWidget({
     super.key,
     required this.icon,
+    this.type,
     this.iconSize = 18.0,
     this.iconColor = const Color(0xff31C3B9),
     this.fit = BoxFit.contain,
@@ -42,7 +44,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
         );
       }
     } else {
-      if ((icon).isSvgIcon) {
+      if ((icon).isSvgIcon || type == "svg") {
         return CachedNetworkSVGImage(
           icon,
           placeholder: const SizedBox(

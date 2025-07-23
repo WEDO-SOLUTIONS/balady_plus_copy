@@ -60,6 +60,7 @@ class MiniAppsItemWidget extends StatelessWidget {
             children: [
               ImageIconBasedTypeWidget(
                 icon: miniApp.logoKey!,
+                type: miniApp.cdnLogoRef?.split(".").last,
                 iconSize: 48,
               ),
               const SizedBox(height: 2),
