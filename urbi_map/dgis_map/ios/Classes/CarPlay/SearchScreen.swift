@@ -58,10 +58,7 @@ class SearchScreen {
             )
         ]
         
-        gridTemplate.backButton = CPBarButton(
-            title: NSLocalizedString("anyScreenBackButton", comment: ""),
-            handler: onBackTap
-        )
+        gridTemplate.backButton = CPBarButton.makeBack(onBackTap)
 
         if #available(iOS 15, *) {
             gridTemplate.updateGridButtons(makeGridButtons())
@@ -73,6 +70,18 @@ class SearchScreen {
             interfaceController: interfaceController,
             searchHistory: searchHistory,
             searchNavigation: searchNavigation,
+            userDefaultsPublished: userDefaultsPublished
+        )
+        screen.createTemplate().show(with: interfaceController)
+    }
+
+    private func onQuickFilterTap(_ quickFilter: QuickFilter) {
+        let screen = QuickFilterSearchScreen(
+            map: map,
+            quickFilter: quickFilter,
+            searchManager: searchManager,
+            searchNavigation: searchNavigation,
+            interfaceController: interfaceController,
             userDefaultsPublished: userDefaultsPublished
         )
         screen.createTemplate().show(with: interfaceController)
@@ -98,15 +107,41 @@ class SearchScreen {
     }
 
     private func makeGridButtons() -> [CPGridButton] {
-        return [
+        var buttons = [
             CPGridButton(
                 titleVariants: [
                     NSLocalizedString("searchScreenGridHistory", comment: "")
                 ],
                 image: UIImage(named: "History")!,
                 handler: onHistoryTap
-            ),
+            )
         ]
+
+        for quickFilter in QuickFilter.allCases {
+            buttons.append(makeQuickFilterButton(for: quickFilter))
+        }
+
+        return buttons
+    }
+
+    private func makeQuickFilterButton(for quickFilter: QuickFilter)
+        -> CPGridButton
+    {
+        CPGridButton(
+            titleVariants: [
+                NSLocalizedString(
+                    "quickFilter" + quickFilter.assetKey, comment: ""
+                )
+            ],
+            image: UIImage(named: quickFilter.assetKey)!,
+            handler: { [unowned self] _ in self.onQuickFilterTap(quickFilter) }
+        )
+    }
+}
+
+extension QuickFilter {
+    fileprivate var assetKey: String {
+        rawValue.prefix(1).capitalized + rawValue.dropFirst()
     }
 }
 

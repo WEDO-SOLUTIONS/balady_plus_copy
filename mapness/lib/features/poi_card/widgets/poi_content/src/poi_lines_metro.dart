@@ -106,7 +106,7 @@ class PoiLinesMetro extends StatelessWidget {
           content: Column(
             children: List.generate(_platformsInfo.length, (index) {
               final transitionRoute = _platformsInfo[index].transitions;
-              final routeCurrent = _platformsInfo[index].name == address;
+              final routeCurrent = _platformsInfo[index].name == address || (transitionRoute.isNotEmpty && transitionRoute.any((element) => element.stationName==address,));
               return CustomPaint(
                 painter: _StationLinePainter(
                   isFirst: index == 0,

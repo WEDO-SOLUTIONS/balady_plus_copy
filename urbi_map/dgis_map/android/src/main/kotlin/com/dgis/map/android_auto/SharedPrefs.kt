@@ -6,8 +6,9 @@ import org.json.JSONObject
 import androidx.core.content.edit
 import com.dgis.map.android_auto.settings.NotificationVolume
 import com.dgis.map.map_api.SoundToggleType
+import java.util.Locale
 
-class SharedPrefs(context: Context) : AutoCloseable {
+class SharedPrefs(val context: Context) : AutoCloseable {
 
     private var sharedPrefsChangeListener: ((key: String) -> Unit)? = null
 
@@ -20,6 +21,16 @@ class SharedPrefs(context: Context) : AutoCloseable {
                 sharedPrefsChangeListener?.invoke(key.substringAfter(keyPrefix))
             }
         }
+
+    fun getLanguage(): Language {
+        return when (getString(languageKey)) {
+            "english" -> Language.ENGLISH
+            "arabic" -> Language.ARABIC
+            else -> if (context.resources.configuration.locales.get(0).language.lowercase()
+                    .contains("en")
+            ) Language.ENGLISH else Language.ARABIC
+        }
+    }
 
     fun getString(key: String): String? {
         return sharedPreferences.getString("$keyPrefix$key", null)
@@ -100,10 +111,12 @@ class SharedPrefs(context: Context) : AutoCloseable {
                 putBoolean("$keyPrefix$suggestBetterRoadKey", value)
             }
         }
+
     // Volume of the navigator voice during the navigation
     var volumeValue: NotificationVolume
         get() {
-            val str = sharedPreferences.getString("$keyPrefix$volumeKey", NotificationVolume.Quiet.name)
+            val str =
+                sharedPreferences.getString("$keyPrefix$volumeKey", NotificationVolume.Quiet.name)
             return try {
                 NotificationVolume.valueOf(str!!)
             } catch (e: IllegalArgumentException) {
@@ -143,4 +156,8 @@ class SharedPrefs(context: Context) : AutoCloseable {
     override fun close() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(prefsChangeListener)
     }
+}
+
+enum class Language {
+    ENGLISH, ARABIC
 }

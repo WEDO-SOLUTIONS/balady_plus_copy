@@ -28,7 +28,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
-  final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier).getMarkerType(rubrics);
+  final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerType(rubrics);
 
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
 

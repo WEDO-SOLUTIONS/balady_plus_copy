@@ -83,7 +83,7 @@ class EtaHeader extends HookConsumerWidget {
             onContinuePressed();
           } else if (state == PathNavState.running) {
             ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-            sheetController.open(duration: BaseRoadPanel.animationDuration);
+            sheetController.open(duration: const Duration(milliseconds: 350));
           }
         },
         child: AnimatedSwitcher(
@@ -146,7 +146,7 @@ class EtaHeader extends HookConsumerWidget {
                                     child: _Button(
                                       icon: SystemIcons.arrowCornerDownLarge,
                                       onTap: () {
-                                        sheetController.close(duration: BaseRoadPanel.animationDuration);
+                                        sheetController.close(duration: const Duration(milliseconds: 350));
                                       },
                                     ),
                                   ),

@@ -52,6 +52,7 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         let dgisCarPlayMapView = DgisCarPlayMapView(map: map, mapView: mapFactory.mapView)
         let mainScreen = MainScreen(
             map: map,
+            container: sdk,
             interfaceController: interfaceController,
             dgisCarPlayMapView: dgisCarPlayMapView,
             window: window,
