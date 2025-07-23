@@ -7,7 +7,7 @@ import 'package:balady_authorization/src/authentication/bloc/authentication_bloc
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SplashWrapper extends StatefulWidget {
+class SplashWrapper extends StatelessWidget {
   final Widget child;
 
   const SplashWrapper({
@@ -15,40 +15,11 @@ class SplashWrapper extends StatefulWidget {
     required this.child,
   }) : super(key: key);
 
-  @override
-  State<SplashWrapper> createState() => _SplashWrapperState();
-}
-
-class _SplashWrapperState extends State<SplashWrapper> {
-  bool _isInitialized = false;
-  bool _navigated = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkInitialForceUpdate();
-  }
-
-  void _checkInitialForceUpdate() {
-    final forceUpdateState = sl<ForceUpdateCubit>().state;
-    if (forceUpdateState is HaveForceUpdateState) {
-      _navigateToForceUpdate();
-    } else if (forceUpdateState is NotHaveForceUpdateState) {
-      _checkAuthentication();
-    }
-  }
-
   void _navigateToForceUpdate() {
-    if (_navigated) return;
-    _navigated = true;
-    Future.microtask(() {
-      if (mounted) NavigationService.pushAndReplaceForceUpdate();
-    });
+    NavigationService.pushAndReplaceForceUpdate();
   }
 
   void _checkAuthentication() {
-    if (_isInitialized) return;
-    _isInitialized = true;
     sl<EntryPointCubit>().hideSplash();
     sl<AuthenticationBloc>().add(CheckLoginAuthentication());
   }
@@ -63,12 +34,7 @@ class _SplashWrapperState extends State<SplashWrapper> {
           _checkAuthentication();
         }
       },
-      child: BlocListener<SplashCubit, SplashState>(
-        listener: (context, state) {
-          if (state is CompletedSplashState) _checkAuthentication();
-        },
-        child: widget.child,
-      ),
+      child: child,
     );
   }
 }
