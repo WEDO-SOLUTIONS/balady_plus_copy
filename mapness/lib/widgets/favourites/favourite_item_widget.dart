@@ -85,7 +85,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                           color: context.color.textAndIconsStatusAccent,
                         ),
                     // TODO: I think this title change from the backend side they append the title and category and add , between them
-                    title: widget.item.title.split(', ').first,
+                    title: widget.item.title.split(', ').firstOrNull ?? '',
                     subtitle: widget.item.subtitle,
                   ),
                 ),
