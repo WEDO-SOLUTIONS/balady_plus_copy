@@ -37,6 +37,8 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../../metro/metro_layer_repository.dart';
+
 part 'layers_controls.g.dart';
 
 @riverpod
@@ -182,21 +184,10 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  Future<void> _tapHandler(LayerType value) async {
-    final currentState = state.selectedType;
-
-    _cancelToken?.cancel();
-    await _viewPortSubscription?.cancel();
-    await _hideAllSelectedMarkers();
-    ref.read(poiCardClosingProvider.notifier).close();
-
-    if (currentState != null && currentState != value) {
-      await _hidePreviousLayers(currentState);
-    }
-
+  Future<void> toggleLayers(LayerType value) async {
     switch (value) {
       case LayerType.favourites:
-        await toggleFavourites(currentState);
+        await toggleFavourites();
         break;
       case LayerType.buildings:
         await toggleComplianceBuildings();
@@ -211,11 +202,26 @@ class LayersControls extends _$LayersControls {
         await toggleParking();
         break;
       case LayerType.metro:
-        toggleMetro(currentState);
+        toggleMetro();
         break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
+  }
+
+  Future<void> _tapHandler(LayerType value) async {
+    final currentState = state.selectedType;
+
+    _cancelToken?.cancel();
+    await _viewPortSubscription?.cancel();
+    await _hideAllSelectedMarkers();
+    ref.read(poiCardClosingProvider.notifier).close();
+
+    if (currentState != null && currentState != value) {
+      await _hidePreviousLayers(currentState);
+    }
+
+    await toggleLayers(value);
   }
 
   Future<void> _hidePreviousLayers(LayerType layer) async {
@@ -250,27 +256,6 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  void updateLayerInfo() {
-    final selectedLayerState = _getLayerState();
-    if (selectedLayerState != null) {
-      setSelection(selectedType: selectedLayerState);
-    } else {
-      setSelection();
-    }
-  }
-
-  LayerType? _getLayerState() => ref.read(activeLayerProvider);
-
-  Future<void> _saveLayersState(LayerType type) async {
-    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
-    await activeLayerNotifier.setActiveLayer(type);
-  }
-
-  Future<void> _removeLayersState() async {
-    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
-    await activeLayerNotifier.removeActiveLayer();
-  }
-
   Future<void> disable() async {
     if (state.selectedType != null) {
       handleTap(state.selectedType!);
@@ -293,12 +278,12 @@ class LayersControls extends _$LayersControls {
     setSelection(selectedType: type);
   }
 
-  Future<void> toggleFavourites(LayerType? currentState) async {
+  Future<void> toggleFavourites() async {
     await _viewPortSubscription?.cancel();
     await _removeAll();
     _cancelToken?.cancel();
 
-    if (currentState != (LayerType.favourites)) {
+    if (state.selectedType != (LayerType.favourites)) {
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
     } else {
@@ -307,9 +292,9 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  void toggleMetro(LayerType? currentState) {
+  void toggleMetro() {
     ref.read(metroLayerProvider.notifier).toggleMetro();
-    if (currentState != (LayerType.metro)) {
+    if (state.selectedType != (LayerType.metro)) {
       setSelection(selectedType: LayerType.metro);
     } else {
       setSelection();
@@ -487,6 +472,15 @@ class LayersControls extends _$LayersControls {
     await ref.read(parkingStateProvider.notifier).hideParking();
   }
 
+  void updateLayerInfo() {
+    final selectedLayerState = _getLayerState();
+    if (selectedLayerState != null) {
+      setSelection(selectedType: selectedLayerState);
+    } else {
+      setSelection();
+    }
+  }
+
   MapRequestParams _createParams(
     VisibleRect visibleRect,
     LayerType layer,
@@ -546,6 +540,18 @@ class LayersControls extends _$LayersControls {
         }
       },
     );
+  }
+
+  LayerType? _getLayerState() => ref.read(activeLayerProvider);
+
+  Future<void> _saveLayersState(LayerType type) async {
+    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
+    await activeLayerNotifier.setActiveLayer(type);
+  }
+
+  Future<void> _removeLayersState() async {
+    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
+    await activeLayerNotifier.removeActiveLayer();
   }
 
   Future<void> _showWhiteLands() async {
@@ -789,5 +795,23 @@ class LayersControls extends _$LayersControls {
     await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
+  }
+
+  Future<void> showActiveLayerOnMap() async {
+    final read = ref.read(activeLayerProvider);
+
+    switch (read) {
+      case null:
+      case LayerType.invest:
+      case LayerType.buildings:
+      case LayerType.fencing:
+        () {}; //NOOP
+      case LayerType.favourites:
+        await ref.read(favouriteToggleProvider.notifier).enable();
+      case LayerType.parkingLots:
+        await ref.read(parkingStateProvider.notifier).showParking();
+      case LayerType.metro:
+        ref.read(metroLayerRepositoryProvider.notifier).showMetro();
+    }
   }
 }

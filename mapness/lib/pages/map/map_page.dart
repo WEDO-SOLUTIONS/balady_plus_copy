@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -71,6 +72,9 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
           androidUseExpensive: true,
           onMapCreated: (controller) async {
             await dgisController.onMapCreated(controller);
+            Future.delayed(const Duration(seconds: 3), () async {
+              await ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
+            });
           },
         ),
         const AutoRouter()
