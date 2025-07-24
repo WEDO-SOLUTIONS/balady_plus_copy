@@ -63,7 +63,8 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         )
         let mapTemplate = mainScreen.createTemplate()
         
-        dgisCarPlayMapView.carWindowScreenNativeBounds = templateApplicationScene.carWindow.screen.nativeBounds
+        let carPlayFixOn = templateApplicationScene.carWindow.screen.nativeBounds.width == 800
+        map.attributes.setAttributeValue(name: "carPlayFixOn", value: .boolean(carPlayFixOn))
         
         interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
         
