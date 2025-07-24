@@ -1,52 +1,50 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entities/search/models/rubric_marker_info.dart';
-import 'package:mapness/shared/constants/remote_config_constants.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 part 'rubric_marker_type_mapper.g.dart';
 
 /// Provider that maps rubric marker types from remote configuration.
 ///
 /// This provider fetches the marker types from Firebase Remote Config and
 /// decodes them into a list of [RubricMarkerInfo] objects
-
-@Riverpod(keepAlive: true)
-class RubricMarkerMapper extends _$RubricMarkerMapper {
-  @override
-  List<RubricMarkerInfo> build() {
-    try {
-      final remoteConfig = FirebaseRemoteConfig.instance;
-
-      final markerTypeValue = remoteConfig
-          .getValue(RemoteConfigConstants.mapMarkerTypes)
-          .asString();
-
-      final List<dynamic> decoded = jsonDecode(markerTypeValue);
-
-      return decoded.map((e) => RubricMarkerInfo.fromJson(e)).toList();
-    } on Exception catch (e, stackTrace) {
-      // if there is an Exception (CheckedFromJsonException e.g.), return an empty list
-      FlutterUxcam.reportExceptionEvent(e, stackTrace);
-      return List<RubricMarkerInfo>.empty();
-    } on Object catch (_) {
-      rethrow;
-    }
-  }
+class RubricTypeMapper {
+  static List<RubricMarkerInfo>? rubricMarkerInfo;
 
   /// Returns the most relevant marker type based on the provided set of rubric IDs.
   ///
   /// Works based on intersection of rubric IDs from config with the rubric form marker info.
-  MapMarkersType? getMarkerType(Set<int> rubricIds) {
-    if (stateOrNull == null || rubricIds.isEmpty) {
+  static Future<MapMarkersType?> getMarkerType(Set<int> rubricIds) async {
+    if (rubricMarkerInfo == null) {
+      try {
+        final markerTypeValue = await AppConfigLoader.getMarkerType();
+        if (markerTypeValue == null) {
+          return null;
+        }
+
+        final List<dynamic> decoded = jsonDecode(markerTypeValue);
+
+        rubricMarkerInfo = decoded.map((e) => RubricMarkerInfo.fromJson(e)).toList();
+      } on Exception catch (e, stackTrace) {
+        unawaited(FlutterUxcam.reportExceptionEvent(e, stackTrace));
+        return null;
+      } on Object catch (_) {
+        rethrow;
+      }
+    }
+
+    if (rubricMarkerInfo == null || rubricIds.isEmpty) {
       return null;
     }
 
     final relevantMap = <MapMarkersType, Set<int>>{};
 
-    for (final markerInfo in state) {
+    for (final markerInfo in rubricMarkerInfo!) {
       final intersection = markerInfo.rubricIds.intersection(rubricIds);
 
       if (intersection.isNotEmpty) {
@@ -65,4 +63,15 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
 
     return mostRelevantType;
   }
+}
+
+@riverpod
+class RubricMarkerMapper extends _$RubricMarkerMapper {
+  @override
+  void build() {}
+
+  /// Returns the most relevant marker type based on the provided set of rubric IDs.
+  ///
+  /// Works based on intersection of rubric IDs from config with the rubric form marker info.
+  Future<MapMarkersType?> getMarkerType(Set<int> rubricIds) => RubricTypeMapper.getMarkerType(rubricIds);
 }

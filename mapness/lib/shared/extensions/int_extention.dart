@@ -1,4 +1,4 @@
-import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:dgis_map/library.dart';
 
 extension SizeExtention on num {
   String formatAsFileSize({

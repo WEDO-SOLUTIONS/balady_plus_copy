@@ -24,25 +24,25 @@ class ParkingContent extends ConsumerWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(Spacing.$4x),
               decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(RadiusBorder.xl),
-              color: context.colorsV3.backgroundSurface1,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.l10n.comment,
-                  style: context.textStyleV3.bodyLargeSemiBold.copyWith(color: context.colorsV3.foregroundDefault),
-                ),
-                Spacing.$1x.heightBox,
-                if (parkingManage != null)
+                borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                color: context.colorsV3.backgroundSurface1,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    parkingManage.comment,
-                    style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                    context.l10n.comment,
+                    style: context.textStyleV3.bodyLargeSemiBold.copyWith(color: context.colorsV3.foregroundDefault),
                   ),
-              ],
+                  Spacing.$1x.heightBox,
+                  if (parkingManage != null)
+                    Text(
+                      parkingManage.comment,
+                      style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                    ),
+                ],
+              ),
             ),
-          ),
           if (parkingManage?.comment.isNotEmpty == true) Spacing.$4x.heightBox,
           Container(
             padding: const EdgeInsets.all(Spacing.$4x),
@@ -73,6 +73,23 @@ class ParkingContent extends ConsumerWidget {
                 ),
               ],
             ),
+          ),
+          Spacing.$4x.heightBox,
+          ContentWrapper(
+            color: context.color.surfaceBasePrimary,
+            children: [
+              ContentRowV2(
+                text: ContentRowTextOptions(
+                  title: context.l10n.location,
+                  titleOptions: const ContentRowTextOption(isBold: true),
+                  subtitle: parkingManage?.address,
+                  subtitleOptions: const ContentRowTextOption(
+                    maxLines: 99,
+                  ),
+                ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+              )
+            ],
           ),
           const Spacer(),
           Text(

@@ -46,6 +46,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   final _kbVisibilityController = KeyboardVisibilityController();
   final _settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
+  final _scope = SearchScopeEnum.navi.value;
 
   @override
   void initState() {
@@ -124,7 +125,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       ).notifier,
     );
     ref.listen(
-      searchProvider(SearchScopeEnum.navi.value),
+      searchProvider(_scope),
       (previous, next) {
         _drawSearchMarkers(next, previous, searchObjectManager);
       },
@@ -187,8 +188,8 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         isRtl: isRtl,
         isDark: dark.isDark,
       );
-      if (!ref.read(searchInRectProvider).isSearchInThisAreaRequest) {
-        ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(value: false);
+      if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
+        ref.read(searchInRectProvider(_scope).notifier).searchInThisAreaSwitch(value: false);
         await mapObjectManager.removeAllMarkers();
       }
       await mapObjectManager.addMarkers(markers);
@@ -244,7 +245,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
           ).notifier,
         )
         .removeAllMarkers();
-    ref.read(searchInRectProvider.notifier).update();
+    ref.read(searchInRectProvider(_scope).notifier).update();
     context.router.popForced();
   }
 

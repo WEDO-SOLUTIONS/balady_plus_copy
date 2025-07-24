@@ -1,5 +1,4 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 
 sealed class SearchState {
   final String searchText;
