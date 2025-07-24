@@ -60,6 +60,9 @@ class PoiContentSliver extends ConsumerWidget {
     final poiSearchByObjectEntrances = searchObjectFuture.valueOrNull?.$2 ?? [];
     const colorShimmer = Color(0xFFE3E3E3);
 
+    final mainLines = data?.routeInfos.map((e) => e.name).toList() ?? [];
+    poiSearchObjectFuture?.removeWhere((element) => mainLines.contains(element.title));
+
     final entrancesWidget = Padding(
       padding: itemPadding,
       child: PoiEntrancesMetro(entrancesDirectoryObject: poiSearchByObjectEntrances),
@@ -136,7 +139,18 @@ class PoiContentSliver extends ConsumerWidget {
           );
           return Column(
             children: [
-              const PoiContentFeedbackCard(
+              PoiContentFeedbackCard(
+                onTap: () {
+                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
+                  if (objectIdInt == null) {
+                    return;
+                  }
+
+                  context.router.push(QuickFeedbackRoute(
+                    type: QuickFeedbackType.editCompany,
+                    params: FeedbackObjectIdParams(objectIdInt),
+                  ));
+                },
                 data: PoiContentFeedbackType.cityExpert,
                 padding: itemPadding,
               ),

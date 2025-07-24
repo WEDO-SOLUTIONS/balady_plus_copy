@@ -6,11 +6,12 @@ import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../domain/entities/request_info_arragments.dart';
 
 class CommercialLicenseBody extends StatefulWidget {
-  final int? requestId;
+  final RequestInfoArragments? requestData;
 
-  const CommercialLicenseBody({super.key, this.requestId});
+  const CommercialLicenseBody({super.key, this.requestData});
 
   @override
   State<CommercialLicenseBody> createState() => _CommercialLicenseBodyState();
@@ -21,7 +22,9 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
   void initState() {
     super.initState();
     context.read<CommercialLicenseBloc>().initState(
-          requestId: widget.requestId,
+          requestId: widget.requestData?.requestId,
+          isFromIntialApproval: widget.requestData?.isFromIntialApproval
+
         );
   }
 

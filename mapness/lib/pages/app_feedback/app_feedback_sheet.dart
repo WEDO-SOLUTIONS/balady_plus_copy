@@ -26,8 +26,6 @@ class AppFeedbackSheet extends HookConsumerWidget {
     super.key,
   });
 
-  static const _sheetPadding = EdgeInsets.symmetric(vertical: 29);
-
   void _showConfirmDialog(BuildContext context) {
     if (!context.mounted) {
       return;
@@ -57,6 +55,8 @@ class AppFeedbackSheet extends HookConsumerWidget {
             ));
   }
 
+  static const _sheetPadding = EdgeInsets.only(top: Spacing.$6x);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
@@ -80,7 +80,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
     return FeedbackSourceProvider(
       source: source,
       child: SafeAreaPadding(
+        bottom: false,
         child: StatelessBottomSheet(
+          startConfig: BottomSheetStart.instant,
           scrollController: scrollController,
           safeAreaColor: context.colors.backgroundSurface1,
           onWillPop: Future.value(false),

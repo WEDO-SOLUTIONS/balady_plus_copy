@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/calculator/presentation/base.dart';
 import 'package:balady_plus/app/features/calculator/service_calculator_exports.dart';
+import 'package:dgis_map/library.dart';
 
 import '../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
 
@@ -20,7 +21,7 @@ abstract class IServviceCalculatorPresenter
   void calculateCost(CalculateCost request);
   void calculateDiggingCost(CalculateDiggingCost request);
   void calculatRenewDiggingCost(CalculateRenewDiggingCost request);
-  // void getGpsLocation(LatLng latLng);
+  void getGpsLocation(LatLng latLng);
 }
 
 abstract class IServiceCalculatorView extends BaseView {

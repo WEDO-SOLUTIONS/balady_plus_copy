@@ -26,6 +26,7 @@ import '../../../domain/use_cases/get_warning_workflow_messsage.dart';
 import '../../step3/widgets/map_widgets/warning_message.dart';
 import '../page/salama_warning_message.dart';
 import 'package:collection/collection.dart';
+
 part 'cr_step2_activity_data_state.dart';
 
 class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
@@ -129,7 +130,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(totalArea: area, errorMessage: ""));
   }
 
-  void updateWorkerType(WorkersTypes type) {
+  void updateWorkerType(WorkersTypesEnum type) {
     emit(state.copyWith(workerType: type, errorMessage: ""));
   }
 
@@ -243,12 +244,13 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
   void getAddetionalActivites() async {
     emit(state.copyWith(
-        additionalActivityListStatus: BlocStatus.loading,
-        errorMessage: "",
-        addetionalItem: Nullable(null),
-        addetionalDetails: Nullable(null),
-        addetionalDetailsItem: Nullable(null),
-        selectedAddetionalList: Nullable(null)));
+      additionalActivityListStatus: BlocStatus.loading,
+      errorMessage: "",
+      addetionalItem: Nullable(null),
+      addetionalDetails: Nullable(null),
+      addetionalDetailsItem: Nullable(null),
+      // selectedAddetionalList: Nullable(null)
+    ));
     final response = await _getAddetionalActivites(
         state.selectedSubActivity?.id.toString() ?? "");
     response.fold(
@@ -385,7 +387,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
               ),
             ],
           ),
-          body: WarningMessage(
+          body: const WarningMessage(
               message:
                   "<p>عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي <a href='https://balady.gov.sa/Services/Terms/?id=328'>https://balady.gov.sa/Services/Terms/?id=328 </a> </p>"),
         ));
@@ -394,11 +396,9 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   void initDraft() async {
     bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
-    print(isDraft);
-    print(draftLoaded);
     if (draftLoaded == false && isDraft) {
       emit(state.copyWith(
-        draftStatus: BlocStatus.success,
+     //   draftStatus: BlocStatus.success,
       ));
       // if (true) {
       CommercialRequestDetailsResponse? requestData =
@@ -406,19 +406,19 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
       RecordInfo? recordInfo = sl<CommercialLicenseBloc>().state.recordInfo;
       print("EEE");
-      WorkersTypes? workerType;
+      WorkersTypesEnum? workerType;
       bool? atmFeesPaid;
       IsicActivity? selectedIsicActivity = state.selectedIsicActivity;
       SubActivityEntity? selectedSubActivity = state.selectedSubActivity;
       print("HHHH");
       if (requestData?.activityInfo?.workerTypeId == 1) {
-        workerType = WorkersTypes.men;
+        workerType = WorkersTypesEnum.men;
       }
       if (requestData?.activityInfo?.workerTypeId == 2) {
-        workerType = WorkersTypes.women;
+        workerType = WorkersTypesEnum.women;
       }
       if (requestData?.activityInfo?.workerTypeId == 3) {
-        workerType = WorkersTypes.menWomen;
+        workerType = WorkersTypesEnum.menWomen;
       }
 
       if (requestData?.activityInfo?.atmActivity == true) {
@@ -447,7 +447,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
         if (requestData?.activityInfo?.mainActivity?.detailedActivityId !=
             null) {
-          selectedSubActivity = state.subActivities?.firstWhereOrNull(
+          selectedSubActivity = state.subActivities.firstWhereOrNull(
               (element) =>
                   element.id ==
                   requestData?.activityInfo?.mainActivity?.detailedActivityId);
@@ -457,12 +457,32 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           }
         }
       }
+
+      List<AddetionalActivityRequest> selectedAddetionalList = [];
+
+      requestData?.activityInfo?.additionalActivities?.forEach((activity) {
+        selectedAddetionalList.add(
+          AddetionalActivityRequest(
+              area: activity.area,
+              item: AddetionalActivityItem(
+                  isicCode: activity.isicActivityId.toString(),
+                  isicName: activity.detailedActivityName),
+              detailsItem: AddetionalActivityItemDetails(
+                activityId: activity.detailedActivityId,
+                isicName: activity.detailedActivityName,
+              ),
+              faweryMessage: activity.salamaWorkflow),
+        );
+      });
+
+      /// Hear Need Add The activities
       emit(state.copyWith(
-          totalArea: requestData?.mainActivityArea?.toDouble(),
+          totalArea: requestData?.shopArea,
           workerType: workerType,
           selectedIsicActivity: selectedIsicActivity,
           atmFeesPaid: atmFeesPaid,
           draftLoaded: true,
+          selectedAddetionalList: Nullable(selectedAddetionalList),
           draftStatus: BlocStatus.success,
           selectedSubActivity: Nullable(selectedSubActivity)));
     } else {

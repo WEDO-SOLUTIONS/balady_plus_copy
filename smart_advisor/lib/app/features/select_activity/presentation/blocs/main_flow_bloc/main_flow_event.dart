@@ -30,6 +30,8 @@ class ChangeValuesEvent extends MainFlowEvent {
   final String? contractOption;
   final String? atmOption;
   final int? step1Selection;
+
+  final int? raingSelectScenario;
   const ChangeValuesEvent(
       {this.selectedCategory,
       this.selectedRubric,
@@ -44,7 +46,8 @@ class ChangeValuesEvent extends MainFlowEvent {
       this.contractOption,
       this.contractType,
       this.atmOption,
-      this.step1Selection});
+      this.step1Selection,
+      this.raingSelectScenario});
 }
 
 class GetActivityInfoDetails extends MainFlowEvent {
@@ -109,6 +112,59 @@ class GetDetailsEvent extends MainFlowEvent {
 class GetGISDataEvent extends MainFlowEvent {
   final double lat;
   final double lon;
+  final bool? fromRating;
 
-  const GetGISDataEvent({required this.lat, required this.lon});
+  const GetGISDataEvent(
+      {required this.lat, required this.lon, this.fromRating});
+}
+
+class GetDelegatorsEvent extends MainFlowEvent {
+  const GetDelegatorsEvent();
+}
+
+class GetLicensesEvent extends MainFlowEvent {
+  final String licenseType;
+  const GetLicensesEvent({required this.licenseType});
+}
+
+class SelectDelegatorEvent extends MainFlowEvent {
+  final DelegatorEntity delegator;
+  const SelectDelegatorEvent({required this.delegator});
+}
+
+class SelectLicenseEvent extends MainFlowEvent {
+  final LicensesResponseItem license;
+  const SelectLicenseEvent({required this.license});
+}
+
+class ChangeAddetionalActivityEvent extends MainFlowEvent {
+  final String area;
+  final int index;
+  const ChangeAddetionalActivityEvent(
+      {required this.area, required this.index});
+}
+
+class ChangeAreaValueEvent extends MainFlowEvent {
+  final String data;
+  const ChangeAreaValueEvent({required this.data});
+}
+
+class ChangeShopAreaValueEvent extends MainFlowEvent {
+  final String data;
+  const ChangeShopAreaValueEvent({required this.data});
+}
+
+class ChangeUnitCountEvent extends MainFlowEvent {
+  final String data;
+  const ChangeUnitCountEvent({required this.data});
+}
+
+class ChangeAccomodationTypeEvent extends MainFlowEvent {
+  final LookUpItem item;
+  const ChangeAccomodationTypeEvent({required this.item});
+}
+
+class ChangeWorkerTypeEvent extends MainFlowEvent {
+  final LookUpItem item;
+  const ChangeWorkerTypeEvent({required this.item});
 }

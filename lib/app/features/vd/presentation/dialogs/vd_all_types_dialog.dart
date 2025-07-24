@@ -56,10 +56,19 @@ class _VDAllTypesDialog extends State<VDAllTypesScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // title
-                    CustomTextWidget(
-                      ("vd_report_type").tr(),
-                      fontColor: AppColor.blackModern500Light,
-                      fontSize: 14.0,
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextWidget(
+                        ("vd_report_type").tr(),
+                        fontColor: AppColor.blackModern500Light,
+                        maxLines: 4,
+                        fontSize: 14.0,
+                        height: 1.5,
+                        fontWeight: AppFontWeight.bold,
+                      ),
                     ),
 
                     Constants.verticalSpaceSmall,
@@ -150,7 +159,7 @@ class VDCardWidgetInDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomInkWellButtonWidget(
       btnPressed: btnPressed,
-      widget: Container(
+      widget: SizedBox(
         height: 150,
         child: Stack(
           children: [
@@ -158,7 +167,7 @@ class VDCardWidgetInDialog extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 decoration: BoxDecoration(
-                    boxShadow: [
+                    boxShadow: const [
                       /* BoxShadow(
                           color: Color(0x14000000),
                           offset: Offset(0, 2),
@@ -166,14 +175,14 @@ class VDCardWidgetInDialog extends StatelessWidget {
                           spreadRadius: 0)*/
                     ],
                     borderRadius: BorderRadius.circular(16),
-                    color: Color(0xFFF5F8FA)),
+                    color: const Color(0xFFF5F8FA)),
                 height: 150,
               ),
             ),
             Align(
               alignment: Alignment.topCenter,
               child: Container(
-                padding: EdgeInsets.only(left: 5, right: 5, top: 8),
+                padding: const EdgeInsets.only(left: 5, right: 5, top: 8),
                 child: Column(
                   children: [
                     CustomCachedNetworkImage(
@@ -185,9 +194,9 @@ class VDCardWidgetInDialog extends StatelessWidget {
                         height: 96,
                       ),
                     ),
-                    CustomVerticalSpace(height: 10),
+                    const CustomVerticalSpace(height: 10),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: CustomTextWidget(
                         title,
                         fontSize: 14,

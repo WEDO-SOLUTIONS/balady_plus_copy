@@ -43,6 +43,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
@@ -355,23 +356,33 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               Positioned.fill(
                 child: Align(
                   alignment: AlignmentDirectional.bottomStart,
-                  child: NaviSheetPanel(
-                    key: panelKey,
-                    navType: widget.navType,
-                    navigationState: _navigationState,
-                    onShowRoutePressed: _onShowRoutePressed,
-                    acceptBetterRoute: _acceptBetterRoute,
-                    rejectBetterRoute: _rejectBetterRoute,
-                    betterRouteDurationProfit: _betterRouteDurationProfit,
-                    onContinuePressed: _onContinuePressed,
-                    endTripAndShowHome: _endTripAndShowHome,
-                    endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
-                    onSearchPressed: _onSearchPressed,
-                    onTapRoute: _onShowRoutePressed,
-                    onEndTripPressed: () => _endTripAndShowFeedback(context),
-                    sheetController: sheetController,
-                    isLandscape: !isPortrait,
-                    isHomeOrWork: widget.isHomeOrWork,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      NaviSheetPanel(
+                        key: panelKey,
+                        navType: widget.navType,
+                        navigationState: _navigationState,
+                        onShowRoutePressed: _onShowRoutePressed,
+                        acceptBetterRoute: _acceptBetterRoute,
+                        rejectBetterRoute: _rejectBetterRoute,
+                        betterRouteDurationProfit: _betterRouteDurationProfit,
+                        onContinuePressed: _onContinuePressed,
+                        endTripAndShowHome: _endTripAndShowHome,
+                        endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
+                        onSearchPressed: _onSearchPressed,
+                        onTapRoute: _onShowRoutePressed,
+                        onEndTripPressed: () => _endTripAndShowFeedback(context),
+                        sheetController: sheetController,
+                        isLandscape: !isPortrait,
+                        isHomeOrWork: widget.isHomeOrWork,
+                      ),
+                      if (widget.navType == RouteSearchOptionsMessage.pedestrian)
+                        const Padding(
+                          padding: padding,
+                          child: IndoorControl(),
+                        ),
+                    ],
                   ),
                 ),
               ),

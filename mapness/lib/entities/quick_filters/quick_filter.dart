@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 // TODO(Sergei): remove rubrics and rename to QuickSearch when quick search feature is approved
@@ -45,9 +45,9 @@ extension QuickFilterExtension on QuickFilter {
       };
 
   IconData? get icon => switch (this) {
-        QuickFilter.eatOut => PlacesIcons.restaurantFilled,
-        QuickFilter.mosques => PlacesIcons.mosquesFilled,
-        QuickFilter.markets => PlacesIcons.marketsFilled,
+        QuickFilter.eatOut => PlacesIcons.restaurant,
+        QuickFilter.mosques => PlacesIcons.mosques,
+        QuickFilter.markets => PlacesIcons.markets,
         QuickFilter.hotels => PlacesIcons.hotelsFilled,
         QuickFilter.fuel => PlacesIcons.gasstationFilled,
       };

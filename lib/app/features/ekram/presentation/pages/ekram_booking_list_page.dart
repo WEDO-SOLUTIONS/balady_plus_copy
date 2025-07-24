@@ -63,7 +63,8 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
           getStatus: sl(),
           isDriver: false)
         ..add(GetCemetryRequestsEvent()),
-      child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
+      child:
+      BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
           if (state.cemetryListStatus == BlocStatus.failure ||
               state.status == BlocStatus.failure) {

@@ -9,6 +9,7 @@ class ViolationDetailsState extends Equatable {
   final BlocStatus objectionsListStatus;
   final ViolationsEntity? violationsEntity;
 
+
   const ViolationDetailsState(
       {this.status = BlocStatus.initial,
       this.gisStatus = BlocStatus.initial,
@@ -16,7 +17,8 @@ class ViolationDetailsState extends Equatable {
       this.errorMessage,
       this.gisLocation,
       this.details,
-      this.violationsEntity});
+      this.violationsEntity,
+     });
 
   @override
   List<Object?> get props => [
@@ -26,7 +28,8 @@ class ViolationDetailsState extends Equatable {
         gisLocation,
         gisStatus,
         objectionsListStatus,
-        violationsEntity
+        violationsEntity,
+
       ];
 
   ViolationDetailsState copyWith(
@@ -36,7 +39,8 @@ class ViolationDetailsState extends Equatable {
       GISResponse? gisLocation,
       BlocStatus? gisStatus,
       BlocStatus? objectionsListStatus,
-      ViolationsEntity? violationsEntity}) {
+      ViolationsEntity? violationsEntity,
+        RequestDetailsModel? commercialRequestDetails}) {
     return ViolationDetailsState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
@@ -44,6 +48,9 @@ class ViolationDetailsState extends Equatable {
         gisLocation: gisLocation ?? this.gisLocation,
         gisStatus: gisStatus ?? this.gisStatus,
         objectionsListStatus: objectionsListStatus ?? this.objectionsListStatus,
-        violationsEntity: violationsEntity ?? this.violationsEntity);
+        violationsEntity: violationsEntity ?? this.violationsEntity,
+
+
+    );
   }
 }

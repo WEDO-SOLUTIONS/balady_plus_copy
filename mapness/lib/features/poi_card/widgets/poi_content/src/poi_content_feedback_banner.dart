@@ -24,52 +24,56 @@ class PoiContentFeedbackCard extends StatelessWidget {
     final subtitleStyle = context.textStyles.captionSmallMedium.copyWith(color: foregroundColor);
 
     const arrowPadding = EdgeInsetsDirectional.only(end: Spacing.$4x, bottom: Spacing.$4x);
-    const contentPadding = EdgeInsetsDirectional.only(start: Spacing.$4x, top: Spacing.$3x, bottom: Spacing.$3x);
+    const contentPadding =
+        EdgeInsetsDirectional.only(start: Spacing.$4x, top: Spacing.$4x - 1, bottom: Spacing.$4x - 1);
 
     return Padding(
       padding: padding,
-      child: SizedBox(
-        height: 96,
-        child: CupertinoButton(
-          onPressed: onTap,
-          padding: EdgeInsets.zero,
-          minSize: 0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusBorder.xl),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: data.gradientColors),
-              ),
-              child: Stack(
+      child: CupertinoButton(
+        onPressed: onTap,
+        padding: EdgeInsets.zero,
+        minSize: 0,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: data.gradientColors),
+            ),
+            child: IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: contentPadding,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(data.title(context.l10n), style: titleStyle),
-                              const SizedBox(height: Spacing.$1x),
-                              Text(data.subtitle(context.l10n), style: subtitleStyle),
-                            ],
-                          ),
+                  Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: contentPadding,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(data.title(context.l10n), style: titleStyle),
+                          const SizedBox(height: Spacing.$1x),
+                          Text(data.subtitle(context.l10n), style: subtitleStyle),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fitHeight,
+                          matchTextDirection: true,
+                          image: AssetImage(data.path),
                         ),
                       ),
-                      Image.asset(
-                        data.path,
-                        fit: BoxFit.fitHeight,
-                        matchTextDirection: true,
+                      child: const Align(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        child: Padding(
+                          padding: arrowPadding,
+                          child: _ArrowIcon(),
+                        ),
                       ),
-                    ],
-                  ),
-                  const Align(
-                    alignment: AlignmentDirectional.bottomEnd,
-                    child: Padding(
-                      padding: arrowPadding,
-                      child: _ArrowIcon(),
                     ),
                   ),
                 ],

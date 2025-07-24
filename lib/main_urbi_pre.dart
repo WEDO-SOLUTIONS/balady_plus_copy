@@ -12,8 +12,8 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
-  await runMapnessApp(() async {
+  await runMapnessApp(EnvType.urbiPre, () async {
+    AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
     await AppEnv.setupEnv(EnvType.urbiPre);
     await setupMapness(EnvType.urbiPre);
 

@@ -73,6 +73,7 @@ class _NewDetailsState extends State<NewDetails> {
                               ),
                               IssueYourLicenseCard(
                                 number: 3,
+                                args: widget.args,
                               ),
                               const SizedBox(
                                 height: 16,

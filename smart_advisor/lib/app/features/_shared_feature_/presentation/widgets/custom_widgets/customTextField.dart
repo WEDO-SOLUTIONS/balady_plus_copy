@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:smart_advisor/app/core/utils/constants/app_colors.dart';
 import 'package:smart_advisor/app/core/utils/constants/app_style.dart';
 
@@ -13,6 +14,7 @@ class Textfield extends StatelessWidget {
 
   final String? title;
   final bool? isEnabled;
+  final bool? isDigit;
   const Textfield(
       {super.key,
       this.onChanged,
@@ -20,7 +22,8 @@ class Textfield extends StatelessWidget {
       this.title,
       this.isEnabled = true,
       this.controller,
-      this.color});
+      this.color,
+      this.isDigit});
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +39,7 @@ class Textfield extends StatelessWidget {
           TextFormField(
             enabled: isEnabled,
             controller: controller,
+            keyboardType: isDigit == true ? TextInputType.number : null,
             decoration: InputDecoration(
               contentPadding:
                   const EdgeInsetsDirectional.only(start: 52, top: 5),
@@ -54,6 +58,9 @@ class Textfield extends StatelessWidget {
               // fontWeight: FontWeight.bold,
               //  errorText: 'Username is required',
             ),
+            inputFormatters: [
+              if (isDigit == true) FilteringTextInputFormatter.digitsOnly,
+            ],
             onChanged: (String t) {
               if (onChanged != null) onChanged!(t);
             },

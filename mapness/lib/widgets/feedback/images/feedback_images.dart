@@ -179,7 +179,6 @@ class FeedbackImages extends StatelessWidget {
           await _showImageActionErrorSheet(
             context,
             error: BaseErrorWidget(
-              buttonColorScheme: ButtonColorScheme.accent,
               errorTitle: context.l10n.photoLimitExceeded,
               errorLabel: context.l10n.feedbackImageLimitsError(
                 field.maxImages.toString(),

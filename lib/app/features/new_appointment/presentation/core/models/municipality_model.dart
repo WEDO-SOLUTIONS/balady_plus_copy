@@ -11,20 +11,26 @@ class Municipality {
     this.data,
   });
 
-  List<StatusDetail>? statusDetails;
+  StatusDetail? statusDetails;
   Data? data;
 
+    // factory AppointmentDetails.fromJson(Map<String, dynamic> json) =>
+    //   AppointmentDetails(
+    //     statusDetails: json["statusDetails"] == null
+    //         ? null
+    //         : StatusDetail.fromJson(json["statusDetails"]),
+    //     data: json["data"] == null ? null : Data.fromJson(json["data"]),
+    //   );
+
   factory Municipality.fromJson(Map<String, dynamic> json) => Municipality(
-        statusDetails: json["statusDetails"] != null
-            ? List<StatusDetail>.from(
-                json["statusDetails"].map((x) => StatusDetail.fromJson(x)))
-            : null,
+            statusDetails: json["statusDetails"] == null
+            ? null
+            : StatusDetail.fromJson(json["statusDetails"]),
         data: json["data"] != null ? Data.fromJson(json["data"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
-        "statusDetails":
-            List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
+        "statusDetails": statusDetails?.toJson(),
         "data": data!.toJson(),
       };
 }

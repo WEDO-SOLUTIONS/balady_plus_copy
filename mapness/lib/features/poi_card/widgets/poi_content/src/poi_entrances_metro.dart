@@ -34,10 +34,10 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 class PoiEntrancesMetro extends StatelessWidget {
   final List<DirectoryObjectMessage> entrancesDirectoryObject;
 
-  PoiEntrancesMetro({
+  const PoiEntrancesMetro({
     required this.entrancesDirectoryObject,
     super.key,
-  }) : assert(entrancesDirectoryObject.isNotEmpty, 'entrancesDirectoryObject must not be empty');
+  });
 
   @override
   Widget build(BuildContext context) {

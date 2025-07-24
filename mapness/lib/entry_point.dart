@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
@@ -13,10 +12,8 @@ import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -59,12 +56,14 @@ import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -326,15 +325,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
-      final isNavPage = currentRouteName == PathNavRoute.name || currentRouteName == FreeRoamRoute.name;
+      final isNavPage = currentRouteName == PathNavRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
-      if (navigation && !isNavPage) {
-        final navStateMessage = await dgisController.getCurrentNavigationState();
-        await ref.read(appRouterProvider).push(
+      final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
+      final isFreeroam = navigation && routeSearchOptions == null;
+      if (navigation && !isFreeroam && !isNavPage) {
+        await ref.read(appRouterProvider).pushAndPopUntil(
               PathNavRoute(
-                navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                navType: routeSearchOptions ?? RouteSearchOptionsMessage.car,
                 initAction: null,
               ),
+              predicate: (route) => route.settings.name == BottomMenuRoute.name,
             );
       }
     });
@@ -446,8 +447,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   void _openParking() {
-    ref.read(appAnalyticsProvider).quickActionSelected('parking');
-    ref.read(layersControlsProvider.notifier).enableParking();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(appAnalyticsProvider).quickActionSelected('parking');
+      await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
+    });
   }
 
   Future<void> _freeRoam() async {
@@ -699,14 +702,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-  await _setupAppConfigs(envType);
-
-  final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
-
-  final vendorConfigLocal = await box.get(
-    MapnessConstants.vendorConfigKey,
-  );
-
+  final vendorConfigLocal = await AppConfigLoader.getAppConfig();
   final vendorConfigContentMessage = VendorConfigContentMessage(content: vendorConfigLocal);
 
   await initialiseDGis(
@@ -716,84 +712,6 @@ Future<void> setupMapness(EnvType envType) async {
     ),
     configContent: vendorConfigContentMessage,
   );
-
-  await Hive.initFlutter();
-
-  // Initialize hive adapters
-  Hive
-    ..registerAdapter(SearchHistoryItemAdapter())
-    ..registerAdapter(FavoriteCacheItemAdapter())
-    ..registerAdapter(HiveCoordinatesAdapter())
-    ..registerAdapter(HiveFavouriteItemEntityAdapter())
-    ..registerAdapter(FavoriteCacheStateAdapter());
-}
-
-///Fetch and save vendor config and environment config from firebase
-///return vendor config for init dgis sdk
-Future<void> _setupAppConfigs(EnvType envType) async {
-  FirebaseRemoteConfig? remoteConfig;
-
-  /// Attempt to initialize Remote Config
-  try {
-    /// Get the instance of FirebaseRemoteConfig
-    remoteConfig = FirebaseRemoteConfig.instance;
-
-    /// Set the config settings where fetchTimeout is the maximum time to wait,
-    /// and minimumFetchInterval is the minimum time between fetch requests
-    await remoteConfig.setConfigSettings(
-      RemoteConfigSettings(
-        fetchTimeout: const Duration(hours: 1),
-        minimumFetchInterval: const Duration(minutes: 2),
-      ),
-    );
-
-    /// Ensure Remote Config is initialized and activate the config values
-    await remoteConfig.ensureInitialized();
-    await remoteConfig.fetchAndActivate();
-    remoteConfig.onConfigUpdated.listen(
-      (event) async {
-        await _saveRemoteConfig(remoteConfig, envType);
-      },
-    );
-  } catch (e) {
-    /// If an error occurs, reset the config and print the error to debug output
-    remoteConfig = null;
-    debugPrint('$e');
-  }
-
-  /// Fetch the vendor configuration for the current environment type
-  await _saveRemoteConfig(remoteConfig, envType);
-}
-
-Future<void> _saveRemoteConfig(FirebaseRemoteConfig? remoteconfig, EnvType envType) async {
-  /// Fetch the vendor configuration for the current environment type
-  final vendorConfigResponse = remoteconfig?.getValue(envType.vendorConfigKey()).asString();
-
-  /// Open the local Hive storage to save the configuration
-  final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
-
-  /// Check if the remote config is available
-  if (vendorConfigResponse != null && vendorConfigResponse.isNotEmpty) {
-    /// Convert the value to JSON and save it to the local storage
-    await box.put(MapnessConstants.vendorConfigKey, vendorConfigResponse);
-  } else {
-    /// If the remote config is not available, load the local configuration from assets
-    final vendorConfigAsset = await rootBundle.loadString('assets/maps/configs/${envType.vendorConfigPath()}');
-    await box.put(MapnessConstants.vendorConfigKey, vendorConfigAsset);
-  }
-
-  /// Save the environment type key to Hive for future reference
-  await box.put(MapnessConstants.envTypeKey, envType.appConfigKey());
-
-  ///save all env config to hive just for testing scenario
-  /// Optionally save all environment config to Hive for testing purposes
-  final envConfigResponse = remoteconfig?.getValue(MapnessConstants.firebaseAppEnvConfigKey).asString();
-  if (envConfigResponse != null && envConfigResponse.isNotEmpty) {
-    await box.put(MapnessConstants.firebaseAppEnvConfigKey, envConfigResponse);
-  } else {
-    final envJsonString = jsonEncode(envType.getLocalEnvConfig().toJson());
-    await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
-  }
 }
 
 class MapnessLogger {
@@ -819,7 +737,7 @@ class MapnessLogger {
   }
 }
 
-Future<void> runMapnessApp(FutureOr<void> Function() main) async {
+Future<void> runMapnessApp(EnvType envType, FutureOr<void> Function() main) async {
   await Zone.current.fork(
     specification: ZoneSpecification(
       print: (self, parent, zone, line) {
@@ -830,7 +748,54 @@ Future<void> runMapnessApp(FutureOr<void> Function() main) async {
   ).run(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await MapnessLogger.init();
+    await initHive();
+
+    final hostFlutterApi = _HostFlutterApi();
+    HostFlutterApi.setUp(hostFlutterApi);
+
+    await AppConfigLoader.init(envType);
+    await hostFlutterApi.appRunCompleter.future;
 
     await main();
   });
+}
+
+Future<void> initHive() async {
+  await Hive.initFlutter();
+  Hive
+    ..registerAdapter(SearchHistoryItemAdapter())
+    ..registerAdapter(FavoriteCacheItemAdapter())
+    ..registerAdapter(HiveCoordinatesAdapter())
+    ..registerAdapter(HiveFavouriteItemEntityAdapter())
+    ..registerAdapter(FavoriteCacheStateAdapter());
+}
+
+class _HostFlutterApi extends HostFlutterApi {
+  final appRunCompleter = Completer();
+
+  _HostFlutterApi();
+
+  bool isAppRun = false;
+
+  @override
+  void analyticsTrack(String event) {
+    analyticsClient.track(event, properties: {"app_run": isAppRun});
+  }
+
+  @override
+  void runMain() {
+    isAppRun = true;
+    appRunCompleter.complete();
+  }
+
+  @override
+  Future<MapMarkersType?> getMarkerType(List<int> rubricIds) async {
+    return RubricTypeMapper.getMarkerType(rubricIds.toSet());
+  }
+
+  @override
+  Future<VendorConfigContentMessage> getAppConfig() async {
+    final vendorConfigLocal = await AppConfigLoader.getAppConfig();
+    return VendorConfigContentMessage(content: vendorConfigLocal);
+  }
 }

@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A widget that renders a metro route with its platforms for a given POI (Point of Interest).
 ///
@@ -31,9 +32,63 @@ class PoiLinesMetro extends StatelessWidget {
     super.key,
   });
 
+  List<PublicTransportPlatformMessage> _getPlatformsInfo() {
+    final directions = transportDirectoryRouteInfo.directions;
+
+    if (directions.isEmpty) {
+      return [];
+    }
+
+    if (directions.length == 1) {
+      return directions.first.platforms;
+    }
+
+    const blueColor = -16736046;
+    const blueColorIOS = 4278231250;
+    const greenColor = -12672206;
+    const greenColorIOS = 4282295090;
+
+    final isGreenOrBlue = [
+      blueColor,
+      blueColorIOS,
+      greenColor,
+      greenColorIOS,
+    ].contains(transportDirectoryRouteInfo.color);
+    return directions
+            .firstWhereOrNull(
+              (direction) =>
+                  direction.type ==
+                  (isGreenOrBlue
+                      ? PublicTransportRouteDirectionTypeMessage.backward
+                      : PublicTransportRouteDirectionTypeMessage.forward),
+            )
+            ?.platforms ??
+        directions.first.platforms;
+  }
+
+  String getTitle(BuildContext context) {
+    switch (transportDirectoryRouteInfo.name.split(' ').first.toLowerCase()) {
+      case 'orange':
+        return context.l10n.orangeLine;
+      case 'yellow':
+        return context.l10n.yellowLine;
+      case 'blue':
+        return context.l10n.blueLine;
+      case 'red':
+        return context.l10n.redLine;
+      case 'purple':
+        return context.l10n.purpleLine;
+      case 'green':
+        return context.l10n.greenLine;
+      default:
+        return transportDirectoryRouteInfo.name;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final _platformsInfo = transportDirectoryRouteInfo.directions.firstOrNull?.platforms ?? [];
+    final _platformsInfo = _getPlatformsInfo();
+
     final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colorsV3.foregroundDefault.value);
 
     return ContentWrapper(
@@ -43,7 +98,7 @@ class PoiLinesMetro extends StatelessWidget {
           expandIconColor: context.colorsV3.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
-            title: transportDirectoryRouteInfo.name,
+            title: getTitle(context),
             leadingIcon: Assets.icons.svg.icMetroMarker.svg(
               colorFilter: ColorFilter.mode(_colorLine, BlendMode.srcIn),
             ),
@@ -51,7 +106,11 @@ class PoiLinesMetro extends StatelessWidget {
           content: Column(
             children: List.generate(_platformsInfo.length, (index) {
               final transitionRoute = _platformsInfo[index].transitions;
-              final routeCurrent = _platformsInfo[index].name == address;
+              final routeCurrent = _platformsInfo[index].name == address ||
+                  (transitionRoute.isNotEmpty &&
+                      transitionRoute.any(
+                        (element) => element.stationName == address,
+                      ));
               return CustomPaint(
                 painter: _StationLinePainter(
                   isFirst: index == 0,
@@ -71,7 +130,7 @@ class PoiLinesMetro extends StatelessWidget {
                           children: transitionRoute
                               .map(
                                 (e) => Padding(
-                                  padding: const EdgeInsets.only(left: Spacing.px),
+                                  padding: const EdgeInsetsDirectional.only(start: Spacing.px),
                                   child: Assets.icons.svg.icMetroMarker.svg(
                                     colorFilter: ColorFilter.mode(Color(e.color ?? 0xFF000000), BlendMode.srcIn),
                                   ),

@@ -5,9 +5,13 @@ import 'package:smart_advisor/app/core/utils/utils_exports.dart';
 import 'package:smart_advisor/app/features/shared_features/widgets/custom_button.dart';
 
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../home_page/presentation/pages/new_home_page.dart';
+import '../../../manage_license_flow/presentation/widgets/bottom_buttons.dart';
 import '../../../shared_features/new_app_bar.dart';
 import '../../data/models/rating_items_response.dart';
 import '../../domain/entities/submit_rating_request.dart';
+import 'dart:math' as math;
+import 'package:flutter/material.dart';
 
 class ResultPage extends StatefulWidget {
   final double value;
@@ -25,21 +29,44 @@ class _ResultPageState extends State<ResultPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.backgroundColor,
-      body: Column(
+      body: Stack(
         children: [
-          ClausesAppBar(
-            title: "",
-          ),
-          CircularPercentageIndicator(
-            percentage: widget.value,
-          ),
-          if (widget.nonCompliance.isEmpty) ComplianceResult(),
-          if (widget.nonCompliance.isNotEmpty)
-            Expanded(
-              child: NonComplianceResult(
-                nonCompliance: widget.nonCompliance,
+          Column(
+            children: [
+              ClausesAppBar(
+                title: "النتيجة النهائية",
               ),
+              HalfCircularPercentageIndicator(
+                percentage: widget.value,
+                radius: 100,
+              ),
+              if (widget.nonCompliance.isEmpty) ComplianceResult(),
+              if (widget.nonCompliance.isNotEmpty)
+                Expanded(
+                  child: NonComplianceResult(
+                    nonCompliance: widget.nonCompliance,
+                  ),
+                ),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            left: 0,
+            child: CustomBottomButtons(
+              nextText: "العودة الى الرئيسية",
+              prevText: "العودة الى الرئيسية",
+              isNextOnly: true,
+              isNextDisabled: false,
+              onNext: () {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const NewHomePage()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+              onPrev: () {},
             ),
+          ),
         ],
       ),
     );
@@ -108,6 +135,203 @@ class CircularPercentageIndicator extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class HalfCircularPercentageIndicator extends StatelessWidget {
+  final double percentage;
+  final double radius;
+
+  HalfCircularPercentageIndicator({
+    required this.percentage,
+    required this.radius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      //height: 233,
+      padding: EdgeInsets.all(16),
+      margin: EdgeInsets.all(16),
+
+      decoration: BoxDecoration(
+        color: AppColor.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          width: 1,
+          color: const Color(0xffE2E9F0),
+        ),
+      ),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              // Background and progress half-circles
+
+              Container(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "نتيجة الامتثال",
+                          style: AppStyle.textRegularRomanStyle
+                              .copyWith(color: Color(0xff1E1E1E), fontSize: 14),
+                        ),
+                        Image.asset(
+                          "packages/smart_advisor/smart_advisor_assets/icons/png/chart-button.png",
+                          width: 32,
+                          height: 32,
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 170.0),
+                          child: RotatedBox(
+                            quarterTurns: 2,
+                            child: SizedBox(
+                              width: radius * 2,
+                              child: CustomPaint(
+                                painter: HalfCirclePainter(
+                                  progressColor: AppColor.statusPositiveColor,
+                                  percentage: percentage,
+                                  radius: radius,
+                                  rounded: true,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(
+                              height: 24,
+                            ),
+                            Text(
+                                '${percentage.toStringAsFixed(1)}%', // Display percentage with 1 decimal
+                                style: TextStyle(
+                                  fontSize: radius /
+                                      5, // Scale font size based on radius
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                )),
+                            Text(
+                              ' امتثال منشأتك', // Display percentage with 1 decimal
+                              style: AppStyle.textRegularRomanStyle.copyWith(
+                                  color: AppColor.textSecondaryColor,
+                                  fontSize: 14),
+                            ),
+                            SizedBox(
+                              height: 24,
+                            ),
+                            Container(
+                              height: 60,
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Color(0xFF568F64).withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  width: 1,
+                                  color: const Color(0xffE2E9F0),
+                                ),
+                              ),
+                              child: percentage < 100
+                                  ? Text(
+                                      "يمكنك مراجعة البنود غير الممتثلة واتخاذ الخطوات اللازمة لتعزيز مستوى الامتثال في منشأتك.",
+                                      style: AppStyle.textRegularRomanStyle
+                                          .copyWith(
+                                              color: AppColor.textPrimaryColor,
+                                              fontSize: 12),
+                                      textAlign: TextAlign.center,
+                                    )
+                                  : Text(
+                                      "لقد حققت نسبة امتثال 100%. منشأتك ملتزمة بجميع المعايير المطلوبة. استمر في هذا الأداء المتميز!",
+                                      style: AppStyle.textRegularRomanStyle
+                                          .copyWith(
+                                        color: AppColor.textPrimaryColor,
+                                        fontSize: 12,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              // Percentage text in the center
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HalfCirclePainter extends CustomPainter {
+  final Color backgroundColor;
+  final Color progressColor;
+  final double percentage;
+  final double radius;
+  final bool rounded;
+
+  HalfCirclePainter({
+    this.backgroundColor = Colors.grey,
+    this.progressColor = Colors.green,
+    this.percentage = 0.0,
+    required this.radius,
+    this.rounded = true,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 15 // Stroke width proportional to radius
+      ..strokeCap = rounded ? StrokeCap.round : StrokeCap.butt; // Rounded edges
+
+    // Define the bounding rectangle for the arc
+    final Rect arcRect =
+        Rect.fromCircle(center: Offset(radius, radius), radius: radius);
+
+    // Draw the background half-circle
+    paint.color = backgroundColor.withOpacity(0.2);
+    canvas.drawArc(
+      arcRect,
+      math.pi, // Start angle (leftmost point)
+      -math.pi, // Sweep angle (180 degrees for a half-circle)
+      false,
+      paint,
+    );
+
+    // Draw the progress half-circle
+    paint.color = progressColor;
+    double progressRadians =
+        (percentage / 100) * -math.pi; // Convert percentage to radians
+    canvas.drawArc(
+      arcRect,
+      math.pi, // Start angle (leftmost point)
+      progressRadians, // Sweep angle (proportional to percentage)
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }
 
@@ -196,14 +420,14 @@ class _ComplianceResultState extends State<ComplianceResult> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            /* Text(
               "الخطوة التالية",
               style: AppStyle.somarSemiBold
                   .copyWith(color: AppColor.textPrimaryColor, fontSize: 16),
             ),
-            SizedBox(height: 8.0),
+            SizedBox(height: 8.0),*/
             Text(
-              "لقد حققت نسبة امتثال 100%. منشأتك ملتزمة بجميع المعايير المطلوبة. استمر في هذا الأداء المتميز! يمكنك استخدام هذا التقييم بشكل دوري للتحقق من الامتثال والحفاظ على مستوى الأداء العالي في منشأتك.",
+              "يمكنك استخدام هذا التقييم بشكل دوري للتحقق من الامتثال والحفاظ على مستوى الأداء العالي في منشأتك.",
               style: AppStyle.textRegularStyle
                   .copyWith(color: AppColor.textSecondaryColor, fontSize: 16),
             ),
@@ -246,27 +470,33 @@ class _NonComplianceResultState extends State<NonComplianceResult> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "الخطوة التالية",
+              "البنود الغير ممتثلة:",
               style: AppStyle.somarSemiBold
                   .copyWith(color: AppColor.textPrimaryColor, fontSize: 16),
             ),
-            SizedBox(height: 8.0),
+            /* SizedBox(height: 8.0),
             Text(
               "الآن، وبعد معرفة نتيجتك، يمكنك مراجعة البنود غير الممتثلة واتخاذ الخطوات اللازمة لتعزيز مستوى الامتثال في منشأتك.",
               style: AppStyle.textRegularStyle
                   .copyWith(color: AppColor.textSecondaryColor, fontSize: 16),
-            ),
-            SizedBox(height: 16.0),
+            ),*/
+            // SizedBox(height: 16.0),
             Expanded(
-              child: ListView(
-                //  physics: NeverScrollableScrollPhysics(),
-                children: items.entries.map((entry) {
-                  print(entry);
-                  final clauseName = entry.key;
-                  final subClauses = entry.value;
-                  return Expansion(
-                      clauseName: clauseName.$2, items: subClauses);
-                }).toList(),
+              child: MediaQuery.removePadding(
+                removeTop: true,
+                context: context,
+                child: ListView(
+                  //  physics: NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.only(bottom: 140),
+
+                  children: items.entries.map((entry) {
+                    print(entry);
+                    final clauseName = entry.key;
+                    final subClauses = entry.value;
+                    return Expansion(
+                        clauseName: clauseName.$2, items: subClauses);
+                  }).toList(),
+                ),
               ),
             ),
           ],
@@ -476,7 +706,7 @@ class ClausesAppBar extends StatelessWidget {
         padding: EdgeInsets.only(
           top: MediaQuery.of(context).padding.top,
           bottom: 12,
-          left: 12,
+          left: 50,
         ),
         child: Column(
           children: [

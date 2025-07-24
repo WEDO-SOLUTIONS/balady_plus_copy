@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:smart_advisor/app/core/utils/utils_exports.dart';
 import 'package:smart_advisor/app/features/_shared_feature_/domain/entities/lookUp_response.dart';
+import 'package:smart_advisor/app/features/manage_license_flow/presentation/blocs/main_flow_bloc/main_flow_bloc.dart';
 
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/app_style.dart';
@@ -62,6 +63,18 @@ class _Step1PageState extends State<Step1Page> {
                       context
                           .read<MainFlowBloc>()
                           .add(const ChangeValuesEvent(step1Selection: 1));
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  OptionButton(
+                    text: "كيف أدير رخصة أملكها ؟",
+                    iconPath:
+                        'packages/smart_advisor/smart_advisor_assets/icons/svg/option_3.svg',
+                    isSelected: state.step1Selection == 2,
+                    onTap: () {
+                      context
+                          .read<MainFlowBloc>()
+                          .add(const ChangeValuesEvent(step1Selection: 2));
                     },
                   ),
                 ],

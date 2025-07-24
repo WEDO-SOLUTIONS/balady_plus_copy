@@ -144,14 +144,18 @@ class PoiCardFooter extends HookConsumerWidget {
   }
 
   void _onParkingTab(WidgetRef ref, BuildContext context) {
-    final hasNotParking = ref.read(parkingManageProvider).valueOrNull != null;
-    if (hasNotParking) {
+    final hasParking = ref.read(parkingManageProvider).valueOrNull != null;
+    if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
           title: context.l10n.createNewParkingSpot,
           desc: context.l10n.currentParkingSpaceRemoved,
-          onAcceptTab: () {
-            context.router.popAndPush(
+          onAcceptTab: () async {
+            // BSA-2734: popAndPush have a bug when we have a bottom sheet open
+            // We need to make it consistent with popForced
+            context.router.popForced();
+            await Future.delayed(Duration.zero);
+            await context.router.push(
               ParkingSpotRoute(
                 address: data?.title,
                 markerPosition: closestPoint != null

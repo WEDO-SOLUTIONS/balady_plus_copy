@@ -102,6 +102,9 @@ class NewAppointmentViewModel extends BaseViewModel {
   //String? notes;
   String? appointmentDetails;
   String? transactionNo;
+  bool? existedWakeelVisit;
+  bool? prevTransNoRequired;
+  bool? agreementChecked;
   String? serviceName;
   LookUpItem? submitterTypeItem;
   VisitType? appointmentTypeItem;
@@ -165,6 +168,9 @@ class NewAppointmentViewModel extends BaseViewModel {
     realEstateRequestId = null;
 
     transactionNo = null;
+    existedWakeelVisit = null;
+    prevTransNoRequired = false;
+    agreementChecked = null;
     serviceName = null;
     appointmentTypeItem = null;
     submitterTypeItem = null;
@@ -233,7 +239,11 @@ class NewAppointmentViewModel extends BaseViewModel {
   void setMunicipalities(Municipality? data) {
     municipalitiesResponse = data;
     municipalitiesList = municipalitiesResponse!.data!.result!
-        .map<DropDownItem>((e) => DropDownItem(id: e.id, name: e.name ?? "",externalSystemUrl: e.externalSystemUrl??"",externalSystem: e.externalSystem??false))
+        .map<DropDownItem>((e) => DropDownItem(
+            id: e.id,
+            name: e.name ?? "",
+            externalSystemUrl: e.externalSystemUrl ?? "",
+            externalSystem: e.externalSystem ?? false))
         .toList();
   }
 
@@ -452,7 +462,7 @@ class NewAppointmentViewModel extends BaseViewModel {
       "subMunicipalityId": selectedSubMunicipalityItem!.id,
       "submitterName": name,
       //"submitterType": submitterTypeItem!.id,
-      if (atttachmentItems != null && atttachmentItems.isNotEmpty)
+      if (atttachmentItems.isNotEmpty)
         "uuid": atttachmentItems.map((e) => e.attachmentUuid).toList(),
       "visitDate": selectedDate!.date,
       "visitLinked": withPreviousTransaction,
@@ -464,7 +474,8 @@ class NewAppointmentViewModel extends BaseViewModel {
         "realEstateSurveyId": realEstateSurveyId,
         "realEstateId": realEstateId,
         "realEstateRequestId": realEstateRequestId
-      }
+      },
+      "existsWakeelVisit": existedWakeelVisit,
     });
     hideLoading();
     if (response.item1 != null &&
@@ -516,7 +527,7 @@ class NewAppointmentViewModel extends BaseViewModel {
           "specialCondition": specialConditionItemOld?.id,
         "subMunicipalityId": selectedSubMunicipalityItem!.id,
         //"submitterType": submitterTypeItem!.id,
-        if (atttachmentItems != null && atttachmentItems.isNotEmpty)
+        if (atttachmentItems.isNotEmpty)
           "uuid": atttachmentItems.map((e) => e.attachmentUuid).toList(),
         "visitDate": selectedDate!.date,
         "visitLinked": withPreviousTransaction,
@@ -557,6 +568,7 @@ class NewAppointmentViewModel extends BaseViewModel {
       print(error);
       hideLoading();
     }
+    return null;
   }
 
   Future<bool> getServiceConfig(
@@ -573,8 +585,10 @@ class NewAppointmentViewModel extends BaseViewModel {
       if (appointmentTypeList?.length == 1) {
         appointmentTypeItem = appointmentTypeList?[0];
       }
-      attachmentConfigList = serviceConfigResponse?.data?.result?[0].attachmentsConfig;
-
+      attachmentConfigList =
+          serviceConfigResponse?.data?.result?[0].attachmentsConfig;
+      prevTransNoRequired =
+          serviceConfigResponse?.data?.result?[0].prevTransNoRequired;
 
       return true;
     } else {
@@ -583,12 +597,10 @@ class NewAppointmentViewModel extends BaseViewModel {
     return false;
   }
 
-
   Future<bool> deleteAttachment(String udid) async {
-
     showLoading();
     Tuple3<bool?, String?, SaveAppointmentResponse?> response =
-    await _repository.deleteAttachment(udid);
+        await _repository.deleteAttachment(udid);
     hideLoading();
     if (response.item1 != null &&
         response.item1! &&
@@ -602,44 +614,43 @@ class NewAppointmentViewModel extends BaseViewModel {
     return false;
   }
 
-  Future<bool> uploadFile(Uint8List? attachmentBase64,
-      String? attachmentFileName, String? attachmentPath,int? attachmentId) async {
+  Future<bool> uploadFile(
+      Uint8List? attachmentBase64,
+      String? attachmentFileName,
+      String? attachmentPath,
+      int? attachmentId) async {
     final mimeType = lookupMimeType(attachmentPath ?? ""); // 'image/jpeg'
 
     showLoading();
     Tuple3<bool?, String?, UploadFileResponse?> response =
-        await _repository.uploadFile(
-            attachmentBase64, attachmentFileName, attachmentPath, mimeType,attachmentId!);
+        await _repository.uploadFile(attachmentBase64, attachmentFileName,
+            attachmentPath, mimeType, attachmentId!);
     hideLoading();
     if (response.item1 != null &&
         response.item1! &&
         response.item3?.data?.result?.uuid != null) {
       var attachmentUuid = response.item3?.data?.result?.uuid;
 
+      int index = atttachmentItems
+          .indexWhere((element) => element.attachmentId == attachmentId);
 
-
-      if(attachmentId != null) {
-
-        int index =atttachmentItems.indexWhere((element) => element.attachmentId ==attachmentId);
-
-        if(index == -1) {
-          atttachmentItems.add(AttachmentItemModel(
-              attachmentId:attachmentId,
-              attachmentUuid: attachmentUuid,
-              attachmentFileName: attachmentFileName,
-              attachmentPath: attachmentPath,
-              updatable: true));
-        }
-        else
-          {
-            atttachmentItems.removeAt(index);
-            atttachmentItems.insert(index,AttachmentItemModel(
-                attachmentId:attachmentId,
+      if (index == -1) {
+        atttachmentItems.add(AttachmentItemModel(
+            attachmentId: attachmentId,
+            attachmentUuid: attachmentUuid,
+            attachmentFileName: attachmentFileName,
+            attachmentPath: attachmentPath,
+            updatable: true));
+      } else {
+        atttachmentItems.removeAt(index);
+        atttachmentItems.insert(
+            index,
+            AttachmentItemModel(
+                attachmentId: attachmentId,
                 attachmentUuid: attachmentUuid,
                 attachmentFileName: attachmentFileName,
                 attachmentPath: attachmentPath,
                 updatable: true));
-          }
       }
       return true;
     } else {
@@ -756,14 +767,14 @@ class NewAppointmentViewModel extends BaseViewModel {
         }
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     isUserOld = isOld;
     return isOld;
   }
@@ -834,6 +845,8 @@ class NewAppointmentViewModel extends BaseViewModel {
           value: editedItem?.serviceCategoryId.toString());
 
       transactionNo = editedItem?.prevTrnNo;
+      existedWakeelVisit = editedItem?.existedWakeelVisit;
+      agreementChecked = editedItem?.accepted_agreement;
       appointmentDetails = editedItem?.appointmentDetails;
       realEstateSurveyId = editedItem?.realEstateSurveyId;
       realEstateId = editedItem?.realEstateId;
@@ -978,6 +991,5 @@ class NewAppointmentViewModel extends BaseViewModel {
     return serviceConfigResponse?.data?.result?.firstOrNull?.realEstate == true;
     /*&&
         selectedMunicipalityItem?.id == "-1"*/
-    ;
   }
 }

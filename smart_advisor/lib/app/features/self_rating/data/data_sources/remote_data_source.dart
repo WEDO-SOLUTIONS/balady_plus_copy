@@ -12,6 +12,7 @@ import '/app/features/fees_calculator/data/models/fees_calculator_response_model
 import '/app/features/fees_calculator/domain/entities/fees_calculator_request.dart';
 import 'package:dio/dio.dart' show DioError, Options;
 import '/app/core/utils/constants/language.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../../../core/errors/errors_exports.dart' show ServerException;
 import '../../../../core/services/services_exports.dart'
@@ -59,8 +60,12 @@ class RemoteDataSourceImplementation implements RemoteDataSource {
   Future<double> submitRatingItems(SubmitRatingRequest request) async {
     try {
       final verifyingKEY = CommonFunctions.hashRequest(
-          sl<EnvType>().domain + ApiUrls.submitRatingItems, "POST",
-          body: json.encode(request.toJson()));
+        sl<EnvType>().domain + ApiUrls.submitRatingItems, "POST",
+        body: json.encode(
+          request.toJson(),
+        ),
+        //  authorization: BaladyServices.token.isNotEmpty ? true : false
+      );
 
       final response = await webService.dio.post(ApiUrls.submitRatingItems,
           data: request.toJson(),

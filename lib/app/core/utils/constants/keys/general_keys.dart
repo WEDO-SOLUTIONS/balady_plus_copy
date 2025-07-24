@@ -1,6 +1,6 @@
 class GeneralKey {
 //
-  static const String appFontType = 'Frutiger';
+  static const String appFontType = 'packages/balady_uikit/Frutiger';
   // Default padding
   static const double semiSmallPadding = 8.0;
   static const double smallPadding = 12.0;

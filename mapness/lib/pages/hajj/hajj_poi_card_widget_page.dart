@@ -101,7 +101,7 @@ class _HajjPoiCardPageState extends ConsumerState<HajjPoiCardPage> with SingleTi
                     delegate: SliverChildListDelegate(
                       [
                         const SizedBox(height: Spacing.$4x),
-                        HajjInfoWidget(poiMarkerRcmc: widget.poiMarkerRcmc),
+                        HajjInfoWidget(data: widget.poiMarkerRcmc),
                       ],
                     ),
                   ),

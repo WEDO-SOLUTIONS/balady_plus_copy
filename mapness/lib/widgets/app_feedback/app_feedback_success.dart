@@ -13,6 +13,7 @@ class AppFeedbackSuccess extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const SizedBox(height: Spacing.$6x),
             Image.asset(
               Assets.images.successAppFeedback.keyName,
               matchTextDirection: true,

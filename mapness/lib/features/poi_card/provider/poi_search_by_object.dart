@@ -31,36 +31,20 @@ class PoiSearchByObject extends _$PoiSearchByObject {
     final entrances = data?.entrances ?? [];
     final resultsEntrances = <DirectoryObjectMessage>[];
     for (final entrance in entrances) {
-      final object = await ref.watch(directoryObjectFromDgisIdProvider(
-        DgisObjectIdMessage(objectId: entrance.id.entranceId, entranceId: 0),
-      ).future);
-
-      if (object != null) {
-        resultsEntrances.add(object);
+      try {
+        final object = await ref.watch(directoryObjectFromDgisIdProvider(
+          DgisObjectIdMessage(objectId: entrance.id.entranceId, entranceId: 0),
+        ).future);
+        if (object != null) {
+          resultsEntrances.add(object);
+        }
+      } catch (_) {
+        // Handle the case where the entrance ID is not found or any other error
+        continue;
       }
     }
 
     state = AsyncValue.data((results, resultsEntrances));
     return (results, resultsEntrances);
-  }
-}
-
-@riverpod
-class PoiSearchByObjectEntrances extends _$PoiSearchByObjectEntrances {
-  @override
-  Future<List<DirectoryObjectMessage>> build(DirectoryObjectMessage? data) async {
-    state = const AsyncValue.loading();
-    final entrances = data?.entrances ?? [];
-    final results = <DirectoryObjectMessage>[];
-    for (final entrance in entrances) {
-      final object = await ref.watch(directoryObjectFromDgisIdProvider(entrance.id).future);
-
-      if (object != null) {
-        results.add(object);
-      }
-    }
-
-    state = AsyncValue.data(results);
-    return results;
   }
 }

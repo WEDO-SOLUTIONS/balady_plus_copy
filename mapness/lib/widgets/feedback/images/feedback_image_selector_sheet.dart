@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 
 enum FeedbackImageSelectorType {
   camera,
@@ -22,32 +23,31 @@ class FeedbackImageSelectorSheet extends HookWidget {
       onClose: (_) => onSelect != null ? onSelect?.call(null) : context.router.popForced,
     );
 
-    return StatelessBottomSheet(
-      safeAreaColor: context.colors.backgroundSurface4,
-      backgroundColor: context.colors.backgroundSurface4,
-      scrollController: sheetController,
-      draggerColor: context.colors.backgroundSurface4,
-      content: [
-        ContentRow(
-          options: ContentRowOptions(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            title: context.l10n.addPhoto,
-            titleStyle: context.textStyles.h4SemiBold.copyWith(
-              color: context.colors.foregroundDefault,
-            ),
-            customActionWidget: AppButton.close(
-              color: context.colors.neutralContainerDefault,
-              onTap: context.router.popForced,
-              innerPadding: const EdgeInsets.all(Spacing.$2x),
-              padding: EdgeInsets.zero,
+    return SafeAreaPadding(
+      bottom: false,
+      child: StatelessBottomSheet(
+        safeAreaColor: context.colors.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface4,
+        scrollController: sheetController,
+        draggerColor: context.colors.backgroundSurface4,
+        content: [
+          ContentRow(
+            options: ContentRowOptions(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              title: context.l10n.addPhoto,
+              titleStyle: context.textStyles.h4SemiBold.copyWith(
+                color: context.colors.foregroundDefault,
+              ),
+              customActionWidget: AppButton.close(
+                color: context.colors.neutralContainerDefault,
+                onTap: context.router.popForced,
+                innerPadding: const EdgeInsets.all(Spacing.$2x),
+                padding: EdgeInsets.zero,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: Spacing.$4x),
-        SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
             child: ContentWrapper(color: context.colors.backgroundSurface1, children: [
               ContentRow(
                 isDividerEnabled: true,
@@ -94,8 +94,8 @@ class FeedbackImageSelectorSheet extends HookWidget {
               ),
             ]),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -13,16 +12,15 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 void main() async {
   unhandledExceptionBaladyLogs(() async {
-    AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
-    await runMapnessApp(() async {
+    await runMapnessApp(EnvType.dev, () async {
+      AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.dev);
       // to observe all blocs movements
       // Bloc.observer = SimpleBlocObserver();
       await setupMapness(EnvType.dev);
       await SentryFlutter.init(
         (options) {
-          options.dsn =
-              'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+          options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
           options.tracesSampleRate = 0.1;
           options.profilesSampleRate = 0.1;
           options.attachScreenshot = true;
@@ -30,8 +28,7 @@ void main() async {
           options.captureFailedRequests = true;
           options.environment = sl<EnvType>().name;
         },
-        appRunner: () => runApp(MapnessProviderScope(
-            child: LocalizedApp(child: App()))),
+        appRunner: () => runApp(MapnessProviderScope(child: LocalizedApp(child: App()))),
       );
     });
   });
