@@ -20,18 +20,61 @@ void main() async {
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
       await SentryFlutter.init(
-        (options) {
-          options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+            (options) {
+          options.dsn = 'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
-          options.tracesSampleRate = 0.1;
+          options.tracesSampleRate = 1.0;
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
-          options.profilesSampleRate = 0.1;
-          options.attachScreenshot = true;
+          options.profilesSampleRate = 1.0;
+          // options.attachScreenshot = true;
           options.enableUserInteractionTracing = true;
-          options.captureFailedRequests = true;
-          options.environment = sl<EnvType>().name;
+          options.reportSilentFlutterErrors = true;
+          options.enableAppHangTracking = true;
+          options.enableAutoPerformanceTracing = true;
+          options.enableAutoNativeBreadcrumbs = true;
+          options.enableNativeCrashHandling = true;
+          options.enableTimeToFullDisplayTracing = true;
+          options.enableAppHangTracking = true;
+          options.enableAppLifecycleBreadcrumbs = true;
+          options.enableFramesTracking = true;
+          // options.captureFailedRequests = true;
+          options.environment = EnvType.stg.name;
+
+
+
+
+
+          // Performance Monitoring
+          options.tracesSampleRate = 1.0; // 100% sampling for development
+          // options.tracesSampleRate = 0.1; // 10% sampling for production
+
+          // Profiling
+          options.profilesSampleRate = 1.0; // 100% profiling sampling
+
+          // Auto Performance Instrumentation
+          options.enableAutoPerformanceTracing = true;
+          options.enableUserInteractionTracing = true;
+          options.enableAppHangTracking = true;
+
+
+          // Session Tracking
+          options.enableAutoSessionTracking = true;
+          // Breadcrumbs
+          options.maxBreadcrumbs = 100;
+
+          // Screenshots and Attachments
+          options.attachScreenshot = true;
+          options.screenshotQuality = SentryScreenshotQuality.high;
+          options.attachViewHierarchy = true;
+
+          // Debug Options
+          options.diagnosticLevel = SentryLevel.debug;
+
+          // Additional Performance Settings
+          options.enableTimeToFullDisplayTracing = true;
+
         },
         appRunner: () => runApp(MapnessProviderScope(child: LocalizedApp(child: App()))),
       );
