@@ -21,6 +21,7 @@ import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
+import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
@@ -36,8 +37,6 @@ import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
-
-import '../../metro/metro_layer_repository.dart';
 
 part 'layers_controls.g.dart';
 
@@ -800,18 +799,12 @@ class LayersControls extends _$LayersControls {
   Future<void> showActiveLayerOnMap() async {
     final read = ref.read(activeLayerProvider);
 
-    switch (read) {
-      case null:
-      case LayerType.invest:
-      case LayerType.buildings:
-      case LayerType.fencing:
-        () {}; //NOOP
-      case LayerType.favourites:
-        await ref.read(favouriteToggleProvider.notifier).enable();
-      case LayerType.parkingLots:
-        await ref.read(parkingStateProvider.notifier).showParking();
-      case LayerType.metro:
-        ref.read(metroLayerRepositoryProvider.notifier).showMetro();
+    if (read case LayerType.favourites) {
+      await ref.read(favouriteToggleProvider.notifier).enable();
+    } else if (read case LayerType.parkingLots) {
+      await ref.read(parkingStateProvider.notifier).showParking();
+    } else if (read case LayerType.metro) {
+      ref.read(metroLayerRepositoryProvider.notifier).showMetro();
     }
   }
 }

@@ -72,8 +72,8 @@ class _MapPageState extends ConsumerState<MapPage> with AutomaticKeepAliveClient
           androidUseExpensive: true,
           onMapCreated: (controller) async {
             await dgisController.onMapCreated(controller);
-            Future.delayed(const Duration(seconds: 3), () async {
-              await ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
+            Future.delayed(const Duration(seconds: 3), () {
+              ref.read(layersControlsProvider.notifier).showActiveLayerOnMap();
             });
           },
         ),
