@@ -4580,6 +4580,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/lifestyle_layers/providers/layers_state.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/parking_spot/parking_manage.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/path_nav/lib/enums.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/path_nav/providers/path_nav_eta.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/path_nav/providers/path_nav_message.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/routing/providers/routes.dart";
@@ -4596,6 +4597,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/camera_padding.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/camera_position.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/navigator_auto_enable_parking.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/parking_autoenabled_sheet_provider.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/selected_marker.dart";
