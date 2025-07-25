@@ -30,14 +30,10 @@ enum BSSActionType {
 
 class BssRequest {
   const BssRequest({
-    required this.query,
-    required this.eventId,
-    required this.timestamp,
-    required this.map,
-    required this.common,
-    required this.eventOrdinal,
     required this.eventType,
+    required this.query,
     required this.uiElement,
+    required this.map,
     this.payload,
     this.actionType,
   });
@@ -46,12 +42,14 @@ class BssRequest {
   static const int type = 434;
 
   /// Globally unique event identifier in "uuid" format
-  final Uuid eventId;
+  /// Note: We don't use it as parameter, because it's generated on the fly in [toJsonWithIds]
+  /// final Uuid eventId;
 
   /// Ordinal number of the event in the sequence starts from 0
   /// Min: 0
   /// [sessionId] + [eventOrdinal] allows to track the message in the unique way
-  final int eventOrdinal;
+  /// Note: We don't use it as parameter, because it passed as a parameter in [toJsonWithIds] from [BssService]
+  /// final int eventOrdinal;
 
   /// Type of the event; action of the user or application OR show up of the UI element
   /// Variants: action, view
@@ -63,7 +61,8 @@ class BssRequest {
 
   /// Event time with millisecond accuracy.
   /// Defined as the number of milliseconds since Unix Epoch
-  final int timestamp;
+  /// Note: We don't use it as parameter, because it's generated on the fly in [toJsonWithIds]
+  /// final int timestamp;
 
   /// Search query text
   final String query;
@@ -75,12 +74,18 @@ class BssRequest {
   final BssMap map;
 
   /// General attribute block
-  final BssCommon common;
+  /// Note: We don't use it as parameter, because it's passed as a parameter in [toJsonWithIds] from [BssService]
+  /// final BssCommon common;
 
   /// Block of additional attributes
   final BssPayload? payload;
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJsonWithIds({
+    required int eventOrdinal,
+    required BssCommon common,
+  }) {
+    final eventId = const Uuid().v4();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
     final data = <String, dynamic>{
       'type': type,
       'eventId': eventId.toString(),
@@ -100,6 +105,23 @@ class BssRequest {
     }
     return data;
   }
+
+  BssRequest copyWith({
+    String? query,
+    BSSEventType? eventType,
+    BSSActionType? actionType,
+    BssMap? map,
+    BssUIElement? uiElement,
+    BssPayload? payload,
+  }) =>
+      BssRequest(
+        query: query ?? this.query,
+        eventType: eventType ?? this.eventType,
+        actionType: actionType ?? this.actionType,
+        map: map ?? this.map,
+        uiElement: uiElement ?? this.uiElement,
+        payload: payload ?? this.payload,
+      );
 }
 
 class BssUIElement {
@@ -137,6 +159,8 @@ class BssUIElement {
 class BssMap {
   const BssMap({
     required this.inviewport,
+    this.zoomLevel,
+    this.rotation,
   });
 
   /// Start viewport when entering a query, specified by 4 (must be all 4) points
@@ -145,18 +169,32 @@ class BssMap {
   /// Very important for the search team within the global map for both searches and card openings.
   final List<BssViewport> inviewport;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'inviewport': inviewport.map((e) => e.toJson()).toList(),
-    };
-  }
+  /// Zoom, fractional number. For mobile and online, the same zoom value may correspond to a different physical scale,
+  /// depending on the current grid on each platform.
+  /// At the moment, the zoom value is approximately 0 when viewing the entire world, 20 - at maximum zoom
+  /// (there is no need to validate this in the schemes).
+  final double? zoomLevel;
+
+  /// Rotate the map relative to the window. Fractional number. Measured in degrees. 0 degrees corresponds to the north,
+  /// up to 180 degrees when rotating clockwise, up to -180 when rotating counterclockwise. 180 and -180 degrees correspond to the south.
+  final double? rotation;
+
+  Map<String, dynamic> toJson() => {
+        'inviewport': inviewport.map((e) => e.toJson()).toList(),
+      };
 }
 
 // TODO: Implement this
 class BssViewport {
-  const BssViewport();
+  final double lat;
+  final double lon;
 
-  Map<String, dynamic> toJson() {
-    return {};
-  }
+  const BssViewport({required this.lat, required this.lon})
+      : assert(lat >= -90 && lat <= 90, 'Latitude must be between -90 and 90'),
+        assert(lon >= -180 && lon <= 180, 'Longitude must be between -180 and 180');
+
+  Map<String, dynamic> toJson() => {
+        'lat': lat,
+        'lon': lon,
+      };
 }

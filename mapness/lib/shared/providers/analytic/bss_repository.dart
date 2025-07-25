@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -8,10 +10,14 @@ class BssService {
   static Dio? _dio;
   static bool _isInitialized = false;
 
+  static int ordinalId = 0;
+  static BssCommon? common;
+
   // Private constructor to prevent instantiation
   BssService._();
 
   // Singleton instance getter
+  // ignore: prefer_constructors_over_static_methods
   static BssService get instance {
     _instance ??= BssService._();
     return _instance!;
@@ -46,11 +52,20 @@ class BssService {
   }
 
   static Future<void> sendEvent(BssRequest request) async {
-    final dio = instance.dio;
-    if (dio == null) {
-      throw StateError('BssService has not been initialized. Call initialize() first.');
+    try {
+      final dio = instance.dio;
+      if (dio == null) {
+        throw StateError('BssService has not been initialized. Call initialize() first.');
+      }
+      if (common == null) {
+        throw StateError('BssService has not been initialized. Call initialize() first.');
+      }
+      final requestJson = request.toJsonWithIds(eventOrdinal: ordinalId, common: common!);
+      await dio.post('/bss/3', data: requestJson);
+      ordinalId++;
+    } catch (e) {
+      debugPrint('Error sending event: $e');
     }
-    await dio.post('/bss/3', data: request.toJson());
   }
 
   // Get the Dio instance

@@ -47,7 +47,7 @@ class BssCommon {
   /// for example, ru_DE.
   /// (The application settings overwrite the first part if it differs from the
   /// system one)
-  /// - For Andorid:
+  /// - For Android:
   /// 1) When first launched, the device language is viewed
   /// 2) The translation is selected based on the device language
   /// 3) The locale is selected according to the selected translation (ru_RU, en_EN)
@@ -63,4 +63,23 @@ class BssCommon {
         'appInstanceId': appInstanceId,
         'product': product,
       };
+
+  BssCommon copyWith({
+    String? appVersion,
+    String? appInstanceId,
+    int? product,
+    String? sessionId,
+    String? user,
+    String? deviceLocale,
+    int? formatVersion,
+  }) =>
+      BssCommon(
+        appVersion: appVersion ?? this.appVersion,
+        appInstanceId: appInstanceId ?? this.appInstanceId,
+        product: product ?? this.product,
+        sessionId: sessionId ?? this.sessionId,
+        user: user ?? this.user,
+        deviceLocale: deviceLocale ?? this.deviceLocale,
+        formatVersion: formatVersion ?? this.formatVersion,
+      );
 }

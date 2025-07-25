@@ -24,10 +24,12 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
@@ -50,10 +52,13 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
+import 'package:mapness/shared/providers/analytic/bss_repository.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_common.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -68,7 +73,11 @@ import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:share_plus/share_plus.dart';
+import 'package:uuid/uuid.dart';
 
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
@@ -126,7 +135,7 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
   ConsumerState<MapnessEntryPoint> createState() => _MapnessEntryPointState();
 }
 
-class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
+class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> with WidgetsBindingObserver {
   late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
@@ -153,6 +162,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // checkNavigationState();
       // TODO: Dmitrii.P: Is it the right place to call this method?
       // Maybe we should call it upper or in the different places too?
+      initBss();
       final track = ref.read(urbiAnalyticsProvider).track;
       AdvancedMetrics.instance.stopMeasureStartup(track: track);
       AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
@@ -197,6 +207,45 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           });
         }
       });
+    }
+  }
+
+  Future<void> initBss() async {
+    try {
+      final baseDio = await ref.read(dGisHttpService.future);
+      final env = await ref.read(dgisEnvironmentProvider.future);
+
+      final locale = ref.read(appLanguageProvider).languageCode;
+      final deviceInfo = await ref.read(deviceInfoProvider.future);
+      final packageInfo = await PackageInfo.fromPlatform();
+
+      final isIOS = deviceInfo.mobileOS == AppFeedbackMobileOs.ios;
+      final product = isIOS ? 87 : 86;
+
+      final common = BssCommon(
+        appVersion: packageInfo.version,
+        appInstanceId: deviceInfo.deviceId ?? 'unknown',
+        product: product,
+        sessionId: const Uuid().v4(),
+        user: deviceInfo.authId ?? deviceInfo.deviceId ?? 'unknown',
+        deviceLocale: locale,
+      );
+
+      await BssService.initialize(
+        baseDio: baseDio,
+        bssApi: env.bssApi,
+      );
+      BssService.common = common;
+    } catch (e) {
+      debugPrint('Error initializing BSS: $e');
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      // TODO: Dmitrii.P: Implement this
+      //BssService.common = BssService.common?.copyWith(sessionId: const Uuid().v4());
     }
   }
 
