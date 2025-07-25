@@ -6,15 +6,18 @@ class FavoritesScreen {
     unowned private let listTemplate: CPListTemplate
     private let interfaceController: CPInterfaceController
     private let hostFlutterApi: HostFlutterApi
+    private let searchNavigation: SearchNavigation
 
     init(
         listTemplate: CPListTemplate,
         interfaceController: CPInterfaceController,
-        hostFlutterApi: HostFlutterApi
+        hostFlutterApi: HostFlutterApi,
+        searchNavigation: SearchNavigation
     ) {
         self.listTemplate = listTemplate
         self.interfaceController = interfaceController
         self.hostFlutterApi = hostFlutterApi
+        self.searchNavigation = searchNavigation
     }
 
     static func createTemplate() -> CPListTemplate {
@@ -50,6 +53,12 @@ class FavoritesScreen {
     private func showFavorites(
         _ favouritesStateMessage: FavouritesStateMessage
     ) {
+        let emptyItemPlaceHolder = CPListItem(
+            text: "favouritesScreenPlaceholderEmptyTitle".localized,
+            detailText: "favouritesScreenPlaceholderEmptySubtitle".localized
+        )
+        emptyItemPlaceHolder.handler = onItemTap
+
         let sections = [
             CPListSection(
                 items: [
@@ -78,11 +87,6 @@ class FavoritesScreen {
         listTemplate.updateSections(sections)
     }
 
-    private let emptyItemPlaceHolder = CPListItem(
-        text: "favouritesScreenPlaceholderEmptyTitle".localized,
-        detailText: "favouritesScreenPlaceholderEmptySubtitle".localized
-    )
-
     private func mapCPListItem(
         from favouriteItemMessage: FavouriteItemMessage?,
         title: String? = nil,
@@ -90,18 +94,36 @@ class FavoritesScreen {
     )
         -> CPListItem
     {
-        CPListItem(
+        let item = CPListItem(
             text: title ?? favouriteItemMessage?.title,
             detailText: favouriteItemMessage?.subtitle
                 ?? "favouritesScreenItemSubtitlePlaceholder".localized,
             image: image
         )
+        item.userInfo = favouriteItemMessage
+        item.handler = onItemTap
+        return item
     }
 
     private func mapCPListItem(favouriteItemMessage: FavouriteItemMessage)
         -> CPListItem
     {
         mapCPListItem(from: favouriteItemMessage)
+    }
+
+    private func onItemTap(
+        listItem: CPSelectableListItem, completion: @escaping () -> Void
+    ) {
+        if let favouriteItemMessage = listItem.userInfo as? FavouriteItemMessage
+        {
+            searchNavigation.navigate(
+                to: favouriteItemMessage.coordinates.geoPoint,
+                destinationName: listItem.text ?? favouriteItemMessage.title,
+                additionalInformation: favouriteItemMessage.subtitle
+            )
+            interfaceController.popToRootTemplate(animated: true) { _, __ in }
+        }
+        completion()
     }
 
     private func onBackTap(_: CPBarButton) {

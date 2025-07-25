@@ -213,7 +213,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let screen = FavoritesScreen(
             listTemplate: template,
             interfaceController: interfaceController,
-            hostFlutterApi: hostFlutterApi
+            hostFlutterApi: hostFlutterApi,
+            searchNavigation: self
         )
         screen.show()
     }
@@ -362,8 +363,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func makeSecondLeadButton() -> (() -> CPBarButton)? {
         if isPanningInterfaceVisible { return nil }
-        guard let trip = startedTrip else { return makeFavoritesButton }
-        return makeRouteHeaderButton(trip)
+        if let trip = startedTrip { return makeRouteHeaderButton(trip) }
+        if isRoutesShown { return nil }
+        return makeFavoritesButton
     }
 
     private func makeSearchButton() -> CPBarButton {
@@ -473,6 +475,17 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         guard let geoPoint = directoryObject.markerPosition?.point
         else { return }
 
+        let addressFormatted = directoryObject.address?.addressToString() ?? ""
+
+        navigate(
+            to: geoPoint, destinationName: directoryObject.title,
+            additionalInformation: addressFormatted)
+    }
+
+    func navigate(
+        to geoPoint: GeoPoint, destinationName: String,
+        additionalInformation: String
+    ) {
         let finishPoint = RouteSearchPoint(coordinates: geoPoint)
         let carRouteSearchOptions = CarRouteSearchOptions()
         let routeSearchOptions = RouteSearchOptions.car(carRouteSearchOptions)
@@ -498,7 +511,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 [self]
                 routeEditorRoutesInfo in
                 showTripPreview(
-                    to: directoryObject, with: routeEditorRoutesInfo
+                    to: destinationName, with: additionalInformation,
+                    with: routeEditorRoutesInfo
                 )
             }
 
@@ -506,7 +520,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func showTripPreview(
-        to directoryObject: DirectoryObject,
+        to destinationName: String,
+        with additionalInformation: String,
         with routeEditorRoutesInfo: RouteEditorRoutesInfo
     ) {
         guard !routeEditorRoutesInfo.routes.isEmpty else { return }
@@ -514,7 +529,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         routesInfoChannelCancellable?.cancel()
 
         let trip = createCPTrip(
-            to: directoryObject, with: routeEditorRoutesInfo
+            to: destinationName,
+            with: additionalInformation,
+            with: routeEditorRoutesInfo
         )
 
         showRoutes(for: trip)
@@ -541,15 +558,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         routeEditorSource.setRoutesVisible(visible: isRoutesShown)
 
         let textConfiguration = CPTripPreviewTextConfiguration(
-            startButtonTitle: NSLocalizedString(
-                "tripPreviewStartButton", comment: ""
-            ),
-            additionalRoutesButtonTitle: NSLocalizedString(
-                "tripPreviewMoreRoutesButton", comment: ""
-            ),
-            overviewButtonTitle: NSLocalizedString(
-                "tripPreviewBackButton", comment: ""
-            )
+            startButtonTitle: "tripPreviewStartButton".localized,
+            additionalRoutesButtonTitle: "tripPreviewMoreRoutesButton"
+                .localized,
+            overviewButtonTitle: "tripPreviewBackButton".localized
         )
 
         if self.startedTrip == nil {
@@ -591,7 +603,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func createCPTrip(
-        to directoryObject: DirectoryObject,
+        to destinationName: String,
+        with additionalInformation: String,
         with routeEditorRoutesInfo: RouteEditorRoutesInfo
     ) -> CPTrip {
         let routeEditorRouteParams = routeEditorRoutesInfo.routeParams
@@ -603,19 +616,19 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let destination = MKMapItem(
             placemark: MKPlacemark(coordinate: clLocationCoordinate2D)
         )
-        destination.name = directoryObject.title
+        destination.name = destinationName
         return CPTrip(
             origin: MKMapItem(),
             destination: destination,
             routeChoices: routeEditorRoutesInfo.routes.map {
                 trafficRoute in
-                createCPRouteChoice(trafficRoute, directoryObject)
+                createCPRouteChoice(trafficRoute, additionalInformation)
             }
         )
     }
 
     private func createCPRouteChoice(
-        _ trafficRoute: TrafficRoute, _ directoryObject: DirectoryObject
+        _ trafficRoute: TrafficRoute, _ additionalInformation: String
     )
         -> CPRouteChoice
     {
@@ -642,11 +655,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             from: distanceMeasurement.formatDistance
         )
 
-        let addressFormatted = directoryObject.address?.addressToString() ?? ""
-
         return CPRouteChoice(
             summaryVariants: [durationFormatted],
-            additionalInformationVariants: [addressFormatted],
+            additionalInformationVariants: [additionalInformation],
             selectionSummaryVariants: [distanceFormatted]
         )
     }
