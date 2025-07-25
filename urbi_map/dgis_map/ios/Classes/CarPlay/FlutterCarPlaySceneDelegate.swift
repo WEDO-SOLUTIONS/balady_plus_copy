@@ -56,7 +56,8 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
             eventProcessor: mapFactory.mapEventProcessor,
             navigationManager: DgisMapInitializer.shared.getNavigationManager(),
             userDefaultsPublished: UserDefaultsPublished(),
-            eventChannel: FlutterCarPlaySceneDelegate.eventChannel
+            eventChannel: FlutterCarPlaySceneDelegate.eventChannel,
+            hostFlutterApi: hostFlutterApi
         )
         let mapTemplate = mainScreen.createTemplate()
         

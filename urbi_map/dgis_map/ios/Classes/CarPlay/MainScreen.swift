@@ -11,6 +11,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     unowned private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler?
     private let container: DGis.Container
+    unowned private let hostFlutterApi: HostFlutterApi
 
     init(
         map: Map,
@@ -21,7 +22,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         eventProcessor: IMapEventProcessor,
         navigationManager: NavigationManager,
         userDefaultsPublished: UserDefaultsPublished,
-        eventChannel: DgisStreamHandler?
+        eventChannel: DgisStreamHandler?,
+        hostFlutterApi: HostFlutterApi
     ) {
         self.map = map
         self.container = container
@@ -45,6 +47,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             model: model,
             mapTemplate: mapTemplate
         )
+        self.hostFlutterApi = hostFlutterApi
     }
 
     private let mapTemplate: CPMapTemplate
@@ -204,6 +207,16 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         )
         screen.createTemplate().show(with: interfaceController)
     }
+    
+    private func onFavoritesTap(_: CPBarButton) {
+        let template = FavoritesScreen.createTemplate()
+        let screen = FavoritesScreen(
+            listTemplate: template,
+            interfaceController: interfaceController,
+            hostFlutterApi: hostFlutterApi
+        )
+        screen.show()
+    }
 
     private func onSettingsBarTap(_: CPBarButton) {
         let screen = SettingsScreen(
@@ -349,13 +362,19 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func makeSecondLeadButton() -> (() -> CPBarButton)? {
         if isPanningInterfaceVisible { return nil }
-        guard let trip = startedTrip else { return nil }
+        guard let trip = startedTrip else { return makeFavoritesButton }
         return makeRouteHeaderButton(trip)
     }
 
     private func makeSearchButton() -> CPBarButton {
         return CPBarButton(
             image: UIImage(named: "Search")!, handler: onSearchBarTap
+        )
+    }
+    
+    private func makeFavoritesButton() -> CPBarButton {
+        return CPBarButton(
+            image: UIImage(named: "Bookmark")!, handler: onFavoritesTap
         )
     }
 

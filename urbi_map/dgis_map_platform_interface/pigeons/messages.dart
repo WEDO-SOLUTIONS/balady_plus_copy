@@ -1510,6 +1510,23 @@ enum MapMarkersType {
   stairs,
 }
 
+class FavouritesStateMessage {
+  FavouritesStateMessage(this.items, this.home, this.work);
+
+  final List<FavouriteItemMessage> items;
+  final FavouriteItemMessage? home;
+  final FavouriteItemMessage? work;
+}
+
+class FavouriteItemMessage {
+  FavouriteItemMessage(this.id, this.subtitle, this.title, this.coordinates);
+
+  final String id;
+  final String subtitle;
+  final String title;
+  final GeoPointMessage coordinates;
+}
+
 @ConfigurePigeon(
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
@@ -1951,6 +1968,9 @@ abstract class HostFlutterApi {
 
   @async
   VendorConfigContentMessage getAppConfig();
+
+  @async
+  FavouritesStateMessage getFavourites();
 
   void runMain();
 }

@@ -27,3 +27,13 @@
 "quickFilterMarkets" = "الآسواق";
 "quickFilterHotels" = "الفنادق";
 "quickFilterFuel" = "الوقود";
+"favouritesScreenTitle" = "المفضلة";
+"favouritesScreenBackButton" = "بحث";
+"favouritesScreenLoadingPlaceholder" = "جار التحميل";
+"favouritesScreenSectionHomeAndWork" = "المنزل والعمل";
+"favouritesScreenSectionFavourites" = "المفضلة";
+"favouritesScreenItemTitleHome" = "بيت";
+"favouritesScreenItemTitleWork" = "عمل";
+"favouritesScreenItemSubtitlePlaceholder" = "أضف عنوانًا في هاتفك";
+"favouritesScreenPlaceholderEmptyTitle" = "لا يوجد شيء هنا بعد";
+"favouritesScreenPlaceholderEmptySubtitle" = "يمكنك إضافة اختيارك الأول من الأماكن والشركات المفضلة على هاتفك";
