@@ -109,8 +109,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       },
     );
 
+    final parkingPoi = widget.objectId == parkingObjectId;
+
     final name = widget.data.buildingInfo.buildingName;
-    if (name != null) {
+    if (name != null && parkingPoi == false) {
       widget.data.title = name;
     }
 
@@ -134,7 +136,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final brief = briefInfo?.firstOrNull;
 
     String? createPoiHeaderSubTitle() {
-      final parkingPoi = widget.objectId == parkingObjectId;
 
       final carParkingLabel = [
         brief?.getBriefRouteDescription(context.l10n),
