@@ -99,10 +99,11 @@ class PoiCardFooter extends HookConsumerWidget {
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
-                icon: GeneralIcons.phoneLTR,
-                buttonType: ButtonType.secondary,
-                label: hasContactsAndHasEntrances ? null : context.l10n.call,
-                onPressed: callPhone),
+              icon: GeneralIcons.phoneLTR,
+              buttonType: ButtonType.secondary,
+              label: hasContactsAndHasEntrances ? null : context.l10n.call,
+              onPressed: callPhone,
+            ),
           if (hasEntrances && onEntranceTap != null && !hasMetro)
             ItemActionBar(
               icon: SystemIcons.turnRight,
