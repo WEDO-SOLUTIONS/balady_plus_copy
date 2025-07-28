@@ -69,11 +69,13 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required bool isDark,
     bool withLabel = true,
     bool isRtl = true,
+    Future<void> Function(ItemMarkerInfoMessage? data)? onTapAnalytic,
   }) async {
     final markers = <Marker>[];
     final existingPositions = <LatLng>{};
 
-    for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (var i = 0; i < (itemMarkerInfos?.length ?? 0); i++) {
+      final markerInfo = (itemMarkerInfos ?? [])[i];
       final position = markerInfo.geoPoint;
       final latLng = LatLng(latitude: position.latitude, longitude: position.longitude);
 
@@ -93,6 +95,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
         Marker(
           id: objectId?.toString() ?? _invalidMarkerId,
           onTap: () {
+            onTapAnalytic?.call(markerInfo);
             Metrics.logEventAdvanced(
               MetricsConstants.poiKeys.marker,
               group: MetricsConstants.poiTag,

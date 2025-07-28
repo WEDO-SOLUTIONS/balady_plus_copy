@@ -64,7 +64,6 @@ class MapSearchResults extends ConsumerWidget {
       final scope = context.read<SearchScope>();
       final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
 
-      final entity = item.toBss();
       if (item.markerPosition == null) {
         debugPrint('GeoPosition for this object is null');
       }
@@ -78,24 +77,8 @@ class MapSearchResults extends ConsumerWidget {
                 position: index + 1,
               ),
               payload: BssPayload(
-                placeItem: entity != null
-                    ? BssPlaceItem(
-                        entity: entity,
-                        position: index + 1,
-                        geoPosition: item.markerPosition != null
-                            ? BssGeoPosition(
-                                latitude: item.markerPosition!.latitude,
-                                longitude: item.markerPosition!.longitude,
-                              )
-                            : null,
-                        contextRubric: item.rubricIds.map((e) => e.toString()).toList(),
-                        adsSearch: false,
-                      )
-                    : null,
-                searchResultList: BssSearchResultList(
-                  size: results.itemMarkerInfos?.length ?? results.firstPage?.items.length ?? 0,
-                  searchType: results.searchResultType.toBss(),
-                ),
+                placeItem: item.toBss(index),
+                searchResultList: results.toBss(),
               ),
             ),
           );

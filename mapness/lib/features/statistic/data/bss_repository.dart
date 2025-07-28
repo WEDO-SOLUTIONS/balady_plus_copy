@@ -9,7 +9,7 @@ class BssRepository {
   BssRepository({required this.dio});
 
   @Deprecated('Use BssService from shared/providers/analytic/bss_repository.dart')
-  Future<void> sendStatistics(BssPayload request) async {
+  Future<void> sendStatistics(BssPayloadMap request) async {
     await dio.post(
       '/bss/3',
       data: jsonEncode(request),

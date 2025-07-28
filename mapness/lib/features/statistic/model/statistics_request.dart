@@ -1,4 +1,4 @@
-typedef BssPayload = List<Map<String, dynamic>>;
+typedef BssPayloadMap = List<Map<String, dynamic>>;
 
 class StatisticsRequest {
   StatisticsRequest({
@@ -21,7 +21,7 @@ class StatisticsRequest {
   final String query;
 
   /// Convert object to JSON
-  BssPayload toBssPayload() => [
+  BssPayloadMap toBssPayload() => [
         {
           'type': type,
           'eventId': eventId.toString(),
