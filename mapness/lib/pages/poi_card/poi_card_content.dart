@@ -136,7 +136,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final brief = briefInfo?.firstOrNull;
 
     String? createPoiHeaderSubTitle() {
-
       final carParkingLabel = [
         brief?.getBriefRouteDescription(context.l10n),
         brief?.getBriefRouteDistanceDescription(context.l10n),
