@@ -177,6 +177,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 child: AppButton(
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
                   buttonType: ButtonType.secondary,
+                  size: ButtonSize.large,
                   primaryIcon: GeneralIcons.location,
                   primaryLabel: context.l10n.changeLocation,
                   iconColor: context.colors.accentSecondaryOnContainer,
@@ -211,6 +212,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
                   buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
                   primaryLabel: context.l10n.save,
+                  size: ButtonSize.large,
                   onTap: canSave
                       ? () => _handleSave(
                             context,

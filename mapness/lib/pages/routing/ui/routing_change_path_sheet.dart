@@ -74,11 +74,9 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 8),
             const SheetDragger(),
-            const SizedBox(height: 12),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$2x),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -95,30 +93,27 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
               padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
               child: ABRoute(
                 items: pointsModels,
+                startPointSubtitle: context.l10n.startPosition,
+                arrivalPointSubtitle: context.l10n.placeOfArrival,
                 onReorder: _onReorder,
                 onTap: _onTap,
               ),
             ),
-            const SizedBox(height: 12),
             Padding(
-              padding: const EdgeInsets.only(
-                top: Spacing.$2x,
-                bottom: Spacing.$3x,
-                left: Spacing.$4x,
-                right: Spacing.$4x,
+              padding: const EdgeInsets.symmetric(
+                vertical: Spacing.$3x,
+                horizontal: Spacing.$4x,
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.accent,
-                      onTap: () {
-                        widget.onConfirm(points);
-                      },
-                      primaryLabel: widget.externalContext.l10n.set,
-                    ),
-                  ),
-                ],
+              child: SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  size: ButtonSize.large,
+                  onTap: () {
+                    widget.onConfirm(points);
+                  },
+                  primaryLabel: widget.externalContext.l10n.set,
+                ),
               ),
             ),
           ],

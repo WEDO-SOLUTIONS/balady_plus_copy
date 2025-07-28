@@ -11,6 +11,7 @@ class AppFeedbackLoading extends StatelessWidget {
         child: FullscreenLoadingIndicator(
           isDisplayTitle: false,
           color: context.colors.accentDefault,
+          backgroundColor: context.colors.backgroundSurface4,
         ),
       );
 }

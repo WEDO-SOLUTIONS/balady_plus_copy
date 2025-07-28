@@ -58,8 +58,7 @@ class BaseErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
 
-    return Material(
-      color: Colors.white,
+    return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.only(

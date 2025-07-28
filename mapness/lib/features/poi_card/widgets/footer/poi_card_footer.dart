@@ -94,6 +94,7 @@ class PoiCardFooter extends HookConsumerWidget {
             buttonType: ButtonType.primary,
             label: context.l10n.poiCardDirections,
             onPressed: onTapCar,
+            innerPadding: const EdgeInsetsDirectional.only(start: 16, end: 20),
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
@@ -111,13 +112,11 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: iconData,
               buttonType: ButtonType.secondary,
-              label: hasContactsAndHasEntrances ? null : context.l10n.save,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: ButtonType.secondary,
-            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)

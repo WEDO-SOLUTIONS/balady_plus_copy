@@ -43,7 +43,7 @@ class EtaShareSheet extends StatelessWidget {
             children: [
               const Center(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+                  padding: EdgeInsets.only(top: Spacing.$1_5x),
                   child: SheetDragger(),
                 ),
               ),
@@ -59,7 +59,6 @@ class EtaShareSheet extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     textColor: context.colors.neutralOnContainer,
                     color: context.colors.neutralContainerDefault,
-                    innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                   ),
                 ),
               ),
@@ -75,15 +74,14 @@ class EtaShareSheet extends StatelessWidget {
                   child: SizedBox(
                     width: double.infinity,
                     child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.accent,
+                      buttonColorScheme: ButtonColorScheme.accentSecondary,
+                      size: ButtonSize.large,
                       onTap: onConfirmTap,
                       primaryLabel: confirmBtnTitle,
                     ),
                   ),
                 ),
-              const SizedBox(
-                height: Spacing.$8x,
-              )
+              const SizedBox(height: Spacing.$8x)
             ],
           ),
         ),

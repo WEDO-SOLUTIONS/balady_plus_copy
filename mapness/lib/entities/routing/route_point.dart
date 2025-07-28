@@ -89,8 +89,7 @@ class RoutePointCoordinates extends RoutePoint {
   int? get objectId => null;
 
   @override
-  String? title(AppLocalizations locale) =>
-      '${coords.latitude.toStringAsFixed(5)}, ${coords.longitude.toStringAsFixed(5)}';
+  String? title(AppLocalizations locale) => label;
 
   @override
   Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;

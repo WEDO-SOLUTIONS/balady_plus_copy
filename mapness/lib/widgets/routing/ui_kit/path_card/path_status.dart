@@ -17,7 +17,7 @@ class _PathBadge extends StatelessWidget {
           Spacing.$1x.widthBox,
           Text(
             info.text,
-            style: context.textStyle.caption.copyWith(
+            style: context.textStyles.captionMediumRegular.copyWith(
               color: info.priority.textColor(context),
             ),
           ),

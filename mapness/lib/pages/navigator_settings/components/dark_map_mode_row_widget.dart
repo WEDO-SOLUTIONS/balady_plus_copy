@@ -34,9 +34,12 @@ class DarkMapModeRowWidget extends ConsumerWidget {
           color: context.colors.foregroundDefault,
         ),
         customActionWidget: darModeState.valueOrNull?.currentMapMode == currentMode
-            ? Icon(
-                SystemIcons.checkmark,
-                color: context.colors.successDefault,
+            ? Padding(
+                padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+                child: Icon(
+                  SystemIcons.checkmark,
+                  color: context.colors.successDefault,
+                ),
               )
             : Spacing.$6x.heightBox,
       ),

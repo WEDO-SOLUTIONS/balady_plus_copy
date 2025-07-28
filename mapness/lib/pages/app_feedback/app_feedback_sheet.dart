@@ -84,7 +84,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
         child: StatelessBottomSheet(
           startConfig: BottomSheetStart.instant,
           scrollController: scrollController,
-          safeAreaColor: context.colors.backgroundSurface1,
+          backgroundColor: context.colors.backgroundSurface4,
+          safeAreaColor: context.colors.backgroundSurface4,
+          draggerColor: context.colors.backgroundSurface4,
           onWillPop: Future.value(false),
           content: [
             sendFeedbackState.when(

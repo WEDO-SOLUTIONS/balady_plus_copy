@@ -4,13 +4,12 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
@@ -28,13 +27,10 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
 
   static const curve = Curves.easeIn;
 
-  late final DraggableScrollableController sheetController = DraggableScrollableController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _showBottomSheet(MediaQuery.of(context).size.height));
-  }
+  late final StatelessBottomSheetController sheetController = StatelessBottomSheetController(onClose: (_) {
+    ref.read(freeRoamStarterProvider.notifier).setShown();
+    context.router.popForced();
+  });
 
   @override
   void dispose() {
@@ -44,127 +40,62 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
 
   @override
   Widget build(BuildContext context) {
-    final direction = ref.watch(uiDirectionProvider);
+    final l10n = context.l10n;
+    final colors = context.colors;
 
-    final screenHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      body: DraggableScrollableSheet(
-        controller: sheetController,
-        minChildSize: .0,
-        initialChildSize: .0,
-        maxChildSize: 240 / screenHeight,
-        snapSizes: [.0, 240 / screenHeight],
-        snap: true,
-        builder: (context, scrollController) {
-          final l10n = context.l10n;
-          final colors = context.colors;
-
-          final textStyles = context.textStyles;
-          return Directionality(
-            textDirection: direction,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(RadiusBorder.xl),
-              ),
-              child: ColoredBox(
-                color: colors.backgroundSurface1,
-                child: CustomScrollView(
-                  controller: scrollController,
-                  physics: const ClampingScrollPhysics(),
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
-                        child: Column(
-                          children: [
-                            const SheetDragger(),
-                            Spacing.$3x.heightBox,
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(context.l10n.autostartNavigator, style: textStyles.h4SemiBold),
-                                      Spacing.$1x.heightBox,
-                                      Text(
-                                        context.l10n.disableStartingTheNavigator,
-                                        style: textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
-                                        maxLines: 2,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                AppButton.close(
-                                  onTap: () {
-                                    _hideLayersPanel();
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  innerPadding: const EdgeInsets.all(Spacing.$2x),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                      sliver: SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            Spacing.$4x.heightBox,
-                            AppButton(
-                              buttonColorScheme: ButtonColorScheme.accent,
-                              primaryLabel: l10n.switchOff,
-                              onTap: switchOff,
-                            ),
-                            Spacing.$3x.heightBox,
-                            AppButton(
-                              buttonColorScheme: ButtonColorScheme.neutral,
-                              primaryLabel: l10n.continueAutorun,
-                              onTap: continueAutorun,
-                            )
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+    final textStyles = context.textStyles;
+    return StatelessBottomSheet(
+      scrollController: sheetController,
+      header: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(context.l10n.autostartNavigator, style: textStyles.h4SemiBold),
+                  Spacing.$1x.heightBox,
+                  Text(
+                    context.l10n.disableStartingTheNavigator,
+                    style: textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
+                    maxLines: 2,
+                  ),
+                ],
               ),
             ),
-          );
-        },
+            Spacing.$3x.widthBox,
+            CustomCloseButton(
+              onClose: _hideLayersPanel,
+            ),
+          ],
+        ),
       ),
+      content: [
+        Spacing.$5x.heightBox,
+        AppButton(
+          buttonColorScheme: ButtonColorScheme.accentSecondary,
+          size: ButtonSize.large,
+          primaryLabel: l10n.switchOff,
+          onTap: switchOff,
+        ),
+        Spacing.$2x.heightBox,
+        AppButton(
+          buttonColorScheme: ButtonColorScheme.accentSecondary,
+          buttonType: ButtonType.secondary,
+          size: ButtonSize.large,
+          primaryLabel: l10n.continueAutorun,
+          onTap: continueAutorun,
+        ),
+        Spacing.$4x.heightBox,
+      ],
+      contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     );
   }
 
-  void _hideLayersPanel() {
-    sheetController.animateTo(
-      .0,
-      duration: showHideDuration,
-      curve: curve,
-    );
-  }
-
-  void _showBottomSheet(double screenHeight) {
-    sheetController
-        .animateTo(
-      240 / screenHeight,
-      duration: showHideDuration,
-      curve: curve,
-    )
-        .then((_) {
-      sheetController.addListener(() {
-        if (sheetController.isAttached && sheetController.size < .1 && context.router.canPop()) {
-          ref.read(freeRoamStarterProvider.notifier).setShown();
-          context.router.popForced();
-        }
-      });
-    });
-  }
+  void _hideLayersPanel() => sheetController.close();
 
   void switchOff() {
     ref.read(freeRoamAutostartSettingsProvider.notifier).setState(isAutostart: false);

@@ -58,6 +58,10 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
               }
               return AppButton(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                innerPadding: const EdgeInsetsDirectional.only(
+                  start: Spacing.$2x + Spacing.$0_5x,
+                  end: Spacing.$3x + Spacing.$0_5x,
+                ),
                 buttonColorScheme: ButtonColorScheme.accent,
                 buttonType: ButtonType.secondary,
                 onTap: () => context.router.push(

@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/pages/free_roam/free_roam_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RoadPanel extends ConsumerWidget {
@@ -12,13 +13,13 @@ class RoadPanel extends ConsumerWidget {
 
   const RoadPanel(
       {required this.isLoading, required this.onEndTrip, required this.onOpenSheet, required this.onSearch, super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.all(Spacing.$4x),
         child: SizedBox(
           height: 56,
-          width: double.infinity,
+          width:
+              MediaQuery.orientationOf(context) == Orientation.portrait ? double.infinity : FreeRoamPage.landscapeWidth,
           child: Material(
             color: Colors.transparent,
             child: isLoading

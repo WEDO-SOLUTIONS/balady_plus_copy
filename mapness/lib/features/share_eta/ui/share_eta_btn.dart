@@ -72,19 +72,22 @@ class ShareEtaBtn extends HookConsumerWidget {
             ),
             if (isPulseactive)
               Padding(
-                padding: const EdgeInsetsDirectional.only(end: Spacing.$1_5x),
+                padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
                 child: PulseIndicator(
                   color: connectionCode != null ? context.colors.errorDefault : null,
                 ),
               )
           ],
         ),
-        customActionWidget: ShareEtaBtnAction(
-          type: isEtaStreamLoading
-              ? ShareEtaBtnActionType.loading
-              : isPulseactive
-                  ? ShareEtaBtnActionType.active
-                  : ShareEtaBtnActionType.stoped,
+        customActionWidget: Padding(
+          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+          child: ShareEtaBtnAction(
+            type: isEtaStreamLoading
+                ? ShareEtaBtnActionType.loading
+                : isPulseactive
+                    ? ShareEtaBtnActionType.active
+                    : ShareEtaBtnActionType.stoped,
+          ),
         ),
       ),
     );

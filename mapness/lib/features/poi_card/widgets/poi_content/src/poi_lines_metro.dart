@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentWorkTime, PoiContentWorkTimeDay;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';

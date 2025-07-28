@@ -40,7 +40,8 @@ class DashboardFeedbackCard extends StatelessWidget {
                     Expanded(
                       child: AppButton(
                         primaryLabel: context.l10n.yes,
-                        buttonColorScheme: ButtonColorScheme.accent,
+                        buttonColorScheme: ButtonColorScheme.accentSecondary,
+                        size: ButtonSize.large,
                         onTap: () {
                           context.router.push(AppFeedbackSheet(initialRating: 5));
                         },
@@ -51,6 +52,8 @@ class DashboardFeedbackCard extends StatelessWidget {
                       child: AppButton(
                         primaryLabel: context.l10n.no,
                         buttonColorScheme: ButtonColorScheme.accentSecondary,
+                        buttonType: ButtonType.secondary,
+                        size: ButtonSize.large,
                         onTap: () {
                           context.router.push(AppFeedbackSheet(initialRating: 2));
                         },
