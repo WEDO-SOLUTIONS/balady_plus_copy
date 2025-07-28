@@ -69,9 +69,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final searcher = ref.watch(searchProvider(scope.value).notifier);
 
     ref.listen(searchProvider(scope.value), (previous, next) {
-      final isSearchInRectRequest = ref.read(searchInRectProvider).isSearchInThisAreaRequest;
+      final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
       if (next.searchText.isEmpty) {
-        ref.read(searchInRectProvider.notifier).update();
+        ref.read(searchInRectProvider(scope.value).notifier).update();
       }
 
       _updateText(next.searchText);
@@ -90,7 +90,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         config: BaladyInputConfig(
           focusNode: _focusNode,
           onChanged: (query) {
-            ref.read(searchInRectProvider.notifier).update();
+            ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,

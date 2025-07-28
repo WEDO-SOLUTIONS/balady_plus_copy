@@ -90,7 +90,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
 
     // We check that our banner is not displayed for pedestrians and should be shown after 15 seconds,
     // when there are 500 m left to the point.
-    if (distance != null && distance > 500 || RouteSearchOptionsMessage.pedestrian == widget.navigatorType) {
+    if (distance != null && distance > 500 || widget.navigatorType != RouteSearchOptionsMessage.car) {
       return const SizedBox.shrink();
     }
 

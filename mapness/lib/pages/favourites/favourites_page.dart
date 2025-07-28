@@ -236,7 +236,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           child: PinnedPlaceCard(
                             key: Key('home${home?.id}'),
                             title: homeTitle,
-                            address: home?.subtitle ?? ctx.l10n.addAddress,
+                            address: home?.title ?? ctx.l10n.addAddress,
                             iconData: GeneralIcons.home,
                             isEditing: isEditing && home != null,
                             isAdded: home != null,
@@ -301,7 +301,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             child: PinnedPlaceCard(
                               key: Key('work${work?.id}'),
                               title: workTitle,
-                              address: work?.subtitle ?? ctx.l10n.addAddress,
+                              address: work?.title ?? ctx.l10n.addAddress,
                               iconData: GeneralIcons.briefcase,
                               isEditing: isEditing && work != null,
                               isAdded: work != null,

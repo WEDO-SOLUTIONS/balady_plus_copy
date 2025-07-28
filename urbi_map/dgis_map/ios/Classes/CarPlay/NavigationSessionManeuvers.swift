@@ -38,18 +38,13 @@ class NavigationSessionManeuvers {
     }
 
     private func receiveRouteInfo(routeInfo: RouteInfo) {
-        if model.isFreeRoam { return }
-
-        let cpManeuvers = routeInfo.route.instructions.entries.map(
-            mapCPManeuver
-        )
+        // isFreeRoam
+        if routeInfo.routeBuildOptions == nil { return }
 
         let navigationSession = self.navigationSession ?? mapTemplate.startNavigationSession(
             for: model.route.trip
         )
         self.navigationSession = navigationSession
-
-        navigationSession.upcomingManeuvers = cpManeuvers
 
         routePositionChannelCancellable?.cancel()
         routePositionChannelCancellable = model.routePositionChannel
@@ -57,7 +52,9 @@ class NavigationSessionManeuvers {
                 [self] routePosition in
                 updateTripEstimates(navigationSession)
                 guard let routePosition else { return }
-                updateNextManeuver(with: routePosition, navigationSession)
+                updateNextManeuver(
+                    with: routePosition, navigationSession, routeInfo
+                )
             }
     }
 
@@ -86,26 +83,48 @@ class NavigationSessionManeuvers {
     }
 
     private func updateNextManeuver(
-        with routePoint: RoutePoint, _ navigationSession: CPNavigationSession
+        with routePoint: RoutePoint,
+        _ navigationSession: CPNavigationSession,
+        _ routeInfo: RouteInfo
     ) {
-        guard let nextManeuver = navigationSession.upcomingManeuvers.first,
-            let instructionRouteEntry = nextManeuver.userInfo
-                as? InstructionRouteEntry
-        else {
-            return
-        }
+        let instructionRouteAttribute = routeInfo.route.instructions
 
-        let millimetersRemaining =
-            (instructionRouteEntry.point.distance.millimeters
-            - routePoint.distance.millimeters).millimeters
+        guard
+            let lastInstruction = instructionRouteAttribute.last,
+            routePoint.distance.millimeters
+                <= lastInstruction.point.distance.millimeters
+        else { return }
 
-        if millimetersRemaining.value <= 0 {
-            navigationSession.upcomingManeuvers.removeFirst()
-        } else {
-            navigationSession.updateEstimates(
-                mapCPTravelEstimates(millimetersRemaining), for: nextManeuver
+        let allInstructions = instructionRouteAttribute.entries
+
+        // returns [begin, end) exclusive end - append last
+        var actualInstructions = instructionRouteAttribute.entries(
+            begin: routePoint, end: lastInstruction.point
+        )
+        actualInstructions.append(lastInstruction)
+
+        guard actualInstructions.count <= allInstructions.count else { return }
+
+        if actualInstructions.count
+            != navigationSession.upcomingManeuvers.count
+        {
+            navigationSession.upcomingManeuvers = actualInstructions.map(
+                mapCPManeuver
             )
         }
+
+        guard
+            let nextInstruction = actualInstructions.first,
+            let nextManeuver = navigationSession.upcomingManeuvers.first
+        else { return }
+
+        let millimetersRemaining =
+            (nextInstruction.point.distance.millimeters
+            - routePoint.distance.millimeters).millimeters
+
+        navigationSession.updateEstimates(
+            mapCPTravelEstimates(millimetersRemaining), for: nextManeuver
+        )
 
         if #available(iOS 17.4, *) {
             navigationSession.maneuverState =

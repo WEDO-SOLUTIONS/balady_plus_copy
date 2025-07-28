@@ -54,6 +54,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   final kbVisibilityController = KeyboardVisibilityController();
   final settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
+  final _scope = SearchScopeEnum.map.value;
 
   ClusteringMapObjectManager? _clustering;
 
@@ -125,7 +126,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       ).notifier,
     );
     ref.listen(
-      searchProvider(SearchScopeEnum.map.value),
+      searchProvider(_scope),
       (previous, next) {
         _drawSearchMarkers(next, previous, searchObjectManager);
       },
@@ -192,8 +193,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         isRtl: isRtl,
         isDark: dark.isDark,
       );
-      if (!ref.read(searchInRectProvider).isSearchInThisAreaRequest) {
-        ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(value: false);
+      if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
+        ref.read(searchInRectProvider(_scope).notifier).searchInThisAreaSwitch(value: false);
         await mapObjectManager.removeAllMarkers();
       }
       await mapObjectManager.addMarkers(markers);
@@ -260,7 +261,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ).notifier,
         )
         .removeAllMarkers();
-    ref.read(searchInRectProvider.notifier).update();
+    ref.read(searchInRectProvider(_scope).notifier).update();
     context.router.popForced();
   }
 

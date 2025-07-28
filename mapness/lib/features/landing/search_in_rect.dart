@@ -1,7 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/landing/models/search_in_rect_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -13,14 +12,14 @@ part 'search_in_rect.g.dart';
 @riverpod
 class SearchInRect extends _$SearchInRect {
   @override
-  SearchInRectState build() {
+  SearchInRectState build(String scope) {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     final subscription =
         dgisController?.visibleRectEvents.debounceTime(const Duration(milliseconds: 300)).listen((event) async {
       _setDefaultValue(event);
 
-      final isSearchRunning = ref.watch(searchProvider(SearchScopeEnum.map.value).notifier).isSearchRunning;
+      final isSearchRunning = ref.watch(searchProvider(scope).notifier).isSearchRunning;
       if (!isSearchRunning) {
         state = SearchInRectState(
           rect: event.visibleRect.geoRectMessage(),
