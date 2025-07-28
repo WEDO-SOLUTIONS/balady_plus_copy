@@ -5,9 +5,6 @@ import 'package:adjust_sdk/adjust_attribution.dart';
 import 'package:adjust_sdk/adjust_config.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
-import 'package:balady_plus/app/core/utils/map_utils.dart';
-import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
-    as diEtmam show initialize;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     show BoxShadow, Color, Colors, WidgetsFlutterBinding;
@@ -19,6 +16,10 @@ import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
 
+import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
+import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
+import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
+import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di
     show initialize;
 import './app/core/dependency_injection/dependency_injection_exports.dart'
@@ -75,7 +76,6 @@ abstract class AppEnv {
     sharedPrefs.init();
     // di: dependency injection
     di.initialize();
-    diEtmam.initialize();
     //! Please assign environment firstly
 
     String testName = ".env.${type.name}";
@@ -135,37 +135,4 @@ abstract class AppEnv {
       ..dismissOnTap = false;
   }
 
-// static Future<void> _deleteCacheDir() async {
-//   try {
-//     final cacheDir = await getTemporaryDirectory();
-//     if (cacheDir.existsSync()) {
-//       cacheDir.deleteSync(recursive: true);
-//     }
-//   } catch (error, stackTrace) {
-//   LogsViewModel().sendEventFromModel(
-//     event: ErrorExceptionModel(
-//       nameEvent: EventsName.handledException,
-//       message: error.toString(),
-//       stackTrace: stackTrace.toString(),
-//     ),
-//   );
-// }
-// }
-//
-// static Future<void> _deleteAppDir() async {
-//   try {
-//     final appDir = await getApplicationSupportDirectory();
-//     if (appDir.existsSync()) {
-//       appDir.deleteSync(recursive: true);
-//     }
-//   } catch (error, stackTrace) {
-//   LogsViewModel().sendEventFromModel(
-//     event: ErrorExceptionModel(
-//       nameEvent: EventsName.handledException,
-//       message: error.toString(),
-//       stackTrace: stackTrace.toString(),
-//     ),
-//   );
-// }
-// }
 }

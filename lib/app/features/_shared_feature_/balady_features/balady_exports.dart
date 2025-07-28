@@ -1,7 +1,6 @@
 /** This Document is to provide the exports that Urbi will used inside Balady App */
 
 // Event Model
-export '../../events/domain/entities/search_events/search_events_item.dart';
 
 //! Home Cards
 

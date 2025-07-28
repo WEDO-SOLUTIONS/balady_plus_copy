@@ -1,40 +1,17 @@
-import 'package:balady_plus/app/features/vd/vd_exports.dart'
-    show
-        GetCategories,
-        GetSpecialClassifications,
-        GetGISData,
-        UploadFile,
-        GetOTP,
-        CreateIncidentUnRegistered,
-        CreateIncidentRegistered,
-        GetSPLDetails,
-        VDRepository,
-        VDRepositoryImpl,
-        CheckCR,
-        VDLocalDataSource,
-        VDLocalDataSourceImpl,
-        VDRemoteDataSourceImpl,
-        VDRemoteDataSource,
-        VDCategoryBloc;
+import 'package:balady_plus/app/features/location/data/data_sources/vd_local_data_source.dart';
+import 'package:balady_plus/app/features/location/data/data_sources/vd_remote_data_source.dart';
+import 'package:balady_plus/app/features/location/data/repositories/vd_repository_impl.dart';
+import 'package:balady_plus/app/features/location/domain/repositories/vd_repository.dart';
+import 'package:balady_plus/app/features/location/domain/use_cases/get_gis_data.dart';
 
 import '../dependency_injection_exports.dart' show sl;
 
 class VDInjection {
   static void init() {
-    sl.registerLazySingleton(() => VDCategoryBloc(getCategories: sl()));
 
     //! Use Case
-    sl.registerLazySingleton(() => GetCategories(repository: sl()));
-    sl.registerLazySingleton(() => GetSpecialClassifications(repository: sl()));
-    sl.registerLazySingleton(() => GetSPLDetails(repository: sl()));
 
     sl.registerLazySingleton(() => GetGISData(repository: sl()));
-    sl.registerLazySingleton(() => UploadFile(repository: sl()));
-    sl.registerLazySingleton(() => GetOTP(repository: sl()));
-    sl.registerLazySingleton(
-        () => CreateIncidentUnRegistered(repository: sl()));
-    sl.registerLazySingleton(() => CreateIncidentRegistered(repository: sl()));
-    sl.registerLazySingleton(() => CheckCR(repository: sl()));
 
     //! Entities
 

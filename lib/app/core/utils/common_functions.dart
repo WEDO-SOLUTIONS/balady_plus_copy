@@ -1,79 +1,102 @@
-import 'dart:convert' show base64Decode, base64Encode, jsonDecode, utf8;
+import 'dart:convert' show base64, base64Decode, base64Encode, jsonDecode, utf8;
 import 'dart:io' show File, Platform;
-import 'dart:math' show asin, cos, sqrt;
 import 'dart:typed_data' show Uint8List;
-
-import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'dart:ui';
+import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart' as calendar;
-import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
-import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart' as events;
+import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
+import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:dgis_map/library.dart';
+import 'package:huawei_location/huawei_location.dart' as hms;
+import 'package:geolocator/geolocator.dart' as geo_locator;
+
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
-import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
-import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
-import 'package:balady_plus/app/features/vd/domain/entities/camera/camera_page_params.dart';
-import 'package:balady_plus/app/features/vd/domain/entities/categories/category_item.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
-import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
-// import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider, EventTransformer;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:hijri/hijri_calendar.dart';
-import 'package:http/http.dart' as http;
-import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/export/mapness_functions.dart';
+import 'package:mime/mime.dart' as mime;
 import 'package:open_file_plus/open_file_plus.dart';
-import 'package:path_provider/path_provider.dart' show getExternalStorageDirectory, getTemporaryDirectory;
+import 'package:path_provider/path_provider.dart'
+    show getExternalStorageDirectory, getTemporaryDirectory;
+
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
-import 'package:url_launcher/url_launcher.dart' show LaunchMode, canLaunchUrl, launchUrl;
+import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
 
 import '../../app.dart';
-import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
-import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
-import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
-import '../../features/_shared_feature_/shared_feature_exports.dart'
-    show AuthData, BottomSheetDialog, BottomSheetWithActions, BridgeParams, BuildingRequirementsDialog, FileInfo;
-import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
-import '../../features/entry_point/domain/entities/sso_user_info.dart' show SsoUserInfo;
-import '../../features/entry_point/domain/entities/sso_user_info.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
-import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/notifications/manager/notification_manager.dart';
-import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../features/profile_features/delegators/delegators_exports.dart' show AgentEntity, DelegatorEntity;
-import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
-import '../../features/vd/domain/entities/gis/gis_params.dart';
-import '../../features/vd/domain/entities/gis/gis_response.dart';
-import '../dependency_injection/dependency_injection_exports.dart' show sl;
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+
 import '../errors/exceptions.dart';
 import './utils_exports.dart'
-    show AppColor, AppConfig, AppLanguage, BlocStatus, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
+    show
+        AppColor,
+        AppLanguage,
+        EnvType,
+        GeneralKey,
+        MimeType,
+        RouteName,
+        UIHelper,
+        WithDelay;
+import '../../features/_shared_feature_/data/entities/device_details.dart';
+import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
+import '../../features/_shared_feature_/shared_feature_exports.dart'
+    show
+        AuthData,
+        BottomSheetDialog,
+        BottomSheetWithActions,
+        BridgeParams,
+        BuildingRequirementsDialog,
+        FileInfo;
+import '../../features/entry_point/domain/entities/sso_user_info.dart'
+    show SsoUserInfo;
+import '../../features/entry_point/domain/entities/sso_user_info.dart';
+import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
+import '../dependency_injection/dependency_injection_exports.dart' show sl;
+import '../services/services_exports.dart'
+    show
+        AppInterceptors,
+        EntryPointBridge,
+        NavigationService,
+        NoParams,
+        WebService;
+import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
+
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -176,8 +199,22 @@ class CommonFunctions {
     manager.updateNotificationSettings(request);
   }
 
+  String? guessMimeTypeFromBase64(String base64String) {
+    // Compute the minimum length of the base64 string we need to decode
+    // [mime.defaultMagicNumbersMaxLength] bytes.  base64 encodes 3 bytes of
+    // binary data to 4 characters.
+    var minimumBase64Length =
+        (mime.defaultMagicNumbersMaxLength / 3).ceil() * 4;
+    return mime.lookupMimeType(
+      '',
+      headerBytes:
+      base64.decode(base64String.substring(0, minimumBase64Length)),
+    );
+  }
+
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
-      (events, mapper) => events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
+      (events, mapper) =>
+          events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
 
   static void signOut() {
     final params = sl<BridgeParams>().copyWith(isAuthenticated: false);
@@ -224,7 +261,8 @@ class CommonFunctions {
       request.priority = hms.LocationRequest.PRIORITY_HIGH_ACCURACY;
       request.interval = 13000;
 
-      final settings = hms.LocationSettingsRequest(requests: [request], needBle: true, alwaysShow: true);
+      final settings = hms.LocationSettingsRequest(
+          requests: [request], needBle: true, alwaysShow: true);
       try {
         await locationService.checkLocationSettings(settings);
       } catch (e) {
@@ -234,8 +272,10 @@ class CommonFunctions {
       final location = await locationService.getLastLocation();
 
       if (location.latitude != null && location.longitude != null) {
-        debugPrint('amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
-        return LatLng(latitude: location.latitude!, longitude: location.longitude!);
+        debugPrint(
+            'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
+        return LatLng(
+            latitude: location.latitude!, longitude: location.longitude!);
       } else {
         await locationService.requestLocationUpdates(request);
       }
@@ -245,7 +285,8 @@ class CommonFunctions {
     return null;
   }
 
-  static Future<LatLng?> handelLocationCatch(bool isHuawei, error, stackTrace) async {
+  static Future<LatLng?> handelLocationCatch(
+      bool isHuawei, error, stackTrace) async {
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(
         nameEvent: EventsName.handledException,
@@ -257,13 +298,15 @@ class CommonFunctions {
       if (isHuawei) {
         final position = await locationService.getLastLocation();
         if (position.latitude != null && position.longitude != null) {
-          return LatLng(latitude: position.latitude!, longitude: position.longitude!);
+          return LatLng(
+              latitude: position.latitude!, longitude: position.longitude!);
         }
       } else {
         geo_locator.Position? position;
         position = await geo_locator.Geolocator.getLastKnownPosition();
         if (position?.latitude != null && position?.longitude != null) {
-          return LatLng(latitude: position!.latitude, longitude: position.longitude);
+          return LatLng(
+              latitude: position!.latitude, longitude: position.longitude);
         }
       }
     } catch (error, stackTrace) {
@@ -283,7 +326,8 @@ class CommonFunctions {
     return MimeType.values.byName(extension).mime;
   }
 
-  static Uint8List dataFromBase64String(String base64String) => Uri.parse(base64String).data!.contentAsBytes();
+  static Uint8List dataFromBase64String(String base64String) =>
+      Uri.parse(base64String).data!.contentAsBytes();
 
   static String base64String(Uint8List data) => base64Encode(data);
 
@@ -331,7 +375,10 @@ class CommonFunctions {
 
   static String formatDate(String? date, [Duration? duration]) {
     final dateStr = DateTime.tryParse(date ?? '')?.toLocal();
-    return dateStr != null ? DateFormat('dd-MM-yyyy').format(dateStr.add(duration ?? const Duration())) : '';
+    return dateStr != null
+        ? DateFormat('dd-MM-yyyy')
+            .format(dateStr.add(duration ?? const Duration()))
+        : '';
   }
 
   static Dio getDio({required String baseUrl}) {
@@ -387,7 +434,9 @@ class CommonFunctions {
     try {
       String bidEndDate = dateStr ?? "";
       DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
-      dayName = DateFormat('EEEE', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(tempDate).toString();
+      dayName = DateFormat('EEEE', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempDate)
+          .toString();
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -405,7 +454,10 @@ class CommonFunctions {
     try {
       String bidEndDate = dateStr ?? "";
       DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
-      formattedDate = DateFormat('dd', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(tempDate).toString();
+      formattedDate =
+          DateFormat('dd', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+              .format(tempDate)
+              .toString();
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -431,7 +483,10 @@ class CommonFunctions {
     try {
       String bidEndDate = dateStr ?? "";
       DateTime tempDate = DateFormat("dd-MM-yyyy").parse(bidEndDate);
-      monthName = DateFormat('MMMM', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US').format(tempDate).toString();
+      monthName =
+          DateFormat('MMMM', CommonFunctions.isAppAR ? 'ar_SA' : 'en_US')
+              .format(tempDate)
+              .toString();
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -463,13 +518,17 @@ class CommonFunctions {
     return difference;
   }
 
-  static String getFormattedTimeEkram(String? timeStr, {Duration? subtractedDuration}) {
+  static String getFormattedTimeEkram(String? timeStr,
+      {Duration? subtractedDuration}) {
     String formattedTime = "";
     print(timeStr);
     try {
       String biddingEndingTime = timeStr ?? "";
-      DateTime tempTime = DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
-      String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US').format(tempTime).toString();
+      DateTime tempTime =
+          DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
+      String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempTime)
+          .toString();
       formattedTime = time;
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -484,7 +543,8 @@ class CommonFunctions {
     return replaceArabicNumberWithEnglish(formattedTime);
   }
 
-  static String getFormattedDateEkram(String? timeStr, {Duration? subtractedDuration}) {
+  static String getFormattedDateEkram(String? timeStr,
+      {Duration? subtractedDuration}) {
     String formattedTime = "";
     try {
       String biddingEndingTime = timeStr ?? "";
@@ -504,11 +564,13 @@ class CommonFunctions {
     return replaceArabicNumberWithEnglish(formattedTime);
   }
 
-  static String getFormattedDateEkramCard(String? timeStr, {Duration? subtractedDuration}) {
+  static String getFormattedDateEkramCard(String? timeStr,
+      {Duration? subtractedDuration}) {
     String formattedTime = "";
     try {
       String biddingEndingTime = timeStr ?? "";
-      DateTime tempTime = DateFormat("yyyy/m/dd H:mm:ss").parse(biddingEndingTime);
+      DateTime tempTime =
+          DateFormat("yyyy/m/dd H:mm:ss").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
     } catch (error, stackTrace) {
@@ -527,11 +589,13 @@ class CommonFunctions {
   static String getDistance(LatLng? location, LatLng? currentLocation) {
     String distance = "-";
     if (currentLocation != null && location != null) {
-      double dis =
-          calculateDistance(location.latitude, location.longitude, currentLocation.latitude, currentLocation.longitude);
+      double dis = calculateDistance(location.latitude, location.longitude,
+          currentLocation.latitude, currentLocation.longitude);
 
       if (dis >= 1000) {
-        distance = ("distance_km").tr().replaceAll("-", (dis / 1000).toStringAsFixed(0));
+        distance = ("distance_km")
+            .tr()
+            .replaceAll("-", (dis / 1000).toStringAsFixed(0));
       } else {
         distance = ("distance_meter").tr().replaceAll("-", (dis).toString());
       }
@@ -543,7 +607,9 @@ class CommonFunctions {
   static double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
     var c = cos;
-    var a = 0.5 - c((lat2 - lat1) * p) / 2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
     return 12742 * asin(sqrt(a)) * 1000;
   }
 
@@ -609,7 +675,8 @@ class CommonFunctions {
     }
   }
 
-  static Future<FileDataItem?> pickFile(BuildContext context, {bool imagesOnly = false, bool filesOnly = false}) async {
+  static Future<FileDataItem?> pickFile(BuildContext context,
+      {bool imagesOnly = false, bool filesOnly = false}) async {
     final file = await BottomSheetDialog.showDraggableSheet(context,
         isFullHeight: false,
         height: 300,
@@ -675,7 +742,8 @@ class CommonFunctions {
   static String generateGUID() {
     try {
       String v1UUID = CommonProperties.uuidInstance.v1();
-      String v5UUID = CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
+      String v5UUID =
+          CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
 
       if (v5UUID.isNotEmpty) {
         return v5UUID.replaceAll("-", "");
@@ -698,12 +766,13 @@ class CommonFunctions {
 
   static bool get isAuthed => sl.isRegistered<AuthData>();
 
-  static bool get isAppAR => translator.activeLanguageCode == AppLanguage.ar.name;
+  static bool get isAppAR =>
+      translator.activeLanguageCode == AppLanguage.ar.name;
 
   // add isMunicipality to check if the user is access municipality services
   // or life style services, make teh default value is false for life style services
-  static Future<bool> onLogin({bool isMunicipality = false}) async =>
-      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
+  static Future<bool> onLogin({bool isMunicipality = false, String? mainPage}) async =>
+      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality,mainPage:mainPage,);
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -726,7 +795,9 @@ class CommonFunctions {
   }
 
   static void changeLanguage({required String lang}) async {
-    await translator.setNewLanguage(NavigationService.navigatorKey.currentContext!, newLanguage: lang);
+    await translator.setNewLanguage(
+        NavigationService.navigatorKey.currentContext!,
+        newLanguage: lang);
     translator.applyChanges(NavigationService.navigatorKey.currentContext!);
     HijriCalendar.setLocal(lang);
 
@@ -861,7 +932,10 @@ class CommonFunctions {
     return newStr.isEmpty ? value : newStr;
   }
 
-  static bool checkForVDExpectedForINC({String? adminMunicipalityId, String? municipalityName, bool? isVDExcepted}) {
+  static bool checkForVDExpectedForINC(
+      {String? adminMunicipalityId,
+      String? municipalityName,
+      bool? isVDExcepted}) {
     /* if (adminMunicipalityId == "003" && municipalityName == "العلا") {
       try {
         String error = ("ola_incident_error").tr(); //MMTr;
@@ -896,7 +970,10 @@ class CommonFunctions {
             title: msg,
             backgroundColor: AppColor.baladyDarkGreen2,
             titleStyle: const TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w500, fontStyle: FontStyle.normal, fontSize: 16.0),
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.normal,
+                fontSize: 16.0),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
       } catch (error, stackTrace) {
@@ -911,34 +988,76 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url, {bool isObjections = false}) async {
-    print(url);
-    EasyLoading.show();
-    GetCookie getCookie = GetCookie(repository: sl());
-    final failureOrSuccessForCookie = await getCookie(NoParams());
-    EasyLoading.dismiss();
-    failureOrSuccessForCookie.fold((l) {
-      CommonFunctions.showError("server_error_1".tr());
-    }, (r) async {
-      Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
+  static void openBaladyWebView(String? url ,
+      {bool isObjections = false,bool needLogin = true}) async {
+
+    if(needLogin==false) {
+      Navigator.of(NavigationService.navigatorKey.currentContext!)
+          .pushNamed(
         RouteName.inappWebview,
-        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections),
+        arguments: (
+        requestNum: ''.tr(),
+        url: url,
+        isObjections: isObjections
+        ),
       );
-    });
+    }
+    else {
+
+      if (CommonProperties.isLoggedIn) {
+        EasyLoading.show();
+        GetCookie getCookie = GetCookie(repository: sl());
+        final failureOrSuccessForCookie = await getCookie(true);
+        EasyLoading.dismiss();
+        failureOrSuccessForCookie.fold(
+          (l) {
+            CommonFunctions.showError("server_error_1".tr());
+          },
+          (r) async {
+            Navigator.of(NavigationService.navigatorKey.currentContext!)
+                .pushNamed(
+              RouteName.inappWebview,
+              arguments: (
+                requestNum: ''.tr(),
+                url: url,
+                isObjections: isObjections
+              ),
+            );
+          },
+        );
+      } else {
+        await showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) => NeedLoginDialog(
+            onSuccessLogin: (bool? isSuccess) async {
+              if (isSuccess ?? false) {
+                openBaladyWebView(url, isObjections: isObjections);
+              }
+            },
+          ),
+        );
+      }
+    }
   }
 
   static showError(String error, [bool? isHtml]) {
     if (error.isNotEmpty) {
-      if (error.contains("https") || error.toLowerCase().contains("momra.gov.sa")) {
+      if (error.contains("https") ||
+          error.toLowerCase().contains("momra.gov.sa")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
-            NavigationService.navigatorKey.currentContext!, error, isHtml ?? false);
+            NavigationService.navigatorKey.currentContext!,
+            error,
+            isHtml ?? false);
       } else {
         try {
           BotToast.showSimpleNotification(
               title: error,
               backgroundColor: const Color.fromARGB(255, 204, 51, 51),
               titleStyle: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w500, fontStyle: FontStyle.normal, fontSize: 16.0),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontStyle: FontStyle.normal,
+                  fontSize: 16.0),
               hideCloseButton: true,
               duration: const Duration(seconds: 3));
         } catch (error, stackTrace) {
@@ -992,7 +1111,8 @@ class CommonFunctions {
   static Future<bool> checkCameraSettings(BuildContext context) async {
     var status = await Permission.camera.request();
     if (status == PermissionStatus.permanentlyDenied) {
-      showDialog(context: context, builder: (ctx) => const CameraPermissionDialog());
+      showDialog(
+          context: context, builder: (ctx) => const CameraPermissionDialog());
       return false;
     } else if (status != PermissionStatus.granted) {
       Permission.camera.request();
@@ -1004,10 +1124,15 @@ class CommonFunctions {
 
   static String convert24TimeTo12WithPeriod(String? time) {
     if (time != null) {
-      int? hoursFrom = int.tryParse(time.split(":")[0]) != null ? int.parse(time.split(":")[0]) : null;
-      int? minuteFrom = int.tryParse(time.split(":")[1]) != null ? int.parse(time.split(":")[1]) : null;
+      int? hoursFrom = int.tryParse(time.split(":")[0]) != null
+          ? int.parse(time.split(":")[0])
+          : null;
+      int? minuteFrom = int.tryParse(time.split(":")[1]) != null
+          ? int.parse(time.split(":")[1])
+          : null;
 
-      TimeOfDay fromTime = TimeOfDay(hour: hoursFrom!, minute: minuteFrom!); // 3:00 PM
+      TimeOfDay fromTime =
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom!); // 3:00 PM
       int hoursFromAS12 = hoursFrom;
 
       if (hoursFrom == 0) hoursFromAS12 += 12;
@@ -1018,11 +1143,14 @@ class CommonFunctions {
         hoursFromAS12 = hoursFromAS12 - 12;
       }
 
-      if (fromTime.period == DayPeriod.pm) return "$hoursFromAS12:$minuteStr " + "pm".tr();
+      if (fromTime.period == DayPeriod.pm)
+        return "$hoursFromAS12:$minuteStr " + "pm".tr();
 
       if (fromTime.period == DayPeriod.am) {
         if (isAppAR == false) {
-          return "$hoursFromAS12:$minuteStr ص".replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
+          return "$hoursFromAS12:$minuteStr ص"
+              .replaceAll("ص", ("am").tr())
+              .replaceAll("م", ("pm").tr());
         } else {
           return "$hoursFromAS12:$minuteStr ص";
         }
@@ -1033,14 +1161,23 @@ class CommonFunctions {
 
   static String getFormattedTimeforQR(String? timeFrom, String? timeTo) {
     if (timeFrom != null && timeTo != null) {
-      int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null ? int.parse(timeFrom.split(":")[0]) : null;
-      int? hoursTo = int.tryParse(timeTo.split(":")[0]) != null ? int.parse(timeTo.split(":")[0]) : null;
+      int? hoursFrom = int.tryParse(timeFrom.split(":")[0]) != null
+          ? int.parse(timeFrom.split(":")[0])
+          : null;
+      int? hoursTo = int.tryParse(timeTo.split(":")[0]) != null
+          ? int.parse(timeTo.split(":")[0])
+          : null;
 
-      int? minuteFrom = int.tryParse(timeFrom.split(":")[1]) != null ? int.parse(timeFrom.split(":")[1]) : null;
-      int? minuteTo = int.tryParse(timeTo.split(":")[1]) != null ? int.parse(timeTo.split(":")[1]) : null;
+      int? minuteFrom = int.tryParse(timeFrom.split(":")[1]) != null
+          ? int.parse(timeFrom.split(":")[1])
+          : null;
+      int? minuteTo = int.tryParse(timeTo.split(":")[1]) != null
+          ? int.parse(timeTo.split(":")[1])
+          : null;
       String minuteFromStr = minuteFrom! < 10 ? "0$minuteFrom" : "$minuteFrom";
       String minuteToStr = minuteTo! < 10 ? "0$minuteTo" : "$minuteTo";
-      TimeOfDay fromTime = TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
+      TimeOfDay fromTime =
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
       TimeOfDay toTime = TimeOfDay(hour: hoursTo!, minute: minuteTo); // 5:00 AM
 
       int hoursFromAS12 = hoursFrom;
@@ -1061,7 +1198,8 @@ class CommonFunctions {
       if (fromTime.period == DayPeriod.am && toTime.period == DayPeriod.am) {
         time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr ص";
         return time;
-      } else if (fromTime.period == DayPeriod.pm && toTime.period == DayPeriod.pm) {
+      } else if (fromTime.period == DayPeriod.pm &&
+          toTime.period == DayPeriod.pm) {
         time = "$hoursFromAS12:$minuteFromStr - $hoursToAS12:$minuteToStr م";
 
         if (isAppAR == false) {
@@ -1104,12 +1242,15 @@ class CommonFunctions {
     return "";
   }
 
-  static String getFormattedTime(String? timeStr, {Duration? subtractedDuration}) {
+  static String getFormattedTime(String? timeStr,
+      {Duration? subtractedDuration}) {
     String formattedTime = "";
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime = DateFormat("hh:mm").parse(biddingEndingTime);
-      String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US').format(tempTime).toString();
+      String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempTime)
+          .toString();
       if (isAppAR) {
         time = time.replaceAll("ص", ("am").tr()).replaceAll("م", ("pm").tr());
       }
@@ -1131,7 +1272,9 @@ class CommonFunctions {
     try {
       String bidEndDate = dateStr ?? "";
       DateTime tempDate = DateFormat("yyyy/MM/dd").parse(bidEndDate);
-      formattedDate = DateFormat.yMMMMd(isAppAR ? 'ar_SA' : 'en_US').format(tempDate).toString();
+      formattedDate = DateFormat.yMMMMd(isAppAR ? 'ar_SA' : 'en_US')
+          .format(tempDate)
+          .toString();
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1161,14 +1304,16 @@ class CommonFunctions {
   static externalLaunch(String? url) async {
     if (url == null) return;
     final Uri convertUrl = Uri.parse(url);
-    if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication)) throw 'Could not launch $convertUrl';
+    if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication))
+      throw 'Could not launch $convertUrl';
   }
 
-  static openBaldyWithRefreshCookie(String? redirectUrl, {bool pushReplacement = false}) async {
+  static openBaldyWithRefreshCookie(String? redirectUrl,
+      {bool pushReplacement = false}) async {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
-    final failureOrSuccessForCookie = await getCookie(NoParams());
+    final failureOrSuccessForCookie = await getCookie(true);
     EasyLoading.dismiss();
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());
@@ -1176,12 +1321,20 @@ class CommonFunctions {
       if (!pushReplacement) {
         NavigationService.navigatorKey.currentState?.pushNamed(
           RouteName.inappWebview,
-          arguments: (requestNum: 'request'.tr(), url: redirectUrl, isObjections: false),
+          arguments: (
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
+          ),
         );
       } else {
         NavigationService.navigatorKey.currentState?.pushReplacementNamed(
           RouteName.inappWebview,
-          arguments: (requestNum: 'request'.tr(), url: redirectUrl, isObjections: false),
+          arguments: (
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
+          ),
         );
       }
     });
@@ -1207,54 +1360,75 @@ class CommonFunctions {
     return newStr.isEmpty ? value : newStr;
   }
 
-  static sendEvent({DioException? dioError, Response? response, Exception? ex, String? errorMessage}) {
+  static sendEvent(
+      {DioException? dioError,
+      Response? response,
+      Exception? ex,
+      String? errorMessage}) {
     try {
       SentryRequest request = SentryRequest(
         url: dioError?.requestOptions.path ?? response?.realUri.path,
         data: dioError?.requestOptions.data ?? response?.requestOptions.data,
-        method: dioError?.requestOptions.method ?? response?.requestOptions.method,
-        queryString:
-            dioError?.requestOptions.queryParameters.toString() ?? response?.requestOptions.queryParameters.toString(),
-        headers: dioError?.requestOptions.headers.cast() ?? response?.requestOptions.headers.cast(),
+        method:
+            dioError?.requestOptions.method ?? response?.requestOptions.method,
+        queryString: dioError?.requestOptions.queryParameters.toString() ??
+            response?.requestOptions.queryParameters.toString(),
+        headers: dioError?.requestOptions.headers.cast() ??
+            response?.requestOptions.headers.cast(),
       );
       String message =
-          (dioError?.response?.data.toString() ?? response?.data.toString()) ?? (errorMessage ?? ex.toString());
+          (dioError?.response?.data.toString() ?? response?.data.toString()) ??
+              (errorMessage ?? ex.toString());
 
       message = message.isEmpty ? (errorMessage ?? ex.toString()) : message;
       SentryMessage sentryMessage = SentryMessage(
         message,
       );
 
-      SentryUser sentryUser =
-          SentryUser(id: CommonProperties.userInfo?.idNo, name: CommonProperties.userInfo?.arName, email: "");
+      SentryUser sentryUser = SentryUser(
+          id: CommonProperties.userInfo?.idNo,
+          name: CommonProperties.userInfo?.arName,
+          email: "");
 
       SentryEvent event = SentryEvent(
           user: sentryUser,
           request: request,
           message: sentryMessage,
-          transaction: (dioError?.requestOptions.path ?? response?.realUri.path) ?? ex.toString(),
+          transaction:
+              (dioError?.requestOptions.path ?? response?.realUri.path) ??
+                  ex.toString(),
           environment: sl<EnvType>().name,
-          exceptions: [SentryException(type: ex != null ? "Exception" : "APIError", value: ex.toString())]);
+          exceptions: [
+            SentryException(
+                type: ex != null ? "Exception" : "APIError",
+                value: ex.toString())
+          ]);
       Sentry.captureEvent(event, withScope: (p) {
         //  p.addAttachment(attachment)
       });
 
 // UX Cam Events
       if (RemoteConfig.uxCamKey.isNotEmpty) {
-        Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ?? response?.requestOptions.headers) ?? {};
+        Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ??
+                response?.requestOptions.headers) ??
+            {};
         headersMap.remove("Authorization");
         headersMap.remove("authorization");
 
         String headers = (headersMap.cast().toString());
 
-        String data = (dioError?.requestOptions.data.toString() ?? response?.requestOptions.data.toString()) ?? "";
-
-        String queryString = (dioError?.requestOptions.queryParameters.toString() ??
-                response?.requestOptions.queryParameters.toString()) ??
+        String data = (dioError?.requestOptions.data.toString() ??
+                response?.requestOptions.data.toString()) ??
             "";
 
-        String message =
-            (dioError?.response?.data.toString() ?? response?.data.toString()) ?? (errorMessage ?? ex.toString());
+        String queryString =
+            (dioError?.requestOptions.queryParameters.toString() ??
+                    response?.requestOptions.queryParameters.toString()) ??
+                "";
+
+        String message = (dioError?.response?.data.toString() ??
+                response?.data.toString()) ??
+            (errorMessage ?? ex.toString());
 
         if (dioError != null && dioError is NoDataFoundException) {
           message = "Data Not Found";
@@ -1269,9 +1443,13 @@ class CommonFunctions {
           FlutterUxcam.logEventWithProperties("APIError", {
             "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
             "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-            "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
-            "Headers": headers.length <= 1024 ? headers : headers.substring(0, 1023),
-            "Message": message.length <= 1024 ? message : message.substring(0, 1023),
+            "QueryString": queryString.length <= 1024
+                ? queryString
+                : queryString.substring(0, 1023),
+            "Headers":
+                headers.length <= 1024 ? headers : headers.substring(0, 1023),
+            "Message":
+                message.length <= 1024 ? message : message.substring(0, 1023),
             "Environment": sl<EnvType>().name
           });
         }
@@ -1294,7 +1472,8 @@ class CommonFunctions {
 
       var dir = await getExternalStorageDirectory();
       if (dir != null) {
-        await for (var entity in dir.list(recursive: true, followLinks: false)) {
+        await for (var entity
+            in dir.list(recursive: true, followLinks: false)) {
           if (entity is File && entity.path.contains("DGis")) {
             dGisFiles.add(entity);
           }
@@ -1302,8 +1481,10 @@ class CommonFunctions {
       }
 
       for (int i = 0; i < dGisFiles.length; i++) {
-        SentryUser sentryUser =
-            SentryUser(id: CommonProperties.userInfo?.idNo, name: CommonProperties.userInfo?.arName, email: "");
+        SentryUser sentryUser = SentryUser(
+            id: CommonProperties.userInfo?.idNo,
+            name: CommonProperties.userInfo?.arName,
+            email: "");
 
         SentryEvent event = SentryEvent(
           user: sentryUser,
@@ -1314,7 +1495,8 @@ class CommonFunctions {
         Sentry.captureEvent(
           event,
           withScope: (p0) {
-            p0.addAttachment(SentryAttachment.fromUint8List(dGisFiles[i].readAsBytesSync(), dGisFiles[i].path ?? ""));
+            p0.addAttachment(SentryAttachment.fromUint8List(
+                dGisFiles[i].readAsBytesSync(), dGisFiles[i].path ?? ""));
           },
         ).then((value) {});
       }
@@ -1329,21 +1511,25 @@ class CommonFunctions {
     }
   }
 
-  static void showApigeeFile(String fileUrl, String fileName, {int? serviceId}) async {
+  static void showApigeeFile(String fileUrl, String fileName,
+      {int? serviceId}) async {
     print(fileName);
     try {
       if (fileName.toLowerCase().contains(".png") ||
           fileName.toLowerCase().contains(".jpeg") ||
           fileName.toLowerCase().contains(".jpg")) {
         if (serviceId == 2) {
-          NavigationService.navigatorKey.currentState!.pushNamed(RouteName.dmsImageFullScreen, arguments: fileUrl);
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.dmsImageFullScreen, arguments: fileUrl);
         } else {
-          NavigationService.navigatorKey.currentState!.pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
+          NavigationService.navigatorKey.currentState!
+              .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
         }
       } else {
         try {
           EasyLoading.show();
-          File fileDownloaded = await createFileOfPdfUrl(fileUrl, fileName, serviceId: serviceId);
+          File fileDownloaded =
+              await createFileOfPdfUrl(fileUrl, fileName, serviceId: serviceId);
           EasyLoading.dismiss();
 
           /*  if (fileName.toLowerCase().contains(".pdf")) {
@@ -1384,7 +1570,8 @@ class CommonFunctions {
     }
   }
 
-  static Future<File> createFileOfPdfUrl(String fileUrl, String fileName, {int? serviceId}) async {
+  static Future<File> createFileOfPdfUrl(String fileUrl, String fileName,
+      {int? serviceId}) async {
     final url = fileUrl;
     Dio dio = Dio();
     dio.options.baseUrl = RemoteConfig.apigeeURL;
@@ -1399,10 +1586,11 @@ class CommonFunctions {
     ;
     print("SERVCE $serviceId");
 
-    Response r = await WebService(dio: dio)
-        .dio
-        .getUri(Uri.parse(url), options: Options(headers: {if (serviceId != null) "X-Service-Id": serviceId}));
-    String extension = r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
+    Response r = await WebService(dio: dio).dio.getUri(Uri.parse(url),
+        options: Options(
+            headers: {if (serviceId != null) "X-Service-Id": serviceId}));
+    String extension =
+        r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
 
     String dir = (await getTemporaryDirectory()).path;
     File file = File('$dir/$fileName.$extension');
@@ -1416,11 +1604,13 @@ class CommonFunctions {
   }
 
   static void openJodService() {
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.jodDonationPage);
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.jodDonationPage);
   }
 
   static void openSnapAndSend() async {
-    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
+    CommonFunctions.sendUXCamEvent(
+        UXCamEvents.SnapAndSend_Open_From_Home_Event);
 
     NavigationService.navigatorKey.currentState!.pushNamed(
       RouteName.vDAllTypesScreen,
@@ -1431,13 +1621,16 @@ class CommonFunctions {
     //أصدر الشهادة
 
     if (CommonProperties.isLoggedInMunicipality) {
-      NavigationService.navigatorKey.currentState!.pushNamed(RouteName.createCompliancePage);
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.createCompliancePage);
     } else {
       showDialog(
           context: NavigationService.navigatorKey.currentContext!,
-          builder: (ctx) => NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
-                  NavigationService.navigatorKey.currentState!.pushNamed(RouteName.createCompliancePage);
+                  NavigationService.navigatorKey.currentState!
+                      .pushNamed(RouteName.createCompliancePage);
                 }
               }));
     }
@@ -1445,12 +1638,14 @@ class CommonFunctions {
 
   static void openRatingBuilding() {
     //قيم مبناك
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.selfRatingMainPage);
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.selfRatingMainPage);
   }
 
   static void openComplianceFaq(String serviceID) {
 //اطلع على الاسئلة الشائعة
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.QAPage, arguments: serviceID);
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.QAPage, arguments: serviceID);
   }
 
   static void openComplianceTerms() async {
@@ -1466,11 +1661,12 @@ class CommonFunctions {
 
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
-    sl<HomeServicesCubit>().loadServices();
-    sl<EventsBloc>().add(const events.GetSearchEvent());
-    sl<CalendarBloc>().add(const calendar.GetSearchEvent());
 
-    BlocProvider.of<DashboardBloc>(NavigationService.navigatorKey.currentContext!).add(DashboardEventInitial());
+    sl<HomeMiniAppsListCubit>().loadMiniApps();
+    // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
+    // BlocProvider.of<DashboardBloc>(
+    //         NavigationService.navigatorKey.currentContext!)
+    //     .add(DashboardEventInitial());
   }
 
   static void sendUXCamEvent(String event) {
@@ -1487,7 +1683,8 @@ class CommonFunctions {
     }
   }
 
-  static void sendUXCamEventWithProperties(String event, Map<String, dynamic> data) {
+  static void sendUXCamEventWithProperties(
+      String event, Map<String, dynamic> data) {
     try {
       FlutterUxcam.logEventWithProperties(event, data);
     } catch (error, stackTrace) {
@@ -1549,15 +1746,18 @@ class CommonFunctions {
     int todayMonth = today.month;
     int todayYear = today.year;
     var allowedDays = [22, 23, 24, 25];
-    if (allowedDays.contains(todayDay) && todayMonth == 9 && todayYear == 2024) return true;
+    if (allowedDays.contains(todayDay) && todayMonth == 9 && todayYear == 2024)
+      return true;
     return false;
   }
 
   static void openMovingViolations(Uri? uri) {
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.vdCameraPage,
-        arguments: CameraParamsPage(
-          selectedCategory: CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey), /*isFromHome: true*/
-        ));
+    // NavigationService.navigatorKey.currentState!.pushNamed(
+    //     RouteName.vdCameraPage,
+    //     arguments: CameraParamsPage(
+    //         selectedCategory:
+    //             CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey),
+    //         /*isFromHome: true*/));
   }
 
   static bool isFoundationDay() {
@@ -1568,7 +1768,8 @@ class CommonFunctions {
     int todayMonth = today.month;
     int todayYear = today.year;
     var allowedDays = [20, 21, 22, 23, 24, 25];
-    if (allowedDays.contains(todayDay) && todayMonth == 2 && todayYear == 2024) return true;
+    if (allowedDays.contains(todayDay) && todayMonth == 2 && todayYear == 2024)
+      return true;
     return false;
   }
 
@@ -1576,9 +1777,13 @@ class CommonFunctions {
     try {
       if (hijriDate != null && hijriDate.isNotEmpty) {
         List<int> dateSplitted =
-            CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!).split("/").map((e) => int.parse(e)).toList();
+            CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
+                .split("/")
+                .map((e) => int.parse(e))
+                .toList();
         var gDate = HijriCalendar();
-        DateTime gorgianDate = gDate.hijriToGregorian(dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+        DateTime gorgianDate = gDate.hijriToGregorian(
+            dateSplitted[0], dateSplitted[1], dateSplitted[2]);
         String? gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
 
         return CommonFunctions.padHijriDate(gorgian);
@@ -1598,7 +1803,8 @@ class CommonFunctions {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final dateTimeString = data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
+        final dateTimeString =
+            data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
         return DateTime.parse(dateTimeString);
       } else {
         print('Failed to fetch time: ${response.statusCode}');
@@ -1620,6 +1826,9 @@ class CommonProperties {
   static String? deviceOs;
   static String? sessionId;
   static String? fcmToken;
+  static String? currentLocalServerDirectory;
+  // static String? serverRootPath;
+
   static bool showEkramDriver = false;
 
   static Uuid uuidInstance = const Uuid();
@@ -1637,49 +1846,58 @@ class CommonProperties {
 
   // static String get token =>
   //    "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE3MDE4NTQ4OTUsImlhdCI6MTcwMTg1NDg5NSwiZXhwIjoxNzMxODU0ODk1LCJhdWQiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EvcmVzb3VyY2VzIiwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIm9mZmxpbmVfYWNjZXNzIl0sImFtciI6WyJwd2QiXSwiY2xpZW50X2lkIjoiYmFsYWR5X21vYmlsZV9hcHBfaW50ZWciLCJzdWIiOiIxZWNkNjY1Ni0zOWEwLTRiYWQtODY5ZC02MjFkYWY1ZjhiZjIiLCJhdXRoX3RpbWUiOjE3MDE4NTQ4OTQsImlkcCI6ImxvY2FsIiwidGlkIjoiNTU1IiwidG5tIjoi2KjZhNiv2YrYqSDYutix2Kgg2LnYsdi52LEiLCJuYW1lIjoiMTAwNTgzMDA4NiIsInJvbGUiOlsiUm9sZV9MaWNlbnNlQWdlbmN5IiwiSW5zdGl0dXRlcyIsIkJhbGFkeV9BZG1pbl9Nb2JpbGUiLCJCYWxhZHlfT3RoZXIiLCJMaWNlbnNlU3RhbmRhcmRBY3Rpdml0eUFkbWluIiwiQ0FOX1NLSVBfQ09PS0lFX1ZBTElEQVRPUiIsIkxpY2Vuc2VTdGFuZGFyZEFjdGl2aXR5RGF0YUVudHJ5Il0sIm1haWwiOiJtYWlsQG1vbXJhaC5nb3Yuc2EiLCJzZXgiOiIxIiwiZG9iIjoiMDcvMDgvMTk3NiIsInBob25lIjoiMDU0MjAwMjE4MCIsImFyX25hbWUiOiLYudio2K_Yp9mE2YTZhyDYtNin2YHZiiDYudmC2YrZhCDYp9mE2LnZhtiy2YoiLCJlbl9uYW1lIjoiQUJEVUxMQUggU0hBRkkgQSBBTEFOQVpJIiwiaWRfbm8iOiIxMDA1ODMwMDg2IiwibmlkIjoiMTEzIiwibmF0aW9uYWxpdHkiOiLYs9i52YjYr9mKIiwiaWRfdHlwZSI6IjEiLCJzbmFtZSI6Iti52KjYr9in2YTZhNmHLNi02KfZgdmKLNi52YLZitmELNin2YTYudmG2LLZiiIsInRlbmFudHMiOiJbe1wiVGVuYW50TmFtZVwiOlwi2YjYstin2LHYqSDYp9mE2LTYptmI2YYg2KfZhNio2YTYr9mK2Kkg2YjYp9mE2YLYsdmI2YrYqSDZiNin2YTYp9iz2YPYp9mGXCIsXCJUZW5hbnRJZFwiOjEyMTIsXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLYo9mF2KfZhtipINin2YTZhdiv2YrZhtipINin2YTZhdmG2YjYsdipXCIsXCJUZW5hbnRJZFwiOjIxMyxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2LrYsdioINi52LHYudixXCIsXCJUZW5hbnRJZFwiOjU1NSxcIlRlbmFudFR5cGVcIjpudWxsLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6dHJ1ZX0se1wiVGVuYW50TmFtZVwiOlwi2KPZhdin2YbYqSDYp9mE2K3Yr9mI2K8g2KfZhNi02YXYp9mE2YrYqVwiLFwiVGVuYW50SWRcIjoxLFwiVGVuYW50VHlwZVwiOm51bGwsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX1dIiwiYm1haWwiOiIiLCJzaWQiOiI4OUI2MDgxMEM0MTM4OERCNTFGN0FFQ0JBQ0ZDNjA3QyIsImp0aSI6IjI5QkU3QjdBOEE2QUY1ODIwRjE4Nzk5NTFCM0I2MUIwIn0.TDtmtlfFOFEFKDjcNmyf0-d-F4fXbCSlKwmp6EZC4xs-FBkZ55pOccrQipk4_MV1CHehd7XX3oN_zv937iANQcQUDapgpgl1KHQxvrvOoMyqA47jOK2Lh8AmEQcOiORcmYqfJQ9kuo4SqPc_86Z9eYp4dzAeRMfUtCqzOz7feZ4bfgm7qS3S6XIkTFsGLkRY60bybnjzQUDirUsUo-aVnEEx-7VmqB0nhgcI3v-mMtmlWwDyjHjbQmnF5Zg5MOQJ8RTjeOvlfXGwz2tMxoTSMA2_-qzc_yUm67nxgQ9hFoGhebZ7St6kaxELVGOLaIrOsTj67D84bVpKvnTxDU-ykQ";
-  static String get appCookie => sl<EntryPointCubit>().state.token?.appCookie ?? "";
+  static String get appCookie =>
+      sl<EntryPointCubit>().state.token?.appCookie ?? "";
 
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
 
-  static DelegatorEntity? get selectedDelegator => sl<EntryPointCubit>().state.selectedDelegator;
+  // static DelegatorEntity? get selectedDelegator =>
+  //     sl<EntryPointCubit>().state.selectedDelegator;
+  //
+  // static AgentEntity? get selectedAgent =>
+  //     sl<EntryPointCubit>().state.selectedAgent;
 
-  static AgentEntity? get selectedAgent => sl<EntryPointCubit>().state.selectedAgent;
+  // static UserProfileEntity? getCurrentUserProfile() {
+  //   if (selectedDelegator != null) {
+  //     return UserProfileEntity(
+  //         id: selectedDelegator?.crNumber,
+  //         type: selectedDelegator?.crType,
+  //         profileType: UserProfileType.Delegator,
+  //         roleId: selectedDelegator?.roleId,
+  //         roleName: selectedDelegator?.roleName,
+  //         name: selectedDelegator?.entityName);
+  //   } else if (selectedAgent != null) {
+  //     return UserProfileEntity(
+  //         id: selectedAgent?.requestId,
+  //         type: selectedAgent?.grantorTypeId,
+  //         profileType: UserProfileType.Agent,
+  //         agencyRequestKey: selectedAgent?.requestId,
+  //         roleName: selectedAgent?.agencyTypeName,
+  //         name: selectedAgent?.grantorName);
+  //   }
+  //   return null;
+  // }
 
-  static UserProfileEntity? getCurrentUserProfile() {
-    if (selectedDelegator != null) {
-      return UserProfileEntity(
-          id: selectedDelegator?.crNumber,
-          type: selectedDelegator?.crType,
-          profileType: UserProfileType.Delegator,
-          roleId: selectedDelegator?.roleId,
-          roleName: selectedDelegator?.roleName,
-          name: selectedDelegator?.entityName);
-    } else if (selectedAgent != null) {
-      return UserProfileEntity(
-          id: selectedAgent?.requestId,
-          type: selectedAgent?.grantorTypeId,
-          profileType: UserProfileType.Agent,
-          agencyRequestKey: selectedAgent?.requestId,
-          roleName: selectedAgent?.agencyTypeName,
-          name: selectedAgent?.grantorName);
-    }
-    return null;
-  }
+  static bool get isLoggedInMunicipality =>
+      sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
 
-  static bool get isLoggedInMunicipality => sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
-  static bool get isLoggedIn => sl<AuthenticationBloc>().state is AuthenticatedState;
+  static bool get isLoggedIn =>
+      sl<AuthenticationBloc>().state is AuthenticatedState;
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
 
-  static GISResponse? get userLocationGIS => sl<LocationCubit>().state.gisResponse;
+  static GISResponse? get userLocationGIS =>
+      sl<LocationCubit>().state.gisResponse;
 
   //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 
-  static Stream<EntryPointState> get userStateStream => sl<EntryPointCubit>().stream;
+  static Stream<EntryPointState> get userStateStream =>
+      sl<EntryPointCubit>().stream;
 
   //static String token =
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODcwNjI0OTMsImlhdCI6MTY4NzA2MjQ5MywiZXhwIjoxNjg4MjcyMDkzLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiMWVjZDY2NTYtMzlhMC00YmFkLTg2OWQtNjIxZGFmNWY4YmYyIiwiYXV0aF90aW1lIjoxNjg3MDYyNDkyLCJpZHAiOiJsb2NhbCIsInJvbGUiOlsiUm9sZV9MaWNlbnNlQWdlbmN5IiwiSW5zdGl0dXRlcyIsIkJhbGFkeV9BZG1pbl9Nb2JpbGUiLCJCYWxhZHlfT3RoZXIiLCJMaWNlbnNlU3RhbmRhcmRBY3Rpdml0eUFkbWluIiwiQ0FOX1NLSVBfQ09PS0lFX1ZBTElEQVRPUiIsIkxpY2Vuc2VTdGFuZGFyZEFjdGl2aXR5RGF0YUVudHJ5Il0sImVtYWlsIjoic3Vwcml5YS5qb25uYWR1bEBpbm92YXIuY29tIiwicGhvbmVfbnVtYmVyIjoiNTU3NjA5NzIyIiwibmFtZSI6IjEwMDU4MzAwODYiLCJ0aWQiOiIyMTMiLCJ0bm0iOiLYo9mF2KfZhtipINin2YTZhdiv2YrZhtipINin2YTZhdmG2YjYsdipIiwibWFpbCI6InN1cHJpeWEuam9ubmFkdWxAaW5vdmFyLmNvbSIsInNleCI6IjEiLCJkb2IiOiIwNy8wOC8xOTc2IiwicGhvbmUiOiIwNTU3NjA5NzIyIiwiYXJfbmFtZSI6Iti52KjYr9in2YTZhNmHINi02KfZgdmKINi52YLZitmEINin2YTYudmG2LLZiiIsImVuX25hbWUiOiJBQkRVTExBSCBTSEFGSSBBIEFMQU5BWkkiLCJpZF9ubyI6IjEwMDU4MzAwODYiLCJuaWQiOiIxMTMiLCJuYXRpb25hbGl0eSI6Itiz2LnZiNiv2YoiLCJpZF90eXBlIjoiMSIsInNuYW1lIjoi2LnYqNiv2KfZhNmE2Ycs2LTYp9mB2Yos2LnZgtmK2YQs2KfZhNi52YbYstmKIiwidGVuYW50cyI6Ilt7XCJUZW5hbnROYW1lXCI6XCLYp9mE2YbYt9in2YIg2KfZhNij2YjZhFwiLFwiVGVuYW50SWRcIjo2NDksXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINin2YTYtNix2KfYpti5INin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE3OSxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi52YXYsdipINin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE4MCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi02YjZgtmK2Kkg2KfZhNmB2LHYudmK2KlcIixcIlRlbmFudElkXCI6MTg3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTZg9io2LHZiSDZiNin2YTYrdmD2YjZhdmK2KlcIixcIlRlbmFudElkXCI6NjQ3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTYqtis2KfYsdmK2Kkg2YjYp9mE2KfYs9iq2KvZhdin2LHZitipXCIsXCJUZW5hbnRJZFwiOjY0OCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItin2YTZhti32KfZgiDYp9mE2KvYp9mG2YpcIixcIlRlbmFudElkXCI6NjUwLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KfZhNmG2LfYp9mCINin2YTYq9in2YTYq1wiLFwiVGVuYW50SWRcIjo2NTEsXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLZiNiy2KfYsdipINin2YTYtNim2YjZhiDYp9mE2KjZhNiv2YrYqSDZiNin2YTZgtix2YjZitipINmI2KfZhNin2LPZg9in2YZcIixcIlRlbmFudElkXCI6MTIxMixcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItij2YXYp9mG2Kkg2KfZhNmF2K_ZitmG2Kkg2KfZhNmF2YbZiNix2KlcIixcIlRlbmFudElkXCI6MjEzLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjp0cnVlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINi62LHYqCDYudix2LnYsVwiLFwiVGVuYW50SWRcIjo1NTUsXCJUZW5hbnRUeXBlXCI6bnVsbCxcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfV0iLCJibWFpbCI6IiIsInNpZCI6IjQ2MkFENTM1Njc0NjREMzM0RkE0MkRENzBBMDhFQUJBIiwianRpIjoiRjQ3Mjc2Q0RCMTREREFGRUI5Rjc0RjAxQ0M3NkM2QzAifQ.OaiWru1BmWD_SbYYRNsmH7SWavSRrckOoMpBfVExBvUHWWgIh4vsUYPC2Xupw2z6F0s7Tuo2te27GVloPaVAQBJpMwZNYiu-rbPbEJ7x_EclxBXsXqIzL55ygqr8E0f332BDX6BDaNMDo_yt5oHfHE38FjHYP7E5tan0KA75bW9JI1psus9E2POoDKVea1MR3w_XNagHZsCyOY7QTJDrC9WFv3cRRTWDpHns9sxcliq7jgz28jeJnQ4Yv5wdgvKL5yUiPkVYzaVlCf5WTdt7N2xZckzR5a3PJ7ogmsosT19ZyQKlXhqAeZd1AEXUZCW4FNNGXdacfb1h6uocN92YnQ";
-  static LatLng defaultLocation = const LatLng(latitude: 24.76836756001484, longitude: 46.720988751704304);
+  static LatLng defaultLocation =
+      const LatLng(latitude: 24.76836756001484, longitude: 46.720988751704304);
 }
 /*const _fakeUser = SsoUserInfo(
   name: "احمد بن خالد",

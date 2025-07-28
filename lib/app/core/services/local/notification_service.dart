@@ -9,9 +9,6 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_insider/flutter_insider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'firebase_options.dart';
 import 'navigation_services.dart';
 
 /// A notification action which triggers a App navigation event

@@ -9,11 +9,17 @@ class NeedLoginDialog extends StatelessWidget {
   final String? img;
   final String? title;
   final String? desc;
+  final String? mainPage;
   final Function(bool isSuccess)? onSuccessLogin;
 
-  const NeedLoginDialog(
-      {Key? key, this.desc, this.img, this.title, this.onSuccessLogin})
-      : super(key: key);
+  const NeedLoginDialog({
+    Key? key,
+    this.desc,
+    this.img,
+    this.title,
+    this.mainPage,
+    this.onSuccessLogin,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +54,12 @@ class NeedLoginDialog extends StatelessWidget {
                   //   ],
                   // ),
                   NeedLoginWidget(
-                      img: img,
-                      title: title,
-                      desc: desc,
-                      onSuccessLogin: onSuccessLogin)
+                    img: img,
+                    title: title,
+                    desc: desc,
+                    onSuccessLogin: onSuccessLogin,
+                    mainPage: mainPage,
+                  )
                 ],
               )),
         ],

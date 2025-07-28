@@ -1,9 +1,9 @@
 package momra.balady.android
 
-import android.os.Bundle
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.oaid.AdjustOaid
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import com.dgis.FlutterProvider
 import com.dgis.map.android_auto.CarAppConnectionState
@@ -21,6 +21,7 @@ class MainActivity : FlutterFragmentActivity() {
         super.onCreate(savedInstanceState)
         // Initialize Adjust OAID
         AdjustOaid.readOaid(applicationContext)
+
         FlutterProvider.getHostFlutterApi(this).runMain { }
         MainAppScreenStateNotifier.setState(MainAppScreenState.CREATED)
     }
