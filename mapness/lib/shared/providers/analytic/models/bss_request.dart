@@ -31,9 +31,7 @@ enum BSSActionType {
 class BssRequest {
   const BssRequest({
     required this.eventType,
-    required this.query,
     required this.uiElement,
-    required this.map,
     this.payload,
     this.actionType,
   });
@@ -64,14 +62,12 @@ class BssRequest {
   /// Note: We don't use it as parameter, because it's generated on the fly in [toJsonWithIds]
   /// final int timestamp;
 
-  /// Search query text
-  final String query;
-
   /// The ui element that the user saw or interacted with.
   final BssUIElement uiElement;
 
   /// Description of the state of the card at the time the event was performed by the user.
-  final BssMap map;
+  /// Note: We don't use it as parameter, because it's passed as a parameter in [toJsonWithIds] from [BssService]
+  ///final BssMap map;
 
   /// General attribute block
   /// Note: We don't use it as parameter, because it's passed as a parameter in [toJsonWithIds] from [BssService]
@@ -80,9 +76,10 @@ class BssRequest {
   /// Block of additional attributes
   final BssPayload? payload;
 
-  Map<String, dynamic> toJsonWithIds({
+  Map<String, dynamic> toJson({
     required int eventOrdinal,
     required BssCommon common,
+    required BssMap map,
   }) {
     final eventId = const Uuid().v4();
     final timestamp = DateTime.now().millisecondsSinceEpoch;
@@ -92,7 +89,6 @@ class BssRequest {
       'eventOrdinal': eventOrdinal,
       'eventType': eventType.name,
       'timestamp': timestamp.toString(),
-      'query': query,
       'uiElement': uiElement.toJson(),
       'map': map.toJson(),
       'common': common.toJson(),
@@ -107,21 +103,29 @@ class BssRequest {
   }
 
   BssRequest copyWith({
-    String? query,
     BSSEventType? eventType,
     BSSActionType? actionType,
-    BssMap? map,
     BssUIElement? uiElement,
     BssPayload? payload,
   }) =>
       BssRequest(
-        query: query ?? this.query,
         eventType: eventType ?? this.eventType,
         actionType: actionType ?? this.actionType,
-        map: map ?? this.map,
         uiElement: uiElement ?? this.uiElement,
         payload: payload ?? this.payload,
       );
+}
+
+enum BssUIElementNames {
+  directorySearchScreen,
+  searchResultList,
+  searchBar,
+  searchStart,
+  suggestList,
+  placeCardMini,
+  mapMarker,
+  historyList,
+  searchField,
 }
 
 class BssUIElement {
@@ -132,21 +136,21 @@ class BssUIElement {
   });
 
   /// The name of the ui element that the user saw or interacted with.
-  final String name;
+  final BssUIElementNames name;
 
   /// The name of the parent ui element, needed to glue message chains together when there is a complex hierarchy of elements.
   /// For example: Column, Row, etc.
-  final String? ownerName;
+  final BssUIElementNames? ownerName;
 
   /// The ordinal number of the element in the list. Required to be filled in for list elements (vertical or horizontal)
   final int? position;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{
-      'name': name,
+      'name': name.name,
     };
     if (ownerName != null) {
-      data['ownerName'] = ownerName;
+      data['ownerName'] = ownerName!.name;
     }
     if (position != null) {
       data['position'] = position;

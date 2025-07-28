@@ -2,8 +2,8 @@ part of 'bss_payload.dart';
 
 class BssSearchRequest {
   const BssSearchRequest({
-    required this.text,
-    required this.entities,
+    this.text,
+    this.entities,
   });
 
   /// The query text passed to one of the search modules.
@@ -17,9 +17,10 @@ class BssSearchRequest {
   final List<BssEntity>? entities;
 
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{
-      'text': text,
-    };
+    final data = <String, dynamic>{};
+    if (text != null) {
+      data['text'] = text;
+    }
     if (entities != null) {
       data['entities'] = entities!.map((e) => e.toJson()).toList();
     }

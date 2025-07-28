@@ -22,14 +22,14 @@ class BssSearchResultList {
   /// May not match the class of the first result
   /// of the search query. For example, the user requested
   /// "Vatutina 107", and the search responded with a hybrid Mega card.
-  final int? searchType;
+  final ResultClassEnum? searchType;
 
   /// The class of the first result of a search query.
   /// Set by search:
   /// 1. UniSearch::Results::GetDGisOutputType()
   /// 2. Sapphiredgis_output_type
   /// Cannot be determined for queries with no results.
-  final int? firstResultClass;
+  final ResultClassEnum? firstResultClass;
 
   /// Array of short identifiers of contextual headings. If there are no contextual headings (for example, in case of unsuccessful queries),
   /// the attribute does not need to be sent.
@@ -58,10 +58,10 @@ class BssSearchResultList {
       'size': size,
     };
     if (searchType != null) {
-      data['searchType'] = searchType;
+      data['searchType'] = searchType!.value;
     }
     if (firstResultClass != null) {
-      data['firstResultClass'] = firstResultClass;
+      data['firstResultClass'] = firstResultClass!.value;
     }
     if (contextRubrics != null) {
       data['contextRubrics'] = contextRubrics!.map((e) => e.toString()).toList();

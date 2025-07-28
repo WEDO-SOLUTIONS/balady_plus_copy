@@ -12,6 +12,10 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +34,69 @@ class MapSearchContent extends ConsumerStatefulWidget {
 class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   bool _hasConnection = true;
   Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.bottomSheetContentScrollController.position.isScrollingNotifier.addListener(() {
+      final value = widget.bottomSheetContentScrollController.position.isScrollingNotifier.value;
+      if (value) {
+        final scope = context.read<SearchScope>();
+        final searchState = ref.watch(searchProvider(scope.value));
+        final BssRequest? request = switch (searchState) {
+          SearchStateHistory() => null,
+          SearchStateError() => null,
+          SearchStateEmpty() => null,
+          SearchStateLoading() => null,
+          SearchStateSuggest() => BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.scroll,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.suggestList,
+                ownerName: BssUIElementNames.directorySearchScreen,
+              ),
+              payload: BssPayload(
+                searchRequest: BssSearchRequest(text: searchState.searchText),
+                suggestList: BssSuggestList(
+                  size: searchState.suggest.suggests.length,
+                ),
+              ),
+            ),
+          SearchStateResults() => BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.scroll,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.searchResultList,
+                ownerName: BssUIElementNames.directorySearchScreen,
+              ),
+              payload: BssPayload(
+                searchRequest: BssSearchRequest(text: searchState.searchText),
+                searchResultList: BssSearchResultList(
+                  size: searchState.results.itemMarkerInfos?.length ?? 0,
+                  searchType: searchState.results.searchResultType.toBss(),
+                ),
+              ),
+            ),
+        };
+        if (request != null) {
+          ref.read(bssServiceProvider.notifier).sendEvent(request);
+        }
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        ref.read(bssServiceProvider.notifier).sendEvent(
+              const BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: BssUIElement(
+                  name: BssUIElementNames.directorySearchScreen,
+                ),
+              ),
+            );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -65,7 +132,42 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
     final searchState = ref.watch(searchProvider(scope.value));
     ref
       ..listen(searchProvider(scope.value), (_oldState, newState) {
-        if (newState is SearchStateEmpty) {
+        if (newState is SearchStateResults) {
+          ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.view,
+                  uiElement: const BssUIElement(
+                    name: BssUIElementNames.searchResultList,
+                    ownerName: BssUIElementNames.directorySearchScreen,
+                  ),
+                  payload: BssPayload(
+                    searchRequest: BssSearchRequest(text: newState.searchText),
+                    // TODO: contextRubrics, contextAttributes, firstResultClass,partialResult,searchSegmentId
+                    /// firstResultClass - нет отдельного. Могу брать то же, что и searchType
+                    /// Мы можем взять contextRubrics и contextAttributes из объектов, которые нам приходят. Из результата взять это не можем
+                    /// Как быть?
+                    /// partialResult - null
+                    /// searchSegmentId, building - это вообще как для search result?
+                    searchResultList: BssSearchResultList(
+                      size: newState.results.itemMarkerInfos?.length ?? newState.results.firstPage?.items.length ?? 0,
+                      searchType: newState.results.searchResultType.toBss(),
+                    ),
+                  ),
+                ),
+              );
+        } else if (newState is SearchStateEmpty) {
+          ref.read(bssServiceProvider.notifier).sendEvent(
+                const BssRequest(
+                  eventType: BSSEventType.view,
+                  uiElement: BssUIElement(
+                    name: BssUIElementNames.searchResultList,
+                    ownerName: BssUIElementNames.directorySearchScreen,
+                  ),
+                  payload: BssPayload(
+                    searchResultList: BssSearchResultList(size: 0),
+                  ),
+                ),
+              );
           ref.read(urbiAnalyticsProvider).track(
             'searchFailed',
             properties: {

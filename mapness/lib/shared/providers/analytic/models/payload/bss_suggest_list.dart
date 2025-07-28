@@ -19,7 +19,7 @@ class BssSuggestList {
 
   /// Class of the first search result
   /// Cannot be determined for queries that do not return any results.
-  final int? firstResultClass;
+  final ResultClassEnum? firstResultClass;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{
@@ -32,7 +32,7 @@ class BssSuggestList {
       data['unisearchVersion'] = unisearchVersion;
     }
     if (firstResultClass != null) {
-      data['firstResultClass'] = firstResultClass;
+      data['firstResultClass'] = firstResultClass!.value;
     }
     return data;
   }

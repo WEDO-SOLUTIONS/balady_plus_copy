@@ -10,8 +10,12 @@ part 'bss_map_marker.dart';
 part 'bss_call_to_action.dart';
 part 'bss_history_item.dart';
 part 'bss_contacts.dart';
+part 'bss_history_list.dart';
 
 enum ResultClassEnum {
+  /// The search didn't recognize request
+  unclassified(value: 0),
+
   /// Recovery branch/organization
   orgRecovery(value: 1),
 
@@ -58,39 +62,61 @@ enum ResultClassEnum {
 /// Block of additional attributes
 class BssPayload {
   const BssPayload({
-    required this.placeItem,
-    required this.suggestList,
-    required this.suggestItem,
-    required this.searchResultList,
-    required this.searchResultItem,
-    required this.mapMarker,
-    required this.callToAction,
-    required this.historyItem,
-    required this.contact,
+    this.placeItem,
+    this.suggestList,
+    this.suggestItem,
+    this.searchRequest,
+    this.searchResultList,
+    this.searchResultItem,
+    this.mapMarker,
+    this.callToAction,
+    this.historyItem,
+    this.historyList,
+    this.contact,
   });
 
   /// Information about the search results element of the Places tab (cards of branches, geographic objects and hybrids).
-  final BssPlaceItem placeItem;
-  final BssSuggestList suggestList;
-  final BssSuggestItem suggestItem;
-  final BssSearchResultList searchResultList;
-  final BssSearchRequest searchResultItem;
-  final BssMapMarker mapMarker;
-  final BssCallToAction callToAction;
-  final BssHistoryItem historyItem;
+  final BssPlaceItem? placeItem;
+  final BssSuggestList? suggestList;
+  final BssSuggestItem? suggestItem;
+  final BssSearchRequest? searchRequest;
+  final BssSearchResultList? searchResultList;
+  final BssSearchRequest? searchResultItem;
+  final BssMapMarker? mapMarker;
+  final BssCallToAction? callToAction;
+  final BssHistoryItem? historyItem;
+  final BssHistoryList? historyList;
   final BssContact? contact;
 
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{
-      'placeItem': placeItem.toJson(),
-      'suggestList': suggestList.toJson(),
-      'suggestItem': suggestItem.toJson(),
-      'searchResultList': searchResultList.toJson(),
-      'searchResultItem': searchResultItem.toJson(),
-      'mapMarker': mapMarker.toJson(),
-      'callToAction': callToAction.toJson(),
-      'historyItem': historyItem.toJson(),
-    };
+    final data = <String, dynamic>{};
+    if (placeItem != null) {
+      data['placeItem'] = placeItem!.toJson();
+    }
+    if (suggestList != null) {
+      data['suggestList'] = suggestList!.toJson();
+    }
+    if (suggestItem != null) {
+      data['suggestItem'] = suggestItem!.toJson();
+    }
+    if (searchRequest != null) {
+      data['searchRequest'] = searchRequest!.toJson();
+    }
+    if (searchResultList != null) {
+      data['searchResultList'] = searchResultList!.toJson();
+    }
+    if (searchResultItem != null) {
+      data['searchResultItem'] = searchResultItem!.toJson();
+    }
+    if (mapMarker != null) {
+      data['mapMarker'] = mapMarker!.toJson();
+    }
+    if (callToAction != null) {
+      data['callToAction'] = callToAction!.toJson();
+    }
+    if (historyItem != null) {
+      data['historyItem'] = historyItem!.toJson();
+    }
     if (contact != null) {
       data['contact'] = contact!.toJson();
     }

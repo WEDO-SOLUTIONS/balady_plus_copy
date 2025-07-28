@@ -28,7 +28,7 @@ class BssPlaceItem {
   final ResultClassEnum? resultClass;
 
   /// If the branch is found as discovery. Contains discovery- heading.
-  final BssStringId? contextRubric;
+  final List<BssStringId>? contextRubric;
 
   /// An advertising indicator determined by the search service by search parameters (how the branch was found) and the presence of advertising weight.
   /// — advertising -> true

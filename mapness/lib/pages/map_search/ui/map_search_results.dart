@@ -12,11 +12,17 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:provider/provider.dart';
+
+import '../../../shared/providers/analytic/models/bss_request.dart';
 
 class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({
@@ -47,6 +53,54 @@ class MapSearchResults extends ConsumerWidget {
       }
     }
 
+    Future<void> _bssAnalyticRequest({
+      required SearchResultMessage results,
+      required DirectoryObjectMessage item,
+    }) async {
+      final index = results.firstPage?.items.indexWhere(
+            (e) => e.id?.objectId == item.id?.objectId,
+          ) ??
+          0;
+      final scope = context.read<SearchScope>();
+      final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
+
+      final entity = item.toBss();
+      if (item.markerPosition == null) {
+        debugPrint('GeoPosition for this object is null');
+      }
+      await ref.read(bssServiceProvider.notifier).sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.placeCardMini,
+                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                placeItem: entity != null
+                    ? BssPlaceItem(
+                        entity: entity,
+                        position: index + 1,
+                        geoPosition: item.markerPosition != null
+                            ? BssGeoPosition(
+                                latitude: item.markerPosition!.latitude,
+                                longitude: item.markerPosition!.longitude,
+                              )
+                            : null,
+                        contextRubric: item.rubricIds.map((e) => e.toString()).toList(),
+                        adsSearch: false,
+                      )
+                    : null,
+                searchResultList: BssSearchResultList(
+                  size: results.itemMarkerInfos?.length ?? results.firstPage?.items.length ?? 0,
+                  searchType: results.searchResultType.toBss(),
+                ),
+              ),
+            ),
+          );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
       child: SearchResults(
@@ -63,7 +117,10 @@ class MapSearchResults extends ConsumerWidget {
           myLocation: myLocation == null
               ? null
               : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-          onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
+          onTap: () {
+            _bssAnalyticRequest(results: results, item: item);
+            _onResultTap(context, item, _sendSuggestionPressed);
+          },
         ),
       ),
     );

@@ -2,11 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/map_ext.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
-class BssService {
-  static BssService? _instance;
+class BssRepo {
+  static BssRepo? _instance;
   static Dio? _dio;
   static bool _isInitialized = false;
 
@@ -14,12 +15,12 @@ class BssService {
   static BssCommon? common;
 
   // Private constructor to prevent instantiation
-  BssService._();
+  BssRepo._();
 
   // Singleton instance getter
   // ignore: prefer_constructors_over_static_methods
-  static BssService get instance {
-    _instance ??= BssService._();
+  static BssRepo get instance {
+    _instance ??= BssRepo._();
     return _instance!;
   }
 
@@ -60,7 +61,7 @@ class BssService {
       if (common == null) {
         throw StateError('BssService has not been initialized. Call initialize() first.');
       }
-      final requestJson = request.toJsonWithIds(eventOrdinal: ordinalId, common: common!);
+      final requestJson = request.toJson(eventOrdinal: ordinalId, common: common!, map: emptyBssMap);
       await dio.post('/bss/3', data: requestJson);
       ordinalId++;
     } catch (e) {
