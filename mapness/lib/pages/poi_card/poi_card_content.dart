@@ -146,6 +146,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
 
+    final offers = ref.watch(poiOffersProvider);
+    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
+
     return Directionality(
       textDirection: Directionality.of(context),
       child: SafeArea(
@@ -243,6 +246,19 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                       alignment: PlaceholderAlignment.middle,
                     ),
                     TextSpan(text: ' $poiHeaderSubTitle'),
+                    if (hasOffers) ...[
+                      const TextSpan(text: ' • '),
+                      WidgetSpan(
+                        child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
+                        baseline: TextBaseline.ideographic,
+                        alignment: PlaceholderAlignment.middle,
+                      ),
+                      TextSpan(
+                        text: ' ${context.l10n.offer}',
+                        style:
+                            context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
+                      ),
+                    ]
                   ]
                 : [],
             parkingInfo: widget.data.parkingInfo,
