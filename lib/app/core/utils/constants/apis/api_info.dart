@@ -659,4 +659,36 @@ class ApiUrl {
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
 static String ekramTransportValidateSubmit(int requestId) => "v1/superapp-ekram-services/transport/$requestId/validate-and-submit";
 static String madinahEmirateApprovalStatus(int cemetryId , int id , int idType) => "v1/superapp-ekram-services/cemetery/deceased-burial-cemetery-approval/$cemetryId/$id/$idType";
+
+
+  static const getVolunteerProfile = 'v1/volunteer-platform-services/profiles';
+  static const getSpecializations =
+      'v1/volunteer-platform-services/lookups/specialization';
+  static const getQualifications =
+      'v1/volunteer-platform-services/lookups/qualifications';
+  static const getLaunguages =
+      'v1/volunteer-platform-services/lookups/languages';
+  static const getFields =
+      'v1/volunteer-platform-services/lookups/volunteering/fields';
+  static const getBloodTypes =
+      'v1/volunteer-platform-services/lookups/blood-type';
+  static const getDiseases = 'v1/volunteer-platform-services/lookups/diseases';
+  static const getSkills = 'v1/volunteer-platform-services/lookups/skills';
+  static const getLvls =
+      'v1/volunteer-platform-services/lookups/volunteering/levels';
+  static const getInterests =
+      'v1/volunteer-platform-services/lookups/interests';
+  static const getVolunteeringFields =
+      'v1/volunteer-platform-services/lookups/volunteering/fields';
+  static const uploadVolunteerCV =
+      'v1/volunteer-platform-services/upload/cv-files';
+
+  static submitVolunteerProfile(String profileId) =>
+      'v1/volunteer-platform-services/profiles/$profileId';
+
+
+  static const getRegions = 'v1/volunteer-platform-services/lookups/region';
+  static const getcities = 'v1/volunteer-platform-services/lookups/city';
+
+
 }

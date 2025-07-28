@@ -396,6 +396,8 @@ class RouteName {
 
 
   static String miniAppsMainScreen = "miniAppsMainScreen";
+  static String VolunteerProfile = "VolunteerProfile";
+
 
 }
 

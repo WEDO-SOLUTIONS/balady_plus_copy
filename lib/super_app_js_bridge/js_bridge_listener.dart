@@ -281,17 +281,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
-        Map<String, dynamic> data = jsonDecode(msg);
-        response = BaseResponse(
-          code: 200,
-          message: "success",
-          eventName: "navigateToSuperAppScreen",
-          data: null,
-        );
-        NavigationService.pushNamed(
-          routeName: data['screenName'],
-          args: data['arguments'],
-        );
+
+
+          Map<String, dynamic> data = jsonDecode(msg);
+          response = BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "navigateToSuperAppScreen",
+            data: null,
+          );
+          NavigationService.pushNamed(
+            routeName: data['screenName'],
+            args: data['arguments'],
+          );
+
       } else {
         response = BaseResponse(
           code: 400,

@@ -34,6 +34,8 @@ import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
 import '../../features/notifications/data/repositories/notification_repository_implementation.dart';
 import '../../features/notifications/manager/notification_manager.dart';
+import '../../features/volunteer_profile/injection/volunteer_profile_injection.dart';
+import '../../features/volunteer_profile/presentation/bloc/volunteer_profile_bloc.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
         DelegatorsInjection,
@@ -193,4 +195,7 @@ void initialize() {
   }
   AuthenticationInjection.initialize();
   /////////////// End
+
+  VolunteerProfileInjection.init();
+
 }

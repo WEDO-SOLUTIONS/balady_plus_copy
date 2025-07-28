@@ -14,6 +14,7 @@ import 'package:flutter/material.dart'
         RouteSettings,
         Scaffold,
         Widget;
+import 'package:get_it/get_it.dart';
 import '../../../super_app_js_bridge/camera/camera_page.dart';
 import '../../core/utils/utils_exports.dart' show RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
@@ -29,6 +30,8 @@ import '../../features/public_services_features/prayer_times/prayer_times_export
 
 import '../../features/public_services_features/prayer_times/presentation/pages/prayer_times_page.dart';
 
+import '../../features/volunteer_profile/presentation/bloc/volunteer_profile_bloc.dart';
+import '../../features/volunteer_profile/presentation/screens/volunteer_profile_screen.dart';
 import '../../features/weather/weather_exports.dart';
 
 import 'package:balady_authorization/src/shared/authentication_routes/authentication_routes.dart';
@@ -87,6 +90,14 @@ class Routes {
         const NotificationsDetailsScreen(),
     RouteName.miniAppsMainScreen: (context) =>
     const MiniAppsMainScreen(),
+
+    RouteName.VolunteerProfile: (context) =>
+     VolunteerProfileScreen(
+      volunteerProfileBloc:
+      GetIt.I<VolunteerProfileBloc>(),
+    ),
+
+
 
 
 
