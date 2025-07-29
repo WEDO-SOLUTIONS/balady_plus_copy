@@ -1618,13 +1618,16 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                             children: [
                               const Icon(Icons.upload_file,
                                   color: Colors.white, size: 16),
-                              const SizedBox(width: 8),
-                              Text(
-                                state.cvFileName != null
-                                    ? 'change_cv'.tr()
-                                    : 'attach_cv'.tr(),
-                                style: const TextStyle(
-                                    fontSize: 14, color: Colors.white),
+
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0,right: 8),
+                                child: Text(
+                                  state.cvFileName != null
+                                      ? 'change_cv'.tr()
+                                      : 'attach_cv'.tr(),
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.white),
+                                ),
                               ),
                             ],
                           ),

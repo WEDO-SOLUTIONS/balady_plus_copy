@@ -715,13 +715,16 @@ class VolunteerDataSourceImpl extends VolunteerProfileRemoteDataSource {
     try {
       // Read file bytes
       final fileBytes = await File(file.filePath).readAsBytes();
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      String newFileName = file.fileName
+          .replaceRange(0, file.fileName.indexOf("."), "$timeStamp");
 
       response = await webService.dio.post(
         ApiUrl.uploadVolunteerCV,
         data: fileBytes,
         options: Options(
           headers: {
-            'contentDisposition': 'file; filename="${file.fileName}"',
+            'contentDisposition': 'file; filename="$newFileName"',
             'Content-Type': 'application/octet-stream',
           },
           contentType: 'application/octet-stream',
