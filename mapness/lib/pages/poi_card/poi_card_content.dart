@@ -256,7 +256,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   ).notifier,
                 )
                 .setMapObjectManagerIsVisible(isVisible: false);
-                _bssOnRouteTap();
+            _bssOnRouteTap();
             _openRoutingRoutes(
               context,
               widget.data.id!.objectId,
@@ -368,8 +368,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
-        uiElement: BssUIElement(
-          name: const BssUIElementNames.buildRoute,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.buildRoute,
           ownerName: BssUIElementNames.actionBar,
         ),
         payload: BssPayload(
@@ -382,18 +382,34 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   void _bssOnCallTap() {
     BssService.instance.sendEvent(
       visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-      const BssRequest(
+      BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.contactTap,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
       ),
     );
   }
 
   void _bssOnFavouritesTap() {
-
-  }
-
-  void _bssSocialMediaTap() {
-
+    BssService.instance.sendEvent(
+      visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.bookmark,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
   }
 }
