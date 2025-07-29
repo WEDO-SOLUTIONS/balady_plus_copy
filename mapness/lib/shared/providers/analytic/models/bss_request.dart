@@ -130,6 +130,7 @@ enum BssUIElementNames {
   searchField,
   expandHistoryList,
   rollupHistoryList,
+  searchMoreButton,
 }
 
 class BssUIElement {
