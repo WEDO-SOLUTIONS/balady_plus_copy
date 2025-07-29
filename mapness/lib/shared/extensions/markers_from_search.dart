@@ -69,7 +69,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required bool isDark,
     bool withLabel = true,
     bool isRtl = true,
-    Future<void> Function(ItemMarkerInfoMessage? data)? onTapAnalytic,
+    Future<void> Function(ItemMarkerInfoMessage? data, int index)? onTapAnalytic,
   }) async {
     final markers = <Marker>[];
     final existingPositions = <LatLng>{};
@@ -95,7 +95,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
         Marker(
           id: objectId?.toString() ?? _invalidMarkerId,
           onTap: () {
-            onTapAnalytic?.call(markerInfo);
+            onTapAnalytic?.call(markerInfo, i);
             Metrics.logEventAdvanced(
               MetricsConstants.poiKeys.marker,
               group: MetricsConstants.poiTag,

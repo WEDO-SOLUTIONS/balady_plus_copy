@@ -90,6 +90,7 @@ class BssService extends _$BssService {
         common: common!,
         map: searchRect?.toBssMap() ?? emptyBssMap,
       );
+      print('BSS REQUEST: $requestJson');
       await dio.post('/bss/3', data: requestJson);
       ordinalId++;
     } catch (e) {

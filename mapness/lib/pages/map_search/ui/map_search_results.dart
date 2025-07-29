@@ -94,7 +94,7 @@ class MapSearchResults extends ConsumerWidget {
             color: context.colors.accentDefault,
           ),
         ),
-        itemBuilder: (context, item) => SearchItem(
+        itemBuilder: (context, item, index) => SearchItem(
           result: item,
           language: language,
           myLocation: myLocation == null
@@ -104,6 +104,8 @@ class MapSearchResults extends ConsumerWidget {
             _bssAnalyticRequest(results: results, item: item);
             _onResultTap(context, item, _sendSuggestionPressed);
           },
+          searchResultList: results.toBss(),
+          index: index,
         ),
       ),
     );

@@ -7,6 +7,7 @@ import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
@@ -44,7 +45,20 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         final scope = context.read<SearchScope>();
         final searchState = ref.watch(searchProvider(scope.value));
         final BssRequest? request = switch (searchState) {
-          SearchStateHistory() => null,
+          SearchStateHistory() => BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.scroll,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.historyList,
+                ownerName: BssUIElementNames.directorySearchScreen,
+              ),
+              payload: BssPayload(
+                searchRequest: BssSearchRequest(text: searchState.searchText),
+                historyList: BssHistoryList(
+                  size: ref.read(searchHistoryProvider(scope.value)).length,
+                ),
+              ),
+            ),
           SearchStateError() => null,
           SearchStateEmpty() => null,
           SearchStateLoading() => null,
@@ -174,6 +188,37 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
               'text': newState.searchText,
             },
           );
+        } else if (newState is SearchStateHistory) {
+          final history = ref.read(searchHistoryProvider(scope.value));
+          ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.view,
+                  uiElement: const BssUIElement(
+                    name: BssUIElementNames.historyList,
+                    ownerName: BssUIElementNames.directorySearchScreen,
+                  ),
+                  payload: BssPayload(
+                    historyList: BssHistoryList(size: history.length),
+                  ),
+                ),
+              );
+        } else if (newState is SearchStateSuggest) {
+          ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.view,
+                  uiElement: const BssUIElement(
+                    name: BssUIElementNames.suggestList,
+                    ownerName: BssUIElementNames.directorySearchScreen,
+                  ),
+                  payload: BssPayload(
+                    searchRequest: BssSearchRequest(text: newState.searchText),
+                    suggestList: BssSuggestList(
+                      // TODO: Add searchSegmentId, unisearchVersion, firstResultClass
+                      size: newState.suggest.suggests.length,
+                    ),
+                  ),
+                ),
+              );
         }
       })
       ..listen(

@@ -12,9 +12,14 @@ import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart'
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 const prefixMapping = {
   'region': 'منطقة',
@@ -38,6 +43,8 @@ class SearchItem extends ConsumerWidget {
   final GeoPointMessage? myLocation;
   final DirectoryObjectMessage result;
   final Color? contentColor;
+  final int index;
+  final BssSearchResultList? searchResultList;
 
   final void Function() onTap;
 
@@ -47,6 +54,8 @@ class SearchItem extends ConsumerWidget {
     required this.language,
     this.myLocation,
     this.contentColor,
+    this.index = 0,
+    this.searchResultList,
     super.key,
   });
 
@@ -71,60 +80,82 @@ class SearchItem extends ConsumerWidget {
       };
     }
 
-    return Material(
-      color: contentColor ?? context.colors.backgroundSurface1,
-      shape: smoothBorder(RadiusBorder.xl),
-      child: SearchTapHandler(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (photosUrls.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: Spacing.$3x),
-                child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
-              ),
-            ContentRow(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              text: ContentRowTextOptions(
-                title: result.title,
-                titleOptions: const ContentRowTextOption(isBold: true),
-                subtitle: subtitle,
-                subtitleOptions: ContentRowTextOption(
-                  baseColor: context.colors.foregroundDefault,
+    return VisibilityDetector(
+      key: Key('searchResult: ${result.id?.objectId}'),
+      onVisibilityChanged: (visibilityInfo) {
+        final visiblePercentage = visibilityInfo.visibleFraction * 100;
+        if (visiblePercentage > 50) {
+          ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.view,
+                  uiElement: BssUIElement(
+                    name: BssUIElementNames.placeCardMini,
+                    ownerName: BssUIElementNames.searchResultList,
+                    position: index + 1,
+                  ),
+                  payload: BssPayload(
+                    placeItem: result.toBss(index),
+                    searchResultList: searchResultList,
+                  ),
                 ),
-                subtitleExtra: result.makeAddress(),
-                subtitleExtraOptions: ContentRowTextOption(
-                  maxLines: 3,
-                  baseColor: context.colors.foregroundSoft,
+              );
+        }
+      },
+      child: Material(
+        color: contentColor ?? context.colors.backgroundSurface1,
+        shape: smoothBorder(RadiusBorder.xl),
+        child: SearchTapHandler(
+          onTap: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (photosUrls.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$3x),
+                  child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
                 ),
-              ),
-              trailing: ContentRowCustomTrailingOptions(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
-                  child: FutureBuilder<double?>(
-                    future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const SizedBox.shrink();
-                      }
-                      final distanceKm = snapshot.data;
-                      if (distanceKm == null || !context.mounted) {
-                        return const SizedBox.shrink();
-                      }
-                      return ContentRowTrailingText(
-                        options: ContentRowTextTrailingOptions(
-                          text: (distanceKm * 1000).formatDistance(context.l10n),
-                          textStyle:
-                              context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundSoft),
-                        ),
-                      );
-                    },
+              ContentRow(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                text: ContentRowTextOptions(
+                  title: result.title,
+                  titleOptions: const ContentRowTextOption(isBold: true),
+                  subtitle: subtitle,
+                  subtitleOptions: ContentRowTextOption(
+                    baseColor: context.colors.foregroundDefault,
+                  ),
+                  subtitleExtra: result.makeAddress(),
+                  subtitleExtraOptions: ContentRowTextOption(
+                    maxLines: 3,
+                    baseColor: context.colors.foregroundSoft,
+                  ),
+                ),
+                trailing: ContentRowCustomTrailingOptions(
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
+                    child: FutureBuilder<double?>(
+                      future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const SizedBox.shrink();
+                        }
+                        final distanceKm = snapshot.data;
+                        if (distanceKm == null || !context.mounted) {
+                          return const SizedBox.shrink();
+                        }
+                        return ContentRowTrailingText(
+                          options: ContentRowTextTrailingOptions(
+                            text: (distanceKm * 1000).formatDistance(context.l10n),
+                            textStyle:
+                                context.textStyles.bodySmallSemiBold.copyWith(color: context.colorsV3.foregroundSoft),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

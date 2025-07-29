@@ -44,7 +44,7 @@ class RoutingSearchResults extends ConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, item) => SearchItem(
+      itemBuilder: (context, item, index) => SearchItem(
         result: item,
         language: language,
         myLocation:

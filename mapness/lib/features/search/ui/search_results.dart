@@ -11,7 +11,7 @@ class SearchResults extends ConsumerStatefulWidget {
   final SearchResultMessage results;
   final ScrollController bottomSheetContentScrollController;
   final Widget Function(BuildContext) loaderBuilder;
-  final Widget Function(BuildContext, DirectoryObjectMessage) itemBuilder;
+  final Widget Function(BuildContext, DirectoryObjectMessage, int) itemBuilder;
   final bool? isShowAddPlace;
 
   const SearchResults({
@@ -93,7 +93,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
           );
         }
 
-        return widget.itemBuilder(context, results[index]);
+        return widget.itemBuilder(context, results[index], index);
       },
       itemCount: totalCount,
       separatorBuilder: (context, index) => const SizedBox(height: 12),

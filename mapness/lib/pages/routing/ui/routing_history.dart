@@ -52,7 +52,8 @@ class RoutingHistory extends ConsumerWidget {
 
               ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
             },
-            onTap: (item) async {
+            // TODO: Implement BSS for it
+            onTap: (item, index, historyList) async {
               Metrics.logEventAdvanced(
                 MetricsConstants.routesKeys.routeSelectionChangeNavType,
                 group: MetricsConstants.routesTag,

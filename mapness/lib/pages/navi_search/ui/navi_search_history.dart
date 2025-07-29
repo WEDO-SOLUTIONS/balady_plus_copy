@@ -26,7 +26,8 @@ class NaviSearchHistory extends ConsumerWidget {
     return ui.SearchHistory(
       iconColor: context.colors.foregroundMuted,
       contentColor: context.colors.backgroundSurface1,
-      onTap: (item) async {
+      // TODO: Implement BSS for it
+      onTap: (item, index, historyList) async {
         if (item.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);
           try {

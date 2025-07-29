@@ -58,7 +58,7 @@ class NaviSearchResults extends ConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, item) => SearchItem(
+      itemBuilder: (context, item, index) => SearchItem(
         contentColor: context.colors.backgroundSurface1,
         result: item,
         language: language,

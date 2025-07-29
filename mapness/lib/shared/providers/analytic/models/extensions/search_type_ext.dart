@@ -1,4 +1,6 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_entity.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 
 extension SearchResultListExt on SearchResultMessage {
@@ -14,4 +16,16 @@ extension ResultClassEnumExt on SearchResultTypeMessage? {
         SearchResultTypeMessage.discovery => ResultClassEnum.orgDiscovery,
         _ => ResultClassEnum.unclassified,
       };
+}
+
+extension HistoryItemExt on SearchHistoryItem {
+  BssHistoryItem toBss(BssHistoryHandlingType handlingType) => BssHistoryItem(
+        text: title,
+        handlingType: handlingType,
+        entity: BssEntity(
+          id: objectId ?? '',
+          // TODO: add type
+          type: '',
+        ),
+      );
 }
