@@ -45,15 +45,15 @@ class JoyParksCardV2 extends ConsumerWidget {
                         children: [
                           Text(
                             context.l10n.joyParks,
-                            style: context.textStyleV3.h4SemiBold.copyWith(
-                              color: context.colorsV2.staticWhite,
+                            style: context.textStyles.h4SemiBold.copyWith(
+                              color: context.colors.staticWhite,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             context.l10n.exploreNature,
-                            style: context.textStyleV3.captionLargeRegular.copyWith(
-                              color: context.colorsV2.staticWhite,
+                            style: context.textStyles.captionLargeRegular.copyWith(
+                              color: context.colors.staticWhite,
                             ),
                           ),
                         ],

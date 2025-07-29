@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -30,6 +31,9 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
       behavior: HitTestBehavior.opaque,
       child: StatelessBottomSheet(
         scrollController: scrollController,
+        backgroundColor: context.colors.backgroundSurface4,
+        draggerColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
         onWillPop: Future.value(false),
         header: AppFeedbackSheetHeader(
           onBackTap: context.router.popForced,
@@ -47,9 +51,10 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
               .copyWith(bottom: Spacing.$8x + MediaQuery.of(context).viewInsets.bottom),
           child: SizedBox(
             width: double.infinity,
-            child: BaladyAppButton(
+            child: AppButton(
               primaryLabel: context.l10n.appFeedbackAddNote,
-              buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+              buttonColorScheme: ButtonColorScheme.accentSecondary,
+              size: ButtonSize.large,
               onTap: () {
                 context.router.popForced(textEditingController.text);
               },

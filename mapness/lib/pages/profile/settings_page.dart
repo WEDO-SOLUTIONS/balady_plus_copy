@@ -106,7 +106,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               actionWidget: ContentRowActionOptions(
                                 actionIcon: AppIcons(
                                   iconData: SystemIcons.arrowCornerRightLarge,
-                                  color: context.colorsV2.foregroundSoft,
+                                  color: context.colors.foregroundSoft,
                                 ),
                               ),
                             ),

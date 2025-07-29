@@ -71,17 +71,17 @@ class PathCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(duration, style: context.textStyle.callout),
+                      Text(duration, style: context.textStyles.bodyLargeSemiBold),
                       Row(
                         children: <Widget>[
                           Text(
                             distance,
-                            style: context.textStyle.caption,
+                            style: context.textStyles.captionMediumRegular,
                           ),
                           if (additionalInfo != null) ...[
                             Text(
                               '·',
-                              style: context.textStyle.caption,
+                              style: context.textStyles.captionMediumRegular,
                             ),
                             _PathBadge(additionalInfo!),
                           ],
@@ -95,10 +95,9 @@ class PathCard extends StatelessWidget {
                   ),
                 ),
                 AppButton(
-                  buttonColorScheme: ButtonColorScheme.primary,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
                   onTap: onStartTap,
-                  size: ButtonSize.small,
-                  primaryLabel: localizations.go,
+                  primaryLabel: localizations.go.toUpperCase(),
                   innerPadding: const EdgeInsets.symmetric(
                     horizontal: Spacing.$5x,
                   ),

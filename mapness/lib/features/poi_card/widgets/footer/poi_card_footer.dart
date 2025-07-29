@@ -91,51 +91,50 @@ class PoiCardFooter extends HookConsumerWidget {
         items: [
           ItemActionBar(
             icon: TransportIcons.locationDirectionNavigator,
-            buttonType: BaladyButtonType.primary,
+            buttonType: ButtonType.primary,
             label: context.l10n.poiCardDirections,
             onPressed: onTapCar,
+            innerPadding: const EdgeInsetsDirectional.only(start: 16, end: 20),
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
                 icon: GeneralIcons.phoneLTR,
-                buttonType: BaladyButtonType.secondary,
+                buttonType: ButtonType.secondary,
                 label: hasContactsAndHasEntrances ? null : context.l10n.call,
                 onPressed: callPhone),
           if (hasEntrances && onEntranceTap != null && !hasMetro)
             ItemActionBar(
               icon: SystemIcons.turnRight,
-              buttonType: BaladyButtonType.secondary,
+              buttonType: ButtonType.secondary,
               onPressed: onEntranceTap,
             ),
           if (!parkingPoi)
             ItemActionBar(
               icon: iconData,
-              buttonType: BaladyButtonType.secondary,
-              label: hasContactsAndHasEntrances ? null : context.l10n.save,
+              buttonType: ButtonType.secondary,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
-            buttonType: BaladyButtonType.secondary,
-            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
+            buttonType: ButtonType.secondary,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
-              buttonType: BaladyButtonType.secondary,
+              buttonType: ButtonType.secondary,
               onPressed: () => _onParkingTab(ref, context),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: SystemIcons.edit,
-              buttonType: BaladyButtonType.secondary,
+              buttonType: ButtonType.secondary,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
-              buttonType: BaladyButtonType.secondary,
+              buttonType: ButtonType.secondary,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],

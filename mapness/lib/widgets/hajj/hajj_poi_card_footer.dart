@@ -46,14 +46,14 @@ class HajjPoiCardFooter extends HookConsumerWidget {
       items: [
         ItemActionBar(
           icon: TransportIcons.locationDirectionNavigator,
-          buttonType: BaladyButtonType.primary,
+          buttonType: ButtonType.primary,
           label: context.l10n.poiCardDirections,
           onPressed: onTapCar,
         ),
         if (poiMarkerRcmc.contactInfo != null && callPhone != null)
           ItemActionBar(
             icon: GeneralIcons.phoneLTR,
-            buttonType: BaladyButtonType.secondary,
+            buttonType: ButtonType.secondary,
             onPressed: callPhone!,
           ),
       ],

@@ -108,8 +108,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   Widget build(BuildContext context) {
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
     final collapsedHeight = 88 + bottomSafeArea;
-    final contentColor = context.colorsV2.backgroundSurface1;
-    final containerColor = context.colorsV2.backgroundSurface4;
+    final contentColor = context.colors.backgroundSurface1;
+    final containerColor = context.colors.backgroundSurface4;
 
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(

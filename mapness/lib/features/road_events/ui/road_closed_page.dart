@@ -101,13 +101,13 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
                 Icon(
                   EventsOnTheRoute.overlap,
                   size: 36,
-                  color: context.colorsV3.errorDefault,
+                  color: context.colors.errorDefault,
                 ),
                 const SizedBox(width: Spacing.$3x),
                 Expanded(
                   child: Text(
                     title,
-                    style: context.textStyleV3.h4SemiBold,
+                    style: context.textStyles.h4SemiBold,
                   ),
                 ),
                 CustomCloseButton(
@@ -126,7 +126,7 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
               ),
               child: Text(
                 '${context.l10n.dates}: $schedule',
-                style: context.textStyleV3.bodySmallRegular,
+                style: context.textStyles.bodySmallRegular,
               ),
             ),
           ],

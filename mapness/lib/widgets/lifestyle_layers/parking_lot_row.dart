@@ -23,32 +23,30 @@ class ParkingLotRow extends ConsumerWidget {
     final layersControls = ref.watch(layersControlsProvider.notifier);
     final state = ref.watch(parkingDetailsProvider);
 
-    return SliverToBoxAdapter(
-      child: ContentRow(
-        onTap: () async {
-          if (ref.read(activeLayerProvider) != LayerType.parkingLots) {
-            layersControls.handleTap(LayerType.parkingLots);
-          }
+    final selectedColor = context.colors.accentOnContainer;
+    final selectedStyle = context.textStyles.bodyLargeMedium.copyWith(
+      color: selectedColor,
+    );
+    final textStyle = context.textStyles.bodyLargeRegular.copyWith(
+      color: context.colors.foregroundDefault,
+    );
 
-          await parkingDetailsNotifier.setParkingFilter(type);
-        },
-        options: ContentRowOptions(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-          leadingIcon: type.icon().icon(),
-          wrapperEnabled: true,
-          wrapperColor: Colors.transparent,
-          actionWidget: state.parkingFilter == type
-              ? ContentRowActionOptions(
-                  actionIcon: SystemIcons.checkmark.icon(
-                    color: context.color.textAndIconsStatusAccent,
-                  ),
-                )
-              : null,
-          title: type.title(context.l10n),
-          titleStyle: context.textStyle.text.copyWith(
-            color: context.color.textAndIconsBasePrimary,
-          ),
-        ),
+    final isSelected = type == state.parkingFilter;
+    return ContentRow(
+      onTap: () async {
+        if (ref.read(activeLayerProvider) != LayerType.parkingLots) {
+          layersControls.handleTap(LayerType.parkingLots);
+        }
+
+        await parkingDetailsNotifier.setParkingFilter(type);
+      },
+      options: ContentRowOptions(
+        padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+        leadingIcon: type.icon().icon(color: isSelected ? selectedColor : context.colors.foregroundSoft),
+        wrapperEnabled: true,
+        wrapperColor: isSelected ? context.colors.accentContainerDefault : Colors.transparent,
+        title: type.title(context.l10n),
+        titleStyle: isSelected ? selectedStyle : textStyle,
       ),
     );
   }

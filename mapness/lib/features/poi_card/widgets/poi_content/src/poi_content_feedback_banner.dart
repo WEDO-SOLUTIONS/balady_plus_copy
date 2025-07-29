@@ -19,9 +19,9 @@ class PoiContentFeedbackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foregroundColor = context.colorsV3.staticWhite;
-    final titleStyle = context.textStyleV3.h4SemiBold.copyWith(color: foregroundColor);
-    final subtitleStyle = context.textStyleV3.captionSmallMedium.copyWith(color: foregroundColor);
+    final foregroundColor = context.colors.staticWhite;
+    final titleStyle = context.textStyles.h4SemiBold.copyWith(color: foregroundColor);
+    final subtitleStyle = context.textStyles.captionSmallMedium.copyWith(color: foregroundColor);
 
     const arrowPadding = EdgeInsetsDirectional.only(end: Spacing.$4x, bottom: Spacing.$4x);
     const contentPadding =
@@ -96,12 +96,12 @@ class _ArrowIcon extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(RadiusBorder.s),
-            color: context.colorsV3.staticWhite.withOpacity(0.2),
+            color: context.colors.staticWhite.withOpacity(0.2),
           ),
           child: Center(
             child: Icon(
               SystemIcons.arrowRight,
-              color: context.colorsV3.staticWhite,
+              color: context.colors.staticWhite,
               size: Spacing.$5x,
             ),
           ),

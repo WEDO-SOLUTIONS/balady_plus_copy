@@ -18,11 +18,11 @@ class QuickFilter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final leadingIcon = item.icon != null
-        ? ChipIconWidgetV2(
+        ? ChipIconWidget(
             ({color}) => Icon(
               item.icon,
               size: 24,
-              color: context.colorsV3.foregroundSoft,
+              color: context.colors.foregroundSoft,
             ),
           )
         : null;

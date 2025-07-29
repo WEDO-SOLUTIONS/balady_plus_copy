@@ -14,12 +14,12 @@ class DarkMapPage extends StatelessWidget {
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Scaffold(
-          backgroundColor: context.colorsV2.backgroundSurface4,
+          backgroundColor: context.colors.backgroundSurface4,
           appBar: BaladyTopBar.iconAndText(
             systemUiOverlayStyle: SystemUiOverlayStyle.dark,
             title: context.l10n.darkMap,
-            textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            textStyle: context.textStyles.bodyLargeSemiBold.copyWith(
+              color: context.colors.foregroundDefault,
             ),
             leading: ActionModel(
               onPressed: () => context.router.popForced(),

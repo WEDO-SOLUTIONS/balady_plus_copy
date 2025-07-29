@@ -30,7 +30,7 @@ class MapSuggestList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
     final myLocation = ref.watch(locationProvider);
-    final contentColor = context.colorsV2.backgroundSurface1;
+    final contentColor = context.colors.backgroundSurface1;
 
     void onObjectTap(DirectoryObjectMessage object) {
       final objectId = object.id?.objectId;
@@ -69,7 +69,7 @@ class MapSuggestList extends ConsumerWidget {
         children: [
           Text(
             context.l10n.suggestedSearches,
-            style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
+            style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
@@ -97,7 +97,7 @@ class MapSuggestList extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$1_5x),
             child: uikit.AppButton(
-              buttonColorScheme: uikit.ButtonColorScheme.secondary,
+              buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
               primaryIcon: uikit.SystemIcons.search,
               primaryLabel: context.l10n.searchMore,
               onTap: () {

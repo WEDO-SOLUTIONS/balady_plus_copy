@@ -39,13 +39,13 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
               Expanded(
                 child: Text(
                   context.l10n.automaticallyEnableParkinglayer,
-                  style: context.textStyleV3.h3SemiBold,
+                  style: context.textStyles.h3SemiBold,
                 ),
               ),
               Spacing.$3x.widthBox,
               AppButton(
                 size: ButtonSize.small,
-                buttonColorScheme: ButtonColorScheme.tertiary,
+                buttonColorScheme: ButtonColorScheme.neutral,
                 primaryIcon: SystemIcons.close,
                 onTap: () => parkingSheetProvider.showParkingAutoEnableSheet(value: false),
               ),
@@ -60,14 +60,14 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                 Spacing.$2x.heightBox,
                 Text(
                   context.l10n.wouldYouLikeTheParkingLayer,
-                  style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
                 Spacing.$4x.heightBox,
                 SizedBox(
                   width: double.infinity,
                   child: AppButton(
                     primaryLabel: context.l10n.yes,
-                    buttonColorScheme: ButtonColorScheme.primary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                     onTap: () {
                       ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true);
 
@@ -80,7 +80,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                   width: double.infinity,
                   child: AppButton(
                     primaryLabel: context.l10n.no,
-                    buttonColorScheme: ButtonColorScheme.secondary,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
                     onTap: () {
                       ToastOverlay.of(context).show(
                         title: context.l10n.youCanChangeAutomaticParking,

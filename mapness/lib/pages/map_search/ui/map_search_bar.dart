@@ -132,10 +132,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           },
 
           hintText: context.l10n.search,
-          fillColor: context.colorsV2.neutralContainerDefault,
-          hintColor: context.colorsV2.foregroundSoft,
+          fillColor: context.colors.neutralContainerDefault,
+          hintColor: context.colors.foregroundSoft,
           // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
-          textStyle: context.textStyleV3.bodySmallRegular,
+          textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
       option: widget.isCloseButton

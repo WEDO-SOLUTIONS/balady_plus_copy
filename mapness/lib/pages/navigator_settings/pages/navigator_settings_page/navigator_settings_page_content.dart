@@ -148,7 +148,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                     actionWidget: ContentRowActionOptions(
                       actionIcon: AppIcons(
                         iconData: SystemIcons.arrowCornerRightLarge,
-                        color: context.colorsV2.foregroundSoft,
+                        color: context.colors.foregroundSoft,
                       ),
                     ),
                   ),
@@ -161,8 +161,8 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                 ContentRow(
                   onTap: () => context.router.push(const SoundSettingsRoute()),
                   options: ContentRowOptions(
-                    titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                      color: context.colorsV2.foregroundDefault,
+                    titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                      color: context.colors.foregroundDefault,
                     ),
                     wrapperColor: context.color.surfaceBaseTertiary,
                     wrapperEnabled: true,
@@ -170,7 +170,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                     actionWidget: ContentRowActionOptions(
                       actionIcon: AppIcons(
                         iconData: SystemIcons.arrowCornerRightLarge,
-                        color: context.colorsV2.foregroundSoft,
+                        color: context.colors.foregroundSoft,
                       ),
                     ),
                   ),

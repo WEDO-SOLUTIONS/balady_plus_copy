@@ -31,7 +31,7 @@ class _VoicePageContentState extends ConsumerState<VoicePageContent> {
     final voicesEnglish = soundSettingsModel.englishInstalledVoices + soundSettingsModel.englishUnInstalledVoices;
     final voicesArabic = soundSettingsModel.arabicInstalledVoices + soundSettingsModel.arabicUnInstalledVoices;
 
-    final colorsV2 = context.colorsV2;
+    final colors = context.colors;
 
     // This text does not require translation.
     final children = <int, Widget>{
@@ -54,13 +54,13 @@ class _VoicePageContentState extends ConsumerState<VoicePageContent> {
             ),
           ),
           ContentWrapper(
-            color: colorsV2.backgroundSurface1,
+            color: colors.backgroundSurface1,
             children: (_currentSegment == 0 ? voicesArabic : voicesEnglish)
                 .map<Widget>((e) => VoiceRowWidget(package: e))
                 .insertBetween(
                   Divider(
                     height: 0.5,
-                    color: colorsV2.borderSoft,
+                    color: colors.borderSoft,
                     thickness: 1,
                     indent: Spacing.$4x,
                     endIndent: 0,

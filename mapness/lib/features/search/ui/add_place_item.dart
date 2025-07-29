@@ -22,20 +22,20 @@ class AddPlaceItem extends StatelessWidget {
         const SizedBox(height: Spacing.$3x),
         Text(
           context.l10n.searchDidntFind,
-          style: context.textStyleV3.bodyLargeSemiBold,
+          style: context.textStyles.bodyLargeSemiBold,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: Spacing.$1x),
         Text(
           context.l10n.searchAddAnObjectOrCompanyToTheMap,
-          style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: Spacing.$3x),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: uikit.AppButton(
-            buttonColorScheme: uikit.ButtonColorScheme.secondary,
+            buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
             primaryIcon: uikit.GeneralIcons.plusCircle,
             // for the first iteration all buttons have same label. Will be changed later
             primaryLabel: context.l10n.addPlace,

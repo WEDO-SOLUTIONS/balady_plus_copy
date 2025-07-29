@@ -23,7 +23,7 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
     final myLocation = ref.watch(locationProvider);
-    final contentColor = context.colorsV3.backgroundSurface1;
+    final contentColor = context.colors.backgroundSurface1;
 
     return SliverMainAxisGroup(slivers: [
       SliverToBoxAdapter(
@@ -35,7 +35,7 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
           ),
           child: Text(
             context.l10n.suggestedSearches,
-            style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
+            style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
           ),
         ),
       ),

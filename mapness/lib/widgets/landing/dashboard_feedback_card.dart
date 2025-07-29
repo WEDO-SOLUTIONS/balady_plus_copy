@@ -16,7 +16,7 @@ class DashboardFeedbackCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: DecoratedBox(
           decoration: BoxDecoration(
-              color: context.colorsV2.backgroundSurface1,
+              color: context.colors.backgroundSurface1,
               boxShadow: Shadows.s,
               borderRadius: BorderRadius.circular(RadiusBorder.xl)),
           child: Padding(
@@ -32,7 +32,7 @@ class DashboardFeedbackCard extends StatelessWidget {
                   padding: const EdgeInsets.only(top: Spacing.$3x + Spacing.$0_5x, bottom: Spacing.$5x),
                   child: Text(
                     context.l10n.doYouLikeBaladyApp,
-                    style: context.textStyleV3.bodyLargeMedium,
+                    style: context.textStyles.bodyLargeMedium,
                   ),
                 ),
                 Row(
@@ -40,7 +40,8 @@ class DashboardFeedbackCard extends StatelessWidget {
                     Expanded(
                       child: AppButton(
                         primaryLabel: context.l10n.yes,
-                        buttonColorScheme: ButtonColorScheme.primary,
+                        buttonColorScheme: ButtonColorScheme.accentSecondary,
+                        size: ButtonSize.large,
                         onTap: () {
                           context.router.push(AppFeedbackSheet(initialRating: 5));
                         },
@@ -50,7 +51,9 @@ class DashboardFeedbackCard extends StatelessWidget {
                     Expanded(
                       child: AppButton(
                         primaryLabel: context.l10n.no,
-                        buttonColorScheme: ButtonColorScheme.secondary,
+                        buttonColorScheme: ButtonColorScheme.accentSecondary,
+                        buttonType: ButtonType.secondary,
+                        size: ButtonSize.large,
                         onTap: () {
                           context.router.push(AppFeedbackSheet(initialRating: 2));
                         },

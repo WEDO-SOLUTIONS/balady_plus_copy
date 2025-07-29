@@ -44,7 +44,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
   @override
   Widget build(BuildContext context) {
     final style = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
-    final errorColor = context.colorsV2.errorOnContainer;
+    final errorColor = context.colors.errorOnContainer;
     final errorBorder = _getBorder(errorColor);
 
     return Expanded(

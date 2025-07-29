@@ -27,16 +27,19 @@ class DarkMapModeRowWidget extends ConsumerWidget {
           vertical: Spacing.$2x,
           horizontal: Spacing.$4x,
         ),
-        wrapperColor: context.colorsV2.backgroundSurface1,
+        wrapperColor: context.colors.backgroundSurface1,
         wrapperEnabled: true,
         title: _getTitleFromDarkModeState(context),
-        titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-          color: context.colorsV2.foregroundDefault,
+        titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+          color: context.colors.foregroundDefault,
         ),
         customActionWidget: darModeState.valueOrNull?.currentMapMode == currentMode
-            ? Icon(
-                SystemIcons.checkmark,
-                color: context.colorsV2.successDefault,
+            ? Padding(
+                padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+                child: Icon(
+                  SystemIcons.checkmark,
+                  color: context.colors.successDefault,
+                ),
               )
             : Spacing.$6x.heightBox,
       ),

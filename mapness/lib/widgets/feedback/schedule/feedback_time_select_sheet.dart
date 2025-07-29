@@ -56,7 +56,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
   @override
   Widget build(BuildContext context) {
     const itemHeight = 30.0;
-    final drumsLabelColor = _isNoBreaksSelected ? context.colorsV2.foregroundMuted : context.colorsV2.foregroundDefault;
+    final drumsLabelColor = _isNoBreaksSelected ? context.colors.foregroundMuted : context.colors.foregroundDefault;
 
     return Container(
       padding: const EdgeInsets.all(Spacing.$4x),
@@ -86,7 +86,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
                         children: [
                           Text(
                             widget.startDrumTitle,
-                            style: context.textStyleV3.captionMediumRegular.copyWith(color: drumsLabelColor),
+                            style: context.textStyles.captionMediumRegular.copyWith(color: drumsLabelColor),
                             textAlign: TextAlign.center,
                           ),
                           Expanded(
@@ -113,7 +113,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
                         children: [
                           Text(
                             widget.endDrumTitle,
-                            style: context.textStyleV3.captionMediumRegular.copyWith(color: drumsLabelColor),
+                            style: context.textStyles.captionMediumRegular.copyWith(color: drumsLabelColor),
                             textAlign: TextAlign.center,
                           ),
                           Expanded(
@@ -147,7 +147,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Text(
                 widget.toggleTitle,
-                style: context.textStyleV3.bodyLargeRegular,
+                style: context.textStyles.bodyLargeRegular,
               ),
               Toggle(
                 value: _isNoBreaksSelected,
@@ -164,7 +164,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
               Expanded(
                 child: AppButton(
                   primaryLabel: context.l10n.feedbackBreaksSheetClose,
-                  buttonColorScheme: ButtonColorScheme.secondary,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
                   onTap: () => context.router.popForced(),
                 ),
               ),
@@ -174,7 +174,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
               Expanded(
                 child: AppButton(
                   primaryLabel: context.l10n.feedbackBreaksSheetSet,
-                  buttonColorScheme: ButtonColorScheme.primary,
+                  buttonColorScheme: ButtonColorScheme.accent,
                   buttonState: _isSubmitActive ? ButtonState.normal : ButtonState.disabled,
                   onTap: _onSubmit,
                 ),
@@ -193,8 +193,8 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
     return Center(
       child: Text(
         time.format(context),
-        style: context.textStyleV3.h2Medium.copyWith(
-          color: _isNoBreaksSelected ? context.colorsV2.foregroundMuted : context.color.textAndIconsBaseSecondary,
+        style: context.textStyles.h2Medium.copyWith(
+          color: _isNoBreaksSelected ? context.colors.foregroundMuted : context.color.textAndIconsBaseSecondary,
         ),
       ),
     );
@@ -202,14 +202,14 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
 
   Widget _timeSelectedItemBuilder(BuildContext context, int minutes) {
     final time = _timeOfDayFromMinutes(minutes);
-    final colors = context.colorsV2;
+    final colors = context.colors;
 
     return Container(
       color: _isNoBreaksSelected ? null : colors.backgroundSurface4,
       child: Center(
         child: Text(
           time.format(context),
-          style: context.textStyleV3.h2Medium.copyWith(
+          style: context.textStyles.h2Medium.copyWith(
             color: _isNoBreaksSelected ? colors.foregroundMuted : colors.foregroundDefault,
           ),
         ),
