@@ -7,17 +7,23 @@ class FavoritesScreen {
     private let interfaceController: CPInterfaceController
     private let hostFlutterApi: HostFlutterApi
     private let searchNavigation: SearchNavigation
+    private let trafficRouter: TrafficRouter
+    private let locationService: LocationService
 
     init(
         listTemplate: CPListTemplate,
         interfaceController: CPInterfaceController,
         hostFlutterApi: HostFlutterApi,
-        searchNavigation: SearchNavigation
+        searchNavigation: SearchNavigation,
+        trafficRouter: TrafficRouter,
+        locationService: LocationService
     ) {
         self.listTemplate = listTemplate
         self.interfaceController = interfaceController
         self.hostFlutterApi = hostFlutterApi
         self.searchNavigation = searchNavigation
+        self.trafficRouter = trafficRouter
+        self.locationService = locationService
     }
 
     static func createTemplate() -> CPListTemplate {
@@ -50,9 +56,39 @@ class FavoritesScreen {
         }
     }
 
+    private func findBriefRouteInfos(
+        _ favouritesStateMessage: FavouritesStateMessage
+    ) {
+        guard let lastLocation = locationService.lastLocation else { return }
+        
+        
+    }
+
     private func showFavorites(
         _ favouritesStateMessage: FavouritesStateMessage
     ) {
+        if let lastLocation = locationService.lastLocation,
+            let homePoint = favouritesStateMessage.home?.coordinates.geoPoint
+        {
+            let startPoint = RouteSearchPoint(
+                coordinates: lastLocation.coordinates.value
+            )
+            let endPoint = RouteSearchPoint(coordinates: homePoint)
+
+            let brisp = BriefRouteInfoSearchPoints(
+                startPoint: startPoint, finishPoint: endPoint
+            )
+            
+            let cancellable = trafficRouter.findBriefRouteInfos(
+                searchPoints: [brisp],
+                routeSearchOptions: RouteSearchOptions.car(
+                    CarRouteSearchOptions())
+            ).sinkOnMainThread {
+                result in 
+            } failure: { simpleError in
+            }
+        }
+
         let emptyItemPlaceHolder = CPListItem(
             text: "favouritesScreenPlaceholderEmptyTitle".localized,
             detailText: "favouritesScreenPlaceholderEmptySubtitle".localized

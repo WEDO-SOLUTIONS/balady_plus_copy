@@ -32,6 +32,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             context: try! container.context, routeEditor: routeEditor,
             calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
+        self.trafficRouter = TrafficRouter(context: try! container.context)
         map.addSource(source: routeEditorSource)
         self.dgisCarPlayMapView = dgisCarPlayMapView
         self.interfaceController = interfaceController
@@ -53,6 +54,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let mapTemplate: CPMapTemplate
     private let routeEditor: RouteEditor
     private let routeEditorSource: RouteEditorSource
+    private let trafficRouter: TrafficRouter
     private lazy var zoomControlModel = ZoomControlModel(map: map)
     private let trafficControlModel: TrafficControlModel
     private let model: Model
@@ -207,14 +209,16 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         )
         screen.createTemplate().show(with: interfaceController)
     }
-    
+
     private func onFavoritesTap(_: CPBarButton) {
         let template = FavoritesScreen.createTemplate()
         let screen = FavoritesScreen(
             listTemplate: template,
             interfaceController: interfaceController,
             hostFlutterApi: hostFlutterApi,
-            searchNavigation: self
+            searchNavigation: self,
+            trafficRouter: trafficRouter,
+            locationService: try! container.locationService
         )
         screen.show()
     }
@@ -373,7 +377,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             image: UIImage(named: "Search")!, handler: onSearchBarTap
         )
     }
-    
+
     private func makeFavoritesButton() -> CPBarButton {
         return CPBarButton(
             image: UIImage(named: "Bookmark")!, handler: onFavoritesTap
