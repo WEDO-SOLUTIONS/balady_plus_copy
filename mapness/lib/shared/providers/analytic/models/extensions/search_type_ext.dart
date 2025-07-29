@@ -29,3 +29,14 @@ extension HistoryItemExt on SearchHistoryItem {
         ),
       );
 }
+
+extension SuggestItemExt on SuggestMessage {
+  BssSuggestItem toBss(BssHistoryHandlingType handlingType) => BssSuggestItem(
+        text: title.text,
+        entity: BssEntity(
+          id: handler.objectHandler!.item.id?.objectId.toString() ?? '',
+          type: suggestedType.name,
+        ),
+        handlingType: handlingType,
+      );
+}

@@ -57,6 +57,7 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
             sliver: SliverList.builder(
               itemBuilder: (context, index) => SuggestItem(
+                index: index,
                 suggest: suggests[index],
                 myLocation: myLocation == null
                     ? null

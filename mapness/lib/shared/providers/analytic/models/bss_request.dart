@@ -122,10 +122,14 @@ enum BssUIElementNames {
   searchBar,
   searchStart,
   suggestList,
+  suggestItem,
   placeCardMini,
   mapMarker,
+  historyItem,
   historyList,
   searchField,
+  expandHistoryList,
+  rollupHistoryList,
 }
 
 class BssUIElement {

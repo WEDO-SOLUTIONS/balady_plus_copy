@@ -22,7 +22,7 @@ class BssSuggestItem {
   /// Suggestion processing type, passed by search.
   /// searchSuggestedText - perform a search by text
   /// openRecord - open a card of a specific object
-  final String? handlingType;
+  final BssHistoryHandlingType? handlingType;
 
   /// The class to which the object found through the search belongs.
   final ResultClassEnum? resultClass;
@@ -38,7 +38,7 @@ class BssSuggestItem {
       data['text'] = text;
     }
     if (handlingType != null) {
-      data['handlingType'] = handlingType;
+      data['handlingType'] = handlingType!.name;
     }
     if (resultClass != null) {
       data['resultClass'] = resultClass!.name;
