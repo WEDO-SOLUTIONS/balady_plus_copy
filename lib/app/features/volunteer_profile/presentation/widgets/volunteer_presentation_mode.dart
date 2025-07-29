@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../bloc/volunteer_profile_bloc.dart';
 import '../bloc/volunteer_profile_event.dart';
 import '../bloc/volunteer_profile_state.dart';
@@ -162,7 +163,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }
 
   void _initializeControllers() {
-    final state = context.read<VolunteerProfileBloc>().state;
+    final state = sl<VolunteerProfileBloc>().state;
 
     // Initialize controllers
     _emailController = TextEditingController(text: state.email ?? '');
@@ -484,7 +485,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             _linkedinController.text = state.linkedinAccount ?? '';
             _facebookController.text = state.facebookAccount ?? '';
             // Validate form on any Bloc state change (for dropdowns/checkboxes)
-            _validateForm();
+            // _validateForm();
           }
         },
         child: BlocBuilder<VolunteerProfileBloc, VolunteerProfileState>(

@@ -196,6 +196,6 @@ void initialize() {
   AuthenticationInjection.initialize();
   /////////////// End
 
-  VolunteerProfileInjection.init();
+  VolunteerProfileInjection.initialize();
 
 }

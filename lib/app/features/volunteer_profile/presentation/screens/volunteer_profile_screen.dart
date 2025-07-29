@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../core/utils/constants/route_names.dart';
 import '../../presentation/bloc/volunteer_profile_bloc.dart';
 import '../../presentation/bloc/volunteer_profile_event.dart';
 import '../../presentation/bloc/volunteer_profile_state.dart';
@@ -127,108 +128,107 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                     IconButton(
                       icon: const Icon(Icons.edit, color: Color(0xFF00796B)),
                       onPressed: () async {
+
+                        Navigator.of(context).pushNamed(RouteName.VolunteerEditProfile,);
                         // Store current state before entering edit mode
-                        final currentState = widget.volunteerProfileBloc.state;
-                        final originalValues = {
-                          'email': currentState.email,
-                          'phoneNumber': currentState.phoneNumber,
-                          'nearbyPhoneNumber': currentState.nearbyPhoneNumber,
-                          'profession': currentState.profession,
-                          'scientificExperienceSummary':
-                              currentState.scientificExperienceSummary,
-                          'xAccount': currentState.xAccount,
-                          'instagramAccount': currentState.instagramAccount,
-                          'linkedinAccount': currentState.linkedinAccount,
-                          'facebookAccount': currentState.facebookAccount,
-                          'city': currentState.city,
-                          'cityId': currentState.cityId,
-                          'region': currentState.region,
-                          'regionId': currentState.regionId,
-                          'educationalQualification':
-                              currentState.educationalQualification,
-                          'educationalQualificationId':
-                              currentState.educationalQualificationId,
-                          'specialization': currentState.specialization,
-                          'specializationId': currentState.specializationId,
-                          'language': currentState.language,
-                          'languageId': currentState.languageId,
-                          'workExperience': currentState.workExperience,
-                          'skills': currentState.skills.isNotEmpty
-                              ? currentState.skills.join(', ')
-                              : null,
-                          'skillsIds': currentState.skillsIds.isNotEmpty
-                              ? currentState.skillsIds.first
-                              : null,
-                          'volunteeringLevel': currentState.volunteeringLevel,
-                          'volunteeringLevelId':
-                              currentState.volunteeringLevelId,
-                          'volunteeringWorkField':
-                              currentState.volunteeringWorkField,
-                          'volunteeringWorkFieldId':
-                              currentState.volunteeringWorkFieldId,
-                          'isIndividualSelected':
-                              currentState.isIndividualSelected,
-                          'isGroupSelected': currentState.isGroupSelected,
-                          'bloodType': currentState.bloodType,
-                          'bloodTypeId': currentState.bloodTypeId,
-                          'disease': currentState.disease,
-                          'diseaseId': currentState.diseaseId,
-                        };
-
-                        print('Stored original values: $originalValues');
-
-                        // Navigate to edit mode
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => WillPopScope(
-                              onWillPop: () async {
-                                // This will be called when back button is pressed
-                                print('WillPopScope triggered in edit mode');
-                                // Restore original values
-                                VolunteerPresentationMode.cancelEditMode(
-                                    context,
-                                    widget.volunteerProfileBloc,
-                                    originalValues);
-                                return true; // Allow pop
-                              },
-                              child: Scaffold(
-                                backgroundColor: Colors.grey[50],
-                                appBar: AppBar(
-                                  backgroundColor: Colors.white,
-                                  elevation: 0,
-                                  leading: IconButton(
-                                    icon: const Icon(Icons.arrow_back_ios,
-                                        color: Colors.grey),
-                                    onPressed: () {
-                                      // Handle cancel logic directly
-                                      print('AppBar back button pressed');
-                                      // Restore original values
-                                      VolunteerPresentationMode.cancelEditMode(
-                                          context,
-                                          widget.volunteerProfileBloc,
-                                          originalValues);
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  title: Text(
-                                    'volunteer_edit_info_title'.tr(),
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  centerTitle: true,
-                                ),
-                                body: BlocProvider.value(
-                                  value: widget.volunteerProfileBloc,
-                                  child: const VolunteerPresentationMode(
-                                      isEditMode: true),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
+                        // final currentState = widget.volunteerProfileBloc.state;
+                        // final originalValues = {
+                        //   'email': currentState.email,
+                        //   'phoneNumber': currentState.phoneNumber,
+                        //   'nearbyPhoneNumber': currentState.nearbyPhoneNumber,
+                        //   'profession': currentState.profession,
+                        //   'scientificExperienceSummary':
+                        //       currentState.scientificExperienceSummary,
+                        //   'xAccount': currentState.xAccount,
+                        //   'instagramAccount': currentState.instagramAccount,
+                        //   'linkedinAccount': currentState.linkedinAccount,
+                        //   'facebookAccount': currentState.facebookAccount,
+                        //   'city': currentState.city,
+                        //   'cityId': currentState.cityId,
+                        //   'region': currentState.region,
+                        //   'regionId': currentState.regionId,
+                        //   'educationalQualification':
+                        //       currentState.educationalQualification,
+                        //   'educationalQualificationId':
+                        //       currentState.educationalQualificationId,
+                        //   'specialization': currentState.specialization,
+                        //   'specializationId': currentState.specializationId,
+                        //   'language': currentState.language,
+                        //   'languageId': currentState.languageId,
+                        //   'workExperience': currentState.workExperience,
+                        //   'skills': currentState.skills.isNotEmpty
+                        //       ? currentState.skills.join(', ')
+                        //       : null,
+                        //   'skillsIds': currentState.skillsIds.isNotEmpty
+                        //       ? currentState.skillsIds.first
+                        //       : null,
+                        //   'volunteeringLevel': currentState.volunteeringLevel,
+                        //   'volunteeringLevelId':
+                        //       currentState.volunteeringLevelId,
+                        //   'volunteeringWorkField':
+                        //       currentState.volunteeringWorkField,
+                        //   'volunteeringWorkFieldId':
+                        //       currentState.volunteeringWorkFieldId,
+                        //   'isIndividualSelected':
+                        //       currentState.isIndividualSelected,
+                        //   'isGroupSelected': currentState.isGroupSelected,
+                        //   'bloodType': currentState.bloodType,
+                        //   'bloodTypeId': currentState.bloodTypeId,
+                        //   'disease': currentState.disease,
+                        //   'diseaseId': currentState.diseaseId,
+                        // };
+                        // await Navigator.of(context).push(
+                        //   MaterialPageRoute(
+                        //     builder: (context) =>
+                        //         WillPopScope(
+                        //       onWillPop: () async {
+                        //         // This will be called when back button is pressed
+                        //         print('WillPopScope triggered in edit mode');
+                        //         // Restore original values
+                        //         VolunteerPresentationMode.cancelEditMode(
+                        //             context,
+                        //             widget.volunteerProfileBloc,
+                        //             originalValues);
+                        //         return true; // Allow pop
+                        //       },
+                        //       child: Scaffold(
+                        //         backgroundColor: Colors.grey[50],
+                        //         appBar: AppBar(
+                        //           backgroundColor: Colors.white,
+                        //           elevation: 0,
+                        //           leading: IconButton(
+                        //             icon: const Icon(Icons.arrow_back_ios,
+                        //                 color: Colors.grey),
+                        //             onPressed: () {
+                        //               // Handle cancel logic directly
+                        //               print('AppBar back button pressed');
+                        //               // Restore original values
+                        //               VolunteerPresentationMode.cancelEditMode(
+                        //                   context,
+                        //                   widget.volunteerProfileBloc,
+                        //                   originalValues);
+                        //               Navigator.of(context).pop();
+                        //             },
+                        //           ),
+                        //           title: Text(
+                        //             'volunteer_edit_info_title'.tr(),
+                        //             style: const TextStyle(
+                        //               fontSize: 18,
+                        //               fontWeight: FontWeight.bold,
+                        //               color: Colors.black,
+                        //             ),
+                        //           ),
+                        //           centerTitle: true,
+                        //         ),
+                        //         body: BlocProvider.value(
+                        //           value: widget.volunteerProfileBloc,
+                        //           child: const VolunteerPresentationMode(
+                        //               isEditMode: true),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                       // );
                       },
                     ),
                   ],

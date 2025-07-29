@@ -1,12 +1,11 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/features/volunteer_profile/presentation/bloc/volunteer_profile_bloc.dart';
-import 'package:balady_plus/app/features/volunteer_profile/presentation/screens/volunteer_profile_screen.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:get_it/get_it.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -117,17 +116,18 @@ class ProfilePage extends HookConsumerWidget {
                                                   ContentRowV2(
                                                     isDividerEnabled: true,
                                                     onTap: () =>
-                                                        Navigator.of(context)
-                                                            .push(
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            VolunteerProfileScreen(
-                                                          volunteerProfileBloc:
-                                                              GetIt.I<
-                                                                  VolunteerProfileBloc>(),
-                                                        ),
-                                                      ),
-                                                    ),
+                                                    CommonFunctions.openVolunteerProfileScreen(),
+                                                    //     Navigator.of(context)
+                                                    //         .push(
+                                                    //   MaterialPageRoute(
+                                                    //     builder: (context) =>
+                                                    //         VolunteerProfileScreen(
+                                                    //       volunteerProfileBloc:
+                                                    //           GetIt.I<
+                                                    //               VolunteerProfileBloc>(),
+                                                    //     ),
+                                                    //   ),
+                                                    // ),
                                                     trailing: trailing,
                                                     leading: leadingIconBuilder(
                                                         Icons.favorite),

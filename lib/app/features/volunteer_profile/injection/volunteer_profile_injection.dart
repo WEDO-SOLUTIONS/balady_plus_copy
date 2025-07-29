@@ -19,99 +19,98 @@ import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/get_
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/submit_profile.dart';
 import 'package:balady_plus/app/features/volunteer_profile/domain/use_cases/upload_cv.dart';
 
-
+final slVolunteer = GetIt.instance;
 class VolunteerProfileInjection {
-  static void init() {
-    final getIt = GetIt.instance;
+  static void initialize() {
 
     // Register BLoC
-    getIt.registerFactory<VolunteerProfileBloc>(
+    slVolunteer.registerLazySingleton<VolunteerProfileBloc>(
       () => VolunteerProfileBloc(
-        getProfile: getIt<GetProfile>(),
-        getRegions: getIt<GetRegions>(),
-        getCities: getIt<GetCities>(),
-        getQualifications: getIt<GetQualifications>(),
-        getSpecializations: getIt<GetSpecializations>(),
-        getLaunguages: getIt<GetLaunguages>(),
-        getSkills: getIt<GetSkills>(),
-        getLvls: getIt<GetLvls>(),
-        getInterests: getIt<GetInterests>(),
-        getVolunteeringFields: getIt<GetVolunteeringFields>(),
-        getBloodTypes: getIt<GetBloodTypes>(),
-        getDiseases: getIt<GetDiseases>(),
-        uploadCV: getIt<UploadCV>(),
-        submitProfile: getIt<SubmitProfile>(),
+        getProfile: slVolunteer<GetProfile>(),
+        getRegions: slVolunteer<GetRegions>(),
+        getCities: slVolunteer<GetCities>(),
+        getQualifications: slVolunteer<GetQualifications>(),
+        getSpecializations: slVolunteer<GetSpecializations>(),
+        getLaunguages: slVolunteer<GetLaunguages>(),
+        getSkills: slVolunteer<GetSkills>(),
+        getLvls: slVolunteer<GetLvls>(),
+        getInterests: slVolunteer<GetInterests>(),
+        getVolunteeringFields: slVolunteer<GetVolunteeringFields>(),
+        getBloodTypes: slVolunteer<GetBloodTypes>(),
+        getDiseases: slVolunteer<GetDiseases>(),
+        uploadCV: slVolunteer<UploadCV>(),
+        submitProfile: slVolunteer<SubmitProfile>(),
       ),
     );
 
     // Register Use Cases
-    getIt.registerLazySingleton<GetProfile>(
-      () => GetProfile(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetProfile>(
+      () => GetProfile(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetRegions>(
-      () => GetRegions(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetRegions>(
+      () => GetRegions(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetCities>(
-      () => GetCities(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetCities>(
+      () => GetCities(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetQualifications>(
-      () => GetQualifications(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetQualifications>(
+      () => GetQualifications(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetSpecializations>(
-      () => GetSpecializations(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetSpecializations>(
+      () => GetSpecializations(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetLaunguages>(
-      () => GetLaunguages(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetLaunguages>(
+      () => GetLaunguages(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetSkills>(
-      () => GetSkills(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetSkills>(
+      () => GetSkills(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetLvls>(
-      () => GetLvls(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetLvls>(
+      () => GetLvls(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetInterests>(
-      () => GetInterests(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetInterests>(
+      () => GetInterests(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetVolunteeringFields>(
+    slVolunteer.registerLazySingleton<GetVolunteeringFields>(
       () => GetVolunteeringFields(
-          repository: getIt<VolunteerProfileRepository>()),
+          repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetBloodTypes>(
-      () => GetBloodTypes(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetBloodTypes>(
+      () => GetBloodTypes(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<GetDiseases>(
-      () => GetDiseases(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<GetDiseases>(
+      () => GetDiseases(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<UploadCV>(
-      () => UploadCV(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<UploadCV>(
+      () => UploadCV(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
-    getIt.registerLazySingleton<SubmitProfile>(
-      () => SubmitProfile(repository: getIt<VolunteerProfileRepository>()),
+    slVolunteer.registerLazySingleton<SubmitProfile>(
+      () => SubmitProfile(repository: slVolunteer<VolunteerProfileRepository>()),
     );
 
     // Register Repository
-    getIt.registerLazySingleton<VolunteerProfileRepository>(
+    slVolunteer.registerLazySingleton<VolunteerProfileRepository>(
       () => VolunteerProfileRepositoryImpl(
-        remoteDataSource: getIt<VolunteerProfileRemoteDataSource>(),
+        remoteDataSource: slVolunteer<VolunteerProfileRemoteDataSource>(),
       ),
     );
 
     // Register Data Source
-    getIt.registerLazySingleton<VolunteerProfileRemoteDataSource>(
-      () => VolunteerDataSourceImpl(webService: getIt<WebService>()),
+    slVolunteer.registerLazySingleton<VolunteerProfileRemoteDataSource>(
+      () => VolunteerDataSourceImpl(webService: slVolunteer<WebService>()),
     );
   }
 }
