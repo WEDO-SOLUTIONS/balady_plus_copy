@@ -65,6 +65,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var isPanningInterfaceVisible: Bool = false
     private var startedTrip: CPTrip? = nil
     private var isRoutesShown = false
+    private var everyMinuteTimer: Timer?
 
     func dispose() {
         rebuildUiCancellable?.cancel()
@@ -73,6 +74,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         activeRouteIndexCancellable?.cancel()
         routeChannelCancelable?.cancel()
         betterRouteChannelCancellable?.cancel()
+        everyMinuteTimer?.invalidate()
         mapTemplate.leadingNavigationBarButtons = []
         mapTemplate.trailingNavigationBarButtons = []
         mapTemplate.mapButtons = []
@@ -490,6 +492,12 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         showRoutes(for: trip)
 
         buildLeadButtons()
+
+        everyMinuteTimer?.invalidate()
+        everyMinuteTimer = Timer.everyMinuteStart {
+            [self] _ in
+            updateEstimates(for: trip)
+        }
 
         activeRouteIndexCancellable = routeEditor.activeRouteIndexChannel
             .sinkOnMainThread {
