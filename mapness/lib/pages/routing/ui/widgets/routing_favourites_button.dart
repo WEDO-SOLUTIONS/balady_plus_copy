@@ -9,7 +9,6 @@ class _FavButton extends StatelessWidget {
   const _FavButton({
     required this.onTap,
     required this.icon,
-    super.key,
   });
 
   @override
@@ -17,7 +16,7 @@ class _FavButton extends StatelessWidget {
         child: SizedBox(
           height: 48,
           child: AppButton(
-            buttonColorScheme: ButtonColorScheme.neutral,
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
             buttonType: ButtonType.secondary,
             primaryIcon: icon,
             onTap: onTap,
