@@ -18,6 +18,7 @@ import 'package:mapness/shared/providers/analytic/models/extensions/search_type_
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:provider/provider.dart';
@@ -67,21 +68,22 @@ class MapSearchResults extends ConsumerWidget {
       if (item.markerPosition == null) {
         debugPrint('GeoPosition for this object is null');
       }
-      await ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.placeCardMini,
-                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                placeItem: item.toBss(index),
-                searchResultList: results.toBss(),
-              ),
-            ),
-          );
+      await BssService.instance.sendEvent(
+        visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.placeCardMini,
+            ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+            position: index + 1,
+          ),
+          payload: BssPayload(
+            placeItem: item.toBss(index),
+            searchResultList: results.toBss(),
+          ),
+        ),
+      );
     }
 
     return Padding(

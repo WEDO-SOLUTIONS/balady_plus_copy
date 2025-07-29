@@ -21,6 +21,11 @@ import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -78,12 +83,42 @@ class PoiContentSliver extends ConsumerWidget {
           final about = data.getAbout(context.l10n);
           final workTime = data.getOpeningHours(context.l10n);
 
+          Future<void> bssOnContactTap(BssContactType type, String value) async {
+            await BssService.instance.sendEvent(
+              visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.contactTap,
+                  ownerName: BssUIElementNames.cardInformation,
+                ),
+                payload: BssPayload(
+                  placeItem: data.toBss(),
+                  contact: BssContact(
+                    type: type,
+                    value: value,
+                  ),
+                ),
+              ),
+            );
+          }
+
           // Contacts
           final actionsProvider = ref.read(poiCardActionsProvider.notifier);
           final contacts = data.getContacts(
-            actionsProvider.callPhone,
-            actionsProvider.sendEmail,
-            actionsProvider.launch,
+            (value) {
+              bssOnContactTap(BssContactType.phone, value);
+              actionsProvider.callPhone(value);
+            },
+            (value) {
+              bssOnContactTap(BssContactType.email, value);
+              actionsProvider.sendEmail(value);
+            },
+            (value) {
+              bssOnContactTap(BssContactType.website, value);
+              actionsProvider.launch(value);
+            },
             context.l10n,
           );
 

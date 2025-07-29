@@ -17,6 +17,7 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -85,20 +86,21 @@ class SearchItem extends ConsumerWidget {
       onVisibilityChanged: (visibilityInfo) {
         final visiblePercentage = visibilityInfo.visibleFraction * 100;
         if (visiblePercentage > 50) {
-          ref.read(bssServiceProvider.notifier).sendEvent(
-                BssRequest(
-                  eventType: BSSEventType.view,
-                  uiElement: BssUIElement(
-                    name: BssUIElementNames.placeCardMini,
-                    ownerName: BssUIElementNames.searchResultList,
-                    position: index + 1,
-                  ),
-                  payload: BssPayload(
-                    placeItem: result.toBss(index),
-                    searchResultList: searchResultList,
-                  ),
-                ),
-              );
+          BssService.instance.sendEvent(
+            visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+            BssRequest(
+              eventType: BSSEventType.view,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.placeCardMini,
+                ownerName: BssUIElementNames.searchResultList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                placeItem: result.toBss(index),
+                searchResultList: searchResultList,
+              ),
+            ),
+          );
         }
       },
       child: Material(

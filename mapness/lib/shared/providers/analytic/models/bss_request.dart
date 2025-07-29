@@ -118,6 +118,7 @@ class BssRequest {
 
 enum BssUIElementNames {
   directorySearchScreen,
+  directoryObjectCardScreen,
   searchResultList,
   searchBar,
   searchStart,
@@ -135,6 +136,8 @@ enum BssUIElementNames {
   placeCardOneThird,
   placeCardTwoThird,
   placeCardFull,
+  buildRoute,
+  actionBar,
 }
 
 class BssUIElement {

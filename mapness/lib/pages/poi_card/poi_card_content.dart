@@ -23,6 +23,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
   late final PoiCardState? poiCardState = widget.poiCardState;
+  PoiCardBottomSheetState? _bottomSheetPreviousState;
 
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
@@ -80,17 +81,25 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       },
     );
 
-    ref.read(bssServiceProvider.notifier).sendEvent(
-          BssRequest(
-            eventType: BSSEventType.view,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.directoryObjectCardScreen,
-            ),
+    // Initialize BssService event
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await BssService.instance.sendEvent(
+        visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+        const BssRequest(
+          eventType: BSSEventType.view,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.directoryObjectCardScreen,
           ),
-        );
+        ),
+      );
+    });
 
     _bottomSheetController.addListener(() {
       final state = _bottomSheetController.state;
+      if (state == _bottomSheetPreviousState) {
+        return;
+      }
+      _bottomSheetPreviousState = state;
       BssUIElementNames? uiElementName;
       switch (state) {
         case PoiCardBottomSheetState.hidden:
@@ -103,18 +112,19 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           uiElementName = BssUIElementNames.placeCardTwoThird;
       }
 
-      ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.view,
-              uiElement: BssUIElement(
-                name: uiElementName,
-                ownerName: BssUIElementNames.directoryObjectCardScreen,
-              ),
-              payload: BssPayload(
-                placeItem: widget.data.toBss(),
-              ),
-            ),
-          );
+      BssService.instance.sendEvent(
+        visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+        BssRequest(
+          eventType: BSSEventType.view,
+          uiElement: BssUIElement(
+            name: uiElementName,
+            ownerName: BssUIElementNames.directoryObjectCardScreen,
+          ),
+          payload: BssPayload(
+            placeItem: widget.data.toBss(),
+          ),
+        ),
+      );
     });
 
     Future.delayed(const Duration(milliseconds: 250), () {
@@ -226,6 +236,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
               (element) => element.type == ContactsInfoType.phone,
             );
+            _bssOnCallTap();
             if (phoneNumber?.value != null) {
               poiActions.callPhone(phoneNumber!.value!);
             }
@@ -245,7 +256,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   ).notifier,
                 )
                 .setMapObjectManagerIsVisible(isVisible: false);
-
+                _bssOnRouteTap();
             _openRoutingRoutes(
               context,
               widget.data.id!.objectId,
@@ -259,7 +270,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               ),
             );
           },
-          onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item),
+          onTapFavorite: (item) {
+            _bssOnFavouritesTap();
+            _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
+          },
         ),
         header: PoiHeader(
           title: widget.data.address?.buildingName ?? widget.data.title,
@@ -345,5 +359,41 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       return freeText;
     }
     return '$total ${l10n.lots} • $freeText';
+  }
+
+  // BSS
+  void _bssOnRouteTap() {
+    BssService.instance.sendEvent(
+      visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: BssUIElement(
+          name: const BssUIElementNames.buildRoute,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
+  }
+
+  void _bssOnCallTap() {
+    BssService.instance.sendEvent(
+      visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+      const BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+      ),
+    );
+  }
+
+  void _bssOnFavouritesTap() {
+
+  }
+
+  void _bssSocialMediaTap() {
+
   }
 }

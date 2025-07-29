@@ -50,7 +50,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
-import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart' show initializeBssServiceProvider;
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
@@ -144,23 +144,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initDeepLinks();
     listenNavigationEvents();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
       // Init camera position point
-      initCameraPositionPoint();
+      await initCameraPositionPoint();
       // TODO(Scroollocker): Disable this feature. Because need to research fail restore cases
       // restoreState();
-      clearCache();
+      await clearCache();
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
       // TODO: Dmitrii.P: Is it the right place to call this method?
       // Maybe we should call it upper or in the different places too?
-      ref.watch(bssServiceProvider.future);
+      await ref.read(initializeBssServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
-      AdvancedMetrics.instance.stopMeasureStartup(track: track);
-      AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
-      AdvancedMetrics.instance.startMeasureBattery();
+      await AdvancedMetrics.instance.stopMeasureStartup(track: track);
+      await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
+      await AdvancedMetrics.instance.startMeasureBattery();
     });
   }
 

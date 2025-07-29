@@ -19,6 +19,7 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class MapSuggestList extends ConsumerWidget {
@@ -118,19 +119,20 @@ class MapSuggestList extends ConsumerWidget {
                 ref.read(urbiAnalyticsProvider).track(
                       '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
                     );
-                ref.read(bssServiceProvider.notifier).sendEvent(
-                      BssRequest(
-                        eventType: BSSEventType.action,
-                        actionType: BSSActionType.tap,
-                        uiElement: const BssUIElement(
-                          name: BssUIElementNames.searchMoreButton,
-                          ownerName: BssUIElementNames.suggestList,
-                        ),
-                        payload: BssPayload(
-                          searchRequest: BssSearchRequest(text: searchText),
-                        ),
-                      ),
-                    );
+                BssService.instance.sendEvent(
+                  visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
+                  BssRequest(
+                    eventType: BSSEventType.action,
+                    actionType: BSSActionType.tap,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.searchMoreButton,
+                      ownerName: BssUIElementNames.suggestList,
+                    ),
+                    payload: BssPayload(
+                      searchRequest: BssSearchRequest(text: searchText),
+                    ),
+                  ),
+                );
               },
             ),
           )
