@@ -80,6 +80,43 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       },
     );
 
+    ref.read(bssServiceProvider.notifier).sendEvent(
+          BssRequest(
+            eventType: BSSEventType.view,
+            uiElement: const BssUIElement(
+              name: BssUIElementNames.directoryObjectCardScreen,
+            ),
+          ),
+        );
+
+    _bottomSheetController.addListener(() {
+      final state = _bottomSheetController.state;
+      BssUIElementNames? uiElementName;
+      switch (state) {
+        case PoiCardBottomSheetState.hidden:
+          uiElementName = BssUIElementNames.placeCardHidden;
+        case PoiCardBottomSheetState.open:
+          uiElementName = BssUIElementNames.placeCardOneThird;
+        case PoiCardBottomSheetState.expanded:
+          uiElementName = BssUIElementNames.placeCardFull;
+        case PoiCardBottomSheetState.halfOpen:
+          uiElementName = BssUIElementNames.placeCardTwoThird;
+      }
+
+      ref.read(bssServiceProvider.notifier).sendEvent(
+            BssRequest(
+              eventType: BSSEventType.view,
+              uiElement: BssUIElement(
+                name: uiElementName,
+                ownerName: BssUIElementNames.directoryObjectCardScreen,
+              ),
+              payload: BssPayload(
+                placeItem: widget.data.toBss(),
+              ),
+            ),
+          );
+    });
+
     Future.delayed(const Duration(milliseconds: 250), () {
       // Fix bug with Exception when calling ref after dispose
       if (!mounted) {

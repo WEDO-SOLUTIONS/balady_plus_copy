@@ -131,6 +131,10 @@ enum BssUIElementNames {
   expandHistoryList,
   rollupHistoryList,
   searchMoreButton,
+  placeCardHidden,
+  placeCardOneThird,
+  placeCardTwoThird,
+  placeCardFull,
 }
 
 class BssUIElement {

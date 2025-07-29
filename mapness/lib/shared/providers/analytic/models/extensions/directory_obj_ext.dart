@@ -3,7 +3,7 @@ import 'package:mapness/shared/providers/analytic/models/payload/bss_entity.dart
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 
 extension BssPlaceItemExt on DirectoryObjectMessage {
-  BssPlaceItem? toBss(int index) {
+  BssPlaceItem? toBss([int? index]) {
     if (id?.objectId == null) {
       return null;
     }
@@ -12,7 +12,7 @@ extension BssPlaceItemExt on DirectoryObjectMessage {
         id: id!.objectId.toString(),
         type: types.firstOrNull?.type.name ?? 'unknown',
       ),
-      position: index + 1,
+      position: index != null ? index + 1 : null,
       geoPosition: markerPosition != null
           ? BssGeoPosition(
               latitude: markerPosition!.latitude,
