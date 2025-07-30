@@ -164,6 +164,7 @@ class _Content extends HookConsumerWidget {
                           _OfferPreviewByGroup(
                             offersGroup: offer.offerGroup,
                             description: offer.description,
+                            title: offer.name,
                             discount: discount,
                             companyLogoId: offer.provider.logo,
                           ),
@@ -197,6 +198,11 @@ class _Content extends HookConsumerWidget {
                                         ? subtitleStyle.copyWith(color: colors.errorDefault)
                                         : subtitleStyle,
                                   ),
+                                ),
+                                Spacing.$1_5x.heightBox,
+                                _OfferInfoRow(
+                                  title: Text(l10n.offerDescription, style: titleStyle),
+                                  subtitle: Text(offer.description, style: subtitleStyle),
                                 ),
                                 Spacing.$3x.heightBox,
                                 GestureDetector(
@@ -407,12 +413,14 @@ Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, S
 class _OfferPreviewByGroup extends StatelessWidget {
   final OffersGroup offersGroup;
   final String description;
+  final String title;
   final TextSpan? discount;
   final String? companyLogoId;
 
   const _OfferPreviewByGroup({
     required this.offersGroup,
     required this.description,
+    required this.title,
     this.discount,
     this.companyLogoId,
   });
@@ -459,7 +467,7 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          description,
+                          title,
                           style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
                         ),
                         if (hasDiscount)
@@ -474,24 +482,22 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 98),
+                  const SizedBox(width: 16),
+                  if (companyLogoId != null)
+                    Expanded(
+                      child: SizedBox(
+                        height: 100,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                          child: SaudiPassImage(imageId: companyLogoId!),
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(width: 78),
                 ],
               ),
             ),
-            if (companyLogoId != null)
-              Positioned.directional(
-                textDirection: Directionality.of(context),
-                top: Spacing.$4x,
-                end: Spacing.$4x,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-                  child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: SaudiPassImage(imageId: companyLogoId!),
-                  ),
-                ),
-              ),
           ],
         ),
       ),
