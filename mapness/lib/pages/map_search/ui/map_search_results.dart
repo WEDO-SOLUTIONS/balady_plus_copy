@@ -13,6 +13,7 @@ import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
@@ -21,8 +22,6 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:provider/provider.dart';
-
-import '../../../shared/providers/analytic/models/bss_request.dart';
 
 class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({

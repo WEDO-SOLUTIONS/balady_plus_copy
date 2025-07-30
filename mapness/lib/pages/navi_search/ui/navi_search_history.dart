@@ -13,6 +13,10 @@ import 'package:mapness/features/search/ui/search_history.dart' as ui;
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -75,6 +79,24 @@ class NaviSearchHistory extends ConsumerWidget {
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
+        final bssHistoryHandlingType =
+            item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
+        await ref.read(bssServiceProvider.notifier).sendEvent(
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: BssUIElement(
+                  name: BssUIElementNames.historyItem,
+                  ownerName: BssUIElementNames.historyList,
+                  position: index + 1,
+                ),
+                payload: BssPayload(
+                  searchRequest: BssSearchRequest(text: item.title),
+                  historyItem: item.toBss(bssHistoryHandlingType),
+                  historyList: historyList,
+                ),
+              ),
+            );
       },
     );
   }
