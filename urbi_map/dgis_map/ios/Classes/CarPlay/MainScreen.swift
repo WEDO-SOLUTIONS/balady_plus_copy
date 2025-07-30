@@ -638,12 +638,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     {
         let duration = trafficRoute.traffic.durations.duration
 
-        let durationFormatter = DateComponentsFormatter()
-        durationFormatter.allowedUnits =
-            duration > 3600 ? [.hour, .minute] : [.minute]
-        durationFormatter.unitsStyle = .short
-        durationFormatter.zeroFormattingBehavior = [.default]
-        let durationFormatted = durationFormatter.string(from: duration) ?? "--"
+        let locale = userDefaultsPublished.language.locale
+
+        let durationFormatted = duration.minutesWithinHourOrHoursAndMinutes(
+            overrideLocale: locale)
 
         let distance = trafficRoute.route.geometry.last?.point.distance
         let distanceMeasurement = Measurement(
@@ -651,13 +649,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             unit: UnitLength.millimeters
         )
 
-        let measurementFormatter = MeasurementFormatter()
-        measurementFormatter.unitStyle = .medium
-        measurementFormatter.unitOptions = .providedUnit
-        measurementFormatter.numberFormatter.decimalSeparator = ","
-        let distanceFormatted = measurementFormatter.string(
-            from: distanceMeasurement.formatDistance
-        )
+        let distanceFormatted = distanceMeasurement.formatDistance
+            .formatWithComma(overrideLocale: locale)
 
         return CPRouteChoice(
             summaryVariants: [durationFormatted],
@@ -761,6 +754,35 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             secondaryAction: closeButton,
             duration: TimeInterval(-1)
         )
+    }
+}
+
+extension TimeInterval {
+    func minutesWithinHourOrHoursAndMinutes(
+        overrideLocale: Foundation.Locale? = nil
+    ) -> String {
+        let durationFormatter = DateComponentsFormatter()
+        durationFormatter.allowedUnits =
+            self > 3600 ? [.hour, .minute] : [.minute]
+        durationFormatter.unitsStyle = .short
+        durationFormatter.zeroFormattingBehavior = [.default]
+        if let overrideLocale = overrideLocale {
+            durationFormatter.calendar?.locale = overrideLocale
+        }
+        return durationFormatter.string(from: self) ?? "--"
+    }
+}
+
+extension Measurement<UnitLength> {
+    func formatWithComma(overrideLocale: Foundation.Locale? = nil) -> String {
+        let measurementFormatter = MeasurementFormatter()
+        measurementFormatter.unitStyle = .medium
+        measurementFormatter.unitOptions = .providedUnit
+        if let overrideLocale = overrideLocale {
+            measurementFormatter.locale = overrideLocale
+        }
+        measurementFormatter.numberFormatter.decimalSeparator = ","
+        return measurementFormatter.string(from: self)
     }
 }
 

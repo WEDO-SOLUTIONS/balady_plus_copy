@@ -48,7 +48,12 @@ class FavoritesScreen {
     private func onResult(result: Result<FavouritesStateMessage, PigeonError>) {
         switch result {
         case .success(let favouritesStateMessage):
-            showFavorites(favouritesStateMessage)
+            Task {
+                showFavorites(
+                    favouritesStateMessage,
+                    await findHomeWorkBriefRouteInfo(favouritesStateMessage)
+                )
+            }
         case .failure(let error):
             self.listTemplate.emptyViewTitleVariants = [
                 String(describing: error)
@@ -56,39 +61,84 @@ class FavoritesScreen {
         }
     }
 
-    private func findBriefRouteInfos(
+    private func findHomeWorkBriefRouteInfo(
         _ favouritesStateMessage: FavouritesStateMessage
-    ) {
-        guard let lastLocation = locationService.lastLocation else { return }
-        
-        
+    ) async -> HomeWorkBriefRouteInfo {
+        let none: HomeWorkBriefRouteInfo = (home: nil, work: nil)
+
+        guard let lastLocation = locationService.lastLocation else {
+            return none
+        }
+
+        let homeWorkGeoPoints = [
+            favouritesStateMessage.home?.coordinates.geoPoint,
+            favouritesStateMessage.work?.coordinates.geoPoint,
+        ]
+
+        let searchPoints = homeWorkGeoPoints.compactMap { $0 }.map {
+            geoPoint in
+            let startSearchPoint = RouteSearchPoint(
+                coordinates: lastLocation.coordinates.value
+            )
+            let endSearchPoint = RouteSearchPoint(coordinates: geoPoint)
+            return BriefRouteInfoSearchPoints(
+                startPoint: startSearchPoint, finishPoint: endSearchPoint
+            )
+        }
+
+        let future = trafficRouter.findBriefRouteInfos(
+            searchPoints: searchPoints,
+            routeSearchOptions: RouteSearchOptions.car(
+                CarRouteSearchOptions()
+            )
+        )
+
+        guard
+            let briefRouteInfos = try? await future.asAsync(),
+            !briefRouteInfos.isEmpty
+        else { return none }
+
+        if briefRouteInfos.count == 2 {
+            return (home: briefRouteInfos[0], work: briefRouteInfos[1])
+        }
+
+        if favouritesStateMessage.home != nil {
+            return (home: briefRouteInfos[0], work: nil)
+        }
+
+        if favouritesStateMessage.work != nil {
+            return (home: nil, work: briefRouteInfos[0])
+        }
+
+        return none
+    }
+
+    private func formatBriefRouteInfo(_ briefRouteInfo: BriefRouteInfo)
+        -> String
+    {
+        let millimeters =
+            switch briefRouteInfo.extraInfo {
+            case .car(let car):
+                car.length.millimeters
+            default:
+                Int64(0)
+            }
+
+        let distanceMeasurement = Measurement<UnitLength>(
+            value: Double(millimeters), unit: .millimeters
+        )
+
+        let delimiter = " • "
+
+        return briefRouteInfo.duration.minutesWithinHourOrHoursAndMinutes()
+            + delimiter + distanceMeasurement.formatMeters.formatWithComma()
+            + delimiter
     }
 
     private func showFavorites(
-        _ favouritesStateMessage: FavouritesStateMessage
+        _ favouritesStateMessage: FavouritesStateMessage,
+        _ homeWorkBriefRouteInfo: HomeWorkBriefRouteInfo
     ) {
-        if let lastLocation = locationService.lastLocation,
-            let homePoint = favouritesStateMessage.home?.coordinates.geoPoint
-        {
-            let startPoint = RouteSearchPoint(
-                coordinates: lastLocation.coordinates.value
-            )
-            let endPoint = RouteSearchPoint(coordinates: homePoint)
-
-            let brisp = BriefRouteInfoSearchPoints(
-                startPoint: startPoint, finishPoint: endPoint
-            )
-            
-            let cancellable = trafficRouter.findBriefRouteInfos(
-                searchPoints: [brisp],
-                routeSearchOptions: RouteSearchOptions.car(
-                    CarRouteSearchOptions())
-            ).sinkOnMainThread {
-                result in 
-            } failure: { simpleError in
-            }
-        }
-
         let emptyItemPlaceHolder = CPListItem(
             text: "favouritesScreenPlaceholderEmptyTitle".localized,
             detailText: "favouritesScreenPlaceholderEmptySubtitle".localized
@@ -100,11 +150,13 @@ class FavoritesScreen {
                 items: [
                     mapCPListItem(
                         from: favouritesStateMessage.home,
+                        briefRouteInfo: homeWorkBriefRouteInfo.home,
                         title: "favouritesScreenItemTitleHome".localized,
                         image: UIImage(named: "Home")!
                     ),
                     mapCPListItem(
                         from: favouritesStateMessage.work,
+                        briefRouteInfo: homeWorkBriefRouteInfo.work,
                         title: "favouritesScreenItemTitleWork".localized,
                         image: UIImage(named: "Work")!
                     ),
@@ -125,13 +177,23 @@ class FavoritesScreen {
 
     private func mapCPListItem(
         from favouriteItemMessage: FavouriteItemMessage?,
+        briefRouteInfo: BriefRouteInfo? = nil,
         title: String? = nil,
         image: UIImage? = nil
     )
         -> CPListItem
     {
+        let estimates =
+            if let briefRouteInfo = briefRouteInfo {
+                formatBriefRouteInfo(briefRouteInfo)
+            } else {
+                ""
+            }
+
+        let title = title ?? favouriteItemMessage?.title ?? ""
+
         let item = CPListItem(
-            text: title ?? favouriteItemMessage?.title,
+            text: estimates + title,
             detailText: favouriteItemMessage?.subtitle
                 ?? "favouritesScreenItemSubtitlePlaceholder".localized,
             image: image
@@ -166,3 +228,7 @@ class FavoritesScreen {
         interfaceController.popTemplate(animated: true) { _, __ in }
     }
 }
+
+private typealias HomeWorkBriefRouteInfo = (
+    home: BriefRouteInfo?, work: BriefRouteInfo?
+)
