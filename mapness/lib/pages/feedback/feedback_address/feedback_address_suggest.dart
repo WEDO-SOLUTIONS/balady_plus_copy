@@ -74,6 +74,7 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
                     RoutePointCoordinates(
                       GeoPointMessage(latitude: latitude, longitude: longitude),
                       address,
+                      null
                     ),
                   );
                 },
