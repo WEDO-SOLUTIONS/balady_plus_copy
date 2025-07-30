@@ -38,7 +38,6 @@ import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
-import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -53,6 +52,9 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/analytic/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/bss_dio.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
@@ -534,7 +536,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final query = quickFilter.query[language];
     if (query != null) {
-      unawaited(ref.read(SendStatisticProvider(query).future));
+      unawaited(
+        ref.read(bssServiceProvider.notifier).sendEvent(
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.deeplink,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.searchStart,
+                  ownerName: BssUIElementNames.searchBar,
+                ),
+                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+              ),
+            ),
+      );
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
     WidgetsBinding.instance.addPostFrameCallback((_) {

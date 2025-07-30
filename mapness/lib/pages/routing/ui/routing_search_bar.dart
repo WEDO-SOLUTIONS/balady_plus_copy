@@ -8,10 +8,12 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
-import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
@@ -86,6 +88,17 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
               action: MetricAction.type.toString(),
               props: {'query': query},
             );
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.action,
+                    actionType: BSSActionType.tap,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.searchStart,
+                      ownerName: BssUIElementNames.searchBar,
+                    ),
+                    payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+                  ),
+                );
             if (query.trim().isNotEmpty) {
               ref.read(searchProvider(scope.value).notifier).searchByText(query);
               ref.read(urbiAnalyticsProvider).track(
@@ -95,7 +108,6 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
               ref.read(searchHistoryProvider(scope.value).notifier).put(
                     SearchHistoryItem.fromQuery(query: query),
                   );
-              ref.read(SendStatisticProvider(query).future);
             }
           },
           hintText: widget.placeholder,
