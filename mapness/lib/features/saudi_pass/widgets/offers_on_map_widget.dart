@@ -77,7 +77,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         ),
         isVisible: true,
         icon: SvgMarkerIcon(
-          svgPath: Assets.icons.svg.icPinNew.keyName,
+          svgPath: Assets.icons.svg.icOfferPin.keyName,
           width: markersWidth,
         ),
       ),
