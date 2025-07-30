@@ -4,9 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
+import 'package:mapness/features/search/providers/search_region.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/map_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_entity.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
@@ -112,8 +114,22 @@ class BssService {
       if (common == null) {
         throw StateError('BssService common data is null. Call initialize() first.');
       }
-
-      final requestJson = request.toJson(
+      var requestWithRegion = request;
+      if (request.payload?.placeItem != null) {
+        final searchRegion = await SearchRegionService.instance.getRegion(
+          latitude: ((visibleRect?.northEastLat ?? 0) + (visibleRect?.southWestLat ?? 0)) / 2,
+          longitude: ((visibleRect?.northEastLon ?? 0) + (visibleRect?.southWestLon ?? 0)) / 2,
+        );
+        requestWithRegion = request.copyWith(
+          payload: request.payload?.copyWith(
+            placeItem: request.payload?.placeItem?.copyWith(
+              entity: request.payload?.placeItem?.entity
+                  .copyWith(segmentInfo: searchRegion != null ? BssSegmentInfo(segmentId: searchRegion.id) : null),
+            ),
+          ),
+        );
+      }
+      final requestJson = requestWithRegion.toJson(
         eventOrdinal: ordinalId,
         common: common!,
         map: visibleRect?.toBssMap() ?? emptyBssMap,

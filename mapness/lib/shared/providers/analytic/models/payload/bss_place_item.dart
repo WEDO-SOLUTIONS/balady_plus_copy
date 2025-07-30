@@ -60,6 +60,25 @@ class BssPlaceItem {
     }
     return data;
   }
+
+  BssPlaceItem copyWith({
+    BssEntity? entity,
+    String? org,
+    int? position,
+    BssGeoPosition? geoPosition,
+    ResultClassEnum? resultClass,
+    List<BssStringId>? contextRubric,
+    bool? adsSearch,
+  }) =>
+      BssPlaceItem(
+        entity: entity ?? this.entity,
+        org: org ?? this.org,
+        position: position ?? this.position,
+        geoPosition: geoPosition ?? this.geoPosition,
+        resultClass: resultClass ?? this.resultClass,
+        contextRubric: contextRubric ?? this.contextRubric,
+        adsSearch: adsSearch ?? this.adsSearch,
+      );
 }
 
 class BssGeoPosition {

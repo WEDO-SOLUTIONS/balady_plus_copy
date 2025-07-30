@@ -122,4 +122,31 @@ class BssPayload {
     }
     return data;
   }
+
+  BssPayload copyWith({
+    BssPlaceItem? placeItem,
+    BssSuggestList? suggestList,
+    BssSuggestItem? suggestItem,
+    BssSearchRequest? searchRequest,
+    BssSearchResultList? searchResultList,
+    BssSearchRequest? searchResultItem,
+    BssMapMarker? mapMarker,
+    BssCallToAction? callToAction,
+    BssHistoryItem? historyItem,
+    BssHistoryList? historyList,
+    BssContact? contact,
+  }) =>
+      BssPayload(
+        placeItem: placeItem ?? this.placeItem,
+        suggestList: suggestList ?? this.suggestList,
+        suggestItem: suggestItem ?? this.suggestItem,
+        searchRequest: searchRequest ?? this.searchRequest,
+        searchResultList: searchResultList ?? this.searchResultList,
+        searchResultItem: searchResultItem ?? this.searchResultItem,
+        mapMarker: mapMarker ?? this.mapMarker,
+        callToAction: callToAction ?? this.callToAction,
+        historyItem: historyItem ?? this.historyItem,
+        historyList: historyList ?? this.historyList,
+        contact: contact ?? this.contact,
+      );
 }

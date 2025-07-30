@@ -36,6 +36,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -154,9 +155,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await clearCache();
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
-      // TODO: Dmitrii.P: Is it the right place to call this method?
-      // Maybe we should call it upper or in the different places too?
+      // Initialization of BSS and Search Region singleton services
       await ref.read(initializeBssServiceProvider.future);
+      await ref.read(initializeSearchRegionServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);

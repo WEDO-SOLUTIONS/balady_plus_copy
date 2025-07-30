@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/features/search/providers/search_region.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_entity.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 

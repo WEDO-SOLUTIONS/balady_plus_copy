@@ -35,19 +35,36 @@ class BssEntity {
     }
     return data;
   }
+
+  BssEntity copyWith({
+    String? type,
+    String? subtype,
+    BssSegmentInfo? segmentInfo,
+  }) =>
+      BssEntity(
+        id: id,
+        type: type ?? this.type,
+        subtype: subtype ?? this.subtype,
+        segmentInfo: segmentInfo ?? this.segmentInfo,
+      );
 }
 
 /// Segment information
 class BssSegmentInfo {
   const BssSegmentInfo({
     required this.segmentId,
+    this.baseLocale,
   });
 
   /// Unique stable identifier of the geography segment (in particular, it can be the identifier of the current project from the List of projects)
   /// String representation of a number from 1 to 19 digits (max: 9223372036854775807)
   final BssStringId segmentId;
 
+  /// Base locale of the segment
+  final String? baseLocale;
+
   Map<String, dynamic> toJson() => {
         'segmentId': segmentId,
+        if (baseLocale != null) 'baseLocale': baseLocale,
       };
 }
