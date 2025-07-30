@@ -511,12 +511,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
+    final attachmentSource = msg["attachmentSource"];
+    final List<String>? attachmentExtension =
+        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>();
     if (checkAppRequirment(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
       var file = await FilePicker.platform.pickFiles(
-        type: FileType.media,
+        type:
+            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
         allowMultiple: false,
-        // allowedExtensions: ['jpg', 'pdf', 'jpeg', 'png'],
+        allowedExtensions:
+            attachmentSource == "gallery" ? [] : attachmentExtension,
       );
       late BaseResponse response;
       try {
