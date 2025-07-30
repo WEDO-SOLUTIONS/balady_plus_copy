@@ -192,10 +192,13 @@ class FavoritesScreen {
 
         let title = title ?? favouriteItemMessage?.title ?? ""
 
+        let address =
+            favouriteItemMessage?.subtitle
+            ?? "favouritesScreenItemSubtitlePlaceholder".localized
+
         let item = CPListItem(
-            text: estimates + title,
-            detailText: favouriteItemMessage?.subtitle
-                ?? "favouritesScreenItemSubtitlePlaceholder".localized,
+            text: title,
+            detailText: estimates + address,
             image: image
         )
         item.userInfo = favouriteItemMessage
