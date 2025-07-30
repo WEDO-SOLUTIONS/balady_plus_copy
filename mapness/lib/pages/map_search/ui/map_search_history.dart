@@ -72,42 +72,40 @@ class MapSearchHistory extends ConsumerWidget {
               await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
             }
           }
-          await BssService.instance.sendEvent(
-            visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.historyItem,
-                ownerName: BssUIElementNames.historyList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                searchRequest: BssSearchRequest(text: item.title),
-                historyItem: item.toBss(BssHistoryHandlingType.openRecord),
-                historyList: historyList,
-              ),
-            ),
-          );
+          await ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: BssUIElement(
+                    name: BssUIElementNames.historyItem,
+                    ownerName: BssUIElementNames.historyList,
+                    position: index + 1,
+                  ),
+                  payload: BssPayload(
+                    searchRequest: BssSearchRequest(text: item.title),
+                    historyItem: item.toBss(BssHistoryHandlingType.openRecord),
+                    historyList: historyList,
+                  ),
+                ),
+              );
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
-          await BssService.instance.sendEvent(
-            visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.historyItem,
-                ownerName: BssUIElementNames.historyList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                searchRequest: BssSearchRequest(text: item.title),
-                historyItem: item.toBss(BssHistoryHandlingType.searchSuggestedText),
-                historyList: historyList,
-              ),
-            ),
-          );
+          await ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: BssUIElement(
+                    name: BssUIElementNames.historyItem,
+                    ownerName: BssUIElementNames.historyList,
+                    position: index + 1,
+                  ),
+                  payload: BssPayload(
+                    searchRequest: BssSearchRequest(text: item.title),
+                    historyItem: item.toBss(BssHistoryHandlingType.searchSuggestedText),
+                    historyList: historyList,
+                  ),
+                ),
+              );
         }
       },
     );

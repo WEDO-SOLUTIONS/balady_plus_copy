@@ -17,7 +17,6 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
@@ -94,25 +93,21 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
             ),
         };
         if (request != null) {
-          BssService.instance.sendEvent(
-            visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-            request,
-          );
+          ref.read(bssServiceProvider.notifier).sendEvent(request);
         }
       }
     });
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        BssService.instance.sendEvent(
-          visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-          const BssRequest(
-            eventType: BSSEventType.view,
-            uiElement: BssUIElement(
-              name: BssUIElementNames.directorySearchScreen,
-            ),
-          ),
-        );
+        ref.read(bssServiceProvider.notifier).sendEvent(
+              const BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: BssUIElement(
+                  name: BssUIElementNames.directorySearchScreen,
+                ),
+              ),
+            );
       },
     );
   }
@@ -153,43 +148,41 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       ..listen(searchProvider(scope.value), (_oldState, newState) {
         if (newState.runtimeType != _oldState.runtimeType) {
           if (newState is SearchStateResults) {
-            BssService.instance.sendEvent(
-              visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-              BssRequest(
-                eventType: BSSEventType.view,
-                uiElement: const BssUIElement(
-                  name: BssUIElementNames.searchResultList,
-                  ownerName: BssUIElementNames.directorySearchScreen,
-                ),
-                payload: BssPayload(
-                  searchRequest: BssSearchRequest(text: newState.searchText),
-                  // TODO: contextRubrics, contextAttributes, firstResultClass,partialResult,searchSegmentId
-                  /// firstResultClass - нет отдельного. Могу брать то же, что и searchType
-                  /// Мы можем взять contextRubrics и contextAttributes из объектов, которые нам приходят. Из результата взять это не можем
-                  /// Как быть?
-                  /// partialResult - null
-                  /// searchSegmentId, building - это вообще как для search result?
-                  searchResultList: BssSearchResultList(
-                    size: newState.results.itemMarkerInfos?.length ?? newState.results.firstPage?.items.length ?? 0,
-                    searchType: newState.results.searchResultType.toBss(),
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.searchResultList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      searchRequest: BssSearchRequest(text: newState.searchText),
+                      // TODO: contextRubrics, contextAttributes, firstResultClass,partialResult,searchSegmentId
+                      /// firstResultClass - нет отдельного. Могу брать то же, что и searchType
+                      /// Мы можем взять contextRubrics и contextAttributes из объектов, которые нам приходят. Из результата взять это не можем
+                      /// Как быть?
+                      /// partialResult - null
+                      /// searchSegmentId, building - это вообще как для search result?
+                      searchResultList: BssSearchResultList(
+                        size: newState.results.itemMarkerInfos?.length ?? newState.results.firstPage?.items.length ?? 0,
+                        searchType: newState.results.searchResultType.toBss(),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
+                );
           } else if (newState is SearchStateEmpty) {
-            BssService.instance.sendEvent(
-              visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-              const BssRequest(
-                eventType: BSSEventType.view,
-                uiElement: BssUIElement(
-                  name: BssUIElementNames.searchResultList,
-                  ownerName: BssUIElementNames.directorySearchScreen,
-                ),
-                payload: BssPayload(
-                  searchResultList: BssSearchResultList(size: 0),
-                ),
-              ),
-            );
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  const BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: BssUIElement(
+                      name: BssUIElementNames.searchResultList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      searchResultList: BssSearchResultList(size: 0),
+                    ),
+                  ),
+                );
             ref.read(urbiAnalyticsProvider).track(
               'searchFailed',
               properties: {
@@ -198,37 +191,35 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
             );
           } else if (newState is SearchStateHistory) {
             final history = ref.read(searchHistoryProvider(scope.value));
-            BssService.instance.sendEvent(
-              visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-              BssRequest(
-                eventType: BSSEventType.view,
-                uiElement: const BssUIElement(
-                  name: BssUIElementNames.historyList,
-                  ownerName: BssUIElementNames.directorySearchScreen,
-                ),
-                payload: BssPayload(
-                  historyList: BssHistoryList(size: history.length),
-                ),
-              ),
-            );
-          } else if (newState is SearchStateSuggest) {
-            BssService.instance.sendEvent(
-              visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-              BssRequest(
-                eventType: BSSEventType.view,
-                uiElement: const BssUIElement(
-                  name: BssUIElementNames.suggestList,
-                  ownerName: BssUIElementNames.directorySearchScreen,
-                ),
-                payload: BssPayload(
-                  searchRequest: BssSearchRequest(text: newState.searchText),
-                  suggestList: BssSuggestList(
-                    // TODO: Add searchSegmentId, unisearchVersion, firstResultClass
-                    size: newState.suggest.suggests.length,
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.historyList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      historyList: BssHistoryList(size: history.length),
+                    ),
                   ),
-                ),
-              ),
-            );
+                );
+          } else if (newState is SearchStateSuggest) {
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.suggestList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      searchRequest: BssSearchRequest(text: newState.searchText),
+                      suggestList: BssSuggestList(
+                        // TODO: Add searchSegmentId, unisearchVersion, firstResultClass
+                        size: newState.suggest.suggests.length,
+                      ),
+                    ),
+                  ),
+                );
           }
         }
       })

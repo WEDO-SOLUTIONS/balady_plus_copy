@@ -51,7 +51,8 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
-import 'package:mapness/shared/providers/analytic/bss_service.dart' show initializeBssServiceProvider;
+import 'package:mapness/shared/providers/analytic/bss_common.dart';
+import 'package:mapness/shared/providers/analytic/bss_dio.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
@@ -156,7 +157,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
       // Initialization of BSS and Search Region singleton services
-      await ref.read(initializeBssServiceProvider.future);
+      _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
@@ -172,6 +173,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     _navigationEventsListener?.cancel();
 
     super.dispose();
+  }
+
+  void _initBssService() {
+    ref
+      ..watch(bssDioProvider)
+      ..watch(bssCommonProvider);
   }
 
   Future<void> restoreState() async {

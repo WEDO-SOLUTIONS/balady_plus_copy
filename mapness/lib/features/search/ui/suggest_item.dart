@@ -16,7 +16,6 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:provider/provider.dart';
@@ -89,23 +88,22 @@ class SuggestItem extends ConsumerWidget {
         handlingType = BssHistoryHandlingType.openRecord;
         onObjectTap(objectItem);
       }
-      BssService.instance.sendEvent(
-        visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-        BssRequest(
-          eventType: BSSEventType.action,
-          actionType: BSSActionType.tap,
-          uiElement: BssUIElement(
-            name: BssUIElementNames.suggestItem,
-            ownerName: BssUIElementNames.suggestList,
-            position: index + 1,
-          ),
-          payload: BssPayload(
-            searchRequest: searchRequest,
-            suggestList: suggestList,
-            suggestItem: suggest.toBss(handlingType ?? BssHistoryHandlingType.searchSuggestedText),
-          ),
-        ),
-      );
+      ref.read(bssServiceProvider.notifier).sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.suggestItem,
+                ownerName: BssUIElementNames.suggestList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                searchRequest: searchRequest,
+                suggestList: suggestList,
+                suggestItem: suggest.toBss(handlingType ?? BssHistoryHandlingType.searchSuggestedText),
+              ),
+            ),
+          );
     }
 
     return ContentRow(

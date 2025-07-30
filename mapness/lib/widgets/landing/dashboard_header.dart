@@ -16,7 +16,6 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
@@ -124,14 +123,13 @@ class DashboardHeader extends ConsumerWidget {
                 action: MetricAction.tap.name,
                 group: MetricsConstants.exploreTag,
               );
-              BssService.instance.sendEvent(
-                visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-                const BssRequest(
-                  eventType: BSSEventType.action,
-                  actionType: BSSActionType.tap,
-                  uiElement: BssUIElement(name: BssUIElementNames.searchField),
-                ),
-              );
+              ref.read(bssServiceProvider.notifier).sendEvent(
+                    const BssRequest(
+                      eventType: BSSEventType.action,
+                      actionType: BSSActionType.tap,
+                      uiElement: BssUIElement(name: BssUIElementNames.searchField),
+                    ),
+                  );
 
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 

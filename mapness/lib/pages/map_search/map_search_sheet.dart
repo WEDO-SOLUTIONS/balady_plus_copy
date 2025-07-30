@@ -31,7 +31,6 @@ import 'package:mapness/shared/providers/analytic/models/extensions/search_type_
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -211,25 +210,24 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
-          await BssService.instance.sendEvent(
-            visibleRect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect,
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: const BssUIElement(
-                name: BssUIElementNames.mapMarker,
-                ownerName: BssUIElementNames.searchResultList,
-              ),
-              payload: BssPayload(
-                mapMarker: const BssMapMarker(
-                  scale: BssMarkerSize.small,
-                  adsHighlight: false,
+          await ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: const BssUIElement(
+                    name: BssUIElementNames.mapMarker,
+                    ownerName: BssUIElementNames.searchResultList,
+                  ),
+                  payload: BssPayload(
+                    mapMarker: const BssMapMarker(
+                      scale: BssMarkerSize.small,
+                      adsHighlight: false,
+                    ),
+                    searchResultList: searchState.results.toBss(),
+                    placeItem: markerInfo?.toBss(index),
+                  ),
                 ),
-                searchResultList: searchState.results.toBss(),
-                placeItem: markerInfo?.toBss(index),
-              ),
-            ),
-          );
+              );
         },
       );
       if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
