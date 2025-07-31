@@ -95,7 +95,6 @@ class PoiCardFooter extends HookConsumerWidget {
             label: context.l10n.poiCardDirections,
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
             onPressed: onTapCar,
-            innerPadding: const EdgeInsetsDirectional.only(start: 16, end: 20),
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
