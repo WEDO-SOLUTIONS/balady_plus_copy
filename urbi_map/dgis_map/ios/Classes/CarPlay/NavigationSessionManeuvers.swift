@@ -16,10 +16,12 @@ class NavigationSessionManeuvers {
 
     private var routePositionChannelCancellable: Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
+    private var everyMinuteTimer: Timer?
 
     func cancel() {
         routePositionChannelCancellable?.cancel()
         routeChannelCancelable?.cancel()
+        everyMinuteTimer?.invalidate()
         navigationSession = nil
     }
 
@@ -45,6 +47,12 @@ class NavigationSessionManeuvers {
             for: model.route.trip
         )
         self.navigationSession = navigationSession
+        
+        everyMinuteTimer?.invalidate()
+        everyMinuteTimer = Timer.everyMinuteStart {
+            [self] _ in
+            updateTripEstimates(navigationSession)
+        }
 
         routePositionChannelCancellable?.cancel()
         routePositionChannelCancellable = model.routePositionChannel
