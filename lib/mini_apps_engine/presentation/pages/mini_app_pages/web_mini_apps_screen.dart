@@ -140,54 +140,59 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     MiniAppsEngineBloc miniAppsEngineBloc = context.watch<MiniAppsEngineBloc>();
     MiniAppsEngineLoadedState state =
         miniAppsEngineBloc.state as MiniAppsEngineLoadedState;
-    /// TODO : Check If The Back Action and bak in the Web with _controller.goBack()
-    return Stack(
-      children: [
-        //DWebViewWidget
-        DWebViewWidget(
-          controller: _controller
-          //https://baladyapps.momra.gov.sa/tawakkalna/baladyplus
-          //https://services-dev.balady.gov.sa/miniapps/municipal
-            ..loadRequest(Uri.parse(state.servicePath))
-            ..addJavaScriptObject(
-              JsBridgeListener(
-                miniAppsEngineBloc: miniAppsEngineBloc,
-                isLoading: _isLoading,
+    return WillPopScope(
+      onWillPop: () async {
+        bool canPop = await _controller.canGoBack();
+        return !canPop;
+      },
+      child: Stack(
+        children: [
+          //DWebViewWidget
+          DWebViewWidget(
+            controller: _controller
+            //https://baladyapps.momra.gov.sa/tawakkalna/baladyplus
+            //https://services-dev.balady.gov.sa/miniapps/municipal
+              ..loadRequest(Uri.parse(state.servicePath))
+              ..addJavaScriptObject(
+                JsBridgeListener(
+                  miniAppsEngineBloc: miniAppsEngineBloc,
+                  isLoading: _isLoading,
+                ),
               ),
-            ),
-        ),
-        /// When Open Url From Sevrver Side Not Show Loading Indicator
-        // ValueListenableBuilder(
-        //   valueListenable: _isLoading,
-        //   builder: (context, value, _) {
-        //     return value
-        //         ? Container(
-        //       height: double.infinity,
-        //       width: double.infinity,
-        //       color: Colors.white,
-        //       margin: EdgeInsets.zero,
-        //       padding: const EdgeInsets.all(24.0),
-        //       child: Column(
-        //         mainAxisSize: MainAxisSize.max,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         children: [
-        //           const CircularProgressIndicator(),
-        //           const SizedBox(height: 16),
-        //           Text(
-        //             "service_will_available_shortly".tr(),
-        //             style: const TextStyle(
-        //               fontSize: 16,
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     )
-        //         : const SizedBox.shrink();
-        //   },
-        // ),
-      ],
+          ),
+          /// When Open Url From Sevrver Side Not Show Loading Indicator
+          // ValueListenableBuilder(
+          //   valueListenable: _isLoading,
+          //   builder: (context, value, _) {
+          //     return value
+          //         ? Container(
+          //       height: double.infinity,
+          //       width: double.infinity,
+          //       color: Colors.white,
+          //       margin: EdgeInsets.zero,
+          //       padding: const EdgeInsets.all(24.0),
+          //       child: Column(
+          //         mainAxisSize: MainAxisSize.max,
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         crossAxisAlignment: CrossAxisAlignment.center,
+          //         children: [
+          //           const CircularProgressIndicator(),
+          //           const SizedBox(height: 16),
+          //           Text(
+          //             "service_will_available_shortly".tr(),
+          //             style: const TextStyle(
+          //               fontSize: 16,
+          //               fontWeight: FontWeight.bold,
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     )
+          //         : const SizedBox.shrink();
+          //   },
+          // ),
+        ],
+      ),
     );
       // PopScope(
       // canPop: false,
