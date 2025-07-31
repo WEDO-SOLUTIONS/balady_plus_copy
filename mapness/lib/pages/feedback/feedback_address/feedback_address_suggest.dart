@@ -35,7 +35,8 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
           ),
           child: Text(
             context.l10n.suggestedSearches,
-            style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+            style: context.textStyles.captionLargeRegular
+                .copyWith(color: context.colors.foregroundSoft),
           ),
         ),
       ),
@@ -49,7 +50,8 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
         sliver: DecoratedSliver(
           decoration: BoxDecoration(
             color: contentColor,
-            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+            borderRadius:
+                const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
           ),
           sliver: SliverPadding(
             padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
@@ -58,7 +60,10 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
                 suggest: suggests[index],
                 myLocation: myLocation == null
                     ? null
-                    : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+                    : GeoPointMessage(
+                        latitude: myLocation.latitude,
+                        longitude: myLocation.longitude,
+                      ),
                 isLast: index == suggests.length - 1,
                 onObjectTap: (object) {
                   if (!context.mounted) {
@@ -72,10 +77,10 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
                   final address = object.makeFullAddress();
                   context.router.popForced(
                     RoutePointCoordinates(
-                      GeoPointMessage(latitude: latitude, longitude: longitude),
-                      address,
-                      null
-                    ),
+                        GeoPointMessage(
+                            latitude: latitude, longitude: longitude),
+                        address,
+                        null),
                   );
                 },
               ),
