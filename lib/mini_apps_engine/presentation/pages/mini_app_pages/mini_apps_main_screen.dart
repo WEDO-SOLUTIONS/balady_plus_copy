@@ -24,6 +24,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   }
 
   Future<bool> _showExitConfirmationDialog() async {
+    /// TODO : Fix The Crach Web Screen
     return await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(

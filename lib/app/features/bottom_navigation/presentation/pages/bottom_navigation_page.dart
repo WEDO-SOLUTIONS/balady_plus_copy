@@ -29,8 +29,12 @@ class BottomNavigationPage extends StatelessWidget {
         child: BaladyAuthorizationWidget(
           authenticated: (LoginDataModel data) {
             sl<EntryPointCubit>().onLoginV2(data: data);
-            Navigator.of(context)
-                .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
+
+            Navigator.of(context).popUntil(
+              ModalRoute.withName(
+                sl<EntryPointCubit>().mainPage ?? RouteName.bottomNavigation,
+              ),
+            );
           },
           unAuthenticatedState: (data) =>
               sl<EntryPointCubit>().clearAuth(loginData: data),

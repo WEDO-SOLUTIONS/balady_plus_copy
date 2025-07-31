@@ -71,8 +71,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openCameraWithUI);
   }
 
-  // Done
-
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
@@ -102,7 +100,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
     } else if (miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true &&
         !CommonProperties.isLoggedIn) {
-      CommonFunctions.onLogin();
+      CommonFunctions.onLogin(
+        mainPage: RouteName.miniAppsMainScreen,
+      );
       response = BaseResponse(
         code: 401,
         eventName: "getAccessToken",
@@ -281,20 +281,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
-
-
-          Map<String, dynamic> data = jsonDecode(msg);
-          response = BaseResponse(
-            code: 200,
-            message: "success",
-            eventName: "navigateToSuperAppScreen",
-            data: null,
-          );
-          NavigationService.pushNamed(
-            routeName: data['screenName'],
-            args: data['arguments'],
-          );
-
+        Map<String, dynamic> data = jsonDecode(msg);
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "navigateToSuperAppScreen",
+          data: null,
+        );
+        NavigationService.pushNamed(
+          routeName: data['screenName'],
+          args: data['arguments'],
+        );
       } else {
         response = BaseResponse(
           code: 400,
