@@ -58,15 +58,6 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
             title: NSLocalizedString(key, comment: ""),
             handler: onBackTap
         )
-
-        if showEmptyPlaceHolder {
-            listTemplate.emptyViewTitleVariants = [
-                NSLocalizedString(
-                    "historyScreenEmptyPlaceholderTitle",
-                    comment: ""
-                )
-            ]
-        }
     }
 
     private func loadHistory() {
@@ -83,6 +74,12 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
         showEmptyPlaceHolder = result.items.isEmpty
         if showEmptyPlaceHolder {
             buildViews()
+             let placeholderItem = CPListItem(
+                        text: NSLocalizedString("historyScreenEmptyPlaceholderTitle", comment: ""),
+                        detailText: NSLocalizedString("historyScreenEmptyPlaceholderSubtitleTitle", comment: "")
+                    )
+                    let section = CPListSection(items: [placeholderItem])
+                    listTemplate.updateSections([section])
             return
         }
         let listItems = result.items.map(mapCPListItem)
