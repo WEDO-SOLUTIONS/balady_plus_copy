@@ -6,6 +6,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/n
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
 
 import '../../../app/core/utils/constants/remote_config.dart';
 import '../../../super_app_js_bridge/camera/camera_page.dart';
@@ -21,7 +22,18 @@ class MiniAppsItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
+        final InAppReview inAppReview = InAppReview.instance;
+        try {
+          final available = await inAppReview.isAvailable();
+          if (available) {
+            await inAppReview.requestReview();
+          } else {
+            // await inAppReview.openStoreListing();
+          }
+        } catch (e) {
+          // await inAppReview.openStoreListing();
+        }
         if(miniApp.latestVersion?.nafathLogin == true && !CommonProperties.isLoggedInMunicipality){
           showDialog(
             context: context,
