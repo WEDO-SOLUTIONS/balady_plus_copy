@@ -163,7 +163,6 @@ class _Content extends HookConsumerWidget {
                           // else
                           _OfferPreviewByGroup(
                             offersGroup: offer.offerGroup,
-                            description: offer.description,
                             title: offer.name,
                             discount: discount,
                             companyLogoId: offer.provider.logo,
@@ -202,7 +201,12 @@ class _Content extends HookConsumerWidget {
                                 Spacing.$1_5x.heightBox,
                                 _OfferInfoRow(
                                   title: Text(l10n.offerDescription, style: titleStyle),
-                                  subtitle: Text(offer.description, style: subtitleStyle),
+                                  subtitle: Text(
+                                    offer.description.length > 500
+                                        ? '${offer.description.substring(0, 500)}...'
+                                        : offer.description,
+                                    style: subtitleStyle,
+                                  ),
                                 ),
                                 Spacing.$3x.heightBox,
                                 GestureDetector(
@@ -412,14 +416,12 @@ Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, S
 
 class _OfferPreviewByGroup extends StatelessWidget {
   final OffersGroup offersGroup;
-  final String description;
   final String title;
   final TextSpan? discount;
   final String? companyLogoId;
 
   const _OfferPreviewByGroup({
     required this.offersGroup,
-    required this.description,
     required this.title,
     this.discount,
     this.companyLogoId,
@@ -467,7 +469,7 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          title.length > 250 ? '${title.substring(0, 250)}...' : title,
                           style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
                         ),
                         if (hasDiscount)
