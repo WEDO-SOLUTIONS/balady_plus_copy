@@ -165,7 +165,7 @@ class SearchHistoryScreen(
                                 RoutePreviewScreen(
                                     carContext,
                                     mapController,
-                                    item,
+                                    item.toRoutePreviewParams(),
                                 )
                             )
                         }.build()

@@ -1,9 +1,13 @@
 package com.dgis.map.android_auto
 
 import android.location.Location
+import android.util.Log
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.android_auto.settings.NotificationVolume
 import com.dgis.map.android_auto.CarNavigationHandler.NavigationListener
+import com.dgis.map.extensions.toBriefRouteInfoMessage
+import com.dgis.map.extensions.toRouteSearchPoint
+import com.dgis.map.map_api.BriefRouteInfoMessage
 import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
@@ -54,6 +58,9 @@ import java.lang.Exception
 import java.util.Locale
 import ru.dgis.sdk.map.Map as DgisMap
 import com.dgis.map.map_api.SoundToggleType
+import ru.dgis.sdk.routing.BriefRouteInfo
+import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
+import ru.dgis.sdk.routing.TrafficRouter
 
 class CarMapController(
     private val sharedPrefs: SharedPrefs,
@@ -72,6 +79,7 @@ class CarMapController(
     private val routeEditorSource = RouteEditorSource(sdkContext, routeEditor).apply {
         setShowOnlyActiveRoute(false)
     }
+    private val trafficRouter = TrafficRouter(sdkContext)
 
     private var map: DgisMap? = null
 
@@ -361,6 +369,11 @@ class CarMapController(
             sharedPrefs.suggestBetterRoad = value
         }
 
+    val isMapReady: Boolean
+        get() {
+            return map != null
+        }
+
     fun getLanguage(): Language {
         return sharedPrefs.getLanguage()
     }
@@ -476,6 +489,24 @@ class CarMapController(
     fun setCameraPadding(padding: Padding) {
         val map = this.map ?: return
         map.camera.padding = padding
+    }
+
+    fun getBriefRouteInfos(
+        routeInfoSearchPoints: List<BriefRouteInfoSearchPoints>,
+        onResult: (List<BriefRouteInfo?>?) -> Unit,
+    ) {
+        trafficRouter.findBriefRouteInfos(
+            searchPoints = routeInfoSearchPoints,
+            routeSearchOptions = RouteSearchOptions(
+                CarRouteSearchOptions(
+                    avoidTollRoads = sharedPrefs.avoidTollRoads,
+                    avoidUnpavedRoads = sharedPrefs.avoidUnpavedRoads
+                )
+            ),
+        ).apply {
+            onResult { onResult(it) }
+            onError { onResult(null) }
+        }
     }
 
     override fun close() {

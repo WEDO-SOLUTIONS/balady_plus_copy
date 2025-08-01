@@ -1,0 +1,84 @@
+package com.dgis.map.android_auto
+
+import android.text.SpannableString
+import android.text.Spanned
+import androidx.car.app.CarContext
+import androidx.car.app.Screen
+import androidx.car.app.ScreenManager
+import androidx.car.app.annotations.ExperimentalCarApi
+import androidx.car.app.constraints.ConstraintManager
+import androidx.car.app.model.Action
+import androidx.car.app.model.ActionStrip
+import androidx.car.app.model.CarColor
+import androidx.car.app.model.DistanceSpan
+import androidx.car.app.model.ItemList
+import androidx.car.app.model.ListTemplate
+import androidx.car.app.model.Row
+import androidx.car.app.model.Template
+import androidx.car.app.navigation.model.MapWithContentTemplate
+import com.dgis.map.R
+import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import com.dgis.map.map_api.FavouriteItemMessage
+import com.dgis.map.map_api.FavouritesStateMessage
+import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.coordinates.distance
+import kotlin.math.min
+
+class FavouritesScreen(
+    carContext: CarContext,
+    private val mapController: CarMapController,
+    favourites: List<FavouriteItemMessage>,
+) : Screen(carContext) {
+
+    private val itemsLimit = carContext.getCarService(ConstraintManager::class.java)
+        .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST)
+
+    private val itemList: ItemList
+
+    private val actionStrip by lazy {
+        val closeAction = Action.Builder().setIcon(buildCarIcon(R.drawable.close_36))
+            .setOnClickListener { carContext.getCarService(ScreenManager::class.java).pop() }
+            .build()
+        ActionStrip.Builder().addAction(closeAction).build()
+    }
+
+    private val noFavourites by lazy {
+        Row.Builder().setTitle(getString(R.string.no_favourites_title))
+            .addText(getString(R.string.no_favourites_subtitle))
+            .build()
+    }
+
+    init {
+        val itemList = ItemList.Builder()
+
+        if (favourites.isNotEmpty()) {
+            for (i in 0 until min(favourites.size, itemsLimit)) {
+                val item = favourites[i]
+                itemList.addItem(
+                    Row.Builder()
+                        .setImage(buildCarIcon(R.drawable.bookmark_circle), Row.IMAGE_TYPE_LARGE)
+                        .setTitle(item.title)
+                        .addText(item.subtitle)
+                        .setOnClickListener { onFavouriteTap(item) }.build()
+                )
+            }
+        } else {
+            itemList.addItem(noFavourites)
+        }
+
+        this.itemList = itemList.build()
+    }
+
+    @ExperimentalCarApi
+    override fun onGetTemplate(): Template {
+        return ListTemplate.Builder().setHeaderAction(Action.BACK)
+            .setTitle(getString(R.string.favourites_title)).setActionStrip(actionStrip)
+            .setSingleList(itemList).build()
+    }
+
+    private fun onFavouriteTap(item: FavouriteItemMessage) {
+        screenManager.push(
+            RoutePreviewScreen(carContext, mapController, item.toRoutePreviewParams())
+        )
+    }
+}
