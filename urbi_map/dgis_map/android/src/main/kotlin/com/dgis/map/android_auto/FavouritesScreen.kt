@@ -1,7 +1,5 @@
 package com.dgis.map.android_auto
 
-import android.text.SpannableString
-import android.text.Spanned
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.ScreenManager
@@ -9,19 +7,12 @@ import androidx.car.app.annotations.ExperimentalCarApi
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
-import androidx.car.app.model.CarColor
-import androidx.car.app.model.DistanceSpan
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
-import androidx.car.app.navigation.model.MapWithContentTemplate
 import com.dgis.map.R
-import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import com.dgis.map.map_api.FavouriteItemMessage
-import com.dgis.map.map_api.FavouritesStateMessage
-import ru.dgis.sdk.coordinates.GeoPoint
-import ru.dgis.sdk.coordinates.distance
 import kotlin.math.min
 
 class FavouritesScreen(

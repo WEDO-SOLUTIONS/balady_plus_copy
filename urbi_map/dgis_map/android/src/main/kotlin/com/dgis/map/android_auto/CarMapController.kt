@@ -1,18 +1,12 @@
 package com.dgis.map.android_auto
 
 import android.location.Location
-import android.util.Log
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.android_auto.settings.NotificationVolume
-import com.dgis.map.android_auto.CarNavigationHandler.NavigationListener
-import com.dgis.map.extensions.toBriefRouteInfoMessage
-import com.dgis.map.extensions.toRouteSearchPoint
-import com.dgis.map.map_api.BriefRouteInfoMessage
 import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
-import ru.dgis.sdk.StatefulChannel
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.directory.DirectoryObject
