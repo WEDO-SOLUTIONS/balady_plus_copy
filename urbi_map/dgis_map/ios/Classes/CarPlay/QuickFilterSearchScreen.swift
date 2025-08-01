@@ -8,22 +8,19 @@ class QuickFilterSearchScreen {
     private let searchManager: SearchManager
     private let searchNavigation: SearchNavigation
     private let interfaceController: CPInterfaceController
-    private let userDefaultsPublished: UserDefaultsPublished
 
     init(
         map: Map,
         quickFilter: QuickFilter,
         searchManager: SearchManager,
         searchNavigation: SearchNavigation,
-        interfaceController: CPInterfaceController,
-        userDefaultsPublished: UserDefaultsPublished
+        interfaceController: CPInterfaceController
     ) {
         self.map = map
         self.quickFilter = quickFilter
         self.searchManager = searchManager
         self.searchNavigation = searchNavigation
         self.interfaceController = interfaceController
-        self.userDefaultsPublished = userDefaultsPublished
     }
 
     private var searchCancellable: Cancellable?
@@ -47,7 +44,7 @@ class QuickFilterSearchScreen {
     }
 
     private func buildSearchQuery() -> SearchQuery {
-        let language = userDefaultsPublished.language
+        let language = Locale.current.languageOrDefault
         let queryText = quickFilter.query[language] ?? ""
 
         let pageSize = Int32(CPListTemplate.maximumItemCount)

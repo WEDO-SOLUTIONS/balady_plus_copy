@@ -1,5 +1,4 @@
 import CarPlay
-import Combine
 import DGis
 
 extension CPTemplate {
@@ -16,36 +15,25 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
     private let interfaceController: CPInterfaceController
     private let searchHistory: SearchHistory
     private let searchNavigation: SearchNavigation
-    private let userDefaultsPublished: UserDefaultsPublished
 
     init(
         interfaceController: CPInterfaceController,
         searchHistory: SearchHistory,
-        searchNavigation: SearchNavigation,
-        userDefaultsPublished: UserDefaultsPublished
+        searchNavigation: SearchNavigation
     ) {
         self.interfaceController = interfaceController
         self.searchHistory = searchHistory
         self.searchNavigation = searchNavigation
-        self.userDefaultsPublished = userDefaultsPublished
-    }
-
-    deinit {
-        languageCancellable?.cancel()
-        languageCancellable = nil
     }
 
     private let listTemplate = CPListTemplate(title: nil, sections: [])
     private var searchHistoryCancellable: DGis.Cancellable?
-    private var languageCancellable: Combine.AnyCancellable?
     private var showEmptyPlaceHolder = false
 
     func createTemplate() -> CPListTemplate {
         loadHistory()
-
-        languageCancellable = userDefaultsPublished.$languageString.sink { _ in
-            self.buildViews()
-        }
+        
+        buildViews()
 
         return listTemplate
     }
