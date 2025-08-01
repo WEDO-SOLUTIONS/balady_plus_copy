@@ -23,6 +23,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
+import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -129,6 +130,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           DeviceOrientation.portraitUp,
           DeviceOrientation.portraitDown,
         ]);
+        await _metroOnInit();
       })
       ..addObserver(this);
 
@@ -592,6 +594,21 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (isParkingEnabledByFreeRoam) {
       final layersControls = ref.read(layersControlsProvider.notifier);
       if (ref.read(activeLayerProvider) == LayerType.parkingLots) {
+        await layersControls.hideActiveLayer();
+      }
+    }
+  }
+
+  // We hide metro layer on init of navigation because public transport goes thought the metro lines
+  // and we don't want to mix it together with the route
+  // TODO: Create `_metroOnDispose` to show metro layer when navigation is stopped
+  // For this you have to change `layersControls` provider and detect previous state of layerControls
+  //
+  // For now we just hide layer
+  Future<void> _metroOnInit() async {
+    if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
+      final layersControls = ref.read(layersControlsProvider.notifier);
+      if (ref.read(layersControlsProvider).selectedType == LayerType.metro) {
         await layersControls.hideActiveLayer();
       }
     }
