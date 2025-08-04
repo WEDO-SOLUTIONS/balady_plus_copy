@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/native_overlay_controller.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -24,30 +27,38 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   }
 
   Future<bool> _showExitConfirmationDialog() async {
-    /// TODO : Fix The Crach Web Screen
-    return await showDialog<bool>(
+    Widget title = Text(
+      "closeService".tr(),
+      style: const TextStyle(fontSize: 16),
+    );
+    List<Widget> actions = [
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(false),
+        child: Text("cancel".tr()),
+      ),
+      TextButton(
+        onPressed: () => Navigator.of(context).pop(true),
+        child: Text(
+          "yes".tr(),
+          style: const TextStyle(color: Colors.red),
+        ),
+      ),
+    ];
+
+    await NativeOverlayController.showOverlay();
+
+    final res = await showDialog<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: Text(
-              "closeService".tr(),
-              style: TextStyle(fontSize: 16),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text("cancel".tr()),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: Text(
-                  "yes".tr(),
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ],
-          ),
+          barrierDismissible: false,
+          builder: (context) => Platform.isIOS
+              ? CupertinoAlertDialog(title: title, actions: actions)
+              : AlertDialog(title: title, actions: actions),
         ) ??
         false;
+
+    await NativeOverlayController.hideOverlay();
+
+    return res;
   }
 
   @override
@@ -84,8 +95,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                 return const SizedBox.shrink();
               } else if (state is MiniAppsEngineLoadedState) {
                 return const WebMiniAppsScreen();
-              } else if (state is FailedDownloadState ||
-                  state is MiniAppsEngineErrorState) {
+              } else if (state is FailedDownloadState || state is MiniAppsEngineErrorState) {
                 return ReloadWidget(
                   errorMessage: "errors_server_error_1".tr(),
                   onTab: () {
@@ -105,12 +115,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                       SizedBox(
                         height: 10,
                         child: LinearProgressIndicator(
-                          value: state.progress.isEmpty
-                              ? null
-                              : (double.parse(state.progress) / 100),
+                          value: state.progress.isEmpty ? null : (double.parse(state.progress) / 100),
                           backgroundColor: Colors.grey[200],
-                          valueColor:
-                              const AlwaysStoppedAnimation<Color>(Colors.blue),
+                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -135,6 +142,8 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
 
   @override
   void dispose() {
+    // Ensure overlay is hidden when screen is disposed
+    NativeOverlayController.hideOverlay();
     super.dispose();
   }
 }

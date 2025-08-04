@@ -152,8 +152,7 @@ class EmptyListWidget extends StatelessWidget {
               fontColor: AppColor.black500,
               fontWeight: AppFontWeight.medium,
             ),
-            if (btnText.isNotEmpty && btnPressed != null)
-              const CustomVerticalSpace(height: 30),
+            if (btnText.isNotEmpty && btnPressed != null) const CustomVerticalSpace(height: 30),
             if (btnText.isNotEmpty && btnPressed != null)
               EnhancedCustomElevatedButtonWidget(
                 btnPressed: btnPressed,
