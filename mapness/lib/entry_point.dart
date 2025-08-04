@@ -13,6 +13,7 @@ import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -158,6 +159,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       AdvancedMetrics.instance.startMeasureBattery();
     });
+
+    // call the openAppLink when user click on notification have deep link
+    FirebaseMessaging.instance.getInitialMessage().then(
+          (RemoteMessage? message) {
+        if (message != null && message.data.containsKey('url')) {
+            final url = message.data['url'];
+            openAppLink(url);
+            return;
+        }
+      },
+    );
   }
 
   @override
