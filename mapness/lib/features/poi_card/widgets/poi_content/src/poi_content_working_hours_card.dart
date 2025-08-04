@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentWorkTime, PoiContentWorkTimeDay;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
@@ -30,15 +30,15 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       return ContentWrapper(
         color: context.color.surfaceBasePrimary,
         children: [
-          ContentRowV2(
+          ContentRow(
             leading: GeneralIcons.timeQuarter.icon(
-              color: context.colorsV3.accentDefault,
+              color: context.colors.accentDefault,
             ),
             text: ContentRowTextOptions(
               title: data.workHours,
               subtitle: data.breakHours,
               subtitleOptions: ContentRowTextOption(
-                baseColor: context.colorsV3.foregroundSoft,
+                baseColor: context.colors.foregroundSoft,
               ),
             ),
           ),
@@ -50,23 +50,23 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       children: [
         ContentRowExpandable(
           padding: EdgeInsets.zero,
-          expandIconColor: context.colorsV3.foregroundMuted,
+          expandIconColor: context.colors.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
             title: data.workHours,
             subtitle: data.breakHours,
-            subtitleStyle: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+            subtitleStyle: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
             leadingIcon: GeneralIcons.timeQuarter.icon(
-              color: context.colorsV3.accentDefault,
+              color: context.colors.accentDefault,
             ),
           ),
           content: Column(
             children: <Widget>[
               ...?workTimeDays,
-              ContentRowV2(
+              ContentRow(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 leading: GeneralIcons.infoSquare.icon(
-                  color: context.colorsV3.foregroundMuted,
+                  color: context.colors.foregroundMuted,
                 ),
                 text: ContentRowTextOptions(
                   title: context.l10n.extraInformation,
@@ -106,8 +106,8 @@ class _WorkTimeItemWidget extends StatelessWidget {
                 children: [
                   TableRow(
                     children: [
-                      Text(workTimeDay.dayTitle, style: context.textStyleV3.bodyLargeRegular),
-                      Text(workTimeDay.workHours, style: context.textStyleV3.bodyLargeRegular),
+                      Text(workTimeDay.dayTitle, style: context.textStyles.bodyLargeRegular),
+                      Text(workTimeDay.workHours, style: context.textStyles.bodyLargeRegular),
                     ],
                   ),
                   if (workTimeDay.breakHours != null)
@@ -115,7 +115,7 @@ class _WorkTimeItemWidget extends StatelessWidget {
                       const SizedBox(),
                       Text(
                         workTimeDay.breakHours!,
-                        style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                       ),
                     ]),
                 ],
@@ -132,7 +132,7 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Divider(
-        color: context.colorsV3.borderSoft,
+        color: context.colors.borderSoft,
         height: 8,
         thickness: 1,
       );

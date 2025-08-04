@@ -99,9 +99,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             }
           },
           hintText: widget.placeholder,
-          fillColor: context.colorsV2.neutralContainerDefault,
-          hintColor: context.colorsV2.foregroundSoft,
-          textStyle: context.textStyleV3.bodySmallRegular,
+          fillColor: context.colors.neutralContainerDefault,
+          hintColor: context.colors.foregroundSoft,
+          textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
       option: SearchTextBackOption(

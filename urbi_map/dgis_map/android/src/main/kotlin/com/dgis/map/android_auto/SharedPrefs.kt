@@ -104,7 +104,7 @@ class SharedPrefs(val context: Context) : AutoCloseable {
 
     var suggestBetterRoad: Boolean
         get() {
-            return sharedPreferences.getBoolean("$keyPrefix$suggestBetterRoadKey", false)
+            return sharedPreferences.getBoolean("$keyPrefix$suggestBetterRoadKey", true)
         }
         set(value) {
             sharedPreferences.edit {

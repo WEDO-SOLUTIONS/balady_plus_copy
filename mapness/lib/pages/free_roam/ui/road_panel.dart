@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/pages/free_roam/free_roam_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RoadPanel extends ConsumerWidget {
@@ -12,19 +13,19 @@ class RoadPanel extends ConsumerWidget {
 
   const RoadPanel(
       {required this.isLoading, required this.onEndTrip, required this.onOpenSheet, required this.onSearch, super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.all(Spacing.$4x),
         child: SizedBox(
           height: 56,
-          width: double.infinity,
+          width:
+              MediaQuery.orientationOf(context) == Orientation.portrait ? double.infinity : FreeRoamPage.landscapeWidth,
           child: Material(
             color: Colors.transparent,
             child: isLoading
                 ? DecoratedBox(
                     decoration: BoxDecoration(
-                      color: context.colorsV2.backgroundSurface1,
+                      color: context.colors.backgroundSurface1,
                       borderRadius: BorderRadius.circular(RadiusBorder.xl),
                     ),
                     child: Center(child: Loading.small()))
@@ -34,7 +35,7 @@ class RoadPanel extends ConsumerWidget {
                         onTap: onSearch,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: context.colorsV2.backgroundSurface1,
+                            color: context.colors.backgroundSurface1,
                             borderRadius: BorderRadius.circular(RadiusBorder.xl),
                           ),
                           child: const Padding(
@@ -49,11 +50,11 @@ class RoadPanel extends ConsumerWidget {
                           onTap: onEndTrip,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: context.colorsV2.backgroundSurface1,
+                              color: context.colors.backgroundSurface1,
                               borderRadius: BorderRadius.circular(RadiusBorder.xl),
                             ),
                             child: Center(
-                              child: Text(context.l10n.endTrip, style: context.textStyleV3.h4Medium),
+                              child: Text(context.l10n.endTrip, style: context.textStyles.h4Medium),
                             ),
                           ),
                         ),
@@ -63,7 +64,7 @@ class RoadPanel extends ConsumerWidget {
                         onTap: onOpenSheet,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
-                            color: context.colorsV2.backgroundSurface1,
+                            color: context.colors.backgroundSurface1,
                             borderRadius: BorderRadius.circular(RadiusBorder.xl),
                           ),
                           child: const Padding(

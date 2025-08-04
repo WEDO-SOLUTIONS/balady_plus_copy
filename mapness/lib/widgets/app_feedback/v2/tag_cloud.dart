@@ -34,9 +34,9 @@ class TagCloud extends HookWidget {
           runSpacing: 10.0,
           children: useTags.map((tag) {
             final isSelected = selectedTagsValue.contains(tag);
-            final textColor = isSelected ? context.colorsV3.accentOnAccent : context.colorsV2.foregroundDefault;
-            final iconColor = isSelected ? context.colorsV3.accentOnAccent : context.colorsV2.accentDefault;
-            final backgroundColor = isSelected ? context.colorsV2.accentDefault : context.colorsV2.backgroundSurface1;
+            final textColor = isSelected ? context.colors.accentOnAccent : context.colors.foregroundDefault;
+            final iconColor = isSelected ? context.colors.accentOnAccent : context.colors.accentDefault;
+            final backgroundColor = isSelected ? context.colors.accentDefault : context.colors.backgroundSurface1;
 
             return GestureDetector(
               onTap: () {
@@ -60,25 +60,28 @@ class TagCloud extends HookWidget {
                   vertical: Spacing.$1x,
                 ),
                 backgroundColor: backgroundColor,
-                label: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      AppFeedbackTagMapper.getLocalizedText(context.l10n, tag),
-                      style: context.textStyleV3.bodySmallRegular.copyWith(
-                        color: textColor,
+                label: Padding(
+                  padding: const EdgeInsets.all(Spacing.$0_5x),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        AppFeedbackTagMapper.getLocalizedText(context.l10n, tag),
+                        style: context.textStyles.bodySmallRegular.copyWith(
+                          color: textColor,
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: Spacing.$1x,
-                    ),
-                    SvgPicture.asset(
-                      AppFeedbackTagMapper.getIconByTag(tag),
-                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
-                      width: Spacing.$4x,
-                      height: Spacing.$4x,
-                    ),
-                  ],
+                      const SizedBox(
+                        width: Spacing.$1x,
+                      ),
+                      SvgPicture.asset(
+                        AppFeedbackTagMapper.getIconByTag(tag),
+                        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                        width: Spacing.$4x,
+                        height: Spacing.$4x,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

@@ -147,8 +147,8 @@ class Data extends ConsumerWidget {
               ),
 
               ///close
-              BaladyAppButton.close(
-                buttonType: BaladyButtonType.secondary,
+              AppButton.close(
+                buttonType: ButtonType.secondary,
                 onTap: () async {
                   await ref.read(weatherMapControllerProvider().notifier).switchOffWeatherLayers();
                   context.router.popForced();

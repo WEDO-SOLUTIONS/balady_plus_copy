@@ -43,7 +43,7 @@ class _NaviTime extends StatelessWidget {
         children: [
           Text(
             title,
-            style: context.textStyleV3.h3SemiBold.copyWith(
+            style: context.textStyles.h3SemiBold.copyWith(
               color: context.color.textAndIconsBasePrimary,
             ),
             maxLines: 1,
@@ -51,7 +51,7 @@ class _NaviTime extends StatelessWidget {
           ),
           Text(
             subTitle,
-            style: context.textStyleV3.captionMediumRegular.copyWith(
+            style: context.textStyles.captionMediumRegular.copyWith(
               color: context.color.textAndIconsBaseSecondary.withOpacity(0.64),
             ),
             maxLines: 1,

@@ -55,7 +55,8 @@ class AppFeedbackSheet extends HookConsumerWidget {
               ],
             ));
   }
-  static const _sheetPadding =  EdgeInsets.only(top: Spacing.$6x);
+
+  static const _sheetPadding = EdgeInsets.only(top: Spacing.$6x);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -87,7 +88,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
         bottom: false,
         child: StatelessBottomSheet(
           scrollController: scrollController,
-          safeAreaColor: context.colorsV3.backgroundSurface1,
+          backgroundColor: context.colors.backgroundSurface4,
+          safeAreaColor: context.colors.backgroundSurface4,
+          draggerColor: context.colors.backgroundSurface4,
           backgroundColor: backgroundColor,
           draggerColor: backgroundColor,
           startConfig: BottomSheetStart.instant,

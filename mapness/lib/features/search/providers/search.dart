@@ -404,7 +404,7 @@ class Search extends _$Search {
   bool _isSearchInThisArea = false;
 
   /// Method that starts search in the visible area
-  void searchInThisArea() {
+  void searchInThisArea(String scope) {
     _isSearchInThisArea = true;
     ref.read(urbiAnalyticsProvider).track(
       MapnessConstants.analyticsSearchInThisAreaPressed,
@@ -418,7 +418,7 @@ class Search extends _$Search {
     print(
         '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
-    ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(value: true);
+    ref.read(searchInRectProvider(scope).notifier).searchInThisAreaSwitch(value: true);
     switch (_previousType) {
       case null:
         break;

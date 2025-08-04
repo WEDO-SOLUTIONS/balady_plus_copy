@@ -13,18 +13,18 @@ class PoiContentDataIncorrectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ContentWrapper(
         children: [
-          ContentRowV2(
+          ContentRow(
             onTap: data.onFeedbackTap,
             leading: AppIcons(
               iconData: GeneralIcons.warning,
-              color: context.colorsV3.accentDefault,
+              color: context.colors.accentDefault,
             ),
             text: ContentRowTextOptions(
               title: data.title,
             ),
             trailing: ContentRowTextTrailingOptions(
               icon: SystemIcons.arrowCornerRightSmall,
-              iconColor: context.colorsV3.foregroundMuted,
+              iconColor: context.colors.foregroundMuted,
             ),
           ),
         ],

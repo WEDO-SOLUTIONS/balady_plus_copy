@@ -22,11 +22,11 @@ class PoiPhotoRowFailure extends ConsumerWidget {
           margin: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
           decoration: BoxDecoration(
             borderRadius: borderRadius,
-            color: context.colorsV3.errorMuted,
+            color: context.colors.errorMuted,
           ),
           child: Center(
             child: GeneralIcons.reload.icon(
-              color: context.colorsV3.errorOnError,
+              color: context.colors.errorOnError,
             ),
           ),
         ),

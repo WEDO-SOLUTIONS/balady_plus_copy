@@ -31,7 +31,7 @@ class EtaShareControlSheet extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: context.colorsV2.backgroundSurface4,
+        color: context.colors.backgroundSurface4,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(RadiusBorder.xl),
           topRight: Radius.circular(RadiusBorder.xl),
@@ -52,14 +52,14 @@ class EtaShareControlSheet extends ConsumerWidget {
               options: ContentRowOptions(
                 padding: const EdgeInsets.only(bottom: Spacing.$4x),
                 title: context.l10n.routeIsSharing,
-                titleStyle: context.textStyleV3.h3SemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                titleStyle: context.textStyles.h3SemiBold.copyWith(
+                  color: context.colors.foregroundDefault,
                 ),
                 customActionWidget: AppButton.close(
                   onTap: () => context.router.popForced(),
                   padding: EdgeInsets.zero,
-                  textColor: context.colorsV2.neutralOnContainer,
-                  color: context.colorsV2.neutralContainerDefault,
+                  textColor: context.colors.neutralOnContainer,
+                  color: context.colors.neutralContainerDefault,
                   innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                 ),
               ),
@@ -74,10 +74,10 @@ class EtaShareControlSheet extends ConsumerWidget {
                   ),
                   dividerEnabled: true,
                   title: context.l10n.shareMore,
-                  titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
-                  leadingIcon: Icon(SystemIcons.share, color: context.colorsV2.foregroundSoft),
+                  leadingIcon: Icon(SystemIcons.share, color: context.colors.foregroundSoft),
                 ),
               ),
               ContentRow(
@@ -88,10 +88,10 @@ class EtaShareControlSheet extends ConsumerWidget {
                     vertical: Spacing.$3x,
                   ),
                   title: context.l10n.stopSharing,
-                  titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
-                  leadingIcon: Icon(GeneralIcons.clearCircle, color: context.colorsV2.foregroundSoft),
+                  leadingIcon: Icon(GeneralIcons.clearCircle, color: context.colors.foregroundSoft),
                 ),
               )
             ]),

@@ -16,7 +16,7 @@ class FeedbackBoolToggle extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final border = BorderSide(color: context.colorsV2.borderMuted);
+    final border = BorderSide(color: context.colors.borderMuted);
     final isSelected = useState(false);
 
     return Container(
@@ -29,7 +29,7 @@ class FeedbackBoolToggle extends HookWidget {
               Expanded(
                 child: Text(
                   field.label,
-                  style: context.textStyleV3.bodyLargeRegular,
+                  style: context.textStyles.bodyLargeRegular,
                 ),
               ),
               FormBuilderField<bool>(

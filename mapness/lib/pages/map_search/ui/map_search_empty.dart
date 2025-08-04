@@ -29,28 +29,28 @@ class MapSearchEmpty extends ConsumerWidget {
           const SizedBox(height: Spacing.$1x),
           Text(
             context.l10n.searchCouldNotFindAnything,
-            style: context.textStyleV3.h4SemiBold,
+            style: context.textStyles.h4SemiBold,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: Spacing.$2x),
           Text(
             desctiption.first,
             textAlign: TextAlign.center,
-            style: context.textStyleV3.bodySmallRegular.copyWith(
-              color: context.colorsV3.foregroundSoft,
+            style: context.textStyles.bodySmallRegular.copyWith(
+              color: context.colors.foregroundSoft,
             ),
           ),
           Text(
             desctiption.last.trim(),
             textAlign: TextAlign.center,
-            style: context.textStyleV3.bodySmallRegular.copyWith(
-              color: context.colorsV3.foregroundSoft,
+            style: context.textStyles.bodySmallRegular.copyWith(
+              color: context.colors.foregroundSoft,
             ),
           ),
           const SizedBox(height: Spacing.$4x),
           if (isShowAddPlaceButton)
             AppButton(
-              buttonColorScheme: ButtonColorScheme.primary,
+              buttonColorScheme: ButtonColorScheme.accent,
               primaryIcon: GeneralIcons.plusCircle,
               // for the first iteration all buttons have same label. Will be changed later
               primaryLabel: context.l10n.addPlace,

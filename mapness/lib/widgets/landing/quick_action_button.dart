@@ -27,14 +27,14 @@ class QuickActionButton extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  color: context.colorsV3.backgroundSurface1,
+                  color: context.colors.backgroundSurface1,
                   boxShadow: Shadows.s,
                 ),
                 child: Center(
                   child: Icon(
                     icon,
                     size: Spacing.$6x + Spacing.$1x,
-                    color: context.colorsV3.accentDefault,
+                    color: context.colors.accentDefault,
                   ),
                 ),
               ),
@@ -46,7 +46,7 @@ class QuickActionButton extends StatelessWidget {
               padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
               child: Text(
                 text,
-                style: context.textStyleV3.captionSmallMedium,
+                style: context.textStyles.captionSmallMedium,
                 textAlign: TextAlign.center,
               ),
             ),

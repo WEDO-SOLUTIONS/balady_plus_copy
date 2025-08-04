@@ -20,8 +20,6 @@ class DgisCarPlayMapView: UIViewController {
     
     private var cancellables = Set<Cancellable>()
     
-    var carWindowScreenNativeBounds: CGRect?
-
     init(
         map: Map,
         mapView: (UIView & IMapView)
@@ -69,9 +67,6 @@ class DgisCarPlayMapView: UIViewController {
                 zoom: Self.defaultCameraZoom
             )
         }
-
-        let carPlayFixOn = carWindowScreenNativeBounds?.width == 800
-        map.attributes.setAttributeValue(name: "carPlayFixOn", value: .boolean(carPlayFixOn))
         
         map.attributes.setAttributeValue(name: "camerasOn", value: .boolean(true))
 

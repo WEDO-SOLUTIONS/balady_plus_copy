@@ -10,8 +10,8 @@ class AppFeedbackLoading extends StatelessWidget {
         padding: const EdgeInsets.only(top: 89.0, bottom: 111.0),
         child: FullscreenLoadingIndicator(
           isDisplayTitle: false,
-          color: context.colorsV2.accentDefault,
-          backgroundColor: context.colorsV3.backgroundSurface4,
+          color: context.colors.accentDefault,
+          backgroundColor: context.colors.backgroundSurface4,
         ),
       );
 }

@@ -83,13 +83,13 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                       child: RichText(
                         text: TextSpan(
                           text: context.l10n.driveBack,
-                          style: context.textStyleV3.h3Medium.copyWith(
+                          style: context.textStyles.h3Medium.copyWith(
                             color: Colors.white,
                           ),
                           children: [
                             TextSpan(
                               text: '\n${context.l10n.homeQuestionMark}',
-                              style: context.textStyleV3.h3Medium.copyWith(
+                              style: context.textStyles.h3Medium.copyWith(
                                 color: const Color(0xFF00FFFA),
                               ),
                             ),

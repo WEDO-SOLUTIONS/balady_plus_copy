@@ -52,7 +52,7 @@ class EtaHeader extends HookConsumerWidget {
       ..watch(shareEtaProvider.select((_) => null));
 
     final backgroundColor =
-        state == PathNavState.paused ? context.colorsV3.accentSecondaryDefault : context.colorsV3.backgroundSurface1;
+        state == PathNavState.paused ? context.colors.accentSecondaryDefault : context.colors.backgroundSurface1;
 
     /// Animating hide and close buttons based on the sheet interpolation.
     final animation = useAnimationController(
@@ -83,7 +83,7 @@ class EtaHeader extends HookConsumerWidget {
             onContinuePressed();
           } else if (state == PathNavState.running) {
             ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-            sheetController.open(duration: const Duration(milliseconds: 350));
+            sheetController.open(duration: Durations.long1);
           }
         },
         child: AnimatedSwitcher(
@@ -146,7 +146,7 @@ class EtaHeader extends HookConsumerWidget {
                                     child: _Button(
                                       icon: SystemIcons.arrowCornerDownLarge,
                                       onTap: () {
-                                        sheetController.close(duration: const Duration(milliseconds: 350));
+                                        sheetController.close(duration: Durations.long1);
                                       },
                                     ),
                                   ),
@@ -199,12 +199,12 @@ class _Button extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => BaladyAppButton(
+  Widget build(BuildContext context) => AppButton(
         innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
-        size: BaladyButtonSize.small,
+        size: ButtonSize.small,
         primaryIcon: icon,
-        buttonType: BaladyButtonType.secondary,
-        buttonColorScheme: BaladyButtonColorScheme.neutral,
+        buttonType: ButtonType.secondary,
+        buttonColorScheme: ButtonColorScheme.neutral,
         onTap: onTap,
       );
 }

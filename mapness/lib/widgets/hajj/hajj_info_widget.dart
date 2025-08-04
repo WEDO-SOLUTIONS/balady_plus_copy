@@ -11,7 +11,7 @@ import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_co
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_full_address_card.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-const itemPadding = const EdgeInsets.only(
+const itemPadding = EdgeInsets.only(
   left: Spacing.$4x,
   right: Spacing.$4x,
   bottom: Spacing.$3x,
@@ -31,6 +31,7 @@ class HajjInfoWidget extends ConsumerWidget {
     final void Function(String) onPhoneTap = (phone) {
       ref.read(poiCardActionsProvider.notifier).callPhone(phone);
     };
+    final contactInfo = data.contactInfo;
     return Column(
       children: [
         if (data.address != null)
@@ -48,13 +49,13 @@ class HajjInfoWidget extends ConsumerWidget {
             padding: itemPadding,
             child: PoiContentAboutCard(
                 data: PoiContentAboutModel(
-                  text: data.description ?? '',
-                  aboutTitle: context.l10n.about,
-                  showMoreTitle: context.l10n.showMore,
-                  showLessTitle: context.l10n.showLess,
-                )),
+              text: data.description ?? '',
+              aboutTitle: context.l10n.about,
+              showMoreTitle: context.l10n.showMore,
+              showLessTitle: context.l10n.showLess,
+            )),
           ),
-        if (data.contactInfo != null)
+        if (contactInfo != null)
           Padding(
             padding: itemPadding,
             child: PoiContentContactsCard(
@@ -62,6 +63,7 @@ class HajjInfoWidget extends ConsumerWidget {
                 onEmailTap: (_) {},
                 onPhoneTap: onPhoneTap,
                 onSocialMediaTap: (_) {},
+                phones: [contactInfo],
               ),
             ),
           ),

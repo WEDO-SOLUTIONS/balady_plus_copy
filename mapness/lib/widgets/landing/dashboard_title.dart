@@ -18,7 +18,7 @@ class DashboardTitle extends StatelessWidget {
           child: Text(
             title,
             textAlign: TextAlign.start,
-            style: context.textStyleV3.h3SemiBold,
+            style: context.textStyles.h3SemiBold,
           ),
         ),
       );

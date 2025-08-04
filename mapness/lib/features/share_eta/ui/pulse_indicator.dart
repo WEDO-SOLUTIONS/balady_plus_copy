@@ -15,7 +15,7 @@ class PulseIndicator extends HookWidget {
       duration: const Duration(seconds: 1),
     )..repeat();
 
-    final indicatorColor = color ?? context.colorsV2.extra01Default;
+    final indicatorColor = color ?? context.colors.extra01Default;
 
     return SizedBox(
       width: _spreadSize,

@@ -18,9 +18,9 @@ class SoundSettingsPageContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
-    final colorsV2 = context.colorsV2;
+    final colors = context.colors;
     final l10n = context.l10n;
-    final textStyleV3 = context.textStyleV3;
+    final textStyles = context.textStyles;
     final color = context.color;
     final voiceInstructionSubtitle = soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(context);
 
@@ -35,11 +35,11 @@ class SoundSettingsPageContent extends ConsumerWidget {
               children: [
                 ContentRow(
                   options: ContentRowOptions(
-                    subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                    subtitleStyle: textStyles.bodySmallRegular.copyWith(
                       color: color.textAndIconsBaseSecondary,
                     ),
-                    titleStyle: textStyleV3.bodyLargeMedium.copyWith(
-                      color: colorsV2.foregroundDefault,
+                    titleStyle: textStyles.bodyLargeMedium.copyWith(
+                      color: colors.foregroundDefault,
                     ),
                     padding: const EdgeInsets.only(
                       top: Spacing.$4x,
@@ -74,7 +74,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                   ),
                   child: Divider(
                     height: 0.5,
-                    color: colorsV2.borderSoft,
+                    color: colors.borderSoft,
                     thickness: 1,
                     indent: 0,
                     endIndent: 0,
@@ -94,11 +94,11 @@ class SoundSettingsPageContent extends ConsumerWidget {
                     actionWidget: ContentRowActionOptions(
                         actionIcon: AppIcons(
                           iconData: SystemIcons.arrowCornerRightLarge,
-                          color: colorsV2.foregroundSoft,
+                          color: colors.foregroundSoft,
                         ),
                         actionText: localizeVoicePackageName(context, soundSettingsModel.voiceName),
-                        actionTextStyle: textStyleV3.bodySmallMedium.copyWith(
-                          color: colorsV2.foregroundSoft,
+                        actionTextStyle: textStyles.bodySmallMedium.copyWith(
+                          color: colors.foregroundSoft,
                         )),
                   ),
                 ),
@@ -106,8 +106,8 @@ class SoundSettingsPageContent extends ConsumerWidget {
             ),
             ContentRow(
               options: ContentRowOptions(
-                titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                  color: colorsV2.foregroundDefault,
+                titleStyle: textStyles.bodyLargeRegular.copyWith(
+                  color: colors.foregroundDefault,
                 ),
                 wrapperColor: color.surfaceBaseTertiary,
                 wrapperEnabled: true,
@@ -146,8 +146,8 @@ class SoundSettingsPageContent extends ConsumerWidget {
                           enabledToggle: true,
                           toggleInitialValue: soundSettingsModel.roadCameras,
                         ),
-                        titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                          color: colorsV2.foregroundDefault,
+                        titleStyle: textStyles.bodyLargeRegular.copyWith(
+                          color: colors.foregroundDefault,
                         ),
                         padding: const EdgeInsets.only(
                           top: Spacing.$4x,
@@ -164,7 +164,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                       ),
                       child: Divider(
                         height: 0.5,
-                        color: colorsV2.borderSoft,
+                        color: colors.borderSoft,
                         thickness: 1,
                         indent: 0,
                         endIndent: 0,
@@ -179,11 +179,11 @@ class SoundSettingsPageContent extends ConsumerWidget {
                           enabledToggle: true,
                           toggleInitialValue: soundSettingsModel.overSpeeding,
                         ),
-                        titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                          color: colorsV2.foregroundDefault,
+                        titleStyle: textStyles.bodyLargeRegular.copyWith(
+                          color: colors.foregroundDefault,
                         ),
-                        subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
-                          color: colorsV2.foregroundSoft,
+                        subtitleStyle: textStyles.bodySmallRegular.copyWith(
+                          color: colors.foregroundSoft,
                         ),
                         subtitleMaxlines: 2,
                         subtitle: l10n.overSpeedingSubtitle,

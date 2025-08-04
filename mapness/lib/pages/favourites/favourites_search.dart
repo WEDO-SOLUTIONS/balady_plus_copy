@@ -100,11 +100,11 @@ class FavouritesSearch extends ConsumerWidget {
       itemBuilder: (_, index) {
         final item = searchResult[index];
 
-        return ContentRowV2(
+        return ContentRow(
           isDividerEnabled: index != searchResult.length - 1,
           onTap: () async => onSearchTap(ref, context, item),
           leading: GeneralIcons.location.icon(
-            color: context.colorsV2.accentActive,
+            color: context.colors.accentActive,
           ),
           text: ContentRowTextOptions(
             title: item.title,

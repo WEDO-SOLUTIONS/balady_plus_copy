@@ -29,7 +29,7 @@ class ComplianceCard extends ConsumerWidget {
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
           child: ColoredBox(
-            color: context.colorsV2.backgroundSurface1,
+            color: context.colors.backgroundSurface1,
             child: Padding(
               padding: const EdgeInsets.only(top: Spacing.$5x),
               child: Column(
@@ -39,7 +39,7 @@ class ComplianceCard extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
                     child: Text(
                       context.l10n.complianceCardTitle,
-                      style: context.textStyleV3.h4SemiBold,
+                      style: context.textStyles.h4SemiBold,
                     ),
                   ),
                   const SizedBox(height: Spacing.$1x + Spacing.$0_5x),
@@ -47,8 +47,8 @@ class ComplianceCard extends ConsumerWidget {
                     padding: const EdgeInsets.symmetric(horizontal: Spacing.$6x),
                     child: Text(
                       context.l10n.complianceCardDescription.multilines,
-                      style: context.textStyleV3.captionLargeRegular.copyWith(
-                        color: context.colorsV2.foregroundSoft,
+                      style: context.textStyles.captionLargeRegular.copyWith(
+                        color: context.colors.foregroundSoft,
                       ),
                     ),
                   ),
@@ -58,7 +58,7 @@ class ComplianceCard extends ConsumerWidget {
                     onTap: createCompliance,
                     label: context.l10n.createCompliance,
                   ),
-                  Divider(height: Spacing.px / 2, indent: 63, color: context.colorsV2.borderMuted),
+                  Divider(height: Spacing.px / 2, indent: 63, color: context.colors.borderMuted),
                   _RowButton(
                     icon: context.isLTR ? GeneralIcons.questionSupportLTR : GeneralIcons.questionSupportRTL,
                     onTap: () {
@@ -69,7 +69,7 @@ class ComplianceCard extends ConsumerWidget {
                     },
                     label: context.l10n.complianceFAQ,
                   ),
-                  Divider(height: Spacing.px / 2, indent: 63, color: context.colorsV2.borderMuted),
+                  Divider(height: Spacing.px / 2, indent: 63, color: context.colors.borderMuted),
                   _RowButton(
                     icon: GeneralIcons.documentDefenceLTR,
                     onTap: CommonFunctions.openComplianceTerms,
@@ -99,7 +99,7 @@ class _RowButton extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: Material(
-          color: context.colorsV2.backgroundSurface1,
+          color: context.colors.backgroundSurface1,
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(RadiusBorder.m),
@@ -114,15 +114,15 @@ class _RowButton extends StatelessWidget {
                       Icon(
                         icon,
                         size: Spacing.$6x,
-                        color: context.colorsV2.accentDefault,
+                        color: context.colors.accentDefault,
                       ),
                       const SizedBox(width: Spacing.$4x),
-                      Text(label, style: context.textStyleV3.bodySmallRegular),
+                      Text(label, style: context.textStyles.bodySmallRegular),
                     ],
                   ),
                   Icon(
                     SystemIcons.arrowCornerRightSmall,
-                    color: context.colorsV2.foregroundMuted,
+                    color: context.colors.foregroundMuted,
                   ),
                 ],
               ),

@@ -21,6 +21,7 @@ import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
+import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -37,6 +38,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -292,7 +294,25 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         if (shouldEndTrip) {
           _endTripAndShowHome();
         }
-      });
+      })
+      ..listen(
+        pathNavEtaProvider,
+        (previous, next) {
+          if (next != null) {
+            if (next.distanceEtaUnits != DistanceUnits.m) {
+              return;
+            }
+            final distance = double.tryParse(next.distanceEta);
+            final navParkingEnabled = ref.read(navigatorAutoEnableParkingProvider);
+            final activeLayer = ref.read(activeLayerProvider);
+            final distanceLessThen500Meters = distance != null && distance <= 500;
+            final parkingTurnedOn = activeLayer == LayerType.parkingLots;
+            if (distanceLessThen500Meters && navParkingEnabled == true && !parkingTurnedOn) {
+              ref.read(layersControlsProvider.notifier).enableParking();
+            }
+          }
+        },
+      );
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
@@ -552,7 +572,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       if (ref.read(activeLayerProvider) == LayerType.parkingLots) {
         await layersControls.hideActiveLayer();
       }
-      await sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, false);
     }
   }
 

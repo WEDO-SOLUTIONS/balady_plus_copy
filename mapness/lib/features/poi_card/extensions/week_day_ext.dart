@@ -19,18 +19,18 @@ extension WeekDayName on WeekDayMessage {
 extension WorkTimeTypeExt on WorkTimeType {
   Color? foregroundColor(BuildContext context) {
     if (this == WorkTimeType.closed) {
-      return context.colorsV3.errorOnContainer;
+      return context.colors.errorOnContainer;
     } else if (this == WorkTimeType.almostClosed) {
-      return context.colorsV3.warningOnContainer;
+      return context.colors.warningOnContainer;
     }
     return null;
   }
 
   Color? backgroundColor(BuildContext context) {
     if (this == WorkTimeType.closed) {
-      return context.colorsV3.errorContainerDefault;
+      return context.colors.errorContainerDefault;
     } else if (this == WorkTimeType.almostClosed) {
-      return context.colorsV3.warningContainerDefault;
+      return context.colors.warningContainerDefault;
     }
     return null;
   }

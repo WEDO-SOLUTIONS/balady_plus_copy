@@ -80,8 +80,8 @@ class AppFeedbackMain extends HookConsumerWidget {
               FeedbackSourceOffer() => context.l10n.doYouLikeOffer,
             },
             textAlign: TextAlign.center,
-            style: context.textStyleV3.h3SemiBold.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            style: context.textStyles.h3SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
             ),
           ),
         ),
@@ -103,8 +103,8 @@ class AppFeedbackMain extends HookConsumerWidget {
                   child: Text(
                     _feedbackSubtitleText(context.l10n, rating.value, source),
                     textAlign: TextAlign.center,
-                    style: context.textStyleV3.bodyLargeRegular.copyWith(
-                      color: context.colorsV2.foregroundSoft,
+                    style: context.textStyles.bodyLargeRegular.copyWith(
+                      color: context.colors.foregroundSoft,
                     ),
                   ),
                 )
@@ -151,6 +151,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                     config: BaladyInputConfig(
                       background: BaladyInputBackground.color,
                       hintText: context.l10n.appFeedbackHintText,
+                      background: BaladyInputBackground.color,
                       maxLines: 4,
                       isDisposed: false,
                       onChanged: (_) {},
@@ -168,13 +169,14 @@ class AppFeedbackMain extends HookConsumerWidget {
               valueListenable: rating,
               builder: (context, ratingValue, _) {
                 final canSend = ratingValue > 0;
-                final buttonColorScheme = !canSend ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
+                final buttonColorScheme = !canSend ? ButtonState.disabled : ButtonState.defaultState;
                 final buttonState = !canSend ? ButtonState.disabled : ButtonState.normal;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    buttonColorScheme: buttonColorScheme,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
                     buttonState: buttonState,
+                    size: ButtonSize.large,
                     onTap: !canSend
                         ? null
                         : () async {

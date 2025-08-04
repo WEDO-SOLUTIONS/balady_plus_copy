@@ -70,7 +70,7 @@ class _DashboardMenu extends ConsumerWidget {
     final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
     return ColoredBox(
-      color: context.colorsV2.backgroundSurface2,
+      color: context.colors.backgroundSurface2,
       child: ClipRect(
         clipBehavior: Clip.antiAlias,
         child: Opacity(
@@ -111,7 +111,7 @@ class DashboardHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
         width: double.infinity,
-        decoration: BoxDecoration(color: context.colorsV2.backgroundSurface2),
+        decoration: BoxDecoration(color: context.colors.backgroundSurface2),
         child: Padding(
           padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$2x),
           child: GestureDetector(
@@ -138,9 +138,9 @@ class DashboardHeader extends ConsumerWidget {
                 inputState: BaladyInputState.readOnly,
                 config: BaladyInputConfig(
                   hintText: context.l10n.searchPlaceOrAddress,
-                  fillColor: context.colorsV2.neutralContainerDefault,
-                  hintColor: context.colorsV2.foregroundSoft,
-                  textStyle: context.textStyleV3.bodySmallRegular,
+                  fillColor: context.colors.neutralContainerDefault,
+                  hintColor: context.colors.foregroundSoft,
+                  textStyle: context.textStyles.bodySmallRegular,
                 ),
               ),
             ),

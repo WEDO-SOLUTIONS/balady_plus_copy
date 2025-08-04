@@ -1,6 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.dart';
@@ -31,7 +30,16 @@ class LayerSliverList extends ConsumerWidget {
       itemBuilder: (_, index) {
         final value = layerType[index];
         final isSelected = layersState.selectedType == value;
-        final textColor = isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary;
+
+        final selectedColor = context.colors.accentOnContainer;
+        final selectedStyle = context.textStyles.bodyLargeMedium.copyWith(
+          color: selectedColor,
+        );
+        final textStyle = context.textStyles.bodyLargeRegular.copyWith(
+          color: context.colors.foregroundDefault,
+        );
+
+        final textColor = isSelected ? selectedColor : context.colors.foregroundSoft;
 
         const _iconDefaultSize = 24;
 
@@ -51,29 +59,21 @@ class LayerSliverList extends ConsumerWidget {
           options: ContentRowOptions(
             padding: EdgeInsets.zero,
             wrapperEnabled: true,
-            wrapperColor: isSelected ? context.color.surfaceStatusContrastAccent.withOpacity(0.12) : Colors.transparent,
-            leadingIcon: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-              child: Row(
-                children: [
-                  Spacing.$4x.widthBox,
-                  value.iconData().icon(color: textColor),
-                ],
-              ),
-            ),
+            wrapperColor: isSelected ? context.colors.accentContainerDefault : Colors.transparent,
+            leadingIcon: value.iconData().icon(color: textColor),
             title: value.titleLocale(context.l10n),
             customActionWidget: value == layers_state.LayerType.parkingLots
                 ? GestureDetector(
                     onTap: tapOnParkingLotsMenu,
-                    child: Container(
+                    behavior: HitTestBehavior.opaque,
+                    child: SizedBox(
                       height: _iconDefaultSize + Spacing.$3x * 2,
                       width: _iconDefaultSize + Spacing.$4x * 2,
-                      color: Colors.transparent,
-                      child: SystemIcons.ellipsis.icon(),
+                      child: SystemIcons.ellipsis.icon(color: context.colors.accentOnContainer),
                     ),
                   )
                 : null,
-            titleStyle: context.textStyle.text.copyWith(color: textColor),
+            titleStyle: isSelected ? selectedStyle : textStyle,
           ),
         );
       },

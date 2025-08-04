@@ -31,7 +31,7 @@ class RatingBar extends StatelessWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(50),
-                    splashColor: context.colorsV2.foregroundSoft.withOpacity(0.01),
+                    splashColor: context.colors.foregroundSoft.withOpacity(0.01),
                     onTap: () => onRatingChanged?.call(index + 1),
                     child: SizedBox(
                       width: ratingItemSize,

@@ -15,8 +15,9 @@ class AppFeedbackError extends StatelessWidget {
           onRetry?.call();
         },
         errorLabel: context.l10n.appFeedbackConnectionIssueV2,
+        backgroundColor: context.colors.backgroundSurface4,
         withRetryButton: onRetry != null,
-        buttonColorScheme: ButtonColorScheme.secondary,
+        buttonColorScheme: ButtonColorScheme.accentSecondary,
         backgroundColor: context.colorsV3.backgroundSurface4,
       );
 }
