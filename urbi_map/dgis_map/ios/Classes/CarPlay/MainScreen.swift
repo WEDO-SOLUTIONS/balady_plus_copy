@@ -1,5 +1,4 @@
 import CarPlay
-import Combine
 import DGis
 
 class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
@@ -54,7 +53,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private lazy var zoomControlModel = ZoomControlModel(map: map)
     private let trafficControlModel: TrafficControlModel
     private let model: Model
-    private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancellable: DGis.Cancellable?
     private var routesInfoChannelCancellable: DGis.Cancellable?
     private var activeRouteIndexCancellable: DGis.Cancellable?
@@ -68,7 +66,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var everyMinuteTimer: Timer?
 
     func dispose() {
-        rebuildUiCancellable?.cancel()
         navigatorStateCancellable?.cancel()
         routesInfoChannelCancellable?.cancel()
         activeRouteIndexCancellable?.cancel()
@@ -108,10 +105,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
         mapTemplate.mapDelegate = self
 
-        rebuildUiCancellable = userDefaultsPublished.$languageString.sink(
-            receiveValue: whenLanguageUpdated
-        )
-
         navigatorStateCancellable = model.stateChannel.sinkOnMainThread(
             navigatorStateListener
         )
@@ -124,10 +117,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func receiveRouteInfo(routeInfo: RouteInfo) {
-        buildLeadButtons()
-    }
-
-    private func whenLanguageUpdated(language: String?) {
         buildLeadButtons()
     }
 
@@ -193,7 +182,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let screen = SearchScreen(
             interfaceController: interfaceController,
             map: map,
-            userDefaultsPublished: userDefaultsPublished,
             searchNavigation: self
         )
         screen.createTemplate().show(with: interfaceController)
@@ -593,18 +581,11 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     {
         let duration = trafficRoute.traffic.durations.duration
 
-        let language =
-            Language(
-                rawValue: userDefaultsPublished.languageString ?? "ar"
-            ) ?? Language.ar
-        let locale = language.locale
-
         let durationFormatter = DateComponentsFormatter()
         durationFormatter.allowedUnits =
             duration > 3600 ? [.hour, .minute] : [.minute]
         durationFormatter.unitsStyle = .short
         durationFormatter.zeroFormattingBehavior = [.default]
-        durationFormatter.calendar?.locale = locale
         let durationFormatted = durationFormatter.string(from: duration) ?? "--"
 
         let distance = trafficRoute.route.geometry.last?.point.distance
@@ -616,7 +597,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let measurementFormatter = MeasurementFormatter()
         measurementFormatter.unitStyle = .medium
         measurementFormatter.unitOptions = .providedUnit
-        measurementFormatter.locale = locale
         measurementFormatter.numberFormatter.decimalSeparator = ","
         let distanceFormatted = measurementFormatter.string(
             from: distanceMeasurement.formatDistance
@@ -703,12 +683,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 )
             }
 
-        let language =
-            Language(
-                rawValue: userDefaultsPublished.languageString ?? "ar"
-            ) ?? Language.ar
-        let locale = language.locale
-
         let profitSeconds = calculateDurationProfit(model, betterRouteInfo)
 
         // reference mapness/lib/widgets/path_nav/ui/navi_sheet_panel.dart:145
@@ -722,7 +696,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         durationFormatter.allowedUnits = [.minute]
         durationFormatter.unitsStyle = .short
         durationFormatter.zeroFormattingBehavior = [.default]
-        durationFormatter.calendar?.locale = locale
         let durationFormatted =
             durationFormatter.string(from: timeInterval) ?? "--"
 

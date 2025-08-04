@@ -35,9 +35,6 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
             hostFlutterApi.analyticsTrack(event: "car_play_start") { _ in }
             Self.sentCarPlayStart = true
         }
-        
-        Bundle.swizzleLocalization()
-        Bundle.syncLanguage()
 
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
