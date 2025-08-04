@@ -168,7 +168,7 @@ class AppFeedbackMain extends HookConsumerWidget {
               valueListenable: rating,
               builder: (context, ratingValue, _) {
                 final canSend = ratingValue > 0;
-                final buttonState = !canSend ? ButtonState.disabled : ButtonState.normal;
+                final buttonState = !canSend ? ButtonState.disabled : ButtonState.defaultState;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(
