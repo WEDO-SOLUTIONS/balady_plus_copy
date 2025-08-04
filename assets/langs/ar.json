@@ -4552,5 +4552,6 @@
   "change_cv": "تغيير السيرة الذاتية",
   "cv_file_selected": "تم اختيار ملف السيرة الذاتية: ",
   "individual": "فرد",
-  "last_name": "الإسم الأخير"
+  "last_name": "الإسم الأخير",
+  "language_required": "اللغة*"
 }
