@@ -195,7 +195,7 @@ class PoiCardFooter extends HookConsumerWidget {
           ref.read(parkingManageProvider.notifier).clearStore();
           ToastOverlay.of(context).show(
             title: context.l10n.parkingSpotDeleted,
-            iconAsset: iconAsset,
+            icon: const ToastIconAsset(iconAsset),
           );
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },
