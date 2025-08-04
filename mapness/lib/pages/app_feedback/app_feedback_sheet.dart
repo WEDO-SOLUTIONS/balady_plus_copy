@@ -80,7 +80,6 @@ class AppFeedbackSheet extends HookConsumerWidget {
     final backgroundColorDelegate = StatelessSheetDelegateFunction<Color?>(
       function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
     );
-    final backgroundColor = context.colorsV3.backgroundSurface4;
 
     return FeedbackSourceProvider(
       source: source,
@@ -91,8 +90,6 @@ class AppFeedbackSheet extends HookConsumerWidget {
           backgroundColor: context.colors.backgroundSurface4,
           safeAreaColor: context.colors.backgroundSurface4,
           draggerColor: context.colors.backgroundSurface4,
-          backgroundColor: backgroundColor,
-          draggerColor: backgroundColor,
           startConfig: BottomSheetStart.instant,
           onWillPop: Future.value(source is FeedbackSourceOffer),
           backgroundColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,

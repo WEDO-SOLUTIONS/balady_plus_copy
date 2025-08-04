@@ -25,7 +25,6 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
     );
 
     final textEditingController = useTextEditingController(text: initialText);
-    final backgroundColor = context.colorsV3.backgroundSurface4;
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),

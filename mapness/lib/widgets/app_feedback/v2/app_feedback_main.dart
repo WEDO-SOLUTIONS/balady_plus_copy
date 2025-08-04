@@ -151,7 +151,6 @@ class AppFeedbackMain extends HookConsumerWidget {
                     config: BaladyInputConfig(
                       background: BaladyInputBackground.color,
                       hintText: context.l10n.appFeedbackHintText,
-                      background: BaladyInputBackground.color,
                       maxLines: 4,
                       isDisposed: false,
                       onChanged: (_) {},
@@ -169,7 +168,6 @@ class AppFeedbackMain extends HookConsumerWidget {
               valueListenable: rating,
               builder: (context, ratingValue, _) {
                 final canSend = ratingValue > 0;
-                final buttonColorScheme = !canSend ? ButtonState.disabled : ButtonState.defaultState;
                 final buttonState = !canSend ? ButtonState.disabled : ButtonState.normal;
                 return SizedBox(
                   width: double.infinity,

@@ -18,6 +18,5 @@ class AppFeedbackError extends StatelessWidget {
         backgroundColor: context.colors.backgroundSurface4,
         withRetryButton: onRetry != null,
         buttonColorScheme: ButtonColorScheme.accentSecondary,
-        backgroundColor: context.colorsV3.backgroundSurface4,
       );
 }
