@@ -62,8 +62,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openShare);
     registerFunction(jsLaunchUri);
     registerFunction(trackLogs);
-    // registerFunction(trackEvent);
-    // registerFunction(trackLogsErrors);
+    registerFunction(trackEvent);
+    registerFunction(trackLogsErrors);
     registerFunction(openDirectionsMap);
     registerFunction(openWebView);
     registerFunction(checkPermission);
@@ -692,27 +692,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
-
+  @pragma('vm:entry-point')
+  void trackEvent(dynamic eventName, dynamic msg, CompletionHandler handler) {
+    handler.complete("");
+  }
   @pragma('vm:entry-point')
   void trackLogsErrors(dynamic msg, CompletionHandler handler) {
-    if (kDebugMode)  print("############## $msg ##############");
-    if (msg != null && msg is String && msg.isNotEmpty) {
-      BaseResponse response = BaseResponse(
-        code: 200,
-        eventName: "trackLogsErrors",
-        message: "Event tracked successfully",
-        data: null,
-      );
-      // CommonFunctions.sendEventToAnalytics(msg);
-      handler.complete(response.jsonEncodeModel());
-    } else {
-      // BaseResponse response = BaseResponse(
-      //   code: 400,
-      //   message: "Invalid event data",
-      //   data: null,
-      // );
-      // handler.complete(response.jsonEncodeModel());
-    }
+    handler.complete("");
   }
 
   @pragma('vm:entry-point')
