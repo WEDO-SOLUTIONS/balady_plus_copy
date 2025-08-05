@@ -1713,7 +1713,7 @@ class CommonFunctions {
 
   static String getIssueCrWarning1() {
     if (CommonFunctions.isAppAR) {
-      return '<blockquote >عزيزي المستفيد.. يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستفيد... يمكنك الاستعلام عن تفاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>';
+      return '<blockquote >عزيزي المستٝيد.. يرجى اختيار النشاط المطابق للنشاط الٝعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستٝيد... يمكنك الاستعلام عن تٝاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>';
     } else {
       return '<blockquote >Dear beneficiary, please select the activity corresponding to the actual activity of the store, as the license activity cannot be modified after issuance.</p><p >Dear beneficiary, you can inquire about the details of the activities and their requirements by visiting the following link: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank"> Details </a></p></blockquote>';
     }
@@ -1721,7 +1721,7 @@ class CommonFunctions {
 
   static String getIssueCrWarning2() {
     if (CommonFunctions.isAppAR) {
-      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
+      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستٝيد.. يمكنك معرٝة الوسطاء العقاريون المعتمدين ٝي شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
     } else {
       return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">Dear beneficiary, you can find out the accredited real estate brokers in the Ejar network through the following link <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> Click Here </a> Or download the Real Estate Brokers application<a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> Or <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
     }
@@ -1729,7 +1729,7 @@ class CommonFunctions {
 
   static String getIssueCrWarning3() {
     if (CommonFunctions.isAppAR) {
-      return '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>';
+      return '<p class="m-0 ng-star-inserted">عزيزي المستٝيد... يمكنك الاطلاع على لائحة استيٝاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيٝاء اشتراطات اللوحات التجارية</a></p>';
     } else {
       return '<p class="m-0 ng-star-inserted">Dear beneficiary, you can review the compliance requirements list for commercial signs by visiting the following link<a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218"> Compliance requirements list for commercial signs</a></p>';
     }
@@ -1833,7 +1833,9 @@ class CommonProperties {
 
   static Uuid uuidInstance = const Uuid();
   static List<String> allowedSHAFingerprints = [
-    "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15"
+    "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15",
+    "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
+
   ];
 
   //static String get token =>
@@ -1897,7 +1899,6 @@ class CommonProperties {
   static LatLng defaultLocation =
       const LatLng(latitude: 24.76836756001484, longitude: 46.720988751704304);
 }
-
 /*const _fakeUser = SsoUserInfo(
   name: "احمد بن خالد",
   phone: "05055032820",

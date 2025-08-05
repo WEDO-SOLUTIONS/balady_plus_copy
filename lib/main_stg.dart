@@ -7,7 +7,6 @@ import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
@@ -44,10 +43,6 @@ void main() async {
           // options.captureFailedRequests = true;
           options.environment = EnvType.stg.name;
 
-
-
-
-
           // Performance Monitoring
           options.tracesSampleRate = 1.0; // 100% sampling for development
           // options.tracesSampleRate = 0.1; // 10% sampling for production
@@ -59,7 +54,6 @@ void main() async {
           options.enableAutoPerformanceTracing = true;
           options.enableUserInteractionTracing = true;
           options.enableAppHangTracking = true;
-
 
           // Session Tracking
           options.enableAutoSessionTracking = true;
@@ -76,7 +70,6 @@ void main() async {
 
           // Additional Performance Settings
           options.enableTimeToFullDisplayTracing = true;
-
         },
         appRunner: () => runApp(
           const MapnessProviderScope(
