@@ -99,7 +99,7 @@ class ProfilePage extends HookConsumerWidget {
                                             ? const SizedBox.shrink()
                                             : Column(
                                                 children: [
-                                                  ContentRowV2(
+                                                  ContentRow(
                                                     isDividerEnabled: true,
                                                     onTap: () => context.router
                                                         .push(
@@ -113,33 +113,23 @@ class ProfilePage extends HookConsumerWidget {
                                                           context.l10n.account,
                                                     ),
                                                   ),
-                                                  ContentRowV2(
-                                                    isDividerEnabled: true,
-                                                    onTap: () =>
-                                                    CommonFunctions.openVolunteerProfileScreen(),
-                                                    //     Navigator.of(context)
-                                                    //         .push(
-                                                    //   MaterialPageRoute(
-                                                    //     builder: (context) =>
-                                                    //         VolunteerProfileScreen(
-                                                    //       volunteerProfileBloc:
-                                                    //           GetIt.I<
-                                                    //               VolunteerProfileBloc>(),
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
-                                                    trailing: trailing,
-                                                    leading: leadingIconBuilder(
-                                                        Icons.favorite),
-                                                    text: ContentRowTextOptions(
-                                                      title:
-                                                          'volunteer_info'.tr(),
-                                                    ),
-                                                  )
+
+                                                  // if (CommonProperties.isLoggedInMunicipality) ContentRow(
+                                                  //   isDividerEnabled: true,
+                                                  //   onTap: () =>
+                                                  //   CommonFunctions.openVolunteerProfileScreen(),
+                                                  //   trailing: trailing,
+                                                  //   leading: leadingIconBuilder(
+                                                  //       Icons.favorite),
+                                                  //   text: ContentRowTextOptions(
+                                                  //     title:
+                                                  //         'volunteer_info'.tr(),
+                                                  //   ),
+                                                  // ) else const SizedBox.shrink(),
                                                 ],
                                               ),
                                       ),
-                                      ContentRowV2(
+                                      ContentRow(
                                         onTap: () => context.router
                                             .push(const SettingsRoute()),
                                         trailing: trailing,

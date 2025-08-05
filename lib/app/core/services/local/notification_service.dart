@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -111,10 +110,6 @@ class NotificationService {
   static Future<void> configure() async {
     try {
       await Firebase.initializeApp();
-
-      FirebaseInAppMessaging fiam = FirebaseInAppMessaging.instance;
-      await fiam.setMessagesSuppressed(true);
-      await fiam.triggerEvent("Start_FirebaseInAppMessaging");
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
