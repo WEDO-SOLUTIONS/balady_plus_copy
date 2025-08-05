@@ -28,5 +28,6 @@ extension ParkingStoreModelExt on ParkingStoreModel {
           longitude: lon,
           elevation: 0,
         ),
+        platformIds: [],
       );
 }

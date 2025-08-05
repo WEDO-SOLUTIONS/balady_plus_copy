@@ -24,19 +24,29 @@ extension HistoryItemExt on SearchHistoryItem {
         handlingType: handlingType,
         entity: BssEntity(
           id: objectId ?? '',
-          // TODO: add type
           type: '',
         ),
       );
 }
 
 extension SuggestItemExt on SuggestMessage {
-  BssSuggestItem toBss(BssHistoryHandlingType handlingType) => BssSuggestItem(
-        text: title.text,
-        entity: BssEntity(
-          id: handler.objectHandler!.item.id?.objectId.toString() ?? '',
-          type: suggestedType.name,
-        ),
-        handlingType: handlingType,
-      );
+  BssSuggestItem toBss(BssHistoryHandlingType handlingType) {
+    final objectHandler = handler.objectHandler;
+    if (objectHandler == null) {
+      throw Exception('Object handler is null');
+    }
+    final item = objectHandler.item;
+    if (item.id == null) {
+      throw Exception('Id is null');
+    }
+    return BssSuggestItem(
+      text: title.text,
+      entity: BssEntity(
+        id: item.id!.objectId.toString(),
+        type: suggestedType.name,
+      ),
+      handlingType: handlingType,
+      org: item.orgInfo != null ? item.orgInfo!.id.toString() : null,
+    );
+  }
 }

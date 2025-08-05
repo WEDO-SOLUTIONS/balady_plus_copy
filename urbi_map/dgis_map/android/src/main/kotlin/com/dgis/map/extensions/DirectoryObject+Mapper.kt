@@ -37,7 +37,9 @@ fun DirectoryObject.toMessage(): DirectoryObjectMessage {
             tradeLicense = this.tradeLicense?.toMessage(),
             rubricIds = this.rubricIds.map { it.value },
             routeInfos = this.routeInfos.map { it.toMessage() },
-            group = this.group.map { it.toMessage() }
+            orgInfo = this.orgInfo?.toMessage(),
+            group = this.group.map { it.toMessage() },
+            platformIds = this.platformIds.map { it.toMessage() }
     )
 }
 
@@ -476,4 +478,7 @@ fun PublicTransportTransferRouteLongEntry.toMessage(): PublicTransportTransferRo
         }
     )
     return PublicTransportTransferRouteLongEntryMessage(point = point, length = length, value=  value)
+}
+fun OrgInfo.toMessage(): OrgInfoMessage {
+    return OrgInfoMessage(id = this.id.value, branchCount = this.branchCount.toLong(), name = this.name)
 }

@@ -415,6 +415,18 @@ class GroupItemMessage {
   final ObjectTypeMessage type;
 }
 
+class OrgInfoMessage {
+  OrgInfoMessage({
+    required this.id,
+    required this.branchCount,
+    this.name,
+  });
+
+  final int branchCount;
+  final int id;
+  final String? name;
+}
+
 class DirectoryObjectMessage {
   DirectoryObjectMessage(
     this.types,
@@ -422,6 +434,7 @@ class DirectoryObjectMessage {
     this.titleAddition,
     this.about,
     this.subtitle,
+    this.description,
     this.id,
     this.markerPosition,
     this.address,
@@ -441,8 +454,10 @@ class DirectoryObjectMessage {
     this.entrances,
     this.tradeLicense,
     this.rubricIds,
+    this.orgInfo,
     this.routeInfos,
     this.group,
+    this.platformIds,
   );
 
   final List<ObjectTypeItemMessage> types;
@@ -450,6 +465,7 @@ class DirectoryObjectMessage {
   final String titleAddition;
   final String subtitle;
   final String about;
+  final String? description;
   final DgisObjectIdMessage? id;
   final GeoPointWithElevationMessage? markerPosition;
   final AddressMessage? address;
@@ -465,12 +481,14 @@ class DirectoryObjectMessage {
   final WorkStatusMessage? workStatus;
   final int? levelId;
   final BuildingLevelsMessage? buildingLevels;
-  final BuildingInfoMessage buildingInfo;
   final List<EntranceInfoMessage> entrances;
   final TradeLicenseMessage? tradeLicense;
+  final BuildingInfoMessage buildingInfo;
   final List<int> rubricIds;
-  final List<PublicTransportDirectoryRouteInfoMessage> routeInfos;
+  final OrgInfoMessage? orgInfo;
   final List<GroupItemMessage> group;
+  final List<PublicTransportDirectoryRouteInfoMessage> routeInfos;
+  final List<DgisObjectIdMessage> platformIds;
 }
 
 class PublicTransportDirectoryRouteDirectionNamesInfoMessage {

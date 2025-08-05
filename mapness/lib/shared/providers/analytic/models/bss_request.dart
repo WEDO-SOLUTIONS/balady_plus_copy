@@ -204,7 +204,6 @@ class BssMap {
       };
 }
 
-// TODO: Implement this
 class BssViewport {
   final double lat;
   final double lon;
