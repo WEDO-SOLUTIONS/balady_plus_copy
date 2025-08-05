@@ -14,20 +14,20 @@ class NaviFindInFav extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$3x),
         child: ContentWrapper(
-          color: context.colorsV3.backgroundSurface1,
+          color: context.colors.backgroundSurface1,
           children: [
-            ContentRowV2(
+            ContentRow(
               onTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
                     context,
                     callback: () => context.router.push(const NaviFavoritesRoute()),
                   ),
               leading: Icon(
                 SystemIcons.bookmark,
-                color: context.colorsV3.accentDefault,
+                color: context.colors.accentDefault,
               ),
               trailing: ContentRowTextTrailingOptions(
                 icon: SystemIcons.arrowCornerRightSmall,
-                iconColor: context.colorsV3.foregroundMuted,
+                iconColor: context.colors.foregroundMuted,
               ),
               text: ContentRowTextOptions(title: context.l10n.findInFav),
             ),

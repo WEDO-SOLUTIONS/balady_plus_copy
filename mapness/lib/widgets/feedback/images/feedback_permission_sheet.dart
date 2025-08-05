@@ -19,10 +19,10 @@ class FeedbackPermissionSheet extends HookWidget {
     );
 
     return StatelessBottomSheet(
-      safeAreaColor: context.colorsV3.backgroundSurface4,
-      backgroundColor: context.colorsV3.backgroundSurface4,
+      safeAreaColor: context.colors.backgroundSurface4,
+      backgroundColor: context.colors.backgroundSurface4,
       scrollController: sheetController,
-      draggerColor: context.colorsV3.backgroundSurface4,
+      draggerColor: context.colors.backgroundSurface4,
       content: [
         ContentRow(
           options: ContentRowOptions(
@@ -31,11 +31,11 @@ class FeedbackPermissionSheet extends HookWidget {
               FeedbackImageSelectorType.camera => context.l10n.allowAccessToCamera,
               FeedbackImageSelectorType.gallery => context.l10n.allowAccessToPhotos,
             },
-            titleStyle: context.textStyleV3.h4SemiBold.copyWith(
-              color: context.colorsV3.foregroundDefault,
+            titleStyle: context.textStyles.h4SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
             ),
             customActionWidget: AppButton.close(
-              color: context.colorsV3.neutralContainerDefault,
+              color: context.colors.neutralContainerDefault,
               onTap: () => Navigator.pop(context),
               innerPadding: const EdgeInsets.all(Spacing.$2x),
               padding: EdgeInsets.zero,
@@ -50,8 +50,8 @@ class FeedbackPermissionSheet extends HookWidget {
               FeedbackImageSelectorType.camera => context.l10n.accessCameraPermissionDesc,
               FeedbackImageSelectorType.gallery => context.l10n.accessGalleryPermissionDesc,
             },
-            style: context.textStyleV3.bodySmallRegular.copyWith(
-              color: context.colorsV3.foregroundSoft,
+            style: context.textStyles.bodySmallRegular.copyWith(
+              color: context.colors.foregroundSoft,
             ),
           ),
         ),
@@ -65,7 +65,7 @@ class FeedbackPermissionSheet extends HookWidget {
                     onTap: () => Navigator.pop(context),
                     primaryLabel: context.l10n.cancel,
                     padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-                    buttonColorScheme: ButtonColorScheme.secondary,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
                   ),
                 ),
                 const SizedBox(width: Spacing.$4x),
@@ -77,7 +77,7 @@ class FeedbackPermissionSheet extends HookWidget {
                     },
                     primaryLabel: context.l10n.goToSettings,
                     padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-                    buttonColorScheme: ButtonColorScheme.primary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                   ),
                 ),
               ],

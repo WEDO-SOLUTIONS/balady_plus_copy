@@ -119,7 +119,7 @@ class DeeplinkPage extends ConsumerWidget {
         data: (value) => value?.address ?? '',
         orElse: () => '',
       ),
-      context.textStyleV3.bodySmallRegular,
+      context.textStyles.bodySmallRegular,
     );
     final isAuthorized = data.maybeWhen(
       data: (value) => value?.isAuthorized ?? false,
@@ -135,7 +135,7 @@ class DeeplinkPage extends ConsumerWidget {
         data: (value) => value?.title ?? '',
         orElse: () => '',
       ),
-      context.textStyleV3.h4SemiBold,
+      context.textStyles.h4SemiBold,
     );
 
     if (sizeOfTitle.width > MediaQuery.of(context).size.width - Spacing.$4x - (isAuthorized ? 48 : 0) - 40) {

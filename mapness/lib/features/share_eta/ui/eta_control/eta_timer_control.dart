@@ -43,13 +43,13 @@ class EtaTimerControl extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             PulseIndicator(
-              color: code == null ? null : context.colorsV2.errorDefault,
+              color: code == null ? null : context.colors.errorDefault,
             ),
             const SizedBox(width: 8),
             Text(
               estimatedTimeString,
               textDirection: ref.watch(uiDirectionProvider),
-              style: context.textStyleV3.captionLargeMedium.copyWith(color: context.colorsV2.foregroundDefault),
+              style: context.textStyles.captionLargeMedium.copyWith(color: context.colors.foregroundDefault),
             ),
           ],
         ),

@@ -17,12 +17,12 @@ class EtaWatchingSheet extends StatelessWidget {
             onTap: onStopWatchingPressed,
             options: ContentRowOptions(
               title: context.l10n.stopWatching,
-              titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundDefault,
+              titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundDefault,
               ),
               leadingIcon: Icon(
                 GeneralIcons.clearCircle,
-                color: context.colorsV2.foregroundSoft,
+                color: context.colors.foregroundSoft,
               ),
             ),
           )

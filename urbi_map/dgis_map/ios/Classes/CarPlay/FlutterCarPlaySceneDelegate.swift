@@ -35,9 +35,6 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
             hostFlutterApi.analyticsTrack(event: "car_play_start") { _ in }
             Self.sentCarPlayStart = true
         }
-        
-        Bundle.swizzleLocalization()
-        Bundle.syncLanguage()
 
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
@@ -63,7 +60,8 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         )
         let mapTemplate = mainScreen.createTemplate()
         
-        dgisCarPlayMapView.carWindowScreenNativeBounds = templateApplicationScene.carWindow.screen.nativeBounds
+        let carPlayFixOn = templateApplicationScene.carWindow.screen.nativeBounds.width == 800
+        map.attributes.setAttributeValue(name: "carPlayFixOn", value: .boolean(carPlayFixOn))
         
         interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
         

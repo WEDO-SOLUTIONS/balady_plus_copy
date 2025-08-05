@@ -32,7 +32,7 @@ class ShareEtaBtnAction extends StatelessWidget {
           ),
         ShareEtaBtnActionType.stoped => Icon(
             SystemIcons.share,
-            color: context.colorsV3.foregroundMuted,
+            color: context.colors.foregroundMuted,
           ),
       };
 }

@@ -40,8 +40,8 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
       children: [
         Text(
           context.l10n.images,
-          style: context.textStyleV3.captionMediumRegular.copyWith(
-            color: context.colorsV3.foregroundDefault,
+          style: context.textStyles.captionMediumRegular.copyWith(
+            color: context.colors.foregroundDefault,
           ),
         ),
         Spacing.$2x.heightBox,
@@ -73,8 +73,8 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
             maxImages,
             maxSizeInBytes.formatAsFileSize(),
           ),
-          style: context.textStyleV3.captionMediumRegular.copyWith(
-            color: context.colorsV3.foregroundSoft,
+          style: context.textStyles.captionMediumRegular.copyWith(
+            color: context.colors.foregroundSoft,
           ),
         ),
       ],

@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentContacts, PoiContentSocialMediaType;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +38,7 @@ class PoiContentContactsCard extends StatelessWidget {
           ),
         if (hasPhones && hasEmails)
           Divider(
-            color: context.colorsV3.borderDefault,
+            color: context.colors.borderDefault,
             indent: Spacing.$12x,
             height: 1,
           ),
@@ -95,33 +95,33 @@ class _PhoneItemWidget extends StatelessWidget {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final phoneIcon = isRtl ? GeneralIcons.phoneRTL : GeneralIcons.phoneLTR;
     if (phones.length == 1) {
-      return ContentRowV2(
+      return ContentRow(
         supportTitleRTL: false,
         text: ContentRowTextOptions(
           title: phones.first,
           titleOptions: ContentRowTextOption(
-            baseColor: context.colorsV3.foregroundDefault,
+            baseColor: context.colors.foregroundDefault,
           ),
         ),
-        leading: phoneIcon.icon(color: context.colorsV3.accentDefault),
+        leading: phoneIcon.icon(color: context.colors.accentDefault),
         onTap: () => onTap.call(phones.first),
       );
     }
     return ContentRowExpandableTmp(
-      expandIconColor: context.colorsV3.foregroundMuted,
+      expandIconColor: context.colors.foregroundMuted,
       supportTitleRTL: false,
-      leading: phoneIcon.icon(color: context.colorsV3.accentDefault),
+      leading: phoneIcon.icon(color: context.colors.accentDefault),
       onTitleTap: () => onTap.call(phones.first),
       text: ContentRowTextOptions(
         title: phones.first,
         titleOptions: ContentRowTextOption(
-          baseColor: context.colorsV3.foregroundDefault,
+          baseColor: context.colors.foregroundDefault,
         ),
       ),
       trailing: Text(
         '${phones.length}',
-        style: context.textStyleV3.bodySmallSemiBold.copyWith(
-          color: context.colorsV3.foregroundMuted,
+        style: context.textStyles.bodySmallSemiBold.copyWith(
+          color: context.colors.foregroundMuted,
         ),
       ),
       content: Column(
@@ -134,13 +134,13 @@ class _PhoneItemWidget extends StatelessWidget {
                   toastText: context.l10n.phoneCopied,
                 );
               },
-              child: ContentRowV2(
+              child: ContentRow(
                 onTap: () => onTap.call(phone),
-                leading: phoneIcon.icon(color: context.colorsV3.accentDefault),
+                leading: phoneIcon.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: phone,
                   titleOptions: ContentRowTextOption(
-                    baseColor: context.colorsV3.foregroundDefault,
+                    baseColor: context.colors.foregroundDefault,
                   ),
                 ),
               ),
@@ -164,32 +164,32 @@ class _EmailItemWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
     if (emails.length == 1) {
-      return ContentRowV2(
+      return ContentRow(
         supportTitleRTL: false,
         text: ContentRowTextOptions(
           title: emails.first,
           titleOptions: ContentRowTextOption(
-            baseColor: context.colorsV3.foregroundDefault,
+            baseColor: context.colors.foregroundDefault,
           ),
         ),
-        leading: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
+        leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
         onTap: () => onTap.call(emails.first),
       );
     }
     return ContentRowExpandableTmp(
       onTitleTap: () => onTap.call(emails.first),
-      expandIconColor: context.colorsV3.foregroundMuted,
-      leading: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
+      expandIconColor: context.colors.foregroundMuted,
+      leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
       text: ContentRowTextOptions(
         title: emails.first,
         titleOptions: ContentRowTextOption(
-          baseColor: context.colorsV3.foregroundDefault,
+          baseColor: context.colors.foregroundDefault,
         ),
       ),
       trailing: Text(
         '${emails.length}',
-        style: context.textStyleV3.bodySmallSemiBold.copyWith(
-          color: context.colorsV3.foregroundMuted,
+        style: context.textStyles.bodySmallSemiBold.copyWith(
+          color: context.colors.foregroundMuted,
         ),
       ),
       content: Column(
@@ -202,13 +202,13 @@ class _EmailItemWidget extends StatelessWidget {
                   toastText: context.l10n.emailHasBeenCopied,
                 );
               },
-              child: ContentRowV2(
+              child: ContentRow(
                 onTap: () => onTap.call(email),
-                leading: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
+                leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: email,
                   titleOptions: ContentRowTextOption(
-                    baseColor: context.colorsV3.foregroundDefault,
+                    baseColor: context.colors.foregroundDefault,
                   ),
                 ),
               ),
@@ -236,12 +236,12 @@ class _SocialMediaItemWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(Spacing.$2x),
           decoration: BoxDecoration(
-            color: context.colorsV3.accentSecondaryContainerDefault,
+            color: context.colors.accentSecondaryContainerDefault,
             borderRadius: BorderRadius.circular(Spacing.$2x),
           ),
           child: Icon(
             icon,
-            color: context.colorsV3.accentSecondaryOnContainer,
+            color: context.colors.accentSecondaryOnContainer,
             size: Spacing.$6x,
           ),
         ),

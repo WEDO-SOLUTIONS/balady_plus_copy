@@ -15,7 +15,7 @@ class SearchActions extends StatelessWidget {
   Widget build(BuildContext context) => ClipRRect(
         borderRadius: BorderRadius.circular(RadiusBorder.xl),
         child: Material(
-          color: context.colorsV2.neutralContainerDefault,
+          color: context.colors.neutralContainerDefault,
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: ListView.builder(
             shrinkWrap: true,

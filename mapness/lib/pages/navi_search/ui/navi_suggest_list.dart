@@ -63,15 +63,15 @@ class NaviSuggestList extends ConsumerWidget {
           Material(
             clipBehavior: Clip.antiAlias,
             borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-            color: context.colorsV3.backgroundSurface1,
+            color: context.colors.backgroundSurface1,
             child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               itemBuilder: (context, index) => SuggestItem(
-                iconColor: context.colorsV3.foregroundMuted,
-                tralingTextColor: context.colorsV3.foregroundSoft,
+                iconColor: context.colors.foregroundMuted,
+                tralingTextColor: context.colors.foregroundSoft,
                 suggest: suggests[index],
                 myLocation: myLocation == null
                     ? null

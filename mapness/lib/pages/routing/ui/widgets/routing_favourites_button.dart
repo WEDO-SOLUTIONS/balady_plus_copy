@@ -9,16 +9,15 @@ class _FavButton extends StatelessWidget {
   const _FavButton({
     required this.onTap,
     required this.icon,
-    super.key,
   });
 
   @override
   Widget build(BuildContext context) => Expanded(
         child: SizedBox(
           height: 48,
-          child: BaladyAppButton(
-            buttonColorScheme: BaladyButtonColorScheme.neutral,
-            buttonType: BaladyButtonType.secondary,
+          child: AppButton(
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonType: ButtonType.secondary,
             primaryIcon: icon,
             onTap: onTap,
           ),

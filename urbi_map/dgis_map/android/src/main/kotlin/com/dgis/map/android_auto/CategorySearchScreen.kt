@@ -73,54 +73,54 @@ class CategorySearchScreen(
 }
 
 enum class SearchCategory {
-    MOSQUE, GAS_STATION, HYPERMARKET, TO_EAT, HOTEL;
+    MOSQUES, FUEL, MARKETS, EAT_OUT, HOTELS;
 
     val titleResId: Int
         get() {
             return when (this) {
-                MOSQUE -> R.string.search_mosque
-                GAS_STATION -> R.string.search_gas_station
-                HYPERMARKET -> R.string.search_hypermarket
-                TO_EAT -> R.string.search_to_eat
-                HOTEL -> R.string.search_hotel
+                MOSQUES -> R.string.search_mosques
+                FUEL -> R.string.search_fuel
+                MARKETS -> R.string.search_market
+                EAT_OUT -> R.string.search_eat_out
+                HOTELS -> R.string.search_hotels
             }
         }
 
     val iconResId: Int
         get() {
             return when (this) {
-                MOSQUE -> R.drawable.mosque
-                GAS_STATION -> R.drawable.gas_station
-                HYPERMARKET -> R.drawable.hypermarket
-                TO_EAT -> R.drawable.to_eat
-                HOTEL -> R.drawable.hotel
+                MOSQUES -> R.drawable.mosque
+                FUEL -> R.drawable.gas_station
+                MARKETS -> R.drawable.market
+                EAT_OUT -> R.drawable.eat_out
+                HOTELS -> R.drawable.hotel
             }
         }
 
     val query: Map<Language, String>
         get() {
             return when (this) {
-                MOSQUE -> mapOf(
+                MOSQUES -> mapOf(
                     Language.ENGLISH to "Mosques",
                     Language.ARABIC to "المساجد",
                 )
 
-                GAS_STATION -> mapOf(
+                FUEL -> mapOf(
                     Language.ENGLISH to "Fuel",
                     Language.ARABIC to "وقود",
                 )
 
-                HYPERMARKET -> mapOf(
+                MARKETS -> mapOf(
                     Language.ENGLISH to "Market",
                     Language.ARABIC to "سوق",
                 )
 
-                TO_EAT -> mapOf(
+                EAT_OUT -> mapOf(
                     Language.ENGLISH to "Eat out",
                     Language.ARABIC to "مطاعم",
                 )
 
-                HOTEL -> mapOf(
+                HOTELS -> mapOf(
                     Language.ENGLISH to "Hotels",
                     Language.ARABIC to "فنادق",
                 )

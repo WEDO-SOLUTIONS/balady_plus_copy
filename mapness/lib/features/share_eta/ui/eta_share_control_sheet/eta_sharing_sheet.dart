@@ -20,27 +20,27 @@ class EtaSharingSheet extends StatelessWidget {
           ContentRow(
             onTap: onLiveLocationPressed,
             options: ContentRowOptions(
-                dividerEnabled: true,
-                leadingIcon: const PulseIndicator(),
-                title: context.l10n.liveLocation,
-                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+              dividerEnabled: true,
+              leadingIcon: const PulseIndicator(),
+              title: context.l10n.liveLocation,
+              titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundDefault,
               ),
             ),
           ),
           ContentRow(
             onTap: onCurrentLocationPressed,
             options: ContentRowOptions(
-                leadingIcon: SvgPicture.asset(
-                  Assets.icons.svg.currentLocationIcon.keyName,
-                  colorFilter: ColorFilter.mode(
-                    context.colorsV2.foregroundSoft,
-                    BlendMode.srcIn,
-                  ),
+              leadingIcon: SvgPicture.asset(
+                Assets.icons.svg.currentLocationIcon.keyName,
+                colorFilter: ColorFilter.mode(
+                  context.colors.foregroundSoft,
+                  BlendMode.srcIn,
                 ),
-                title: context.l10n.currentLocation,
-                titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+              ),
+              title: context.l10n.currentLocation,
+              titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundDefault,
               ),
             ),
           )

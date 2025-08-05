@@ -9,6 +9,7 @@ import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CameraAnimationType
 import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.navigation.BetterRouteInfo
 import ru.dgis.sdk.navigation.BetterRouteResponse
@@ -20,6 +21,8 @@ import ru.dgis.sdk.navigation.RouteBuildOptions
 import ru.dgis.sdk.navigation.RouteInfo
 import ru.dgis.sdk.navigation.SoundCategory
 import ru.dgis.sdk.navigation.State
+import ru.dgis.sdk.navigation.SpeedRange
+import ru.dgis.sdk.navigation.SpeedRangeToStyleZoom
 import ru.dgis.sdk.navigation.duration
 import ru.dgis.sdk.navigation.getInstructionManeuver
 import ru.dgis.sdk.navigation.metersPerSecondToKilometersPerHour
@@ -328,6 +331,21 @@ class CarNavigationHandler(
 
     fun setNavigationVoice(voice: NavigationVoice) {
         navigationManager.voiceSelector.voice = voice
+    }
+
+    fun setupCamera() {
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence =
+            listOf(
+                SpeedRangeToStyleZoom(
+                    range = SpeedRange(
+                        minSpeed = 0.0,
+                        maxSpeed = 200.0
+                    ),
+                    minDistanceToManeuver = RouteDistance(millimeters = 0),
+                    maxDistanceToManeuver = RouteDistance(millimeters = 0),
+                    styleZoom = StyleZoom(value = 18.0f)
+                )
+            )
     }
 
     fun followNavigation() {

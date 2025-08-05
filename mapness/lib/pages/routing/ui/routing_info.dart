@@ -209,7 +209,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                 onChanged: _onChanged,
                 points: widget.points,
               ),
-              Spacing.$4x.heightBox,
             ],
           ),
         );

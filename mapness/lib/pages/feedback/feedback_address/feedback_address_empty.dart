@@ -18,7 +18,7 @@ class FeedbackAddressEmpty extends ConsumerWidget {
           child: !isInitial
               ? Text(
                   context.l10n.searchCouldNotFindAnything,
-                  style: context.textStyleV3.bodyLargeSemiBold,
+                  style: context.textStyles.bodyLargeSemiBold,
                   textAlign: TextAlign.center,
                 )
               : null,

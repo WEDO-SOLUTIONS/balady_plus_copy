@@ -15,7 +15,7 @@ class LanguagePickSheetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorsV2 = context.colorsV2;
+    final colors = context.colors;
 
     return DraggableScrollableSheet(
       expand: false,
@@ -23,7 +23,7 @@ class LanguagePickSheetPage extends StatelessWidget {
       builder: (context, controller) => Scaffold(
         body: DecoratedBox(
           decoration: BoxDecoration(
-            color: colorsV2.backgroundSurface4,
+            color: colors.backgroundSurface4,
             borderRadius: const BorderRadius.vertical(
               top: Radius.circular(RadiusBorder.xl),
             ),
@@ -36,7 +36,7 @@ class LanguagePickSheetPage extends StatelessWidget {
                 DrawLineWidget(
                   lineHeight: Spacing.$1x,
                   lineWidth: Spacing.$10x,
-                  lineColor: colorsV2.neutralMuted,
+                  lineColor: colors.neutralMuted,
                 ),
                 Spacing.$3x.heightBox,
                 Row(
@@ -45,14 +45,14 @@ class LanguagePickSheetPage extends StatelessWidget {
                     Text(
                       context.l10n.voiceLanguageTitle,
                       style: context.textStyle.heading2.copyWith(
-                        color: colorsV2.foregroundDefault,
+                        color: colors.foregroundDefault,
                       ),
                     ),
                     AppButton.close(
                       padding: EdgeInsets.zero,
                       onTap: () => context.router.popForced(),
-                      color: colorsV2.neutralDefault.withOpacity(0.12),
-                      iconColor: colorsV2.foregroundSoft,
+                      color: colors.neutralDefault.withOpacity(0.12),
+                      iconColor: colors.foregroundSoft,
                       innerPadding: const EdgeInsets.all(Spacing.$2x),
                     ),
                   ],
@@ -68,7 +68,7 @@ class LanguagePickSheetPage extends StatelessWidget {
                       )
                       .insertBetween(
                         Divider(
-                          color: colorsV2.borderSoft,
+                          color: colors.borderSoft,
                           indent: Spacing.$4x,
                           endIndent: 0,
                         ),

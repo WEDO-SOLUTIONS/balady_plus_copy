@@ -20,7 +20,7 @@ class MyLocationPoiActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = context.textStyle.footNoteBold;
-    final accent = context.colorsV2.accentDefault;
+    final accent = context.colors.accentDefault;
     final secondary = context.staticColor.surfaceStatusContrastAccent;
     final primary = context.color.textAndIconsBaseInversePrimary;
     final secondaryText = context.color.textAndIconsStatusAccent;
@@ -62,7 +62,7 @@ class MyLocationPoiActions extends StatelessWidget {
               if (onParkingAdd != null)
                 ItemActionBar(
                   icon: SystemIcons.parkingAdd,
-                  buttonType: BaladyButtonType.secondary,
+                  buttonType: ButtonType.secondary,
                   onPressed: () {
                     onParkingAdd?.call();
                   },

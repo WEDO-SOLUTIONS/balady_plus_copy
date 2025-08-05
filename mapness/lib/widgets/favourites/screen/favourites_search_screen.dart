@@ -44,7 +44,7 @@ class FavouritesSearchScreen extends HookConsumerWidget {
               Expansion.expanded,
             },
             scrollableBody: (context, scrollController) {
-              final bgColor = context.colorsV2.backgroundSurface1;
+              final bgColor = context.colors.backgroundSurface1;
               return ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(RadiusBorder.xl),

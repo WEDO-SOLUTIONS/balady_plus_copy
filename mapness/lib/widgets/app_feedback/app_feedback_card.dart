@@ -23,7 +23,7 @@ class AppFeedbackCard extends ConsumerWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.l),
-                  color: context.colorsV2.accentSecondaryDefault,
+                  color: context.colors.accentSecondaryDefault,
                 ),
                 child: ContentRow(
                   options: ContentRowOptions(
@@ -39,8 +39,8 @@ class AppFeedbackCard extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: Spacing.$1x),
                       child: Text(
                         context.l10n.appFeedbackShareFeedback,
-                        style: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                          color: context.colorsV2.staticWhite,
+                        style: context.textStyles.bodyLargeSemiBold.copyWith(
+                          color: context.colors.staticWhite,
                         ),
                       ),
                     ),
@@ -48,8 +48,8 @@ class AppFeedbackCard extends ConsumerWidget {
                       padding: const EdgeInsets.only(bottom: Spacing.$1x),
                       child: Text(
                         context.l10n.appFeedbackDoYouLikeBaladyAppTellUsMore,
-                        style: context.textStyleV3.captionLargeRegular.copyWith(
-                          color: context.colorsV2.staticWhite,
+                        style: context.textStyles.captionLargeRegular.copyWith(
+                          color: context.colors.staticWhite,
                         ),
                       ),
                     ),
@@ -58,7 +58,7 @@ class AppFeedbackCard extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: context.colorsV2.staticWhite,
+                            color: context.colors.staticWhite,
                             borderRadius: BorderRadius.circular(RadiusBorder.s),
                           ),
                           width: Spacing.$8x,
@@ -67,7 +67,7 @@ class AppFeedbackCard extends ConsumerWidget {
                             child: Icon(
                               SystemIcons.arrowRight,
                               size: Spacing.$6x,
-                              color: context.colorsV2.accentDefault,
+                              color: context.colors.accentDefault,
                             ),
                           ),
                         )),

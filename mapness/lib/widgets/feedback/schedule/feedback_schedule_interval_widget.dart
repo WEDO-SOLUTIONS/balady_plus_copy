@@ -86,7 +86,7 @@ class InputDropDownList extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
           decoration: BoxDecoration(
-            color: context.colorsV2.backgroundSurface1,
+            color: context.colors.backgroundSurface1,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -96,14 +96,14 @@ class InputDropDownList extends StatelessWidget {
                 child: Text(
                   label,
                   overflow: TextOverflow.ellipsis,
-                  style: context.textStyleV3.bodySmallRegular.copyWith(
-                    color: isEnable ? null : context.colorsV2.foregroundMuted,
+                  style: context.textStyles.bodySmallRegular.copyWith(
+                    color: isEnable ? null : context.colors.foregroundMuted,
                   ),
                 ),
               ),
               Icon(
                 SystemIcons.arrowCornerDownSmall,
-                color: isEnable ? null : context.colorsV2.foregroundMuted,
+                color: isEnable ? null : context.colors.foregroundMuted,
               ),
             ],
           ),

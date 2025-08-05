@@ -113,7 +113,7 @@ class EtaUtils {
               );
         }
         final storedTokenId = EtaStreamStorage().state.streamToken;
-        if(tokenId == storedTokenId){
+        if (tokenId == storedTokenId) {
           return true;
         }
 
@@ -146,7 +146,7 @@ class EtaUtils {
         }
 
         final storedTokenId = EtaStreamStorage().state.streamToken;
-        if(tokenId == storedTokenId){
+        if (tokenId == storedTokenId) {
           return true;
         }
 

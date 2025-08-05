@@ -73,3 +73,14 @@ extension ContactsInfoTypeExt on ContactsInfoType {
         _ => null
       };
 }
+
+enum PoiContentSocialMediaType {
+  email,
+  website,
+  instagram,
+  facebook,
+  youtube,
+  linkedin,
+  whatsapp,
+  telegram,
+}

@@ -85,9 +85,9 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final colorsV3 = context.colorsV3;
+    final colors = context.colors;
     final color = context.color;
-    final textStyleV3 = context.textStyleV3;
+    final textStyles = context.textStyles;
 
     final eta = ref.watch(pathNavEtaProvider);
     final soundSettingsModel = ref.watch(soundSettingsProvider);
@@ -108,8 +108,8 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
           key: sheetKey,
           displayDragger: false,
           startConfig: BottomSheetStart.closed,
-          safeAreaColor: colorsV3.backgroundSurface4,
-          backgroundColor: colorsV3.backgroundSurface4,
+          safeAreaColor: colors.backgroundSurface4,
+          backgroundColor: colors.backgroundSurface4,
           scrollController: widget.sheetController,
           borderRadiusDelegate: StatelessSheetDelegateFunction<BorderRadius?>(
             function: (controller) => BorderRadius.vertical(
@@ -187,7 +187,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                         actionWidget: ContentRowActionOptions(
                           actionIcon: AppIcons(
                             iconData: GeneralIcons.routeStroke,
-                            color: context.colorsV3.foregroundMuted,
+                            color: context.colors.foregroundMuted,
                           ),
                         ),
                       ),
@@ -197,11 +197,11 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                   ContentRow(
                     onTap: () => context.router.push(const SoundSettingsRoute()),
                     options: ContentRowOptions(
-                      subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
+                      subtitleStyle: textStyles.bodySmallRegular.copyWith(
                         color: color.textAndIconsBaseSecondary,
                       ),
-                      titleStyle: textStyleV3.bodyLargeMedium.copyWith(
-                        color: colorsV3.foregroundDefault,
+                      titleStyle: textStyles.bodyLargeMedium.copyWith(
+                        color: colors.foregroundDefault,
                       ),
                       wrapperColor: color.surfaceBaseTertiary,
                       wrapperEnabled: true,
@@ -210,7 +210,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                       actionWidget: ContentRowActionOptions(
                         actionIcon: AppIcons(
                           iconData: SystemIcons.arrowCornerRightLarge,
-                          color: context.colorsV3.foregroundMuted,
+                          color: context.colors.foregroundMuted,
                         ),
                       ),
                       bottomWidget: SegmentTabsButton(
@@ -232,8 +232,8 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                   ContentRow(
                     onTap: () => context.router.push(const NavigatorSettingsRoute()),
                     options: ContentRowOptions(
-                      titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                        color: colorsV3.foregroundDefault,
+                      titleStyle: textStyles.bodyLargeRegular.copyWith(
+                        color: colors.foregroundDefault,
                       ),
                       wrapperColor: color.surfaceBaseTertiary,
                       wrapperEnabled: true,
@@ -245,7 +245,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                       actionWidget: ContentRowActionOptions(
                         actionIcon: AppIcons(
                           iconData: SystemIcons.arrowCornerRightLarge,
-                          color: context.colorsV3.foregroundMuted,
+                          color: context.colors.foregroundMuted,
                         ),
                       ),
                     ),

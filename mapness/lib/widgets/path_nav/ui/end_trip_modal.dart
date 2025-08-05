@@ -29,7 +29,7 @@ class EndTripModal extends HookWidget {
           constraints:
               BoxConstraints(maxWidth: isLandscape ? NaviSheetPanel.landscapeWidth - Spacing.$4x * 2 : double.infinity),
           child: StatelessBottomSheet(
-            safeAreaColor: context.colorsV3.backgroundSurface1,
+            safeAreaColor: context.colors.backgroundSurface1,
             scrollController: bottomsheetController,
             backgroundColorDelegate: StatelessSheetDelegateFunction<Color?>(
               function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
@@ -41,16 +41,16 @@ class EndTripModal extends HookWidget {
                     padding: const EdgeInsets.all(
                       Spacing.$2x,
                     ),
-                    child: Center(child: Text(context.l10n.endTrip, style: context.textStyleV3.h3SemiBold)),
+                    child: Center(child: Text(context.l10n.endTrip, style: context.textStyles.h3SemiBold)),
                   ),
                   PositionedDirectional(
                     end: Spacing.$4x,
-                    child: BaladyAppButton(
+                    child: AppButton(
                       innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
-                      size: BaladyButtonSize.small,
+                      size: ButtonSize.small,
                       primaryIcon: SystemIcons.arrowCornerDownLarge,
-                      buttonType: BaladyButtonType.secondary,
-                      buttonColorScheme: BaladyButtonColorScheme.neutral,
+                      buttonType: ButtonType.secondary,
+                      buttonColorScheme: ButtonColorScheme.neutral,
                       onTap: Navigator.of(context).pop,
                     ),
                   ),
@@ -59,21 +59,21 @@ class EndTripModal extends HookWidget {
               const SizedBox(height: Spacing.$4x),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                child: BaladyAppButton(
+                child: AppButton(
                   primaryLabel: context.l10n.yesEnd,
-                  size: BaladyButtonSize.large,
-                  buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+                  size: ButtonSize.large,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
                   onTap: onEndTripPressed,
                 ),
               ),
               const SizedBox(height: Spacing.$3x),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                child: BaladyAppButton(
+                child: AppButton(
                   primaryLabel: context.l10n.cancel,
-                  size: BaladyButtonSize.large,
-                  buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                  buttonType: BaladyButtonType.secondary,
+                  size: ButtonSize.large,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonType: ButtonType.secondary,
                   onTap: Navigator.of(context).pop,
                 ),
               ),

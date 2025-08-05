@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentAccessibilityInfo;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
@@ -39,9 +39,9 @@ class _AccessibilityInfoItem extends StatelessWidget {
   const _AccessibilityInfoItem({required this.title, required this.iconData, Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => ContentRowV2(
+  Widget build(BuildContext context) => ContentRow(
         leading: iconData.icon(
-          color: context.colorsV3.accentDefault,
+          color: context.colors.accentDefault,
         ),
         text: ContentRowTextOptions(
           title: title,

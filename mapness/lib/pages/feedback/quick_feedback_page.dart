@@ -32,7 +32,7 @@ class QuickFeedbackPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: context.colorsV3.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface4,
         body: _QuickFeedbackScreen(
           type: feedbackType != null
               ? QuickFeedbackType.values.firstWhereOrNull((e) => e.name == feedbackType) ?? type
