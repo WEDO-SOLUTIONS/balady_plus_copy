@@ -16,7 +16,7 @@ class TitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) => Text(
         title,
-        style: context.textStyleV3.h2SemiBold.copyWith(
+        style: context.textStyles.h2SemiBold.copyWith(
           color: context.color.textAndIconsBasePrimary,
         ),
         overflow: TextOverflow.ellipsis,

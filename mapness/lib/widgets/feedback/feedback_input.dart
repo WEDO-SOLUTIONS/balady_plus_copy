@@ -136,7 +136,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
           focusNode: widget.focusNode,
           hintText: widget.hintText,
           background: BaladyInputBackground.color,
-          fillColor: context.colorsV2.neutralContainerDefault,
+          fillColor: context.colors.neutralContainerDefault,
           autovalidateMode: AutovalidateMode.onUnfocus,
           allowedInputPattern: widget.allowedInputPattern,
           maxLines: widget.maxLines,

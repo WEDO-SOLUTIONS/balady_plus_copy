@@ -56,9 +56,9 @@ class _HajjPoiCardPageState extends ConsumerState<HajjPoiCardPage> with SingleTi
         child: SafeArea(
           child: StatefulBottomSheet(
             scrollController: _bottomSheetController,
-            safeAreaColor: context.colorsV2.backgroundSurface2,
-            draggerColor: context.colorsV2.backgroundSurface2,
-            backgroundColor: context.colorsV2.backgroundSurface2,
+            safeAreaColor: context.colors.backgroundSurface2,
+            draggerColor: context.colors.backgroundSurface2,
+            backgroundColor: context.colors.backgroundSurface2,
             backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
             outside: PoiCardMapControlsWrapper(
               bottomSheetController: _bottomSheetController,
@@ -91,7 +91,7 @@ class _HajjPoiCardPageState extends ConsumerState<HajjPoiCardPage> with SingleTi
             ),
             sliverBeforeContent: DecoratedSliver(
               decoration: BoxDecoration(
-                color: context.colorsV2.backgroundSurface4,
+                color: context.colors.backgroundSurface4,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
               ),
               sliver: SliverFillAfter(

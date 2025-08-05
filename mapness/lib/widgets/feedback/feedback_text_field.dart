@@ -89,9 +89,9 @@ class FeedbackInput extends HookWidget {
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.only(top: Spacing.$3x),
-                  child: BaladyAppButton(
-                    buttonType: BaladyButtonType.secondary,
-                    buttonColorScheme: BaladyButtonColorScheme.accent,
+                  child: AppButton(
+                    buttonType: ButtonType.secondary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                     primaryLabel: context.l10n.setOnTheMap,
                     primaryIcon: GeneralIcons.pin,
                     onTap: () => _selectRoute(context, controller, fieldState),

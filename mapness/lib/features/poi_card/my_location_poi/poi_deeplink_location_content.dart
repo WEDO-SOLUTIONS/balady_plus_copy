@@ -49,8 +49,8 @@ class PoiDeeplinkContent extends ConsumerWidget {
                       data: (value) => value?.address ?? '${location.latitude}, ${location.longitude}',
                       orElse: () => '',
                     ),
-                    style: context.textStyleV3.bodySmallRegular.copyWith(
-                      color: context.colorsV2.foregroundSoft,
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: context.colors.foregroundSoft,
                     ),
                   ),
                 ),

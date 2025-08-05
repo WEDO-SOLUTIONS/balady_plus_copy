@@ -60,31 +60,34 @@ class ShareEtaBtn extends HookConsumerWidget {
         }
       },
       options: ContentRowOptions(
-        wrapperColor: context.colorsV2.staticWhite,
+        wrapperColor: context.colors.staticWhite,
         wrapperEnabled: true,
         titleBuilder: (context) => Row(
           children: [
             Text(
               isPulseactive || isEtaStreamLoading ? context.l10n.routeIsSharing : context.l10n.shareTripProgress,
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundDefault,
+              style: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundDefault,
               ),
             ),
             if (isPulseactive)
               Padding(
-                padding: const EdgeInsetsDirectional.only(end: Spacing.$1_5x),
+                padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
                 child: PulseIndicator(
-                  color: connectionCode != null ? context.colorsV2.errorDefault : null,
+                  color: connectionCode != null ? context.colors.errorDefault : null,
                 ),
               )
           ],
         ),
-        customActionWidget: ShareEtaBtnAction(
-          type: isEtaStreamLoading
-              ? ShareEtaBtnActionType.loading
-              : isPulseactive
-                  ? ShareEtaBtnActionType.active
-                  : ShareEtaBtnActionType.stoped,
+        customActionWidget: Padding(
+          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+          child: ShareEtaBtnAction(
+            type: isEtaStreamLoading
+                ? ShareEtaBtnActionType.loading
+                : isPulseactive
+                    ? ShareEtaBtnActionType.active
+                    : ShareEtaBtnActionType.stoped,
+          ),
         ),
       ),
     );

@@ -33,8 +33,8 @@ class AuthorizedWidget extends ConsumerWidget {
                 maxLines: 3,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
-                style: context.textStyleV3.h3Medium.copyWith(
-                  color: context.colorsV3.foregroundDefault,
+                style: context.textStyles.h3Medium.copyWith(
+                  color: context.colors.foregroundDefault,
                 ),
               ),
             ),

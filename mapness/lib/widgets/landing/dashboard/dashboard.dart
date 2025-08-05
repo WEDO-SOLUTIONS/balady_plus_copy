@@ -74,7 +74,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         keepContentBehindFooter: true,
         scrollController: widget.bottomSheetController,
         topHeader: MapHiddenStateControls(widget.bottomSheetController),
-        backgroundColor: context.colorsV2.backgroundSurface2,
+        backgroundColor: context.colors.backgroundSurface2,
         header: const DashboardHeader(),
         footer: IgnorePointer(
           child: SizedBox(

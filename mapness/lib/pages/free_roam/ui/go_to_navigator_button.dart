@@ -38,7 +38,7 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
       const squareSize = 40.0;
       const iconSize = 24.0;
 
-      final colorsV3 = context.colorsV3;
+      final colors = context.colors;
       final alignment = context.isLTR ? Alignment.centerLeft : Alignment.centerRight;
 
       return ClipRRect(
@@ -57,12 +57,12 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
                 SizedBox(
                   width: double.infinity,
                   height: height,
-                  child: ColoredBox(color: colorsV3.accentSecondarySoft),
+                  child: ColoredBox(color: colors.accentSecondarySoft),
                 ),
                 SizedBox(
                   width: constrains.maxWidth * Curves.decelerate.transform(animationProgress),
                   height: height,
-                  child: ColoredBox(color: colorsV3.accentSecondaryDefault),
+                  child: ColoredBox(color: colors.accentSecondaryDefault),
                 ),
                 Align(
                   alignment: alignment,
@@ -75,21 +75,21 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
                           height: squareSize,
                           padding: const EdgeInsets.all(Spacing.$2x),
                           decoration: BoxDecoration(
-                            color: colorsV3.accentSecondaryOnAccentSecondary,
+                            color: colors.accentSecondaryOnAccentSecondary,
                             borderRadius: BorderRadius.circular(RadiusBorder.s),
                           ),
                           child: Icon(
                             TransportIcons.locationDirectionNavigator,
                             size: iconSize,
-                            color: context.colorsV3.foregroundSoft,
+                            color: context.colors.foregroundSoft,
                           ),
                         ),
                       ),
                       Spacing.$3x.widthBox,
                       Text(
                         context.l10n.goToNavigator,
-                        style: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                          color: colorsV3.accentOnAccent,
+                        style: context.textStyles.bodyLargeSemiBold.copyWith(
+                          color: colors.accentOnAccent,
                         ),
                       )
                     ],
@@ -98,13 +98,13 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
                 Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: AppButton(
-                    color: context.colorsV3.accentSecondarySoft,
+                    color: context.colors.accentSecondarySoft,
                     onTap: () {
                       ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
                       context.router.push(const AutostartSettingsSheetRoute());
                     },
                     primaryIcon: SystemIcons.close,
-                    buttonColorScheme: ButtonColorScheme.primary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                   ),
                 ),
               ],

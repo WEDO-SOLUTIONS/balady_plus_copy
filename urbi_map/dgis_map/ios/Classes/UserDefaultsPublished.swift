@@ -36,7 +36,6 @@ class UserDefaultsPublished {
     
     @objc private func userDefaultsDidChangeNotification() {
         if userDefaults.languageString != languageString {
-            Bundle.syncLanguage()
             languageString = userDefaults.languageString
         }
     }

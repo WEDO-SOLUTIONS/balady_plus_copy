@@ -72,7 +72,7 @@ class SearchItem extends ConsumerWidget {
     }
 
     return Material(
-      color: contentColor ?? context.colorsV2.backgroundSurface1,
+      color: contentColor ?? context.colors.backgroundSurface1,
       shape: smoothBorder(RadiusBorder.xl),
       child: SearchTapHandler(
         onTap: onTap,
@@ -84,19 +84,19 @@ class SearchItem extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: Spacing.$3x),
                 child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
               ),
-            ContentRowV2(
+            ContentRow(
               crossAxisAlignment: CrossAxisAlignment.start,
               text: ContentRowTextOptions(
                 title: result.title,
                 titleOptions: const ContentRowTextOption(isBold: true),
                 subtitle: subtitle,
                 subtitleOptions: ContentRowTextOption(
-                  baseColor: context.colorsV3.foregroundDefault,
+                  baseColor: context.colors.foregroundDefault,
                 ),
                 subtitleExtra: result.makeAddress(),
                 subtitleExtraOptions: ContentRowTextOption(
                   maxLines: 3,
-                  baseColor: context.colorsV3.foregroundSoft,
+                  baseColor: context.colors.foregroundSoft,
                 ),
               ),
               trailing: ContentRowCustomTrailingOptions(
@@ -116,7 +116,7 @@ class SearchItem extends ConsumerWidget {
                         options: ContentRowTextTrailingOptions(
                           text: (distanceKm * 1000).formatDistance(context.l10n),
                           textStyle:
-                              context.textStyleV3.bodySmallSemiBold.copyWith(color: context.colorsV3.foregroundSoft),
+                              context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundSoft),
                         ),
                       );
                     },

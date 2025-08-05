@@ -28,14 +28,14 @@ class LogoutSheet extends HookWidget {
     return StatelessBottomSheet(
       header: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: ContentRowV2(
+        child: ContentRow(
           crossAxisAlignment: CrossAxisAlignment.start,
           text: ContentRowTextOptions(
             titleOptions: ContentRowTextOption(
                 builder: (_) => Text(
                       title,
-                      style: context.textStyleV3.h4SemiBold.copyWith(
-                        color: context.colorsV2.foregroundDefault,
+                      style: context.textStyles.h4SemiBold.copyWith(
+                        color: context.colors.foregroundDefault,
                       ),
                     )),
             subtitle: description,

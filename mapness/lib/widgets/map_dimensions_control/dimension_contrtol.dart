@@ -28,12 +28,12 @@ class DimensionControl extends ConsumerWidget {
               ? Assets.icons.svg.ic3d.svg(
                   width: iconSize,
                   height: iconSize,
-                  colorFilter: ColorFilter.mode(context.colorsV3.foregroundDefault, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
                 )
               : Assets.icons.svg.ic2d.svg(
                   width: iconSize,
                   height: iconSize,
-                  colorFilter: ColorFilter.mode(context.colorsV3.foregroundDefault, BlendMode.srcIn),
+                  colorFilter: ColorFilter.mode(context.colors.foregroundDefault, BlendMode.srcIn),
                 ),
         ),
       ),

@@ -19,8 +19,8 @@ class ClosedRoadCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = context.textStyleV3;
-    final color = context.colorsV3;
+    final textStyle = context.textStyles;
+    final color = context.colors;
 
     return SafeArea(
       top: false,

@@ -16,14 +16,14 @@ class SearchHistoryEmpty extends ConsumerWidget {
             const SizedBox(height: Spacing.$12x),
             Text(
               context.l10n.lookForPlaces,
-              style: context.textStyleV3.h4SemiBold,
+              style: context.textStyles.h4SemiBold,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Spacing.$3x),
             Text(
               context.l10n.likeShoppingMalls,
               textAlign: TextAlign.center,
-              style: context.textStyleV3.bodySmallRegular,
+              style: context.textStyles.bodySmallRegular,
             ),
           ],
         ),

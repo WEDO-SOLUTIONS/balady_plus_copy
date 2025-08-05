@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -8,12 +8,11 @@ class SheetDragger extends StatelessWidget {
   const SheetDragger({super.key});
 
   @override
-  Widget build(BuildContext context) => Container(
-        height: 4,
-        width: 40,
-        decoration: BoxDecoration(
-          color: context.color.surfaceContrastMid,
-          borderRadius: const BorderRadius.all(Radius.circular(99)),
+  Widget build(BuildContext context) => const SizedBox(
+        width: double.infinity,
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Padding(padding: EdgeInsets.only(top: 6.0, bottom: 6.0), child: Dragger()),
         ),
       );
 }

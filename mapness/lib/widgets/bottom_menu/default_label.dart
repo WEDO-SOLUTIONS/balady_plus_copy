@@ -14,8 +14,8 @@ class DefaultLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Text(
         label,
-        style: context.textStyleV3.captionSmallMedium.copyWith(
-          color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
+        style: context.textStyles.captionSmallMedium.copyWith(
+          color: selected ? context.colors.accentDefault : context.colors.foregroundSoft,
         ),
       );
 }

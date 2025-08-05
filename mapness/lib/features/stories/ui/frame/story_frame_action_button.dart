@@ -87,11 +87,11 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   }
 
   @override
-  Widget build(BuildContext context) => BaladyAppButton(
+  Widget build(BuildContext context) => AppButton(
         color: widget.actionTheme.backgroundColor,
         textColor: widget.actionTheme.textColor,
-        buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-        size: BaladyButtonSize.large,
+        buttonColorScheme: ButtonColorScheme.accentSecondary,
+        size: ButtonSize.large,
         primaryLabel: _getActionTitle(),
         onTap: () {
           widget.onActionPressed?.call();

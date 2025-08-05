@@ -1,5 +1,4 @@
 import CarPlay
-import Combine
 import DGis
 
 class SettingsScreen: NSObject {
@@ -9,7 +8,6 @@ class SettingsScreen: NSObject {
     private let userDefaultsPublished: UserDefaultsPublished
     private let trafficControlModel: TrafficControlModel
     private var trafficStateCancellable: DGis.Cancellable?
-    private var languageCancellable: Combine.AnyCancellable?
     private var gridTemplate = CPGridTemplate(title: nil, gridButtons: [])
     private var navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler?
@@ -45,8 +43,6 @@ class SettingsScreen: NSObject {
     func dispose() {
         updateTemplate(title: nil, gridButtons: [])
         trafficStateCancellable?.cancel()
-        languageCancellable?.cancel()
-        languageCancellable = nil
     }
     
     // MARK: - Settings Save/Restore
@@ -81,21 +77,6 @@ class SettingsScreen: NSObject {
         )
        
         gridTemplate.backButton = CPBarButton.makeBack(self.onBackTap)
-        
-        languageCancellable = userDefaultsPublished.$languageString.sink { _ in
-            let trafficBtn = self.createTrafficButton()
-            let soundBtn = self.createSoundButton()
-            let parkingBtn = self.createParkingButton()
-            
-            self.updateTemplate(
-                title: NSLocalizedString("settingsScreenTitle", comment: ""),
-                gridButtons: [trafficBtn, soundBtn, parkingBtn]
-            )
-           
-            self.gridTemplate.backButton = CPBarButton.makeBack(
-                self.onBackTap
-            )
-        }
         
         return gridTemplate
     }

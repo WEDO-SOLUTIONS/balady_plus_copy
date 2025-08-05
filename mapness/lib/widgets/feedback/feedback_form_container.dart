@@ -29,7 +29,7 @@ class FeedbackFormContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Material(
-          color: context.colorsV2.backgroundSurface4,
+          color: context.colors.backgroundSurface4,
           child: SafeArea(
             child: Scaffold(
               appBar: BaladyTopBar.iconAndText(
@@ -45,8 +45,8 @@ class FeedbackFormContainer extends ConsumerWidget {
                         onPressed: isSendEnabled ? onSend : null,
                       )
                     : null,
-                colorDisabled: context.colorsV2.foregroundMuted,
-                colorEnabled: context.colorsV3.foregroundDefault,
+                colorDisabled: context.colors.foregroundMuted,
+                colorEnabled: context.colors.foregroundDefault,
                 textStyle: context.textStyle.footNoteBold.copyWith(
                   color: context.color.textAndIconsBasePrimary,
                   fontWeight: FontWeight.w600,

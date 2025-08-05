@@ -33,8 +33,8 @@ class HeaderInfoWrapper extends BottomSheetStateComponent<PoiCardBottomSheetStat
     if (!isVisible) {
       return child;
     }
-    final backgroundColor = this.backgroundColor ?? context.colorsV3.errorContainerDefault;
-    final textColor = this.textColor ?? context.colorsV3.errorOnContainer;
+    final backgroundColor = this.backgroundColor ?? context.colors.errorContainerDefault;
+    final textColor = this.textColor ?? context.colors.errorOnContainer;
     return Column(
       children: [
         ColoredBox(
@@ -50,7 +50,7 @@ class HeaderInfoWrapper extends BottomSheetStateComponent<PoiCardBottomSheetStat
                   children: [
                     Text(
                       text,
-                      style: context.textStyleV3.bodySmallRegular.copyWith(
+                      style: context.textStyles.bodySmallRegular.copyWith(
                         color: textColor,
                       ),
                     ),

@@ -157,9 +157,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           cornerRadius: PoiHeader.poiHeaderBorderRadius,
           scrollController: _bottomSheetController,
           offsetOutsideWidgetByTopheader: !isPhotosNotEmpty,
-          safeAreaColor: context.colorsV2.backgroundSurface2,
-          draggerColor: context.colorsV2.backgroundSurface2,
-          backgroundColor: context.colorsV2.backgroundSurface2,
+          safeAreaColor: context.colors.backgroundSurface2,
+          draggerColor: context.colors.backgroundSurface2,
+          backgroundColor: context.colors.backgroundSurface2,
           backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
           outside: PoiCardMapControlsWrapper(
               bottomSheetController: _bottomSheetController,
@@ -238,7 +238,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 ? [
                     const TextSpan(text: ' • '),
                     WidgetSpan(
-                      child: Icon(General16Icons.car, size: 16, color: context.colorsV3.foregroundSoft),
+                      child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
                       baseline: TextBaseline.ideographic,
                       alignment: PlaceholderAlignment.middle,
                     ),
@@ -266,7 +266,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             valueListenable: _tabType,
             builder: (context, tabType, _) => DecoratedSliver(
               decoration: BoxDecoration(
-                color: context.colorsV2.backgroundSurface4,
+                color: context.colors.backgroundSurface4,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(PoiHeader.poiHeaderBorderRadius)),
               ),
               sliver: SliverFillAfter(

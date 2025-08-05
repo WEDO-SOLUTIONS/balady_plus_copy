@@ -37,7 +37,7 @@ class LanguageRowWidget extends ConsumerWidget {
             ? ContentRowActionOptions(
                 actionIcon: AppIcons(
                   iconData: SystemIcons.checkmark,
-                  color: context.colorsV2.successDefault,
+                  color: context.colors.successDefault,
                 ),
               )
             : null,

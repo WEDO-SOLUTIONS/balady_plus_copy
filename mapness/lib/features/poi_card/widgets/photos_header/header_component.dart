@@ -56,10 +56,14 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
                   ),
                 );
               }
-              return BaladyAppButton(
+              return AppButton(
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                buttonColorScheme: BaladyButtonColorScheme.accent,
-                buttonType: BaladyButtonType.secondary,
+                innerPadding: const EdgeInsetsDirectional.only(
+                  start: Spacing.$2x + Spacing.$0_5x,
+                  end: Spacing.$3x + Spacing.$0_5x,
+                ),
+                buttonColorScheme: ButtonColorScheme.accent,
+                buttonType: ButtonType.secondary,
                 onTap: () => context.router.push(
                   QuickFeedbackPhotoRoute(
                     params: FeedbackObjectIdParams(objectId),
@@ -67,7 +71,7 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
                 ),
                 primaryIcon: GeneralIcons.photoSolid,
                 primaryLabel: context.l10n.addPhoto,
-                color: context.colorsV3.backgroundSurface2,
+                color: context.colors.backgroundSurface2,
               );
             }),
           ),

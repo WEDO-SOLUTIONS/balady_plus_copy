@@ -419,6 +419,7 @@ class CarMapController(
         val selectedRoute = routeEditor.routesInfo.routes[selectedRouteIndex]
 
         routeEditorSource.setRoutesVisible(false)
+        navigationHandler.setupCamera()
         navigationHandler.startNavigation(
             routeBuildOptions = RouteBuildOptions(
                 routeParams.finishPoint, routeParams.routeSearchOptions
@@ -428,6 +429,7 @@ class CarMapController(
     }
 
     fun startFreeroam() {
+        navigationHandler.setupCamera()
         navigationHandler.startFreeroam()
     }
 

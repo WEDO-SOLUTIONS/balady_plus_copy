@@ -1,22 +1,18 @@
 import CarPlay
-import Combine
 import DGis
 
 class SearchScreen {
     private let interfaceController: CPInterfaceController
     private let map: Map
-    private let userDefaultsPublished: UserDefaultsPublished
     private let searchNavigation: SearchNavigation
 
     init(
         interfaceController: CPInterfaceController,
         map: Map,
-        userDefaultsPublished: UserDefaultsPublished,
         searchNavigation: SearchNavigation
     ) {
         self.interfaceController = interfaceController
         self.map = map
-        self.userDefaultsPublished = userDefaultsPublished
         self.searchNavigation = searchNavigation
         let sdk = DgisMapInitializer.shared.getSdkContainer()
         self.searchManager = try! SearchManager.createOnlineManager(
@@ -25,11 +21,6 @@ class SearchScreen {
         self.searchHistory = SearchHistory(context: try! sdk.context)
     }
     
-    deinit {
-        languageCancellable?.cancel()
-        languageCancellable = nil
-    }
-
     private lazy var gridTemplate = CPGridTemplate(
         title: nil,
         gridButtons: makeGridButtons()
@@ -41,12 +32,9 @@ class SearchScreen {
         .getNavigationManager()
     private var searchTemplateDelegate: KeyboardSearchScreen?
     private var searchDirectoryObjectCancellable: DGis.Cancellable?
-    private var languageCancellable: Combine.AnyCancellable?
 
     func createTemplate() -> CPGridTemplate {
-        languageCancellable = userDefaultsPublished.$languageString.sink { _ in
-            self.buildViews()
-        }
+        buildViews()
         return gridTemplate
     }
 
@@ -69,8 +57,7 @@ class SearchScreen {
         let screen = HistoryScreen(
             interfaceController: interfaceController,
             searchHistory: searchHistory,
-            searchNavigation: searchNavigation,
-            userDefaultsPublished: userDefaultsPublished
+            searchNavigation: searchNavigation
         )
         screen.createTemplate().show(with: interfaceController)
     }
@@ -81,8 +68,7 @@ class SearchScreen {
             quickFilter: quickFilter,
             searchManager: searchManager,
             searchNavigation: searchNavigation,
-            interfaceController: interfaceController,
-            userDefaultsPublished: userDefaultsPublished
+            interfaceController: interfaceController
         )
         screen.createTemplate().show(with: interfaceController)
     }

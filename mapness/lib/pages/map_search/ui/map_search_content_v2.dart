@@ -110,7 +110,6 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         child: const Center(
           child: Loading(
             orientation: Axis.vertical,
-            backgroundColor: Colors.transparent,
             size: LoaderSize.large,
           ),
         ),

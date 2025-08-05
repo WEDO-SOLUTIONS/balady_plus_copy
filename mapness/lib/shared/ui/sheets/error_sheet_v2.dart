@@ -39,7 +39,7 @@ class ErrorSheetV2 extends StatelessWidget {
     Text styledText(String text, {bool isTitle = false}) => Text(
           text,
           textAlign: TextAlign.center,
-          style: (isTitle ? context.textStyleV3.h3SemiBold : context.textStyleV3.bodyLargeRegular).copyWith(
+          style: (isTitle ? context.textStyles.h3SemiBold : context.textStyles.bodyLargeRegular).copyWith(
             color: isTitle ? context.color.textAndIconsBasePrimary : NonThemeColor.color6,
           ),
         );
