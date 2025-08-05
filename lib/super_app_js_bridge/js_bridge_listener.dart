@@ -60,8 +60,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openFilePicker);
     registerFunction(openShare);
     registerFunction(jsLaunchUri);
-    registerFunction(trackEvent);
-    registerFunction(trackLogsErrors);
+    registerFunction(trackLogs);
+    // registerFunction(trackEvent);
+    // registerFunction(trackLogsErrors);
     registerFunction(openDirectionsMap);
     registerFunction(openWebView);
     registerFunction(checkPermission);
@@ -281,17 +282,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
-        Map<String, dynamic> data = jsonDecode(msg);
-        response = BaseResponse(
-          code: 200,
-          message: "success",
-          eventName: "navigateToSuperAppScreen",
-          data: null,
-        );
-        NavigationService.pushNamed(
-          routeName: data['screenName'],
-          args: data['arguments'],
-        );
+
+
+          Map<String, dynamic> data = jsonDecode(msg);
+          response = BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "navigateToSuperAppScreen",
+            data: null,
+          );
+          NavigationService.pushNamed(
+            routeName: data['screenName'],
+            args: data['arguments'],
+          );
+
       } else {
         response = BaseResponse(
           code: 400,
@@ -508,12 +512,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
+    final attachmentSource = msg["attachmentSource"];
+    final List<String>? attachmentExtension =
+        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>();
     if (checkAppRequirment(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
       var file = await FilePicker.platform.pickFiles(
-        type: FileType.media,
+        type:
+            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
         allowMultiple: false,
-        // allowedExtensions: ['jpg', 'pdf', 'jpeg', 'png'],
+        allowedExtensions:
+            attachmentSource == "gallery" ? [] : attachmentExtension,
       );
       late BaseResponse response;
       try {
@@ -684,12 +693,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void trackEvent(dynamic msg, CompletionHandler handler) {
+  void trackLogs(dynamic eventName, dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
-      print("%%%%%%%%%  $msg %%%%%%%%%");
+      print("%%%%%%%%% $eventName %%%%%%%%%  $msg %%%%%%%%%");
       BaseResponse response = BaseResponse(
         code: 200,
-        eventName: "trackEvent",
+        eventName: "trackLogs",
         message: "Event tracked successfully",
         data: null,
       );
@@ -698,7 +707,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       BaseResponse response = BaseResponse(
         code: 400,
-        eventName: "trackEvent",
+        eventName: "trackLogs",
         message: "Invalid event data",
         data: null,
       );
@@ -706,27 +715,50 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  @pragma('vm:entry-point')
-  void trackLogsErrors(dynamic msg, CompletionHandler handler) {
-    print("############## $msg ##############");
-    if (msg != null && msg is String && msg.isNotEmpty) {
-      BaseResponse response = BaseResponse(
-        code: 200,
-        eventName: "trackLogsErrors",
-        message: "Event tracked successfully",
-        data: null,
-      );
-      // CommonFunctions.sendEventToAnalytics(msg);
-      handler.complete(response.jsonEncodeModel());
-    } else {
-      // BaseResponse response = BaseResponse(
-      //   code: 400,
-      //   message: "Invalid event data",
-      //   data: null,
-      // );
-      // handler.complete(response.jsonEncodeModel());
-    }
-  }
+  // @pragma('vm:entry-point')
+  // void trackEvent(dynamic msg, CompletionHandler handler) {
+  //   if (msg != null && msg is String && msg.isNotEmpty) {
+  //     print("%%%%%%%%%  $msg %%%%%%%%%");
+  //     BaseResponse response = BaseResponse(
+  //       code: 200,
+  //       eventName: "trackEvent",
+  //       message: "Event tracked successfully",
+  //       data: null,
+  //     );
+  //     CommonFunctions.sendUXCamEvent(msg);
+  //     handler.complete(response.jsonEncodeModel());
+  //   } else {
+  //     BaseResponse response = BaseResponse(
+  //       code: 400,
+  //       eventName: "trackEvent",
+  //       message: "Invalid event data",
+  //       data: null,
+  //     );
+  //     handler.complete(response.jsonEncodeModel());
+  //   }
+  // }
+  //
+  // @pragma('vm:entry-point')
+  // void trackLogsErrors(dynamic msg, CompletionHandler handler) {
+  //   print("############## $msg ##############");
+  //   if (msg != null && msg is String && msg.isNotEmpty) {
+  //     BaseResponse response = BaseResponse(
+  //       code: 200,
+  //       eventName: "trackLogsErrors",
+  //       message: "Event tracked successfully",
+  //       data: null,
+  //     );
+  //     // CommonFunctions.sendEventToAnalytics(msg);
+  //     handler.complete(response.jsonEncodeModel());
+  //   } else {
+  //     // BaseResponse response = BaseResponse(
+  //     //   code: 400,
+  //     //   message: "Invalid event data",
+  //     //   data: null,
+  //     // );
+  //     // handler.complete(response.jsonEncodeModel());
+  //   }
+  // }
 
   @pragma('vm:entry-point')
   void openDirectionsMap(dynamic data, CompletionHandler handler) {

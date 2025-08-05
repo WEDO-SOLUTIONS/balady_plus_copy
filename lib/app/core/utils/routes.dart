@@ -1,7 +1,9 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_list_screen.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_page.dart';
+import 'package:balady_plus/app/features/volunteer_profile/injection/volunteer_profile_injection.dart';
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/mini_apps_main_screen.dart';
 import 'package:flutter/material.dart'
@@ -14,6 +16,7 @@ import 'package:flutter/material.dart'
         RouteSettings,
         Scaffold,
         Widget;
+import 'package:get_it/get_it.dart';
 import '../../../super_app_js_bridge/camera/camera_page.dart';
 import '../../core/utils/utils_exports.dart' show RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
@@ -29,6 +32,9 @@ import '../../features/public_services_features/prayer_times/prayer_times_export
 
 import '../../features/public_services_features/prayer_times/presentation/pages/prayer_times_page.dart';
 
+import '../../features/volunteer_profile/presentation/bloc/volunteer_profile_bloc.dart';
+import '../../features/volunteer_profile/presentation/screens/volunteer_profile_editing_screen.dart';
+import '../../features/volunteer_profile/presentation/screens/volunteer_profile_screen.dart';
 import '../../features/weather/weather_exports.dart';
 
 import 'package:balady_authorization/src/shared/authentication_routes/authentication_routes.dart';
@@ -87,6 +93,19 @@ class Routes {
         const NotificationsDetailsScreen(),
     RouteName.miniAppsMainScreen: (context) =>
     const MiniAppsMainScreen(),
+
+    RouteName.VolunteerProfile: (context) =>
+     VolunteerProfileScreen(
+      volunteerProfileBloc:
+      slVolunteer<VolunteerProfileBloc>(),
+    ),
+    RouteName.VolunteerEditProfile: (context) =>
+        VolunteerProfileEditingScreen(
+          volunteerProfileBloc:
+          slVolunteer<VolunteerProfileBloc>(),
+        ),
+
+
 
 
 

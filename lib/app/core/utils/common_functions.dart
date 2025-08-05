@@ -223,6 +223,13 @@ class CommonFunctions {
     entryPointBridge(params);
   }
 
+  static void openVolunteerProfileScreen()
+  {
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(
+      RouteName.VolunteerProfile,
+    );
+  }
   static Future<bool> isHuaweiDevice() async {
     return await FlutterHmsGmsAvailability.isHmsAvailable;
   }
