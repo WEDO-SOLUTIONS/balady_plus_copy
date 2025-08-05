@@ -1,15 +1,15 @@
-import 'dart:io';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/native_overlay_controller.dart';
+import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
+import 'package:balady_plus/app/core/utils/dialog_on_web_view/native_overlay_controller.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+
 
 class MiniAppsMainScreen extends StatefulWidget {
   const MiniAppsMainScreen({super.key});
@@ -44,21 +44,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         ),
       ),
     ];
-
-    await NativeOverlayController.showOverlay();
-
-    final res = await showDialog<bool>(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) => Platform.isIOS
-              ? CupertinoAlertDialog(title: title, actions: actions)
-              : AlertDialog(title: title, actions: actions),
-        ) ??
-        false;
-
-    await NativeOverlayController.hideOverlay();
-
-    return res;
+    return await ShowDialogOnWebView.showAlertDialog<bool>(context: context, title: title, actions: (_) => actions) ?? false;
   }
 
   @override
@@ -66,15 +52,13 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
 
     return BlocProvider<MiniAppsEngineBloc>(
-      create: (context) {
-        return MiniAppsEngineBloc(miniApp: data);
-      },
+      create: (context) => MiniAppsEngineBloc(miniApp: data),
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
           final shouldExit = await _showExitConfirmationDialog();
-          if (shouldExit) Navigator.of(context).pop();
+          if (shouldExit && context.mounted) Navigator.of(context).pop();
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -85,7 +69,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
               icon: const Icon(Icons.close),
               onPressed: () async {
                 final shouldExit = await _showExitConfirmationDialog();
-                if (shouldExit) Navigator.of(context).pop();
+                if (shouldExit && context.mounted) Navigator.of(context).pop();
               },
             ),
           ),
