@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 
 class NativeOverlayController {
   static const MethodChannel _channel = MethodChannel('native_overlay_channel');
@@ -7,7 +8,7 @@ class NativeOverlayController {
     try {
       await _channel.invokeMethod('showOverlay');
     } catch (e) {
-      print('Error showing native overlay: $e');
+      if (kDebugMode) print('Error showing native overlay: $e');
     }
   }
 
@@ -15,7 +16,7 @@ class NativeOverlayController {
     try {
       await _channel.invokeMethod('hideOverlay');
     } catch (e) {
-      print('Error hiding native overlay: $e');
+      if (kDebugMode) print('Error hiding native overlay: $e');
     }
   }
 }
