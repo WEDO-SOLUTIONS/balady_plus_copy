@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
@@ -35,7 +37,8 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
           },
           (listMiniApps) async {
             // String basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
-            String pathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
+            String pathService =
+                "${(await getApplicationDocumentsDirectory()).path}/www/";
             CommonProperties.currentLocalServerDirectory = pathService;
             // localhostServer ??= CustomInAppLocalhostServer(
             //   PlatformInAppLocalhostServerCreationParams(
@@ -86,8 +89,22 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
     );
   }
 
+  Future<void> openMiniApp(String serviceKey, String? path) async {
+    MiniAppModel? miniApp = (state as HomeMiniAppsListSuccessState)
+        .miniAppsList
+        .firstWhere((service) => service.serviceKey == serviceKey);
+
+    if (miniApp != null) {
+      miniApp.path = path;
+      NavigationService.pushNamed(
+        routeName: RouteName.miniAppsMainScreen,
+        args: miniApp,
+      );
+    }
+  }
+
   Future<BaseResponse?> getMiniAppAcessToken(String serviceKey) async {
-    if (serviceKey == "municipalservice") {
+    if (serviceKey != "municipalservice") {
       return BaseResponse(
         code: 200,
         message: "success",
@@ -148,6 +165,7 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
       }
     }
   }
+
 // int index=(state as HomeMiniAppsListSuccessState).miniAppsList.indexWhere((it) => it.serviceKey == serviceKey);
 // if(index !=-1) {
 //

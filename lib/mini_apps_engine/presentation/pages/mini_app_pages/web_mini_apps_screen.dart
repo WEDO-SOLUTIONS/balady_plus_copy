@@ -95,7 +95,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
         controller: _controller
         //https://baladyapps.momra.gov.sa/tawakkalna/baladyplus
         //https://services-dev.balady.gov.sa/miniapps/municipal
-          ..loadRequest(Uri.parse(state.servicePath))
+          ..loadRequest(Uri.parse(state.servicePath+state.path??""))
           ..addJavaScriptObject(
             JsBridgeListener(
               miniAppsEngineBloc: miniAppsEngineBloc,
