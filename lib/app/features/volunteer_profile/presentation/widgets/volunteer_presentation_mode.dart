@@ -1147,21 +1147,26 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       // Region dropdown
       if (state.isLoadingRegions) {
         return const SizedBox(
-          height: 40,
+          height: 45,
           child: Center(child: CircularProgressIndicator()),
         );
       }
-
       return DropdownButtonFormField<String>(
         value: state.regionId?.isEmpty == true ? null : state.regionId,
+
         decoration: const InputDecoration(
+
           border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10),
         ),
         items: state.regionsList
             .map((region) => DropdownMenuItem<String>(
                   value: region.tid.toString(),
-                  child: Text(region.name),
+                  child: Center(child: Text(region.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),
                 ))
             .toList(),
         onChanged: (value) {
@@ -1202,12 +1207,17 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         value: state.cityId?.isEmpty == true ? null : state.cityId,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10),
         ),
         items: state.citiesList
             .map((city) => DropdownMenuItem<String>(
                   value: city.tid.toString(),
-                  child: Text(city.name),
+                  child:  Center(child: Text(city.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),
+
                 ))
             .toList(),
         onChanged: state.regionId?.isEmpty ?? true
