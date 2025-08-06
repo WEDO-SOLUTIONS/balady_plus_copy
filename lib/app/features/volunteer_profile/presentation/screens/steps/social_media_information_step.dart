@@ -56,7 +56,13 @@ class _SocialMeidaInformationStepState
           }
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
+            padding: EdgeInsets.only(
+              top: 20.0,
+              left: 20.0,
+              right: 20.0,
+              bottom: MediaQuery.of(context).viewInsets.bottom + 120.0,
+            ),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -143,7 +149,10 @@ class _SocialMeidaInformationStepState
                         );
                   },
                 ),
-                const SizedBox(height: 40),
+                SizedBox(
+                    height: MediaQuery.of(context).viewInsets.bottom > 0
+                        ? 120
+                        : 40),
               ],
             ),
           );
@@ -170,6 +179,7 @@ class _SocialMeidaInformationStepState
           TextFormField(
             controller: controller,
             textDirection: TextDirection.ltr,
+            scrollPadding: const EdgeInsets.only(bottom: 300),
             decoration: InputDecoration(
               hintText: '@user',
               hintStyle: const TextStyle(
