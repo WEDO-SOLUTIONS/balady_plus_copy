@@ -4554,5 +4554,6 @@
   "individual": "فرد",
   "last_name": "الإسم الأخير",
   "language_required": "اللغة*",
-  "next_step" : "الخطوة التالية"
+  "next_step" : "الخطوة التالية",
+  "lbl_fill_required_fields": "يرجى تعبئة البيانات المطلوبة"
 }

@@ -25,7 +25,7 @@ class ScientificInfoStep extends StatelessWidget {
                 ),
               ),
               Text(
-                'FillFields'.tr(),
+                'lbl_fill_required_fields'.tr(),
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
