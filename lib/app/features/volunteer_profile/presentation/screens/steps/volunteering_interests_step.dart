@@ -54,19 +54,25 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0)),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 15.0),
+                        horizontal: 12.0),
                   ),
                   items: state.skillsList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child: Text('no_skills_available'.tr()),
-                          )
+          child: Center(child: Text('no_skills_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                          )
                         ]
                       : state.skillsList
                           .map((skill) => DropdownMenuItem<String>(
                                 value: skill.tid.toString(),
-                                child: Text(skill.name),
-                              ))
+          child: Center(child: Text(skill.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.skillsList.isEmpty
                       ? null
@@ -117,19 +123,25 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0)),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 15.0),
+                        horizontal: 12.0),
                   ),
                   items: state.lvlsList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child: Text('no_levels_available'.tr()),
-                          )
+          child: Center(child: Text('no_levels_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                          )
                         ]
                       : state.lvlsList
                           .map((level) => DropdownMenuItem<String>(
                                 value: level.tid.toString(),
-                                child: Text(level.name),
-                              ))
+          child: Center(child: Text(level.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.lvlsList.isEmpty
                       ? null
@@ -180,19 +192,25 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0)),
                     contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 15.0),
+                        horizontal: 12.0),
                   ),
                   items: state.interestsList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child: Text('no_interests_available'.tr()),
-                          )
+          child: Center(child: Text('no_interests_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                          )
                         ]
                       : state.interestsList
                           .map((interest) => DropdownMenuItem<String>(
                                 value: interest.name,
-                                child: Text(interest.name),
-                              ))
+          child: Center(child: Text(interest.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.interestsList.isEmpty
                       ? null
@@ -227,15 +245,21 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                   items: state.volunteeringFieldsList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child:
-                                Text('no_volunteering_fields_available'.tr()),
+          child: Center(child: Text('no_volunteering_fields_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),
                           )
                         ]
                       : state.volunteeringFieldsList
                           .map((field) => DropdownMenuItem<String>(
                                 value: field.tid.toString(),
-                                child: Text(field.name),
-                              ))
+          child: Center(child: Text(field.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.volunteeringFieldsList.isEmpty
                       ? null

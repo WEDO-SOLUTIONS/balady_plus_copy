@@ -59,13 +59,19 @@ class ScientificInfoStep extends StatelessWidget {
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0)),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 15.0),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12.0),
                   ),
                   items: state.qualificationsList
                       .map((qualification) => DropdownMenuItem<String>(
                             value: qualification.tid.toString(),
-                            child: Text(qualification.name),
+                            child: Center(
+                                child: Text(qualification.name,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ))),
                           ))
                       .toList(),
                   onChanged: (value) {
@@ -127,13 +133,19 @@ class ScientificInfoStep extends StatelessWidget {
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0)),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 15.0),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12.0),
                   ),
                   items: state.specializationsList
                       .map((specialization) => DropdownMenuItem<String>(
                             value: specialization.tid.toString(),
-                            child: Text(specialization.name),
+                            child: Center(
+                                child: Text(specialization.name,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ))),
                           ))
                       .toList(),
                   onChanged: (value) {
@@ -217,14 +229,19 @@ class ScientificInfoStep extends StatelessWidget {
                   hintText: 'choose_years_of_experience'.tr(),
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0)),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 15.0),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
                 ),
                 items: List.generate(51, (index) => index)
                     .map((year) => DropdownMenuItem<String>(
                           value: year.toString(),
-                          child: Text(
-                              '$year ${year == 0 ? 'no_experience'.tr() : year == 1 ? 'one_year'.tr() : 'years'.tr()}'),
+                          child: Center(
+                              child: Text(
+                                  '$year ${year == 0 ? 'no_experience'.tr() : year == 1 ? 'one_year'.tr() : 'years'.tr()}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ))),
                         ))
                     .toList(),
                 onChanged: (value) {
@@ -275,13 +292,19 @@ class ScientificInfoStep extends StatelessWidget {
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0)),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 15.0),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 12.0),
                   ),
                   items: state.languagesList
                       .map((language) => DropdownMenuItem<String>(
                             value: language.tid.toString(),
-                            child: Text(language.name),
+                            child: Center(
+                                child: Text(language.name,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500,
+                                    ))),
                           ))
                       .toList(),
                   onChanged: (value) {
