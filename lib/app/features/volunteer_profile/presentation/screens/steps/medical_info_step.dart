@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 import '../../bloc/volunteer_profile_bloc.dart';
 import '../../bloc/volunteer_profile_event.dart';
 import '../../bloc/volunteer_profile_state.dart';
@@ -31,7 +30,7 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                 ),
               ),
               Text(
-                'please_fill_required_data'.tr(),
+                'FillFields'.tr(),
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,

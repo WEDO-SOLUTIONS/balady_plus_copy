@@ -424,7 +424,7 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(
-                                              'lbl_fill_required_fields'.tr())),
+                                              'FillFields'.tr())),
                                     );
                                   }
                                 } else {

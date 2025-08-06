@@ -61,8 +61,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openShare);
     registerFunction(jsLaunchUri);
     registerFunction(trackLogs);
-    // registerFunction(trackEvent);
-    // registerFunction(trackLogsErrors);
+    registerFunction(trackEvent);
+    registerFunction(trackLogsErrors);
     registerFunction(openDirectionsMap);
     registerFunction(openWebView);
     registerFunction(checkPermission);

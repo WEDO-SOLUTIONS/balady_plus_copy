@@ -30,7 +30,7 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                 ),
               ),
               Text(
-                'please_fill_required_data'.tr(),
+                'FillFields'.tr(),
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,

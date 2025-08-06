@@ -4553,5 +4553,6 @@
   "cv_file_selected": "تم اختيار ملف السيرة الذاتية: ",
   "individual": "فرد",
   "last_name": "الإسم الأخير",
-  "language_required": "اللغة*"
+  "language_required": "اللغة*",
+  "next_step" : "الخطوة التالية"
 }
