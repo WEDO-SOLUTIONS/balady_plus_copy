@@ -671,7 +671,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void trackLogs(dynamic eventName, dynamic msg, CompletionHandler handler) {
+  void trackLogs(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
       if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
       BaseResponse response = BaseResponse(
@@ -692,8 +692,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
+
   @pragma('vm:entry-point')
-  void trackEvent(dynamic eventName, dynamic msg, CompletionHandler handler) {
+  void trackEvent(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
       if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
       BaseResponse response = BaseResponse(
@@ -714,6 +715,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
+
   @pragma('vm:entry-point')
   void trackLogsErrors(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {

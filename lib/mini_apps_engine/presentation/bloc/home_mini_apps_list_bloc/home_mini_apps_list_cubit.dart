@@ -5,6 +5,7 @@ import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/server/CustomInAppLocalhostServer.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -18,6 +19,7 @@ part 'home_mini_apps_list_state.dart';
 
 class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
   MiniAppsRepository homeServicesUseCases;
+
   // InAppLocalhostServer? localhostServer;
   // CustomInAppLocalhostServer? localhostServer;
 
@@ -90,18 +92,17 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
   }
 
   Future<void> openMiniApp({required String serviceKey, String? path}) async {
-    MiniAppModel? miniApp = (state as HomeMiniAppsListSuccessState)
-        .miniAppsList
-        .firstWhere((service) => service.serviceKey == serviceKey);
-
-    if (miniApp != null) {
-      miniApp.copyWith(path: path);
-
+    try {
+      MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
+          .miniAppsList
+          .firstWhere((service) => service.serviceKey == serviceKey)
+          .copyWith();
+      miniApp.path = path;
       NavigationService.pushNamed(
         routeName: RouteName.miniAppsMainScreen,
         args: miniApp,
       );
-    }
+    } catch (_) {}
   }
 
   Future<BaseResponse?> getMiniAppAcessToken(String serviceKey) async {
