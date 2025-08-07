@@ -20,26 +20,11 @@ class MiniAppsItemWidget extends StatelessWidget {
     required this.miniApp,
   });
 
-  Future<void> _handleInAppReview() async {
-    final inAppReview = InAppReview.instance;
-    try {
-      final available = await inAppReview.isAvailable();
-      if (available) {
-        await inAppReview.requestReview();
-      }
-      else {
-        // await inAppReview.openStoreListing();
-      }
-    } catch (_) {
-      // await inAppReview.openStoreListing();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await _handleInAppReview();
         if(miniApp.latestVersion?.nafathLogin == true && !CommonProperties.isLoggedInMunicipality){
           showDialog(
             context: context,
