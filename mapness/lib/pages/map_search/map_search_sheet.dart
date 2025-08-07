@@ -1,13 +1,15 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
@@ -27,6 +29,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:sheetify/sheetify.dart';
 
 /// Search sheet that is shown on the explore screen.
 class MapSearchSheet extends ConsumerStatefulWidget {
@@ -48,7 +51,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _statefulBottomSheetController;
+  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -58,13 +61,22 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>(
+    (controller) {
+      final fraction = controller.fraction;
+      final state = controller.state;
+
+      return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+    },
+  );
+
   @override
   void initState() {
     super.initState();
 
-    _statefulBottomSheetController = StatefulBottomSheetController(
-      initialState: ThreeStateBottomSheet.expanded,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: {
+    _multiStateSheetController = MultiStateSheetController(
+      initialState: ThreeStateSheet.expanded,
+      behavior: FractionSnappingBehavior(fractions: {
         0.0,
         if (Platform.isIOS) .3 else .38,
         .931,
@@ -96,7 +108,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
-    _statefulBottomSheetController.dispose();
+    _multiStateSheetController.dispose();
     _keyboardVisible.cancel();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
@@ -146,28 +158,28 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
-            child: SafeArea(
-              bottom: false,
-              child: StatefulBottomSheet<ThreeStateBottomSheet>(
-                animateOpening: false,
-                keepContentBehindFooter: true,
-                backgroundColor: containerColor,
-                scrollController: _statefulBottomSheetController,
-                header: Container(
-                  color: contentColor,
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
-                  child: MapSearchBar(
-                    requestFocus: widget.requestFocus,
-                    onClose: onClose,
-                  ),
+            child: MultiStateSheet<ThreeStateSheet>(
+              scrollController: _multiStateSheetController,
+              animateOpening: false,
+              keepContentBehindFooter: true,
+              backgroundColor: containerColor,
+              safeAreaColor: containerColor,
+              dragger: const SheetDragger(),
+              outsideOpacityDelegate: outsideOpacityDelegate,
+              header: Container(
+                color: contentColor,
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
+                child: MapSearchBar(
+                  requestFocus: widget.requestFocus,
+                  onClose: onClose,
                 ),
-                outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-                content: [
-                  MapSearchContent(
-                    bottomSheetContentScrollController: _statefulBottomSheetController,
-                  ),
-                ],
               ),
+              outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
+              content: [
+                MapSearchContent(
+                  bottomSheetContentScrollController: _multiStateSheetController,
+                ),
+              ],
             ),
           ),
         ],
@@ -235,11 +247,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState || _statefulBottomSheetController.state == ThreeStateBottomSheet.expanded) {
+    if (!kbState || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
 
-    _statefulBottomSheetController.setState(ThreeStateBottomSheet.expanded);
+    _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 
   void onClose() {
@@ -266,6 +278,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _collapseBottomSheet() {
-    _statefulBottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    _multiStateSheetController.setState(ThreeStateSheet.hidden);
   }
 }

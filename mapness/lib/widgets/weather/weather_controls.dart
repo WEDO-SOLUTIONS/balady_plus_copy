@@ -1,5 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart'
-    show RadiusBorder, Spacing, StatefulBottomSheetController, ThreeStateBottomSheet;
+import 'package:balady_uikit/balady_uikit.dart' show RadiusBorder, Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +9,10 @@ import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/weather/weather_state_icon.dart';
+import 'package:sheetify/sheetify.dart';
 
 class WeatherControls extends ConsumerStatefulWidget {
-  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
   const WeatherControls({
     required this.bottomSheetController,
@@ -42,7 +42,7 @@ class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsB
 
   @override
   Widget build(BuildContext context) => Visibility(
-        visible: widget.bottomSheetController.state != ThreeStateBottomSheet.expanded,
+        visible: widget.bottomSheetController.state != ThreeStateSheet.expanded,
         child: SafeArea(
           bottom: false,
           child: Padding(

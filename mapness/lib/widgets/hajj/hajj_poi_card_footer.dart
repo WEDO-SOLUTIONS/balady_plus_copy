@@ -5,12 +5,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/hajj/poi_marker_rcmc.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:sheetify/sheetify.dart';
 
 class HajjPoiCardFooter extends HookConsumerWidget {
   final PoiMarkerRcmc poiMarkerRcmc;
   final VoidCallback? callPhone;
   final VoidCallback onTapCar;
-  final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
+  final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
   const HajjPoiCardFooter({
     required this.onTapCar,

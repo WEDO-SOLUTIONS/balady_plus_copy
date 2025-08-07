@@ -42,6 +42,10 @@ dependencies:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: 4.1.2
 
+  sheetify: ^1.0.0+1
+
+  smooth_corner: ^1.0.0
+
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: 0.0.4
@@ -163,6 +167,9 @@ dependency_overrides:
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
   sentry_dio: 8.14.2
+  analyzer: ^6.5.0
+  custom_lint_builder: ^0.7.0
+  analyzer_plugin: ^0.11.2
 
 dev_dependencies:
   flutter_test:
@@ -182,6 +189,7 @@ dev_dependencies:
   auto_route_generator: 9.0.0
   custom_lint: ^0.7.0
   geolocator_android: 4.6.1
+  sheetify_lint: ^1.0.1
 
 flutter:
   assets:

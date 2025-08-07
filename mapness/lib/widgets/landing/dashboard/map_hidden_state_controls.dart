@@ -14,9 +14,10 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:sheetify/sheetify.dart';
 
 class MapHiddenStateControls extends ConsumerStatefulWidget {
-  final StatefulBottomSheetController<ThreeStateBottomSheet> controller;
+  final MultiStateSheetController<ThreeStateSheet> controller;
 
   const MapHiddenStateControls(this.controller, {super.key});
 
@@ -53,11 +54,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     final freeRoamState = ref.read(freeRoamStarterProvider);
 
     final isLaunchingDismiss =
-        freeRoamState.canStart && freeRoamState.isAutorun && widget.controller.state != ThreeStateBottomSheet.hidden;
+        freeRoamState.canStart && freeRoamState.isAutorun && widget.controller.state != ThreeStateSheet.hidden;
 
     final isGoToNavigatorDismiss = freeRoamState.canStart &&
         !freeRoamState.isAutorun &&
-        widget.controller.state == ThreeStateBottomSheet.open &&
+        widget.controller.state == ThreeStateSheet.open &&
         widget.controller.interpolation > 0.5;
 
     if (isLaunchingDismiss || isGoToNavigatorDismiss) {
@@ -71,10 +72,10 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
 
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
-      if (widget.controller.state == ThreeStateBottomSheet.expanded) {
+      if (widget.controller.state == ThreeStateSheet.expanded) {
         ref.read(freeRoamStarterProvider.notifier).setShown();
       } else if (state.canStart && state.isAutorun) {
-        widget.controller.setState(ThreeStateBottomSheet.hidden);
+        widget.controller.setState(ThreeStateSheet.hidden);
         setState(() {
           quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 0.05);
         });
@@ -126,14 +127,14 @@ class QuickSearchBar extends StatelessWidget {
   final ValueNotifier<double> opacity = ValueNotifier(1.0);
 
   @override
-  Widget build(BuildContext context) => BottomSheetStateBuilder<ThreeStateBottomSheet>(
-        defaultState: ThreeStateBottomSheet.hidden,
+  Widget build(BuildContext context) => MultiStateSheetBuilder<ThreeStateSheet>(
+        defaultState: ThreeStateSheet.hidden,
         builder: (context, state, interpolation, child) {
-          final delta = state == ThreeStateBottomSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
+          final delta = state == ThreeStateSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
 
           opacity.value = delta;
           return IgnorePointer(
-            ignoring: state != ThreeStateBottomSheet.hidden,
+            ignoring: state != ThreeStateSheet.hidden,
             child: Align(
               heightFactor: delta,
               alignment: Alignment.topCenter,
