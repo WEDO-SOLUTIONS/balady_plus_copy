@@ -90,6 +90,7 @@ class VolunteerProfileBloc
     try {
       // Reset state and set loading
 
+
       emit(state.resetProfileState().copyWith(isLoading: true));
 
       final result = await getProfile(NoParams());
