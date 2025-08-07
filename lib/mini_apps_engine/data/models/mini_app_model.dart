@@ -5,6 +5,7 @@ class MiniAppModel {
       this.description,
       this.entity,
       this.requirements,
+      this.serviceKey,
       this.cdnLogoRef,
       this.logoKey,
       this.latestVersion,
@@ -44,6 +45,7 @@ class MiniAppModel {
           String? serviceName,
           String? description,
           String? cdnLogoRef,
+          String? serviceKey,
           String? entity,
           String? logoKey,
           List<Requirements>? requirements,
@@ -51,6 +53,7 @@ class MiniAppModel {
           String? path}) =>
       MiniAppModel(
           id: id ?? this.id,
+          serviceKey: serviceKey ?? this.serviceKey,
           serviceName: serviceName ?? this.serviceName,
           description: description ?? this.description,
           entity: entity ?? this.entity,
