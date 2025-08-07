@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -247,12 +249,18 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    context.watch<HomeMiniAppsListCubit>().openMiniApp(
+        serviceKey: "IslamicServices",
+        path:  "#Quran_Show_All_Surahs_Page",
+    );
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    context.watch<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: "IslamicServices",
+      path:  "#Athkar_Page",
+    );
   }
 
   void _openFreeRoam() {
@@ -285,7 +293,9 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
     Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
         action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
-    CommonFunctions.openSnapAndSend();
+    context.watch<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: "snapandsend",
+    );
   }
 
   void _scrollListenHandler() {

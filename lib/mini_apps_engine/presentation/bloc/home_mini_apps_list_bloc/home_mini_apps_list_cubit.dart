@@ -89,7 +89,7 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
     );
   }
 
-  Future<void> openMiniApp(String serviceKey, String? path) async {
+  Future<void> openMiniApp({required String serviceKey, String? path}) async {
     MiniAppModel? miniApp = (state as HomeMiniAppsListSuccessState)
         .miniAppsList
         .firstWhere((service) => service.serviceKey == serviceKey);
