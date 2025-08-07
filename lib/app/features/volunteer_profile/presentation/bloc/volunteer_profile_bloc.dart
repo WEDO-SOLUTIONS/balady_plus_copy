@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:bloc/bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../domain/use_cases/get_blood_types.dart';
 import '../../domain/use_cases/get_cities.dart';
 import '../../domain/use_cases/get_diseases.dart';
@@ -82,14 +83,12 @@ class VolunteerProfileBloc
 
   /// Resets all profile data to initial state
 
-
   Future<void> _onLoadVolunteerProfile(
     LoadVolunteerProfile event,
     Emitter<VolunteerProfileState> emit,
   ) async {
     try {
       // Reset state and set loading
-
 
       emit(state.resetProfileState().copyWith(isLoading: true));
 
@@ -98,7 +97,7 @@ class VolunteerProfileBloc
       result.fold(
         (failure) {
           emit(state.copyWith(
-              isLoading: false, errorMessage: 'Failed to load profile'));
+              isLoading: false, errorMessage: 'failed_to_load_profile'.tr()));
         },
         (profile) {
           // Check if fields exist in the API response
@@ -285,7 +284,8 @@ class VolunteerProfileBloc
       );
     } catch (e) {
       emit(state.copyWith(
-          isLoading: false, errorMessage: 'Failed to load profile: $e'));
+          isLoading: false,
+          errorMessage: '${'failed_to_load_profile'.tr()}: $e'));
     }
   }
 
@@ -297,7 +297,8 @@ class VolunteerProfileBloc
     final result = await getRegions(NoParams());
     result.fold(
       (failure) => emit(state.copyWith(
-          isLoadingRegions: false, errorMessage: 'Failed to load regions')),
+          isLoadingRegions: false,
+          errorMessage: 'failed_to_load_regions'.tr())),
       (regions) {
         // Use the regionId we already have from the API response
         // or try to match by name as fallback
@@ -348,7 +349,7 @@ class VolunteerProfileBloc
     final result = await getCities(event.regionId);
     result.fold(
       (failure) => emit(state.copyWith(
-          isLoadingCities: false, errorMessage: 'Failed to load cities')),
+          isLoadingCities: false, errorMessage: 'failed_to_load_cities'.tr())),
       (cities) {
         // Use the cityId we already have from the API response
         // or try to match by name as fallback
@@ -395,7 +396,7 @@ class VolunteerProfileBloc
     result.fold(
       (failure) => emit(state.copyWith(
           isLoadingQualifications: false,
-          errorMessage: 'Failed to load qualifications')),
+          errorMessage: 'failed_to_load_qualifications'.tr())),
       (qualifications) => emit(state.copyWith(
           isLoadingQualifications: false, qualificationsList: qualifications)),
     );
@@ -411,7 +412,7 @@ class VolunteerProfileBloc
     result.fold(
       (failure) => emit(state.copyWith(
           isLoadingSpecializations: false,
-          errorMessage: 'Failed to load specializations')),
+          errorMessage: 'failed_to_load_specializations'.tr())),
       (specializations) => emit(state.copyWith(
           isLoadingSpecializations: false,
           specializationsList: specializations)),
@@ -426,7 +427,8 @@ class VolunteerProfileBloc
     final result = await getLaunguages(NoParams());
     result.fold(
       (failure) => emit(state.copyWith(
-          isLoadingLanguages: false, errorMessage: 'Failed to load languages')),
+          isLoadingLanguages: false,
+          errorMessage: 'failed_to_load_languages'.tr())),
       (languages) => emit(
           state.copyWith(isLoadingLanguages: false, languagesList: languages)),
     );
@@ -440,7 +442,7 @@ class VolunteerProfileBloc
     final result = await getSkills(NoParams());
     result.fold(
       (failure) => emit(state.copyWith(
-          isLoadingSkills: false, errorMessage: 'Failed to load skills')),
+          isLoadingSkills: false, errorMessage: 'failed_to_load_skills'.tr())),
       (skills) =>
           emit(state.copyWith(isLoadingSkills: false, skillsList: skills)),
     );
@@ -454,7 +456,7 @@ class VolunteerProfileBloc
     final result = await getLvls(NoParams());
     result.fold(
       (failure) => emit(state.copyWith(
-          isLoadingLvls: false, errorMessage: 'Failed to load levels')),
+          isLoadingLvls: false, errorMessage: 'failed_to_load_levels'.tr())),
       (levels) => emit(state.copyWith(isLoadingLvls: false, lvlsList: levels)),
     );
   }
@@ -467,7 +469,8 @@ class VolunteerProfileBloc
     final result = await getInterests(NoParams());
     result.fold(
       (failure) => emit(state.copyWith(
-          isLoadingInterests: false, errorMessage: 'Failed to load interests')),
+          isLoadingInterests: false,
+          errorMessage: 'failed_to_load_interests'.tr())),
       (interests) => emit(
           state.copyWith(isLoadingInterests: false, interestsList: interests)),
     );
@@ -483,7 +486,7 @@ class VolunteerProfileBloc
     result.fold(
       (failure) => emit(state.copyWith(
           isLoadingVolunteeringFields: false,
-          errorMessage: 'Failed to load volunteering fields')),
+          errorMessage: 'failed_to_load_volunteering_fields'.tr())),
       (fields) => emit(state.copyWith(
           isLoadingVolunteeringFields: false, volunteeringFieldsList: fields)),
     );
@@ -634,7 +637,7 @@ class VolunteerProfileBloc
     result.fold(
       (failure) => emit(state.copyWith(
           isLoadingBloodTypes: false,
-          errorMessage: 'Failed to load blood types')),
+          errorMessage: 'failed_to_load_blood_types'.tr())),
       (bloodTypes) => emit(state.copyWith(
           isLoadingBloodTypes: false, bloodTypesList: bloodTypes)),
     );
@@ -648,7 +651,8 @@ class VolunteerProfileBloc
     final result = await getDiseases(NoParams());
     result.fold(
       (failure) => emit(state.copyWith(
-          isLoadingDiseases: false, errorMessage: 'Failed to load diseases')),
+          isLoadingDiseases: false,
+          errorMessage: 'failed_to_load_diseases'.tr())),
       (diseases) => emit(
           state.copyWith(isLoadingDiseases: false, diseasesList: diseases)),
     );
@@ -683,7 +687,8 @@ class VolunteerProfileBloc
         !state.isVolunteeringInterestsValid ||
         !state.isMedicalInfoValid ||
         !state.isSocialMediaInfoValid) {
-      emit(state.copyWith(errorMessage: 'Please fill all required fields'));
+      emit(
+          state.copyWith(errorMessage: 'please_fill_all_required_fields'.tr()));
       return;
     }
     emit(state.copyWith(isSubmitting: true));
@@ -733,7 +738,7 @@ class VolunteerProfileBloc
       if (profileId == null || profileId.isEmpty) {
         emit(state.copyWith(
           isSubmitting: false,
-          errorMessage: 'Profile ID not found. Please reload your profile.',
+          errorMessage: 'profile_id_not_found'.tr(),
         ));
         return;
       }
@@ -746,7 +751,8 @@ class VolunteerProfileBloc
       result.fold(
         (failure) => emit(state.copyWith(
           isSubmitting: false,
-          errorMessage: 'Failed to submit profile: ${failure.toString()}',
+          errorMessage:
+              '${'failed_to_submit_profile'.tr()}: ${failure.toString()}',
         )),
         (_) => emit(state.copyWith(
           isSubmitting: false,
@@ -756,7 +762,7 @@ class VolunteerProfileBloc
     } catch (e) {
       emit(state.copyWith(
         isSubmitting: false,
-        errorMessage: 'Failed to submit profile: $e',
+        errorMessage: '${'failed_to_submit_profile'.tr()}: $e',
       ));
     }
   }
@@ -812,7 +818,7 @@ class VolunteerProfileBloc
       if (profileId == null || profileId.isEmpty) {
         emit(state.copyWith(
           isSubmitting: false,
-          errorMessage: 'Profile ID not found. Please reload your profile.',
+          errorMessage: 'profile_id_not_found'.tr(),
         ));
         return;
       }
@@ -825,7 +831,8 @@ class VolunteerProfileBloc
       result.fold(
         (failure) => emit(state.copyWith(
           isSubmitting: false,
-          errorMessage: 'Failed to update profile: ${failure.toString()}',
+          errorMessage:
+              '${'failed_to_update_profile'.tr()}: ${failure.toString()}',
         )),
         (_) => emit(state.copyWith(
           isSubmitting: false,
@@ -835,7 +842,7 @@ class VolunteerProfileBloc
     } catch (e) {
       emit(state.copyWith(
         isSubmitting: false,
-        errorMessage: 'Failed to update profile: $e',
+        errorMessage: '${'failed_to_update_profile'.tr()}: $e',
       ));
     }
   }
@@ -928,14 +935,14 @@ class VolunteerProfileBloc
     result.fold(
       (failure) => emit(state.copyWith(
         isUploadingCV: false,
-        cvUploadMessage: 'Failed to upload CV: ${failure.toString()}',
+        cvUploadMessage: '${'failed_to_upload_cv'.tr()}: ${failure.toString()}',
       )),
       (response) => emit(state.copyWith(
         isUploadingCV: false,
         cvFileName: response.fileName ?? event.fileName,
         cvFileUrl: response.fileUrl,
         cvFileId: response.fileId, // Store fid for final submission
-        cvUploadMessage: 'CV uploaded successfully',
+        cvUploadMessage: 'cv_uploaded_successfully'.tr(),
       )),
     );
   }

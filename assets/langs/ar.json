@@ -4555,5 +4555,21 @@
   "next_step": "الخطوة التالية",
   "lbl_fill_required_fields": "يرجى تعبئة البيانات المطلوبة",
   "social_media_information": "بيانات التواصل الاجتماعي",
-  "all_fields_optional": "جميع الحقول اختيارية"
+  "all_fields_optional": "جميع الحقول اختيارية",
+  "failed_to_load_profile": "فشل في تحميل الملف الشخصي",
+  "failed_to_load_regions": "فشل في تحميل المناطق",
+  "failed_to_load_cities": "فشل في تحميل المدن",
+  "failed_to_load_qualifications": "فشل في تحميل المؤهلات",
+  "failed_to_load_specializations": "فشل في تحميل التخصصات",
+  "failed_to_load_languages": "فشل في تحميل اللغات",
+  "failed_to_load_skills": "فشل في تحميل المهارات",
+  "failed_to_load_levels": "فشل في تحميل المستويات",
+  "failed_to_load_interests": "فشل في تحميل الاهتمامات",
+  "failed_to_load_volunteering_fields": "فشل في تحميل مجالات العمل التطوعي",
+  "failed_to_load_blood_types": "فشل في تحميل فصائل الدم",
+  "failed_to_load_diseases": "فشل في تحميل الأمراض",
+  "failed_to_submit_profile": "فشل في إرسال الملف الشخصي",
+  "failed_to_update_profile": "فشل في تحديث الملف الشخصي",
+  "profile_id_not_found": "لم يتم العثور على معرف الملف الشخصي. يرجى إعادة تحميل ملفك الشخصي",
+  "cv_uploaded_successfully": "تم رفع السيرة الذاتية بنجاح"
 }

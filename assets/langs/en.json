@@ -4779,5 +4779,20 @@
   "please_select_blood_type": "Please select blood type",
   "please_select_disease": "Please select disease",
   "social_media_information": "Social Media Information",
-  "all_fields_optional": "All fields are optional"
+  "all_fields_optional": "All fields are optional",
+  "failed_to_load_profile": "Failed to load profile",
+  "failed_to_load_regions": "Failed to load regions",
+  "failed_to_load_cities": "Failed to load cities",
+  "failed_to_load_qualifications": "Failed to load qualifications",
+  "failed_to_load_specializations": "Failed to load specializations",
+  "failed_to_load_languages": "Failed to load languages",
+  "failed_to_load_skills": "Failed to load skills",
+  "failed_to_load_levels": "Failed to load levels",
+  "failed_to_load_interests": "Failed to load interests",
+  "failed_to_load_volunteering_fields": "Failed to load volunteering fields",
+  "failed_to_load_blood_types": "Failed to load blood types",
+  "failed_to_load_diseases": "Failed to load diseases",
+  "failed_to_submit_profile": "Failed to submit profile",
+  "failed_to_update_profile": "Failed to update profile",
+  "profile_id_not_found": "Profile ID not found. Please reload your profile"
 }
