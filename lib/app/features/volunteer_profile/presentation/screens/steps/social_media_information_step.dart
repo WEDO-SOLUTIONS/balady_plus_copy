@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../bloc/volunteer_profile_bloc.dart';
 import '../../bloc/volunteer_profile_event.dart';
 import '../../bloc/volunteer_profile_state.dart';
@@ -66,17 +67,17 @@ class _SocialMeidaInformationStepState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'بيانات التواصل الاجتماعي',
-                  style: TextStyle(
+                Text(
+                  'social_media_information'.tr(),
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'جميع الحقول اختيارية',
-                  style: TextStyle(
+                Text(
+                  'all_fields_optional'.tr(),
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Colors.grey,
                   ),
@@ -85,7 +86,7 @@ class _SocialMeidaInformationStepState
 
                 // X Account Field
                 _buildSocialMediaField(
-                  label: 'حساب إكس',
+                  label: 'x_account'.tr(),
                   controller: _xAccountController,
                   onChanged: (value) {
                     context.read<VolunteerProfileBloc>().add(
@@ -102,7 +103,7 @@ class _SocialMeidaInformationStepState
 
                 // Instagram Account Field
                 _buildSocialMediaField(
-                  label: 'حساب الانستقرام',
+                  label: 'instagram_account'.tr(),
                   controller: _instagramController,
                   onChanged: (value) {
                     context.read<VolunteerProfileBloc>().add(
@@ -119,7 +120,7 @@ class _SocialMeidaInformationStepState
 
                 // LinkedIn Account Field
                 _buildSocialMediaField(
-                  label: 'حساب لينكدان',
+                  label: 'linkedin_account'.tr(),
                   controller: _linkedinController,
                   onChanged: (value) {
                     context.read<VolunteerProfileBloc>().add(
@@ -136,7 +137,7 @@ class _SocialMeidaInformationStepState
 
                 // Facebook Account Field
                 _buildSocialMediaField(
-                  label: 'حساب الفيس بوك',
+                  label: 'facebook_account'.tr(),
                   controller: _facebookController,
                   onChanged: (value) {
                     context.read<VolunteerProfileBloc>().add(

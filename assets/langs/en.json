@@ -4777,5 +4777,7 @@
   "select_cv_file": "Select CV file",
   "cv_file_selected": "CV file selected: ",
   "please_select_blood_type": "Please select blood type",
-  "please_select_disease": "Please select disease"
+  "please_select_disease": "Please select disease",
+  "social_media_information": "Social Media Information",
+  "all_fields_optional": "All fields are optional"
 }
