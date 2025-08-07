@@ -370,12 +370,10 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                       ),
                       // Scrollable Form Content
                       Expanded(
-                        child: SingleChildScrollView(
-                          child: Form(
-                            key: _formKey,
-                            // Display the current step widget
-                            child: _steps[state.currentStep],
-                          ),
+                        child: Form(
+                          key: _formKey,
+                          // Display the current step widget
+                          child: _steps[state.currentStep],
                         ),
                       ),
                     ],
