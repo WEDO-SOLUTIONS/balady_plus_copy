@@ -81,103 +81,7 @@ class VolunteerProfileBloc
   }
 
   /// Resets all profile data to initial state
-  VolunteerProfileState _resetProfileState() {
-    return const VolunteerProfileState(
-      currentStep: 0,
-      isLoading: false,
-      isSubmitting: false,
-      isSuccess: false,
-      isPresentationMode: false,
-      // All profile fields reset to null/empty
-      profileId: null,
-      firstName: null,
-      middleName: null,
-      lastName: null,
-      fullName: null,
-      email: null,
-      phoneNumber: null,
-      nationalId: null,
-      dateOfBirth: null,
-      nationality: null,
-      gender: null,
-      maritalStatus: null,
-      nearbyPhoneNumber: null,
-      region: null,
-      regionId: null,
-      city: null,
-      cityId: null,
-      // Scientific info reset
-      educationalQualification: null,
-      educationalQualificationId: null,
-      specialization: null,
-      specializationId: null,
-      profession: null,
-      workExperience: null,
-      language: null,
-      languageId: null,
-      scientificExperienceSummary: null,
-      // Volunteering interests reset
-      skills: [],
-      skillsIds: [],
-      volunteeringLevel: null,
-      volunteeringLevelId: null,
-      volunteeringWorkField: null,
-      volunteeringWorkFieldId: null,
-      volunteeringType: null,
-      volunteeringTypeId: null,
-      isIndividualSelected: false,
-      isGroupSelected: false,
-      interests: [],
-      // Medical info reset
-      bloodType: null,
-      bloodTypeId: null,
-      disease: null,
-      diseaseId: null,
-      // Social media reset
-      xAccount: null,
-      instagramAccount: null,
-      linkedinAccount: null,
-      facebookAccount: null,
-      // API flags reset
-      isGenderFromApi: false,
-      isMaritalStatusFromApi: false,
-      isNationalIdFromApi: false,
-      isRegionFromApi: false,
-      isCityFromApi: false,
-      isNearbyPhoneNumberFromApi: false,
-      isDateOfBirthFromApi: false,
-      // CV upload reset
-      isUploadingCV: false,
-      cvFileName: null,
-      cvFileUrl: null,
-      cvUploadMessage: null,
-      cvFileId: null,
-      // Loading states reset
-      isLoadingRegions: false,
-      isLoadingCities: false,
-      isLoadingQualifications: false,
-      isLoadingSpecializations: false,
-      isLoadingLanguages: false,
-      isLoadingSkills: false,
-      isLoadingLvls: false,
-      isLoadingInterests: false,
-      isLoadingVolunteeringFields: false,
-      isLoadingBloodTypes: false,
-      isLoadingDiseases: false,
-      // Lists reset
-      regionsList: [],
-      citiesList: [],
-      qualificationsList: [],
-      specializationsList: [],
-      languagesList: [],
-      skillsList: [],
-      lvlsList: [],
-      interestsList: [],
-      volunteeringFieldsList: [],
-      bloodTypesList: [],
-      diseasesList: [],
-    );
-  }
+
 
   Future<void> _onLoadVolunteerProfile(
     LoadVolunteerProfile event,
@@ -185,7 +89,8 @@ class VolunteerProfileBloc
   ) async {
     try {
       // Reset state and set loading
-      emit(_resetProfileState().copyWith(isLoading: true));
+
+      emit(state.resetProfileState().copyWith(isLoading: true));
 
       final result = await getProfile(NoParams());
 
