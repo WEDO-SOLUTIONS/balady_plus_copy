@@ -694,11 +694,47 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
   @pragma('vm:entry-point')
   void trackEvent(dynamic eventName, dynamic msg, CompletionHandler handler) {
-    handler.complete("");
+    if (msg != null && msg is String && msg.isNotEmpty) {
+      if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
+      BaseResponse response = BaseResponse(
+        code: 200,
+        eventName: "trackLogs",
+        message: "Event tracked successfully",
+        data: null,
+      );
+      CommonFunctions.sendUXCamEvent(msg);
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 400,
+        eventName: "trackLogs",
+        message: "Invalid event data",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
   @pragma('vm:entry-point')
   void trackLogsErrors(dynamic msg, CompletionHandler handler) {
-    handler.complete("");
+    if (msg != null && msg is String && msg.isNotEmpty) {
+      if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
+      BaseResponse response = BaseResponse(
+        code: 200,
+        eventName: "trackLogs",
+        message: "Event tracked successfully",
+        data: null,
+      );
+      CommonFunctions.sendUXCamEvent(msg);
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 400,
+        eventName: "trackLogs",
+        message: "Invalid event data",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
