@@ -9,7 +9,7 @@ class RefreshButton extends StatelessWidget {
   Widget build(BuildContext context) => Center(
         child: AppButton(
           onTap: onPressed,
-          buttonColorScheme: ButtonColorScheme.tertiary,
+          buttonColorScheme: ButtonColorScheme.neutral,
           size: ButtonSize.small,
           primaryIcon: Icons.refresh,
           innerPadding: const EdgeInsets.all(Spacing.$2x),

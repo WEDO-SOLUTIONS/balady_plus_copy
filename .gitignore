@@ -2,11 +2,13 @@
 *.class
 *.log
 *.swp
+*.lock
 .DS_Store
 .atom/
 .buildlog/
 .history
 *.pyc
+*.lock
 .svn/
 migrate_working_dir/
 lefthook-local.yml
@@ -21,7 +23,6 @@ lefthook-local.yml
 .classpath
 .project
 .settings/
-.vscode/
 devtools_options.yaml
 
 # Flutter repo-specific
@@ -158,7 +159,7 @@ mapness/lib/l10n/generated
 mapness/lib/l10n/*.arb
 mapness/lib/app/auto_route/app_routes.gr.dart
 .sdk-version
-pubspec.lock
+
 
 # tests
 reports/

@@ -3,13 +3,12 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_button.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';
@@ -176,11 +175,8 @@ class PoiPhotoCardSliver extends ConsumerWidget {
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.only(top: Spacing.$4x),
-                child: FeedbackBannerCard(
-                  path: Assets.images.addPhoto.keyName,
-                  title: context.l10n.addPhotoPOICardTitle,
-                  subtitle: context.l10n.addPhotosDescription,
-                  gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
+                child: PoiContentFeedbackCard(
+                  data: PoiContentFeedbackType.addPhoto,
                   onTap: () => context.router.push(
                     QuickFeedbackPhotoRoute(
                       params: FeedbackObjectIdParams(objectId),

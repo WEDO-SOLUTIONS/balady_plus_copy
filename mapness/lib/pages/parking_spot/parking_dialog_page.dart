@@ -41,20 +41,20 @@ class ParkingDialogPage extends ConsumerWidget {
                   children: [
                     Text(
                       title,
-                      style: context.textStyleV3.h4SemiBold,
+                      style: context.textStyles.h4SemiBold,
                     ),
                     if (desc != null) Spacing.$1x.heightBox,
                     if (desc != null)
                       Text(
                         desc!,
-                        style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                       ),
                   ],
                 ),
               ),
               Spacing.$3x.widthBox,
               AppButton(
-                buttonColorScheme: ButtonColorScheme.tertiary,
+                buttonColorScheme: ButtonColorScheme.neutral,
                 primaryIcon: SystemIcons.close,
                 onTap: () => context.router.popForced(),
               ),
@@ -64,7 +64,7 @@ class ParkingDialogPage extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
           child: AppButton(
-            buttonColorScheme: ButtonColorScheme.primary,
+            buttonColorScheme: ButtonColorScheme.accent,
             primaryLabel: context.l10n.accept,
             onTap: onAcceptTab,
           ),
@@ -73,7 +73,7 @@ class ParkingDialogPage extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: AppButton(
-            buttonColorScheme: ButtonColorScheme.secondary,
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
             primaryLabel: context.l10n.cancel,
             onTap: onCancelTab,
           ),

@@ -1,14 +1,24 @@
 import Foundation
 import DGis
 
+class TrafficAndParkingConstants {
+    // EVENTS
+    public static let parkingStateChanged = "parkingStateChanged"
+    public static let trafficStateChanged = "trafficStateChanged"
+    
+    // ATTRIBUTES
+    public static let parkingAttrName = "parkingOn"
+    public static let parkingFilterAttrName = "parkingFilter"
+}
+
 class TrafficAndParkingControlHandler {
     private class Events {
-        static let parkingStateChanged = "parkingStateChanged"
-        static let trafficStateChanged = "trafficStateChanged"
+        static let parkingStateChanged = TrafficAndParkingConstants.parkingStateChanged
+        static let trafficStateChanged = TrafficAndParkingConstants.trafficStateChanged
     }
     
-    private let parkingAttrName = "parkingOn"
-    private let parkingFilterAttrName = "parkingFilter"
+    private let parkingAttrName = TrafficAndParkingConstants.parkingAttrName
+    private let parkingFilterAttrName = TrafficAndParkingConstants.parkingFilterAttrName
     
     private let map: Map
     private let eventChannel: DgisStreamHandler

@@ -20,12 +20,12 @@ import 'package:provider/provider.dart';
 class NaviSearchResults extends ConsumerWidget {
   const NaviSearchResults({
     required this.results,
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
   final SearchResultMessage results;
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,7 +36,7 @@ class NaviSearchResults extends ConsumerWidget {
       final scope = context.read<SearchScope>();
       final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
       if (isFromSuggest) {
-        ref.read(urbiAnalyticsProvider).track(
+        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
             );
       } else {
@@ -49,17 +49,17 @@ class NaviSearchResults extends ConsumerWidget {
     return SearchResults(
       isShowAddPlace: false,
       results: results,
-      scrollController: scrollController,
+      bottomSheetContentScrollController: bottomSheetContentScrollController,
       loaderBuilder: (context) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: CircularProgressIndicator(
-            color: context.colorsV2.accentDefault,
+            color: context.colors.accentDefault,
           ),
         ),
       ),
       itemBuilder: (context, item) => SearchItem(
-        contentColor: context.colorsV3.backgroundSurface1,
+        contentColor: context.colors.backgroundSurface1,
         result: item,
         language: language,
         myLocation:

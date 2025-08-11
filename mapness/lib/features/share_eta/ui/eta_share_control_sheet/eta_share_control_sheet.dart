@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -24,14 +25,13 @@ class EtaShareControlSheet extends ConsumerWidget {
     }
 
     Future<void> _shareMore() async {
-      await _closeStream();
-      await ref.read(shareEtaProvider.notifier).startSharingEta();
+      ref.read(shareEtaProvider.notifier).shareCurrentStream(EtaStreamType.eta);
       context.router.popForced();
     }
 
     return Container(
       decoration: BoxDecoration(
-        color: context.colorsV2.backgroundSurface4,
+        color: context.colors.backgroundSurface4,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(RadiusBorder.xl),
           topRight: Radius.circular(RadiusBorder.xl),
@@ -52,14 +52,14 @@ class EtaShareControlSheet extends ConsumerWidget {
               options: ContentRowOptions(
                 padding: const EdgeInsets.only(bottom: Spacing.$4x),
                 title: context.l10n.routeIsSharing,
-                titleStyle: context.textStyleV3.h3SemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                titleStyle: context.textStyles.h3SemiBold.copyWith(
+                  color: context.colors.foregroundDefault,
                 ),
                 customActionWidget: AppButton.close(
                   onTap: () => context.router.popForced(),
                   padding: EdgeInsets.zero,
-                  textColor: context.colorsV2.neutralOnContainer,
-                  color: context.colorsV2.neutralContainerDefault,
+                  textColor: context.colors.neutralOnContainer,
+                  color: context.colors.neutralContainerDefault,
                   innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                 ),
               ),
@@ -74,10 +74,10 @@ class EtaShareControlSheet extends ConsumerWidget {
                   ),
                   dividerEnabled: true,
                   title: context.l10n.shareMore,
-                  titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
-                  leadingIcon: Icon(SystemIcons.share, color: context.colorsV2.foregroundSoft),
+                  leadingIcon: Icon(SystemIcons.share, color: context.colors.foregroundSoft),
                 ),
               ),
               ContentRow(
@@ -88,10 +88,10 @@ class EtaShareControlSheet extends ConsumerWidget {
                     vertical: Spacing.$3x,
                   ),
                   title: context.l10n.stopSharing,
-                  titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
-                  leadingIcon: Icon(GeneralIcons.clearCircle, color: context.colorsV2.foregroundSoft),
+                  leadingIcon: Icon(GeneralIcons.clearCircle, color: context.colors.foregroundSoft),
                 ),
               )
             ]),

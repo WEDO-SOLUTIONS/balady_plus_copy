@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
@@ -38,8 +40,8 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
       children: [
         Text(
           context.l10n.images,
-          style: context.textStyleV3.captionMediumRegular.copyWith(
-            color: context.colorsV3.foregroundDefault,
+          style: context.textStyles.captionMediumRegular.copyWith(
+            color: context.colors.foregroundDefault,
           ),
         ),
         Spacing.$2x.heightBox,
@@ -49,7 +51,10 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
           children: [
             if (_images.length < maxImages)
               AddImageButton(
-                onTap: imageProvider.onAddImages,
+                onTap: () async {
+                  final picked = await context.pushRoute<List<XFile>>(const AddPhotoRoute());
+                  await imageProvider.onAddImages(picked);
+                },
                 size: _imageSize,
               ),
             ..._images.indexed.map(
@@ -68,8 +73,8 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
             maxImages,
             maxSizeInBytes.formatAsFileSize(),
           ),
-          style: context.textStyleV3.captionMediumRegular.copyWith(
-            color: context.colorsV3.foregroundSoft,
+          style: context.textStyles.captionMediumRegular.copyWith(
+            color: context.colors.foregroundSoft,
           ),
         ),
       ],

@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
@@ -16,16 +16,15 @@ import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/ui/measure_size.dart';
-
 import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
-class RoutingRoutesPage extends ConsumerStatefulWidget {
+class RoutingRoutesPage extends StatefulHookConsumerWidget {
   final List<RouteParamsPointWithLabel> points;
   final bool isHomeOrWork;
 
@@ -41,32 +40,27 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPointWithLabel> points;
-  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
+  bool _permissionRequested = false;
 
   @override
   void initState() {
     super.initState();
     points = widget.points;
-  }
 
-  @override
-  void dispose() {
-    _bottomHeightNotifier.dispose();
-    super.dispose();
+    if (!_permissionRequested && widget.points.any((p) => p.value == null)) {
+      _permissionRequested = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(locationProvider.notifier).checkLocationPermission(
+              routeOnClose: RoutingRoutesRoute.name,
+            );
+      });
+    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     FocusScope.of(context).unfocus();
-    final locationPermission = ref.read(locationProvider.notifier);
-
-    /// if route from user location make sure he has location permission
-    if (widget.points.map((e) => e.value).any((element) => element == null)) {
-      locationPermission.checkLocationPermission(
-        routeOnClose: RoutingRoutesRoute.name,
-      );
-    }
   }
 
   @override
@@ -91,67 +85,59 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        RoutingMapControls(
-          bottomHeightNotifier: _bottomHeightNotifier,
-        ),
-        MeasureSize(
-          onChange: (size) {
-            _bottomHeightNotifier.value = size.height + Spacing.$3x;
-          },
-          child: BottomSheet(
-            backgroundColor: context.color.surfaceBasePrimary,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
-              ),
+    final sheetController = useStatelessBottomsheetController(
+      isInteractive: false,
+    );
+
+    return StatelessBottomSheet(
+      backgroundColor: context.colors.backgroundSurface4,
+      draggerColor: context.colors.backgroundSurface4,
+      scrollController: sheetController,
+      outside: const RoutingMapControls(),
+      header: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: Spacing.$4x,
+              right: Spacing.$4x,
             ),
-            onClosing: () => {},
-            builder: (context) => SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: Spacing.$4x,
-                      right: Spacing.$4x,
-                      top: Spacing.$4x,
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        AppButton(
-                          primaryIcon: SystemIcons.arrowLeft,
-                          buttonColorScheme: ButtonColorScheme.tertiary,
-                          onTap: _onClose,
-                        ),
-                        AppButton(
-                          primaryIcon: TransportIcons.verticalChange,
-                          buttonColorScheme: ButtonColorScheme.tertiary,
-                          onTap: _onSwipeRoutes,
-                        ),
-                        Expanded(
-                          child: ABPoints(
-                            locations: points.map((e) => e.label).toList(),
-                            onTap: _changeRoute,
-                          ),
-                        ),
-                      ].insertBetween(Spacing.$3x.widthBox).toList(),
-                    ),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: ABPoints(
+                    locations: points.map((e) => e.label).toList(),
+                    onTap: _changeRoute,
+                    change: points.first.value == null
+                        ? ABPointsChange.off
+                        : points.last.value == null
+                            ? ABPointsChange.on
+                            : ABPointsChange.none,
                   ),
-                  RoutingInfo(
-                    pointsWithLabel: points,
-                    isHomeOrWork: widget.isHomeOrWork,
-                  ),
-                ],
-              ),
+                ),
+                AppButton(
+                  primaryIcon: TransportIcons.verticalChange,
+                  buttonColorScheme: ButtonColorScheme.neutral,
+                  buttonType: ButtonType.secondary,
+                  size: ButtonSize.large,
+                  onTap: _onSwipeRoutes,
+                ),
+                AppButton(
+                  primaryIcon: SystemIcons.close,
+                  buttonColorScheme: ButtonColorScheme.neutral,
+                  buttonType: ButtonType.secondary,
+                  size: ButtonSize.large,
+                  onTap: _onClose,
+                ),
+              ].insertBetween(Spacing.$3x.widthBox).toList(),
             ),
           ),
-        ),
-      ],
+          RoutingInfo(
+            pointsWithLabel: points,
+            isHomeOrWork: widget.isHomeOrWork,
+          ),
+        ],
+      ),
     );
   }
 
@@ -176,7 +162,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       ),
     );
     showModalBottomSheet(
-      backgroundColor: context.color.surfaceBasePrimary,
+      backgroundColor: context.colors.backgroundSurface4,
       shape: shape,
       context: context,
       builder: (context) => ChangePathSheet(

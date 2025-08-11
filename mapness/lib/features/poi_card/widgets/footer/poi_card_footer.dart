@@ -24,6 +24,7 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
+  final LatLng? closestPoint;
   final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
   const PoiCardFooter({
@@ -33,6 +34,7 @@ class PoiCardFooter extends HookConsumerWidget {
     this.callPhone,
     this.onEntranceTap,
     this.data,
+    this.closestPoint,
     this.bottomSheetController,
     super.key,
   });
@@ -73,6 +75,12 @@ class PoiCardFooter extends HookConsumerWidget {
     final callPhone = this.callPhone;
     final onEntranceTap = this.onEntranceTap;
 
+    final type = data?.types.firstOrNull?.type;
+    final hasMetro = type == ObjectTypeMessage.stationMetro ||
+        type == ObjectTypeMessage.station ||
+        type == ObjectTypeMessage.stationPlatform ||
+        type == ObjectTypeMessage.stationEntrance;
+
     final parkingPoi = objectId == parkingObjectId;
 
     return ThrottledCallbackWidget(
@@ -83,77 +91,98 @@ class PoiCardFooter extends HookConsumerWidget {
         items: [
           ItemActionBar(
             icon: TransportIcons.locationDirectionNavigator,
-            buttonType: BaladyButtonType.primary,
+            buttonType: ButtonType.primary,
             label: context.l10n.poiCardDirections,
             onPressed: onTapCar,
+            innerPadding: const EdgeInsetsDirectional.only(start: 16, end: 20),
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
                 icon: GeneralIcons.phoneLTR,
-                buttonType: BaladyButtonType.secondary,
+                buttonType: ButtonType.secondary,
                 label: hasContactsAndHasEntrances ? null : context.l10n.call,
                 onPressed: callPhone),
-          if (hasEntrances && onEntranceTap != null)
+          if (hasEntrances && onEntranceTap != null && !hasMetro)
             ItemActionBar(
               icon: SystemIcons.turnRight,
-              buttonType: BaladyButtonType.secondary,
+              buttonType: ButtonType.secondary,
               onPressed: onEntranceTap,
             ),
           if (!parkingPoi)
             ItemActionBar(
               icon: iconData,
-              buttonType: BaladyButtonType.secondary,
-              label: hasContactsAndHasEntrances ? null : context.l10n.save,
+              buttonType: ButtonType.secondary,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
-            buttonType: BaladyButtonType.secondary,
-            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
+            buttonType: ButtonType.secondary,
             onPressed: throttledShare,
           ),
-          // TODO(Ayat): temporarily hides
-          // if (!parkingPoi)
-          //   ItemActionBar(
-          //     icon: SystemIcons.parkingAdd,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => _onParkingTab(ref, context),
-          //   ),
-          // if (parkingPoi)
-          //   ItemActionBar(
-          //     icon: SystemIcons.edit,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
-          //   ),
-          // if (parkingPoi)
-          //   ItemActionBar(
-          //     icon: GeneralIcons.trash,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => _onTrashTab(ref, context),
-          //   ),
+          if (!parkingPoi)
+            ItemActionBar(
+              icon: SystemIcons.parkingAdd,
+              buttonType: ButtonType.secondary,
+              onPressed: () => _onParkingTab(ref, context),
+            ),
+          if (parkingPoi)
+            ItemActionBar(
+              icon: SystemIcons.edit,
+              buttonType: ButtonType.secondary,
+              onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
+            ),
+          if (parkingPoi)
+            ItemActionBar(
+              icon: GeneralIcons.trash,
+              buttonType: ButtonType.secondary,
+              onPressed: () => _onTrashTab(ref, context),
+            ),
         ],
       ),
     );
   }
 
   void _onParkingTab(WidgetRef ref, BuildContext context) {
-    final hasNotParking = ref.read(parkingManageProvider).valueOrNull != null;
-    if (hasNotParking) {
+    final hasParking = ref.read(parkingManageProvider).valueOrNull != null;
+    if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
           title: context.l10n.createNewParkingSpot,
           desc: context.l10n.currentParkingSpaceRemoved,
-          onAcceptTab: () {
-            context.router.popAndPush(ParkingSpotRoute(
-              address: data?.title,
-              markerPosition: data?.markerPosition,
-            ));
+          onAcceptTab: () async {
+            // BSA-2734: popAndPush have a bug when we have a bottom sheet open
+            // We need to make it consistent with popForced
+            context.router.popForced();
+            await Future.delayed(Duration.zero);
+            await context.router.push(
+              ParkingSpotRoute(
+                address: data?.title,
+                markerPosition: closestPoint != null
+                    ? GeoPointWithElevationMessage(
+                        latitude: closestPoint!.latitude,
+                        longitude: closestPoint!.longitude,
+                        elevation: 0,
+                      )
+                    : data?.markerPosition,
+              ),
+            );
           },
           onCancelTab: context.router.popForced,
         ),
       );
     } else {
-      context.router.push(ParkingSpotRoute(address: data?.title, markerPosition: data?.markerPosition));
+      context.router.push(
+        ParkingSpotRoute(
+          address: data?.title,
+          markerPosition: closestPoint != null
+              ? GeoPointWithElevationMessage(
+                  latitude: closestPoint!.latitude,
+                  longitude: closestPoint!.longitude,
+                  elevation: 0,
+                )
+              : data?.markerPosition,
+        ),
+      );
     }
   }
 

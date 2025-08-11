@@ -33,7 +33,10 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
   }
 
   /// Delegate method for calculate background fill color inside bottom sheet.
-  static Color? backgroundColorDelegate(StatefulBottomSheetController<PoiCardBottomSheetState> controller) {
+  static const StatefulSheetDelegateFunction<Color?, PoiCardBottomSheetState> backgroundColorDelegate =
+      StatefulSheetDelegateFunction(function: _backgroundColorDelegate);
+
+  static Color? _backgroundColorDelegate(StatefulBottomSheetController<PoiCardBottomSheetState> controller) {
     final state = controller.state;
     final interpolation = controller.interpolation;
 
@@ -47,5 +50,19 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
 
     final opacity = interpolation * 0.4;
     return Colors.black.withOpacity(opacity);
+  }
+
+  static const StatefulSheetDelegateFunction<double, PoiCardBottomSheetState> topHeaderOffsetDelegate =
+      StatefulSheetDelegateFunction(function: _topHeaderOffsetDelegate);
+
+  static double _topHeaderOffsetDelegate(StatefulBottomSheetController<PoiCardBottomSheetState> controller) {
+    final state = controller.state;
+    final interpolation = controller.interpolation;
+
+    if (state != PoiCardBottomSheetState.halfOpen) {
+      return 0;
+    }
+
+    return -RadiusBorder.xl * interpolation;
   }
 }

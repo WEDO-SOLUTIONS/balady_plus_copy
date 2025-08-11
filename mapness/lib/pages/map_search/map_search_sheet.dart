@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -9,16 +10,15 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/pages/map_search/ui/map_search_content.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
+import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
+import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
-import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -48,23 +48,30 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final DgisBottomSheetController _dgisSheetController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _statefulBottomSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
   final settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
+  final _scope = SearchScopeEnum.map.value;
 
   ClusteringMapObjectManager? _clustering;
-
-  final _initialExpansion = Expansion.middle;
 
   @override
   void initState() {
     super.initState();
-    _dgisSheetController = DgisBottomSheetController();
+
+    _statefulBottomSheetController = StatefulBottomSheetController(
+      initialState: ThreeStateBottomSheet.expanded,
+      behavior: AspectRatioSnappingBehavior(aspectRatios: {
+        0.0,
+        if (Platform.isIOS) .3 else .38,
+        .931,
+      }),
+      stateMapper: const LandingStateMapper(),
+    );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
-    _setupTapListener();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -89,8 +96,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
+    _statefulBottomSheetController.dispose();
     _keyboardVisible.cancel();
-    _dgisSheetController.dispose();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
@@ -101,6 +108,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   Widget build(BuildContext context) {
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
     final collapsedHeight = 88 + bottomSafeArea;
+    final contentColor = context.colors.backgroundSurface1;
+    final containerColor = context.colors.backgroundSurface4;
 
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
@@ -117,72 +126,52 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       ).notifier,
     );
     ref.listen(
-      searchProvider(SearchScopeEnum.map.value),
+      searchProvider(_scope),
       (previous, next) {
         _drawSearchMarkers(next, previous, searchObjectManager);
       },
     );
 
-    return Stack(
-      alignment: Alignment.bottomLeft,
-      children: [
-        Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) {
-            _unfocusSearchField();
-            _collapseBottomSheet();
-          },
-        ),
-        MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-        NotificationListener<ScrollNotification>(
-          onNotification: _onNotification,
-          child: DgisBottomSheet(
-              key: const Key('MAP SEARCH SHEET KEY'),
-              showBarrier: false,
-              controller: _dgisSheetController,
-              initialExpansion: widget.expansion ?? _initialExpansion,
-              availableExpansions: const {
-                Expansion.hidden,
-                Expansion.middle,
-                Expansion.expanded,
-                Expansion.collapsed,
-              },
-              onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
-              middleHeight: widget.biggestHeight * 0.8,
-              collapsedHeight: collapsedHeight,
-              scrollableBody: (context, scrollController) {
-                final bgColor = context.colorsV2.backgroundSurface1;
-                return ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(RadiusBorder.xl),
+    return SearchScope(
+      named: SearchScopeEnum.map,
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              _unfocusSearchField();
+              _collapseBottomSheet();
+            },
+          ),
+          NotificationListener<ScrollNotification>(
+            onNotification: _onNotification,
+            child: SafeArea(
+              bottom: false,
+              child: StatefulBottomSheet<ThreeStateBottomSheet>(
+                animateOpening: false,
+                keepContentBehindFooter: true,
+                backgroundColor: containerColor,
+                scrollController: _statefulBottomSheetController,
+                header: Container(
+                  color: contentColor,
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
+                  child: MapSearchBar(
+                    requestFocus: widget.requestFocus,
+                    onClose: onClose,
                   ),
-                  child: Material(
-                    color: bgColor,
-                    child: SearchScope(
-                      named: SearchScopeEnum.map,
-                      child: CustomScrollView(
-                        controller: scrollController,
-                        physics: const ClampingScrollPhysics(),
-                        slivers: [
-                          SliverPersistentHeader(
-                            delegate: MapSearchHeaderDelegate(
-                              backgroundColor: bgColor,
-                              requestFocus: widget.requestFocus,
-                              onClose: onClose,
-                            ),
-                            pinned: true,
-                          ),
-                          MapSearchContent(
-                            scrollController: scrollController,
-                          ),
-                        ],
-                      ),
-                    ),
+                ),
+                outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
+                content: [
+                  MapSearchContent(
+                    bottomSheetContentScrollController: _statefulBottomSheetController,
                   ),
-                );
-              }),
-        ),
-      ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -204,8 +193,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         isRtl: isRtl,
         isDark: dark.isDark,
       );
-      if (!ref.read(searchInRectProvider).isSearchInThisAreaRequest) {
-        ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(value: false);
+      if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
+        ref.read(searchInRectProvider(_scope).notifier).searchInThisAreaSwitch(value: false);
         await mapObjectManager.removeAllMarkers();
       }
       await mapObjectManager.addMarkers(markers);
@@ -223,17 +212,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ),
         ),
       );
-
-  void _onExpansionChanged(Expansion expansion) => switch (expansion) {
-        Expansion.middle => setState(() {
-            currentSize = 0.8;
-          }),
-        Expansion.collapsed => setState(() {
-            currentSize = 0.1;
-          }),
-        Expansion.hidden => _removeAllMarkersAndPop(),
-        _ => null,
-      };
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
@@ -257,20 +235,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState) {
+    if (!kbState || _statefulBottomSheetController.state == ThreeStateBottomSheet.expanded) {
       return;
     }
-    final currentExp = _dgisSheetController.currentExpansion;
-    if (currentExp == Expansion.expanded || currentExp == Expansion.middle) {
-      return;
-    }
-    // We need to wait because of the rebuild the sheet state
-    // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
-    // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
-    // we will get set wrong [Expansion] value
-    Future.delayed(Durations.short2).then((_) {
-      _dgisSheetController.animateTo(Expansion.expanded);
-    });
+
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.expanded);
   }
 
   void onClose() {
@@ -292,20 +261,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ).notifier,
         )
         .removeAllMarkers();
-    ref.read(searchInRectProvider.notifier).update();
+    ref.read(searchInRectProvider(_scope).notifier).update();
     context.router.popForced();
   }
 
-  void _setupTapListener() {
-    _streamSubscription = ref.read(mapTapHandlerProvider.notifier).listen((_) {
-      if (context.router.isRouteActive(SearchRoute.name)) {
-        _unfocusSearchField();
-        _collapseBottomSheet();
-      }
-    });
-  }
-
   void _collapseBottomSheet() {
-    _dgisSheetController.animateTo(Expansion.collapsed);
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.hidden);
   }
 }

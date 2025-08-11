@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
@@ -68,9 +69,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final searcher = ref.watch(searchProvider(scope.value).notifier);
 
     ref.listen(searchProvider(scope.value), (previous, next) {
-      final isSearchInRectRequest = ref.read(searchInRectProvider).isSearchInThisAreaRequest;
+      final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
       if (next.searchText.isEmpty) {
-        ref.read(searchInRectProvider.notifier).update();
+        ref.read(searchInRectProvider(scope.value).notifier).update();
       }
 
       _updateText(next.searchText);
@@ -89,7 +90,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         config: BaladyInputConfig(
           focusNode: _focusNode,
           onChanged: (query) {
-            ref.read(searchInRectProvider.notifier).update();
+            ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
@@ -131,10 +132,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           },
 
           hintText: context.l10n.search,
-          fillColor: context.colorsV2.neutralContainerDefault,
-          hintColor: context.colorsV2.foregroundSoft,
+          fillColor: context.colors.neutralContainerDefault,
+          hintColor: context.colors.foregroundSoft,
           // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
-          textStyle: context.textStyleV3.bodySmallRegular,
+          textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
       option: widget.isCloseButton

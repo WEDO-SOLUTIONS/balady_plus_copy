@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,31 +25,40 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
     );
 
     final textEditingController = useTextEditingController(text: initialText);
-    final isValid = useState(false);
 
-    return StatelessBottomSheet(
-      scrollController: scrollController,
-      header: AppFeedbackSheetHeader(
-        onBackTap: context.router.popForced,
-        title: context.l10n.appFeedbackInputTitle,
-      ),
-      content: [
-        AppFeedbackInput(
-          textController: textEditingController,
-          isValid: (value) => isValid.value = value,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: StatelessBottomSheet(
+        scrollController: scrollController,
+        backgroundColor: context.colors.backgroundSurface4,
+        draggerColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        onWillPop: Future.value(false),
+        header: AppFeedbackSheetHeader(
+          onBackTap: context.router.popForced,
+          title: context.l10n.appFeedbackInputTitle,
         ),
-      ],
-      footer: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$8x),
-        child: SizedBox(
-          width: double.infinity,
-          child: AppButton(
-            primaryLabel: context.l10n.appFeedbackAddNote,
-            buttonState: isValid.value ? ButtonState.normal : ButtonState.disabled,
-            buttonColorScheme: ButtonColorScheme.primary,
-            onTap: () {
-              context.router.popForced(textEditingController.text);
-            },
+        content: [
+          AppFeedbackInput(
+            textController: textEditingController,
+            textInputAction: TextInputAction.go,
+          ),
+        ],
+        // TODO: What this is temporally solution, and will be removed as the bottom sheet fixes be added
+        footer: Padding(
+          padding: const EdgeInsets.all(Spacing.$4x)
+              .copyWith(bottom: Spacing.$8x + MediaQuery.of(context).viewInsets.bottom),
+          child: SizedBox(
+            width: double.infinity,
+            child: AppButton(
+              primaryLabel: context.l10n.appFeedbackAddNote,
+              buttonColorScheme: ButtonColorScheme.accentSecondary,
+              size: ButtonSize.large,
+              onTap: () {
+                context.router.popForced(textEditingController.text);
+              },
+            ),
           ),
         ),
       ),

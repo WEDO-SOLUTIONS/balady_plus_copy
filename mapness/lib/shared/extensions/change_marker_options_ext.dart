@@ -33,6 +33,7 @@ extension ChangeTextStyleExt on MarkerTextStyleMessage {
     MarkerTextPlacementMessage? textPlacement,
     double? textOffset,
     String? fontName,
+    bool? suppressOnOverlap,
   }) =>
       MarkerTextStyleMessage(
         fontSize: fontSize ?? this.fontSize,
@@ -42,6 +43,7 @@ extension ChangeTextStyleExt on MarkerTextStyleMessage {
         textPlacement: textPlacement ?? this.textPlacement,
         textOffset: textOffset ?? this.textOffset,
         fontName: fontName ?? this.fontName,
+        suppressOnOverlap: suppressOnOverlap ?? this.suppressOnOverlap,
       );
 }
 

@@ -15,7 +15,7 @@ class DefaultProfileImage extends ConsumerWidget {
       return Icon(
         GeneralIcons.userCircle,
         size: dimension,
-        color: color ?? context.colorsV3.foregroundSoft,
+        color: color ?? context.colors.foregroundSoft,
       );
     }
     final userData = ref.read(authProvider);
@@ -29,23 +29,23 @@ class DefaultProfileImage extends ConsumerWidget {
         shape: BoxShape.circle,
         gradient: LinearGradient(
           colors: [
-            context.colorsV3.accentSecondarySoft,
-            context.colorsV2.accentSecondaryActive,
+            context.colors.accentSecondarySoft,
+            context.colors.accentSecondaryActive,
           ],
         ),
       ),
       child: name != null
           ? Text(
               name,
-              style: context.textStyleV3.h1SemiBold.copyWith(
-                color: context.colorsV3.backgroundSurface1,
+              style: context.textStyles.h1SemiBold.copyWith(
+                color: context.colors.backgroundSurface1,
               ),
             )
           : Assets.icons.svg.icProfile.svg(
               height: 36,
               width: 36,
               colorFilter: ColorFilter.mode(
-                context.colorsV3.backgroundSurface1,
+                context.colors.backgroundSurface1,
                 BlendMode.srcIn,
               ),
             ),

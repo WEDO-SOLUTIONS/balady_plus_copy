@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:mapness/features/poi_card/domain/model/opening_hours_model.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_working_time.dart';
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/features/poi_card/extensions/week_day_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';

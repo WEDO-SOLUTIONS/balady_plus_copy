@@ -5,16 +5,18 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AppFeedbackInput extends HookWidget {
   final ValueChanged<bool>? isValid;
+  final TextInputAction? textInputAction;
   final TextEditingController textController;
 
   const AppFeedbackInput({
     required this.textController,
     this.isValid,
+    this.textInputAction,
     super.key,
   });
 
-  static const _initMaxLines = 4;
-  static const _maxLinesAllowed = 7;
+  static const _initMaxLines = 9;
+  static const _maxLinesAllowed = 15;
   static const _maxCharsAllowed = 1000;
 
   @override
@@ -67,8 +69,10 @@ class AppFeedbackInput extends HookWidget {
           controller: textController,
           inputState: inputState.value,
           config: BaladyInputConfig(
+            background: BaladyInputBackground.color,
             focusNode: focusNode,
             autofocus: true,
+            textInputAction: textInputAction,
             hintText: context.l10n.appFeedbackTellUsMore,
             maxLines: maxLinesValue,
             isDisposed: false,

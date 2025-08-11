@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 // TODO(Sergei): remove rubrics and rename to QuickSearch when quick search feature is approved
@@ -48,8 +48,8 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.eatOut => PlacesIcons.restaurant,
         QuickFilter.mosques => PlacesIcons.mosques,
         QuickFilter.markets => PlacesIcons.markets,
-        QuickFilter.hotels => PlacesIcons.hotels,
-        QuickFilter.fuel => PlacesIcons.gasstation,
+        QuickFilter.hotels => PlacesIcons.hotelsFilled,
+        QuickFilter.fuel => PlacesIcons.gasstationFilled,
       };
 
   MapMarkersType? get markerType => switch (this) {
@@ -79,7 +79,7 @@ extension QuickFilterExtension on QuickFilter {
           },
         QuickFilter.eatOut => {
             Language.english: 'Eat out',
-            Language.arabic: 'تناول الطعام بالخارج',
+            Language.arabic: 'مطاعم',
           },
       };
 

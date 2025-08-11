@@ -9,14 +9,14 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 
 class SearchResults extends ConsumerStatefulWidget {
   final SearchResultMessage results;
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
   final Widget Function(BuildContext) loaderBuilder;
   final Widget Function(BuildContext, DirectoryObjectMessage) itemBuilder;
   final bool? isShowAddPlace;
 
   const SearchResults({
     required this.results,
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     required this.loaderBuilder,
     required this.itemBuilder,
     this.isShowAddPlace,
@@ -38,18 +38,18 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     // Check if the first page has more than 5 items to determine if there is more data to fetch
     // We need it to show loader at the end of the list
     _hasNext = (widget.results.firstPage?.items.length ?? 0) > 5;
-    widget.scrollController.addListener(_scrollListener);
+    widget.bottomSheetContentScrollController.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
-    widget.scrollController.removeListener(_scrollListener);
+    widget.bottomSheetContentScrollController.removeListener(_scrollListener);
     super.dispose();
   }
 
   void _scrollListener() {
-    final current = widget.scrollController.position.pixels;
-    final max = widget.scrollController.position.maxScrollExtent;
+    final current = widget.bottomSheetContentScrollController.position.pixels;
+    final max = widget.bottomSheetContentScrollController.position.maxScrollExtent;
 
     final delta = MediaQuery.of(context).size.height * 0.2;
 

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +7,7 @@ import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/ui/picture/picture.dart';
 
 class MyLocationImageWidget extends ConsumerWidget {
   const MyLocationImageWidget({
@@ -53,8 +53,8 @@ class _DefaultImage extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: context.textStyleV3.h4SemiBold.copyWith(
-            color: context.colorsV2.staticWhite,
+          style: context.textStyles.h4SemiBold.copyWith(
+            color: context.colors.staticWhite,
             height: 1,
           ),
         ),

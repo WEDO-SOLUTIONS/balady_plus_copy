@@ -18,7 +18,7 @@ class UnauthorizedProfile extends ConsumerWidget {
           BaladyLogo(
             height: 48,
             width: 127,
-            color: context.colorsV3.accentOnAccent,
+            color: context.colors.accentOnAccent,
           ),
           Spacing.$4x.heightBox,
           SizedBox(
@@ -26,19 +26,19 @@ class UnauthorizedProfile extends ConsumerWidget {
             child: Text(
               context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
               textAlign: TextAlign.center,
-              style: context.textStyleV3.bodySmallRegular.copyWith(
-                color: context.colorsV3.accentOnAccent,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.accentOnAccent,
               ),
             ),
           ),
           Spacing.$4x.heightBox,
           SizedBox(
             width: double.infinity,
-            child: BaladyAppButton(
+            child: AppButton(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               primaryLabel: context.l10n.connectToMomrah,
-              size: BaladyButtonSize.large,
-              buttonColorScheme: BaladyButtonColorScheme.accent,
+              size: ButtonSize.large,
+              buttonColorScheme: ButtonColorScheme.accent,
               onTap: onConnect,
             ),
           ),

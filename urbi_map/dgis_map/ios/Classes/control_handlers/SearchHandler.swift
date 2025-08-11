@@ -19,7 +19,7 @@ class SearchHandler: NSObject {
     
     private let jsonDecoder = JSONDecoder()
         
-    private static let saRestrictions = [
+    static let saRestrictions = [
         GeoPoint(latitude: 32.568765, longitude: 56.694472),
         GeoPoint(latitude: 32.568765, longitude: 32.61185),
         GeoPoint(latitude: 15.506104, longitude: 32.61185),
@@ -68,7 +68,7 @@ class SearchHandler: NSObject {
     
     func search(
         _ queryText: String,
-        categories: [RubricId]?,
+        rubricIds: [RubricId]?,
         spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
@@ -89,8 +89,8 @@ class SearchHandler: NSObject {
             return
         }
         
-        var queryBuilder = categories != nil ?
-            SearchQueryBuilder.fromQueryTextAndRubricIds(queryText: queryText, rubricIds: categories!) :
+        var queryBuilder = rubricIds != nil ?
+            SearchQueryBuilder.fromQueryTextAndRubricIds(queryText: queryText, rubricIds: rubricIds!) :
             SearchQueryBuilder.fromQueryText(queryText: queryText)
         
         let query = queryBuilder
@@ -153,8 +153,8 @@ class SearchHandler: NSObject {
         performSearch(query, completion: completion)
     }
     
-    func searchByCategories(
-        _ categories: [RubricId],
+    func searchByRubricIds(
+        _ rubricIds: [RubricId],
         spatialRestriction: [GeoPointMessage]?,
         searchGeoRect: DGis.GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage?,
@@ -163,7 +163,7 @@ class SearchHandler: NSObject {
         locale: String?,
         completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
-        let query = SearchQueryBuilder.fromRubricIds(rubricIds: categories)
+        let query = SearchQueryBuilder.fromRubricIds(rubricIds: rubricIds)
             .setPageSize(pageSize: pageSize)
             .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setSortingType(sortingType: sortingType.toSortingType())
@@ -181,65 +181,6 @@ class SearchHandler: NSObject {
         
         performSearch(query, completion: completion)
     }
-
-    func searchByParkCategory(
-        spatialRestriction: [GeoPointMessage]?,
-        searchGeoRect: DGis.GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: Int32,
-        locale: String?,
-        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
-    ) {
-        let query = SearchQueryBuilder.fromQueryText(queryText: "park")
-            .setAllowedResultTypes(allowedResultTypes: [.attraction])
-            .setPageSize(pageSize: pageSize)
-            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
-            .setSortingType(sortingType: sortingType.toSortingType())
-            .setDirectoryFilter(filter:
-                DirectoryFilter(
-                    workTime: buildWeekTimeFilter(weekTimeMessage),
-                    dynamic: []
-                )
-			)
-            .setAreaOfInterest(rect: searchGeoRect)
-            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
-                $0.geoPoint
-            } ?? Self.saRestrictions)
-            .build()
-
-        performSearch(query, completion: completion)
-    }
-
-    func searchByBeachCategory(
-        spatialRestriction: [GeoPointMessage]?,
-        searchGeoRect: DGis.GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage?,
-        sortingType: SortingTypeMessage,
-        pageSize: Int32,
-        locale: String?,
-        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
-    ) {
-        let query = SearchQueryBuilder.fromQueryText(queryText: "beach")
-            .setAllowedResultTypes(allowedResultTypes: [.attraction])
-            .setPageSize(pageSize: pageSize)
-            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
-            .setSortingType(sortingType: sortingType.toSortingType())
-            .setDirectoryFilter(filter:
-                DirectoryFilter(
-                    workTime: buildWeekTimeFilter(weekTimeMessage),
-                    dynamic: []
-                )
-			)
-            .setAreaOfInterest(rect: searchGeoRect)
-            .setSpatialRestriction(spatialRestriction: spatialRestriction?.map {
-                $0.geoPoint
-            } ?? Self.saRestrictions)
-            .build()
-
-        performSearch(query, completion: completion)
-    }
-
 
     func performSearch(
         _ query: SearchQuery,

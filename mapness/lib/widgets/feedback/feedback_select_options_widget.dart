@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
-import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
+import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/widgets/feedback/feedback_type_item_widget.dart';
 
 class FeedbackSelectOptionsWidget extends StatelessWidget {
@@ -31,14 +31,14 @@ class FeedbackSelectOptionsWidget extends StatelessWidget {
               children: [
                 Text(poiDataValue.title, style: context.textStyle.callout),
                 const SizedBox(height: 5),
-                Text(poiDataValue.makeAddress(), style: context.textStyleV3.bodySmallRegular),
+                Text(poiDataValue.makeAddress(), style: context.textStyles.bodySmallRegular),
               ],
             ),
           ),
           const SizedBox(height: Spacing.$4x),
           Material(
             shape: smoothBorder(RadiusBorder.l),
-            color: context.colorsV2.backgroundSurface1,
+            color: context.colors.backgroundSurface1,
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(vertical: 6),
               shrinkWrap: true,
@@ -55,7 +55,7 @@ class FeedbackSelectOptionsWidget extends StatelessWidget {
                 );
               },
               separatorBuilder: (context, index) => Divider(
-                color: context.colorsV2.borderSoft,
+                color: context.colors.borderSoft,
                 height: 8,
                 thickness: 0.5,
                 indent: 52,

@@ -30,7 +30,7 @@ class MapSuggestList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
     final myLocation = ref.watch(locationProvider);
-    final contentColor = context.colorsV2.backgroundSurface4;
+    final contentColor = context.colors.backgroundSurface1;
 
     void onObjectTap(DirectoryObjectMessage object) {
       final objectId = object.id?.objectId;
@@ -59,6 +59,7 @@ class MapSuggestList extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.only(
+        top: Spacing.$1_5x,
         left: Spacing.$4x,
         right: Spacing.$4x,
         bottom: Spacing.$4x,
@@ -68,7 +69,7 @@ class MapSuggestList extends ConsumerWidget {
         children: [
           Text(
             context.l10n.suggestedSearches,
-            style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
+            style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
@@ -76,29 +77,27 @@ class MapSuggestList extends ConsumerWidget {
               clipBehavior: Clip.antiAlias,
               borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
               color: contentColor,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  itemBuilder: (context, index) => SuggestItem(
-                    suggest: suggests[index],
-                    myLocation: myLocation == null
-                        ? null
-                        : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-                    isLast: index == suggests.length - 1,
-                    onObjectTap: onObjectTap,
-                  ),
-                  itemCount: suggests.length,
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: const EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+                physics: const NeverScrollableScrollPhysics(),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                itemBuilder: (context, index) => SuggestItem(
+                  suggest: suggests[index],
+                  myLocation: myLocation == null
+                      ? null
+                      : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+                  isLast: index == suggests.length - 1,
+                  onObjectTap: onObjectTap,
                 ),
+                itemCount: suggests.length,
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$1_5x),
             child: uikit.AppButton(
-              buttonColorScheme: uikit.ButtonColorScheme.secondary,
+              buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
               primaryIcon: uikit.SystemIcons.search,
               primaryLabel: context.l10n.searchMore,
               onTap: () {

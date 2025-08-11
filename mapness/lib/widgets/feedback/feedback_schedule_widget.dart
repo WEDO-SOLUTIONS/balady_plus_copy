@@ -89,7 +89,7 @@ class FeedbackScheduleWidget extends StatelessWidget {
                   width: double.infinity,
                   child: uikit.AppButton(
                     size: ButtonSize.small,
-                    buttonColorScheme: ButtonColorScheme.secondary,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
                     primaryLabel: context.l10n.feedbackScheduleAddMoreDays,
                     onTap: () => _onIntervalAdd(fieldState),
                   ),

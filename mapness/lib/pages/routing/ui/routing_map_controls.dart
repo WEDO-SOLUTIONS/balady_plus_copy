@@ -9,11 +9,12 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
-    this.bottomHeightNotifier,
+    @Deprecated('Please use sheetify outside property') this.bottomHeightNotifier,
     super.key,
   });
 
@@ -54,7 +55,8 @@ class RoutingMapControls extends ConsumerWidget {
                           LayersControl(),
                           SizedBox(height: 8),
                           TrafficControl(),
-                          SizedBox(height: 8),
+                          SizedBox(height: uikit.Spacing.$2x),
+                          DimensionControl(),
                           Spacer(),
                           ZoomControl(),
                           Spacer(),

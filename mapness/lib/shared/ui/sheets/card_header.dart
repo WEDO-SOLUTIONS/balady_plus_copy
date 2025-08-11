@@ -1,6 +1,8 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
+import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 sealed class CardHeaderData {
@@ -15,11 +17,11 @@ class CardHeaderText extends CardHeaderData {
   CardHeaderText({required this.text, required this.style, required this.maxLines});
 
   CardHeaderText.title({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
+      : style = style ?? context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
         maxLines = maxLines ?? 2;
 
   CardHeaderText.subTitle({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),
+      : style = style ?? context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
         maxLines = maxLines ?? 1;
 
   @override
@@ -35,7 +37,7 @@ class CardHeaderWidget extends CardHeaderData {
   Widget get build => child;
 }
 
-class CardHeader extends StatelessWidget {
+class CardHeader extends BottomSheetStateComponent<PoiCardBottomSheetState> {
   final Function()? onTapClose;
   final BorderRadius borderRadius;
 
@@ -50,10 +52,20 @@ class CardHeader extends StatelessWidget {
     this.profileImage,
     this.borderRadius = const BorderRadius.all(Radius.circular(RadiusBorder.m)),
     super.key,
-  });
+  }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
-  Widget build(BuildContext context) => Row(
+  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
+    final hideSubtitle = state.index > PoiCardBottomSheetState.halfOpen.index;
+    var scale = interpolation;
+
+    if (state == PoiCardBottomSheetState.halfOpen) {
+      scale = Curves.easeInQuart.transform(1 - interpolation);
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.$2x),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (profileImage != null) ...[
@@ -66,14 +78,23 @@ class CardHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 title.build,
-                if (subTitle != null) subTitle!.build,
+                if (subTitle != null && !hideSubtitle)
+                  ContentTransition(
+                    interpolation: scale,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: Spacing.$2x),
+                      child: subTitle!.build,
+                    ),
+                  ),
               ],
             ),
           ),
           const SizedBox(width: Spacing.$3x),
-          CustomCloseButton(onClose: onTapClose),
+          CustomCloseButton(onClose: onTapClose, padding: EdgeInsets.zero),
         ],
-      );
+      ),
+    );
+  }
 }
 
 class _HeaderText extends StatelessWidget {

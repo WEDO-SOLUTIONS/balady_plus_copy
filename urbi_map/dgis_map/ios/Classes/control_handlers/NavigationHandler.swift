@@ -11,6 +11,8 @@ class NavigationHandler {
         // event values
         static let stateFinished = "finished"
         static let stateDisabled = "disabled"
+        static let stateNavigation = "navigation"
+        static let stateRouteSearch = "routeSearch"
     }
     
     private let map: Map
@@ -100,8 +102,16 @@ class NavigationHandler {
             self.isNavigating = false
             stopNavigation()
         case State.navigation:
+            self.eventChannel.success([
+                "event": Events.navigationEvent,
+                "state": Events.stateNavigation
+            ])
             self.isNavigating = true
         case State.routeSearch:
+            self.eventChannel.success([
+                "event": Events.navigationEvent,
+                "state": Events.stateRouteSearch
+            ])
             self.isNavigating = true
         }
     }
@@ -122,14 +132,9 @@ class NavigationHandler {
     }
     
     private func betterRouteListener(_ routeInfo: BetterRouteInfo?) {
-        let activeRouteDuration = self.navigationManager.uiModel.duration
-        var betterRouteDuration: TimeInterval? = nil
         let durationProfit: Int
-        if let first = routeInfo?.trafficRoute.route.geometry.first {
-            betterRouteDuration = routeInfo!.trafficRoute.traffic.durations.calculateDuration(routePoint: first.point).rounded()
-        }
-        if let activeRouteDuration = activeRouteDuration, let betterRouteDuration = betterRouteDuration {
-            durationProfit = Int(activeRouteDuration - betterRouteDuration)
+        if let routeInfo = routeInfo {
+            durationProfit = calculateDurationProfit(navigationManager.uiModel, routeInfo)
         } else {
             durationProfit = 0
         }
@@ -274,10 +279,6 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             
-            if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-                FlutterCarPlaySceneDelegate.startNavigation()
-            }
-            
             // TODO: return back
             try self.navigationManager.start(
                 routeBuildOptions: RouteBuildOptions(
@@ -375,7 +376,6 @@ class NavigationHandler {
     
     func stopNavigation() {
         self.navigationManager.stop()
-        FlutterCarPlaySceneDelegate.stopNavigation()
         resetCamera()
     }
     
@@ -506,4 +506,19 @@ class NavigationHandler {
             ))
         )
     }
+}
+
+func calculateDurationProfit(_ uiModel: Model,_ routeInfo: BetterRouteInfo) -> Int {
+    let activeRouteDuration = uiModel.duration
+    var betterRouteDuration: TimeInterval? = nil
+    let durationProfit: Int
+    if let first = routeInfo.trafficRoute.route.geometry.first {
+        betterRouteDuration = routeInfo.trafficRoute.traffic.durations.calculateDuration(routePoint: first.point).rounded()
+    }
+    if let activeRouteDuration = activeRouteDuration, let betterRouteDuration = betterRouteDuration {
+        durationProfit = Int(activeRouteDuration - betterRouteDuration)
+    } else {
+        durationProfit = 0
+    }
+    return durationProfit
 }

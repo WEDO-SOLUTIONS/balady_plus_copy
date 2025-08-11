@@ -9,7 +9,6 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
-import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
@@ -151,7 +150,6 @@ class QuickSearchBar extends StatelessWidget {
               child: MapQuickFilters(
                 forMap: true,
                 itemScrollController: quickScrollController,
-                id: QuickFilterScreen.controls,
                 customFilters: [
                   FilterItemBuilder(
                     filterType: FilterType.custom,
@@ -223,14 +221,14 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
     super.build(context);
     listerForStart();
     final color = context.color;
-    final colorsV3 = context.colorsV2;
+    final colors = context.colors;
 
     final delta = launchingController.value;
     final borderRadius = lerpDouble(RadiusBorder.m, RadiusBorder.l, delta) ?? RadiusBorder.m;
 
     final iconAndTextColor = Color.lerp(
           color.textAndIconsBasePrimary,
-          context.colorsV2.backgroundSurface1,
+          context.colors.backgroundSurface1,
           delta,
         ) ??
         color.textAndIconsBasePrimary;
@@ -249,7 +247,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: Shadows.s,
-        color: Color.lerp(colorsV3.accentOnAccent, colorsV3.accentSecondarySoft, delta) ?? colorsV3.accentOnAccent,
+        color: Color.lerp(colors.accentOnAccent, colors.accentSecondarySoft, delta) ?? colors.accentOnAccent,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -295,7 +293,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                           child: Icon(
                             TransportIcons.locationDirectionNavigator,
                             size: iconSize,
-                            color: context.colorsV3.foregroundSoft,
+                            color: context.colors.foregroundSoft,
                           ),
                         ),
                       ),
@@ -312,16 +310,16 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                             children: [
                               Text(
                                 context.l10n.launchingNavigator,
-                                style: context.textStyleV3.bodySmallSemiBold.copyWith(color: iconAndTextColor),
+                                style: context.textStyles.bodySmallSemiBold.copyWith(color: iconAndTextColor),
                               ),
                               AppButton(
-                                color: context.colorsV3.accentSecondarySoft,
+                                color: context.colors.accentSecondarySoft,
                                 onTap: () {
                                   ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
                                   context.router.push(const AutostartSettingsSheetRoute());
                                 },
                                 primaryIcon: SystemIcons.close,
-                                buttonColorScheme: ButtonColorScheme.primary,
+                                buttonColorScheme: ButtonColorScheme.accent,
                               )
                             ],
                           ),

@@ -27,17 +27,17 @@ class FeedbackTypeItemWidget extends ConsumerWidget {
                   width: 24,
                   height: 24,
                   colorFilter: ColorFilter.mode(
-                    context.colorsV2.accentDefault,
+                    context.colors.accentDefault,
                     BlendMode.srcIn,
                   ),
                 ),
           title: title,
-          titleStyle: context.textStyleV3.bodyLargeRegular,
+          titleStyle: context.textStyles.bodyLargeRegular,
           titleMaxlines: 2,
           actionWidget: ContentRowActionOptions(
             actionIcon: AppIcons(
-              iconData: SystemIcons.arrowCornerRightLarge,
-              color: context.colorsV2.neutralDefault,
+              iconData: SystemIcons.arrowCornerRightSmall,
+              color: context.colors.neutralDefault,
             ),
           ),
         ),

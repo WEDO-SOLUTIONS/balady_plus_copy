@@ -23,7 +23,7 @@ class EtaSharingTimeSheet extends HookWidget {
     );
 
     Widget _customCheckMarkBuilder(bool? init) => init ?? false
-        ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colorsV2.accentDefault)
+        ? AppIcons(size: 24, iconData: SystemIcons.checkmark, color: context.colors.accentDefault)
         : empty;
 
     return EtaShareSheet(
@@ -40,8 +40,8 @@ class EtaSharingTimeSheet extends HookWidget {
               customToggleBuilder: ({required onToggle, initial}) => _customCheckMarkBuilder(initial),
             ),
             title: context.l10n.for15Minutes,
-            titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+              color: context.colors.foregroundDefault,
             ),
           ),
         ),
@@ -54,8 +54,8 @@ class EtaSharingTimeSheet extends HookWidget {
               customToggleBuilder: ({required onToggle, initial}) => _customCheckMarkBuilder(initial),
             ),
             title: context.l10n.for1Hour,
-            titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+              color: context.colors.foregroundDefault,
             ),
           ),
         ),
@@ -67,8 +67,8 @@ class EtaSharingTimeSheet extends HookWidget {
               customToggleBuilder: ({required onToggle, initial}) => _customCheckMarkBuilder(initial),
             ),
             title: context.l10n.for8Hours,
-            titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+              color: context.colors.foregroundDefault,
             ),
           ),
         ),

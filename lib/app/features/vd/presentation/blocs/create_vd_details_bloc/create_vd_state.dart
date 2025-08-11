@@ -27,7 +27,7 @@ class CreateVDState extends Equatable {
   final bool qrCodeFlow;
   final PAGE_TYPE? pageType;
   //final String? splSearchedText;
-  CreateVDState({
+  const CreateVDState({
     this.status = BlocStatus.initial,
     // this.isFromHome,
     this.errorMessage,
@@ -57,28 +57,28 @@ class CreateVDState extends Equatable {
   });
 
   PhoneNumberValidation get phoneValidator => mobileNumber == null
-      ? PhoneNumberValidation.pure()
+      ? const PhoneNumberValidation.pure()
       : PhoneNumberValidation.dirty(value: mobileNumber);
   String? get phoneErrorText => phoneValidator.error?.message != null
       ? (phoneValidator.error?.message ?? "").tr()
       : null;
 
   NameValidation get firstNameValidator => firstName == null
-      ? NameValidation.pure()
+      ? const NameValidation.pure()
       : NameValidation.dirty(value: firstName);
   String? get firstNameErrorText => firstNameValidator.error?.message != null
       ? (firstNameValidator.error?.message ?? "").tr()
       : null;
 
   NameValidation get lastNameValidator => lastName == null
-      ? NameValidation.pure()
+      ? const NameValidation.pure()
       : NameValidation.dirty(value: lastName);
   String? get lastNameErrorText => lastNameValidator.error?.message != null
       ? (lastNameValidator.error?.message ?? "").tr()
       : null;
 
   IncidentDescValidation get incidentDescValidator => issueDesc == null
-      ? IncidentDescValidation.pure()
+      ? const IncidentDescValidation.pure()
       : IncidentDescValidation.dirty(value: issueDesc);
   String? get incidentDescErrorText =>
       incidentDescValidator.error?.message != null
@@ -86,24 +86,36 @@ class CreateVDState extends Equatable {
           : null;
 
   bool isNextButtonEnabled() {
-    if (currentPageValue == 0)
+    if (currentPageValue == 0) {
+      if (selectedCategory?.categoryId == RemoteConfig.QaseemCategoryKey) {
+        if (gisResponse?.adminMunicipalityId != '008') {
+          CommonFunctions.showError('ErrOnlyQaseem'.tr());
+          return false;
+        } else {
+          return true;
+        }
+      }
       return gisResponse != null && location != null;
-    else if (currentPageValue == 1)
+    } else if (currentPageValue == 1)
       return splDetailsResponse != null;
-    else if (((CommonProperties.isLoggedInMunicipality && currentPageValue == 2) ||
-            (!CommonProperties.isLoggedInMunicipality && currentPageValue == 3)) &&
+    else if (((CommonProperties.isLoggedInMunicipality &&
+                currentPageValue == 2) ||
+            (!CommonProperties.isLoggedInMunicipality &&
+                currentPageValue == 3)) &&
         validateAddetionalFields()) {
       bool status = Formz.validate([incidentDescValidator]);
       bool isRegaValid = isRegaClass() == true ? (isCrValid ?? false) : true;
       if (!incidentDescValidator.isPure && status && isRegaValid) return true;
-    } else if ((!CommonProperties.isLoggedInMunicipality && currentPageValue == 2)) {
+    } else if ((!CommonProperties.isLoggedInMunicipality &&
+        currentPageValue == 2)) {
       bool guestFormStatus = Formz.validate(
           [firstNameValidator, lastNameValidator, phoneValidator]);
       if (!firstNameValidator.isPure &&
           !lastNameValidator.isPure &&
           !phoneValidator.isPure &&
           guestFormStatus) return true;
-    } else if (((CommonProperties.isLoggedInMunicipality && currentPageValue == 3) ||
+    } else if (((CommonProperties.isLoggedInMunicipality &&
+            currentPageValue == 3) ||
         (!CommonProperties.isLoggedInMunicipality && currentPageValue == 4))) {
       return agreement ?? false;
     }
@@ -111,7 +123,7 @@ class CreateVDState extends Equatable {
     return false;
   }
 
-  /**To Validate Addetional Fields */
+  /// To Validate Addetional Fields
   bool validateAddetionalFields() {
     bool isValid = true;
     if (splDetailsResponse?.questionList != null &&

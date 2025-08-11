@@ -4,6 +4,7 @@ import 'package:smart_advisor/app/core/utils/utils_exports.dart';
 import '../../features/details/domain/repositories/repository.dart';
 import '../../features/fees_calculator/domain/repositories/repository.dart';
 import '../../features/home_page/domain/repositories/repository.dart';
+import '../../features/manage_license_flow/domain/repositories/repository.dart';
 import '../../features/map/domain/repositories/repository.dart';
 import '../../features/qr_scan/domain/repositories/repository.dart';
 import '../../features/select_activity/domain/repositories/repository.dart';
@@ -27,6 +28,7 @@ import '../services/services_exports.dart'
         SmartAdvisorNetworkConnection,
         SmartAdvisorNetworkConnectionImplementation,
         SmartAdvisorWebService;
+import 'features/manage_license_injection.dart';
 import 'features/self_rating_iinjection.dart';
 
 /// sl -> Service Locator
@@ -52,6 +54,10 @@ void initialize(EnvType env) {
 
 //? Calculator
   if (!sl.isRegistered<CalculatorRepository>()) CalculatorInjection.init();
+
+//? Calculator
+  if (!sl.isRegistered<ManageLicenseRepository>())
+    ManageLicenseInjection.init();
 
   if (!sl.isRegistered<Repository>()) SelfRatingInjection.init();
   //! Core

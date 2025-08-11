@@ -42,12 +42,12 @@ class FeedbackBannerCardV2 extends StatelessWidget {
                 child: DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                    color: context.colorsV3.staticWhite.withOpacity(0.2),
+                    color: context.colors.staticWhite.withOpacity(0.2),
                   ),
                   child: Center(
                     child: Icon(
                       SystemIcons.arrowRight,
-                      color: context.colorsV3.staticWhite,
+                      color: context.colors.staticWhite,
                       size: Spacing.$5x,
                     ),
                   ),
@@ -79,11 +79,11 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
   _RenderFeedBack createRenderObject(BuildContext context) => _RenderFeedBack(
         title: TextSpan(
           text: title,
-          style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
+          style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite),
         ),
         subTitle: TextSpan(
           text: subTitle ?? '',
-          style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
+          style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
         ),
         asset: asset,
         gradientColors: gradientColors,
@@ -99,11 +99,11 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
     renderObject.update(
       TextSpan(
         text: title,
-        style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
+        style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite),
       ),
       TextSpan(
         text: subTitle ?? '',
-        style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
+        style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
       ),
       asset,
       gradientColors,
@@ -311,7 +311,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
       needsCompositing,
       offset,
       rect,
-      RRect.fromRectAndRadius(rect, const Radius.circular(RadiusBorder.ml)),
+      RRect.fromRectAndRadius(rect, const Radius.circular(RadiusBorder.xl)),
       paintCard,
       oldLayer: layer as ClipRRectLayer?,
     );

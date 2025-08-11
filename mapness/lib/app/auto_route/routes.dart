@@ -15,6 +15,7 @@ class Routes {
           ),
         ),
         CustomRoute(
+          path: '/stories',
           page: StoriesRoute.page,
           opaque: false,
           transitionsBuilder: (_, __, ___, child) => StoriesTransition(
@@ -74,6 +75,12 @@ class Routes {
         CustomRoute(
           path: '/flips_continue',
           page: FlipsContinueRoute.page,
+        ),
+        CustomRoute(
+          path: '/addPhoto',
+          page: AddPhotoRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
           path: '/feedback_address_suggester',

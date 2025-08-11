@@ -66,7 +66,11 @@ class FeedbackInput extends HookWidget {
           isRequired: field.isRequired,
           maxLength: isAddress ? null : field.maxLength,
           keyboardType: keyboardType,
-          maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
+          maxLines: isAddress
+              ? null
+              : field.type == FeedbackTextType.multilineText
+                  ? 5
+                  : 1,
           onChanged: fieldState.didChange,
           type: field.type,
         );
@@ -85,9 +89,9 @@ class FeedbackInput extends HookWidget {
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.only(top: Spacing.$3x),
-                  child: BaladyAppButton(
-                    buttonType: BaladyButtonType.secondary,
-                    buttonColorScheme: BaladyButtonColorScheme.accent,
+                  child: AppButton(
+                    buttonType: ButtonType.secondary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                     primaryLabel: context.l10n.setOnTheMap,
                     primaryIcon: GeneralIcons.pin,
                     onTap: () => _selectRoute(context, controller, fieldState),

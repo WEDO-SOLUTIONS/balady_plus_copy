@@ -449,20 +449,32 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  Future<void> enableParking() async {
+  Future<void> enableParking({bool isFromDeepLink = false}) async {
+    LayersState? oldState;
+    if (isFromDeepLink) {
+      oldState = state;
+      state = LayersState(
+        layersVisible: false,
+        selectedType: null,
+        isLoading: true,
+        investmentsMarkers: {},
+        polygons: {},
+        polylines: {},
+      );
+    }
+
     await _viewPortSubscription?.cancel();
-
-    await _removeMapObjects();
-
+    unawaited(_removeMapObjects());
     final currentState = state.selectedType;
-
     if (currentState != null && currentState != LayerType.parkingLots) {
       await _hidePreviousLayers(currentState);
     }
-
     if (currentState != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
+    }
+    if (isFromDeepLink && oldState != null) {
+      state = oldState;
     }
   }
 

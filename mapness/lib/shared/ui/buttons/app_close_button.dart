@@ -16,11 +16,11 @@ class AppCloseButton extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
             onTap: onPressed,
-            child: const Padding(
-              padding: EdgeInsets.all(8),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
               child: Icon(
                 Icons.close,
-                color: NonThemeColor.color58,
+                color: context.colors.neutralOnContainer,
               ),
             ),
           ),
@@ -29,34 +29,17 @@ class AppCloseButton extends StatelessWidget {
 }
 
 class CustomCloseButton extends StatelessWidget {
-  const CustomCloseButton({super.key, this.onClose});
+  final EdgeInsets? padding;
+  const CustomCloseButton({super.key, this.onClose, this.padding = const EdgeInsets.only(bottom: Spacing.$4x)});
 
   final Function()? onClose;
   static const borderRadius = BorderRadius.all(Radius.circular(8));
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.$4x),
-        child: Material(
-          borderRadius: borderRadius,
-          child: InkWell(
-            borderRadius: borderRadius,
-            onTap: onClose,
-            child: SizedBox(
-              height: Spacing.$10x,
-              width: Spacing.$10x,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(RadiusBorder.m),
-                  color: context.colorsV3.neutralContainerDefault.withOpacity(0.12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(Spacing.$2x),
-                  child: SystemIcons.close.icon(color: context.colorsV3.neutralOnContainer),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
+      padding: padding ?? const EdgeInsets.only(bottom: Spacing.$4x),
+      child: AppButton.close(
+        padding: EdgeInsets.zero,
+        onTap: onClose,
+      ));
 }

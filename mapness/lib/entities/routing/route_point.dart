@@ -62,10 +62,11 @@ class RoutePointMyLocation extends RoutePoint {
 }
 
 class RoutePointCoordinates extends RoutePoint {
-  RoutePointCoordinates(this.coords, this.address);
+  RoutePointCoordinates(this.coords, this.address, this.levelIdParam);
 
   final GeoPointMessage coords;
   final String? address;
+  final int? levelIdParam;
 
   @override
   String get icon => Assets.icons.svg.icRoutingCircle.keyName;
@@ -83,14 +84,13 @@ class RoutePointCoordinates extends RoutePoint {
   int? get entranceId => null;
 
   @override
-  int? get levelId => null;
+  int? get levelId => levelIdParam;
 
   @override
   int? get objectId => null;
 
   @override
-  String? title(AppLocalizations locale) =>
-      '${coords.latitude.toStringAsFixed(5)}, ${coords.longitude.toStringAsFixed(5)}';
+  String? title(AppLocalizations locale) => label;
 
   @override
   Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;

@@ -51,9 +51,30 @@ class ApiUrls {
   static String getWorkFlow = "v1/$_proxy/commercial/work-flows";
 
   static String selfRatingItems(int activityId) =>
-      "v1/cis-selfrating-services/acitivities/${activityId}/inspection-clauses";
+      "v1/cis-selfrating-services/acitivities/$activityId/inspection-clauses";
 
   static String submitRatingItems = "v1/cis-selfrating-services/evaluation";
 
   static String activityDetailsInfo(int id) => "v1/$_proxy/activities/$id";
+
+  //TODO complet link
+  static String issueCommercialLicense = "v1/$_proxy/ext/issuing";
+
+  static String renewCommercialLicense(int id) => "v1/$_proxy/ext/renew/$id";
+
+  static String cancelCommercialLicense(int id) => "v1/$_proxy/ext/cancel/$id";
+
+  static String modifyCommercialLicense(int id) => "v1/$_proxy/ext/modify/$id";
+  static String transferOwnershipCommercialLicense(int id) =>
+      "v1/$_proxy/ext/transfer-ownership/$id";
+
+  static const delegators =
+      '/v1/delegation-services/delegated-commercial-records';
+
+  static String licenses(String crNumber, String crType, String roleType,
+          String licenseType, String userId) =>
+      'v1/$_proxy/commercial/licenses/$roleType/$licenseType?crNumber=$crNumber&crType=CR';
+
+  static String licenseDetails(String licenseNumber) =>
+      'v1/$_proxy/commercial/license-details/$licenseNumber';
 }

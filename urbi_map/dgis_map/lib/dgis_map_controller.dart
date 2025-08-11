@@ -63,6 +63,9 @@ class DgisMapController {
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
 
+  /// Sound on events
+  Stream<SoundOnEvent> get soundOnEvents => _instance.soundOnEvents;
+
   /// Events of visible rect changes.
   Stream<VisibleRectEvent> get visibleRectEvents => _instance.visibleRectEvents;
 
@@ -269,7 +272,7 @@ class DgisMapController {
   /// is visible rect of the viewport
   Future<SearchResultMessage> search(
     String queryText, {
-    List<SearchCategoryMessage>? categories,
+    List<int>? rubricIds,
     List<GeoPointMessage>? spatialRestriction,
     SortingTypeMessage sortingType = SortingTypeMessage.byRelevance,
     GeoRectMessage? searchRect,
@@ -279,7 +282,7 @@ class DgisMapController {
   }) {
     return _instance.search(
       queryText,
-      categories: categories,
+      rubricIds: rubricIds,
       spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
@@ -304,30 +307,6 @@ class DgisMapController {
   }) {
     return _instance.searchByQuery(
       query,
-      spatialRestriction: spatialRestriction,
-      sortingType: sortingType,
-      weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
-      pageSize: pageSize,
-      searchRect: searchRect,
-      locale: locale,
-    );
-  }
-
-  /// Runs directory search by [SearchCategoryMessage] category.
-  /// [spatialRestriction] is search area limit in the form of a polygon
-  /// [searchRect] is rectangular region of interest in geographic coordinates. A typical value
-  /// is visible rect of the viewport
-  Future<SearchResultMessage> searchByCategory(
-    SearchCategoryMessage category, {
-    List<GeoPointMessage>? spatialRestriction,
-    SortingTypeMessage sortingType = SortingTypeMessage.byRelevance,
-    GeoRectMessage? searchRect,
-    bool isOpenNow = false,
-    int pageSize = 20,
-    String? locale,
-  }) {
-    return _instance.searchByCategory(
-      category,
       spatialRestriction: spatialRestriction,
       sortingType: sortingType,
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,

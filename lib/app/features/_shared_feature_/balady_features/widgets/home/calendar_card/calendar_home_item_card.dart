@@ -2,7 +2,6 @@ import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/calendar/domain/entities/search_calendar/search_calendar_item.dart';
-import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -12,14 +11,12 @@ class CalendarHomeItemCard extends StatelessWidget {
   final SearchCalendarItem item;
   final double? width;
   final EdgeInsets? padding;
-  final AppColorScheme colorScheme;
 
   const CalendarHomeItemCard({
     super.key,
     required this.item,
     this.width,
     this.padding,
-    required this.colorScheme,
   });
 
   @override
@@ -47,10 +44,7 @@ class CalendarHomeItemCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
         image: DecorationImage(
           matchTextDirection: true,
-          image: AssetImage(
-            colorScheme == AppColorScheme.brown
-              ? Assets.images.calendarCardBrown.keyName
-              : Assets.images.calendarCard.keyName),
+          image: AssetImage(Assets.images.calendarCard.keyName),
           fit: BoxFit.cover,
         ),
       ),

@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_content.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_search_bar.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 
 @RoutePage()
 class FeedbackAddressSuggester extends ConsumerStatefulWidget {
@@ -56,15 +57,15 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
         child: LayoutBuilder(
           builder: (context, constraints) => NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
-            child: SafeArea(
+            child: SafeAreaPadding(
               child: StatelessBottomSheet(
                 key: const ValueKey('FEEDBACK SEARCH SHEET'),
                 physics: const BouncingScrollPhysics(),
                 scrollController: _dgisSheetController,
-                backgroundColor: context.colorsV3.backgroundSurface4,
-                safeAreaColor: context.colorsV3.backgroundSurface4,
+                backgroundColor: context.colors.backgroundSurface4,
+                safeAreaColor: context.colors.backgroundSurface4,
                 header: ColoredBox(
-                  color: context.colorsV3.backgroundSurface1,
+                  color: context.colors.backgroundSurface1,
                   child: const Column(
                     children: [
                       Padding(

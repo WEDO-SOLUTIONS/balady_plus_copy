@@ -1,0 +1,62 @@
+part of 'navi_eta_header.dart';
+
+class _RunningStateTitle extends StatelessWidget {
+  final PathNavEta? eta;
+  const _RunningStateTitle({
+    required this.eta,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final eta = this.eta;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        _NaviTime(
+          title: eta != null ? eta.timeEta : '--',
+          subTitle: eta != null ? eta.timeEtaUnits.getDescription(context) : '--',
+        ),
+        _NaviTime(
+          title: eta != null ? eta.arrivalTime : '--',
+          subTitle: context.l10n.arrival,
+        ),
+        _NaviTime(
+          title: eta != null ? formatDistance(eta.distanceEta) : '--',
+          subTitle: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
+        ),
+      ].insertBetween(Spacing.$1x.widthBox).toList(),
+    );
+  }
+}
+
+class _NaviTime extends StatelessWidget {
+  final String title;
+  final String subTitle;
+
+  const _NaviTime({required this.title, required this.subTitle});
+
+  @override
+  Widget build(BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            title,
+            style: context.textStyles.h3SemiBold.copyWith(
+              color: context.color.textAndIconsBasePrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          Text(
+            subTitle,
+            style: context.textStyles.captionMediumRegular.copyWith(
+              color: context.color.textAndIconsBaseSecondary.withOpacity(0.64),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+}

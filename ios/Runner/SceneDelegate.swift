@@ -7,19 +7,18 @@
 
 import Foundation
 import app_links
+import dgis_map
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
+    static var flutterEngine: FlutterEngine?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = scene as? UIWindowScene else { return }
+        guard let windowScene = scene as? UIWindowScene, let flutterEngine = Self.flutterEngine else { return }
         
         window = UIWindow(windowScene: windowScene)
         
-        let flutterEngine = FlutterEngine(name: "SceneDelegateEngine")
-        flutterEngine.run()
-        
-        GeneratedPluginRegistrant.register(with: flutterEngine)
+        FlutterCarPlaySceneDelegate.runApp()
         let controller = FlutterViewController.init(engine: flutterEngine, nibName: nil, bundle: nil)
         
         window?.rootViewController = controller

@@ -22,11 +22,11 @@ class _PoiCardNoInfo extends HookConsumerWidget {
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
-    return SafeArea(
+    return SafeAreaPadding(
       child: StatelessBottomSheet(
-        safeAreaColor: context.colorsV2.backgroundSurface2,
-        draggerColor: context.colorsV2.backgroundSurface2,
-        backgroundColor: context.colorsV2.backgroundSurface2,
+        safeAreaColor: context.colors.backgroundSurface2,
+        draggerColor: context.colors.backgroundSurface2,
+        backgroundColor: context.colors.backgroundSurface2,
         header: PoiHeader(
           title:
               '${closestPoint?.longitude.roundDecimal(places: 6)}, ${closestPoint?.latitude.roundDecimal(places: 6)}',
@@ -47,11 +47,8 @@ class _PoiCardNoInfo extends HookConsumerWidget {
         topHeader: PoiPhotosHeader(objectId: objectId),
         content: [
           const SizedBox(height: Spacing.$4x),
-          FeedbackBannerCard(
-            path: Assets.images.cityExpert.keyName,
-            title: context.l10n.cityExpert,
-            subtitle: context.l10n.cityExpertDescription,
-            gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
+          PoiContentFeedbackCard(
+            data: PoiContentFeedbackType.cityExpert,
             onTap: () {
               context.router.push(QuickFeedbackRoute(
                 type: QuickFeedbackType.editCompany,

@@ -24,7 +24,7 @@ class FavouritesSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentColor = context.colorsV2.backgroundSurface4;
+    final contentColor = context.colors.backgroundSurface1;
 
     final items = results.firstPage?.items;
     final length = items?.length ?? 0;
@@ -50,12 +50,12 @@ class FavouritesSearchResults extends ConsumerWidget {
             itemBuilder: (context, index) {
               final item = items![index];
 
-              return ContentRowV2(
-                backgroundColor: context.colorsV2.backgroundSurface4,
+              return ContentRow(
+                backgroundColor: context.colors.backgroundSurface4,
                 isDividerEnabled: index != length - 1,
                 onTap: () async => onSearchTap(ref, context, item),
                 leading: GeneralIcons.location.icon(
-                  color: context.colorsV2.accentActive,
+                  color: context.colors.accentActive,
                 ),
                 text: ContentRowTextOptions(
                   title: item.title,

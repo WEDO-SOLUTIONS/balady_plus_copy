@@ -10,6 +10,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
@@ -62,29 +63,29 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
       horizontal: Spacing.$4x,
       vertical: Spacing.$3x,
     );
-    final itemTitleStyle = context.textStyleV3.bodyLargeRegular.copyWith(
-      color: context.colorsV2.foregroundDefault,
+    final itemTitleStyle = context.textStyles.bodyLargeRegular.copyWith(
+      color: context.colors.foregroundDefault,
     );
 
-    return SafeArea(
+    return SafeAreaPadding(
       child: StatelessBottomSheet(
         scrollController: scrollController,
-        backgroundColor: context.colorsV2.backgroundSurface4,
-        draggerColor: context.colorsV2.backgroundSurface4,
-        safeAreaColor: context.colorsV2.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface4,
+        draggerColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
         content: [
           ContentRow(
             options: ContentRowOptions(
               padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
               title: context.l10n.addToFavorites,
-              titleStyle: context.textStyleV3.h4SemiBold.copyWith(
-                color: context.colorsV2.foregroundDefault,
+              titleStyle: context.textStyles.h4SemiBold.copyWith(
+                color: context.colors.foregroundDefault,
               ),
               customActionWidget: AppButton.close(
                 onTap: scrollController.close,
                 padding: EdgeInsets.zero,
-                textColor: context.colorsV2.neutralOnContainer,
-                color: context.colorsV2.neutralContainerDefault,
+                textColor: context.colors.neutralOnContainer,
+                color: context.colors.neutralContainerDefault,
                 innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
               ),
             ),
@@ -102,7 +103,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
                       dividerEnabled: true,
                       title: context.l10n.setAsWork,
                       titleStyle: itemTitleStyle,
-                      leadingIcon: Icon(GeneralIcons.briefcase, color: context.colorsV2.foregroundDefault),
+                      leadingIcon: Icon(GeneralIcons.briefcase, color: context.colors.foregroundDefault),
                     ),
                   ),
                 if (showHome)
@@ -113,7 +114,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
                       dividerEnabled: true,
                       title: context.l10n.setAsHome,
                       titleStyle: itemTitleStyle,
-                      leadingIcon: Icon(GeneralIcons.home, color: context.colorsV2.foregroundDefault),
+                      leadingIcon: Icon(GeneralIcons.home, color: context.colors.foregroundDefault),
                     ),
                   ),
                 ContentRow(
@@ -122,7 +123,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
                     padding: itemPadding,
                     title: context.l10n.addToFavorite,
                     titleStyle: itemTitleStyle,
-                    leadingIcon: Icon(SystemIcons.bookmarkAdd, color: context.colorsV2.foregroundDefault),
+                    leadingIcon: Icon(SystemIcons.bookmarkAdd, color: context.colors.foregroundDefault),
                   ),
                 ),
               ],

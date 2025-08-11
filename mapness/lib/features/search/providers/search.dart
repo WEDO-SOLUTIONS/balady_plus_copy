@@ -175,19 +175,17 @@ class Search extends _$Search {
       );
       _searchOperation = searchOperation;
       final result = await searchOperation.value;
-
-      state = result.suggests.isEmpty
-          ? SearchStateEmpty(searchText: query)
-          : SearchStateSuggest(
-              suggest: result,
-              searchText: query,
-            );
       // BSA-1931: We need to start full search if we don't get any results
       // and user types more than 2 symbols
-      if (query.length > 2 && state is SearchStateEmpty) {
+      if (result.suggests.isNotEmpty) {
+        state = SearchStateSuggest(
+          suggest: result,
+          searchText: query,
+        );
+      } else if (query.length > 2) {
         await ref
-            .read(urbiAnalyticsProvider)
-            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
 
         _fullSearchTimer?.cancel();
         _fullSearchTimer = Timer(
@@ -199,8 +197,8 @@ class Search extends _$Search {
       }
       // -- Analytics
       await ref
-          .read(urbiAnalyticsProvider)
-          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestResult}');
+          .read(urbiAnalyticsProvider.notifier)
+          .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestResult}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
@@ -333,12 +331,12 @@ class Search extends _$Search {
       // -- Analytics
       if (state is SearchStateEmpty) {
         await ref
-            .read(urbiAnalyticsProvider)
-            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySearchResult}');
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySearchResult}');
       }
       await ref
-          .read(urbiAnalyticsProvider)
-          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchResult_}');
+          .read(urbiAnalyticsProvider.notifier)
+          .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchResult_}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
       // -- Analytics
@@ -415,7 +413,7 @@ class Search extends _$Search {
   bool _isSearchInThisArea = false;
 
   /// Method that starts search in the visible area
-  void searchInThisArea() {
+  void searchInThisArea(String scope) {
     _isSearchInThisArea = true;
     ref.read(urbiAnalyticsProvider).track(
       MapnessConstants.analyticsSearchInThisAreaPressed,
@@ -429,7 +427,7 @@ class Search extends _$Search {
     print(
         '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
-    ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(value: true);
+    ref.read(searchInRectProvider(scope).notifier).searchInThisAreaSwitch(value: true);
     switch (_previousType) {
       case null:
         break;

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -45,8 +47,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
-  static final _bottomSheetAspectRatios = {.7, .931};
-  static const controlsBottomExtent = 136.0;
+  static final _bottomSheetAspectRatios = {0.4, 0.931};
 
   List<RoutePoint> points = [
     RoutePointMyLocation(),
@@ -58,7 +59,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   /// Bottom sheet controller
   late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
-  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(controlsBottomExtent);
+  final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   @override
   void initState() {
@@ -77,12 +78,16 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       initialState: ThreeStateBottomSheet.open,
     );
     _setupTapListener();
+    bottomSheetController.addListener(updateFooterOpacity);
     super.initState();
   }
 
+  void updateFooterOpacity() => footerOpacity.value = min(1.0, (1 - bottomSheetController.aspectRatio) * 2);
+
   @override
   void dispose() {
-    _bottomHeightNotifier.dispose();
+    bottomSheetController.removeListener(updateFooterOpacity);
+    footerOpacity.dispose();
     super.dispose();
   }
 
@@ -123,9 +128,13 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       value: SystemUiOverlayStyle.dark,
       child: Stack(
         children: [
-          RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
           StatefulBottomSheet<ThreeStateBottomSheet>(
             animateOpening: false,
+            draggerColor: context.colors.backgroundSurface4,
+            backgroundColor: context.colors.backgroundSurface4,
+            outside: const RoutingMapControls(),
+            outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
+                function: (c) => c.aspectRatio > 0.4 ? 1 - (c.aspectRatio - 0.4) * 10 : 1.0),
             sliverBeforeContent: SliverPersistentHeader(
               delegate: RoutingHeaderDelegate(onFavouritesTap: _onFavouritesTap),
               pinned: true,
@@ -152,6 +161,26 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                 ],
               ),
             ],
+            keepContentBehindFooter: true,
+            footer: IgnorePointer(
+              child: SizedBox(
+                height: Spacing.$16x + Spacing.$5x,
+                width: double.infinity,
+                child: FadeTransition(
+                  opacity: Animation.fromValueListenable(footerOpacity),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      backgroundBlendMode: BlendMode.srcOver,
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             scrollController: bottomSheetController,
           ),
         ],
@@ -169,7 +198,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
     ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
 
-    await ref.read(urbiAnalyticsProvider).track(
+    await ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
           '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
         );
     final value = await context.router.push(

@@ -8,7 +8,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
-import 'package:mapness/pages/navi_search/ui/navi_search_empty.dart';
+import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_history.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_results.dart';
 import 'package:mapness/pages/navi_search/ui/navi_suggest_list.dart';
@@ -20,10 +20,10 @@ import 'package:mapness/widgets/navi_search/navi_quick_filter.dart';
 import 'package:provider/provider.dart';
 
 class NaviSearchContent extends ConsumerStatefulWidget {
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   const NaviSearchContent({
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
@@ -106,7 +106,7 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
         hasScrollBody: false,
         child: SafeArea(
           top: false,
-          child: NaviSearchEmpty(),
+          child: MapSearchEmpty(),
         ),
       ),
       history: () => SliverToBoxAdapter(
@@ -148,7 +148,7 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: NaviSearchResults(
               results: results,
-              scrollController: widget.scrollController,
+              bottomSheetContentScrollController: widget.bottomSheetContentScrollController,
             ),
           ),
         ),

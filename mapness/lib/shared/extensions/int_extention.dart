@@ -1,3 +1,5 @@
+import 'package:dgis_map/library.dart';
+
 extension SizeExtention on num {
   String formatAsFileSize({
     int fractionDigits = 2,
@@ -33,5 +35,34 @@ extension SizeExtention on num {
     }
 
     return '$formattedResult${metrics[currentMetric]}';
+  }
+
+  MapMarkersType? categoryFromId() {
+    switch (this) {
+      case 1:
+        return MapMarkersType.medicalHelp;
+      case 2:
+        return MapMarkersType.fireStation;
+      case 3:
+        return MapMarkersType.policeStation;
+      case 4:
+        return MapMarkersType.waterPlaces;
+      case 5:
+        return MapMarkersType.lostAndFound;
+      case 6:
+        return MapMarkersType.healthCenter;
+      case 7:
+        return MapMarkersType.hospital;
+      case 8:
+        return MapMarkersType.hajjSupport;
+      case 9:
+        return MapMarkersType.kiosksRetail;
+      case 10:
+        return MapMarkersType.additional;
+      case 11:
+        return MapMarkersType.stairs;
+      default:
+        return MapMarkersType.additional;
+    }
   }
 }

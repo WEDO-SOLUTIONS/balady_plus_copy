@@ -250,7 +250,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     final Completer _locationCompleter = Completer();
 
     locationProviderSubscription = ref.listen(locationProvider, (_, __) {
-      _locationCompleter.complete();
+      if (!_locationCompleter.isCompleted) {
+        _locationCompleter.complete();
+      }
 
       locationProviderSubscription?.close();
     });
@@ -394,7 +396,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
-          icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_unauthorizedUser', width: 48),
+          icon: SvgMarkerIcon(svgPath: _unauthorizedUser, width: 48),
           animatedAppearance: true,
           zIndex: 50,
         ),
@@ -418,7 +420,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
-          icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_autharizedUser', width: 48),
+          icon: SvgMarkerIcon(svgPath: _autharizedUser, width: 48),
           animatedAppearance: true,
           zIndex: 50,
         ),
@@ -433,7 +435,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         onTap: () => _showStopWatchingSheet(rootNavigatorKey.currentContext!),
         options: MarkerOptionsMessage(
           position: point,
-          icon: SvgMarkerIcon(svgPath: 'packages/mapness/$_lostConnection', width: 48),
+          icon: SvgMarkerIcon(svgPath: _lostConnection, width: 48),
           animatedAppearance: true,
           zIndex: 50,
         ),

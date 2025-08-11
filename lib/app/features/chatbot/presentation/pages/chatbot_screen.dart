@@ -1,20 +1,15 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import 'package:balady_plus/app/features/_shared_features/rating_feature/models/rating_request.dart';
-import 'package:balady_plus/app/features/_shared_features/rating_feature/models/services_types.dart';
-import 'package:balady_plus/app/features/_shared_features/rating_feature/widgets/submit_rating_widget.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/app_bar_chat_bot.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/chat_bot_list.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/widgets/prompt_questions_widget.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/send_mseeage_card_chat_bot.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../data/models/session_details.dart';
 import '../widgets/chat_history.dart';
 
@@ -63,6 +58,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                           ? Column(
                               children: [
                                 ChatBotList(),
+                                PromptQuestionsWidget(),
                                 SendMessageCardChatBot(),
                               ],
                             )

@@ -501,56 +501,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion
         )
     }
-    func searchByCategory(category: SearchCategoryMessage, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64, locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
-  
-        guard let searchHandler = self.searchHandler else {
-            completion(  Result.failure( FlutterError(
-                code: "IllegalArgumentException",
-                message: "Map was not initialized properly",
-                details: nil
-            )))
-            return
-        }
-
-        // TODO. Remove, when backend data will fixed.
-        if category == .parks {
-            searchHandler.searchByParkCategory(
-                spatialRestriction: spatialRestriction,
-                searchGeoRect: searchRect?.geoRect,
-                weekTimeMessage: weekTime,
-                sortingType: sortingType,
-                pageSize: Int32(pageSize),
-                locale: locale,
-                completion: completion
-            )
-            return
-        }
-
-        // TODO. Remove, when backend data will fixed.
-        if category == .beaches {
-            searchHandler.searchByBeachCategory(
-                spatialRestriction: spatialRestriction,
-                searchGeoRect: searchRect?.geoRect,
-                weekTimeMessage: weekTime,
-                sortingType: sortingType,
-                pageSize: Int32(pageSize),
-                locale: locale,
-                completion: completion
-            )
-            return
-        }
-
-        searchHandler.searchByCategories(
-            category.toRubrics(),
-            spatialRestriction: spatialRestriction,
-            searchGeoRect: searchRect?.geoRect,
-            weekTimeMessage: weekTime,
-            sortingType: sortingType,
-            pageSize: Int32(pageSize),
-            locale: locale,
-            completion: completion
-        )
-    }
 
     func searchByRubrics(rubrics: [Int64], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64,  locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
         guard let searchHandler = self.searchHandler else {
@@ -562,7 +512,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
 
-        searchHandler.searchByCategories(
+        searchHandler.searchByRubricIds(
             rubrics.map { RubricId(value: UInt64($0)) },
             spatialRestriction: spatialRestriction,
             searchGeoRect: searchRect?.geoRect,
@@ -594,7 +544,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func search(queryText: String, categories: SearchCategoriesMessage?, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64,  locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
+    func search(queryText: String, rubrics: [Int64]?, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64,  locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
         guard let searchHandler = self.searchHandler else {
             completion(
                 Result.failure(
@@ -608,9 +558,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         searchHandler.search(
             queryText,
-            categories: categories?.categories.flatMap {
-                $0.category.toRubrics()
-            },
+            rubricIds: rubrics?.map { RubricId(value: UInt64($0)) },
             spatialRestriction: spatialRestriction,
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
@@ -1215,6 +1163,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func toggleVoiceInstruction( toggleType: SoundToggleType, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.navigationHandler?.toggleSounds(toggleType: toggleType)
+        self.carPlayHandler?.toggleSounds(toggleType: toggleType)
          completion(Result.success(()))
     }
 

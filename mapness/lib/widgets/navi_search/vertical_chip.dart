@@ -17,7 +17,7 @@ class VerticalChip extends StatelessWidget {
           height: 70,
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x, vertical: Spacing.$3x),
           decoration: BoxDecoration(
-            color: context.colorsV3.accentSecondaryContainerSoft,
+            color: context.colors.accentSecondaryContainerSoft,
             borderRadius: BorderRadius.circular(RadiusBorder.m),
           ),
           child: Column(
@@ -25,7 +25,7 @@ class VerticalChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 24,
-                color: context.colorsV3.accentSecondaryDefault,
+                color: context.colors.accentSecondaryDefault,
               ),
               const SizedBox(height: Spacing.$1x),
               Text(
@@ -33,7 +33,7 @@ class VerticalChip extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: context.textStyleV3.bodySmallMedium.copyWith(color: context.colorsV3.accentSecondaryDefault),
+                style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.accentSecondaryDefault),
               ),
             ],
           ),

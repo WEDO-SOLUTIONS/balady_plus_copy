@@ -14,9 +14,9 @@ class RouteOnboarding extends _$RouteOnboarding {
     return _box?.get('route', defaultValue: false) as bool;
   }
 
-  Future<void> setShown(bool v) async {
+  Future<void> setShown({required bool value}) async {
     _box = await ref.read(hiveProvider('onboarding').future);
-    await _box?.put('route', v);
-    state = AsyncData(v);
+    await _box?.put('route', value);
+    state = AsyncData(value);
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/my_location_poi/my_location_image.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
@@ -18,6 +19,7 @@ import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharin
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
@@ -38,6 +40,20 @@ class ShareMyLocationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    LatLng? closestPoint;
+    PoiCameraConfig? cameraConfig;
+
+    if (this.closestPoint == null || this.cameraConfig == null) {
+      final userLocation = ref.read(locationProvider);
+      if (userLocation != null) {
+        closestPoint = LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude);
+        cameraConfig = const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0);
+      }
+    } else {
+      closestPoint = this.closestPoint;
+      cameraConfig = this.cameraConfig;
+    }
+
     final _bottomHeightNotifier = useState(0.0);
     final _animationController = useAnimationController(
       duration: const Duration(milliseconds: 300),
@@ -144,7 +160,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
                     padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
                     child: Text(
                       text,
-                      style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),
+                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -152,17 +168,16 @@ class ShareMyLocationPage extends HookConsumerWidget {
                   MyLocationPoiActions(
                     onShare: () => _showEtaControlSheet(context, ref),
                     onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
-                    // TODO(Ayat): temporarily hides
-                    // onParkingAdd: () => context.router.push(
-                    //   ParkingSpotRoute(
-                    //     address: text,
-                    //     markerPosition: GeoPointWithElevationMessage(
-                    //       latitude: closestPoint?.latitude ?? 0,
-                    //       longitude: closestPoint?.longitude ?? 0,
-                    //       elevation: 0,
-                    //     ),
-                    //   ),
-                    // ),
+                    onParkingAdd: () => context.router.push(
+                      ParkingSpotRoute(
+                        address: text,
+                        markerPosition: GeoPointWithElevationMessage(
+                          latitude: closestPoint?.latitude ?? 0,
+                          longitude: closestPoint?.longitude ?? 0,
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

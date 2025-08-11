@@ -1,23 +1,23 @@
+// ignore_for_file: prefer_expression_function_bodies
+
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -25,20 +25,29 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
+import 'package:mapness/features/statistic/providers/statistics_provider.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
@@ -47,17 +56,22 @@ import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
+
+import 'features/search/providers/search.dart';
+import 'features/search/ui/search_scope.dart';
 
 Mixpanel? mixpanel;
 
@@ -216,7 +230,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         textDirection: direction,
         child: Consumer(
           builder: (context, ref, child) {
-            final colorScheme = ref.watch(colorSchemeProvider);
             return MaterialApp.router(
               routerConfig: ref.read(appRouterProvider).config(
                     navigatorObservers: () => [
@@ -230,10 +243,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 extensions: <ThemeExtension<dynamic>>[
                   if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-                  AppColorsThemeExt.palette(colorScheme, isDark: false),
+                  AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
                   AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
-                  AppStaticColorsThemeExt.palette(colorScheme),
+                  AppStaticColorsThemeExt.palette(),
                 ],
               ),
               builder: (context, child) => child != null
@@ -312,18 +325,28 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
-      final isNavPage = currentRouteName == PathNavRoute.name || currentRouteName == FreeRoamRoute.name;
+      final isNavPage = currentRouteName == PathNavRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
-      if (navigation && !isNavPage) {
-        final navStateMessage = await dgisController.getCurrentNavigationState();
-        await ref.read(appRouterProvider).push(
+      final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
+      final isFreeroam = navigation && routeSearchOptions == null;
+      if (navigation && !isFreeroam && !isNavPage) {
+        await ref.read(appRouterProvider).pushAndPopUntil(
               PathNavRoute(
-                navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                navType: routeSearchOptions ?? RouteSearchOptionsMessage.car,
                 initAction: null,
               ),
+              predicate: (route) => route.settings.name == BottomMenuRoute.name,
             );
       }
     });
+  }
+
+  Future<void> _delayIfFirstRun(
+      {required bool isFirstRun, Duration duration = const Duration(milliseconds: 300)}) async {
+    // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
+    if (isFirstRun) {
+      await Future.delayed(duration);
+    }
   }
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
@@ -375,35 +398,164 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       if (id != null) {
         final location =
             (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
-        if (isFirstRun) {
-          // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
-          await Future.delayed(const Duration(milliseconds: 300));
-        }
+        await _delayIfFirstRun(isFirstRun: isFirstRun);
+
         await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
       if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
         _myLocationDeepLinkHandler(latitude, longitude);
       } else {
-        if (isFirstRun) {
-          await Future.delayed(const Duration(milliseconds: 300));
-        }
+        await _delayIfFirstRun(isFirstRun: isFirstRun);
         await _poiDeepLinkByCoords(latitude, longitude);
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
-      if (isFirstRun) {
-        await Future.delayed(const Duration(seconds: 8));
-      }
+      await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (url.toString().isNotEmpty) {
-      await ref.watch(appRouterProvider).pushNamed(url.toString());
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
+      final AppRouter router = await ref.watch(appRouterProvider);
+
+      final params = url.queryParameters;
+      if (url.path == '/stories' && params['id'] != null) {
+        final id = params['id'];
+        await _openStories(id!);
+      } else if (url.path == '/search' && params['filter'] != null) {
+        final filter = params['filter'];
+        await _openQuickFilter(filter!);
+      } else if (url.path == '/quickFeedback') {
+        await router.push(QuickFeedbackRoute());
+      } else if (url.path == '/freeRoam') {
+        await _freeRoam();
+      } else if (url.path == '/qibla') {
+        await _openQibla();
+      } else if (url.path == '/shareMyLocation') {
+        await _shareMyLocation();
+      } else if (url.path == '/athkar') {
+        await _openAthkar();
+      } else if (url.path == '/quran') {
+        await _openQuran();
+      } else if (url.path == '/snapSend') {
+        await _openSnapSend();
+      } else if (url.path == '/parking') {
+        _openParking();
+      } else {
+        await router.pushNamed(url.toString());
+      }
     }
+  }
+
+  void _openParking() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(appAnalyticsProvider).quickActionSelected('parking');
+      await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
+    });
+  }
+
+  Future<void> _freeRoam() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    ref.read(appAnalyticsProvider).quickActionSelected('free_roam');
+    await router.push(const FreeRoamRoute());
+  }
+
+  Future<void> _shareMyLocation() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    await router.push(ShareMyLocationRoute());
+  }
+
+  Future<void> _openQibla() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    ref.read(appAnalyticsProvider).quickActionSelected('qibla');
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.qibla,
+      action: MetricAction.tap.name,
+      group: MetricsConstants.exploreTag,
+    );
+    final location = ref.read(locationProvider.notifier);
+
+    await location.checkLocationPermission().then((allowed) async {
+      if (allowed) {
+        await router.push(const KiblahRoute());
+      }
+    });
+  }
+
+  Future<void> _openQuran() async {
+    ref.read(appAnalyticsProvider).quickActionSelected('quran');
+    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+  }
+
+  Future<void> _openAthkar() async {
+    ref.read(appAnalyticsProvider).quickActionSelected('athkar');
+    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+  }
+
+  Future<void> _openSnapSend() async {
+    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
+
+    await NavigationService.navigatorKey.currentState!.pushNamed(
+      RouteName.vDAllTypesScreen,
+    );
+  }
+
+  Future<void> _openQuickFilter(String filter) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    final quickFilter = QuickFilter.values.firstWhere(
+      (element) => element.name == filter,
+    );
+    unawaited(ref.read(urbiAnalyticsProvider).track(
+      'quickFilterSearch',
+      properties: {
+        'filter': quickFilter.name,
+      },
+    ));
+    ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+    final language = ref.read(appLanguageProvider);
+
+    final query = quickFilter.query[language];
+    if (query != null) {
+      unawaited(ref.read(SendStatisticProvider(query).future));
+    }
+    unawaited(router.push(SearchRoute(requestFocus: false)));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
+    });
+  }
+
+  Future<void> _openStories(String id) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.storyBanner,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+      props: {'id': id},
+    );
+
+    ref.read(storiesOpenStateProvider.notifier).open();
+
+    await router.push(StoriesRoute(
+      type: StoryTypes.network,
+      initialStoryId: id,
+      onClose: ref.read(storiesOpenStateProvider.notifier).close,
+    ));
   }
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
     final appRouter = ref.watch(appRouterProvider);
+    final storeParkingData = await ref.read(parkingManageProvider.future);
+    final isParkingPoi = dgisObjectId == parkingObjectId;
+
+    if (isParkingPoi && storeParkingData == null) {
+      if (location != null) {
+        await _poiDeepLinkByCoords(location.latitude, location.longitude);
+      }
+      return;
+    }
+
     await appRouter.replaceOrPush(
       route: PoiCardWidgetRoute(
         objectId: DgisObjectIdMessage(
@@ -550,14 +702,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-  await _setupAppConfigs(envType);
-
-  final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
-
-  final vendorConfigLocal = await box.get(
-    MapnessConstants.vendorConfigKey,
-  );
-
+  final vendorConfigLocal = await AppConfigLoader.getAppConfig();
   final vendorConfigContentMessage = VendorConfigContentMessage(content: vendorConfigLocal);
 
   await initialiseDGis(
@@ -567,84 +712,6 @@ Future<void> setupMapness(EnvType envType) async {
     ),
     configContent: vendorConfigContentMessage,
   );
-
-  await Hive.initFlutter();
-
-  // Initialize hive adapters
-  Hive
-    ..registerAdapter(SearchHistoryItemAdapter())
-    ..registerAdapter(FavoriteCacheItemAdapter())
-    ..registerAdapter(HiveCoordinatesAdapter())
-    ..registerAdapter(HiveFavouriteItemEntityAdapter())
-    ..registerAdapter(FavoriteCacheStateAdapter());
-}
-
-///Fetch and save vendor config and environment config from firebase
-///return vendor config for init dgis sdk
-Future<void> _setupAppConfigs(EnvType envType) async {
-  FirebaseRemoteConfig? remoteConfig;
-
-  /// Attempt to initialize Remote Config
-  try {
-    /// Get the instance of FirebaseRemoteConfig
-    remoteConfig = FirebaseRemoteConfig.instance;
-
-    /// Set the config settings where fetchTimeout is the maximum time to wait,
-    /// and minimumFetchInterval is the minimum time between fetch requests
-    await remoteConfig.setConfigSettings(
-      RemoteConfigSettings(
-        fetchTimeout: const Duration(hours: 1),
-        minimumFetchInterval: const Duration(minutes: 2),
-      ),
-    );
-
-    /// Ensure Remote Config is initialized and activate the config values
-    await remoteConfig.ensureInitialized();
-    await remoteConfig.fetchAndActivate();
-    remoteConfig.onConfigUpdated.listen(
-      (event) async {
-        await _saveRemoteConfig(remoteConfig, envType);
-      },
-    );
-  } catch (e) {
-    /// If an error occurs, reset the config and print the error to debug output
-    remoteConfig = null;
-    debugPrint('$e');
-  }
-
-  /// Fetch the vendor configuration for the current environment type
-  await _saveRemoteConfig(remoteConfig, envType);
-}
-
-Future<void> _saveRemoteConfig(FirebaseRemoteConfig? remoteconfig, EnvType envType) async {
-  /// Fetch the vendor configuration for the current environment type
-  final vendorConfigResponse = remoteconfig?.getValue(envType.vendorConfigKey()).asString();
-
-  /// Open the local Hive storage to save the configuration
-  final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
-
-  /// Check if the remote config is available
-  if (vendorConfigResponse != null && vendorConfigResponse.isNotEmpty) {
-    /// Convert the value to JSON and save it to the local storage
-    await box.put(MapnessConstants.vendorConfigKey, vendorConfigResponse);
-  } else {
-    /// If the remote config is not available, load the local configuration from assets
-    final vendorConfigAsset = await rootBundle.loadString('assets/maps/configs/${envType.vendorConfigPath()}');
-    await box.put(MapnessConstants.vendorConfigKey, vendorConfigAsset);
-  }
-
-  /// Save the environment type key to Hive for future reference
-  await box.put(MapnessConstants.envTypeKey, envType.appConfigKey());
-
-  ///save all env config to hive just for testing scenario
-  /// Optionally save all environment config to Hive for testing purposes
-  final envConfigResponse = remoteconfig?.getValue(MapnessConstants.firebaseAppEnvConfigKey).asString();
-  if (envConfigResponse != null && envConfigResponse.isNotEmpty) {
-    await box.put(MapnessConstants.firebaseAppEnvConfigKey, envConfigResponse);
-  } else {
-    final envJsonString = jsonEncode(envType.getLocalEnvConfig().toJson());
-    await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
-  }
 }
 
 class MapnessLogger {
@@ -670,7 +737,7 @@ class MapnessLogger {
   }
 }
 
-Future<void> runMapnessApp(FutureOr<void> Function() main) async {
+Future<void> runMapnessApp(EnvType envType, FutureOr<void> Function() main) async {
   await Zone.current.fork(
     specification: ZoneSpecification(
       print: (self, parent, zone, line) {
@@ -681,7 +748,54 @@ Future<void> runMapnessApp(FutureOr<void> Function() main) async {
   ).run(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await MapnessLogger.init();
+    await initHive();
+
+    final hostFlutterApi = _HostFlutterApi();
+    HostFlutterApi.setUp(hostFlutterApi);
+
+    await AppConfigLoader.init(envType);
+    await hostFlutterApi.appRunCompleter.future;
 
     await main();
   });
+}
+
+Future<void> initHive() async {
+  await Hive.initFlutter();
+  Hive
+    ..registerAdapter(SearchHistoryItemAdapter())
+    ..registerAdapter(FavoriteCacheItemAdapter())
+    ..registerAdapter(HiveCoordinatesAdapter())
+    ..registerAdapter(HiveFavouriteItemEntityAdapter())
+    ..registerAdapter(FavoriteCacheStateAdapter());
+}
+
+class _HostFlutterApi extends HostFlutterApi {
+  final appRunCompleter = Completer();
+
+  _HostFlutterApi();
+
+  bool isAppRun = false;
+
+  @override
+  void analyticsTrack(String event) {
+    analyticsClient.track(event, properties: {"app_run": isAppRun});
+  }
+
+  @override
+  void runMain() {
+    isAppRun = true;
+    appRunCompleter.complete();
+  }
+
+  @override
+  Future<MapMarkersType?> getMarkerType(List<int> rubricIds) async {
+    return RubricTypeMapper.getMarkerType(rubricIds.toSet());
+  }
+
+  @override
+  Future<VendorConfigContentMessage> getAppConfig() async {
+    final vendorConfigLocal = await AppConfigLoader.getAppConfig();
+    return VendorConfigContentMessage(content: vendorConfigLocal);
+  }
 }

@@ -12,6 +12,7 @@ class FullscreenErrorWidget extends StatelessWidget {
     this.errorTitle,
     this.onClose,
     this.buttonColorScheme,
+    this.backgroundColor = Colors.white,
     super.key,
   });
 
@@ -36,9 +37,12 @@ class FullscreenErrorWidget extends StatelessWidget {
   /// error button scheme (default: primary)
   final ButtonColorScheme? buttonColorScheme;
 
+  /// the color used as the background for the error widget.
+  final Color backgroundColor;
+
   @override
   Widget build(BuildContext context) => Material(
-        color: Colors.white,
+        color: backgroundColor,
         type: MaterialType.transparency,
         child: Center(
           child: BaseErrorWidget(
@@ -46,7 +50,6 @@ class FullscreenErrorWidget extends StatelessWidget {
             buttonLabel: buttonLabel,
             errorLabel: errorLabel ?? context.l10n.pleaseTryAgainLater,
             errorTitle: errorTitle ?? context.l10n.somethingWentWrong,
-            buttonColorScheme: buttonColorScheme ?? ButtonColorScheme.primary,
             withRetryButton: withRetryButton,
           ),
         ),

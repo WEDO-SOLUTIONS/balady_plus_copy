@@ -71,23 +71,23 @@ class PathCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(duration, style: context.textStyle.callout),
+                      Text(duration, style: context.textStyles.bodyLargeSemiBold),
                       Row(
                         children: <Widget>[
                           Text(
                             distance,
-                            style: context.textStyle.caption,
+                            style: context.textStyles.captionMediumRegular,
                           ),
                           if (additionalInfo != null) ...[
                             Text(
                               '·',
-                              style: context.textStyle.caption,
+                              style: context.textStyles.captionMediumRegular,
                             ),
                             _PathBadge(additionalInfo!),
                           ],
                         ]
                             .insertBetween(
-                              Spacing.horizontalGapBetweenChipContent.widthBox,
+                              Spacing.$1x.widthBox,
                             )
                             .toList(),
                       )
@@ -95,18 +95,17 @@ class PathCard extends StatelessWidget {
                   ),
                 ),
                 AppButton(
-                  buttonColorScheme: ButtonColorScheme.primary,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
                   onTap: onStartTap,
-                  size: ButtonSize.small,
-                  primaryLabel: localizations.go,
+                  primaryLabel: localizations.go.toUpperCase(),
                   innerPadding: const EdgeInsets.symmetric(
-                    horizontal: NumericBase.$5x,
+                    horizontal: Spacing.$5x,
                   ),
                 )
               ],
             ),
             if (isPedestrian && (calories != null || steps != null)) ...[
-              Spacing.verticalGapBetweenChips.heightBox,
+              Spacing.$2x.heightBox,
               SizedBox(
                 height: 24,
                 child: Row(
@@ -127,7 +126,7 @@ class PathCard extends StatelessWidget {
                     ],
                   ]
                       .insertBetween(
-                        Spacing.horizontalGapBetweenChips.widthBox,
+                        Spacing.$2x.widthBox,
                       )
                       .toList(),
                 ),

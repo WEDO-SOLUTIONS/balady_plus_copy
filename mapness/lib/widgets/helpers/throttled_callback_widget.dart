@@ -49,7 +49,7 @@ class _ThrottledCallbackWidgetState extends State<ThrottledCallbackWidget> {
     _lastCall = DateTime.now();
     inProgress = true;
 
-    await widget.callback();
+    await widget.callback.call();
     inProgress = false;
   }
 }

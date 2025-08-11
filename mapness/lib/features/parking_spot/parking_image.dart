@@ -17,7 +17,7 @@ class _ParkingImage extends _$ParkingImage {
   @override
   List<XFile> build({bool isEdit = false}) {
     if (isEdit == false) {
-      return <XFile>[];
+      return stateOrNull ?? <XFile>[];
     }
 
     final data = ref.read(parkingManageProvider).valueOrNull;
@@ -25,23 +25,19 @@ class _ParkingImage extends _$ParkingImage {
     return data?.imagesPaths.map((e) => XFile(e)).toList() ?? <XFile>[];
   }
 
-  Future<void> onAddImages() async {
-    final picked = await ImagePicker().pickMultiImage(
-      maxWidth: maxImageResolution.toDouble(),
-      maxHeight: maxImageResolution.toDouble(),
-    );
-
-    final availableSlots = maxImages - state.length;
-    final filtered = await _filterValidImages(picked, availableSlots);
-
-    state = state + filtered;
+  Future<void> onAddImages(List<XFile>? picked) async {
+    if (picked != null) {
+      final filtered = await _filterValidImages(picked);
+      state = state + filtered;
+    }
   }
 
   void removeImage(XFile file) {
     state = List.of(state)..remove(file);
   }
 
-  Future<List<XFile>> _filterValidImages(List<XFile> images, int limit) async {
+  Future<List<XFile>> _filterValidImages(List<XFile> images) async {
+    final int limit = maxImages - state.length;
     final filtered = <XFile>[];
 
     for (final image in images) {

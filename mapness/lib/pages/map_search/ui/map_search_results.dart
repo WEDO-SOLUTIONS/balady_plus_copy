@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,12 @@ import 'package:provider/provider.dart';
 class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({
     required this.results,
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
   final SearchResultMessage results;
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,7 +37,7 @@ class MapSearchResults extends ConsumerWidget {
       final scope = context.read<SearchScope>();
       final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
       if (isFromSuggest) {
-        ref.read(urbiAnalyticsProvider).track(
+        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
             );
       } else {
@@ -46,23 +47,24 @@ class MapSearchResults extends ConsumerWidget {
       }
     }
 
-    return SearchResults(
-      results: results,
-      scrollController: scrollController,
-      loaderBuilder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+      child: SearchResults(
+        results: results,
+        bottomSheetContentScrollController: bottomSheetContentScrollController,
+        loaderBuilder: (context) => Center(
           child: CircularProgressIndicator(
-            color: context.colorsV2.accentDefault,
+            color: context.colors.accentDefault,
           ),
         ),
-      ),
-      itemBuilder: (context, item) => SearchItem(
-        result: item,
-        language: language,
-        myLocation:
-            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-        onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
+        itemBuilder: (context, item) => SearchItem(
+          result: item,
+          language: language,
+          myLocation: myLocation == null
+              ? null
+              : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+          onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
+        ),
       ),
     );
   }

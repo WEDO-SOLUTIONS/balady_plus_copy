@@ -58,12 +58,10 @@ class _NearestObject extends _$NearestObject {
   Future<AsyncValue<NearestObject>> _loadNearest() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final objects = await dgisController.getNearestObjects();
-    final dgisObjects = await Stream.fromIterable(objects)
-        .asyncMap(
-          (e) async => (e, await dgisController.searchByObjectId(e.objectId)),
-        )
-        .toList();
-    final filteredObjects = dgisObjects
+    final dgisObjects = Stream.fromIterable(objects).asyncMap(
+      (e) async => (e, await dgisController.searchByObjectId(e.objectId)),
+    );
+    final filteredObjects = await dgisObjects
         .where(
           (element) => element.$2.types.firstOrNull?.type != ObjectTypeMessage.admDiv,
         )

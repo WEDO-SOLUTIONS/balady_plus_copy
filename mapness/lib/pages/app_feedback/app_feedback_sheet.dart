@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
@@ -8,6 +9,7 @@ import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart'
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_loading.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_success.dart';
@@ -23,8 +25,6 @@ class AppFeedbackSheet extends HookConsumerWidget {
     this.source = FeedbackSource.main,
     super.key,
   });
-
-  static const _sheetPadding = EdgeInsets.symmetric(vertical: 29);
 
   void _showConfirmDialog(BuildContext context) {
     if (!context.mounted) {
@@ -55,6 +55,8 @@ class AppFeedbackSheet extends HookConsumerWidget {
             ));
   }
 
+  static const _sheetPadding = EdgeInsets.only(top: Spacing.$6x);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
@@ -77,38 +79,44 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     return FeedbackSourceProvider(
       source: source,
-      child: StatelessBottomSheet(
-        scrollController: scrollController,
-        resizeToAvoidBottomPadding: false,
-        onWillPop: Future.value(false),
-        content: [
-          sendFeedbackState.when(
-            data: (data) => switch (data) {
-              AppFeedbackState.initial => AppFeedbackMain(
-                  initialRating: initialRating,
-                  onNeedPopConfirm: () => _showConfirmDialog(context),
-                ),
-              AppFeedbackState.loading => const AppFeedbackLoading(),
-              AppFeedbackState.success => const Padding(
-                  padding: _sheetPadding,
-                  child: AppFeedbackSuccess(),
-                ),
-              AppFeedbackState.error => Padding(
-                  padding: _sheetPadding,
-                  child: AppFeedbackError(
-                    onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+      child: SafeAreaPadding(
+        bottom: false,
+        child: StatelessBottomSheet(
+          startConfig: BottomSheetStart.instant,
+          scrollController: scrollController,
+          backgroundColor: context.colors.backgroundSurface4,
+          safeAreaColor: context.colors.backgroundSurface4,
+          draggerColor: context.colors.backgroundSurface4,
+          onWillPop: Future.value(false),
+          content: [
+            sendFeedbackState.when(
+              data: (data) => switch (data) {
+                AppFeedbackState.initial => AppFeedbackMain(
+                    initialRating: initialRating,
+                    onNeedPopConfirm: () => _showConfirmDialog(context),
                   ),
+                AppFeedbackState.loading => const AppFeedbackLoading(),
+                AppFeedbackState.success => const Padding(
+                    padding: _sheetPadding,
+                    child: AppFeedbackSuccess(),
+                  ),
+                AppFeedbackState.error => Padding(
+                    padding: _sheetPadding,
+                    child: AppFeedbackError(
+                      onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+                    ),
+                  ),
+              },
+              loading: () => const AppFeedbackLoading(),
+              error: (_, __) => Padding(
+                padding: _sheetPadding,
+                child: AppFeedbackError(
+                  onRetry: ref.read(sendFeedbackProvider.notifier).retry,
                 ),
-            },
-            loading: () => const AppFeedbackLoading(),
-            error: (_, __) => Padding(
-              padding: _sheetPadding,
-              child: AppFeedbackError(
-                onRetry: ref.read(sendFeedbackProvider.notifier).retry,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

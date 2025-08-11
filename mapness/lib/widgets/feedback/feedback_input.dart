@@ -34,7 +34,7 @@ class FeedbackTextInput extends StatefulWidget {
   final Pattern? allowedInputPattern;
   final bool isRequired;
   final int? maxLength;
-  final int maxLines;
+  final int? maxLines;
   final FeedbackTextType type;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
@@ -136,7 +136,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
           focusNode: widget.focusNode,
           hintText: widget.hintText,
           background: BaladyInputBackground.color,
-          fillColor: context.colorsV2.neutralContainerDefault,
+          fillColor: context.colors.neutralContainerDefault,
           autovalidateMode: AutovalidateMode.onUnfocus,
           allowedInputPattern: widget.allowedInputPattern,
           maxLines: widget.maxLines,

@@ -13,6 +13,7 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 
 class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen
@@ -33,6 +34,8 @@ class MapSearchSheetControls extends ConsumerStatefulWidget {
 }
 
 class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> {
+  final _scope = SearchScopeEnum.map.value;
+
   void _searchInArea() {
     Metrics.logEventAdvanced(
       MetricsConstants.searchKeys.searchInThisArea,
@@ -40,8 +43,8 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
       action: MetricAction.tap.toString(),
     );
 
-    ref.read(searchInRectProvider.notifier).update();
-    ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
+    ref.read(searchInRectProvider(_scope).notifier).update();
+    ref.read(searchProvider(_scope).notifier).searchInThisArea(_scope);
   }
 
   @override
@@ -65,7 +68,7 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
       bottomPadding = 16;
     }
     final ValueNotifier<bool> visibleSearchArea = ValueNotifier(false);
-    ref.watch(searchInRectProvider.select((value) {
+    ref.watch(searchInRectProvider(SearchScopeEnum.map.value).select((value) {
       if (visibleSearchArea.value != value.isButtonVisible) {
         visibleSearchArea.value = value.isButtonVisible;
       }
@@ -100,6 +103,8 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                           const LayersControl(),
                           const SizedBox(height: 8),
                           const TrafficControl(),
+                          const SizedBox(height: uikit.Spacing.$2x),
+                          const DimensionControl(),
                           const Spacer(),
                           const ZoomControl(),
                           const Spacer(),
@@ -127,7 +132,6 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                   ),
                 ),
               ),
-              SizedBox(height: widget.collapsedSize),
             ],
           ),
         ),

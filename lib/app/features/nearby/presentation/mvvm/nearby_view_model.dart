@@ -31,8 +31,8 @@ class NearByViewModel extends BaseViewModel {
 
   Future<void> performSearch() async {
     try {
-      searchResultMessage.value = await controller.searchByCategory(
-        selectedCategory.value!,
+      searchResultMessage.value = await controller.searchByRubrics(
+        selectedCategory.value!.rubrics,
         sortingType: SortingTypeMessage.byRelevance,
         isOpenNow: false,
         pageSize: 50,

@@ -14,7 +14,7 @@ class NaviQuickFilter extends ConsumerWidget {
     final quickFilters = ref.watch(naviQuickFilterProvider).where((filter) => filter.icon != null).toList();
 
     return Container(
-      color: context.colorsV3.backgroundSurface2,
+      color: context.colors.backgroundSurface2,
       padding: const EdgeInsets.only(bottom: Spacing.$4x),
       child: SizedBox(
         height: 70,

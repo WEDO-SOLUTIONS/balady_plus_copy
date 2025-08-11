@@ -8,8 +8,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
-import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
-import 'package:mapness/features/landing/search_by_rubrics.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -72,7 +70,7 @@ class _DashboardMenu extends ConsumerWidget {
     final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
     return ColoredBox(
-      color: context.colorsV2.backgroundSurface2,
+      color: context.colors.backgroundSurface2,
       child: ClipRect(
         clipBehavior: Clip.antiAlias,
         child: Opacity(
@@ -85,15 +83,16 @@ class _DashboardMenu extends ConsumerWidget {
             child: SizedBox(
               height: QuickFilters.defaultHeight,
               child: MapQuickFilters(
-                id: QuickFilterScreen.dashboard,
                 customFilters: [
                   FilterItemConfig(
                     filterType: FilterType.custom,
                     icon: TransportIcons.locationDirectionNavigator,
-                    onTap: () {
-                      ref.read(locationProvider.notifier).checkLocationPermission();
-                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-                      context.router.push(const FreeRoamRoute());
+                    onTap: () async {
+                      final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+                      if (isAllowed) {
+                        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+                        await context.router.push(const FreeRoamRoute());
+                      }
                     },
                   ),
                 ],
@@ -112,7 +111,7 @@ class DashboardHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
         width: double.infinity,
-        decoration: BoxDecoration(color: context.colorsV2.backgroundSurface2),
+        decoration: BoxDecoration(color: context.colors.backgroundSurface2),
         child: Padding(
           padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$2x),
           child: GestureDetector(
@@ -125,12 +124,11 @@ class DashboardHeader extends ConsumerWidget {
 
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
-              ref.read(searchByRubricsQueryProvider.notifier).update(null);
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
 
-              ref.read(urbiAnalyticsProvider).track(
+              ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
                     '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
                   );
               context.router.push(SearchRoute(expansion: Expansion.expanded));
@@ -140,9 +138,9 @@ class DashboardHeader extends ConsumerWidget {
                 inputState: BaladyInputState.readOnly,
                 config: BaladyInputConfig(
                   hintText: context.l10n.searchPlaceOrAddress,
-                  fillColor: context.colorsV2.neutralContainerDefault,
-                  hintColor: context.colorsV2.foregroundSoft,
-                  textStyle: context.textStyleV3.bodySmallRegular,
+                  fillColor: context.colors.neutralContainerDefault,
+                  hintColor: context.colors.foregroundSoft,
+                  textStyle: context.textStyles.bodySmallRegular,
                 ),
               ),
             ),

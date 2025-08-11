@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
+import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -24,7 +25,9 @@ const _boxName = 'parking_location';
 const _keyCache = 'parking_store_model';
 
 const parkingId = 'parking_marker';
-const parkingObjectId = 10; /// This ID is needed to determine that we have opened the parking lot
+const parkingObjectId = 10;
+
+/// This ID is needed to determine that we have opened the parking lot
 
 @riverpod
 class _ParkingManage extends _$ParkingManage {
@@ -173,6 +176,7 @@ class _ParkingManage extends _$ParkingManage {
           icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
         onTap: () {
+          ref.read(poiCardClosingProvider.notifier).close();
           ref.read(appRouterProvider).replaceOrPush(
             route: PoiCardWidgetRoute(
               closestPoint: LatLng(latitude: lat, longitude: lon),
@@ -181,7 +185,7 @@ class _ParkingManage extends _$ParkingManage {
                 entranceId: 0,
               ),
             ),
-            toCompareRoutes: [PoiCardWidgetRoute.page],
+            toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
           );
         },
       ),

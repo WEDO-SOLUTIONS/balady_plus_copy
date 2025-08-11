@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 
 enum FeedbackSheetState {
   success,
@@ -84,16 +85,16 @@ class FeedbackSheetWidget extends HookWidget {
         color: Colors.transparent,
         child: Stack(
           children: [
-            SafeArea(
+            SafeAreaPadding(
               child: StatelessBottomSheet(
-                backgroundColor: context.colorsV2.backgroundSurface1,
+                backgroundColor: context.colors.backgroundSurface1,
                 scrollController: sheetController,
                 header: Align(
                   alignment: AlignmentDirectional.centerEnd,
                   child: Padding(
                     padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
                     child: AppButton(
-                        buttonColorScheme: ButtonColorScheme.tertiary,
+                        buttonColorScheme: ButtonColorScheme.neutral,
                         primaryIcon: SystemIcons.close,
                         onTap: () {
                           sheetController.close();
@@ -106,7 +107,6 @@ class FeedbackSheetWidget extends HookWidget {
                     child: switch (state) {
                       FeedbackSheetState.failure => BaseErrorWidget(
                           onRetry: onRetry,
-                          buttonColorScheme: ButtonColorScheme.primary,
                           errorLabel: context.l10n.appFeedbackConnectionIssueV2,
                           paddingForImage: const EdgeInsets.symmetric(vertical: AppSizes.$3xs),
                         ),
@@ -128,7 +128,7 @@ class FeedbackSheetWidget extends HookWidget {
                                 padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
                                 child: Text(
                                   context.l10n.feedbackSuccessTitle,
-                                  style: context.textStyleV3.h3SemiBold,
+                                  style: context.textStyles.h3SemiBold,
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -143,7 +143,7 @@ class FeedbackSheetWidget extends HookWidget {
                                     horizontal: Spacing.$4x,
                                     vertical: Spacing.$4x,
                                   ),
-                                  buttonColorScheme: ButtonColorScheme.primary,
+                                  buttonColorScheme: ButtonColorScheme.accent,
                                   primaryLabel: context.l10n.done,
                                   onTap: sheetController.close,
                                 ),
@@ -160,7 +160,7 @@ class FeedbackSheetWidget extends HookWidget {
                                 final textPainter = TextPainter(
                                     text: TextSpan(
                                       text: context.l10n.feedbackSuccessTitle,
-                                      style: context.textStyleV3.h3SemiBold,
+                                      style: context.textStyles.h3SemiBold,
                                     ),
                                     textDirection: Directionality.of(context))
                                   ..layout(maxWidth: constraints.maxWidth - AppSizes.xxs * 2);

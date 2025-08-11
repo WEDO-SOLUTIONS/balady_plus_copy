@@ -8,7 +8,6 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
-import 'package:mapness/widgets/debug_overlay/colorscheme_toggler.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
 import 'package:mapness/widgets/debug_overlay/link_checker.dart';
@@ -212,7 +211,6 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const SliderSpeed(),
                   const SizedBox(height: 12),
                   const DebugNavigationControll(),
-                  const ColorschemeToggler(),
                   const ShowOnboardingButton(),
                   const SizedBox(height: 12),
                   const LinkChecker(),

@@ -2,11 +2,14 @@ package com.dgis.map.android_auto
 
 import androidx.car.app.model.DateTimeWithZone
 import com.dgis.map.DgisMapInitializer
-import com.dgis.map.extensions.toRouteSearchOptionsMessage
+import com.dgis.map.map_api.SoundToggleType
+import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CameraAnimationType
 import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.navigation.BetterRouteInfo
 import ru.dgis.sdk.navigation.BetterRouteResponse
@@ -16,10 +19,14 @@ import ru.dgis.sdk.navigation.NavigationVoice
 import ru.dgis.sdk.navigation.PackedNavigationState
 import ru.dgis.sdk.navigation.RouteBuildOptions
 import ru.dgis.sdk.navigation.RouteInfo
+import ru.dgis.sdk.navigation.SoundCategory
 import ru.dgis.sdk.navigation.State
+import ru.dgis.sdk.navigation.SpeedRange
+import ru.dgis.sdk.navigation.SpeedRangeToStyleZoom
 import ru.dgis.sdk.navigation.duration
 import ru.dgis.sdk.navigation.getInstructionManeuver
 import ru.dgis.sdk.navigation.metersPerSecondToKilometersPerHour
+import ru.dgis.sdk.navigation.notificationVolume
 import ru.dgis.sdk.positioning.Location
 import ru.dgis.sdk.routing.FloatRouteLongAttribute
 import ru.dgis.sdk.routing.InstructionRouteAttribute
@@ -31,14 +38,21 @@ import ru.dgis.sdk.routing.compareTo
 import ru.dgis.sdk.routing.meters
 import ru.dgis.sdk.routing.minus
 import ru.dgis.sdk.routing.plus
+import java.lang.Exception
 import java.util.Calendar
+import java.util.EnumSet
 import java.util.GregorianCalendar
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 
 class CarNavigationHandler(
     private val navigationManager: NavigationManager,
-    private val searchHandler: CarSearchHandler,
+    private val sharedPrefs: SharedPrefs,
+    private val searchByDirectoryObjectId: (
+        objectId: DgisObjectId,
+        resultCallback: (result: DirectoryObject?) -> Unit,
+        errorCallback: ((exception: Exception) -> Unit)?,
+    ) -> Unit,
 ) : AutoCloseable {
 
     interface NavigationListener {
@@ -111,16 +125,28 @@ class CarNavigationHandler(
 
         // Destination
         if (destination == null && state == State.NAVIGATION && routeBuildOptions != null) {
-            searchHandler.searchByDirectoryObjectId(
+            searchByDirectoryObjectId(
                 routeBuildOptions.finishPoint.objectId,
-                resultCallback = {
+                {
                     destination = it?.title
                     updateEta()
-                })
+                },
+                null,
+            )
         }
     }
 
     private fun routeListener(routeInfo: RouteInfo) {
+        val navigationState = navigationManager.uiModel.state.toNavigationState(
+            routeInfo.routeBuildOptions != null
+        )
+
+        // SDK sometimes doesn't send navigation state to stateChannel when navigation on route is started after freeroam,
+        // therefore we should call onNavigationStateChanged with NAVIGATION here
+        if (navigationState == NavigationState.NAVIGATION) {
+            navigationListener?.onNavigationStateChanged(navigationState)
+        }
+
         // Speed limits
         speedLimits = routeInfo.route.maxSpeedLimits
 
@@ -170,6 +196,10 @@ class CarNavigationHandler(
     }
 
     private fun betterRouteListener(routeInfo: BetterRouteInfo?) {
+        if (!sharedPrefs.suggestBetterRoad) {
+            navigationListener?.onBetterRouteFound(durationProfit = null)
+            return
+        }
         val activeRouteDuration = navigationManager.uiModel.duration?.inSeconds
         val betterRouteDuration = routeInfo?.trafficRoute?.route?.geometry?.first?.point?.let {
             routeInfo.trafficRoute.traffic.durations.calculateDuration(
@@ -183,7 +213,7 @@ class CarNavigationHandler(
 
 
     private fun updateManeuverInfo(
-        routePosition: RoutePoint, instructions: InstructionRouteAttribute
+        routePosition: RoutePoint, instructions: InstructionRouteAttribute,
     ) {
         if (navigationManager.uiModel.state != State.NAVIGATION) {
             navigationListener?.onManeuverUpdate(null, null)
@@ -203,7 +233,7 @@ class CarNavigationHandler(
     }
 
     private fun handleInstructionForPosition(
-        instructionEntry: InstructionRouteEntry, routePosition: RoutePoint
+        instructionEntry: InstructionRouteEntry, routePosition: RoutePoint,
     ) {
         val maneuver = getManeuver(routePosition, instructionEntry)
         if (maneuver == null) {
@@ -215,7 +245,7 @@ class CarNavigationHandler(
     }
 
     private fun getNextManeuver(
-        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry
+        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry,
     ): ManeuverModel? {
         val instruction = instructionEntry.value
         val instructionManeuver = getInstructionManeuver(instruction.extraInstructionInfo)
@@ -244,7 +274,7 @@ class CarNavigationHandler(
     }
 
     private fun getManeuver(
-        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry
+        routePosition: RoutePoint, instructionEntry: InstructionRouteEntry,
     ): ManeuverModel? {
         val instruction = instructionEntry.value
         val instructionManeuver = getInstructionManeuver(instruction.extraInstructionInfo)
@@ -303,6 +333,21 @@ class CarNavigationHandler(
         navigationManager.voiceSelector.voice = voice
     }
 
+    fun setupCamera() {
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence =
+            listOf(
+                SpeedRangeToStyleZoom(
+                    range = SpeedRange(
+                        minSpeed = 0.0,
+                        maxSpeed = 200.0
+                    ),
+                    minDistanceToManeuver = RouteDistance(millimeters = 0),
+                    maxDistanceToManeuver = RouteDistance(millimeters = 0),
+                    styleZoom = StyleZoom(value = 18.0f)
+                )
+            )
+    }
+
     fun followNavigation() {
         map?.camera?.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
@@ -315,6 +360,10 @@ class CarNavigationHandler(
             routeBuildOptions = routeBuildOptions,
             trafficRoute = trafficRoute
         )
+    }
+
+    fun startFreeroam() {
+        navigationManager.start()
     }
 
     fun startNavigationSimulation() {
@@ -353,6 +402,38 @@ class CarNavigationHandler(
     fun getCurrentNavigationState(): NavigationState {
         val routeBuildOptions = navigationManager.uiModel.route.routeBuildOptions
         return navigationManager.uiModel.state.toNavigationState(routeBuildOptions != null)
+    }
+
+    fun toggleVoiceInstruction(toggleType: SoundToggleType) {
+        val currentCategories =
+            this.navigationManager.soundNotificationSettings.enabledSoundCategories
+
+        val updatedCategories = when (toggleType) {
+            SoundToggleType.NONE -> {
+                EnumSet.noneOf(SoundCategory::class.java).apply {
+                    addAll(currentCategories)
+                    removeAll(EnumSet.allOf(SoundCategory::class.java))
+                }
+            }
+
+            SoundToggleType.ALL -> {
+                EnumSet.allOf(SoundCategory::class.java).apply {
+                    addAll(currentCategories)
+                }
+            }
+
+            SoundToggleType.IMPORTANT -> {
+                EnumSet.copyOf(currentCategories).apply {
+                    remove(SoundCategory.INSTRUCTIONS)
+                }
+            }
+        }
+
+        this.navigationManager.soundNotificationSettings.enabledSoundCategories = updatedCategories
+    }
+
+    fun setNavigatorVolume(volume: Int) {
+        this.navigationManager.soundNotificationSettings.notificationVolume = volume
     }
 
     override fun close() {

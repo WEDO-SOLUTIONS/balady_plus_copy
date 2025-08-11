@@ -9,10 +9,9 @@ import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
-import 'package:mapness/widgets/weather/weather_card_header.dart';
 import 'package:mapness/widgets/weather/weather_state_icon.dart';
 
-class WeatherControls extends ConsumerWidget {
+class WeatherControls extends ConsumerStatefulWidget {
   final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
 
   const WeatherControls({
@@ -21,45 +20,63 @@ class WeatherControls extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => SafeArea(
-        bottom: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Spacing.$3x,
-                  vertical: Spacing.$3x,
-                ).copyWith(bottom: Spacing.$4x),
-                child: Row(
+  ConsumerState<WeatherControls> createState() => _WeatherControlsState();
+}
+
+class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) {
+        widget.bottomSheetController.addListener(
+          () {
+            setState(() {});
+          },
+        );
+      },
+    );
+  }
+
+  Widget get spaceWidget => SizedBox(height: widget.bottomSheetController.sheetHeight);
+
+  @override
+  Widget build(BuildContext context) => Visibility(
+        visible: widget.bottomSheetController.state != ThreeStateBottomSheet.expanded,
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Spacing.$3x,
+              vertical: Spacing.$3x,
+            ).copyWith(bottom: Spacing.$4x),
+            child: Row(
+              children: [
+                Column(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Spacer(),
-                        const Legend(),
-                        SizedBox(height: weatherHeaderSize),
-                      ],
-                    ),
                     const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const WeatherStateIcon(),
-                        const Spacer(),
-                        const ZoomControl(),
-                        const Spacer(),
-                        const CompassControl(),
-                        Spacing.$2x.heightBox,
-                        const FollowControl(),
-                      ],
-                    ),
+                    const Legend(),
+                    spaceWidget,
                   ],
                 ),
-              ),
+                const Spacer(),
+                Column(
+                  children: [
+                    const WeatherStateIcon(),
+                    Spacing.$2x.heightBox,
+                    const Spacer(),
+                    const ZoomControl(),
+                    const Spacer(),
+                    Spacing.$2x.heightBox,
+                    const CompassControl(),
+                    Spacing.$2x.heightBox,
+                    const FollowControl(),
+                    spaceWidget
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       );
 }

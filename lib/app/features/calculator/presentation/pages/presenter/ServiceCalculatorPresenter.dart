@@ -4,7 +4,7 @@ import 'package:balady_plus/app/features/calculator/data/model/request/Calculate
 import 'package:balady_plus/app/features/calculator/data/model/request/CalculateRenewDiggingCost.dart';
 import 'package:balady_plus/app/features/calculator/presentation/pages/repository/ServiceCalculatorRepository.dart';
 import 'package:balady_plus/app/features/calculator/presentation/pages/service_calculator_screen.dart';
-
+import 'package:dgis_map/library.dart';
 
 import '../../../../../core/services/local/helpers.dart';
 import '../contract/ServiceCalculatorContract.dart';
@@ -24,7 +24,7 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
 
     print(getView());
     if (isViewAttached) getView()?.showLoading();
-    _serviceCalculatorRepository.getServicesListlookup().then((value) {
+    this._serviceCalculatorRepository.getServicesListlookup().then((value) {
       if (isViewAttached) {
         getView()?.hideLoading();
 
@@ -502,37 +502,37 @@ class ServiceCalculatorPresenter extends IServviceCalculatorPresenter {
     });
   }
 
-  // @override
-  // void getGpsLocation(LatLng latLng) {
-  //   if (isViewAttached) getView()?.showLoading();
-  //   _serviceCalculatorRepository.getGpsLocation(latLng).then((value) {
-  //     if (isViewAttached) {
-  //       getView()?.hideLoading();
-  //       if (value != null && (value.isSuccessfull ?? false)) {
-  //         getView()?.getGpsLocationSuccess(value);
-  //         if (value.sub_Municipalityguid == null) {
-  //           getView()?.showError(Helpers.translatingWord("gis_error_1"));
-  //         }
-  //       } else {
-  //         String error = Helpers.translatingWord("server_error_1");
-  //         getView()?.showError(error);
-  //         getView()?.getGpsLocationFailed();
-  //       }
-  //     }
-  //   }).catchError((error) {
-  //     String msg = Helpers.translatingWord("server_error_1");
-  //
-  //     if (error is APIException) {
-  //       msg = Helpers.translatingWord("errors_server_error_2");
-  //     }
-  //
-  //     if (isViewAttached) {
-  //       getView()?.hideLoading();
-  //       getView()?.showError(msg);
-  //       getView()?.getGpsLocationFailed();
-  //     }
-  //   });
-  // }
+  @override
+  void getGpsLocation(LatLng latLng) {
+    if (isViewAttached) getView()?.showLoading();
+    this._serviceCalculatorRepository.getGpsLocation(latLng).then((value) {
+      if (isViewAttached) {
+        getView()?.hideLoading();
+        if (value != null && (value.isSuccessfull ?? false)) {
+          getView()?.getGpsLocationSuccess(value);
+          if (value.sub_Municipalityguid == null) {
+            getView()?.showError(Helpers.translatingWord("gis_error_1"));
+          }
+        } else {
+          String error = Helpers.translatingWord("server_error_1");
+          getView()?.showError(error);
+          getView()?.getGpsLocationFailed();
+        }
+      }
+    }).catchError((error) {
+      String msg = Helpers.translatingWord("server_error_1");
+
+      if (error is APIException) {
+        msg = Helpers.translatingWord("errors_server_error_2");
+      }
+
+      if (isViewAttached) {
+        getView()?.hideLoading();
+        getView()?.showError(msg);
+        getView()?.getGpsLocationFailed();
+      }
+    });
+  }
 }
 
 class APIException implements Exception {
