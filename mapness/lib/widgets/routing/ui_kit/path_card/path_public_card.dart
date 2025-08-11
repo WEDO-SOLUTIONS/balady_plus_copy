@@ -102,6 +102,7 @@ class PathPublicCard extends ConsumerWidget {
           BaladyAppButton(
             buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
             buttonType: BaladyButtonType.secondary,
+            innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
             onTap: () {
               context.router.push(
                 RouteDetailsRoute(
