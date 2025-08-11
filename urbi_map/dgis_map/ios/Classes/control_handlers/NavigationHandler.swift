@@ -228,9 +228,12 @@ class NavigationHandler {
         }
         
         if oldSource == nil { return }
-        map.removeSource(source: map.sources.first!)
+        let toDelete = map.sources.first(where: { $0 is MyLocationMapObjectSource})
+        
+        if toDelete == nil { return }
+        
+        map.removeSource(source: toDelete!)
         map.addSource(source: oldSource!)
-       
     }
     
     func resetCamera(map: Map) {
@@ -298,7 +301,7 @@ class NavigationHandler {
             return
         }
         
-        let oldSource = map.sources.first!
+        let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
         
         map.removeSource(source: oldSource)
         

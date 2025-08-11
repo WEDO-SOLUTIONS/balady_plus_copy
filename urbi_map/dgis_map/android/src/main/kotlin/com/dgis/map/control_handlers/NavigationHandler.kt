@@ -162,7 +162,7 @@ class NavigationHandler(
 
                 if (oldSource != null) {
                         if (map.sources.isNotEmpty()) {
-                                map.removeSource(map.sources.first())
+                                map.removeSource(map.sources.first { it is MyLocationMapObjectSource })
                         }
                         map.addSource(oldSource!!)
                         oldSource = null
@@ -269,7 +269,7 @@ class NavigationHandler(
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
                 if (oldSource == null && map.sources.isNotEmpty()) {
-                        oldSource = map.sources.first()
+                        oldSource = map.sources.first { it is MyLocationMapObjectSource }
                         map.removeSource(oldSource!!)
                         map.addSource(
                                 MyLocationMapObjectSource(
