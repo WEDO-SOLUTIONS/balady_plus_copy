@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +26,20 @@ class ProfilePage extends HookConsumerWidget {
     final textDirection = Directionality.of(context);
     final trailing = ContentRowTextTrailingOptions(
       icon: SystemIcons.arrowCornerRightLarge,
-      iconColor: context.colorsV3.foregroundMuted,
+      iconColor: context.colors.foregroundMuted,
     );
     final Widget Function(IconData icon) leadingIconBuilder = (icon) => Icon(
           icon,
-          color: context.colorsV3.accentDefault,
+          color: context.colors.accentDefault,
           size: 24,
         );
     final userData = ref.watch(authProvider);
-    final backgroundColor =
-        userData.valueOrNull != null ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
+    final backgroundColor = userData.valueOrNull != null
+        ? context.colorsV3.staticWhite
+        : context.colorsV3.staticDarkblue;
 
-    final overlay = switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
+    final overlay =
+        switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
       Brightness.dark => SystemUiOverlayStyle.light,
       Brightness.light => SystemUiOverlayStyle.dark,
     };
@@ -67,7 +70,7 @@ class ProfilePage extends HookConsumerWidget {
                     ),
                     DecoratedSliver(
                       decoration: BoxDecoration(
-                        color: context.colorsV3.backgroundSurface4,
+                        color: context.colors.backgroundSurface4,
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(RadiusBorder.xxl),
                           topRight: Radius.circular(RadiusBorder.xxl),
@@ -83,28 +86,53 @@ class ProfilePage extends HookConsumerWidget {
                               [
                                 const SizedBox(height: Spacing.$4x),
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(RadiusBorder.l),
+                                  borderRadius:
+                                      BorderRadius.circular(RadiusBorder.l),
                                   child: ContentWrapper(
-                                    color: context.colorsV3.backgroundSurface1,
+                                    color: context.colors.backgroundSurface1,
                                     children: [
                                       userData.maybeWhen(
                                         orElse: () => const SizedBox.shrink(),
                                         data: (data) => data == null
                                             ? const SizedBox.shrink()
-                                            : ContentRowV2(
-                                                isDividerEnabled: true,
-                                                onTap: () => context.router.push(const ProfileInfoRoute()),
-                                                trailing: trailing,
-                                                leading: leadingIconBuilder(GeneralIcons.userCircle),
-                                                text: ContentRowTextOptions(
-                                                  title: context.l10n.account,
-                                                ),
+                                            : Column(
+                                                children: [
+                                                  ContentRow(
+                                                    isDividerEnabled: true,
+                                                    onTap: () => context.router
+                                                        .push(
+                                                            const ProfileInfoRoute()),
+                                                    trailing: trailing,
+                                                    leading: leadingIconBuilder(
+                                                        GeneralIcons
+                                                            .userCircle),
+                                                    text: ContentRowTextOptions(
+                                                      title:
+                                                          context.l10n.account,
+                                                    ),
+                                                  ),
+
+                                                  // if (CommonProperties.isLoggedInMunicipality) ContentRow(
+                                                  //   isDividerEnabled: true,
+                                                  //   onTap: () =>
+                                                  //   CommonFunctions.openVolunteerProfileScreen(),
+                                                  //   trailing: trailing,
+                                                  //   leading: leadingIconBuilder(
+                                                  //       Icons.favorite),
+                                                  //   text: ContentRowTextOptions(
+                                                  //     title:
+                                                  //         'volunteer_info'.tr(),
+                                                  //   ),
+                                                  // ) else const SizedBox.shrink(),
+                                                ],
                                               ),
                                       ),
-                                      ContentRowV2(
-                                        onTap: () => context.router.push(const SettingsRoute()),
+                                      ContentRow(
+                                        onTap: () => context.router
+                                            .push(const SettingsRoute()),
                                         trailing: trailing,
-                                        leading: leadingIconBuilder(SystemIcons.settings),
+                                        leading: leadingIconBuilder(
+                                            SystemIcons.settings),
                                         text: ContentRowTextOptions(
                                           title: context.l10n.settings,
                                         ),
@@ -114,36 +142,42 @@ class ProfilePage extends HookConsumerWidget {
                                 ),
                                 const SizedBox(height: Spacing.$4x),
                                 ContentWrapper(
-                                  color: context.colorsV3.backgroundSurface1,
+                                  color: context.colors.backgroundSurface1,
                                   children: [
-                                    ContentRowV2(
+                                    ContentRow(
                                       isDividerEnabled: true,
-                                      onTap: () => context.router.push(const HelpCenterRoute()),
+                                      onTap: () => context.router
+                                          .push(const HelpCenterRoute()),
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(GeneralIcons.questionCircle),
+                                      leading: leadingIconBuilder(
+                                          GeneralIcons.questionCircle),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.helpCenter,
                                       ),
                                     ),
-                                    ContentRowV2(
+                                    ContentRow(
                                       isDividerEnabled: true,
                                       onTap: () {
-                                        context.router.push(const AboutBaladyRoute());
+                                        context.router
+                                            .push(const AboutBaladyRoute());
                                       },
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(GeneralIcons.infoSquare),
+                                      leading: leadingIconBuilder(
+                                          GeneralIcons.infoSquare),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.aboutApp,
                                       ),
                                     ),
-                                    ContentRowV2(
+                                    ContentRow(
                                       onTap: () {
                                         inAppReview.openStoreListing(
-                                          appStoreId: MapnessConstants.appStoreId,
+                                          appStoreId:
+                                              MapnessConstants.appStoreId,
                                         );
                                       },
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(GeneralIcons.star),
+                                      leading:
+                                          leadingIconBuilder(GeneralIcons.star),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.rateBaladyApp,
                                       ),
@@ -156,20 +190,25 @@ class ProfilePage extends HookConsumerWidget {
                                   data: (data) => data == null
                                       ? const SizedBox.shrink()
                                       : ContentWrapper(
-                                          color: context.colorsV3.backgroundSurface1,
+                                          color: context
+                                              .colorsV3.backgroundSurface1,
                                           children: [
                                             ContentRowV2(
-                                              onTap: () => _logOut(context, ref, isLoading),
+                                              onTap: () => _logOut(
+                                                  context, ref, isLoading),
                                               text: ContentRowTextOptions(
                                                 title: context.l10n.signOut,
-                                                titleOptions: ContentRowTextOption(
-                                                  baseColor: context.colorsV3.errorDefault,
+                                                titleOptions:
+                                                    ContentRowTextOption(
+                                                  baseColor: context
+                                                      .colorsV3.errorDefault,
                                                 ),
                                               ),
                                               leading: Icon(
                                                 GeneralIcons.doorEntrance,
                                                 size: AppSizes.xxs,
-                                                color: context.colorsV3.errorDefault,
+                                                color: context
+                                                    .colorsV3.errorDefault,
                                               ),
                                             ),
                                           ],
@@ -186,7 +225,7 @@ class ProfilePage extends HookConsumerWidget {
                 if (isLoading.value)
                   Center(
                     child: CircularProgressIndicator(
-                      color: context.colorsV3.accentDefault,
+                      color: context.colors.accentDefault,
                     ),
                   ),
               ],
@@ -197,7 +236,8 @@ class ProfilePage extends HookConsumerWidget {
     );
   }
 
-  Future<void> _logOut(BuildContext context, WidgetRef ref, ValueNotifier isLoading) async {
+  Future<void> _logOut(
+      BuildContext context, WidgetRef ref, ValueNotifier isLoading) async {
     await showDialog(
       context: context,
       builder: (ctx) => LogoutSheet(

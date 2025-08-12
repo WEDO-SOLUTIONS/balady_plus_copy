@@ -1,14 +1,15 @@
 class MiniAppModel {
-  MiniAppModel({
-    this.id,
-    this.serviceName,
-    this.description,
-    this.entity,
-    this.requirements,
-    this.cdnLogoRef,
-    this.logoKey,
-    this.latestVersion,});
-
+  MiniAppModel(
+      {this.id,
+      this.serviceName,
+      this.description,
+      this.entity,
+      this.requirements,
+      this.serviceKey,
+      this.cdnLogoRef,
+      this.logoKey,
+      this.latestVersion,
+        this.path});
 
   MiniAppModel.fromJson(dynamic json) {
     id = json['id'];
@@ -18,7 +19,10 @@ class MiniAppModel {
     cdnLogoRef = json['cdnLogoRef'];
     entity = json['entity'];
     logoKey = json['logoKey'];
-    latestVersion = json['latestVersion'] != null ? LatestVersion.fromJson(json['latestVersion']) : null;
+    latestVersion = json['latestVersion'] != null
+        ? LatestVersion.fromJson(json['latestVersion'])
+        : null;
+    path = json['path'] ?? "";
     if (json['requirements'] != null) {
       requirements = [];
       json['requirements'].forEach((v) {
@@ -35,25 +39,29 @@ class MiniAppModel {
   String? entity;
   String? logoKey;
   LatestVersion? latestVersion;
-  MiniAppModel copyWith({  String? id,
-    String? serviceName,
-    String? description,
-    String? cdnLogoRef,
-    String? entity,
-    String? logoKey,
-    List<Requirements>? requirements,
-    LatestVersion? latestVersion,
-  }) => MiniAppModel(  id: id ?? this.id,
-    serviceName: serviceName ?? this.serviceName,
-    description: description ?? this.description,
-    entity: entity ?? this.entity,
-    cdnLogoRef: cdnLogoRef ?? this.cdnLogoRef,
-    requirements:requirements??this.requirements,
-    logoKey: logoKey ?? this.logoKey,
-    latestVersion: latestVersion ?? this.latestVersion,
-  );
-
-
+  String? path;
+  MiniAppModel copyWith(
+          {String? id,
+          String? serviceName,
+          String? description,
+          String? cdnLogoRef,
+          String? serviceKey,
+          String? entity,
+          String? logoKey,
+          List<Requirements>? requirements,
+          LatestVersion? latestVersion,
+          String? path}) =>
+      MiniAppModel(
+          id: id ?? this.id,
+          serviceKey: serviceKey ?? this.serviceKey,
+          serviceName: serviceName ?? this.serviceName,
+          description: description ?? this.description,
+          entity: entity ?? this.entity,
+          cdnLogoRef: cdnLogoRef ?? this.cdnLogoRef,
+          requirements: requirements ?? this.requirements,
+          logoKey: logoKey ?? this.logoKey,
+          latestVersion: latestVersion ?? this.latestVersion,
+          path: path ?? this.path);
 }
 
 class LatestVersion {
@@ -67,7 +75,8 @@ class LatestVersion {
     this.forceUpdate,
     this.packageMetaDataDto,
     this.status,
-    this.type,});
+    this.type,
+  });
 
   LatestVersion.fromJson(dynamic json) {
     id = json['id'];
@@ -77,7 +86,9 @@ class LatestVersion {
     nafathLogin = json['nafathLogin'];
     otpLogin = json['otpLogin'];
     forceUpdate = json['forceUpdate'];
-    packageMetaDataDto = json['packageMetaDataDto'] != null ? PackageMetaDataDto.fromJson(json['packageMetaDataDto']) : null;
+    packageMetaDataDto = json['packageMetaDataDto'] != null
+        ? PackageMetaDataDto.fromJson(json['packageMetaDataDto'])
+        : null;
     status = json['status'];
     type = json['type'];
   }
@@ -91,7 +102,8 @@ class LatestVersion {
   PackageMetaDataDto? packageMetaDataDto;
   int? status;
   int? type;
-  LatestVersion copyWith({  String? id,
+  LatestVersion copyWith({
+    String? id,
     String? versionDescription,
     String? versionNumber,
     dynamic serviceUrl,
@@ -101,19 +113,19 @@ class LatestVersion {
     PackageMetaDataDto? packageMetaDataDto,
     int? status,
     int? type,
-  }) => LatestVersion(  id: id ?? this.id,
-    versionDescription: versionDescription ?? this.versionDescription,
-    versionNumber: versionNumber ?? this.versionNumber,
-    serviceUrl: serviceUrl ?? this.serviceUrl,
-    nafathLogin: nafathLogin ?? this.nafathLogin,
-    otpLogin: otpLogin ?? this.otpLogin,
-    forceUpdate: forceUpdate ?? this.forceUpdate,
-    packageMetaDataDto: packageMetaDataDto ?? this.packageMetaDataDto,
-    status: status ?? this.status,
-    type: type ?? this.type,
-  );
-
-
+  }) =>
+      LatestVersion(
+        id: id ?? this.id,
+        versionDescription: versionDescription ?? this.versionDescription,
+        versionNumber: versionNumber ?? this.versionNumber,
+        serviceUrl: serviceUrl ?? this.serviceUrl,
+        nafathLogin: nafathLogin ?? this.nafathLogin,
+        otpLogin: otpLogin ?? this.otpLogin,
+        forceUpdate: forceUpdate ?? this.forceUpdate,
+        packageMetaDataDto: packageMetaDataDto ?? this.packageMetaDataDto,
+        status: status ?? this.status,
+        type: type ?? this.type,
+      );
 }
 
 class PackageMetaDataDto {
@@ -121,36 +133,39 @@ class PackageMetaDataDto {
     required this.id,
     this.extension,
     this.size,
-    this.name,});
+    this.name,
+  });
 
   factory PackageMetaDataDto.fromJson(dynamic json) => PackageMetaDataDto(
-    id : json['id'] ?? "",
-    extension : json['extension'],
-    size : json['size'],
-    name : json['name'],
-  );
+        id: json['id'] ?? "",
+        extension: json['extension'],
+        size: json['size'],
+        name: json['name'],
+      );
 
   String id;
   String? extension;
   String? size;
   String? name;
-  PackageMetaDataDto copyWith({  String? id,
+  PackageMetaDataDto copyWith({
+    String? id,
     String? extension,
     String? size,
     String? name,
-  }) => PackageMetaDataDto(  id: id ?? this.id,
-    extension: extension ?? this.extension,
-    size: size ?? this.size,
-    name: name ?? this.name,
-  );
-
-
+  }) =>
+      PackageMetaDataDto(
+        id: id ?? this.id,
+        extension: extension ?? this.extension,
+        size: size ?? this.size,
+        name: name ?? this.name,
+      );
 }
 
 class Requirements {
   Requirements({
     this.requirementKey,
-    this.name,});
+    this.name,
+  });
 
   Requirements.fromJson(dynamic json) {
     requirementKey = json['requirementKey'];
@@ -158,16 +173,18 @@ class Requirements {
   }
   String? requirementKey;
   String? name;
-  Requirements copyWith({  String? requirementKey,
+  Requirements copyWith({
+    String? requirementKey,
     String? name,
-  }) => Requirements(  requirementKey: requirementKey ?? this.requirementKey,
-    name: name ?? this.name,
-  );
+  }) =>
+      Requirements(
+        requirementKey: requirementKey ?? this.requirementKey,
+        name: name ?? this.name,
+      );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['requirementKey'] = requirementKey;
     map['name'] = name;
     return map;
   }
-
 }

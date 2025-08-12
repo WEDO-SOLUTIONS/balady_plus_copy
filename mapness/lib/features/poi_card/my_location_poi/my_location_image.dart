@@ -53,8 +53,8 @@ class _DefaultImage extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: context.textStyleV3.h4SemiBold.copyWith(
-            color: context.colorsV2.staticWhite,
+          style: context.textStyles.h4SemiBold.copyWith(
+            color: context.colors.staticWhite,
             height: 1,
           ),
         ),

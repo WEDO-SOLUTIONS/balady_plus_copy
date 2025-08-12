@@ -1,8 +1,8 @@
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/services/services_exports.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -74,7 +74,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         keepContentBehindFooter: true,
         scrollController: widget.bottomSheetController,
         topHeader: MapHiddenStateControls(widget.bottomSheetController),
-        backgroundColor: context.colorsV2.backgroundSurface2,
+        backgroundColor: context.colors.backgroundSurface2,
         header: const DashboardHeader(),
         footer: IgnorePointer(
           child: SizedBox(
@@ -247,12 +247,18 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    sl<HomeMiniAppsListCubit>().openMiniApp(
+        serviceKey: "islamicservice",
+        path:  "#Quran_Show_All_Surahs_Page",
+    );
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: "islamicservice",
+      path:  "#Athkar_Page",
+    );
   }
 
   void _openFreeRoam() {
@@ -285,7 +291,9 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
     Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
         action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
-    CommonFunctions.openSnapAndSend();
+    sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: "snapandsend",
+    );
   }
 
   void _scrollListenHandler() {

@@ -93,7 +93,7 @@ class PrayerCard extends ConsumerWidget {
                                 children: [
                                   Text(
                                     'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
-                                    style: context.textStyleV3.bodyLargeRegular.copyWith(
+                                    style: context.textStyles.bodyLargeRegular.copyWith(
                                       color: context.color.textAndIconsBaseInversePrimary,
                                     ),
                                   ),
@@ -113,15 +113,15 @@ class PrayerCard extends ConsumerWidget {
                                         children: [
                                           Text(
                                             '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
-                                            style: context.textStyleV3.bodySmallRegular.copyWith(
+                                            style: context.textStyles.bodySmallRegular.copyWith(
                                               color: context.color.textAndIconsBaseInversePrimary,
                                             ),
                                           ),
                                           RichText(
                                             textDirection: TextDirection.ltr,
                                             text: TextSpan(
-                                              style: context.textStyleV3.h2Medium.copyWith(
-                                                color: context.colorsV2.staticWhite,
+                                              style: context.textStyles.h2Medium.copyWith(
+                                                color: context.colors.staticWhite,
                                               ),
                                               children: [
                                                 TextSpan(
@@ -198,7 +198,7 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
                     final isNotificationDisabled = state.isNotificationDisable;
                     return Icon(
                       isNotificationDisabled ? SystemIcons.notification : SystemIcons.notificationFill,
-                      color: isPressed ? context.colorsV2.foregroundMuted : Colors.white,
+                      color: isPressed ? context.colors.foregroundMuted : Colors.white,
                     );
                   },
                 ),
@@ -281,7 +281,7 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
 
         return Text(
           '$hours:$minutes:$seconds',
-          style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
+          style: context.textStyles.h1Medium.copyWith(color: context.colors.staticWhite),
           textDirection: TextDirection.ltr,
         );
       },

@@ -57,8 +57,8 @@ class QiblaCard extends ConsumerWidget {
                         padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, start: Spacing.$4x),
                         child: Text(
                           context.l10n.qibla,
-                          style: context.textStyleV3.h2Medium.copyWith(
-                            color: context.colorsV2.staticWhite,
+                          style: context.textStyles.h2Medium.copyWith(
+                            color: context.colors.staticWhite,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -68,8 +68,8 @@ class QiblaCard extends ConsumerWidget {
                         padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: Spacing.$4x),
                         child: Text(
                           context.l10n.showDirection,
-                          style: context.textStyleV3.captionLargeRegular.copyWith(
-                            color: context.colorsV2.staticWhite,
+                          style: context.textStyles.captionLargeRegular.copyWith(
+                            color: context.colors.staticWhite,
                           ),
                         ),
                       ),

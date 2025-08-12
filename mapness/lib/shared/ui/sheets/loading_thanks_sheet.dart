@@ -61,7 +61,7 @@ class LoadingThanksSheet extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     AppButton(
-                      buttonColorScheme: ButtonColorScheme.primary,
+                      buttonColorScheme: ButtonColorScheme.accent,
                       onTap: onClose,
                       primaryLabel: context.l10n.complete,
                       buttonState: isLoading ? ButtonState.disabled : ButtonState.normal,

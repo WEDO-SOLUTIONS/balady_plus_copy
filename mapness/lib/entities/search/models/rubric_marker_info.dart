@@ -1,5 +1,5 @@
+import 'package:dgis_map/library.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 
 part 'rubric_marker_info.g.dart';
 

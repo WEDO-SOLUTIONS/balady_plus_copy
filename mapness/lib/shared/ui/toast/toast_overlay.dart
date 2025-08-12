@@ -178,12 +178,12 @@ class ToastOverlayState extends State<ToastOverlay> {
   void showBetaNotification() {
     show(
       title: _betaNotificationTitleKey,
-      titleStyle: context.textStyleV3.captionLargeRegular.copyWith(fontSize: context.isLTR ? 12 : 13),
+      titleStyle: context.textStyles.captionLargeRegular.copyWith(fontSize: context.isLTR ? 12 : 13),
       isDismissible: true,
       isClosable: true,
       isFlipped: true,
       iconData: General16Icons.infoCircleFill,
-      iconColor: context.colorsV2.accentDefault,
+      iconColor: context.colors.accentDefault,
       displayDuration: const Duration(seconds: 20),
     );
   }

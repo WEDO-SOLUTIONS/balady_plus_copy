@@ -22,7 +22,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
   double _dragPosition = 0;
   final radius = BorderRadius.circular(10);
 
-  Color get _backgroundColor => context.colorsV2.errorContainerDefault;
+  Color get _backgroundColor => context.colors.errorContainerDefault;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -44,8 +44,8 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                   padding: const EdgeInsetsDirectional.only(start: slideSize + Spacing.$6x),
                   child: Text(
                     widget.buttonText,
-                    style: context.textStyleV3.buttonL.copyWith(
-                      color: context.colorsV2.errorDefault,
+                    style: context.textStyles.buttonL.copyWith(
+                      color: context.colors.errorDefault,
                     ),
                   ),
                 ),
@@ -55,7 +55,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                 height: slideSize,
                 width: _dragPosition + slideSize,
                 decoration: BoxDecoration(
-                  color: context.colorsV2.errorDefault.withOpacity(0.7),
+                  color: context.colors.errorDefault.withOpacity(0.7),
                   borderRadius: radius,
                 ),
               ),
@@ -83,13 +83,13 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                     width: slideSize,
                     height: slideSize,
                     decoration: BoxDecoration(
-                      color: context.colorsV2.errorDefault,
+                      color: context.colors.errorDefault,
                       borderRadius: radius,
                     ),
                     child: Icon(
                       isRTL ? SystemIcons.arrowLeft : SystemIcons.arrowRight,
                       size: 24,
-                      color: context.colorsV2.staticWhite,
+                      color: context.colors.staticWhite,
                     ),
                   ),
                 ),

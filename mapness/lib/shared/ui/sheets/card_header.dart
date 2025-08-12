@@ -17,11 +17,11 @@ class CardHeaderText extends CardHeaderData {
   CardHeaderText({required this.text, required this.style, required this.maxLines});
 
   CardHeaderText.title({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyleV3.h4SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+      : style = style ?? context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
         maxLines = maxLines ?? 2;
 
   CardHeaderText.subTitle({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+      : style = style ?? context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
         maxLines = maxLines ?? 1;
 
   @override

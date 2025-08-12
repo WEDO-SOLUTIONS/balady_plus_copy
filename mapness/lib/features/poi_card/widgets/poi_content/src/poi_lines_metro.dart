@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentWorkTime, PoiContentWorkTimeDay;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -106,7 +106,11 @@ class PoiLinesMetro extends StatelessWidget {
           content: Column(
             children: List.generate(_platformsInfo.length, (index) {
               final transitionRoute = _platformsInfo[index].transitions;
-              final routeCurrent = _platformsInfo[index].name == address;
+              final routeCurrent = _platformsInfo[index].name == address ||
+                  (transitionRoute.isNotEmpty &&
+                      transitionRoute.any(
+                        (element) => element.stationName == address,
+                      ));
               return CustomPaint(
                 painter: _StationLinePainter(
                   isFirst: index == 0,

@@ -414,7 +414,7 @@ class NavigationScreen(
         carContext: CarContext,
         type: Int,
         iconResourceId: Int,
-        exitNumber: Int?
+        exitNumber: Int?,
     ): Maneuver {
         val icon =
             CarIcon.Builder(IconCompat.createWithResource(carContext, iconResourceId)).build()

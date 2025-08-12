@@ -24,21 +24,22 @@ class FeedbackImageSelectorSheet extends HookWidget {
     );
 
     return SafeAreaPadding(
+      bottom: false,
       child: StatelessBottomSheet(
-        safeAreaColor: context.colorsV3.backgroundSurface4,
-        backgroundColor: context.colorsV3.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface4,
         scrollController: sheetController,
-        draggerColor: context.colorsV3.backgroundSurface4,
+        draggerColor: context.colors.backgroundSurface4,
         content: [
           ContentRow(
             options: ContentRowOptions(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               title: context.l10n.addPhoto,
-              titleStyle: context.textStyleV3.h4SemiBold.copyWith(
-                color: context.colorsV3.foregroundDefault,
+              titleStyle: context.textStyles.h4SemiBold.copyWith(
+                color: context.colors.foregroundDefault,
               ),
               customActionWidget: AppButton.close(
-                color: context.colorsV3.neutralContainerDefault,
+                color: context.colors.neutralContainerDefault,
                 onTap: context.router.popForced,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
                 padding: EdgeInsets.zero,
@@ -47,15 +48,15 @@ class FeedbackImageSelectorSheet extends HookWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
-            child: ContentWrapper(color: context.colorsV3.backgroundSurface1, children: [
-              ContentRowV2(
+            child: ContentWrapper(color: context.colors.backgroundSurface1, children: [
+              ContentRow(
                 isDividerEnabled: true,
                 onTap: () => onSelect != null
                     ? onSelect?.call(FeedbackImageSelectorType.camera)
                     : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
                 leading: AppIcons(
                   iconData: GeneralIcons.photo,
-                  color: context.colorsV3.accentDefault,
+                  color: context.colors.accentDefault,
                 ),
                 text: ContentRowTextOptions(
                   title: context.l10n.takePhoto,
@@ -65,18 +66,18 @@ class FeedbackImageSelectorSheet extends HookWidget {
                     padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                     child: AppIcons(
                       iconData: SystemIcons.arrowCornerRightLarge,
-                      color: context.colorsV3.foregroundMuted,
+                      color: context.colors.foregroundMuted,
                     ),
                   ),
                 ),
               ),
-              ContentRowV2(
+              ContentRow(
                 onTap: () => onSelect != null
                     ? onSelect?.call(FeedbackImageSelectorType.gallery)
                     : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
                 leading: AppIcons(
                   iconData: SystemIcons.images,
-                  color: context.colorsV3.accentDefault,
+                  color: context.colors.accentDefault,
                 ),
                 text: ContentRowTextOptions(
                   title: context.l10n.chooseFromGallery,
@@ -86,7 +87,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
                     padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                     child: AppIcons(
                       iconData: SystemIcons.arrowCornerRightLarge,
-                      color: context.colorsV3.foregroundMuted,
+                      color: context.colors.foregroundMuted,
                     ),
                   ),
                 ),

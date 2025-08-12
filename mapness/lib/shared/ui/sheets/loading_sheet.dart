@@ -45,8 +45,8 @@ class LoadingSheet extends StatelessWidget {
               ),
               Center(
                 child: Loading.large(
-                  color: context.colorsV2.accentDefault,
-                  backgroundColor: context.colorsV2.accentDefault.withOpacity(0.1),
+                  color: context.colors.accentDefault,
+                  backgroundColor: context.colors.accentDefault.withOpacity(0.1),
                   title: title,
                   orientation: Axis.vertical,
                   isDisplayTitle: title != null,

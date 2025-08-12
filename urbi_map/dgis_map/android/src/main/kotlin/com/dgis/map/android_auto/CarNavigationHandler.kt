@@ -3,10 +3,13 @@ package com.dgis.map.android_auto
 import androidx.car.app.model.DateTimeWithZone
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.map_api.SoundToggleType
+import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CameraAnimationType
 import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.map.StyleZoom
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.navigation.BetterRouteInfo
 import ru.dgis.sdk.navigation.BetterRouteResponse
@@ -18,6 +21,8 @@ import ru.dgis.sdk.navigation.RouteBuildOptions
 import ru.dgis.sdk.navigation.RouteInfo
 import ru.dgis.sdk.navigation.SoundCategory
 import ru.dgis.sdk.navigation.State
+import ru.dgis.sdk.navigation.SpeedRange
+import ru.dgis.sdk.navigation.SpeedRangeToStyleZoom
 import ru.dgis.sdk.navigation.duration
 import ru.dgis.sdk.navigation.getInstructionManeuver
 import ru.dgis.sdk.navigation.metersPerSecondToKilometersPerHour
@@ -33,6 +38,7 @@ import ru.dgis.sdk.routing.compareTo
 import ru.dgis.sdk.routing.meters
 import ru.dgis.sdk.routing.minus
 import ru.dgis.sdk.routing.plus
+import java.lang.Exception
 import java.util.Calendar
 import java.util.EnumSet
 import java.util.GregorianCalendar
@@ -41,8 +47,12 @@ import kotlin.math.max
 
 class CarNavigationHandler(
     private val navigationManager: NavigationManager,
-    private val searchHandler: CarSearchHandler,
     private val sharedPrefs: SharedPrefs,
+    private val searchByDirectoryObjectId: (
+        objectId: DgisObjectId,
+        resultCallback: (result: DirectoryObject?) -> Unit,
+        errorCallback: ((exception: Exception) -> Unit)?,
+    ) -> Unit,
 ) : AutoCloseable {
 
     interface NavigationListener {
@@ -115,12 +125,14 @@ class CarNavigationHandler(
 
         // Destination
         if (destination == null && state == State.NAVIGATION && routeBuildOptions != null) {
-            searchHandler.searchByDirectoryObjectId(
+            searchByDirectoryObjectId(
                 routeBuildOptions.finishPoint.objectId,
-                resultCallback = {
+                {
                     destination = it?.title
                     updateEta()
-                })
+                },
+                null,
+            )
         }
     }
 
@@ -319,6 +331,21 @@ class CarNavigationHandler(
 
     fun setNavigationVoice(voice: NavigationVoice) {
         navigationManager.voiceSelector.voice = voice
+    }
+
+    fun setupCamera() {
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence =
+            listOf(
+                SpeedRangeToStyleZoom(
+                    range = SpeedRange(
+                        minSpeed = 0.0,
+                        maxSpeed = 200.0
+                    ),
+                    minDistanceToManeuver = RouteDistance(millimeters = 0),
+                    maxDistanceToManeuver = RouteDistance(millimeters = 0),
+                    styleZoom = StyleZoom(value = 18.0f)
+                )
+            )
     }
 
     fun followNavigation() {

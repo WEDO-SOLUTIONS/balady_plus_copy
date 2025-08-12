@@ -71,7 +71,7 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
                   Text(
                     lockedDays.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
                     style: context.textStyle.footNote.copyWith(
-                      color: context.colorsV2.foregroundSoft,
+                      color: context.colors.foregroundSoft,
                     ),
                   ),
                 ],
@@ -83,7 +83,7 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Spacing.$4x),
-              color: context.colorsV2.backgroundSurface4,
+              color: context.colors.backgroundSurface4,
             ),
             padding: const EdgeInsets.symmetric(
               horizontal: Spacing.$4x,
@@ -189,7 +189,7 @@ class _SelectDayItem extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: context.colorsV2.neutralContainerActive,
+                color: context.colors.neutralContainerActive,
               ),
             ),
           ),
@@ -198,7 +198,7 @@ class _SelectDayItem extends StatelessWidget {
               Expanded(
                 child: Text(
                   dayName,
-                  style: context.textStyleV3.bodyLargeRegular,
+                  style: context.textStyles.bodyLargeRegular,
                 ),
               ),
               uikit.BaladyCheckBox(

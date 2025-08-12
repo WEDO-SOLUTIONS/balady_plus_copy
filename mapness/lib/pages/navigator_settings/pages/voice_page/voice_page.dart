@@ -18,13 +18,13 @@ class VoiceSettingsPage extends ConsumerStatefulWidget {
 class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    final colorsV2 = context.colorsV2;
+    final colors = context.colors;
     final l10n = context.l10n;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Material(
-        color: colorsV2.backgroundSurface4,
+        color: colors.backgroundSurface4,
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
@@ -32,8 +32,8 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
               appBar: BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: l10n.voice,
-                textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                  color: colorsV2.foregroundDefault,
+                textStyle: context.textStyles.bodyLargeSemiBold.copyWith(
+                  color: colors.foregroundDefault,
                 ),
                 leading: ActionModel(
                   onPressed: () => context.router.popForced(),

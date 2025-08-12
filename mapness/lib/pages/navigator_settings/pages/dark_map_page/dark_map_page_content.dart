@@ -38,7 +38,7 @@ class DarkMapPageContent extends ConsumerWidget {
             ),
           ),
           ContentWrapper(
-            color: context.colorsV2.backgroundSurface1,
+            color: context.colors.backgroundSurface1,
             children: DarkMapStateEnum.values
                 .map<Widget>(
                   (e) => DarkMapModeRowWidget(
@@ -48,7 +48,7 @@ class DarkMapPageContent extends ConsumerWidget {
                 .insertBetween(
                   Divider(
                     height: 0.5,
-                    color: context.colorsV2.borderSoft,
+                    color: context.colors.borderSoft,
                     thickness: 1,
                     indent: Spacing.$4x,
                     endIndent: 0,

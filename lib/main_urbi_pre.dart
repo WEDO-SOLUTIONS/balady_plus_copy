@@ -13,15 +13,14 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  await runMapnessApp(() async {
+  await runMapnessApp(EnvType.urbiPre, () async {
     AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
     await AppEnv.setupEnv(EnvType.urbiPre);
     await setupMapness(EnvType.urbiPre);
 
     await SentryFlutter.init(
-      (options) {
-        options.dsn =
-            'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
+          (options) {
+        options.dsn = 'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
         // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
         // We recommend adjusting this value in production.
         options.tracesSampleRate = 1.0;
@@ -42,6 +41,10 @@ void main() async {
         // options.captureFailedRequests = true;
         options.environment = EnvType.stg.name;
 
+
+
+
+
         // Performance Monitoring
         options.tracesSampleRate = 1.0; // 100% sampling for development
         // options.tracesSampleRate = 0.1; // 10% sampling for production
@@ -53,6 +56,7 @@ void main() async {
         options.enableAutoPerformanceTracing = true;
         options.enableUserInteractionTracing = true;
         options.enableAppHangTracking = true;
+
 
         // Session Tracking
         options.enableAutoSessionTracking = true;
@@ -69,6 +73,7 @@ void main() async {
 
         // Additional Performance Settings
         options.enableTimeToFullDisplayTracing = true;
+
       },
       appRunner: () =>
           runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),

@@ -58,7 +58,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
               onPressed: () => context.router.popForced(),
             ),
           ),
-          backgroundColor: context.colorsV3.backgroundSurface4,
+          backgroundColor: context.colors.backgroundSurface4,
           body: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: Spacing.$4x,
@@ -73,7 +73,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
                     child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: context.colorsV3.backgroundSurface2,
+                          color: context.colors.backgroundSurface2,
                         ),
                         alignment: Alignment.center,
                         child: Column(
@@ -84,7 +84,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
                                 context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                                 textAlign: TextAlign.center,
                                 style: context.textStyle.text.copyWith(
-                                  color: context.colorsV3.foregroundDefault,
+                                  color: context.colors.foregroundDefault,
                                 ),
                               ),
                             ),
@@ -116,7 +116,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
                     return Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                        color: context.colorsV3.backgroundSurface2,
+                        color: context.colors.backgroundSurface2,
                         borderRadius: BorderRadius.vertical(
                           top: index == 0 ? radius : Radius.zero,
                           bottom: index == allFav.length - 1 ? radius : Radius.zero,
@@ -128,7 +128,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
                         isSelected: false,
                         isEditing: false,
                         icon: SystemIcons.bookmark.icon(
-                          color: context.colorsV3.foregroundMuted,
+                          color: context.colors.foregroundMuted,
                         ),
                         key: ValueKey(item.id),
                         isFirst: index == 0,

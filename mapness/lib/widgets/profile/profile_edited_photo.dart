@@ -29,11 +29,11 @@ class ProfileEditablePhoto extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   // TODO: Change to background screen
-                  color: context.colorsV3.staticWhite,
+                  color: context.colors.staticWhite,
                 ),
                 child: Center(
                   child: General16Icons.edit.icon(
-                    color: context.colorsV3.foregroundMuted,
+                    color: context.colors.foregroundMuted,
                     size: AppSizes.$4xs,
                   ),
                 ),

@@ -19,7 +19,7 @@ class SearchHandler: NSObject {
     
     private let jsonDecoder = JSONDecoder()
         
-    private static let saRestrictions = [
+    static let saRestrictions = [
         GeoPoint(latitude: 32.568765, longitude: 56.694472),
         GeoPoint(latitude: 32.568765, longitude: 32.61185),
         GeoPoint(latitude: 15.506104, longitude: 32.61185),

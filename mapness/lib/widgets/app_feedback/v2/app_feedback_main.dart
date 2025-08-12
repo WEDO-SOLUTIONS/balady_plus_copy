@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
@@ -78,8 +79,8 @@ class AppFeedbackMain extends HookConsumerWidget {
                 ? context.l10n.appFeedbackNavigationExperience
                 : context.l10n.appFeedbackAppExperience,
             textAlign: TextAlign.center,
-            style: context.textStyleV3.h3SemiBold.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            style: context.textStyles.h3SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
             ),
           ),
         ),
@@ -101,8 +102,8 @@ class AppFeedbackMain extends HookConsumerWidget {
               _ratingText(context.l10n, rating.value),
               textAlign: TextAlign.center,
               maxLines: 1,
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundSoft,
+              style: context.textStyles.bodyLargeRegular.copyWith(
+                color: context.colors.foregroundSoft,
               ),
             ),
           ),
@@ -144,6 +145,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                     controller: feedbackTextController,
                     config: BaladyInputConfig(
                       hintText: context.l10n.appFeedbackHintText,
+                      background: BaladyInputBackground.color,
                       maxLines: 4,
                       isDisposed: false,
                       onChanged: (_) {},
@@ -161,11 +163,13 @@ class AppFeedbackMain extends HookConsumerWidget {
               valueListenable: rating,
               builder: (context, ratingValue, _) {
                 final canSend = ratingValue > 0;
-                final buttonState = !canSend ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
+                final buttonState = !canSend ? ButtonState.disabled : ButtonState.defaultState;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    buttonColorScheme: buttonState,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonState: buttonState,
+                    size: ButtonSize.large,
                     onTap: !canSend
                         ? null
                         : () async {
@@ -178,15 +182,33 @@ class AppFeedbackMain extends HookConsumerWidget {
                               text: text.isEmpty ? null : feedbackTextController.text,
                               source: source,
                             );
+                            openInAppReviewRating(ratingValue);
                           },
                     primaryLabel: context.l10n.appFeedbackSubmitButton,
                   ),
                 );
               }),
         ),
-        const SizedBox(height: Spacing.$8x),
+        const SizedBox(height: Spacing.$4x),
       ],
     );
+  }
+
+
+  void openInAppReviewRating (ratingValue) async {
+    if(ratingValue > 3) {
+      final InAppReview inAppReview = InAppReview.instance;
+      try {
+        final available = await inAppReview.isAvailable();
+        if (available) {
+          await inAppReview.requestReview();
+        } else {
+          // await inAppReview.openStoreListing();
+        }
+      } catch (e) {
+        // await inAppReview.openStoreListing();
+      }
+    }
   }
 
   String _ratingText(AppLocalizations l10n, int rating) => switch (rating) {

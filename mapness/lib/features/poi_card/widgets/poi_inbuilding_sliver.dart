@@ -182,7 +182,7 @@ class OrganizationWidget extends StatelessWidget {
             title: item.title,
             subtitle: item.rubricsNames,
             subtitleExtra: item.addressComment,
-            titleStyle: context.textStyleV3.bodyLargeSemiBold,
+            titleStyle: context.textStyles.bodyLargeSemiBold,
           ),
         ),
       );

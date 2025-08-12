@@ -21,7 +21,7 @@ class HajjPoiHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ColoredBox(
-        color: context.colorsV2.backgroundSurface2,
+        color: context.colors.backgroundSurface2,
         child: Padding(
           padding: const EdgeInsets.only(
             left: Spacing.$4x,
@@ -82,7 +82,7 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
             ContentRow(
               options: ContentRowOptions(
                 subtitle: poiMarkerRcmc.address,
-                subtitleStyle: context.textStyleV3.bodyLargeRegular,
+                subtitleStyle: context.textStyles.bodyLargeRegular,
                 padding: const EdgeInsets.only(bottom: Spacing.$0_5x),
                 subtitleMaxlines: 1,
                 crossAxisAlignment: CrossAxisAlignment.start,

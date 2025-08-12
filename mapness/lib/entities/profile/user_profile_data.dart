@@ -50,8 +50,7 @@ extension LocalizedName on SsoUserInfo {
     return lastName;
   }
 
-  String getLocalizedFirstAndLastName(Language lang) =>
-      '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
+  String getLocalizedFirstAndLastName(Language lang) => '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
 
   String getLocalizedAbbreviatedName(Language lang) {
     final firstName = getLocalizedFirstName(lang);

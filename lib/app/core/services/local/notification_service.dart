@@ -13,6 +13,7 @@ import 'navigation_services.dart';
 
 /// A notification action which triggers a App navigation event
 String navigationActionId = 'id_3';
+
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // ignore: avoid_//print
@@ -25,22 +26,19 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
     //  'notification action tapped with input: ${notificationResponse.input}');
   }
 }
+
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-
   if (message.data['source'] == 'Insider') {
     FlutterInsider.Instance.handleNotification(
-        <String, dynamic>{
-          "data": message.data
-        }
-    );
+        <String, dynamic>{"data": message.data});
   }
 }
 
 class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
   static final StreamController<String?> selectNotificationStream =
-  StreamController<String?>.broadcast();
+      StreamController<String?>.broadcast();
 
   static init({bool initScheduled = false}) async {
     const android = AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -84,13 +82,12 @@ class NotificationService {
     );
   }
 
-
   static Future<void> showScheduledNotification(
       {int id = 0,
-        String? title,
-        String? body,
-        String? payload,
-        required DateTime scheduledDate}) async {
+      String? title,
+      String? body,
+      String? payload,
+      required DateTime scheduledDate}) async {
     if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
       _notifications.zonedSchedule(
         id,
@@ -101,7 +98,7 @@ class NotificationService {
         payload: payload,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
+            UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
   }
@@ -124,7 +121,6 @@ class NotificationService {
     }
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
-
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: true,
@@ -134,6 +130,7 @@ class NotificationService {
 
     Future.delayed(const Duration(seconds: 15), () {
       FirebaseMessaging.instance.getToken().then((value) {
+        print("FMC Token : $value");
         if (value != null && value.isNotEmpty) {
           CommonProperties.fcmToken = value;
           CommonFunctions.updateNotificationSettings(value);
@@ -149,18 +146,24 @@ class NotificationService {
         throw 'Could not launch $url';
       }
     }
+
     void handleMessage(RemoteMessage message) {
-      print("open notication clciked");
       if (message.data.containsKey('url')) {
-        final url = message.data['url'];
-        launchURL(url);
         return;
       }
-      Future.delayed(const Duration(seconds: 2), () {
-        NavigationService.pushNamed(routeName: RouteName.notificationsListScreen);
-      });
-
+      Future.delayed(
+        const Duration(seconds: 2),
+            () {
+          // Open notifications List Screen  if user is login and have the idNo
+          if(CommonProperties.userInfo?.idNo != null) {
+            NavigationService.pushNamed(
+              routeName: RouteName.notificationsListScreen,
+            );
+          }
+        },
+      );
     }
+
     // FirebaseMessaging.instance.subscribeToTopic("all").then((value) {});
     FirebaseMessaging.instance
         .getInitialMessage()
@@ -172,63 +175,36 @@ class NotificationService {
       }
     });
 
-
-
-
     // Register Background Handler
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-
       if (message.data['source'] == 'Insider') {
         FlutterInsider.Instance.handleNotification(
-            <String, dynamic>{
-              "data": message.data
-            }
-        );
-      }
-      else
-        {
-
+            <String, dynamic>{"data": message.data});
+      } else {
         RemoteNotification? notification = message.notification;
 
         AndroidNotification? android = message.notification?.android;
 
         if (notification != null && android != null) {
-
           _notifications.show(
-
               notification.hashCode,
-
               notification.title,
-
               notification.body,
-
               NotificationDetails(
-
                 android: AndroidNotificationDetails(
-
                   CommonFunctions.generateUUID(),
-
                   "Notification",
-
                   channelDescription: "Notification",
                   playSound: true,
                   icon: 'mipmap/ic_launcher',
-
                 ),
-
               ));
-
         }
-
-
-    }
-
-  });
+      }
+    });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       handleMessage(message);
     });
-
-
   }
 }

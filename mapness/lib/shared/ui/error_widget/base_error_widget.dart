@@ -58,8 +58,7 @@ class BaseErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
 
-    return Material(
-      color: Colors.white,
+    return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.only(
@@ -78,7 +77,7 @@ class BaseErrorWidget extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: Spacing.$2x, top: Spacing.$1x),
                   child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.tertiary,
+                    buttonColorScheme: ButtonColorScheme.neutral,
                     primaryIcon: SystemIcons.close,
                     onTap: onClose,
                   ),
@@ -96,8 +95,8 @@ class BaseErrorWidget extends StatelessWidget {
                 child: Text(
                   errorTitle!,
                   textAlign: TextAlign.center,
-                  style: context.textStyleV3.h3SemiBold.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  style: context.textStyles.h3SemiBold.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                 ),
               )
@@ -108,8 +107,8 @@ class BaseErrorWidget extends StatelessWidget {
               child: Text(
                 errorText,
                 textAlign: TextAlign.center,
-                style: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: errorTitle != null ? context.colorsV2.foregroundSoft : context.colorsV2.foregroundDefault,
+                style: context.textStyles.bodyLargeRegular.copyWith(
+                  color: errorTitle != null ? context.colors.foregroundSoft : context.colors.foregroundDefault,
                 ),
               ),
             ),
@@ -118,10 +117,10 @@ class BaseErrorWidget extends StatelessWidget {
                 top: false,
                 child: Padding(
                   padding: const EdgeInsets.only(top: Spacing.$6x),
-                  child: BaladyAppButton(
+                  child: AppButton(
                     onTap: onRetry,
-                    buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                    size: BaladyButtonSize.large,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    size: ButtonSize.large,
                     primaryLabel: buttonLabel ?? context.l10n.tryAgain,
                   ),
                 ),

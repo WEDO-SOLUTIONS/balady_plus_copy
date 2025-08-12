@@ -5,7 +5,13 @@ class UserDefaultsPublished {
     private let userDefaults = UserDefaults.standard
 
     @Published var languageString: String?
-    
+
+    var language: Language {
+        Language(
+            rawValue: languageString ?? "ar"
+        ) ?? Language.ar
+    }
+
     // CarPlay Settings Keys
     private enum CarPlaySettingsKeys {
         static let parkingEnabled = "carplay.parking.enabled"
@@ -30,7 +36,6 @@ class UserDefaultsPublished {
     
     @objc private func userDefaultsDidChangeNotification() {
         if userDefaults.languageString != languageString {
-            Bundle.syncLanguage()
             languageString = userDefaults.languageString
         }
     }

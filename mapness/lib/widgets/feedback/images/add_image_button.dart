@@ -22,11 +22,11 @@ class AddImageButton extends StatelessWidget {
             height: size,
             width: size,
             child: ColoredBox(
-              color: context.colorsV2.backgroundSurface1,
+              color: context.colors.backgroundSurface1,
               child: Center(
                 child: Icon(
                   GeneralIcons.photo,
-                  color: context.colorsV2.accentDefault,
+                  color: context.colors.accentDefault,
                   size: size * .4,
                 ),
               ),

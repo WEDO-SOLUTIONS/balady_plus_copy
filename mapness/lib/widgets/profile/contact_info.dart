@@ -69,7 +69,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
   Widget build(BuildContext context) => Column(
         children: [
           ContentWrapper(color: context.color.surfaceBaseSecondary, children: [
-            ContentRowV2(
+            ContentRow(
               onTap: () => CommonFunctions.launch('https://twitter.com/Balady_saudi'),
               leading: AppIcons(
                 iconData: SocialIcons.twitter,
@@ -84,7 +84,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                 icon: SystemIcons.arrowCornerRightLarge,
               ),
             ),
-            ContentRowV2(
+            ContentRow(
               leading: AppIcons(
                 iconData: switch (Directionality.of(context)) {
                   TextDirection.ltr => GeneralIcons.phoneLTR,
@@ -100,7 +100,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
             ),
             AnimatedBuilder(
               animation: _animationController,
-              builder: (_, __) => ContentRowV2(
+              builder: (_, __) => ContentRow(
                 onTap: () => CommonFunctions.email(momrahEmail),
                 leading: AppIcons(
                   iconData: GeneralIcons.mail,

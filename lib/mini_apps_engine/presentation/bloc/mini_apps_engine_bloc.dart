@@ -48,6 +48,7 @@ class MiniAppsEngineBloc
       emit(
         MiniAppsEngineLoadedState(
           servicePath: event.miniApp.latestVersion!.serviceUrl!,
+          path: event.miniApp.path ?? "",
         ),
       );
     } else {
@@ -169,7 +170,9 @@ class MiniAppsEngineBloc
         "http://localhost:${localhostServer!.port}",
       );
 
-      emit(MiniAppsEngineLoadedState(servicePath: servicePath));
+      emit(MiniAppsEngineLoadedState(
+          servicePath: servicePath, path: event.miniApp.path??""));
+
     } catch (e) {
       print(e.toString());
     }
@@ -186,7 +189,6 @@ class MiniAppsEngineBloc
     try {
       Response response = await webService.dio.get(
         urlDownload,
-        // "https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=f6f2f357-7c5e-476b-aeed-aaf72b283264&at=AN8xHopEyCm07QgbfLvkLMHP6vm2:1751807713656",
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(

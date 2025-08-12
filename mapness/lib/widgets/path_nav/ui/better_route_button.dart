@@ -45,7 +45,7 @@ class BetterRouteButton extends StatelessWidget {
                     ),
                   ),
                   AppButton(
-                    buttonColorScheme: ButtonColorScheme.primary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                     size: ButtonSize.small,
                     trailing: SvgPicture.asset(
                       Assets.icons.svg.icClose.keyName,

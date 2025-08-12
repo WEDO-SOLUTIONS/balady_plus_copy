@@ -1,5 +1,4 @@
 import CarPlay
-import Combine
 import DGis
 
 extension CPTemplate {
@@ -16,36 +15,25 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
     private let interfaceController: CPInterfaceController
     private let searchHistory: SearchHistory
     private let searchNavigation: SearchNavigation
-    private let userDefaultsPublished: UserDefaultsPublished
 
     init(
         interfaceController: CPInterfaceController,
         searchHistory: SearchHistory,
-        searchNavigation: SearchNavigation,
-        userDefaultsPublished: UserDefaultsPublished
+        searchNavigation: SearchNavigation
     ) {
         self.interfaceController = interfaceController
         self.searchHistory = searchHistory
         self.searchNavigation = searchNavigation
-        self.userDefaultsPublished = userDefaultsPublished
-    }
-
-    deinit {
-        languageCancellable?.cancel()
-        languageCancellable = nil
     }
 
     private let listTemplate = CPListTemplate(title: nil, sections: [])
     private var searchHistoryCancellable: DGis.Cancellable?
-    private var languageCancellable: Combine.AnyCancellable?
     private var showEmptyPlaceHolder = false
 
     func createTemplate() -> CPListTemplate {
         loadHistory()
-
-        languageCancellable = userDefaultsPublished.$languageString.sink { _ in
-            self.buildViews()
-        }
+        
+        buildViews()
 
         return listTemplate
     }
@@ -90,41 +78,6 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
         listTemplate.updateSections([section])
     }
 
-    private func addressToString(_ address: Address?) -> String {
-        guard let address = address else { return "" }
-
-        let delimiter = ", "
-
-        let addressComponents = address.components.reduce("") {
-            partial, addressComponent in
-            let componentString =
-                switch addressComponent {
-                case .streetAddress(let addressStreet):
-                    addressStreet.number + delimiter + addressStreet.street
-                case .number(let number):
-                    number.number
-                case .location(let location):
-                    location.comment
-                @unknown default:
-                    ""
-                }
-            return partial + componentString + delimiter
-        }
-
-        let drillDownTypes: Set = ["city", "district"]
-
-        let drillDown = address.drillDown.filter {
-            addressAdmDiv in drillDownTypes.contains(addressAdmDiv.type)
-        }.reduce("") {
-            partial, addressAdmDiv in partial + addressAdmDiv.name + delimiter
-        }
-
-        let result = addressComponents + drillDown
-
-        return result.hasSuffix(delimiter)
-            ? String(result.dropLast(delimiter.count)) : result
-    }
-
     private func mapCPListItem(searchHistoryItem: SearchHistoryItem)
         -> CPListItem
     {
@@ -133,7 +86,7 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
             case .directoryObject(let directoryObject):
                 CPListItem(
                     text: directoryObject.title,
-                    detailText: addressToString(directoryObject.address)
+                    detailText: directoryObject.addressString
                 )
             case .searchQuery(let searchQuery):
                 CPListItem(
