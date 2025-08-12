@@ -1,11 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_working_time.dart';
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/features/poi_card/extensions/week_day_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 extension OpeningHoursMessageExt on OpeningHoursMessage {
   List<OpenHours> getDisplayOpenHours(
@@ -45,7 +45,7 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
       });
       return allWeekDays.toList();
     } catch (e) {
-      debugPrint('OPEN TIME EXCEPTION: $e');
+      logger.log('OPEN TIME EXCEPTION: $e', logLevel: MapnessLogLevel.critical);
       return <OpenHours>[];
     }
   }

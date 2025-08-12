@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,7 +14,7 @@ part 'feedback_dio.g.dart';
 /// for the feedback API endpoint.
 ///
 /// Returns a [Future<Dio>] configured for feedback operations.
-Future<Dio> feedbackDio(AutoDisposeFutureProviderRef ref) async {
+Future<Dio> feedbackDio(Ref ref) async {
   final baseDio = await ref.watch(dGisHttpService.future);
   final env = await ref.watch(dgisEnvironmentProvider.future);
 

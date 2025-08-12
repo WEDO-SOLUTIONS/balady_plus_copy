@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/feedback/dto/feedback_category_dto.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/feedback/feedback_dio.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'feedback_categories.g.dart';
@@ -39,10 +38,7 @@ Future<List<FeedbackCategoryDto>> _loadFromBackend(
     final response = await dio.get('/discrepancy/${objectType.name}/categories');
     return FeedbackCategoryDto.parseList(response.data);
   } catch (e, stackTrace) {
-    log(
-      e.toString(),
-      stackTrace: stackTrace,
-    );
+    logger.log('Failed to load feedback categories ${e.toString()}, ${stackTrace.toString()}');
   }
   return [];
 }

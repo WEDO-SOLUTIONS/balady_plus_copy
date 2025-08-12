@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mapness/features/lifestyle_layers/models/building_compliance_certificate.dart';
 import 'package:mapness/features/lifestyle_layers/models/investment_sites.dart';
 import 'package:mapness/features/lifestyle_layers/models/map_requests_params.dart';
 import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
 import 'package:mapness/features/lifestyle_layers/providers/data/lifestyle_datasource.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'lifestyle_repository.g.dart';
@@ -37,7 +37,7 @@ class LifestyleRepository extends _$LifestyleRepository {
 
       return buildingComplianceCertificateFromJson(response ?? []);
     } catch (e) {
-      debugPrint('$e');
+      logger.log('$e', logLevel: MapnessLogLevel.critical);
       return [];
     }
   }
@@ -51,7 +51,7 @@ class LifestyleRepository extends _$LifestyleRepository {
 
       return whiteLandsFromJson(response ?? []);
     } catch (e) {
-      debugPrint('$e');
+      logger.log('$e', logLevel: MapnessLogLevel.critical);
       return [];
     }
   }

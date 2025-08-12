@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:balady_plus/app/core/utils/constants/apis/api_headers.dart';
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/weather/weather_params.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 abstract class WeatherRemoteDataSource {
   factory WeatherRemoteDataSource({
@@ -54,9 +54,9 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
       unawaited(mixpanel?.track('WebServiceWeather: getCurrentWeatherData'));
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      log('WEATHER API DioException $e');
+      logger.log('WEATHER API DioException $e', logLevel: MapnessLogLevel.critical);
     } catch (e) {
-      log('WEATHER API EXCEPTION $e');
+      logger.log('WEATHER API EXCEPTION $e', logLevel: MapnessLogLevel.critical);
     }
     return null;
   }
@@ -86,9 +86,9 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
       unawaited(mixpanel?.track('WebServiceWeather: getForecastData'));
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
-      log('WEATHER API DioException $e');
+      logger.log('WEATHER API DioException $e', logLevel: MapnessLogLevel.critical);
     } catch (e) {
-      log('WEATHER API EXCEPTION $e');
+      logger.log('WEATHER API EXCEPTION $e', logLevel: MapnessLogLevel.critical);
     }
     unawaited(mixpanel?.track('WebServiceWeather: getForecastData'));
     return null;

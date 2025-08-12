@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/remote_config_constants.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 class AppConfigLoader {
   AppConfigLoader._();
@@ -49,7 +50,7 @@ class AppConfigLoader {
       _config!.complete(remoteConfig);
     } catch (e) {
       /// If an error occurs, reset the config and print the error to debug output
-      debugPrint('$e');
+      logger.log('Error initializing Firebase Remote Config: ${e.toString()}');
       _config!.complete();
     }
 

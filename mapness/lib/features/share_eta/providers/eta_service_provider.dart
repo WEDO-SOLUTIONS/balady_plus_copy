@@ -4,8 +4,10 @@ import 'package:mapness/features/share_eta/models/eta_stream_info.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:urbi_analytics/logger.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
 part 'eta_service_provider.g.dart';
 
@@ -35,6 +37,15 @@ class EtaService extends _$EtaService {
     _baseUrl = env.shareEtaApi;
 
     _dio = Dio();
+    _dio!.interceptors.add(
+      TalkerDioLogger(
+        settings: const TalkerDioLoggerSettings(
+          printRequestHeaders: true,
+          printResponseHeaders: true,
+          printResponseData: false,
+        ),
+      ),
+    );
 
     if (_dio != null && token.isNotEmpty) {
       _dio!.options.headers[authorizationKey] = 'Bearer $token';
@@ -141,7 +152,7 @@ class EtaService extends _$EtaService {
         throw Exception('Failed to update ETA stream');
       }
     } catch (e) {
-      log('Error: $e');
+      logger.log('Update ETA stream error: $e', logLevel: MapnessLogLevel.critical);
 
       rethrow;
     }

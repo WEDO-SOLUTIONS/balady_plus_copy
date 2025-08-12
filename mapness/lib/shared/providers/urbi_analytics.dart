@@ -1,3 +1,4 @@
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:urbi_analytics/analytics.dart' show Analytics;
 import 'package:urbi_analytics/client.dart';
@@ -15,8 +16,7 @@ class UrbiAnalytics extends _$UrbiAnalytics {
   Analytics build() => analyticsClient;
 
   Future<void> trackWithPrint(String event, {Map<String, dynamic>? properties}) async {
-    // ignore: avoid_print
-    print('event: $event');
+    logger.log(event);
     await state.track(event, properties: properties);
   }
 }

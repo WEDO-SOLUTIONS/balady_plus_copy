@@ -28,9 +28,9 @@ import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:urbi_analytics/logger.dart';
 
 part 'share_eta_provider.g.dart';
 
@@ -132,7 +132,7 @@ class ShareEta extends _$ShareEta {
                 ),
               );
             } catch (e) {
-              log(e.toString());
+              logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
             }
           } else {
             // If location lost, set error status to 4002
@@ -283,7 +283,7 @@ class ShareEta extends _$ShareEta {
       EtaStreamStorage().setDurationInMinutes(durationInMinutes);
       await etaService.startEtaStream(payload);
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
     }
@@ -306,7 +306,7 @@ class ShareEta extends _$ShareEta {
 
       await etaService.startEtaStream(payload);
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
     }
@@ -339,7 +339,7 @@ class ShareEta extends _$ShareEta {
       await EtaWebsocket().stop();
       await etaService.stopEtaStream(tokenId, xStreamData);
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
       EtaWebsocket().removeConnectionLostListener(_onErrorStatus);
       if (clearStateStorage) {
@@ -361,7 +361,7 @@ class ShareEta extends _$ShareEta {
       );
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
       ref.read(websocketTypeProvider.notifier).setType(type: SubscriptionType.share);
     }

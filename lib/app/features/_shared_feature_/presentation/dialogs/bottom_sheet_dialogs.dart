@@ -16,8 +16,7 @@ class BottomSheetDialog {
       bool isScrollControlled = true,
       bool enableDrag = true,
       String? currentRouteName,
-      String? dialogKeyName}) async
-  {
+      String? dialogKeyName}) async {
     final screenHeight = context.screenHeight;
     final screenStatusBarHeight = context.topPadding + 20.0;
 
@@ -31,19 +30,15 @@ class BottomSheetDialog {
           backgroundColor: Colors.transparent,
           barrierColor: barrierColor,
           shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(borderRadius)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadius)),
           ),
           builder: (context) => Padding(
             padding: EdgeInsets.only(top: screenStatusBarHeight),
             child: ClipRRect(
-              borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(borderRadius)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadius)),
               child: SizedBox(
                 // height: height ?? screenHeight * 0.90, // 90% from screenHeight
-                height: isFullHeight
-                    ? screenHeight - screenStatusBarHeight
-                    : height,
+                height: isFullHeight ? screenHeight - screenStatusBarHeight : height,
                 child: child,
               ),
             ),
@@ -51,8 +46,7 @@ class BottomSheetDialog {
         )) ??
         false;
 
-    if (currentRouteName != null)
-      await FlutterUxcam.tagScreenName(currentRouteName);
+    if (currentRouteName != null) await FlutterUxcam.tagScreenName(currentRouteName);
 
     return value;
   }
@@ -101,15 +95,13 @@ class BottomSheetDialog {
           backgroundColor: backgroundColor,
           barrierColor: barrierColor,
           shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.vertical(top: Radius.circular(borderRadius)),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadius)),
           ),
           builder: (context) => Padding(
             padding: MediaQuery.of(context).viewInsets,
             child: SizedBox(
               // height: height ?? screenHeight * 0.90, // 90% from screenHeight
-              height:
-                  isFullHeight ? screenHeight - screenStatusBarHeight : height,
+              height: isFullHeight ? screenHeight - screenStatusBarHeight : height,
               child: child,
             ),
           ),
