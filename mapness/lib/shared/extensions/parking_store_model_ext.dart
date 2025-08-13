@@ -9,7 +9,7 @@ extension ParkingStoreModelExt on ParkingStoreModel {
         types: [],
         title: context.l10n.yourParkingSpot,
         titleAddition: '',
-        subtitle: 'Disappears in 24 h',
+        subtitle: context.l10n.disappearsIn24H,
         about: '',
         attributes: [],
         contextAttributes: [],

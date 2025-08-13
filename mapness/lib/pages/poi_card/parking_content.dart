@@ -20,7 +20,7 @@ class ParkingContent extends ConsumerWidget {
       child: Column(
         children: [
           ContentWrapper(
-            color: context.color.surfaceBasePrimary,
+            color: context.colors.backgroundSurface1,
             children: [
               ContentRowV2(
                 text: ContentRowTextOptions(
