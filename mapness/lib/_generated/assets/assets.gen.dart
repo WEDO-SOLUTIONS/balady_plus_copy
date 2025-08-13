@@ -345,8 +345,11 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_notification.svg
   SvgGenImage get icNotification => const SvgGenImage('assets/icons/svg/ic_notification.svg');
 
-  /// File path: assets/icons/svg/ic_offer_pin.svg
-  SvgGenImage get icOfferPin => const SvgGenImage('assets/icons/svg/ic_offer_pin.svg');
+  /// File path: assets/icons/svg/ic_offer_marker.svg
+  SvgGenImage get icOfferMarker => const SvgGenImage('assets/icons/svg/ic_offer_marker.svg');
+
+  /// File path: assets/icons/svg/ic_offers_clustering_marker.svg
+  SvgGenImage get icOffersClusteringMarker => const SvgGenImage('assets/icons/svg/ic_offers_clustering_marker.svg');
 
   /// File path: assets/icons/svg/ic_parking_spot.svg
   SvgGenImage get icParkingSpot => const SvgGenImage('assets/icons/svg/ic_parking_spot.svg');
@@ -478,7 +481,8 @@ class $AssetsIconsSvgGen {
         icMarkerMNew,
         icMetroMarker,
         icNotification,
-        icOfferPin,
+        icOfferMarker,
+        icOffersClusteringMarker,
         icParkingSpot,
         icPhone,
         icPinNew,

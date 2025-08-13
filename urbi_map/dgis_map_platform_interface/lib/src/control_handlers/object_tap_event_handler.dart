@@ -36,8 +36,8 @@ class ObjectTapEventHandler {
     clusterHandlers.remove(id);
   }
 
-  void addClusterRenderer(String id, ClusterRenderer onTap) {
-    clusterRenderers[id] = onTap;
+  void addClusterRenderer(String id, ClusterRenderer render) {
+    clusterRenderers[id] = render;
   }
 
   void removeClusterRenderer(String id) {

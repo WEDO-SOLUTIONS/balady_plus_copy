@@ -123,7 +123,7 @@ class ClusteringMapObjectManager {
   final SimpleClusterOptionsMessage Function(int objectCount) renderCluster;
 
   /// Map render object's onTap handler
-  final Future<void> Function(SimpleClusterObject)? onTap;
+  final FutureOr<void> Function(SimpleClusterObject)? onTap;
 }
 
 /// Model corresponds render object on map
