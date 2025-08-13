@@ -57,15 +57,7 @@ abstract class CarMapScreen(carContext: CarContext, private val mapController: C
 
     val settingsAction =
         Action.Builder()
-            .setIcon(
-                CarIcon.Builder(
-                    IconCompat.createWithResource(
-                        carContext,
-                        R.drawable.settings
-                    )
-                )
-                    .build()
-            )
+            .setIcon(buildCarIcon(R.drawable.settings))
             .setOnClickListener {
                 screenManager.push(SettingsScreen(carContext, mapController))
             }
