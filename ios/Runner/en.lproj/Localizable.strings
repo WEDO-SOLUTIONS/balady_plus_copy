@@ -7,6 +7,9 @@
 "tripPreviewStartButton" = "Start";
 "tripPreviewMoreRoutesButton" = "Route Options";
 "tripPreviewBackButton" = "Back";
+"tripFinishedAlertTitle" = "You arrived";
+"tripFinishedAlertEndTripButton" = "End trip";
+"tripFinishedAlertNewRouteButton" = "New route";
 "searchScreenGridHistory" = "History";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "Nothing was found";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "Try changing your query a little";

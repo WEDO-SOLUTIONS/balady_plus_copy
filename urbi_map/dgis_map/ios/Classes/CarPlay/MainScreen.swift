@@ -151,7 +151,11 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         case .routeSearch:
             navigationSessionManeuvers.routeSearch()
         case .finished:
-            navigationSessionManeuvers.finish()
+            let alert = ArrivedNavigationAlert(
+                mainScreen: self,
+                navigationSessionManeuvers: navigationSessionManeuvers
+            ).create()
+            mapTemplate.present(navigationAlert: alert, animated: true)
         @unknown default:
             break
         }
@@ -179,6 +183,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func onSearchBarTap(_: CPBarButton) {
+        showSearchScreen()
+    }
+
+    func showSearchScreen() {
         let screen = SearchScreen(
             interfaceController: interfaceController,
             map: map,
@@ -240,6 +248,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func onFinishBarTap(_: CPBarButton) {
         navigationManager.stop()
+        navigationSessionManeuvers.finish()
     }
 
     private func onCancelBarTap(_: CPBarButton) {
@@ -653,9 +662,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let closeTitle = NSLocalizedString(
             "betterRouteDialogCloseButton", comment: ""
         )
-
-        // TODO CPAlertAction color behave weirdly, not found straight documentation howto get results as in our design
-        let hasFoundColorIssue = false
 
         let startButton =
             if hasFoundColorIssue, #available(iOS 16.0, *) {
