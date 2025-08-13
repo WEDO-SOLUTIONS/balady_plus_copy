@@ -95,10 +95,14 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             ),
           ),
         ),
-        backgroundColorDelegate: StatefulSheetDelegateFunction(function: (controller) {
+        backgroundColorDelegate: StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
           final state = controller.state;
+
           if (state == ThreeStateBottomSheet.expanded) {
             return Colors.black.withOpacity(.4);
+          }
+          if (state == ThreeStateBottomSheet.open) {
+            return Colors.black.withOpacity(.4 * controller.interpolation);
           }
           return null;
         }),

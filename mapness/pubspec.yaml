@@ -138,7 +138,11 @@ dependencies:
   firebase_remote_config: 5.1.5
 
   easy_image_viewer: 1.5.1
-  talker_dio_logger: 4.5.2
+  talker_dio_logger: 4.4.1
+
+  # Talker logging and error handling
+  talker: 4.4.1
+  talker_flutter: 4.4.1
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
@@ -18,6 +17,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'favourite_cache.g.dart';
@@ -249,7 +249,7 @@ class _FavouriteCache extends _$FavouriteCache {
         await favoritesBox.delete(_keyDeleteSync);
       }
     } on Exception catch (_) {
-      debugPrint('Delete sync failed');
+      logger.log('Delete sync failed', logLevel: MapnessLogLevel.critical);
     }
 
     try {
@@ -265,7 +265,7 @@ class _FavouriteCache extends _$FavouriteCache {
         await favoritesBox.delete(_keyAddSync);
       }
     } on Exception catch (_) {
-      debugPrint('Add sync failed');
+      logger.log('Add sync failed', logLevel: MapnessLogLevel.critical);
     }
   }
 
@@ -332,7 +332,8 @@ class _FavouriteCache extends _$FavouriteCache {
       final newState = proto.FavouritesResponse.fromBuffer(raw.data as List<int>).toDomain();
       await _updateState(newState);
     } on DioException catch (e) {
-      debugPrint(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString());
+      logger.log(proto.ErrorResponse.fromBuffer(e.response!.data as List<int>).toString(),
+          logLevel: MapnessLogLevel.critical);
     }
     await mixpanel?.track('Favorites: addItems');
   }
@@ -379,7 +380,7 @@ class _FavouriteCache extends _$FavouriteCache {
         return apiData;
       }
     } on Exception catch (e) {
-      debugPrint(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     }
 
     final cache = favoritesBox.get(_keyCache, defaultValue: FavoriteCacheState()) as FavoriteCacheState?;

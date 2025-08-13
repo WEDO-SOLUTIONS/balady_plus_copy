@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 import 'package:mapness/features/poi_card/data/qr_license_service.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 abstract class QrLicenseDataSource {
   factory QrLicenseDataSource(QrLicenseService service) => _QrLicenseDataSource(service: service);
@@ -38,9 +39,9 @@ class _QrLicenseDataSource implements QrLicenseDataSource {
       // TODO: refactor to dto model
       return ((result as Response<Map?>).data?['data'] as Map?)?['result'] as Map<String, dynamic>?;
     } on DioException catch (error) {
-      print('[licenseDetails] DioError $error');
+      logger.log('[licenseDetails] DioError $error', logLevel: MapnessLogLevel.critical);
     } catch (error) {
-      print('[licenseDetails] $error');
+      logger.log('[licenseDetails] $error', logLevel: MapnessLogLevel.critical);
     }
     return null;
   }

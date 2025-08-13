@@ -10,8 +10,8 @@ import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/features/feedback/submit_feedback_payload.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:urbi_analytics/logger.dart';
 
 part 'submit_feedback.g.dart';
 
@@ -75,15 +75,17 @@ Future<void> submitFeedback(
       ).toJson(),
     );
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.poiSubmitted);
-    log(response.data.toString());
+    logger.log(response.data.toString());
   } on DioException catch (e) {
-    log(e.response?.statusCode?.toString() ?? '');
-    // print(e.toString());
-    log('request data: ${jsonEncode(e.requestOptions.data)}');
-    log('response data: ${jsonEncode(e.response?.data)}');
+    logger
+      ..log(e.response?.statusCode?.toString() ?? '')
+      ..log('request failed with status code ${e.response?.statusCode}. ${e.response?.data}',
+          logLevel: MapnessLogLevel.critical)
+      ..log('request data: ${jsonEncode(e.requestOptions.data)}')
+      ..log('response data: ${jsonEncode(e.response?.data)}');
     rethrow;
   } catch (e) {
-    log(e.toString());
+    logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     rethrow;
   }
 }

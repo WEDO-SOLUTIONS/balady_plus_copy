@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:battery_plus/battery_plus.dart';
 import 'package:collection/collection.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Battery usage metrics
 class BatteryUsage {
@@ -81,7 +82,7 @@ class BatteryUsage {
         isInBatterySaveMode: isInBatterySaveMode,
       );
     } catch (e) {
-      print('BatteryUsage fromJson ${e.toString()}');
+      logger.log('BatteryUsage fromJson ${e.toString()}');
       return null;
     }
   }
