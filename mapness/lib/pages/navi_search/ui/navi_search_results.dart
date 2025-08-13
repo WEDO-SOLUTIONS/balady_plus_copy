@@ -54,12 +54,12 @@ class NaviSearchResults extends ConsumerWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: CircularProgressIndicator(
-            color: context.colorsV2.accentDefault,
+            color: context.colors.accentDefault,
           ),
         ),
       ),
       itemBuilder: (context, item, offers) => SearchItem(
-        contentColor: context.colorsV3.backgroundSurface1,
+        contentColor: context.colors.backgroundSurface1,
         result: item,
         offers: offers,
         language: language,

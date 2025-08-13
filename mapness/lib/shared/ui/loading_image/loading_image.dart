@@ -74,6 +74,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
       return Image.file(
         widget.file!,
         fit: widget.fit,
+        width: double.infinity,
         errorBuilder: (context, __, ___) => ColoredBox(
           color: context.color.surfaceBasePrimary,
           child: const SizedBox.shrink(),

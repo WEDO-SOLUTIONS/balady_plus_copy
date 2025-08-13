@@ -62,10 +62,10 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
                 key: const ValueKey('FEEDBACK SEARCH SHEET'),
                 physics: const BouncingScrollPhysics(),
                 scrollController: _dgisSheetController,
-                backgroundColor: context.colorsV3.backgroundSurface4,
-                safeAreaColor: context.colorsV3.backgroundSurface4,
+                backgroundColor: context.colors.backgroundSurface4,
+                safeAreaColor: context.colors.backgroundSurface4,
                 header: ColoredBox(
-                  color: context.colorsV3.backgroundSurface1,
+                  color: context.colors.backgroundSurface1,
                   child: const Column(
                     children: [
                       Padding(

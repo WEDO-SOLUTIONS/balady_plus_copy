@@ -164,9 +164,9 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          context.colorsV3.neutralDefault.withOpacity(0.9),
-                          context.colorsV3.neutralDefault.withOpacity(0.3),
-                          context.colorsV3.neutralDefault.withOpacity(0),
+                          context.colors.neutralDefault.withOpacity(0.9),
+                          context.colors.neutralDefault.withOpacity(0.3),
+                          context.colors.neutralDefault.withOpacity(0),
                         ],
                         begin: Alignment.centerRight,
                         end: Alignment.centerLeft,
@@ -210,13 +210,13 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
                   children: [
                     Text(
                       widget.itemCount.toString(),
-                      style: context.textStyleV3.captionLargeSemiBold.copyWith(color: context.colorsV3.staticWhite),
+                      style: context.textStyles.captionLargeSemiBold.copyWith(color: context.colors.staticWhite),
                     ),
                     const SizedBox(width: Spacing.$1x),
                     Icon(
                       General16Icons.photoSolid,
                       size: 16,
-                      color: context.colorsV3.staticWhite,
+                      color: context.colors.staticWhite,
                     )
                   ],
                 ),

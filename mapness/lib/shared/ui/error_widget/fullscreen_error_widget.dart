@@ -37,7 +37,7 @@ class FullscreenErrorWidget extends StatelessWidget {
   /// error button scheme (default: primary)
   final ButtonColorScheme? buttonColorScheme;
 
-  /// The background color
+  /// the color used as the background for the error widget.
   final Color backgroundColor;
 
   @override

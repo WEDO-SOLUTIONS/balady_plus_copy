@@ -16,42 +16,54 @@ class NavigationSessionManeuvers {
 
     private var routePositionChannelCancellable: Cancellable?
     private var routeChannelCancelable: DGis.Cancellable?
+    private var everyMinuteTimer: Timer?
 
-    private func cancel() {
+    func cancel() {
         routePositionChannelCancellable?.cancel()
         routeChannelCancelable?.cancel()
+        everyMinuteTimer?.invalidate()
         navigationSession = nil
+    }
+
+    func routeSearch() {
+        navigationSession?.pauseTrip(
+            for: .rerouting,
+            description: NSLocalizedString("navigationRerouting", comment: "")
+        )
     }
 
     func navigate() {
         routeChannelCancelable?.cancel()
-        routeChannelCancelable = model.routeChannel.sink(
-            receiveValue: receiveRouteInfo
+        routeChannelCancelable = model.routeChannel.sinkOnMainThread(
+            receiveRouteInfo
         )
     }
 
     private func receiveRouteInfo(routeInfo: RouteInfo) {
-        if model.isFreeRoam { return }
+        // isFreeRoam
+        if routeInfo.routeBuildOptions == nil { return }
 
-        let cpManeuvers = routeInfo.route.instructions.entries.map(
-            mapCPManeuver
-        )
-
-        self.navigationSession?.cancelTrip()
-        let navigationSession = mapTemplate.startNavigationSession(
+        let navigationSession = self.navigationSession ?? mapTemplate.startNavigationSession(
             for: model.route.trip
         )
         self.navigationSession = navigationSession
-
-        navigationSession.upcomingManeuvers = cpManeuvers
+        
+        everyMinuteTimer?.invalidate()
+        everyMinuteTimer = Timer.everyMinuteStart {
+            [self] _ in
+            updateTripEstimates(navigationSession)
+        }
 
         routePositionChannelCancellable?.cancel()
-        routePositionChannelCancellable = model.routePositionChannel.sink {
-            [self] routePosition in
-            updateTripEstimates(navigationSession)
-            guard let routePosition else { return }
-            updateNextManeuver(with: routePosition, navigationSession)
-        }
+        routePositionChannelCancellable = model.routePositionChannel
+            .sinkOnMainThread {
+                [self] routePosition in
+                updateTripEstimates(navigationSession)
+                guard let routePosition else { return }
+                updateNextManeuver(
+                    with: routePosition, navigationSession, routeInfo
+                )
+            }
     }
 
     func finish() {
@@ -71,7 +83,7 @@ class NavigationSessionManeuvers {
 
         mapTemplate.updateEstimates(
             CPTravelEstimates(
-                distanceRemaining: formatDistance(tripDistanceRemaining),
+                distanceRemaining: tripDistanceRemaining.formatDistance,
                 timeRemaining: tripTimeRemaining
             ),
             for: navigationSession.trip
@@ -79,26 +91,48 @@ class NavigationSessionManeuvers {
     }
 
     private func updateNextManeuver(
-        with routePoint: RoutePoint, _ navigationSession: CPNavigationSession
+        with routePoint: RoutePoint,
+        _ navigationSession: CPNavigationSession,
+        _ routeInfo: RouteInfo
     ) {
-        guard let nextManeuver = navigationSession.upcomingManeuvers.first,
-            let instructionRouteEntry = nextManeuver.userInfo
-                as? InstructionRouteEntry
-        else {
-            return
-        }
+        let instructionRouteAttribute = routeInfo.route.instructions
 
-        let millimetersRemaining =
-            (instructionRouteEntry.point.distance.millimeters
-            - routePoint.distance.millimeters).millimeters
+        guard
+            let lastInstruction = instructionRouteAttribute.last,
+            routePoint.distance.millimeters
+                <= lastInstruction.point.distance.millimeters
+        else { return }
 
-        if millimetersRemaining.value <= 0 {
-            navigationSession.upcomingManeuvers.removeFirst()
-        } else {
-            navigationSession.updateEstimates(
-                mapCPTravelEstimates(millimetersRemaining), for: nextManeuver
+        let allInstructions = instructionRouteAttribute.entries
+
+        // returns [begin, end) exclusive end - append last
+        var actualInstructions = instructionRouteAttribute.entries(
+            begin: routePoint, end: lastInstruction.point
+        )
+        actualInstructions.append(lastInstruction)
+
+        guard actualInstructions.count <= allInstructions.count else { return }
+
+        if actualInstructions.count
+            != navigationSession.upcomingManeuvers.count
+        {
+            navigationSession.upcomingManeuvers = actualInstructions.map(
+                mapCPManeuver
             )
         }
+
+        guard
+            let nextInstruction = actualInstructions.first,
+            let nextManeuver = navigationSession.upcomingManeuvers.first
+        else { return }
+
+        let millimetersRemaining =
+            (nextInstruction.point.distance.millimeters
+            - routePoint.distance.millimeters).millimeters
+
+        navigationSession.updateEstimates(
+            mapCPTravelEstimates(millimetersRemaining), for: nextManeuver
+        )
 
         if #available(iOS 17.4, *) {
             navigationSession.maneuverState =
@@ -137,7 +171,7 @@ class NavigationSessionManeuvers {
         _ distanceRemaining: Measurement<UnitLength>
     ) -> CPTravelEstimates {
         return CPTravelEstimates(
-            distanceRemaining: formatMeters(distanceRemaining),
+            distanceRemaining: distanceRemaining.formatMeters,
             timeRemaining: TimeInterval(-1)
         )
     }
@@ -198,22 +232,38 @@ class NavigationSessionManeuvers {
             nil
         }
     }
+}
+
+extension Measurement<UnitLength> {
+    var meters: Double {
+        converted(to: .meters).value
+    }
+
+    // meters rounded to decameters 420 410 400
+    var decametersRounded: Measurement<UnitLength> {
+        let tensOfMeters = max(1, meters / 10).rounded(.down)
+        let distanceM = tensOfMeters * 10
+        return Measurement(value: distanceM, unit: .meters)
+    }
+
+    var kilometersOneDecimalRounded: Measurement<UnitLength> {
+        let hundredsOfMeters = (meters / 100).rounded(.down)
+        let distanceKm = (hundredsOfMeters / 10)
+        return Measurement(value: distanceKm, unit: .kilometers)
+    }
 
     // correlated with Dart extension double.formatDistance()
     // mapness/lib/features/path_nav/lib/number_formatters.dart:6
-    private func formatDistance(_ measurement: Measurement<UnitLength>)
-        -> Measurement<UnitLength>
-    {
-        return measurement.meters >= 1000
-            ? measurement.converted(to: .kilometers)
-            : measurement.decametersRounded
+    var formatDistance: Measurement<UnitLength> {
+        return meters >= 1000
+            ? kilometersOneDecimalRounded
+            : decametersRounded
     }
 
     // correlated with Dart ManeuverEventHandler.formatMeters(int millis)
     // urbi_map/dgis_map_platform_interface/lib/src/control_handlers/navigation/maneuver_event_handler.dart:47
-    private func formatMeters(_ measurement: Measurement<UnitLength>)
-        -> Measurement<UnitLength>
-    {
+    var formatMeters: Measurement<UnitLength> {
+        let measurement = self
         let meters = measurement.meters
 
         if meters > 3000 {
@@ -224,10 +274,7 @@ class NavigationSessionManeuvers {
 
         if meters > 1000 {
             // We show in kilometers with an accuracy of one decimal place
-            let hundredsOfMeters = (meters / 100).rounded(.down)
-            let distanceKm = (hundredsOfMeters / 10).rounded(.down)
-            return Measurement(
-                value: distanceKm.rounded(.down), unit: .kilometers)
+            return kilometersOneDecimalRounded
         }
 
         if meters > 500 {
@@ -250,19 +297,6 @@ class NavigationSessionManeuvers {
 
         // We show with an accuracy of up to 10 m
         return measurement.decametersRounded
-    }
-}
-
-extension Measurement<UnitLength> {
-    var meters: Double {
-        converted(to: .meters).value
-    }
-
-    // meters rounded to decameters 420 410 400
-    var decametersRounded: Measurement<UnitLength> {
-        let tensOfMeters = max(1, meters / 10).rounded(.down)
-        let distanceM = tensOfMeters * 10
-        return Measurement(value: distanceM, unit: .meters)
     }
 }
 

@@ -15,6 +15,6 @@ class DefaultIcon extends StatelessWidget {
   Widget build(BuildContext context) => Icon(
         icon,
         size: 24,
-        color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
+        color: selected ? context.colors.accentDefault : context.colors.foregroundSoft,
       );
 }

@@ -1,5 +1,4 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_chips_widget.dart';
@@ -77,16 +76,13 @@ class FilterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ChipIconWidget trailingIcon(FilterView filter) => ChipIconWidget(
-          ({required isSelected}) {
-            final color = filter.isHighlighted ? context.colorsV2.accentOnAccent : context.colorsV2.foregroundDefault;
-            return InkWell(
-              onTap: filter.isHighlighted ? filter.tapCross : null,
-              child: Icon(
-                filter.isHighlighted ? SystemIcons.closeSmall : SystemIcons.arrowCornerDownSmall,
-                color: color,
-              ),
-            );
-          },
+          ({color}) => InkWell(
+            onTap: filter.isHighlighted ? filter.tapCross : null,
+            child: Icon(
+              filter.isHighlighted ? SystemIcons.closeSmall : SystemIcons.arrowCornerDownSmall,
+              color: color,
+            ),
+          ),
         );
 
     return SaudiPassChipsWidget(

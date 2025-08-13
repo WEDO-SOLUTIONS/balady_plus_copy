@@ -24,8 +24,8 @@ class NaviSearchHistory extends ConsumerWidget {
     final scope = context.read<SearchScope>();
 
     return ui.SearchHistory(
-      iconColor: context.colorsV3.foregroundMuted,
-      contentColor: context.colorsV3.backgroundSurface1,
+      iconColor: context.colors.foregroundMuted,
+      contentColor: context.colors.backgroundSurface1,
       onTap: (item) async {
         if (item.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);

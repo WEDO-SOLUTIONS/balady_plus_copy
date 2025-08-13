@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentLicense;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
@@ -24,15 +24,15 @@ class PoiContentLicenseCard extends StatelessWidget {
         children: [
           Text(
             license!.title,
-            style: context.textStyleV3.captionLargeRegular.copyWith(
-              color: context.colorsV3.foregroundSoft,
+            style: context.textStyles.captionLargeRegular.copyWith(
+              color: context.colors.foregroundSoft,
             ),
           ),
           const SizedBox(width: Spacing.$1x),
           SelectableText(
             license!.number,
-            style: context.textStyleV3.captionLargeRegular.copyWith(
-              color: context.colorsV3.foregroundSoft,
+            style: context.textStyles.captionLargeRegular.copyWith(
+              color: context.colors.foregroundSoft,
             ),
             onTap: () => onCopyToClipboard(license!.number),
           ),

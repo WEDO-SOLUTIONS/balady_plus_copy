@@ -91,7 +91,7 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
             ContentRow(
               options: ContentRowOptions(
                 subtitle: fullAddress.fullAddress,
-                subtitleStyle: context.textStyleV3.bodyLargeRegular,
+                subtitleStyle: context.textStyles.bodyLargeRegular,
                 padding: const EdgeInsets.only(bottom: Spacing.$0_5x),
                 subtitleMaxlines: 1,
                 // This file will be deleted in the nearest future

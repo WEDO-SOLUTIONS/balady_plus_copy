@@ -40,10 +40,10 @@ class RoutingSearchHistory extends ConsumerWidget {
           child: SearchActions(
             children: [
               if (showMyLocation)
-                ContentRowV2(
+                ContentRow(
                   leading: Icon(
                     isLTR ? TransportIcons.locationLTR : TransportIcons.locationRTL,
-                    color: context.colorsV2.accentActive,
+                    color: context.colors.accentActive,
                     size: 22,
                   ),
                   text: ContentRowTextOptions(
@@ -51,20 +51,20 @@ class RoutingSearchHistory extends ConsumerWidget {
                   ),
                   onTap: () => context.router.popForced(RoutePointMyLocation()),
                 ),
-              ContentRowV2(
+              ContentRow(
                 leading: Icon(
                   GeneralIcons.location,
-                  color: context.colorsV2.accentActive,
+                  color: context.colors.accentActive,
                 ),
                 text: ContentRowTextOptions(
                   title: context.l10n.specifyOnTheMap,
                 ),
                 onTap: () => _specifyOnTheMap(context),
               ),
-              ContentRowV2(
+              ContentRow(
                 leading: Icon(
                   SystemIcons.bookmark,
-                  color: context.colorsV2.accentActive,
+                  color: context.colors.accentActive,
                 ),
                 text: ContentRowTextOptions(
                   title: context.l10n.findInFavorites,

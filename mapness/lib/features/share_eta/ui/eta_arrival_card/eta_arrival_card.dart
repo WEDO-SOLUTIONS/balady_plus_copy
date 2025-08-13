@@ -56,8 +56,8 @@ class EtaArrivalCard extends HookConsumerWidget {
                   _getArrivalTime(context, streamData),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: context.textStyleV3.h3Medium.copyWith(
-                    color: context.colorsV2.staticWhite,
+                  style: context.textStyles.h3Medium.copyWith(
+                    color: context.colors.staticWhite,
                   ),
                 ),
                 const SizedBox(height: Spacing.$1_5x),
@@ -67,8 +67,8 @@ class EtaArrivalCard extends HookConsumerWidget {
                     '${context.l10n.kmAway(_getDistance(context, streamData))} • ${context.l10n.lastUpdatedAtTime(_getUpdatedAt(context, streamData))}',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: context.textStyleV3.captionLargeRegular.copyWith(
-                      color: context.colorsV2.staticWhite,
+                    style: context.textStyles.captionLargeRegular.copyWith(
+                      color: context.colors.staticWhite,
                     ),
                   ),
                 ),
@@ -82,7 +82,7 @@ class EtaArrivalCard extends HookConsumerWidget {
               progress: _getProgress(streamData, startDistance),
               image: ClipOval(
                 child: ColoredBox(
-                  color: context.colorsV2.staticWhite,
+                  color: context.colors.staticWhite,
                   child: Center(
                     child: SizedBox(
                       width: imgSize,
@@ -100,7 +100,7 @@ class EtaArrivalCard extends HookConsumerWidget {
             child: AppButton(
               buttonColorScheme: ButtonColorScheme.onColor,
               primaryLabel: context.l10n.back,
-              textColor: context.colorsV2.foregroundDefault,
+              textColor: context.colors.foregroundDefault,
               onTap: () => _cancelEta(context, ref),
             ),
           ),

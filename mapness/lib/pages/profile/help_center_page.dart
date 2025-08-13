@@ -12,7 +12,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/widgets/profile/contact_info.dart';
 
-
 @RoutePage()
 class HelpCenterPage extends ConsumerStatefulWidget {
   const HelpCenterPage({super.key});
@@ -57,7 +56,8 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                           onTap: () => context.router.push(const MomraWebsiteRoute()),
                           options: ContentRowOptions(
                             title: context.l10n.baladyWebsite,
-                            leadingIcon: SvgPicture.asset('assets/icons/svg/profile/website.svg', height: 24, width: 24),
+                            leadingIcon:
+                                SvgPicture.asset('assets/icons/svg/profile/website.svg', height: 24, width: 24),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: SystemIcons.arrowCornerRightLarge.icon(
                                 color: context.color.textAndIconsBaseSecondary,

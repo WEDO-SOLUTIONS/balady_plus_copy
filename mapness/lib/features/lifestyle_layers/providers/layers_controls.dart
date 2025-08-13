@@ -464,7 +464,7 @@ class LayersControls extends _$LayersControls {
     }
 
     await _viewPortSubscription?.cancel();
-    await _removeMapObjects();
+    unawaited(_removeMapObjects());
     final currentState = state.selectedType;
     if (currentState != null && currentState != LayerType.parkingLots) {
       await _hidePreviousLayers(currentState);

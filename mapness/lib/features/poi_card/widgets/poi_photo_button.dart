@@ -24,17 +24,23 @@ class PoiPhotoButton extends StatelessWidget {
     }
 
     return AppButton(
-      buttonColorScheme: ButtonColorScheme.onColor,
+      buttonColorScheme: ButtonColorScheme.accent,
+      buttonType: ButtonType.secondary,
+      color: context.colors.backgroundSurface1,
       onTap: () => context.router.push(
         QuickFeedbackPhotoRoute(
           params: FeedbackObjectIdParams(objectId),
         ),
       ),
       size: ButtonSize.small,
+      innerPadding: const EdgeInsetsDirectional.only(
+        start: Spacing.$2x + Spacing.$0_5x,
+        end: Spacing.$3x + Spacing.$0_5x,
+      ),
       primaryIcon: General16Icons.photoSolid,
       primaryLabel: context.l10n.addPhoto,
-      textColor: context.colorsV3.accentDefault,
-      iconColor: context.colorsV3.accentDefault,
+      textColor: context.colors.accentDefault,
+      iconColor: context.colors.accentDefault,
     );
   }
 }

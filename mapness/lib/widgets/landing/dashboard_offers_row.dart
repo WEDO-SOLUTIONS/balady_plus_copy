@@ -4,8 +4,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
@@ -16,24 +18,18 @@ class DashboardOffersRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           GestureDetector(
             onTap: () {
               context.router.push(OffersScreenViewRoute());
             },
-            child: Row(
-              children: [
-                const SizedBox(width: 16),
-                Text(
-                  context.l10n.allOffers,
-                  style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
-                ),
-                const SizedBox(width: 4),
-                AppIcons(
-                  iconData: SystemIcons.arrowCornerRightLarge,
-                  color: context.colorsV3.foregroundDefault,
-                )
-              ],
+            child: Padding(
+              padding:  const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              child: SvgPicture.asset(
+                'packages/mapness/assets/icons/svg/tadalal_logo_${context.isLTR ?"en":"ar"}.svg',
+                height: 24,
+              ),
             ),
           ),
           const SizedBox(height: 16),

@@ -27,8 +27,6 @@ class AppFeedbackSheet extends HookConsumerWidget {
     super.key,
   });
 
-  static const _sheetPadding = EdgeInsets.symmetric(vertical: 29);
-
   void _showConfirmDialog(BuildContext context) {
     if (!context.mounted) {
       return;
@@ -58,6 +56,8 @@ class AppFeedbackSheet extends HookConsumerWidget {
             ));
   }
 
+  static const _sheetPadding = EdgeInsets.only(top: Spacing.$6x);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
@@ -80,7 +80,6 @@ class AppFeedbackSheet extends HookConsumerWidget {
     final backgroundColorDelegate = StatelessSheetDelegateFunction<Color?>(
       function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
     );
-    final backgroundColor = context.colorsV3.backgroundSurface4;
 
     return FeedbackSourceProvider(
       source: source,
@@ -88,9 +87,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
         bottom: false,
         child: StatelessBottomSheet(
           scrollController: scrollController,
-          safeAreaColor: context.colorsV3.backgroundSurface1,
-          backgroundColor: backgroundColor,
-          draggerColor: backgroundColor,
+          backgroundColor: context.colors.backgroundSurface4,
+          safeAreaColor: context.colors.backgroundSurface4,
+          draggerColor: context.colors.backgroundSurface4,
           startConfig: BottomSheetStart.instant,
           onWillPop: Future.value(source is FeedbackSourceOffer),
           backgroundColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,

@@ -30,7 +30,7 @@ class PathCardFailure extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               AppButton(
-                buttonColorScheme: ButtonColorScheme.primary,
+                buttonColorScheme: ButtonColorScheme.accent,
                 onTap: refresh,
                 primaryLabel: AppLocalizations.of(context).reload,
               ),

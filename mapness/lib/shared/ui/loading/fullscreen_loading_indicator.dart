@@ -37,8 +37,7 @@ class FullscreenLoadingIndicator extends StatelessWidget {
           title: loadingTitle,
           orientation: Axis.vertical,
           isDisplayTitle: isDisplayTitle,
-          color: color ?? context.color.strokeAccent,
-          backgroundColor: context.color.strokeAccent.withOpacity(0.1),
+          color: color ?? context.colors.accentDefault,
         ),
       ),
     );

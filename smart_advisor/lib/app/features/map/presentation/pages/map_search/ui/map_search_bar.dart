@@ -104,10 +104,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         },
         controller: _controller,
         hintText: context.l10n.search,
-        fillColor: context.colorsV2.neutralContainerDefault,
-        hintColor: context.colorsV2.foregroundSoft,
+        fillColor: context.colors.neutralContainerDefault,
+        hintColor: context.colors.foregroundSoft,
         textFieldHeight: 40,
-        textStyle: context.textStyleV3.bodySmallRegular,
+        textStyle: context.textStyles.bodySmallRegular,
       ),
       backButtonLabel: context.l10n.cancel,
       onBackButtonPressed: () {

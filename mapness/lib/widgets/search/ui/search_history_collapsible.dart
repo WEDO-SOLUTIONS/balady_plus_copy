@@ -38,7 +38,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
   @override
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
-    final contentColor = widget.contentColor ?? context.colorsV2.backgroundSurface1;
+    final contentColor = widget.contentColor ?? context.colors.backgroundSurface1;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$3x),
@@ -66,7 +66,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         addBottomBorderRadius: isLastItemAndNoManyResults,
                         onDismiss: () => widget.onDelete(widget.history[index]),
                         elementKey: ValueKey(widget.history[index].hashKey),
-                        child: ContentRowV2(
+                        child: ContentRow(
                             backgroundColor: contentColor,
                             onTap: () async {
                               await Future.delayed(const Duration(milliseconds: 300));
@@ -74,7 +74,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                             },
                             leading: AppIcons(
                               iconData: GeneralIcons.timeQuarter,
-                              color: widget.iconColor ?? context.colorsV2.foregroundSoft,
+                              color: widget.iconColor ?? context.colors.foregroundSoft,
                               size: 24,
                             ),
                             text: ContentRowTextOptions(
@@ -88,11 +88,11 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                   itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
                 ),
                 if (hasManyResults)
-                  ContentRowV2(
+                  ContentRow(
                     onTap: () => setState(() => _collapsed = !_collapsed),
                     leading: AppIcons(
                       iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
-                      color: widget.iconColor ?? context.colorsV2.foregroundDefault,
+                      color: widget.iconColor ?? context.colors.foregroundDefault,
                       size: 24,
                     ),
                     text: ContentRowTextOptions(
@@ -112,7 +112,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 children: [
                   Expanded(
                     child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.tertiary,
+                      buttonColorScheme: ButtonColorScheme.neutral,
                       onTap: widget.onClear,
                       primaryLabel: context.l10n.deleteHistory,
                     ),

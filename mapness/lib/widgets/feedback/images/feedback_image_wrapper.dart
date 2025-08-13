@@ -34,7 +34,7 @@ class FeedbackImageWrapper extends HookWidget {
           height: imageSize,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(RadiusBorder.l),
-            color: context.colorsV2.backgroundSurface3,
+            color: context.colors.backgroundSurface3,
           ),
           child: Stack(
             children: [

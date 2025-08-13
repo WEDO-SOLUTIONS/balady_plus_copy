@@ -54,7 +54,7 @@ class MapSearchResults extends ConsumerWidget {
         bottomSheetContentScrollController: bottomSheetContentScrollController,
         loaderBuilder: (context) => Center(
           child: CircularProgressIndicator(
-            color: context.colorsV2.accentDefault,
+            color: context.colors.accentDefault,
           ),
         ),
         itemBuilder: (context, item, offers) => SearchItem(

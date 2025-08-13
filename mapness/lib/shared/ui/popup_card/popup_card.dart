@@ -30,10 +30,6 @@ class PopupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PopupMenuButton<bool>(
-        constraints: const BoxConstraints(
-          minWidth: 140,
-          maxWidth: 140,
-        ),
         iconSize: 16,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -76,21 +72,14 @@ class PopupMenuWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: 48,
-            width: 140,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: Spacing.$3x,
-                horizontal: Spacing.$4x,
-              ),
-              child: ContentRow(
-                options: ContentRowOptions(
-                  padding: EdgeInsets.zero,
-                  title: title,
-                  titleStyle: titleStyle,
-                  leadingIcon: icon,
-                ),
+          Padding(
+            padding: EdgeInsets.zero,
+            child: ContentRow(
+              options: ContentRowOptions(
+                padding: EdgeInsets.zero,
+                title: title,
+                titleStyle: titleStyle,
+                leadingIcon: icon,
               ),
             ),
           ),

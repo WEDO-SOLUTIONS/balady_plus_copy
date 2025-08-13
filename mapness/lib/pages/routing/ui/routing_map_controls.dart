@@ -14,7 +14,7 @@ import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
-    this.bottomHeightNotifier,
+    @Deprecated('Please use sheetify outside property') this.bottomHeightNotifier,
     super.key,
   });
 

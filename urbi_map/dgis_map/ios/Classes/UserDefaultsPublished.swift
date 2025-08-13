@@ -5,7 +5,13 @@ class UserDefaultsPublished {
     private let userDefaults = UserDefaults.standard
 
     @Published var languageString: String?
-    
+
+    var language: Language {
+        Language(
+            rawValue: languageString ?? "ar"
+        ) ?? Language.ar
+    }
+
     // CarPlay Settings Keys
     private enum CarPlaySettingsKeys {
         static let parkingEnabled = "carplay.parking.enabled"
@@ -30,7 +36,6 @@ class UserDefaultsPublished {
     
     @objc private func userDefaultsDidChangeNotification() {
         if userDefaults.languageString != languageString {
-            Bundle.syncLanguage()
             languageString = userDefaults.languageString
         }
     }
@@ -54,19 +59,7 @@ class UserDefaultsPublished {
     }
     
     func getSoundEnabled() -> Bool {
-        let mobileKey = "flutter.voice_instruction_index"
-        // It is value that set up from mobile. It is important to keep in mind that
-        // a) key could be changed without changing it here
-        // b) Order of the [SoundToggleType] could be changed inside mobile app
-        // (e.g. it was .all, .importnat, .none but now it is .none, .important, .all
-        // and here we will get different value
-        let mobileValue = userDefaults.integer(forKey: mobileKey)
-        let soundEnableValue = SoundToggleType(rawValue: mobileValue) == .all
-        
-        // Value from mobile is more important then from CarPlay
-        // After initialization we take this value from mobile first
-        saveSoundEnabled(soundEnableValue)
-        return soundEnableValue
+        return userDefaults.bool(forKey: CarPlaySettingsKeys.soundEnabled)
     }
     
     func getTrafficEnabled() -> Bool {

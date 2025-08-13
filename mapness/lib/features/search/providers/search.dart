@@ -10,7 +10,6 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -405,7 +404,7 @@ class Search extends _$Search {
   bool _isSearchInThisArea = false;
 
   /// Method that starts search in the visible area
-  void searchInThisArea() {
+  void searchInThisArea(String scope) {
     _isSearchInThisArea = true;
     ref.read(urbiAnalyticsProvider).track(
       MapnessConstants.analyticsSearchInThisAreaPressed,
@@ -419,7 +418,7 @@ class Search extends _$Search {
     print(
         '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
-    ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(value: true);
+    ref.read(searchInRectProvider(scope).notifier).searchInThisAreaSwitch(value: true);
     switch (_previousType) {
       case null:
         break;

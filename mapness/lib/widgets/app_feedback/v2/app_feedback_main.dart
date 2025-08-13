@@ -80,8 +80,8 @@ class AppFeedbackMain extends HookConsumerWidget {
               FeedbackSourceOffer() => context.l10n.doYouLikeOffer,
             },
             textAlign: TextAlign.center,
-            style: context.textStyleV3.h3SemiBold.copyWith(
-              color: context.colorsV2.foregroundDefault,
+            style: context.textStyles.h3SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
             ),
           ),
         ),
@@ -103,8 +103,8 @@ class AppFeedbackMain extends HookConsumerWidget {
                   child: Text(
                     _feedbackSubtitleText(context.l10n, rating.value, source),
                     textAlign: TextAlign.center,
-                    style: context.textStyleV3.bodyLargeRegular.copyWith(
-                      color: context.colorsV2.foregroundSoft,
+                    style: context.textStyles.bodyLargeRegular.copyWith(
+                      color: context.colors.foregroundSoft,
                     ),
                   ),
                 )
@@ -168,13 +168,13 @@ class AppFeedbackMain extends HookConsumerWidget {
               valueListenable: rating,
               builder: (context, ratingValue, _) {
                 final canSend = ratingValue > 0;
-                final buttonColorScheme = !canSend ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
-                final buttonState = !canSend ? ButtonState.disabled : ButtonState.normal;
+                final buttonState = !canSend ? ButtonState.disabled : ButtonState.defaultState;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    buttonColorScheme: buttonColorScheme,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
                     buttonState: buttonState,
+                    size: ButtonSize.large,
                     onTap: !canSend
                         ? null
                         : () async {
@@ -193,7 +193,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                 );
               }),
         ),
-        const SizedBox(height: Spacing.$8x),
+        const SizedBox(height: Spacing.$4x),
       ],
     );
   }

@@ -16,11 +16,10 @@ class DgisCarPlayMapView: UIViewController {
     private let mapView: (UIView & IMapView)
     
     private var myLocationControlModel: MyLocationControlModel?
+    private var myLocationSource: MyLocationMapObjectSource?
     
     private var cancellables = Set<Cancellable>()
     
-    var carWindowScreenNativeBounds: CGRect?
-
     init(
         map: Map,
         mapView: (UIView & IMapView)
@@ -47,13 +46,15 @@ class DgisCarPlayMapView: UIViewController {
         
         myLocationControlModel = MyLocationControlModel(map: map)
         
-        map.addSource(source: MyLocationMapObjectSource(
+        let myLocationSource = MyLocationMapObjectSource(
             context: context,
             controllerSettings: MyLocationControllerSettings(
                 bearingSource: .auto
             ),
             markerType: .model
-        ))
+        )
+        self.myLocationSource = myLocationSource
+        map.addSource(source: myLocationSource)
         
         if let location = try? sdk.locationService.lastLocation?.coordinates {
             try? map.camera.setPosition(
@@ -66,9 +67,6 @@ class DgisCarPlayMapView: UIViewController {
                 zoom: Self.defaultCameraZoom
             )
         }
-
-        let carPlayFixOn = carWindowScreenNativeBounds?.width == 800
-        map.attributes.setAttributeValue(name: "carPlayFixOn", value: .boolean(carPlayFixOn))
         
         map.attributes.setAttributeValue(name: "camerasOn", value: .boolean(true))
 
@@ -92,6 +90,13 @@ class DgisCarPlayMapView: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        DgisMapInitializer.shared.getNavigationManager().mapManager.removeMap(map: map)
+        mapView.subviews.forEach { $0.removeFromSuperview() }
+        if let myLocationSource = self.myLocationSource {
+            map.removeSource(source: myLocationSource)
+            self.myLocationSource = nil
+        }
+        myLocationControlModel = nil
         cancellables.forEach { $0.cancel() }
     }
     

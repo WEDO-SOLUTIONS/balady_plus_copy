@@ -15,8 +15,8 @@ class AppFeedbackInput extends HookWidget {
     super.key,
   });
 
-  static const _initMaxLines = 4;
-  static const _maxLinesAllowed = 7;
+  static const _initMaxLines = 9;
+  static const _maxLinesAllowed = 15;
   static const _maxCharsAllowed = 1000;
 
   @override

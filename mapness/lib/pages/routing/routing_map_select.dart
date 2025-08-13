@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' as uikit;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
@@ -52,7 +52,6 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     final additionPadding = mediaQueryTop * MediaQuery.of(context).devicePixelRatio;
 
     final scrollController = useStatelessBottomsheetController(onClose: (_) => _onClose(context));
-    final _bottomHeightNotifier = useState(0.0);
 
     useEffect(() {
       void updateCameraPadding() {
@@ -70,14 +69,14 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     }, [scrollController]);
 
     return SafeAreaPadding(
-      child: uikit.StatelessBottomSheet(
+      child: StatelessBottomSheet(
         scrollController: scrollController,
-        backgroundColor: context.colorsV3.backgroundSurface4,
-        draggerColor: context.colorsV3.backgroundSurface4,
-        safeAreaColor: context.colorsV3.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface4,
+        draggerColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
         outside: Stack(
           children: [
-            RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
+            const RoutingMapControls(),
             Center(
               child: Padding(
                 padding: EdgeInsets.only(
@@ -89,7 +88,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
           ],
         ),
         header: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -99,13 +98,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                   children: [
                     Text(
                       context.l10n.pointToMap,
-                      style: context.textStyleV3.h4SemiBold,
+                      style: context.textStyles.h4SemiBold,
                     ),
-                    uikit.Spacing.$1x.heightBox,
+                    Spacing.$1x.heightBox,
                     Text(
                       context.l10n.moveMap,
-                      style: context.textStyleV3.bodySmallRegular.copyWith(
-                        color: context.colorsV3.foregroundSoft,
+                      style: context.textStyles.bodySmallRegular.copyWith(
+                        color: context.colors.foregroundSoft,
                       ),
                     ),
                   ],
@@ -116,46 +115,48 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
           ),
         ),
         content: [
-          uikit.Spacing.$3x.heightBox,
           _NearestObject(
             nearestObject: nearestObject,
           ),
           Padding(
             padding: const EdgeInsets.only(
-              left: uikit.Spacing.$4x,
-              right: uikit.Spacing.$4x,
-              top: uikit.Spacing.$3x,
-              bottom: uikit.Spacing.$3x,
+              left: Spacing.$4x,
+              right: Spacing.$4x,
+              top: Spacing.$3x,
             ),
             child: AnimatedSwitcher(
               duration: Durations.medium1,
               child: nearestObject.when(
                 loading: () => SizedBox(
-                  key: const ValueKey(uikit.ButtonColorScheme.secondary),
+                  key: const ValueKey(ButtonColorScheme.accentSecondary),
                   width: double.infinity,
-                  child: uikit.AppButton(
+                  child: AppButton(
                     primaryLabel: context.l10n.done,
-                    buttonColorScheme: uikit.ButtonColorScheme.secondary,
-                    buttonState: uikit.ButtonState.disabled,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonType: ButtonType.secondary,
+                    buttonState: ButtonState.loading,
+                    size: ButtonSize.large,
                     onTap: null,
                   ),
                 ),
                 data: (data) => SizedBox(
-                  key: const ValueKey(uikit.ButtonColorScheme.primary),
+                  key: const ValueKey(ButtonColorScheme.accent),
                   width: double.infinity,
-                  child: uikit.AppButton(
+                  child: AppButton(
                     primaryLabel: context.l10n.done,
-                    buttonColorScheme: uikit.ButtonColorScheme.primary,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    size: ButtonSize.large,
                     onTap: () => _onTap(data, context),
                   ),
                 ),
                 error: (error, stackTrace) => SizedBox(
-                  key: const ValueKey(uikit.ButtonColorScheme.secondary),
+                  key: const ValueKey(ButtonColorScheme.accentSecondary),
                   width: double.infinity,
-                  child: uikit.AppButton(
+                  child: AppButton(
                     primaryLabel: context.l10n.done,
-                    buttonColorScheme: uikit.ButtonColorScheme.secondary,
-                    buttonState: uikit.ButtonState.disabled,
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonState: ButtonState.disabled,
+                    size: ButtonSize.large,
                     onTap: null,
                   ),
                 ),
@@ -179,11 +180,11 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
         context.router.popForced(
           // We need to pass the coordinates of the nearest point
           // because coordinates of object like street or districts are so far from the selected point
-          RoutePointCoordinates(nearestPoint.geoPoint, nearestObject.object.title),
+          RoutePointCoordinates(nearestPoint.geoPoint, nearestObject.object.title, nearestObject.object.levelId),
         );
       case CooridnatesNearestObject(geoPoint: final geoPoint):
         context.router.popForced(
-          RoutePointCoordinates(geoPoint, null),
+          RoutePointCoordinates(geoPoint, null, null),
         );
     }
   }
@@ -207,9 +208,9 @@ class _NearestObject extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final leadingIcon = nearestObject.when(
-      data: (_) => const Icon(uikit.GeneralIcons.pin),
-      error: (_, __) => uikit.Loading.small(color: context.colorsV3.accentSecondaryDefault),
-      loading: () => uikit.Loading.small(color: context.colorsV3.accentSecondaryDefault),
+      data: (_) => const Icon(GeneralIcons.pin),
+      error: (_, __) => Loading.small(color: context.colors.accentSecondaryDefault),
+      loading: () => Loading.small(color: context.colors.accentSecondaryDefault),
     );
     final title = nearestObject.when(
       data: (object) => _buildTitle(object),
@@ -221,24 +222,21 @@ class _NearestObject extends StatelessWidget {
       error: (_, __) => null,
       loading: () => null,
     );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
-      child: SizedBox(
-        height: 68,
-        child: Center(
-          child: AnimatedSwitcher(
-            duration: Durations.medium1,
-            child: SizedBox(
-              key: ValueKey(title),
-              width: double.infinity,
-              child: uikit.ContentRow(
-                options: uikit.ContentRowOptions(
-                  wrapperEnabled: true,
-                  wrapperColor: context.colorsV3.backgroundSurface1,
-                  leadingIcon: leadingIcon,
-                  title: title,
-                  subtitle: subtitle,
-                ),
+    return SizedBox(
+      height: 70,
+      child: Center(
+        child: AnimatedSwitcher(
+          duration: Durations.medium1,
+          child: SizedBox(
+            key: ValueKey(title),
+            width: double.infinity,
+            child: ContentRow(
+              options: ContentRowOptions(
+                // wrapperEnabled: true,
+                wrapperColor: context.colors.backgroundSurface1,
+                leadingIcon: leadingIcon,
+                title: title,
+                subtitle: subtitle,
               ),
             ),
           ),

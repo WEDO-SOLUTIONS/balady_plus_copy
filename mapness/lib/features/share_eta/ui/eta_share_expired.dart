@@ -31,61 +31,61 @@ class EtaShareExpired extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-        color: context.colorsV2.backgroundSurface4,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(RadiusBorder.xl),
-          topRight: Radius.circular(RadiusBorder.xl),
+          color: context.colors.backgroundSurface4,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(RadiusBorder.xl),
+            topRight: Radius.circular(RadiusBorder.xl),
+          ),
         ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
-                child: SheetDragger(),
-              ),
-            ),
-            ContentRow(
-              options: ContentRowOptions(
-                padding: EdgeInsets.zero,
-                titleStyle: context.textStyleV3.h3SemiBold.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+                  child: SheetDragger(),
                 ),
-                customActionWidget: AppButton.close(
+              ),
+              ContentRow(
+                options: ContentRowOptions(
+                  padding: EdgeInsets.zero,
+                  titleStyle: context.textStyles.h3SemiBold.copyWith(
+                    color: context.colors.foregroundDefault,
+                  ),
+                  customActionWidget: AppButton.close(
                     onTap: Navigator.of(context).pop,
                     padding: EdgeInsets.zero,
-                  textColor: context.colorsV2.neutralOnContainer,
-                  color: context.colorsV2.neutralContainerDefault,
-                  innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    textColor: context.colors.neutralOnContainer,
+                    color: context.colors.neutralContainerDefault,
+                    innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  ),
                 ),
               ),
-            ),
-            SvgPicture.asset(
-              Assets.imagesSvg.illustrationError.keyName,
-            ),
-            const SizedBox(height: Spacing.$2x),
-            Text(
-              title,
-              style: context.textStyleV3.h3SemiBold.copyWith(
-                color: context.colorsV2.foregroundDefault,
+              SvgPicture.asset(
+                Assets.imagesSvg.illustrationError.keyName,
               ),
-            ),
-            const SizedBox(height: Spacing.$3x),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundSoft,
+              const SizedBox(height: Spacing.$2x),
+              Text(
+                title,
+                style: context.textStyles.h3SemiBold.copyWith(
+                  color: context.colors.foregroundDefault,
+                ),
               ),
-            ),
-            const SizedBox(
-              height: Spacing.$8x,
-            )
-          ],
+              const SizedBox(height: Spacing.$3x),
+              Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: context.textStyles.bodyLargeRegular.copyWith(
+                  color: context.colors.foregroundSoft,
+                ),
+              ),
+              const SizedBox(
+                height: Spacing.$8x,
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
 }

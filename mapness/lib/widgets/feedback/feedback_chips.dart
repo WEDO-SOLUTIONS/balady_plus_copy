@@ -24,8 +24,8 @@ class FeedbackChips extends StatelessWidget {
                 child: WidgetLabel(
                   isRequired: field.isRequired,
                   label: field.label,
-                  labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
-                    color: context.colorsV2.foregroundDefault,
+                  labelStyle: context.textStyles.captionMediumRegular.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                 ),
               ),
@@ -46,7 +46,7 @@ class FeedbackChips extends StatelessWidget {
                     labelFirst: variant.label,
                     leadingIcon: variant.iconUrl == null
                         ? null
-                        : ChipIconWidgetV2(
+                        : ChipIconWidget(
                             ({color}) => SvgPicture.network(
                               variant.iconUrl!,
                               colorFilter: ColorFilter.mode(

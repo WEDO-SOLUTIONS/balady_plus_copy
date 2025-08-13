@@ -163,7 +163,7 @@ class _Content extends HookConsumerWidget {
                           // else
                           _OfferPreviewByGroup(
                             offersGroup: offer.offerGroup,
-                            description: offer.description,
+                            title: offer.name,
                             discount: discount,
                             companyLogoId: offer.provider.logo,
                           ),
@@ -196,6 +196,16 @@ class _Content extends HookConsumerWidget {
                                     style: offer.willExpiredSoon
                                         ? subtitleStyle.copyWith(color: colors.errorDefault)
                                         : subtitleStyle,
+                                  ),
+                                ),
+                                Spacing.$1_5x.heightBox,
+                                _OfferInfoRow(
+                                  title: Text(l10n.offerDescription, style: titleStyle),
+                                  subtitle: Text(
+                                    offer.description.length > 500
+                                        ? '${offer.description.substring(0, 500)}...'
+                                        : offer.description,
+                                    style: subtitleStyle,
                                   ),
                                 ),
                                 Spacing.$3x.heightBox,
@@ -406,13 +416,13 @@ Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, S
 
 class _OfferPreviewByGroup extends StatelessWidget {
   final OffersGroup offersGroup;
-  final String description;
+  final String title;
   final TextSpan? discount;
   final String? companyLogoId;
 
   const _OfferPreviewByGroup({
     required this.offersGroup,
-    required this.description,
+    required this.title,
     this.discount,
     this.companyLogoId,
   });
@@ -422,7 +432,6 @@ class _OfferPreviewByGroup extends StatelessWidget {
     final hasDiscount = discount != null;
     return SizedBox(
       width: double.infinity,
-      height: 141,
       child: DecoratedBox(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -459,14 +468,9 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: Text(
-                            description,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: hasDiscount ? 4 : 6,
-                            style:
-                                context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
-                          ),
+                        Text(
+                          title.length > 250 ? '${title.substring(0, 250)}...' : title,
+                          style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
                         ),
                         if (hasDiscount)
                           Padding(
@@ -480,24 +484,22 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 98),
+                  const SizedBox(width: 16),
+                  if (companyLogoId != null)
+                    Expanded(
+                      child: SizedBox(
+                        height: 100,
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                          child: SaudiPassImage(imageId: companyLogoId!),
+                        ),
+                      ),
+                    )
+                  else
+                    const SizedBox(width: 78),
                 ],
               ),
             ),
-            if (companyLogoId != null)
-              Positioned.directional(
-                textDirection: Directionality.of(context),
-                top: Spacing.$4x,
-                end: Spacing.$4x,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-                  child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: SaudiPassImage(imageId: companyLogoId!),
-                  ),
-                ),
-              ),
           ],
         ),
       ),
@@ -536,7 +538,6 @@ class _OfferPreviewByBusiness extends StatelessWidget {
             ),
             fit: BoxFit.contain,
           )),
-      height: 141,
       padding: const EdgeInsets.all(Spacing.$4x),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -546,13 +547,9 @@ class _OfferPreviewByBusiness extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    description,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: hasDiscount ? 4 : 6,
-                    style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
-                  ),
+                Text(
+                  description,
+                  style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
                 ),
                 if (hasDiscount)
                   Padding(

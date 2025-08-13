@@ -34,6 +34,8 @@ class MapSearchSheetControls extends ConsumerStatefulWidget {
 }
 
 class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> {
+  final _scope = SearchScopeEnum.map.value;
+
   void _searchInArea() {
     Metrics.logEventAdvanced(
       MetricsConstants.searchKeys.searchInThisArea,
@@ -41,8 +43,8 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
       action: MetricAction.tap.toString(),
     );
 
-    ref.read(searchInRectProvider.notifier).update();
-    ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
+    ref.read(searchInRectProvider(_scope).notifier).update();
+    ref.read(searchProvider(_scope).notifier).searchInThisArea(_scope);
   }
 
   @override
@@ -66,7 +68,7 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
       bottomPadding = 16;
     }
     final ValueNotifier<bool> visibleSearchArea = ValueNotifier(false);
-    ref.watch(searchInRectProvider.select((value) {
+    ref.watch(searchInRectProvider(SearchScopeEnum.map.value).select((value) {
       if (visibleSearchArea.value != value.isButtonVisible) {
         visibleSearchArea.value = value.isButtonVisible;
       }

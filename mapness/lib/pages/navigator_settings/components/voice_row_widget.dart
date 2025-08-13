@@ -44,11 +44,11 @@ class VoiceRowWidget extends ConsumerWidget {
           vertical: Spacing.$2x,
           horizontal: Spacing.$4x,
         ),
-        wrapperColor: context.colorsV2.backgroundSurface1,
+        wrapperColor: context.colors.backgroundSurface1,
         wrapperEnabled: true,
         title: localizeVoicePackageName(context, packageInfo.name),
-        titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
-          color: context.colorsV2.foregroundDefault,
+        titleStyle: context.textStyles.bodyLargeRegular.copyWith(
+          color: context.colors.foregroundDefault,
         ),
         customActionWidget: Builder(
           builder: (context) {
@@ -58,22 +58,22 @@ class VoiceRowWidget extends ConsumerWidget {
                   Loading(
                     value: (progress / 100).toDouble(),
                     title: '$progress%',
-                    color: context.colorsV2.accentDefault,
-                    backgroundColor: context.colorsV2.accentDefault.withOpacity(0.1),
+                    color: context.colors.accentDefault,
+                    backgroundColor: context.colors.accentDefault.withOpacity(0.1),
                   ),
                 ],
               );
             } else if (selectedVoice == package.id) {
               return Icon(
                 SystemIcons.checkmark,
-                color: context.colorsV2.successDefault,
+                color: context.colors.successDefault,
               );
             } else if (packageInfo.installed) {
               return Spacing.$6x.heightBox;
             } else {
               return Icon(
                 SystemIcons.download,
-                color: context.colorsV2.accentDefault,
+                color: context.colors.accentDefault,
               );
             }
           },

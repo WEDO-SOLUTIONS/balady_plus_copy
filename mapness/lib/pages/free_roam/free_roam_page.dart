@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
@@ -26,6 +27,8 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 
 @RoutePage()
 class FreeRoamPage extends ConsumerStatefulWidget {
+  static const landscapeWidth = 370.0;
+
   const FreeRoamPage({
     super.key,
   });
@@ -34,7 +37,7 @@ class FreeRoamPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => FreeRoamPageState();
 }
 
-class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
+class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingObserver {
   static const padding = EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x);
 
   bool isLoading = true;
@@ -53,6 +56,16 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance
+      ..addPostFrameCallback((_) async {
+        await SystemChrome.setPreferredOrientations([
+          DeviceOrientation.landscapeRight,
+          DeviceOrientation.landscapeLeft,
+          DeviceOrientation.portraitUp,
+          DeviceOrientation.portraitDown,
+        ]);
+      })
+      ..addObserver(this);
     ref.read(freeRoamManagerProvider.notifier).initFreeRoam().then((_) {
       setState(() {
         isLoading = false;
@@ -65,6 +78,13 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    final x = MediaQuery.of(context).orientation == Orientation.landscape ? 0.6 : 0.5;
+    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
+    super.didChangeDependencies();
+  }
+
+  @override
   void deactivate() {
     ref.read(freeRoamManagerProvider.notifier).deactivate();
     super.deactivate();
@@ -72,6 +92,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    WidgetsBinding.instance.removeObserver(this);
     WakelockPlus.disable();
     _naviEventsListener?.cancel();
     super.dispose();
@@ -100,6 +126,8 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   @override
   Widget build(BuildContext context) {
     final systemDirectionality = Directionality.of(context);
+    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
+
     return SafeArea(
       bottom: false,
       child: Directionality(
@@ -139,43 +167,9 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const SizedBox(height: uikit.Spacing.$1_5x, width: double.maxFinite),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final message = ref.watch(pathNavMessageProvider);
-                      final maneuver = ref.watch(pathNavManeuverProvider);
-                      final info = ref.watch(pathNavSpeedInfoProvider);
-
-                      return Material(
-                        type: MaterialType.transparency,
-                        color: Colors.transparent,
-                        child: uikit.BaladyManeuverAndLimit(
-                          isPedestrian: false,
-                          hideSpeedLimit: info.speedLimit == null,
-                          speedInfo: uikit.LimitsModel(
-                            speed: info.speed,
-                            speedExceed: info.speedExceed,
-                            speedLimit: info.speedLimit,
-                          ),
-                          maneuver: maneuver != null
-                              ? uikit.BaladyManeuverModel(
-                                  distance: maneuver.distance,
-                                  instruction: maneuver.instruction?.toUIKit(),
-                                  roadName: maneuver.roadName,
-                                  unit: maneuver.unit,
-                                )
-                              : null,
-                          message: message != null && message.state != PathNavMessageState.reroute
-                              ? uikit.ManeuverMessageModel(
-                                  comment: message.state.toMessage(context.l10n),
-                                  state: message.state.toUIKit(),
-                                )
-                              : null,
-                        ),
-                      );
-                    },
-                  ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+                  child: ManeuverWidget(),
                 ),
                 const SizedBox(height: uikit.Spacing.$3x),
                 Expanded(
@@ -192,37 +186,53 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                           isControlsActive = true;
                           startControlsDisapearTimer();
                         },
-                        child: const Padding(
-                          padding: padding,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              TrafficParkingControl(),
-                              SizedBox(height: uikit.Spacing.$2x),
-                              DimensionControl(),
-                              Spacer(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IndoorControl(),
-                                  ZoomControl(),
-                                ],
-                              ),
-                              Spacer(),
-                              CompassControl(),
-                              SizedBox(height: uikit.Spacing.$2x),
-                              FollowControl(),
-                              SizedBox(height: uikit.Spacing.$3x),
-                            ],
-                          ),
-                        ),
+                        child: Padding(
+                            padding: padding,
+                            child: isPortrait
+                                ? const Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      TrafficParkingControl(),
+                                      SizedBox(height: uikit.Spacing.$2x),
+                                      DimensionControl(),
+                                      Spacer(),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          IndoorControl(),
+                                          ZoomControl(),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      CompassControl(),
+                                      SizedBox(height: uikit.Spacing.$2x),
+                                      FollowControl(),
+                                      SizedBox(height: uikit.Spacing.$3x),
+                                    ],
+                                  )
+                                : const Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Spacer(),
+                                          Padding(
+                                            padding: padding,
+                                            child: IndoorControl(),
+                                          ),
+                                          Spacer(flex: 3),
+                                        ],
+                                      ),
+                                    ],
+                                  )),
                       ),
                     ),
                   ),
                 ),
                 Directionality(
                   textDirection: systemDirectionality,
-                  child: Center(
+                  child: Align(
+                    alignment: isPortrait ? AlignmentDirectional.center : AlignmentDirectional.bottomStart,
                     child: RoadPanel(
                       isLoading: isLoading,
                       onSearch: () => context.router.push(NaviSearchRoute()),
@@ -237,6 +247,45 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
             const ParkingBottomSheetPage(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ManeuverWidget extends ConsumerWidget {
+  const ManeuverWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final message = ref.watch(pathNavMessageProvider);
+    final maneuver = ref.watch(pathNavManeuverProvider);
+    final info = ref.watch(pathNavSpeedInfoProvider);
+
+    return Material(
+      type: MaterialType.transparency,
+      color: Colors.transparent,
+      child: uikit.BaladyManeuverAndLimit(
+        isPedestrian: false,
+        hideSpeedLimit: info.speedLimit == null,
+        speedInfo: uikit.LimitsModel(
+          speed: info.speed,
+          speedExceed: info.speedExceed,
+          speedLimit: info.speedLimit,
+        ),
+        maneuver: maneuver != null
+            ? uikit.BaladyManeuverModel(
+                distance: maneuver.distance,
+                instruction: maneuver.instruction?.toUIKit(),
+                roadName: maneuver.roadName,
+                unit: maneuver.unit,
+              )
+            : null,
+        message: message != null && message.state != PathNavMessageState.reroute
+            ? uikit.ManeuverMessageModel(
+                comment: message.state.toMessage(context.l10n),
+                state: message.state.toUIKit(),
+              )
+            : null,
       ),
     );
   }

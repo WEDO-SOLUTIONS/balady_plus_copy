@@ -90,7 +90,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
 
     // We check that our banner is not displayed for pedestrians and should be shown after 15 seconds,
     // when there are 500 m left to the point.
-    if (distance != null && distance > 500 || RouteSearchOptionsMessage.pedestrian == widget.navigatorType) {
+    if (distance != null && distance > 500 || widget.navigatorType != RouteSearchOptionsMessage.car) {
       return const SizedBox.shrink();
     }
 
@@ -142,7 +142,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                       widthFactor: animationValue,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: context.colorsV3.accentActive,
+                          color: context.colors.accentActive,
                           borderRadius: BorderRadius.only(
                             topLeft: isRtl
                                 ? Radius.circular(cornerAnimationValue * RadiusBorder.l)
@@ -168,7 +168,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          color: context.colorsV3.backgroundSurface1,
+                          color: context.colors.backgroundSurface1,
                           borderRadius: borderSizeS,
                         ),
                         padding: const EdgeInsets.all(Spacing.$2x),
@@ -178,15 +178,14 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                       Expanded(
                         child: Text(
                           context.l10n.showParkingSuggestions,
-                          style:
-                              context.textStyleV3.bodyLargeMedium.copyWith(color: context.colorsV3.backgroundSurface1),
+                          style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.backgroundSurface1),
                         ),
                       ),
                       AppButton(
                         size: ButtonSize.small,
-                        buttonColorScheme: ButtonColorScheme.primary,
+                        buttonColorScheme: ButtonColorScheme.accent,
                         primaryIcon: SystemIcons.close,
-                        iconColor: context.colorsV2.staticWhite,
+                        iconColor: context.colors.staticWhite,
                         color: Colors.transparent,
                         onTap: () {
                           _animationController.value = 1.0;

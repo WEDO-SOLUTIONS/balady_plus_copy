@@ -41,7 +41,7 @@ class ContentRowExpandableTmp extends StatelessWidget {
               padding: const EdgeInsets.only(top: Spacing.$3x),
               child: ExpansionWidget(
                 duration: const Duration(milliseconds: 100),
-                titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRowV2(
+                titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRow(
                   text: const ContentRowTextOptions(title: ''),
                   trailing: ContentRowCustomTrailingOptions(
                     builder: (context) => CupertinoButton(
@@ -54,8 +54,8 @@ class ContentRowExpandableTmp extends StatelessWidget {
                           if (count != null)
                             Text(
                               count.toString(),
-                              style: context.textStyleV3.bodySmallSemiBold.copyWith(
-                                color: context.colorsV3.foregroundMuted,
+                              style: context.textStyles.bodySmallSemiBold.copyWith(
+                                color: context.colors.foregroundMuted,
                               ),
                             ),
                           if (trailing != null) trailing!,
@@ -86,7 +86,7 @@ class ContentRowExpandableTmp extends StatelessWidget {
             Padding(
               // padding + text + icon + padding
               padding: const EdgeInsetsDirectional.only(end: Spacing.$4x + Spacing.$2x + AppSizes.xxs + Spacing.$4x),
-              child: ContentRowV2(
+              child: ContentRow(
                 supportTitleRTL: supportTitleRTL,
                 onTap: onTitleTap,
                 leading: leading,
