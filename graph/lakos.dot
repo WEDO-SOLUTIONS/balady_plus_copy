@@ -3457,6 +3457,7 @@ digraph "" {
   "/lib/features/lifestyle_layers/providers/layers_controls.dart" -> "/lib/features/lifestyle_layers/providers/layers_state.dart";
   "/lib/features/lifestyle_layers/providers/layers_controls.dart" -> "/lib/features/lifestyle_layers/providers/lifestyle_repository.dart";
   "/lib/features/lifestyle_layers/providers/layers_controls.dart" -> "/lib/features/metro/metro_layer_provider.dart";
+  "/lib/features/lifestyle_layers/providers/layers_controls.dart" -> "/lib/features/metro/metro_layer_repository.dart";
   "/lib/features/lifestyle_layers/providers/layers_controls.dart" -> "/lib/features/poi_card/provider/poi_card_closing.dart";
   "/lib/features/lifestyle_layers/providers/layers_controls.dart" -> "/lib/shared/config/environment_config.dart";
   "/lib/features/lifestyle_layers/providers/layers_controls.dart" -> "/lib/shared/constants/metrics_constants.dart";
@@ -4958,6 +4959,7 @@ digraph "" {
   "/lib/pages/stories/stories_page.dart" -> "/lib/features/stories/ui/story_args_provider.dart";
   "/lib/pages/stories/stories_page.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/pages/stories/stories_page.dart" -> "/lib/shared/lib/urbi_metrics.dart";
+  "/lib/pages/map/map_page.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/map/map_page.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/pages/map/map_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/map/map_page.dart" -> "/lib/shared/providers/map/selected_marker.dart";
