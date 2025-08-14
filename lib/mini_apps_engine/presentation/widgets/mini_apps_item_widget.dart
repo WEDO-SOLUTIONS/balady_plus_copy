@@ -23,7 +23,7 @@ class MiniAppsItemWidget extends StatelessWidget {
         elevation: 0.5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -32,7 +32,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                   child: ImageIconBasedTypeWidget(
                     icon: miniApp.logoKey!,
                     type: miniApp.cdnLogoRef?.split(".").last,
-                    iconSize: 48,
+                    iconSize: 55,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -43,7 +43,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                     children: [
                       Text(
                         miniApp.serviceName ?? '',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                         maxLines: 1,
@@ -54,7 +54,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                         miniApp.description?.isNotEmpty == true
                             ? miniApp.description!
                             : '',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Colors.grey[600],
                             ),
                       ),
