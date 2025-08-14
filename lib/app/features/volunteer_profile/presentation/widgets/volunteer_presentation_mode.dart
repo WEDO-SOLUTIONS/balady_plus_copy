@@ -11,7 +11,6 @@ import '../bloc/volunteer_profile_bloc.dart';
 import '../bloc/volunteer_profile_event.dart';
 import '../bloc/volunteer_profile_state.dart';
 
-
 class VolunteerPresentationMode extends StatefulWidget {
   final bool isEditMode;
 
@@ -87,61 +86,31 @@ class VolunteerPresentationMode extends StatefulWidget {
 class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   // Track expanded state for each section
   bool _isPersonalInfoExpanded = true;
-  bool _isScientificInfoExpanded = false;
-  bool _isVolunteeringInterestsExpanded = false;
-  bool _isMedicalInfoExpanded = false;
-  bool _isSocialMediaInfoExpanded = false;
+  final bool _isScientificInfoExpanded = false;
+  final bool _isVolunteeringInterestsExpanded = false;
+  final bool _isMedicalInfoExpanded = false;
+  final bool _isSocialMediaInfoExpanded = false;
 
   // Edit mode state
   late bool _isEditMode;
 
-  // Store original values for cancel functionality
+  // Store original values for unified step fields only
   late String? _originalEmail;
   late String? _originalPhoneNumber;
-  late String? _originalNearbyPhoneNumber;
-  late String? _originalProfession;
-  late String? _originalScientificExperienceSummary;
-  late String? _originalXAccount;
-  late String? _originalInstagramAccount;
-  late String? _originalLinkedinAccount;
-  late String? _originalFacebookAccount;
   late String? _originalCity;
   late String? _originalCityId;
   late String? _originalRegion;
   late String? _originalRegionId;
 
-  // Store original dropdown values
+  // Store original dropdown values for unified step
   late String? _originalEducationalQualification;
   late String? _originalEducationalQualificationId;
-  late String? _originalSpecialization;
-  late String? _originalSpecializationId;
-  late String? _originalLanguage;
-  late String? _originalLanguageId;
-  late String? _originalWorkExperience;
-  late String? _originalSkills;
-  late String? _originalSkillsIds;
-  late String? _originalVolunteeringLevel;
-  late String? _originalVolunteeringLevelId;
-  late String? _originalInterests;
   late String? _originalVolunteeringWorkField;
   late String? _originalVolunteeringWorkFieldId;
-  late bool _originalIsIndividualSelected;
-  late bool _originalIsGroupSelected;
-  late String? _originalBloodType;
-  late String? _originalBloodTypeId;
-  late String? _originalDisease;
-  late String? _originalDiseaseId;
 
-  // Form controllers for editable fields
+  // Form controllers for unified step fields only
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
-  late TextEditingController _nearbyPhoneController;
-  late TextEditingController _professionController;
-  late TextEditingController _scientificExperienceController;
-  late TextEditingController _xAccountController;
-  late TextEditingController _instagramController;
-  late TextEditingController _linkedinController;
-  late TextEditingController _facebookController;
 
   final _formKey = GlobalKey<FormState>();
   bool _isFormValid = false;
@@ -157,29 +126,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _validateForm());
     _emailController.addListener(_validateForm);
     _phoneController.addListener(_validateForm);
-    _nearbyPhoneController.addListener(_validateForm);
-    _professionController.addListener(_validateForm);
-    _scientificExperienceController.addListener(_validateForm);
   }
 
   void _initializeControllers() {
     final state = sl<VolunteerProfileBloc>().state;
 
-    // Initialize controllers
+    // Initialize controllers for unified step fields only
     _emailController = TextEditingController(text: state.email ?? '');
     _phoneController = TextEditingController(text: state.phoneNumber ?? '');
-    _nearbyPhoneController =
-        TextEditingController(text: state.nearbyPhoneNumber ?? '');
-    _professionController = TextEditingController(text: state.profession ?? '');
-    _scientificExperienceController =
-        TextEditingController(text: state.scientificExperienceSummary ?? '');
-    _xAccountController = TextEditingController(text: state.xAccount ?? '');
-    _instagramController =
-        TextEditingController(text: state.instagramAccount ?? '');
-    _linkedinController =
-        TextEditingController(text: state.linkedinAccount ?? '');
-    _facebookController =
-        TextEditingController(text: state.facebookAccount ?? '');
 
     // Store original values if in edit mode
     if (_isEditMode) {
@@ -189,43 +143,19 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   }
 
   void _storeOriginalValues(VolunteerProfileState state) {
+    // Store only unified step fields
     _originalEmail = state.email;
     _originalPhoneNumber = state.phoneNumber;
-    _originalNearbyPhoneNumber = state.nearbyPhoneNumber;
-    _originalProfession = state.profession;
-    _originalScientificExperienceSummary = state.scientificExperienceSummary;
-    _originalXAccount = state.xAccount;
-    _originalInstagramAccount = state.instagramAccount;
-    _originalLinkedinAccount = state.linkedinAccount;
-    _originalFacebookAccount = state.facebookAccount;
     _originalCity = state.city;
     _originalCityId = state.cityId;
     _originalRegion = state.region;
     _originalRegionId = state.regionId;
 
-    // Store original dropdown values
+    // Store original dropdown values for unified step
     _originalEducationalQualification = state.educationalQualification;
     _originalEducationalQualificationId = state.educationalQualificationId;
-    _originalSpecialization = state.specialization;
-    _originalSpecializationId = state.specializationId;
-    _originalLanguage = state.language;
-    _originalLanguageId = state.languageId;
-    _originalWorkExperience = state.workExperience;
-    _originalSkills = state.skills.isNotEmpty ? state.skills.join(', ') : null;
-    _originalSkillsIds =
-        state.skillsIds.isNotEmpty ? state.skillsIds.first : null;
-    _originalVolunteeringLevel = state.volunteeringLevel;
-    _originalVolunteeringLevelId = state.volunteeringLevelId;
-    _originalInterests =
-        state.interests.isNotEmpty ? state.interests.join(', ') : null;
     _originalVolunteeringWorkField = state.volunteeringWorkField;
     _originalVolunteeringWorkFieldId = state.volunteeringWorkFieldId;
-    _originalIsIndividualSelected = state.isIndividualSelected;
-    _originalIsGroupSelected = state.isGroupSelected;
-    _originalBloodType = state.bloodType;
-    _originalBloodTypeId = state.bloodTypeId;
-    _originalDisease = state.disease;
-    _originalDiseaseId = state.diseaseId;
 
     // Debug: Print original values
     print('Stored original city: $_originalCity, cityId: $_originalCityId');
@@ -237,9 +167,6 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
   void dispose() {
     _emailController.removeListener(_validateForm);
     _phoneController.removeListener(_validateForm);
-    _nearbyPhoneController.removeListener(_validateForm);
-    _professionController.removeListener(_validateForm);
-    _scientificExperienceController.removeListener(_validateForm);
     super.dispose();
   }
 
@@ -247,7 +174,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     final bloc = context.read<VolunteerProfileBloc>();
     final currentState = bloc.state;
 
-    // Update personal info with editable fields
+    // Update only unified step fields
     bloc
       ..add(UpdatePersonalInfo(
         email: _emailController.text,
@@ -255,32 +182,36 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         nationalId: currentState.nationalId,
         gender: currentState.gender,
         maritalStatus: currentState.maritalStatus,
-        nearbyPhoneNumber: _nearbyPhoneController.text,
+        nearbyPhoneNumber: currentState.nearbyPhoneNumber,
         region: currentState.region,
         regionId: currentState.regionId,
         city: currentState.city,
         cityId: currentState.cityId,
       ))
 
-      // Update scientific info
+      // Update educational qualification
       ..add(UpdateScientificInfo(
         educationalQualification: currentState.educationalQualification,
         educationalQualificationId: currentState.educationalQualificationId,
         specialization: currentState.specialization,
         specializationId: currentState.specializationId,
-        profession: _professionController.text,
+        profession: currentState.profession,
         workExperience: currentState.workExperience,
         language: currentState.language,
         languageId: currentState.languageId,
-        scientificExperienceSummary: _scientificExperienceController.text,
+        scientificExperienceSummary: currentState.scientificExperienceSummary,
       ))
 
-      // Update social media info
-      ..add(UpdateSocialMediaInfo(
-        xAccount: _xAccountController.text,
-        instagramAccount: _instagramController.text,
-        linkedinAccount: _linkedinController.text,
-        facebookAccount: _facebookController.text,
+      // Update volunteering work field
+      ..add(UpdateVolunteeringInterests(
+        skills: currentState.skills,
+        skillsIds: currentState.skillsIds,
+        volunteeringLevel: currentState.volunteeringLevel,
+        volunteeringLevelId: currentState.volunteeringLevelId,
+        volunteeringWorkField: currentState.volunteeringWorkField,
+        volunteeringWorkFieldId: currentState.volunteeringWorkFieldId,
+        isIndividualSelected: currentState.isIndividualSelected,
+        isGroupSelected: currentState.isGroupSelected,
       ))
 
       // Update the profile on the server without triggering success dialog
@@ -308,22 +239,14 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
     print(
         'Restoring region to: $_originalRegion, regionId: $_originalRegionId');
 
-    // Reset controllers to original values
+    // Reset controllers to original values (only unified step fields)
     _emailController.text = _originalEmail ?? '';
     _phoneController.text = _originalPhoneNumber ?? '';
-    _nearbyPhoneController.text = _originalNearbyPhoneNumber ?? '';
-    _professionController.text = _originalProfession ?? '';
-    _scientificExperienceController.text =
-        _originalScientificExperienceSummary ?? '';
-    _xAccountController.text = _originalXAccount ?? '';
-    _instagramController.text = _originalInstagramAccount ?? '';
-    _linkedinController.text = _originalLinkedinAccount ?? '';
-    _facebookController.text = _originalFacebookAccount ?? '';
 
-    // Reset bloc state to original values
+    // Reset bloc state to original values (only unified step fields)
     final bloc = context.read<VolunteerProfileBloc>();
 
-    // Update personal info with ALL original values
+    // Update personal info with original values
     bloc
       ..add(UpdatePersonalInfo(
         email: _originalEmail,
@@ -331,52 +254,36 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         nationalId: bloc.state.nationalId,
         gender: bloc.state.gender,
         maritalStatus: bloc.state.maritalStatus,
-        nearbyPhoneNumber: _originalNearbyPhoneNumber,
+        nearbyPhoneNumber: bloc.state.nearbyPhoneNumber,
         region: _originalRegion,
         regionId: _originalRegionId,
         city: _originalCity,
         cityId: _originalCityId,
       ))
 
-      // Update scientific info
+      // Update educational qualification
       ..add(UpdateScientificInfo(
         educationalQualification: _originalEducationalQualification,
         educationalQualificationId: _originalEducationalQualificationId,
-        specialization: _originalSpecialization,
-        specializationId: _originalSpecializationId,
-        profession: _originalProfession,
-        workExperience: _originalWorkExperience,
-        language: _originalLanguage,
-        languageId: _originalLanguageId,
-        scientificExperienceSummary: _originalScientificExperienceSummary,
+        specialization: bloc.state.specialization,
+        specializationId: bloc.state.specializationId,
+        profession: bloc.state.profession,
+        workExperience: bloc.state.workExperience,
+        language: bloc.state.language,
+        languageId: bloc.state.languageId,
+        scientificExperienceSummary: bloc.state.scientificExperienceSummary,
       ))
 
-      // Update volunteering interests
+      // Update volunteering work field
       ..add(UpdateVolunteeringInterests(
-        skills: _originalSkills != null ? [_originalSkills!] : [],
-        skillsIds: _originalSkillsIds != null ? [_originalSkillsIds!] : [],
-        volunteeringLevel: _originalVolunteeringLevel,
-        volunteeringLevelId: _originalVolunteeringLevelId,
+        skills: bloc.state.skills,
+        skillsIds: bloc.state.skillsIds,
+        volunteeringLevel: bloc.state.volunteeringLevel,
+        volunteeringLevelId: bloc.state.volunteeringLevelId,
         volunteeringWorkField: _originalVolunteeringWorkField,
         volunteeringWorkFieldId: _originalVolunteeringWorkFieldId,
-        isIndividualSelected: _originalIsIndividualSelected,
-        isGroupSelected: _originalIsGroupSelected,
-      ))
-
-      // Update medical info
-      ..add(UpdateMedicalInfo(
-        bloodType: _originalBloodType,
-        bloodTypeId: _originalBloodTypeId,
-        disease: _originalDisease,
-        diseaseId: _originalDiseaseId,
-      ))
-
-      // Update social media info
-      ..add(UpdateSocialMediaInfo(
-        xAccount: _originalXAccount,
-        instagramAccount: _originalInstagramAccount,
-        linkedinAccount: _originalLinkedinAccount,
-        facebookAccount: _originalFacebookAccount,
+        isIndividualSelected: bloc.state.isIndividualSelected,
+        isGroupSelected: bloc.state.isGroupSelected,
       ));
   }
 
@@ -422,7 +329,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
   void _validateForm() {
     final state = context.read<VolunteerProfileBloc>().state;
-    // Personal Info
+    // Unified Step validation - only required fields
     final isEmailValid = Helpers.validateEmail(_emailController.text) == null &&
         _emailController.text.trim().isNotEmpty;
     final isPhoneValid =
@@ -430,37 +337,20 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             _phoneController.text.trim().isNotEmpty;
     final isRegionValid = state.regionId != null && state.regionId!.isNotEmpty;
     final isCityValid = state.cityId != null && state.cityId!.isNotEmpty;
-    // Scientific Info
     final isQualificationValid = state.educationalQualificationId != null &&
         state.educationalQualificationId!.isNotEmpty;
-    final isSpecializationValid =
-        state.specializationId != null && state.specializationId!.isNotEmpty;
-    final isLanguageValid =
-        state.languageId != null && state.languageId!.isNotEmpty;
-    final isScientificSummaryValid =
-        _scientificExperienceController.text.trim().isNotEmpty;
-    // Volunteering Interests
-    final isSkillsValid =
-        state.skillsIds.isNotEmpty && state.skillsIds.first.isNotEmpty;
-    final isVolunteeringLevelValid = state.volunteeringLevelId != null &&
-        state.volunteeringLevelId!.isNotEmpty;
     final isVolunteeringWorkFieldValid =
         state.volunteeringWorkFieldId != null &&
             state.volunteeringWorkFieldId!.isNotEmpty;
-    final isTypeValid = state.isIndividualSelected || state.isGroupSelected;
-    // All required fields must be valid
+
+    // All required unified step fields must be valid
     final valid = isEmailValid &&
         isPhoneValid &&
         isRegionValid &&
         isCityValid &&
         isQualificationValid &&
-        isSpecializationValid &&
-        isLanguageValid &&
-        isScientificSummaryValid &&
-        isSkillsValid &&
-        isVolunteeringLevelValid &&
-        isVolunteeringWorkFieldValid &&
-        isTypeValid;
+        isVolunteeringWorkFieldValid;
+
     if (_isFormValid != valid) {
       setState(() {
         _isFormValid = valid;
@@ -476,14 +366,6 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
           if (_isEditMode) {
             _emailController.text = state.email ?? '';
             _phoneController.text = state.phoneNumber ?? '';
-            _nearbyPhoneController.text = state.nearbyPhoneNumber ?? '';
-            _professionController.text = state.profession ?? '';
-            _scientificExperienceController.text =
-                state.scientificExperienceSummary ?? '';
-            _xAccountController.text = state.xAccount ?? '';
-            _instagramController.text = state.instagramAccount ?? '';
-            _linkedinController.text = state.linkedinAccount ?? '';
-            _facebookController.text = state.facebookAccount ?? '';
             // Validate form on any Bloc state change (for dropdowns/checkboxes)
             // _validateForm();
           }
@@ -512,16 +394,18 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Personal Information Section
+                        // Personal Information Section - Only Unified Step Fields
                         _buildExpandableSection(
                           title: 'lbl_personal_info'.tr(),
                           isExpanded: _isPersonalInfoExpanded,
                           onToggle: () => setState(() =>
                               _isPersonalInfoExpanded =
                                   !_isPersonalInfoExpanded),
-                          children: _buildPersonalInfoRows(state),
+                          children: _buildUnifiedStepRows(state),
                         ),
 
+                        // Commented out other sections - keeping for reference
+                        /*
                         const SizedBox(height: 16),
 
                         // Scientific Information Section
@@ -568,6 +452,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                                   !_isSocialMediaInfoExpanded),
                           children: _buildSocialMediaRows(state),
                         ),
+                        */
 
                         const SizedBox(height: 24), // Bottom spacing
                       ],
@@ -581,6 +466,85 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         ),
       );
 
+  // New method to build unified step rows with only required fields
+  List<Widget> _buildUnifiedStepRows(VolunteerProfileState state) => [
+        // Read-only fields (locked)
+        _buildInfoRow('full_name'.tr(), state.fullName ?? '', isReadOnly: true),
+        _buildInfoRow('national_id'.tr(), state.nationalId ?? '',
+            isReadOnly: true),
+
+        // Editable fields
+        _buildEditableInfoRow('email'.tr(), _emailController,
+            keyboardType: TextInputType.emailAddress),
+        _buildEditableInfoRow('personal_mobile'.tr(), _phoneController,
+            keyboardType: TextInputType.phone),
+
+        // Location fields - editable in edit mode via dropdowns
+        _buildLocationRow('region'.tr(), state.region ?? '',
+            isRegion: true, state: state),
+        _buildLocationRow('city'.tr(), state.city ?? '',
+            isRegion: false, state: state),
+
+        // Educational Qualification - dropdown in edit mode
+        _buildDropdownOrInfoRow(
+          'educational_qualification_required'.tr(),
+          state.educationalQualification ?? 'not_selected'.tr(),
+          _isEditMode ? state.qualificationsList : null,
+          state.educationalQualificationId,
+          (value) {
+            if (value != null) {
+              final selectedQualification = state.qualificationsList.firstWhere(
+                (qualification) => qualification.tid.toString() == value,
+              );
+              context.read<VolunteerProfileBloc>().add(
+                    UpdateScientificInfo(
+                      educationalQualification: selectedQualification.name,
+                      educationalQualificationId: value,
+                      specialization: state.specialization,
+                      specializationId: state.specializationId,
+                      profession: state.profession,
+                      workExperience: state.workExperience,
+                      language: state.language,
+                      languageId: state.languageId,
+                      scientificExperienceSummary:
+                          state.scientificExperienceSummary,
+                    ),
+                  );
+            }
+          },
+        ),
+
+        // Volunteering Work Field - dropdown in edit mode
+        _buildDropdownOrInfoRow(
+          'volunteering_work_field_required'.tr(),
+          state.volunteeringWorkField ?? 'not_selected'.tr(),
+          _isEditMode ? state.volunteeringFieldsList : null,
+          state.volunteeringWorkFieldId,
+          (value) {
+            if (value != null) {
+              final selectedField = state.volunteeringFieldsList.firstWhere(
+                (field) => field.tid.toString() == value,
+              );
+              context.read<VolunteerProfileBloc>().add(
+                    UpdateVolunteeringInterests(
+                      skills: state.skills,
+                      skillsIds: state.skillsIds,
+                      volunteeringLevel: state.volunteeringLevel,
+                      volunteeringLevelId: state.volunteeringLevelId,
+                      volunteeringWorkField: selectedField.name,
+                      volunteeringWorkFieldId: value,
+                      isIndividualSelected: state.isIndividualSelected,
+                      isGroupSelected: state.isGroupSelected,
+                    ),
+                  );
+            }
+          },
+          isLast: true,
+        ),
+      ];
+
+  // Commented out old personal info rows - replaced with unified step
+  /*
   List<Widget> _buildPersonalInfoRows(VolunteerProfileState state) => [
         // Read-only fields (locked)
         _buildInfoRow('national_id'.tr(), state.nationalId ?? '',
@@ -605,9 +569,6 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             keyboardType: TextInputType.emailAddress),
         _buildEditableInfoRow('personal_mobile'.tr(), _phoneController,
             keyboardType: TextInputType.phone),
-        _buildEditableInfoRow(
-            'relative_phone_number'.tr(), _nearbyPhoneController,
-            keyboardType: TextInputType.phone),
 
         // Location fields - editable in edit mode via dropdowns
         _buildLocationRow('region'.tr(), state.region ?? '',
@@ -615,7 +576,10 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         _buildLocationRow('city'.tr(), state.city ?? '',
             isRegion: false, state: state, isLast: true),
       ];
+  */
 
+  // Commented out old scientific info rows - replaced with unified step
+  /*
   List<Widget> _buildScientificInfoRows(VolunteerProfileState state) => [
         // Educational Qualification - dropdown in edit mode
         _buildDropdownOrInfoRow(
@@ -721,6 +685,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         // CV file status
         _buildCVUploadRow(state),
       ];
+  */
 
   List<Widget> _buildVolunteeringInterestsRows(VolunteerProfileState state) => [
         // Skills - dropdown in edit mode
@@ -1153,20 +1118,20 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       }
       return DropdownButtonFormField<String>(
         value: state.regionId?.isEmpty == true ? null : state.regionId,
-
         decoration: const InputDecoration(
-
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
         ),
         items: state.regionsList
             .map((region) => DropdownMenuItem<String>(
                   value: region.tid.toString(),
-                  child: Center(child: Text(region.name,style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ))),
+                  child: Center(
+                      child: Text(region.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ))),
                 ))
             .toList(),
         onChanged: (value) {
@@ -1212,12 +1177,13 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         items: state.citiesList
             .map((city) => DropdownMenuItem<String>(
                   value: city.tid.toString(),
-                  child:  Center(child: Text(city.name,style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
-                  ))),
-
+                  child: Center(
+                      child: Text(city.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ))),
                 ))
             .toList(),
         onChanged: state.regionId?.isEmpty ?? true
@@ -1525,6 +1491,8 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         ),
       );
 
+  // Commented out old social media rows - replaced with unified step
+  /*
   List<Widget> _buildSocialMediaRows(VolunteerProfileState state) {
     final List<Widget> rows = [];
 
@@ -1556,6 +1524,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
 
     return rows;
   }
+  */
 
   // Helper method to build CV upload row
   Widget _buildCVUploadRow(VolunteerProfileState state) => Container(
@@ -1629,9 +1598,9 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
                             children: [
                               const Icon(Icons.upload_file,
                                   color: Colors.white, size: 16),
-
                               Padding(
-                                padding: const EdgeInsets.only(left: 8.0,right: 8),
+                                padding:
+                                    const EdgeInsets.only(left: 8.0, right: 8),
                                 child: Text(
                                   state.cvFileName != null
                                       ? 'change_cv'.tr()
