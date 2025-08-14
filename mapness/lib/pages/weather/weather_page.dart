@@ -7,7 +7,6 @@ import 'package:mapness/features/weather/provider/forecast_weather_provider.dart
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
-import 'package:mapness/widgets/weather/weather_controls.dart';
 import 'package:mapness/widgets/weather/weather_dashboard.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -42,12 +41,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
         value: SystemUiOverlayStyle.dark,
         child: Material(
           type: MaterialType.transparency,
-          child: Stack(
-            children: [
-              WeatherControls(bottomSheetController: _bottomSheetController),
-              WeatherDashboard(bottomSheetController: _bottomSheetController)
-            ],
-          ),
+          child: WeatherDashboard(bottomSheetController: _bottomSheetController),
         ),
       );
     } else {

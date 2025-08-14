@@ -38,8 +38,6 @@ class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsB
     );
   }
 
-  Widget get spaceWidget => SizedBox(height: widget.bottomSheetController.sheetHeight);
-
   @override
   Widget build(BuildContext context) => Visibility(
         visible: widget.bottomSheetController.state != ThreeStateSheet.expanded,
@@ -52,11 +50,10 @@ class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsB
             ).copyWith(bottom: Spacing.$4x),
             child: Row(
               children: [
-                Column(
+                const Column(
                   children: [
-                    const Spacer(),
-                    const Legend(),
-                    spaceWidget,
+                    Spacer(),
+                    Legend(),
                   ],
                 ),
                 const Spacer(),
@@ -71,7 +68,7 @@ class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsB
                     const CompassControl(),
                     Spacing.$2x.heightBox,
                     const FollowControl(),
-                    spaceWidget
+                    Spacing.$2x.heightBox,
                   ],
                 ),
               ],

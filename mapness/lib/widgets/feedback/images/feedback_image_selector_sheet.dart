@@ -42,7 +42,6 @@ class FeedbackImageSelectorSheet extends HookWidget {
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
                 onTap: context.router.popForced,
-                innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
               ),
             ),
           ),

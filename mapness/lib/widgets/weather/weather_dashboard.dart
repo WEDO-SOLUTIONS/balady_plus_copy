@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/widgets/weather/weather_card_header.dart';
+import 'package:mapness/widgets/weather/weather_controls.dart';
 import 'package:mapness/widgets/weather/weather_day_card.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -23,6 +24,10 @@ class WeatherDashboard extends ConsumerStatefulWidget {
 
 class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
   final cardKey = GlobalKey();
+
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>(
+    (c) => c.fraction > 0.4 ? 1 - (c.fraction - 0.4) * 10 : 1.0,
+  );
 
   void _updateHeaderHeight() {
     final renderBox = cardKey.currentContext?.findRenderObject() as RenderBox?;
@@ -49,6 +54,8 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
       backgroundColor: context.colors.backgroundSurface1,
       safeAreaColor: context.colors.backgroundSurface1,
       dragger: const SheetDragger(),
+      outside: WeatherControls(bottomSheetController: widget.bottomSheetController),
+      outsideOpacityDelegate: outsideOpacityDelegate,
       sliver: SliverPersistentHeader(
         delegate: WeatherCardHeaderDelegate(
           cardKey: cardKey,
