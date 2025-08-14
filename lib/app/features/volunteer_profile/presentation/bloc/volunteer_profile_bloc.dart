@@ -682,11 +682,13 @@ class VolunteerProfileBloc
     SubmitVolunteerProfile event,
     Emitter<VolunteerProfileState> emit,
   ) async {
-    if (!state.isPersonalInfoValid ||
-        !state.isScientificInfoValid ||
-        !state.isVolunteeringInterestsValid ||
-        !state.isMedicalInfoValid ||
-        !state.isSocialMediaInfoValid) {
+    if (
+        // !state.isPersonalInfoValid ||
+        //   !state.isScientificInfoValid ||
+        //   !state.isVolunteeringInterestsValid ||
+        //   !state.isMedicalInfoValid ||
+        //   !state.isSocialMediaInfoValid ||
+        !state.isUnifiedStepValid) {
       emit(
           state.copyWith(errorMessage: 'please_fill_all_required_fields'.tr()));
       return;

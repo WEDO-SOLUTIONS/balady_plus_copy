@@ -648,18 +648,28 @@ class VolunteerProfileState extends Equatable {
     return Helpers.validateMobile(phone) == null;
   }
 
-  bool get isPersonalInfoValid =>
+    bool get isPersonalInfoValid =>
+        _isValidField(nationalId) &&
+        _isValidField(fullName) &&
+        _isValidField(firstName) &&
+        _isValidField(lastName) &&
+        _isValidField(dateOfBirth) &&
+        _isValidField(gender) &&
+        _isValidField(nationality) &&
+        isEmailValid(email) &&
+        isPhoneValid(phoneNumber) &&
+        _isValidField(regionId) &&
+        _isValidField(cityId);
+
+  bool get isUnifiedStepValid =>
       _isValidField(nationalId) &&
       _isValidField(fullName) &&
-      _isValidField(firstName) &&
-      _isValidField(lastName) &&
-      _isValidField(dateOfBirth) &&
-      _isValidField(gender) &&
-      _isValidField(nationality) &&
       isEmailValid(email) &&
       isPhoneValid(phoneNumber) &&
       _isValidField(regionId) &&
-      _isValidField(cityId);
+      _isValidField(cityId) &&
+      _isValidField(educationalQualificationId) &&
+      _isValidField(volunteeringWorkFieldId) ;
   // Note: nearbyPhoneNumber (relative phone) is optional
 
   bool get isScientificInfoValid =>
@@ -682,15 +692,17 @@ class VolunteerProfileState extends Equatable {
   bool get isCurrentStepValid {
     switch (currentStep) {
       case 0:
-        return isPersonalInfoValid;
-      case 1:
-        return isScientificInfoValid;
-      case 2:
-        return isVolunteeringInterestsValid;
-      case 3:
-        return isMedicalInfoValid;
-      case 4:
-        return isSocialMediaInfoValid;
+        return isUnifiedStepValid;
+      // case 0:
+      //   return isPersonalInfoValid;
+      // case 1:
+      //   return isScientificInfoValid;
+      // case 2:
+      //   return isVolunteeringInterestsValid;
+      // case 3:
+      //   return isMedicalInfoValid;
+      // case 4:
+      //   return isSocialMediaInfoValid;
       default:
         return false;
     }

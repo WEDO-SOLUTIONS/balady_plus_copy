@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/volunteer_profile/presentation/screens/steps/unified_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -30,20 +31,21 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
 
   // Define the list of steps
   final List<Widget> _steps = [
-    const PersonalInfoStep(),
-    const ScientificInfoStep(),
-    const VolunteeringInterestsStep(),
-    const MedicalInfoStep(),
-    const SocialMeidaInformationStep()
+     UnifiedStep(),
+    // const PersonalInfoStep(),
+    // const ScientificInfoStep(),
+    // const VolunteeringInterestsStep(),
+    // const MedicalInfoStep(),
+    // const SocialMeidaInformationStep()
   ];
 
   // Define step titles
   final List<String> _stepTitles = [
-    'lbl_personal_info',
-    'lbl_scientific_info',
-    'lbl_volunteering_interests',
-    'lbl_medical_info',
-    'lbl_social_media_info'
+    // 'lbl_personal_info',
+    // 'lbl_scientific_info',
+    // 'lbl_volunteering_interests',
+    // 'lbl_medical_info',
+    // 'lbl_social_media_info'
   ];
 
   // Get current step title
@@ -309,35 +311,35 @@ class _VolunteerProfileScreenState extends State<VolunteerProfileScreen> {
                               mainAxisSize:
                                   MainAxisSize.min, // Shrink row to fit content
                               children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 60,
-                                      height: 60,
-                                      child: CircularProgressIndicator(
-                                        // Update progress based on actual number of steps
-                                        value: (state.currentStep + 1) /
-                                            _steps.length.toDouble(),
-                                        strokeWidth: 3,
-                                        backgroundColor: Colors.grey[300],
-                                        valueColor:
-                                            const AlwaysStoppedAnimation<Color>(
-                                          Colors.blue,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      // Update step count text
-                                      '${state.currentStep + 1}/${_steps.length}', // Display current step out of total steps
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                // Stack(
+                                //   alignment: Alignment.center,
+                                //   children: [
+                                //     SizedBox(
+                                //       width: 60,
+                                //       height: 60,
+                                //       child: CircularProgressIndicator(
+                                //         // Update progress based on actual number of steps
+                                //         value: (state.currentStep + 1) /
+                                //             _steps.length.toDouble(),
+                                //         strokeWidth: 3,
+                                //         backgroundColor: Colors.grey[300],
+                                //         valueColor:
+                                //             const AlwaysStoppedAnimation<Color>(
+                                //           Colors.blue,
+                                //         ),
+                                //       ),
+                                //     ),
+                                //     Text(
+                                //       // Update step count text
+                                //       '${state.currentStep + 1}/${_steps.length}', // Display current step out of total steps
+                                //       style: const TextStyle(
+                                //         fontSize: 20,
+                                //         fontWeight: FontWeight.bold,
+                                //         color: Colors.grey,
+                                //       ),
+                                //     ),
+                                //   ],
+                                // ),
                                 const SizedBox(width: 30),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
