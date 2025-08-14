@@ -90,11 +90,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         window.isUserInteractionEnabled = true
         window.isMultipleTouchEnabled = true
 
-        mapTemplate.mapButtons = [
-            makeZoomInButton(),
-            makeZoomOutButton(),
-            makeMyLocationButton(),
-        ]
+        buildMapButtons()
 
         buildLeadButtons()
 
@@ -129,6 +125,20 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mapTemplate.leadingNavigationBarButtons = factories.map {
             function in function()
         }
+    }
+
+    private func buildMapButtons() {
+        mapTemplate.mapButtons =
+            isPanningInterfaceVisible
+            ? [
+                makeZoomInButton(),
+                makeZoomOutButton(),
+            ]
+            : [
+                makeZoomInButton(),
+                makeZoomOutButton(),
+                makeMyLocationButton(),
+            ]
     }
 
     private func navigatorStateListener(state: State) {
@@ -244,6 +254,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             makeSettingsButton(),
         ]
         buildLeadButtons()
+        buildMapButtons()
     }
 
     private func onFinishBarTap(_: CPBarButton) {
@@ -263,6 +274,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             makeMyLocationHeaderButton()
         ]
         buildLeadButtons()
+        buildMapButtons()
     }
 
     private func processDirectEvent(event: DGis.Event) {
