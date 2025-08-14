@@ -52,6 +52,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @override
   void register() {
     registerFunction(getAccessToken);
+    registerFunction(getAccessSSOToken);
     registerFunction(getCookies);
     registerFunction(getUserProfile);
     registerFunction(getAppPreferences);
@@ -74,9 +75,51 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
+  void getAccessSSOToken(dynamic msg, CompletionHandler handler) async {
+    late BaseResponse response;
+    if (CommonProperties.isLoggedInMunicipality) {
+      response = BaseResponse(
+        code: 200,
+        message: "success",
+        eventName: "getAccessToken",
+        data: AccessTokenModel(accessToken: CommonProperties.token),
+      );
+    } else {
+      final needDialog = NeedLoginDialog(
+        onSuccessLogin: (bool? isSuccess) async {
+          if (isSuccess ?? false) {
+            response = BaseResponse(
+              code: 200,
+              message: "success",
+              eventName: "getAccessToken",
+              data: AccessTokenModel(accessToken: CommonProperties.token),
+            );
+          } else {
+            response = BaseResponse(
+              code: 401,
+              eventName: "getAccessToken",
+              message: "Unauthorized",
+              data: null,
+            );
+          }
+        },
+        mainPage: RouteName.miniAppsMainScreen,
+      );
+
+      await ShowDialogOnWebView.showAlertDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        content: needDialog.content(withoutActions: Platform.isIOS),
+        actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
+      );
+    }
+    handler.complete(response.jsonEncodeModel());
+  }
+
+  @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
-    if (miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' && !CommonProperties.isLoggedInMunicipality) {
+    if (miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' &&
+        !CommonProperties.isLoggedInMunicipality) {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
           if (isSuccess ?? false) {
@@ -102,7 +145,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         content: needDialog.content(withoutActions: Platform.isIOS),
         actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
       );
-    } else if (miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true && !CommonProperties.isLoggedIn) {
+    } else if (miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true &&
+        !CommonProperties.isLoggedIn) {
       CommonFunctions.onLogin(
         mainPage: RouteName.miniAppsMainScreen,
       );
@@ -113,7 +157,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: null,
       );
     } else {
-      await sl<HomeMiniAppsListCubit>().getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!).then((result) {
+      await sl<HomeMiniAppsListCubit>()
+          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+          .then((result) {
         response = result!;
       });
     }
@@ -124,7 +170,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void getUserProfile(dynamic msg, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.userProfile.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.userProfile.name) ==
+        true) {
       if (CommonProperties.isLoggedIn) {
         if (CommonProperties.userInfo == null) {
           BaseResponse response = BaseResponse(
@@ -280,7 +327,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void navigateToSuperAppScreen(dynamic msg, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.navigateToSuperAppScreen.name) == true) {
+    if (checkAppRequirement(
+            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
+        true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
         Map<String, dynamic> data = jsonDecode(msg);
@@ -319,7 +368,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void checkPermission(dynamic data, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.checkPermission.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.checkPermission.name) ==
+        true) {
       if (data != null && data is Map) {
         String permissionName = data["permission_name"];
         bool state = false;
@@ -377,7 +427,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void getLocation(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.location.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.location.name) ==
+        true) {
       LatLng? latLng = await Helpers.getMapLocation();
       if (latLng != null) {
         BaseResponse response = BaseResponse(
@@ -431,7 +482,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           );
         } else {
           String path = image.path;
-          String fileName = path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
+          String fileName =
+              path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
           final fileBytes = await File(path).readAsBytes();
           String base64File = base64Encode(fileBytes);
           JsFilesModel file = JsFilesModel(
@@ -472,7 +524,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.camera.name) == true) {
       late BaseResponse response;
-      var fileData = await NavigationService.navigatorKey.currentState!.pushNamed(
+      var fileData =
+          await NavigationService.navigatorKey.currentState!.pushNamed(
         RouteName.vdCameraPage,
       );
       if (fileData != null) {
@@ -508,12 +561,16 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     final attachmentSource = msg["attachmentSource"];
-    final List<String>? attachmentExtension = (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>();
-    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) == true) {
+    final List<String>? attachmentExtension =
+        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>();
+    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
+        true) {
       var file = await FilePicker.platform.pickFiles(
-        type: (attachmentSource == "gallery" ? FileType.image : FileType.custom),
+        type:
+            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
         allowMultiple: false,
-        allowedExtensions: attachmentSource == "gallery" ? [] : attachmentExtension,
+        allowedExtensions:
+            attachmentSource == "gallery" ? [] : attachmentExtension,
       );
       late BaseResponse response;
       try {
@@ -524,7 +581,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName = path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
+              String fileName = path.isNotEmpty
+                  ? path.split('/').last
+                  : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
               JsFilesModel file = JsFilesModel(
@@ -532,11 +591,19 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                   fileName: fileName,
                   // fileBytes: fileBytes,
                   filePath: path);
-              response = BaseResponse(code: 200, message: "success", data: file, eventName: "openFilePicker");
+              response = BaseResponse(
+                  code: 200,
+                  message: "success",
+                  data: file,
+                  eventName: "openFilePicker");
             }
           }
         } else {
-          response = BaseResponse(code: 300, message: "Can't get file", data: null, eventName: "openFilePicker");
+          response = BaseResponse(
+              code: 300,
+              message: "Can't get file",
+              data: null,
+              eventName: "openFilePicker");
         }
       } on PlatformException catch (_) {
         response = BaseResponse(
@@ -598,7 +665,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void jsLaunchUri(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.launchUri.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.launchUri.name) ==
+        true) {
       if (msg != null && msg is Map) {
         bool canLaunch = await canLaunchUrl(Uri.parse(msg['uri']));
         if (canLaunch) {
@@ -628,7 +696,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openWebView(dynamic dataUri, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.openWebView.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.openWebView.name) ==
+        true) {
       if (dataUri != null && dataUri is Map) {
         if (dataUri["url"] != null) {
           if (dataUri["type"] == "pdf") {
@@ -647,7 +716,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               ),
             );
           } else {
-            CommonFunctions.openBaladyWebView(dataUri["url"], needLogin: dataUri["needLogin"] ?? true);
+            CommonFunctions.openBaladyWebView(dataUri["url"],
+                needLogin: dataUri["needLogin"] ?? true);
           }
         } else {
           BaseResponse response = BaseResponse(
@@ -743,7 +813,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openDirectionsMap(dynamic data, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.directionsMap.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.directionsMap.name) ==
+        true) {
       if (data != null && data is Map) {
         BaseResponse response = BaseResponse(
           code: 200,
@@ -782,7 +853,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void sendToCalender(dynamic data, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.sendToCalender.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.sendToCalender.name) ==
+        true) {
       if (data != null && data is Map) {
         BaseResponse response = BaseResponse(
           code: 200,
@@ -839,7 +911,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       try {
         final notifications = data['notifications'];
 
-        if (notifications != null && notifications is List && notifications.isNotEmpty) {
+        if (notifications != null &&
+            notifications is List &&
+            notifications.isNotEmpty) {
           final Map<String, List<Map>> notificationsByType = {};
 
           // Process and group notifications
@@ -859,8 +933,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
             // Sort notifications by date (ascending)
             notificationsForType.sort((a, b) {
-              final dateA = DateTime.tryParse(a['scheduled_date'] ?? '') ?? DateTime(2000);
-              final dateB = DateTime.tryParse(b['scheduled_date'] ?? '') ?? DateTime(2000);
+              final dateA = DateTime.tryParse(a['scheduled_date'] ?? '') ??
+                  DateTime(2000);
+              final dateB = DateTime.tryParse(b['scheduled_date'] ?? '') ??
+                  DateTime(2000);
               return dateA.compareTo(dateB);
             });
 
@@ -884,13 +960,16 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             }
 
             // If no future notification found, use the first one (for tomorrow)
-            nextNotification ??= notificationsForType.isNotEmpty ? notificationsForType.first : null;
+            nextNotification ??= notificationsForType.isNotEmpty
+                ? notificationsForType.first
+                : null;
 
             // Schedule or cancel the notification
             if (nextNotification != null) {
               final int id = nextNotification['id'] ?? 0;
               final String title = nextNotification['title'] ?? '';
-              final String scheduledDateStr = nextNotification['scheduled_date'] ?? '';
+              final String scheduledDateStr =
+                  nextNotification['scheduled_date'] ?? '';
               final bool isEnabled = nextNotification['is_enabled'] ?? false;
 
               if (isEnabled && scheduledDateStr.isNotEmpty) {
@@ -898,7 +977,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                   final scheduledDate = DateTime.parse(scheduledDateStr);
 
                   // Schedule notification using NotificationService
-                  NotificationService.showScheduledNotification(id: id, title: title, scheduledDate: scheduledDate);
+                  NotificationService.showScheduledNotification(
+                      id: id, title: title, scheduledDate: scheduledDate);
                 } catch (e) {
                   debugPrint('Error parsing date: $e');
                 }
@@ -939,10 +1019,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void downloadAndExtractInAssets(dynamic data, CompletionHandler handler) async {
+  void downloadAndExtractInAssets(
+      dynamic data, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(serviceKey, RequirementEnum.downloadAndExtractInAssets.name) == true) {
+    if (checkAppRequirement(
+            serviceKey, RequirementEnum.downloadAndExtractInAssets.name) ==
+        true) {
       if (data != null && data is Map) {
         try {
           String? exratctPath = data['pathFile'];
@@ -958,7 +1041,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               data['url'],
               onReceiveProgress: (received, total) {
                 if (total != -1) {
-                  if (kDebugMode)  print("object");
+                  if (kDebugMode) print("object");
                 }
               },
               //Received data with List<int>
@@ -999,7 +1082,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  unarchiveAndSave(String? extractPath, var zippedFile, CompletionHandler handler) async {
+  unarchiveAndSave(
+      String? extractPath, var zippedFile, CompletionHandler handler) async {
     try {
       extractPath ??= "assets/quran";
       var bytes = zippedFile.readAsBytesSync();
@@ -1008,7 +1092,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       int counter = 0;
       for (var file in archive) {
         if (file.isFile && !file.name.contains("__MACOSX")) {
-          var outFile = File('${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
+          var outFile = File(
+              '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
           outFile = await outFile.create(recursive: true);
           if (counter == 0) {
             filesPath = outFile.path;
@@ -1019,7 +1104,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       }
 
       if (filesPath != null) {
-        filesPath = filesPath.replaceAll("${CommonProperties.currentLocalServerDirectory}/assets/", "");
+        filesPath = filesPath.replaceAll(
+            "${CommonProperties.currentLocalServerDirectory}/assets/", "");
         final lastIndex = filesPath.lastIndexOf('/');
         if (lastIndex != -1) {
           filesPath = filesPath.substring(0, lastIndex);
