@@ -437,13 +437,19 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                       hintText: 'region'.tr(),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0)),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 15.0),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12.0),
                     ),
                     items: state.regionsList
                         .map((region) => DropdownMenuItem<String>(
                               value: region.tid.toString(),
-                              child: Text(region.name),
+                              child: Center(
+                                  child: Text(region.name,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ))),
                             ))
                         .toList(),
                     onChanged: (value) => _onRegionChanged(value, state),
@@ -471,13 +477,19 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                       hintText: 'city'.tr(),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0)),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 15.0),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 12.0),
                     ),
                     items: state.citiesList
                         .map((city) => DropdownMenuItem<String>(
                               value: city.tid.toString(),
-                              child: Text(city.name),
+                              child: Center(
+                                  child: Text(city.name,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ))),
                             ))
                         .toList(),
                     onChanged: (value) => _onCityChanged(value, state),

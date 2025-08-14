@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 import '../../bloc/volunteer_profile_bloc.dart';
 import '../../bloc/volunteer_profile_event.dart';
 import '../../bloc/volunteer_profile_state.dart';
@@ -31,7 +30,7 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                 ),
               ),
               Text(
-                'please_fill_required_data'.tr(),
+                'lbl_fill_required_fields'.tr(),
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -66,14 +65,20 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                   items: state.bloodTypesList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child: Text('no_blood_types_available'.tr()),
-                          )
+          child: Center(child: Text('no_blood_types_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                          )
                         ]
                       : state.bloodTypesList
                           .map((bloodType) => DropdownMenuItem<String>(
                                 value: bloodType.tid.toString(),
-                                child: Text(bloodType.name),
-                              ))
+          child: Center(child: Text(bloodType.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.bloodTypesList.isEmpty
                       ? null
@@ -123,14 +128,20 @@ class _MedicalInfoStepState extends State<MedicalInfoStep> {
                   items: state.diseasesList.isEmpty
                       ? [
                           DropdownMenuItem<String>(
-                            child: Text('no_diseases_available'.tr()),
-                          )
+          child: Center(child: Text('no_diseases_available'.tr(),style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                          )
                         ]
                       : state.diseasesList
                           .map((disease) => DropdownMenuItem<String>(
                                 value: disease.tid.toString(),
-                                child: Text(disease.name),
-                              ))
+          child: Center(child: Text(disease.name,style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ))),                              ))
                           .toList(),
                   onChanged: state.diseasesList.isEmpty
                       ? null

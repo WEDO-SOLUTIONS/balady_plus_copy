@@ -743,7 +743,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void trackLogs(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
-      if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
+
       BaseResponse response = BaseResponse(
         code: 200,
         eventName: "trackLogs",

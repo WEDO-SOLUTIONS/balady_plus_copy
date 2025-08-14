@@ -111,19 +111,19 @@ class ProfilePage extends HookConsumerWidget {
                                                           context.l10n.account,
                                                     ),
                                                   ),
+                                                  if (CommonProperties.isLoggedInMunicipality) ContentRowV2(
+                                                    isDividerEnabled: true,
+                                                    onTap: () =>
+                                                    CommonFunctions.openVolunteerProfileScreen(),
 
-                                                  // if (CommonProperties.isLoggedInMunicipality) ContentRow(
-                                                  //   isDividerEnabled: true,
-                                                  //   onTap: () =>
-                                                  //   CommonFunctions.openVolunteerProfileScreen(),
-                                                  //   trailing: trailing,
-                                                  //   leading: leadingIconBuilder(
-                                                  //       Icons.favorite),
-                                                  //   text: ContentRowTextOptions(
-                                                  //     title:
-                                                  //         'volunteer_info'.tr(),
-                                                  //   ),
-                                                  // ) else const SizedBox.shrink(),
+                                                    trailing: trailing,
+                                                    leading: leadingIconBuilder(
+                                                        Icons.favorite),
+                                                    text: ContentRowTextOptions(
+                                                      title:
+                                                          'volunteer_info'.tr(),
+                                                    ),
+                                                  )else const SizedBox.shrink(),
                                                 ],
                                               ),
                                       ),

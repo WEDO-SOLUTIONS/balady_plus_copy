@@ -233,6 +233,104 @@ class VolunteerProfileState extends Equatable {
     this.cvFileId,
   });
 
+  VolunteerProfileState resetProfileState() {
+    return const VolunteerProfileState(
+      currentStep: 0,
+      isLoading: false,
+      isSubmitting: false,
+      isSuccess: false,
+      isPresentationMode: false,
+      // All profile fields reset to null/empty
+      profileId: null,
+      firstName: null,
+      middleName: null,
+      lastName: null,
+      fullName: null,
+      email: null,
+      phoneNumber: null,
+      nationalId: null,
+      dateOfBirth: null,
+      nationality: null,
+      gender: null,
+      maritalStatus: null,
+      nearbyPhoneNumber: null,
+      region: null,
+      regionId: null,
+      city: null,
+      cityId: null,
+      // Scientific info reset
+      educationalQualification: null,
+      educationalQualificationId: null,
+      specialization: null,
+      specializationId: null,
+      profession: null,
+      workExperience: null,
+      language: null,
+      languageId: null,
+      scientificExperienceSummary: null,
+      // Volunteering interests reset
+      skills: [],
+      skillsIds: [],
+      volunteeringLevel: null,
+      volunteeringLevelId: null,
+      volunteeringWorkField: null,
+      volunteeringWorkFieldId: null,
+      volunteeringType: null,
+      volunteeringTypeId: null,
+      isIndividualSelected: false,
+      isGroupSelected: false,
+      interests: [],
+      // Medical info reset
+      bloodType: null,
+      bloodTypeId: null,
+      disease: null,
+      diseaseId: null,
+      // Social media reset
+      xAccount: null,
+      instagramAccount: null,
+      linkedinAccount: null,
+      facebookAccount: null,
+      // API flags reset
+      isGenderFromApi: false,
+      isMaritalStatusFromApi: false,
+      isNationalIdFromApi: false,
+      isRegionFromApi: false,
+      isCityFromApi: false,
+      isNearbyPhoneNumberFromApi: false,
+      isDateOfBirthFromApi: false,
+      // CV upload reset
+      isUploadingCV: false,
+      cvFileName: null,
+      cvFileUrl: null,
+      cvUploadMessage: null,
+      cvFileId: null,
+      // Loading states reset
+      isLoadingRegions: false,
+      isLoadingCities: false,
+      isLoadingQualifications: false,
+      isLoadingSpecializations: false,
+      isLoadingLanguages: false,
+      isLoadingSkills: false,
+      isLoadingLvls: false,
+      isLoadingInterests: false,
+      isLoadingVolunteeringFields: false,
+      isLoadingBloodTypes: false,
+      isLoadingDiseases: false,
+      // Lists reset
+      regionsList: [],
+      citiesList: [],
+      qualificationsList: [],
+      specializationsList: [],
+      languagesList: [],
+      skillsList: [],
+      lvlsList: [],
+      interestsList: [],
+      volunteeringFieldsList: [],
+      bloodTypesList: [],
+      diseasesList: [],
+    );
+  }
+
   VolunteerProfileState copyWith({
     int? currentStep,
     bool? isSubmitting,
@@ -550,18 +648,28 @@ class VolunteerProfileState extends Equatable {
     return Helpers.validateMobile(phone) == null;
   }
 
-  bool get isPersonalInfoValid =>
+    bool get isPersonalInfoValid =>
+        _isValidField(nationalId) &&
+        _isValidField(fullName) &&
+        _isValidField(firstName) &&
+        _isValidField(lastName) &&
+        _isValidField(dateOfBirth) &&
+        _isValidField(gender) &&
+        _isValidField(nationality) &&
+        isEmailValid(email) &&
+        isPhoneValid(phoneNumber) &&
+        _isValidField(regionId) &&
+        _isValidField(cityId);
+
+  bool get isUnifiedStepValid =>
       _isValidField(nationalId) &&
       _isValidField(fullName) &&
-      _isValidField(firstName) &&
-      _isValidField(lastName) &&
-      _isValidField(dateOfBirth) &&
-      _isValidField(gender) &&
-      _isValidField(nationality) &&
       isEmailValid(email) &&
       isPhoneValid(phoneNumber) &&
       _isValidField(regionId) &&
-      _isValidField(cityId);
+      _isValidField(cityId) &&
+      _isValidField(educationalQualificationId) &&
+      _isValidField(volunteeringWorkFieldId) ;
   // Note: nearbyPhoneNumber (relative phone) is optional
 
   bool get isScientificInfoValid =>
@@ -584,15 +692,17 @@ class VolunteerProfileState extends Equatable {
   bool get isCurrentStepValid {
     switch (currentStep) {
       case 0:
-        return isPersonalInfoValid;
-      case 1:
-        return isScientificInfoValid;
-      case 2:
-        return isVolunteeringInterestsValid;
-      case 3:
-        return isMedicalInfoValid;
-      case 4:
-        return isSocialMediaInfoValid;
+        return isUnifiedStepValid;
+      // case 0:
+      //   return isPersonalInfoValid;
+      // case 1:
+      //   return isScientificInfoValid;
+      // case 2:
+      //   return isVolunteeringInterestsValid;
+      // case 3:
+      //   return isMedicalInfoValid;
+      // case 4:
+      //   return isSocialMediaInfoValid;
       default:
         return false;
     }
