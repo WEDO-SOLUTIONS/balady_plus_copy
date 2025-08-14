@@ -11,7 +11,7 @@ part 'bss_common.g.dart';
 
 @riverpod
 Future<BssCommon> bssCommon(Ref ref) async {
-  final languageCode = ref.read(appLanguageProvider).languageCode;
+  final languageCode = ref.watch(appLanguageProvider).languageCode;
   final deviceInfo = await ref.read(deviceInfoProvider.future);
   final packageInfo = await PackageInfo.fromPlatform();
 

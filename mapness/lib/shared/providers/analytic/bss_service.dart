@@ -21,13 +21,17 @@ class BssService extends _$BssService {
     final visibleRect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
 
     try {
+      if (visibleRect == null) {
+        throw Exception('Visible rect is null');
+      }
+
       final dio = await ref.read(bssDioProvider.future);
       final common = await ref.read(bssCommonProvider.future);
       var requestWithRegion = request;
       if (request.payload?.placeItem != null) {
         final searchRegion = await SearchRegionService.instance.getRegion(
-          latitude: ((visibleRect?.northEastLat ?? 0) + (visibleRect?.southWestLat ?? 0)) / 2,
-          longitude: ((visibleRect?.northEastLon ?? 0) + (visibleRect?.southWestLon ?? 0)) / 2,
+          latitude: (visibleRect.northEastLat + visibleRect.southWestLat) / 2,
+          longitude: (visibleRect.northEastLon + visibleRect.southWestLon) / 2,
         );
         requestWithRegion = request.copyWith(
           payload: request.payload?.copyWith(
@@ -41,7 +45,7 @@ class BssService extends _$BssService {
       final requestJson = requestWithRegion.toJson(
         eventOrdinal: ordinalId,
         common: common,
-        map: visibleRect?.toBssMap() ?? emptyBssMap,
+        map: visibleRect.toBssMap(),
       );
       debugPrint('BSS REQUEST: $requestJson');
       await dio.post('/bss/3', data: requestJson);
