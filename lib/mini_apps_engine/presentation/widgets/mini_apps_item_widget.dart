@@ -16,55 +16,66 @@ class MiniAppsItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(12),
-      onTap: () => _handleTap(context),
-      child: Card(
-        elevation: 0.5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: ImageIconBasedTypeWidget(
-                    icon: miniApp.logoKey!,
-                    type: miniApp.cdnLogoRef?.split(".").last,
-                    iconSize: 55,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+    /// Todo need Map on new felage for not show some mini app not need not
+    return miniApp.serviceKey == "smart_advisor"
+        ? const SizedBox()
+        : InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => _handleTap(context),
+            child: Card(
+              elevation: 0.5,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        miniApp.serviceName ?? '',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: ImageIconBasedTypeWidget(
+                          icon: miniApp.logoKey!,
+                          type: miniApp.cdnLogoRef?.split(".").last,
+                          iconSize: 55,
+                        ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        miniApp.description?.isNotEmpty == true
-                            ? miniApp.description!
-                            : '',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.grey[600],
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              miniApp.serviceName ?? '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            const SizedBox(height: 4),
+                            Text(
+                              miniApp.description?.isNotEmpty == true
+                                  ? miniApp.description!
+                                  : '',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
-                  ),
-                ),
-              ],
-            )),
-      ),
-    );
+                  )),
+            ),
+          );
   }
 
   void _handleTap(BuildContext context) {
