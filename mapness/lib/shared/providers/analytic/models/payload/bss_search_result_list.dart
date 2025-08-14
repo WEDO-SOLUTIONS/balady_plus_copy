@@ -7,7 +7,6 @@ class BssSearchResultList {
     this.firstResultClass,
     this.contextRubrics,
     this.contextAttributes,
-    this.partialResult,
     this.searchSegmentId,
     this.building,
   });
@@ -29,25 +28,26 @@ class BssSearchResultList {
   /// 1. UniSearch::Results::GetDGisOutputType()
   /// 2. Sapphiredgis_output_type
   /// Cannot be determined for queries with no results.
+  ///
+  /// IMPORTANT: We have decided to put here [searchType] value because SDK do not return this value for values from search result
   final ResultClassEnum? firstResultClass;
 
   /// Array of short identifiers of contextual headings. If there are no contextual headings (for example, in case of unsuccessful queries),
   /// the attribute does not need to be sent.
+  ///
+  /// IMPORTANT: Response from BSS team: if not exists, we should not send this field.
   final List<BssStringId>? contextRubrics;
 
   /// Array of contextual attribute identifiers in the text of the search query. Specified by the search. For example, for the query "Italian cuisine cafe with live music",
   /// the contextAttributes should include the attribute ids7 0000201006748040 "Italian cuisine" and 70000201006747993 "live music".
   /// If there are no contextual attributes (for example, for unsuccessful queries), the attribute does not need to be sent.
+  ///
+  /// IMPORTANT: Response from BSS team: if not exists, we should not send this field.
   final List<BssStringId>? contextAttributes;
 
-  /// An indication that the search has found results without taking into account some words in the query text. For example, the results of the query "Cafe fvalvalovavao" will be similar to the results of "Cafe".
-  /// Set by the search: the Is_Partial_Result flag is set if the Is Partial field for the search results in the SearchDetails block is true.
-  /// true—the Is_Partial_Result flag is set
-  /// false—the Is_Partial_Result flag is not set
-  /// missing—the product has no information
-  final bool? partialResult;
-
   /// Segment defined by search
+  ///
+  /// IMPORTANT: Response from BSS team: if not exists, we should not send this field.
   final BssStringId? searchSegmentId;
 
   /// Building identifier.
@@ -68,9 +68,6 @@ class BssSearchResultList {
     }
     if (contextAttributes != null) {
       data['contextAttributes'] = contextAttributes!.map((e) => e.toString()).toList();
-    }
-    if (partialResult != null) {
-      data['partialResult'] = partialResult;
     }
     if (searchSegmentId != null) {
       data['searchSegmentId'] = searchSegmentId;

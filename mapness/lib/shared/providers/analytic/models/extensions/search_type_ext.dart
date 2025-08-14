@@ -7,6 +7,7 @@ extension SearchResultListExt on SearchResultMessage {
   BssSearchResultList toBss() => BssSearchResultList(
         size: itemMarkerInfos?.length ?? 0,
         searchType: searchResultType.toBss(),
+        firstResultClass: searchResultType.toBss(),
       );
 }
 

@@ -88,6 +88,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                 searchResultList: BssSearchResultList(
                   size: searchState.results.itemMarkerInfos?.length ?? 0,
                   searchType: searchState.results.searchResultType.toBss(),
+                  firstResultClass: searchState.results.searchResultType.toBss(),
                 ),
               ),
             ),
@@ -157,15 +158,10 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                     ),
                     payload: BssPayload(
                       searchRequest: BssSearchRequest(text: newState.searchText),
-                      // TODO: contextRubrics, contextAttributes, firstResultClass,partialResult,searchSegmentId
-                      /// firstResultClass - нет отдельного. Могу брать то же, что и searchType
-                      /// Мы можем взять contextRubrics и contextAttributes из объектов, которые нам приходят. Из результата взять это не можем
-                      /// Как быть?
-                      /// partialResult - null
-                      /// searchSegmentId, building - это вообще как для search result?
                       searchResultList: BssSearchResultList(
                         size: newState.results.itemMarkerInfos?.length ?? newState.results.firstPage?.items.length ?? 0,
                         searchType: newState.results.searchResultType.toBss(),
+                        firstResultClass: newState.results.searchResultType.toBss(),
                       ),
                     ),
                   ),
@@ -213,10 +209,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                     ),
                     payload: BssPayload(
                       searchRequest: BssSearchRequest(text: newState.searchText),
-                      suggestList: BssSuggestList(
-                        // TODO: Add searchSegmentId, unisearchVersion, firstResultClass
-                        size: newState.suggest.suggests.length,
-                      ),
+                      suggestList: BssSuggestList(size: newState.suggest.suggests.length),
                     ),
                   ),
                 );

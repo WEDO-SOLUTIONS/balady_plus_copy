@@ -15,6 +15,8 @@ class BssSuggestList {
   final BssStringId? searchSegmentId;
 
   /// Search version (UniSearch). For example 2.10.4
+  ///
+  /// IMPORTANT: Response from BSS team: if not exists, we should not send this field.
   final String? unisearchVersion;
 
   /// Class of the first search result
