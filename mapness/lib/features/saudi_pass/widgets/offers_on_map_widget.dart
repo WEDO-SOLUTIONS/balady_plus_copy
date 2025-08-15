@@ -7,11 +7,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/simple_map_object_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -20,6 +22,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 
 class OffersOnMapWidget extends StatefulHookConsumerWidget {
   final Set<lookups_body.Category> categories;
@@ -36,7 +39,11 @@ class OffersOnMapWidget extends StatefulHookConsumerWidget {
 }
 
 class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
-  static double markersWidth = 32.0;
+  static const double _kMarkerWidth = 32.0;
+  static const double _kClusterLogicalPixel = 70;
+  static const double _kClusterMaxZoom = 20;
+  static const double _kClusterFitPaddingDp = 40.0;
+  static const double _kClusterIconSize = 32.0;
   late final StatelessBottomSheetController _bottomsheetController;
 
   @override
@@ -60,7 +67,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         strokeWidth: 1,
       );
 
-  Marker _createMarker(Offer item, bool isRtl, bool isDark) {
+  Marker _createMarker({
+    required Offer item,
+    required bool isRtl,
+    required bool isDark,
+  }) {
     final text = item.name.breakMarkerLabel(maxCharsPerLine: 20);
     final hasArabic = text.containsArabic() || isRtl;
 
@@ -77,8 +88,45 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         ),
         isVisible: true,
         icon: SvgMarkerIcon(
-          svgPath: Assets.icons.svg.icOfferMarker.keyName,
-          width: markersWidth,
+          svgPath: isDark ? Assets.icons.svg.icOfferMarkerDark.keyName : Assets.icons.svg.icOfferMarker.keyName,
+          width: _kMarkerWidth,
+        ),
+      ),
+    );
+  }
+
+  SimpleClusterOptionsMessage _clusterOptions({
+    required bool isRtl,
+    required bool isDark,
+    required int objectCount,
+  }) =>
+      SimpleClusterOptionsMessage(
+        icon: isDark ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName.markerIcon(size: _kClusterIconSize) : Assets.icons.svg.icOffersClusteringMarker.keyName.markerIcon(size: _kClusterIconSize),
+        text: objectCount.toString(),
+        textStyle: MarkerTextStyleMessage(
+          textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+          color: Colors.white.value,
+          fontSize: 13,
+          fontName: isRtl ? poiMapFontAr : poiMapFontEn,
+        ),
+      );
+
+  Future<void> _onClusterTap(
+      SimpleClusterObject simpleClusterObject,
+      CameraPosition cameraPosition,
+      ) async {
+    final media = ref.read(mediaQueryInfoProvider);
+    final dpr = media?.devicePixelRatio ?? 1.0;
+    final padding = (_kClusterFitPaddingDp * dpr).ceil();
+
+    await cameraPosition.animateToMarkers(
+      simpleClusterObject.markers.toMarkers(),
+      options: CalcPositionOptionsMessage(
+        screenArea: CameraSetPaddingMessage(
+          leftPadding: padding * 2,
+          topPadding: padding,
+          rightPadding: padding * 2,
+          bottomPadding: padding,
         ),
       ),
     );
@@ -86,9 +134,9 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final _settings = MapObjectManagerSettings.mappness();
-
+    final settings = MapObjectManagerSettings.mappness();
     final showMapOffers = ref.watch(showMapOffersProvider.notifier);
+    final cameraPosition = ref.read(cameraPositionProvider.notifier);
 
     useEffect(() {
       showMapOffers.switchOffersVisibility(
@@ -100,61 +148,53 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       return () => showMapOffers.switchOffersVisibility(enabled: false);
     });
 
-    ref.listen(showMapOffersProvider, (prev, next) {
-      final objectManager = ref.read(
+    ref.listen(showMapOffersProvider, (prev, next) async {
+      final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+      final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+
+      final objectManager = ref.watch(
         mapObjectManagerProvider(
-          named: _settings.name,
-          layerId: _settings.layerId,
+          named: settings.name,
+          layerId: settings.layerId,
+          clustering: ClusteringMapObjectManager(
+            options: ClusteringMapObjectManagerOptionsMessage(
+              logicalPixel: _kClusterLogicalPixel,
+              maxZoom: _kClusterMaxZoom,
+            ),
+            onTap: (cluster) => _onClusterTap(cluster, cameraPosition),
+            renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
+          ),
         ).notifier,
       );
 
-      final isDarkMode = ref.read(darkModeProvider).value?.isDark ?? false;
-      final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-      final markers = next.map((item) => _createMarker(item, isRtl, isDarkMode)).toList();
+      final markers = next.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
 
-      objectManager
-        ..removeAllMarkers()
-        ..addMarkers(markers);
+      await objectManager.removeAllMarkers();
+      await objectManager.addMarkers(markers);
 
-      final position = ref.read(locationProvider);
-
-      if (position == null) {
+      final userPos = ref.read(locationProvider);
+      if (userPos == null) {
         return;
       }
 
-      final point = GeoPointMessage(
-        latitude: position.latitude,
-        longitude: position.longitude,
-      );
+      final gp = GeoPointMessage(latitude: userPos.latitude, longitude: userPos.longitude);
+      final zoom = await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
 
-      GeoUtils.zoomByMarkersNearby(markers: markers, position: point).then((zoom) async {
-        final cameraPosition = ref.read(cameraPositionProvider.notifier);
-
-        await cameraPosition.animateTo(
-          CameraPositionMessage(
-            point: point,
-            zoom: zoom,
-            tilt: 0,
-            bearing: 0,
-          ),
-        );
-      });
+      await cameraPosition.animateTo(CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
     });
 
     return StatelessBottomSheet(
       scrollController: _bottomsheetController,
-      outside: const RoutingMapControls(
-        key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
-      ),
+      outside: const RoutingMapControls(key: ValueKey('OffersOnMapWidgetRoutingMapControls')),
       content: [
-        ContentRowV2(
+        ContentRow(
           text: ContentRowTextOptions(
             titleOptions: ContentRowTextOption(
               builder: (context) => Center(
                 child: Text(
                   context.l10n.allOffers,
-                  style: context.textStyleV3.h3Medium.copyWith(
-                    color: context.colorsV3.foregroundDefault,
+                  style: context.textStyles.h3Medium.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                 ),
               ),

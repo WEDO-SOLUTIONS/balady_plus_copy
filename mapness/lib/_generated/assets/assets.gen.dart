@@ -348,8 +348,15 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_offer_marker.svg
   SvgGenImage get icOfferMarker => const SvgGenImage('assets/icons/svg/ic_offer_marker.svg');
 
+  /// File path: assets/icons/svg/ic_offer_marker_dark.svg
+  SvgGenImage get icOfferMarkerDark => const SvgGenImage('assets/icons/svg/ic_offer_marker_dark.svg');
+
   /// File path: assets/icons/svg/ic_offers_clustering_marker.svg
   SvgGenImage get icOffersClusteringMarker => const SvgGenImage('assets/icons/svg/ic_offers_clustering_marker.svg');
+
+  /// File path: assets/icons/svg/ic_offers_clustering_marker_dark.svg
+  SvgGenImage get icOffersClusteringMarkerDark =>
+      const SvgGenImage('assets/icons/svg/ic_offers_clustering_marker_dark.svg');
 
   /// File path: assets/icons/svg/ic_parking_spot.svg
   SvgGenImage get icParkingSpot => const SvgGenImage('assets/icons/svg/ic_parking_spot.svg');
@@ -482,7 +489,9 @@ class $AssetsIconsSvgGen {
         icMetroMarker,
         icNotification,
         icOfferMarker,
+        icOfferMarkerDark,
         icOffersClusteringMarker,
+        icOffersClusteringMarkerDark,
         icParkingSpot,
         icPhone,
         icPinNew,
