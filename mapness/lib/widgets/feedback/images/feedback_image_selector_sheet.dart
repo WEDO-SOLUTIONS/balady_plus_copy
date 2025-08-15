@@ -31,18 +31,20 @@ class FeedbackImageSelectorSheet extends HookWidget {
         scrollController: sheetController,
         draggerColor: context.colors.backgroundSurface4,
         content: [
-          ContentRow(
-            options: ContentRowOptions(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              title: context.l10n.addPhoto,
-              titleStyle: context.textStyles.h4SemiBold.copyWith(
-                color: context.colors.foregroundDefault,
-              ),
-              customActionWidget: AppButton.close(
-                color: context.colors.neutralContainerDefault,
-                onTap: context.router.popForced,
-                innerPadding: const EdgeInsets.all(Spacing.$2x),
-                padding: EdgeInsets.zero,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
+            child: ContentRow(
+              options: ContentRowOptions(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                title: context.l10n.addPhoto,
+                titleStyle: context.textStyles.h4SemiBold.copyWith(
+                  color: context.colors.foregroundDefault,
+                ),
+                customActionWidget: AppButton.close(
+                  color: context.colors.neutralContainerDefault,
+                  onTap: context.router.popForced,
+                  innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
+                ),
               ),
             ),
           ),

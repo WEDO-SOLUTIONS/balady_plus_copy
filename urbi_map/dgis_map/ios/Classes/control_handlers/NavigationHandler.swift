@@ -34,6 +34,8 @@ class NavigationHandler {
     private let messageControlModel: MessageControlModel
     private let maneuverControlModel: ManeuverControlModel
     
+    private let oldSource: DGis.Source?
+    
     private(set) var isNavigating: Bool = false
 
     init(map: Map, mapView: UIView & IMapView, sdk: Container, eventChannel: DgisStreamHandler, view: UIView) {
@@ -42,6 +44,7 @@ class NavigationHandler {
 
         self.eventChannel = eventChannel
         self.navigationManager = DgisMapInitializer.shared.getNavigationManager()
+        self.oldSource = nil
         
         self.voiceManager = getVoiceManager(context: context)
 
@@ -79,6 +82,8 @@ class NavigationHandler {
         )
         
         navigationManager.mapManager.addMap(map: map)
+        
+        
     }
     
     private func stateChannelListener(_ state: State) {
@@ -221,6 +226,14 @@ class NavigationHandler {
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
             resetCamera(map: carPlayMap)
         }
+        
+        if oldSource == nil { return }
+        let toDelete = map.sources.first(where: { $0 is MyLocationMapObjectSource})
+        
+        if toDelete == nil { return }
+        
+        map.removeSource(source: toDelete!)
+        map.addSource(source: oldSource!)
     }
     
     func resetCamera(map: Map) {
@@ -287,6 +300,18 @@ class NavigationHandler {
             )))
             return
         }
+        
+        let oldSource = map.sources.first(where: { $0 is MyLocationMapObjectSource })!
+        
+        map.removeSource(source: oldSource)
+        
+        map.addSource(source: MyLocationMapObjectSource(
+            context: context,
+            controllerSettings:  MyLocationControllerSettings(
+                coordinatesThreshold: Meter(value: 10),
+                bearingThreshold: Bearing(value: 90),
+            )
+        ))
         
         completion(Result.success(()))
     }

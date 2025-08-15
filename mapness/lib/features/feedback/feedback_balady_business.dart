@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,10 +23,7 @@ class FeedbackBaladyBusiness extends _$FeedbackBaladyBusiness {
           await launchUrl(uri);
         }
       } catch (e, stackTrace) {
-        log(
-          e.toString(),
-          stackTrace: stackTrace,
-        );
+        logger.log('Failed to open Balady Business ${e.toString()}, ${stackTrace.toString()}');
       }
     }
   }

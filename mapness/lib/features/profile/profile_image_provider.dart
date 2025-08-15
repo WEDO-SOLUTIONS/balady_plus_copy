@@ -11,6 +11,7 @@ import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -147,7 +148,7 @@ class ProfileImage extends _$ProfileImage {
   }
 
   void _log(Object? data, [StackTrace? trace]) {
-    debugPrint(data.toString());
+    logger.log(data.toString(), logLevel: MapnessLogLevel.critical);
     if (trace != null) {
       debugPrintStack(stackTrace: trace);
     }

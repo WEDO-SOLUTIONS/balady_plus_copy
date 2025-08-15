@@ -21,6 +21,7 @@ import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
+import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
@@ -174,6 +175,11 @@ class LayersControls extends _$LayersControls {
     );
   }
 
+  void onError() {
+    setSelection();
+    update(isLoading: false);
+  }
+
   Future<void> hideActiveLayer() async {
     final currentState = state.selectedType;
 
@@ -182,21 +188,10 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  Future<void> _tapHandler(LayerType value) async {
-    final currentState = state.selectedType;
-
-    _cancelToken?.cancel();
-    await _viewPortSubscription?.cancel();
-    await _hideAllSelectedMarkers();
-    ref.read(poiCardClosingProvider.notifier).close();
-
-    if (currentState != null && currentState != value) {
-      await _hidePreviousLayers(currentState);
-    }
-
+  Future<void> toggleLayers(LayerType value) async {
     switch (value) {
       case LayerType.favourites:
-        await toggleFavourites(currentState);
+        await toggleFavourites();
         break;
       case LayerType.buildings:
         await toggleComplianceBuildings();
@@ -211,64 +206,24 @@ class LayersControls extends _$LayersControls {
         await toggleParking();
         break;
       case LayerType.metro:
-        toggleMetro(currentState);
+        toggleMetro();
         break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
   }
 
-  Future<void> _hidePreviousLayers(LayerType layer) async {
-    switch (layer) {
-      case LayerType.favourites:
-        {
-          await _removeAll();
-          await ref.read(favouriteToggleProvider.notifier).disable();
-          break;
-        }
 
-      case LayerType.buildings:
-      case LayerType.invest:
-      case LayerType.fencing:
-        await _removeAll();
-        break;
-      case LayerType.parkingLots:
-        {
-          await ref
-              .read(mapObjectManagerProvider(
-                named: esriMapObjectSettings.name,
-                layerId: esriMapObjectSettings.layerId,
-              ).notifier)
-              .removeAllMarkers();
-          await ref.read(parkingStateProvider.notifier).hideParking();
-          break;
-        }
+  Future<void> showActiveLayerOnMap() async {
+    final layerType = ref.read(activeLayerProvider);
 
-      case LayerType.metro:
-        await ref.read(metroLayerProvider.notifier).toggleMetro();
-        break;
+    if (layerType case LayerType.favourites) {
+      await ref.read(favouriteToggleProvider.notifier).enable();
+    } else if (layerType case LayerType.parkingLots) {
+      await ref.read(parkingStateProvider.notifier).showParking();
+    } else if (layerType case LayerType.metro) {
+      ref.read(metroLayerRepositoryProvider.notifier).showMetro();
     }
-  }
-
-  void updateLayerInfo() {
-    final selectedLayerState = _getLayerState();
-    if (selectedLayerState != null) {
-      setSelection(selectedType: selectedLayerState);
-    } else {
-      setSelection();
-    }
-  }
-
-  LayerType? _getLayerState() => ref.read(activeLayerProvider);
-
-  Future<void> _saveLayersState(LayerType type) async {
-    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
-    await activeLayerNotifier.setActiveLayer(type);
-  }
-
-  Future<void> _removeLayersState() async {
-    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
-    await activeLayerNotifier.removeActiveLayer();
   }
 
   Future<void> disable() async {
@@ -293,12 +248,12 @@ class LayersControls extends _$LayersControls {
     setSelection(selectedType: type);
   }
 
-  Future<void> toggleFavourites(LayerType? currentState) async {
+  Future<void> toggleFavourites() async {
     await _viewPortSubscription?.cancel();
     await _removeAll();
     _cancelToken?.cancel();
 
-    if (currentState != (LayerType.favourites)) {
+    if (state.selectedType != (LayerType.favourites)) {
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
     } else {
@@ -307,9 +262,9 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  void toggleMetro(LayerType? currentState) {
+  void toggleMetro() {
     ref.read(metroLayerProvider.notifier).toggleMetro();
-    if (currentState != (LayerType.metro)) {
+    if (state.selectedType != (LayerType.metro)) {
       setSelection(selectedType: LayerType.metro);
     } else {
       setSelection();
@@ -487,6 +442,47 @@ class LayersControls extends _$LayersControls {
     await ref.read(parkingStateProvider.notifier).hideParking();
   }
 
+  void updateLayerInfo() {
+    final selectedLayerState = _getLayerState();
+    if (selectedLayerState != null) {
+      setSelection(selectedType: selectedLayerState);
+    } else {
+      setSelection();
+    }
+  }
+
+  Future<void> showIwish() async {
+    update(isLoading: true);
+    const duration = Duration(seconds: 10);
+    final markers = await ref.read(iwishMarkersProvider.future).onError((error, stackTrace) {
+      onError();
+      return [];
+    }).timeout(
+      duration,
+      onTimeout: () {
+        onError();
+        return [];
+      },
+    );
+    await _removeAll();
+    await ref
+        .read(mapObjectManagerProvider(
+      named: esriMapObjectSettings.name,
+      layerId: esriMapObjectSettings.layerId,
+    ).notifier)
+        .addMarkers(markers)
+        .onError((error, stackTrace) => onError())
+        .timeout(duration, onTimeout: onError);
+    update(isLoading: false);
+
+    await computeCameraPosition(
+      markers,
+      ref.read(cameraPositionProvider),
+      ref.read(locationProvider),
+      ref.read(cameraPositionProvider.notifier).animateTo,
+    );
+  }
+
   MapRequestParams _createParams(
     VisibleRect visibleRect,
     LayerType layer,
@@ -546,6 +542,66 @@ class LayersControls extends _$LayersControls {
         }
       },
     );
+  }
+
+  Future<void> _tapHandler(LayerType value) async {
+    final currentState = state.selectedType;
+
+    _cancelToken?.cancel();
+    await _viewPortSubscription?.cancel();
+    await _hideAllSelectedMarkers();
+    ref.read(poiCardClosingProvider.notifier).close();
+
+    if (currentState != null && currentState != value) {
+      await _hidePreviousLayers(currentState);
+    }
+
+    await toggleLayers(value);
+  }
+
+  Future<void> _hidePreviousLayers(LayerType layer) async {
+    switch (layer) {
+      case LayerType.favourites:
+        {
+          await _removeAll();
+          await ref.read(favouriteToggleProvider.notifier).disable();
+          break;
+        }
+
+      case LayerType.buildings:
+      case LayerType.invest:
+      case LayerType.fencing:
+        await _removeAll();
+        break;
+      case LayerType.parkingLots:
+        {
+          await ref
+              .read(mapObjectManagerProvider(
+            named: esriMapObjectSettings.name,
+            layerId: esriMapObjectSettings.layerId,
+          ).notifier)
+              .removeAllMarkers();
+          await ref.read(parkingStateProvider.notifier).hideParking();
+          break;
+        }
+
+      case LayerType.metro:
+        await ref.read(metroLayerProvider.notifier).toggleMetro();
+        break;
+    }
+  }
+
+
+  LayerType? _getLayerState() => ref.read(activeLayerProvider);
+
+  Future<void> _saveLayersState(LayerType type) async {
+    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
+    await activeLayerNotifier.setActiveLayer(type);
+  }
+
+  Future<void> _removeLayersState() async {
+    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
+    await activeLayerNotifier.removeActiveLayer();
   }
 
   Future<void> _showWhiteLands() async {
@@ -726,42 +782,6 @@ class LayersControls extends _$LayersControls {
           .toList() ??
       [];
 
-  Future<void> showIwish() async {
-    update(isLoading: true);
-    const duration = Duration(seconds: 10);
-    final markers = await ref.read(iwishMarkersProvider.future).onError((error, stackTrace) {
-      onError();
-      return [];
-    }).timeout(
-      duration,
-      onTimeout: () {
-        onError();
-        return [];
-      },
-    );
-    await _removeAll();
-    await ref
-        .read(mapObjectManagerProvider(
-          named: esriMapObjectSettings.name,
-          layerId: esriMapObjectSettings.layerId,
-        ).notifier)
-        .addMarkers(markers)
-        .onError((error, stackTrace) => onError())
-        .timeout(duration, onTimeout: onError);
-    update(isLoading: false);
-
-    await computeCameraPosition(
-      markers,
-      ref.read(cameraPositionProvider),
-      ref.read(locationProvider),
-      ref.read(cameraPositionProvider.notifier).animateTo,
-    );
-  }
-
-  void onError() {
-    setSelection();
-    update(isLoading: false);
-  }
 
   void _showEsriCard(PointLayersData e) {
     ref.read(appRouterProvider).push(LayersDetailsWidgetRoute(data: e));

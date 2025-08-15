@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
@@ -152,9 +152,16 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                       color: Colors.black54,
                     ),
                   ),
-                  const LabeledElevatedButton(
-                    onPressed: MapnessLogger.share,
-                    label: 'Export logs',
+                  LabeledElevatedButton(
+                    onPressed: () {
+                      widget._draggableController.animateTo(
+                        0.0,
+                        duration: const Duration(milliseconds: 150),
+                        curve: Curves.linear,
+                      );
+                      logger.share();
+                    },
+                    label: 'Show logs',
                   ),
                   Text(
                     'Git branch:',

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 /// Lost GPS metric that is used to track the number of times the GPS signal is lost.
 class LostGpsMetrics {
@@ -47,7 +48,7 @@ class LostGpsMetrics {
         location: (json[AdvancedMetricsConstants.keys.location] as List<dynamic>).map((e) => e as double).toList(),
       );
     } catch (e) {
-      print('LostGpsMetrics fromJson error: $e');
+      logger.log('LostGpsMetrics fromJson error: $e', logLevel: MapnessLogLevel.critical);
     }
     return null;
   }

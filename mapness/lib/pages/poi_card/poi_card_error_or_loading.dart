@@ -43,7 +43,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
       onClose: (_) {
         onClose();
       },
-      heightModel: BottomSheetHeightModel.aspect(0.4),
+      heightModel: BottomSheetHeightModel.aspect(0.42),
     );
     return SafeAreaPadding(
       child: StatelessBottomSheet(
@@ -56,7 +56,6 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
                   child: AppButton.close(
-                    buttonType: ButtonType.secondary,
                     onTap: onClose,
                   ),
                 ),

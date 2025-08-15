@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -9,8 +8,10 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/package_info.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
 part 'dgis_network.g.dart';
 
@@ -53,9 +54,11 @@ class _DGisNetwork extends _$DGisNetwork {
     );
     dio.interceptors.addAll(
       [
-        PrettyDioLogger(
-          /// Since protobufs are just binary files what a purpose to print it
-          responseBody: false,
+        TalkerDioLogger(
+          settings: const TalkerDioLoggerSettings(
+            /// Since protobufs are just binary files what a purpose to print it
+            printResponseData: false,
+          ),
         ),
         AuthTokenInterceptor.tokenInterceptor(
           ref,
@@ -71,7 +74,7 @@ class _DGisNetwork extends _$DGisNetwork {
         RetryInterceptor(
           dio: dio,
           logPrint: (message) {
-            log('RETRY LOG: $message');
+            logger.log('RETRY LOG: $message', logLevel: MapnessLogLevel.critical);
           }, // specify log function (optional)
           retries: 2, // retry count (optional)
           retryDelays: const [

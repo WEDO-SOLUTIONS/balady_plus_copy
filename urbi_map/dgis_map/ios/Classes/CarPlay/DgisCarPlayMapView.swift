@@ -33,6 +33,28 @@ class DgisCarPlayMapView: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+        
+        let safeAreaInsets = view.safeAreaInsets
+        let frame = view.frame
+        let safeAreaRect = CGRect(
+            x: safeAreaInsets.left,
+            y: safeAreaInsets.top,
+            width: frame.width - safeAreaInsets.left - safeAreaInsets.right,
+            height: frame.height - safeAreaInsets.top - safeAreaInsets.bottom
+        )
+
+        let safeCameraPositionPoint = CameraPositionPoint(
+            x: Float(safeAreaRect.midX / frame.maxX),
+            y: map.camera.positionPoint.y
+        )
+
+        try? map.camera.setPositionPoint(
+            positionPoint: safeCameraPositionPoint
+        )
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
