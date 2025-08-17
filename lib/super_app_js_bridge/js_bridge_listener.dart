@@ -561,8 +561,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     final attachmentSource = msg["attachmentSource"];
-    final List<String>? attachmentExtension =
-        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>();
+    final List<String>? attachmentExtension =msg["attachmentExtension"]!= null?
+        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>():null;
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
       var file = await FilePicker.platform.pickFiles(
