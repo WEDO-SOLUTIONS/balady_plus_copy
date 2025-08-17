@@ -16,9 +16,7 @@ class MiniAppsItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return miniApp.serviceKey == "smartadvisor"
-        ? const SizedBox()
-        : InkWell(
+    return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () => _handleTap(context),
       child: Card(
