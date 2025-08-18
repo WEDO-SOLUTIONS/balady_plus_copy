@@ -106,7 +106,7 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
   }
 
   Future<BaseResponse?> getMiniAppAcessToken(String serviceKey) async {
-    if (serviceKey != "municipalservice") {
+    if (serviceKey == "municipalservice") {
       return BaseResponse(
         code: 200,
         message: "success",
