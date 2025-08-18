@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
+import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -356,6 +358,43 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       BaseResponse response = BaseResponse(
         code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "navigateToSuperAppScreen",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void openMiniApps(dynamic msg, CompletionHandler handler) {
+    String serviceKey = "municipalservice"; //for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirement(
+            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
+        true) {
+      late BaseResponse response;
+      if (msg != null && msg is Map && msg["miniAppKey"] != null) {
+        sl<HomeMiniAppsListCubit>()
+            .openMiniApp(serviceKey: msg["miniAppKey"], path: msg['path']);
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "navigateToSuperAppScreen",
+          data: null,
+        );
+      } else {
+        response = BaseResponse(
+          code: 400,
+          eventName: "navigateToSuperAppScreen",
+          message: "Invalid screen name",
+          data: null,
+        );
+      }
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 401,
         message: "you do not have permission to access this functionality",
         eventName: "navigateToSuperAppScreen",
         data: null,
@@ -728,6 +767,36 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           );
           handler.complete(response.jsonEncodeModel());
         }
+      }
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "openWebView",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void openPdfFile(dynamic dataUri, CompletionHandler handler) async {
+    String serviceKey = "municipalservice"; //for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirement(serviceKey, RequirementEnum.openWebView.name) ==
+        true) {
+      if (dataUri != null && dataUri is Map) {
+        NavigationService.navigatorKey.currentState!.push(
+          MaterialPageRoute(
+            builder: (_) {
+              return PdfViewerScreen(
+                pdfData: JsPdfModel.fromJson(
+                  dataUri,
+                ),
+              );
+            },
+          ),
+        );
       }
     } else {
       BaseResponse response = BaseResponse(

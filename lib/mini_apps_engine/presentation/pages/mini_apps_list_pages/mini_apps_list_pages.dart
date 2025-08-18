@@ -20,6 +20,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       appBar: AppBar(
         title: Text(
           "services".tr(),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+            fontFamily: 'packages/balady_uikit/Frutiger',
+          ),
         ),
         centerTitle: true,
         backgroundColor: context.colors.accentDefault,

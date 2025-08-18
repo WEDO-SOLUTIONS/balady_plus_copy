@@ -45,7 +45,8 @@ class MiniAppsItemWidget extends StatelessWidget {
                         miniApp.serviceName ?? '',
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w600,
-                            ),
+                          fontFamily: 'packages/balady_uikit/Frutiger',
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -56,6 +57,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                             : '',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: Colors.grey[600],
+                          fontFamily: 'packages/balady_uikit/Frutiger',
                             ),
                       ),
                     ],
