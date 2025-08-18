@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_insider/flutter_insider.dart';
 // ignore: implementation_imports
 import 'package:flutter_insider/src/identifiers.dart';
@@ -115,5 +117,52 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
         .addParameterWithString('destination', destination)
         .addParameterWithInt('time_to_reach', spentTime.inSeconds)
         .build();
+  }
+
+  @override
+  void carPlayConnected() {
+    FlutterInsider.Instance.tagEvent('carplay_connected')
+        .addParameterWithString('event_name', 'carplay_connected')
+        .addParameterWithString('status', 'connected')
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  String get now {
+    final now = DateTime.now().toUtc();
+    final formatted = now.toIso8601String().replaceFirst(RegExp(r'\.\d+'), '');
+    return formatted;
+  }
+
+  @override
+  void networkConnectionType({required String type}) {
+    FlutterInsider.Instance.tagEvent('network_type_detected')
+        .addParameterWithString('event_name', 'network_type_detected')
+        .addParameterWithString('connection_type', type)
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  @override
+  Future<void> deviceTypeDetected() async {
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      final model = androidInfo.data['model'];
+      await FlutterInsider.Instance.tagEvent('device_type_detected')
+          .addParameterWithString('event_name', 'device_type_detected')
+          .addParameterWithString('device_type', model)
+          .addParameterWithString('platform', Platform.operatingSystem)
+          .addParameterWithString('timestamp', now)
+          .build();
+    } else {
+      final iOSInfo = await DeviceInfoPlugin().iosInfo;
+      final model = iOSInfo.data['machine'];
+      await FlutterInsider.Instance.tagEvent('device_type_detected')
+          .addParameterWithString('event_name', 'device_type_detected')
+          .addParameterWithString('device_type', model)
+          .addParameterWithString('platform', Platform.operatingSystem)
+          .addParameterWithString('timestamp', now)
+          .build();
+    }
   }
 }

@@ -38,4 +38,11 @@ abstract interface class AppAnalyticsRepository {
   void serviceSectionVisited();
 
   void quickActionSelected(String action);
+
+  void carPlayConnected();
+
+  Future<void> deviceTypeDetected();
+
+  void networkConnectionType({required String type});
+
 }
