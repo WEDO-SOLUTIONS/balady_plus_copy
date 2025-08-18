@@ -16,11 +16,12 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/path_nav/ui/end_trip_modal.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 part 'finished_state_title.dart';
-part 'running_state_title.dart';
 part 'paused_state_title.dart';
+part 'running_state_title.dart';
 
 class EtaHeader extends HookConsumerWidget {
   final PathNavState state;
@@ -29,7 +30,7 @@ class EtaHeader extends HookConsumerWidget {
   final VoidCallback? onTapRoute;
   final VoidCallback onEndTripPressed;
   final VoidCallback onContinuePressed;
-  final StatelessBottomSheetController sheetController;
+  final ToggleSheetController sheetController;
 
   const EtaHeader({
     required this.onEndTripPressed,
@@ -83,7 +84,7 @@ class EtaHeader extends HookConsumerWidget {
             onContinuePressed();
           } else if (state == PathNavState.running) {
             ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-            sheetController.open(duration: Durations.long1);
+            sheetController.open(duration: Durations.long1 * 3);
           }
         },
         child: AnimatedSwitcher(

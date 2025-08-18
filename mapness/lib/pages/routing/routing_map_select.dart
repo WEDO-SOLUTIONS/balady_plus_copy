@@ -7,12 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -21,7 +22,7 @@ import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
-import 'package:mapness/shared/ui/safe_area_padding.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class RoutingMapSelectPage extends StatefulHookConsumerWidget {
@@ -51,7 +52,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     final mediaQueryTop = mediaQuery?.viewPadding.top ?? 0;
     final additionPadding = mediaQueryTop * MediaQuery.of(context).devicePixelRatio;
 
-    final scrollController = useStatelessBottomsheetController(onClose: (_) => _onClose(context));
+    final scrollController = useToggleSheetController(onClose: (_) => _onClose(context));
 
     useEffect(() {
       void updateCameraPadding() {
@@ -68,103 +69,101 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
       return () => scrollController.removeListener(updateCameraPadding);
     }, [scrollController]);
 
-    return SafeAreaPadding(
-      child: StatelessBottomSheet(
-        scrollController: scrollController,
-        backgroundColor: context.colors.backgroundSurface4,
-        draggerColor: context.colors.backgroundSurface4,
-        safeAreaColor: context.colors.backgroundSurface4,
-        outside: Stack(
-          children: [
-            const RoutingMapControls(),
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: additionPadding,
-                ),
-                child: SvgPicture.asset(Markers.defaultPinNew),
+    return ToggleSheet(
+      scrollController: scrollController,
+      backgroundColor: context.colors.backgroundSurface4,
+      safeAreaColor: context.colors.backgroundSurface4,
+      dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+      outside: Stack(
+        children: [
+          const RoutingMapControls(),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: additionPadding,
               ),
-            ),
-          ],
-        ),
-        header: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      context.l10n.pointToMap,
-                      style: context.textStyles.h4SemiBold,
-                    ),
-                    Spacing.$1x.heightBox,
-                    Text(
-                      context.l10n.moveMap,
-                      style: context.textStyles.bodySmallRegular.copyWith(
-                        color: context.colors.foregroundSoft,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              CustomCloseButton(onClose: () => _onClose(context)),
-            ],
-          ),
-        ),
-        content: [
-          _NearestObject(
-            nearestObject: nearestObject,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              left: Spacing.$4x,
-              right: Spacing.$4x,
-              top: Spacing.$3x,
-            ),
-            child: AnimatedSwitcher(
-              duration: Durations.medium1,
-              child: nearestObject.when(
-                loading: () => SizedBox(
-                  key: const ValueKey(ButtonColorScheme.accentSecondary),
-                  width: double.infinity,
-                  child: AppButton(
-                    primaryLabel: context.l10n.done,
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
-                    buttonType: ButtonType.secondary,
-                    buttonState: ButtonState.loading,
-                    size: ButtonSize.large,
-                    onTap: null,
-                  ),
-                ),
-                data: (data) => SizedBox(
-                  key: const ValueKey(ButtonColorScheme.accent),
-                  width: double.infinity,
-                  child: AppButton(
-                    primaryLabel: context.l10n.done,
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
-                    size: ButtonSize.large,
-                    onTap: () => _onTap(data, context),
-                  ),
-                ),
-                error: (error, stackTrace) => SizedBox(
-                  key: const ValueKey(ButtonColorScheme.accentSecondary),
-                  width: double.infinity,
-                  child: AppButton(
-                    primaryLabel: context.l10n.done,
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
-                    buttonState: ButtonState.disabled,
-                    size: ButtonSize.large,
-                    onTap: null,
-                  ),
-                ),
-              ),
+              child: SvgPicture.asset(Markers.defaultPinNew),
             ),
           ),
         ],
       ),
+      header: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.l10n.pointToMap,
+                    style: context.textStyles.h4SemiBold,
+                  ),
+                  Spacing.$1x.heightBox,
+                  Text(
+                    context.l10n.moveMap,
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: context.colors.foregroundSoft,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            CustomCloseButton(onClose: () => _onClose(context)),
+          ],
+        ),
+      ),
+      content: [
+        _NearestObject(
+          nearestObject: nearestObject,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: Spacing.$4x,
+            right: Spacing.$4x,
+            top: Spacing.$3x,
+          ),
+          child: AnimatedSwitcher(
+            duration: Durations.medium1,
+            child: nearestObject.when(
+              loading: () => SizedBox(
+                key: const ValueKey(ButtonColorScheme.accentSecondary),
+                width: double.infinity,
+                child: AppButton(
+                  primaryLabel: context.l10n.done,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonType: ButtonType.secondary,
+                  buttonState: ButtonState.loading,
+                  size: ButtonSize.large,
+                  onTap: null,
+                ),
+              ),
+              data: (data) => SizedBox(
+                key: const ValueKey(ButtonColorScheme.accent),
+                width: double.infinity,
+                child: AppButton(
+                  primaryLabel: context.l10n.done,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  size: ButtonSize.large,
+                  onTap: () => _onTap(data, context),
+                ),
+              ),
+              error: (error, stackTrace) => SizedBox(
+                key: const ValueKey(ButtonColorScheme.accentSecondary),
+                width: double.infinity,
+                child: AppButton(
+                  primaryLabel: context.l10n.done,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonState: ButtonState.disabled,
+                  size: ButtonSize.large,
+                  onTap: null,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

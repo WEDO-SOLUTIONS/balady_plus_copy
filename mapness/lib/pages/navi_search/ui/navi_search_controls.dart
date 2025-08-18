@@ -15,9 +15,10 @@ import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
+import 'package:sheetify/sheetify.dart';
 
 class NaviSearchSheetControls extends ConsumerStatefulWidget {
-  final uikit.StatefulBottomSheetController scrollController;
+  final MultiStateSheetController scrollController;
 
   const NaviSearchSheetControls(
     this.scrollController, {
@@ -119,7 +120,7 @@ class _NaviSearchSheetControlsState extends ConsumerState<NaviSearchSheetControl
                                 ),
                                 uikit.Spacing.$4x.heightBox,
                                 SizedBox(
-                                  height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                                  height: widget.scrollController.state == ThreeStateSheet.hidden
                                       ? uikit.Spacing.$3x * (1 - interpolation)
                                       : 0,
                                 )

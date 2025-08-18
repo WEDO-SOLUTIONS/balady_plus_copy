@@ -1,21 +1,21 @@
-import 'package:balady_uikit/components.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:sheetify/sheetify.dart';
 
-/// Creates a [StatefulBottomSheetController] that will be disposed automatically.
+/// Creates a [MultiStateSheetController] that will be disposed automatically.
 ///
 /// See also:
-/// - [StatefulBottomSheetController]
-StatefulBottomSheetController<T> useStatefulBottomsheetController<T>({
+/// - [MultiStateSheetController]
+MultiStateSheetController<T> useMultiStateSheetController<T>({
   required SnappingBehavior behavior,
-  required BottomSheetStateMapper<T> mapper,
+  required SheetStateMapper<T> mapper,
   T? initialState,
   List<Object?>? keys,
   double? durationMultiplier,
   bool? resetContentScrollOnHiddenState,
 }) =>
     use(
-      _StatefulBottomSheetControllerHook<T>(
+      _MultiStateSheetControllerHook<T>(
         keys: keys,
         behavior: behavior,
         mapper: mapper,
@@ -25,14 +25,14 @@ StatefulBottomSheetController<T> useStatefulBottomsheetController<T>({
       ),
     );
 
-class _StatefulBottomSheetControllerHook<T> extends Hook<StatefulBottomSheetController<T>> {
+class _MultiStateSheetControllerHook<T> extends Hook<MultiStateSheetController<T>> {
   final SnappingBehavior behavior;
-  final BottomSheetStateMapper<T> mapper;
+  final SheetStateMapper<T> mapper;
   final double? durationMultiplier;
   final bool? resetContentScrollOnHiddenState;
   final T? initialState;
 
-  const _StatefulBottomSheetControllerHook({
+  const _MultiStateSheetControllerHook({
     required this.behavior,
     required this.mapper,
     this.initialState,
@@ -42,13 +42,13 @@ class _StatefulBottomSheetControllerHook<T> extends Hook<StatefulBottomSheetCont
   }) : super(keys: keys);
 
   @override
-  HookState<StatefulBottomSheetController<T>, Hook<StatefulBottomSheetController<T>>> createState() =>
-      _StatefulBottomSheetControllerHookState<T>();
+  HookState<MultiStateSheetController<T>, Hook<MultiStateSheetController<T>>> createState() =>
+      _MultiStateSheetControllerHookState<T>();
 }
 
-class _StatefulBottomSheetControllerHookState<T>
-    extends HookState<StatefulBottomSheetController<T>, _StatefulBottomSheetControllerHook<T>> {
-  late final controller = StatefulBottomSheetController<T>(
+class _MultiStateSheetControllerHookState<T>
+    extends HookState<MultiStateSheetController<T>, _MultiStateSheetControllerHook<T>> {
+  late final controller = MultiStateSheetController<T>(
     durationMultiplier: hook.durationMultiplier ?? 1.0,
     behavior: hook.behavior,
     stateMapper: hook.mapper,
@@ -57,11 +57,11 @@ class _StatefulBottomSheetControllerHookState<T>
   );
 
   @override
-  StatefulBottomSheetController<T> build(BuildContext context) => controller;
+  MultiStateSheetController<T> build(BuildContext context) => controller;
 
   @override
   void dispose() => controller.dispose();
 
   @override
-  String get debugLabel => 'useStatefulBottomSheetController';
+  String get debugLabel => 'useMultiStateSheetController';
 }

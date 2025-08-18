@@ -7,13 +7,15 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/utils/language_detector.dart';
+import 'package:sheetify/sheetify.dart';
 
 /// Previously called RoadClosurePage.
 @RoutePage()
@@ -58,11 +60,11 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useStatelessBottomsheetController(
+    final scrollController = useToggleSheetController(
       onClose: (controller) {
         unawaited(removeSelection());
       },
-      heightModel: BottomSheetHeightModel.fixed(120),
+      heightModel: ToggleSheetHeightModel.fixed(120),
     );
     final currentLang = ref.read(appLanguageProvider).languageCode;
 
@@ -89,11 +91,14 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
             child: GestureDetector(
               onTap: _onClose,
               child: ColoredBox(
-                color: context.color.surfaceOverlayModal,
+                color: context.colors.screenOverlayDimming40,
               ),
             ),
           ),
-        StatelessBottomSheet(
+        ToggleSheet(
+          dragger: const SheetDragger(),
+          backgroundColor: context.colors.backgroundSurface1,
+          safeAreaColor: context.colors.backgroundSurface1,
           header: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: Row(

@@ -2,10 +2,12 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sheetify/sheetify.dart';
 
 class FeedbackPermissionSheet extends HookWidget {
   final FeedbackImageSelectorType type;
@@ -14,15 +16,15 @@ class FeedbackPermissionSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sheetController = useStatelessBottomsheetController(
+    final sheetController = useToggleSheetController(
       onClose: (_) => Navigator.of(context).pop(),
     );
 
-    return StatelessBottomSheet(
+    return ToggleSheet(
       safeAreaColor: context.colors.backgroundSurface4,
       backgroundColor: context.colors.backgroundSurface4,
       scrollController: sheetController,
-      draggerColor: context.colors.backgroundSurface4,
+      dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
       content: [
         ContentRow(
           options: ContentRowOptions(

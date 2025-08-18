@@ -12,12 +12,13 @@ import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:shimmer/shimmer.dart';
 
 double weatherHeaderSize = 300.0;
 
 class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
   final GlobalKey cardKey;
 
   const WeatherCardHeaderDelegate({
@@ -47,7 +48,7 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class DashboardHeader extends ConsumerWidget {
-  final StatefulBottomSheetController bottomSheetController;
+  final MultiStateSheetController bottomSheetController;
   final GlobalKey cardKey;
 
   const DashboardHeader({
@@ -83,10 +84,10 @@ class DashboardHeader extends ConsumerWidget {
         locale: locale,
         cardKey: cardKey,
         onTap: () {
-          if (bottomSheetController.state == ThreeStateBottomSheet.expanded) {
-            bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+          if (bottomSheetController.state == ThreeStateSheet.expanded) {
+            bottomSheetController.setState(ThreeStateSheet.hidden);
           } else {
-            bottomSheetController.setState(ThreeStateBottomSheet.expanded);
+            bottomSheetController.setState(ThreeStateSheet.expanded);
           }
         },
       ),

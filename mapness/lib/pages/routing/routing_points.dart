@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' show ABRoute, ABRouteModel, Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -26,6 +27,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class RoutingPointsPage extends StatelessWidget {
@@ -58,15 +60,18 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
 
   /// Bottom sheet controller
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  late final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
+
+  final outsideOpacityDelegate = StatefulSheetDelegateFunction<double, ThreeStateSheet>(
+      function: (c) => c.fraction > 0.4 ? 1 - (c.fraction - 0.4) * 10 : 1.0);
 
   @override
   void initState() {
-    bottomSheetController = StatefulBottomSheetController(
+    bottomSheetController = MultiStateSheetController(
       behavior: MultiSnappingBehavior(
         models: [
-          AspectRatioSnappingModel(_bottomSheetAspectRatios),
+          FractionSnappingModel(_bottomSheetAspectRatios),
           ComponentsSnappingModel(
             componentsDescriptions: [
               const SnapComponentSize(component: Components.header),
@@ -75,14 +80,14 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
         ],
       ),
       stateMapper: const ThreeStateMapper(),
-      initialState: ThreeStateBottomSheet.open,
+      initialState: ThreeStateSheet.open,
     );
     _setupTapListener();
     bottomSheetController.addListener(updateFooterOpacity);
     super.initState();
   }
 
-  void updateFooterOpacity() => footerOpacity.value = min(1.0, (1 - bottomSheetController.aspectRatio) * 2);
+  void updateFooterOpacity() => footerOpacity.value = min(1.0, (1 - bottomSheetController.fraction) * 2);
 
   @override
   void dispose() {
@@ -126,64 +131,60 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Stack(
-        children: [
-          StatefulBottomSheet<ThreeStateBottomSheet>(
-            animateOpening: false,
-            draggerColor: context.colors.backgroundSurface4,
-            backgroundColor: context.colors.backgroundSurface4,
-            outside: const RoutingMapControls(),
-            outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
-                function: (c) => c.aspectRatio > 0.4 ? 1 - (c.aspectRatio - 0.4) * 10 : 1.0),
-            sliverBeforeContent: SliverPersistentHeader(
-              delegate: RoutingHeaderDelegate(onFavouritesTap: _onFavouritesTap),
-              pinned: true,
-              floating: true,
+      child: MultiStateSheet<ThreeStateSheet>(
+        animateOpening: false,
+        useSafeArea: false,
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+        backgroundColor: context.colors.backgroundSurface4,
+        outside: const RoutingMapControls(),
+        outsideOpacityDelegate: outsideOpacityDelegate,
+        sliver: SliverPersistentHeader(
+          delegate: RoutingHeaderDelegate(onFavouritesTap: _onFavouritesTap),
+          pinned: true,
+          floating: true,
+        ),
+        header: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: Spacing.$4x),
+            child: ABRoute(
+              items: aBRouteModels.toList(),
+              onTap: (i) => _onTap(i, context, ref),
+              onReorder: _onReorder,
             ),
-            header: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.$4x),
-                child: ABRoute(
-                  items: aBRouteModels.toList(),
-                  onTap: (i) => _onTap(i, context, ref),
-                  onReorder: _onReorder,
-                ),
-              ),
-            ),
-            content: [
-              Column(
-                children: [
-                  RoutingHistory(
-                    updatePoint: _updatePoint,
-                    searchByQuery: _searchQuery,
-                  ),
-                ],
+          ),
+        ),
+        content: [
+          Column(
+            children: [
+              RoutingHistory(
+                updatePoint: _updatePoint,
+                searchByQuery: _searchQuery,
               ),
             ],
-            keepContentBehindFooter: true,
-            footer: IgnorePointer(
-              child: SizedBox(
-                height: Spacing.$16x + Spacing.$5x,
-                width: double.infinity,
-                child: FadeTransition(
-                  opacity: Animation.fromValueListenable(footerOpacity),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      backgroundBlendMode: BlendMode.srcOver,
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
-                      ),
-                    ),
+          ),
+        ],
+        keepContentBehindFooter: true,
+        footer: IgnorePointer(
+          child: SizedBox(
+            height: Spacing.$16x + Spacing.$5x,
+            width: double.infinity,
+            child: FadeTransition(
+              opacity: Animation.fromValueListenable(footerOpacity),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  backgroundBlendMode: BlendMode.srcOver,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
                   ),
                 ),
               ),
             ),
-            scrollController: bottomSheetController,
           ),
-        ],
+        ),
+        scrollController: bottomSheetController,
       ),
     );
   }
@@ -333,11 +334,11 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     if (event is ObjectTapEvent) {
       final state = bottomSheetController.state;
       switch (state) {
-        case ThreeStateBottomSheet.open:
+        case ThreeStateSheet.open:
           break;
-        case ThreeStateBottomSheet.hidden:
-        case ThreeStateBottomSheet.expanded:
-          bottomSheetController.setState(ThreeStateBottomSheet.open);
+        case ThreeStateSheet.hidden:
+        case ThreeStateSheet.expanded:
+          bottomSheetController.setState(ThreeStateSheet.open);
           break;
       }
     }

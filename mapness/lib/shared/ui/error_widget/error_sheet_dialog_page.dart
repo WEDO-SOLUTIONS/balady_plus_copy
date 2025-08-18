@@ -1,8 +1,8 @@
 import 'package:auto_route/annotations.dart';
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class ErrorSheetDialogPage extends ConsumerWidget {
@@ -10,7 +10,7 @@ class ErrorSheetDialogPage extends ConsumerWidget {
   final VoidCallback onRetry;
   final String? buttonLabel;
   final String? errorLabel;
-  final BottomSheetOnCloseCallback? onClose;
+  final ToggleSheetOnCloseCallback? onClose;
 
   /// Add barrier to bottom sheet background
   final bool hasBarrier;

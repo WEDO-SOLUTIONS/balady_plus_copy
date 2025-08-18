@@ -4,8 +4,9 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
 import 'package:mapness/features/poi_card/widgets/poi_tabs.dart';
+import 'package:sheetify/sheetify.dart';
 
-class TabComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class TabComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final TabController tabController;
   final int objectId;
   final PoiCardState? poiCardState;

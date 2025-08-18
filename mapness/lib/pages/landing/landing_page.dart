@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +15,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
@@ -26,10 +26,9 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
-      StatefulBottomSheetController(
-    initialState: ThreeStateBottomSheet.open,
-    behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, .931}),
+  late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController = MultiStateSheetController(
+    initialState: ThreeStateSheet.open,
+    behavior: FractionSnappingBehavior(fractions: {0.0, if (Platform.isIOS) .3 else .38, .931}),
     stateMapper: const LandingStateMapper(),
   );
 
@@ -113,7 +112,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                 ListenableBuilder(
                   listenable: _bottomSheetController,
                   builder: (_, __) {
-                    if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
+                    if (_bottomSheetController.state == ThreeStateSheet.hidden) {
                       return const SizedBox.shrink();
                     }
 
@@ -134,8 +133,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _hideBottomSheet() {
-    if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-      _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    if (_bottomSheetController.state != ThreeStateSheet.hidden) {
+      _bottomSheetController.setState(ThreeStateSheet.hidden);
     }
   }
 }
