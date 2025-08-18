@@ -73,9 +73,7 @@ import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
-import 'package:share_plus/share_plus.dart';
 
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
