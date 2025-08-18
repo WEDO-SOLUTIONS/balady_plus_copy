@@ -259,6 +259,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           .removeAllMarkers();
     }
 
+    ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
+
     Metrics.logEventAdvanced(
       MetricsConstants.routesKeys.routeSelectionGoButton,
       group: MetricsConstants.routesTag,

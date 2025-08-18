@@ -45,4 +45,6 @@ abstract interface class AppAnalyticsRepository {
 
   void networkConnectionType({required String type});
 
+  void transportModeSelected({required String type});
+
 }

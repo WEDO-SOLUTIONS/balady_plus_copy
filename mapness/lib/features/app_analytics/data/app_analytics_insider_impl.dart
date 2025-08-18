@@ -165,4 +165,13 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
           .build();
     }
   }
+
+  @override
+  void transportModeSelected({required String type}) {
+     FlutterInsider.Instance.tagEvent('transport_mode_selected')
+        .addParameterWithString('event_name', 'transport_mode_selected')
+        .addParameterWithString('mode', type)
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
 }
