@@ -146,7 +146,7 @@ class SearchItem extends ConsumerWidget {
                           options: ContentRowTextTrailingOptions(
                             text: (distanceKm * 1000).formatDistance(context.l10n),
                             textStyle:
-                                context.textStyles.bodySmallSemiBold.copyWith(color: context.colorsV3.foregroundSoft),
+                                context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundSoft),
                           ),
                         );
                       },
