@@ -213,7 +213,6 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-
   Future<void> showActiveLayerOnMap() async {
     final layerType = ref.read(activeLayerProvider);
 
@@ -467,9 +466,9 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
     await ref
         .read(mapObjectManagerProvider(
-      named: esriMapObjectSettings.name,
-      layerId: esriMapObjectSettings.layerId,
-    ).notifier)
+          named: esriMapObjectSettings.name,
+          layerId: esriMapObjectSettings.layerId,
+        ).notifier)
         .addMarkers(markers)
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
@@ -504,7 +503,6 @@ class LayersControls extends _$LayersControls {
       handleTap(_previousLayer!);
       _previousLayer = null;
     }
-  }
   }
 
   MapRequestParams _createParams(
@@ -601,9 +599,9 @@ class LayersControls extends _$LayersControls {
         {
           await ref
               .read(mapObjectManagerProvider(
-            named: esriMapObjectSettings.name,
-            layerId: esriMapObjectSettings.layerId,
-          ).notifier)
+                named: esriMapObjectSettings.name,
+                layerId: esriMapObjectSettings.layerId,
+              ).notifier)
               .removeAllMarkers();
           await ref.read(parkingStateProvider.notifier).hideParking();
           break;
@@ -614,7 +612,6 @@ class LayersControls extends _$LayersControls {
         break;
     }
   }
-
 
   LayerType? _getLayerState() => ref.read(activeLayerProvider);
 
@@ -805,7 +802,6 @@ class LayersControls extends _$LayersControls {
           )
           .toList() ??
       [];
-
 
   void _showEsriCard(PointLayersData e) {
     ref.read(appRouterProvider).push(LayersDetailsWidgetRoute(data: e));
