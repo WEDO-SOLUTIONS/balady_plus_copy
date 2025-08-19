@@ -371,13 +371,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openMiniApps(dynamic msg, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirement(
-            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
-        true) {
+
+    if (checkAppRequirement(serviceKey, RequirementEnum.navigateToSuperAppScreen.name) == true) {
       late BaseResponse response;
-      if (msg != null && msg is Map ) {
+      if (msg != null && msg is String ) {
+        Map data = jsonDecode(msg);
         sl<HomeMiniAppsListCubit>()
-            .openMiniApp(serviceKey: msg["a"], path: msg['b']);
+            .openMiniApp(serviceKey: data["miniAppKey"], path: data['path']);
         response = BaseResponse(
           code: 200,
           message: "success",

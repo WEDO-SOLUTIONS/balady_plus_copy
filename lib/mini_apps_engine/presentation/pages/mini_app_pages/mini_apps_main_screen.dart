@@ -1,3 +1,4 @@
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -9,7 +10,6 @@ import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/native_overlay_controller.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
-
 
 class MiniAppsMainScreen extends StatefulWidget {
   const MiniAppsMainScreen({super.key});
@@ -44,15 +44,24 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         ),
       ),
     ];
-    return await ShowDialogOnWebView.showAlertDialog<bool>(context: context, title: title, actions: (_) => actions) ?? false;
+    return await ShowDialogOnWebView.showAlertDialog<bool>(
+            context: context, title: title, actions: (_) => actions) ??
+        false;
   }
 
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
 
+    HomeMiniAppsListSuccessState state = context
+        .watch<HomeMiniAppsListCubit>()
+        .state as HomeMiniAppsListSuccessState;
+
     return BlocProvider<MiniAppsEngineBloc>(
-      create: (context) => MiniAppsEngineBloc(miniApp: data),
+      create: (context) => data.serviceKey == "ServiceKey" && !(state.municipalAppBloc?.isClosed ?? true) &&
+              state.municipalAppBloc?.state is MiniAppsEngineLoadedState
+          ? state.municipalAppBloc!
+          : MiniAppsEngineBloc(miniApp: data),
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
@@ -79,7 +88,8 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                 return const SizedBox.shrink();
               } else if (state is MiniAppsEngineLoadedState) {
                 return const WebMiniAppsScreen();
-              } else if (state is FailedDownloadState || state is MiniAppsEngineErrorState) {
+              } else if (state is FailedDownloadState ||
+                  state is MiniAppsEngineErrorState) {
                 return ReloadWidget(
                   errorMessage: "errors_server_error_1".tr(),
                   onTab: () {
@@ -99,9 +109,12 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                       SizedBox(
                         height: 10,
                         child: LinearProgressIndicator(
-                          value: state.progress.isEmpty ? null : (double.parse(state.progress) / 100),
+                          value: state.progress.isEmpty
+                              ? null
+                              : (double.parse(state.progress) / 100),
                           backgroundColor: Colors.grey[200],
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                          valueColor:
+                              const AlwaysStoppedAnimation<Color>(Colors.blue),
                         ),
                       ),
                       const SizedBox(height: 16),
