@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' as ui_kit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
@@ -16,6 +16,7 @@ import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 /// Type of the route details sheet
@@ -55,7 +56,7 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController;
+  late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController;
   List<RouteDetailsPublicTransport>? _transports;
   int _activeIndex = 0;
   late BriefPublicTransportModel? _route;
@@ -67,11 +68,11 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _bottomSheetController = StatefulBottomSheetController(
+    _bottomSheetController = MultiStateSheetController(
       behavior: MultiSnappingBehavior(
         models: [
           OffsetSnappingModel({_PublicTransportRoutes.height + (topHeaderOffset?.getStaticValue() ?? 0.0) + 58.0}),
-          AspectRatioSnappingModel({0.0}),
+          FractionSnappingModel({0.0}),
           if (_showFooter)
             ComponentsSnappingModel(componentsDescriptions: [
               SnapComponent.merge(
@@ -82,7 +83,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
             ])
         ],
       ),
-      stateMapper: const RouteDetailsStateMapper(),
+      stateMapper: const RouteDetailsStateMapperV2(),
       initialState: _initialState,
     );
     _activeIndex = widget.initialIndex;
@@ -112,9 +113,9 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
     return Directionality(
       textDirection: direction,
-      child: StatefulBottomSheet<ThreeStateBottomSheet>(
+      child: MultiStateSheet<ThreeStateSheet>(
         scrollController: _bottomSheetController,
-        backgroundColor: context.colorsV3.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface4,
         outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
         topHeaderOffset: topHeaderOffset,
         topHeader: _hasPublicTransportRoutes
@@ -137,15 +138,15 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         ),
         footer: SizedBox(
           width: double.infinity,
-          child: BaladyAppButton(
+          child: ui_kit.AppButton(
             padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom + Spacing.$2x,
-              left: Spacing.$4x,
-              right: Spacing.$4x,
-              top: Spacing.$3x,
+              bottom: MediaQuery.of(context).padding.bottom + ui_kit.Spacing.$2x,
+              left: ui_kit.Spacing.$4x,
+              right: ui_kit.Spacing.$4x,
+              top: ui_kit.Spacing.$3x,
             ),
-            buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-            size: BaladyButtonSize.large,
+            buttonColorScheme: ui_kit.ButtonColorScheme.accentSecondary,
+            size: ui_kit.ButtonSize.large,
             primaryLabel: widget.buttonLabel,
             onTap: () {
               context.router.popForced();
@@ -155,41 +156,41 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         ),
         content: [
           Padding(
-            padding: const EdgeInsets.all(Spacing.$4x),
+            padding: const EdgeInsets.all(ui_kit.Spacing.$4x),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ContentWrapper(
-                  color: context.colorsV3.backgroundSurface1,
+                ui_kit.ContentWrapper(
+                  color: context.colors.backgroundSurface1,
                   children: [
-                    ContentRowV2(
+                    ui_kit.ContentRow(
                       leading: Icon(
-                        TransportIcons.locationFullLTR,
-                        color: context.colorsV3.accentDefault,
+                        ui_kit.TransportIcons.locationFullLTR,
+                        color: context.colors.accentDefault,
                         size: 24,
                       ),
-                      text: ContentRowTextOptions(
+                      text: ui_kit.ContentRowTextOptions(
                         title: widget.startPoint?.label ?? context.l10n.myLocation,
                       ),
                     ),
                   ],
                 ),
-                Spacing.$2x.heightBox,
+                ui_kit.Spacing.$2x.heightBox,
                 ...(_transports ?? [])
                     .map((e) =>
                         e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
-                    .insertBetween(Spacing.$2x.heightBox),
-                Spacing.$2x.heightBox,
-                ContentWrapper(
-                  color: context.colorsV3.backgroundSurface1,
+                    .insertBetween(ui_kit.Spacing.$2x.heightBox),
+                ui_kit.Spacing.$2x.heightBox,
+                ui_kit.ContentWrapper(
+                  color: context.colors.backgroundSurface1,
                   children: [
-                    ContentRowV2(
+                    ui_kit.ContentRow(
                       leading: Icon(
-                        GeneralIcons.bulletCircleSolid,
-                        color: context.colorsV3.accentDefault,
+                        ui_kit.GeneralIcons.bulletCircleSolid,
+                        color: context.colors.accentDefault,
                         size: 24,
                       ),
-                      text: ContentRowTextOptions(
+                      text: ui_kit.ContentRowTextOptions(
                         title: widget.destination?.label ?? context.l10n.destination,
                       ),
                     ),
@@ -273,9 +274,9 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
   }
 
   bool get _showFooter => widget.type == RouteDetailsSheetType.about;
-  ThreeStateBottomSheet get _initialState => switch (widget.type) {
-        RouteDetailsSheetType.about => ThreeStateBottomSheet.expanded,
-        RouteDetailsSheetType.driving => ThreeStateBottomSheet.hidden,
+  ThreeStateSheet get _initialState => switch (widget.type) {
+        RouteDetailsSheetType.about => ThreeStateSheet.expanded,
+        RouteDetailsSheetType.driving => ThreeStateSheet.hidden,
       };
 }
 
@@ -309,7 +310,7 @@ class _HeaderState extends ConsumerState<_Header> {
 
     return Container(
       color: context.colorsV3.backgroundSurface1,
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      padding: const EdgeInsets.symmetric(horizontal: ui_kit.Spacing.$4x),
       child: SafeArea(
         top: false,
         bottom: _bottomSafeArea,
@@ -326,8 +327,8 @@ class _HeaderState extends ConsumerState<_Header> {
                         children: [
                           Text(
                             duration,
-                            style: context.textStyleV3.h4SemiBold.copyWith(
-                              color: context.colorsV3.foregroundDefault,
+                            style: context.textStyles.h4SemiBold.copyWith(
+                              color: context.colors.foregroundDefault,
                             ),
                           ),
                           Text(
@@ -336,11 +337,11 @@ class _HeaderState extends ConsumerState<_Header> {
                               color: context.colorsV3.foregroundSoft,
                             ),
                           ),
-                          const SizedBox(height: Spacing.$4x),
+                          const SizedBox(height: ui_kit.Spacing.$4x),
                         ],
                       ),
-                      BaladyAppButton.close(
-                        buttonType: BaladyButtonType.secondary,
+                      ui_kit.AppButton.close(
+                        buttonType: ui_kit.ButtonType.secondary,
                         onTap: widget.onClose,
                       ),
                     ],
@@ -351,7 +352,7 @@ class _HeaderState extends ConsumerState<_Header> {
                     isLarge: true,
                     mainAxisAlignment: MainAxisAlignment.center,
                   ),
-                  const SizedBox(height: Spacing.$4x),
+                  const SizedBox(height: ui_kit.Spacing.$4x),
                 ],
               ),
       ),
@@ -368,43 +369,43 @@ class YouArrivedHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: Spacing.$12x, top: Spacing.$2x),
+        padding: const EdgeInsets.only(bottom: ui_kit.Spacing.$12x, top: ui_kit.Spacing.$2x),
         child: Row(
           children: [
             Container(
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: context.colorsV3.accentDefault,
+                color: context.colors.accentDefault,
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                GeneralIcons.flag,
-                color: context.colorsV3.accentOnAccent,
+                ui_kit.GeneralIcons.flag,
+                color: context.colors.accentOnAccent,
                 size: 24,
               ),
             ),
-            Spacing.$3x.widthBox,
+            ui_kit.Spacing.$3x.widthBox,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   context.l10n.arrivedPub,
-                  style: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                    color: context.colorsV3.foregroundDefault,
+                  style: context.textStyles.bodyLargeSemiBold.copyWith(
+                    color: context.colors.foregroundDefault,
                   ),
                 ),
                 Text(
                   context.l10n.thankYou,
-                  style: context.textStyleV3.bodySmallRegular.copyWith(
-                    color: context.colorsV3.foregroundSoft,
+                  style: context.textStyles.bodySmallRegular.copyWith(
+                    color: context.colors.foregroundSoft,
                   ),
                 ),
               ],
             ),
             const Spacer(),
-            BaladyAppButton.close(
-              buttonType: BaladyButtonType.secondary,
+            ui_kit.AppButton.close(
+              buttonType: ui_kit.ButtonType.secondary,
               onTap: onClose,
             ),
           ],
@@ -429,7 +430,7 @@ class _PublicTransportRoutes extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
         height: height,
         child: ListView.separated(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
+          padding: const EdgeInsets.only(left: ui_kit.Spacing.$4x, right: ui_kit.Spacing.$4x),
           scrollDirection: Axis.horizontal,
           itemCount: routes.length,
           itemBuilder: (context, index) {
@@ -441,12 +442,12 @@ class _PublicTransportRoutes extends StatelessWidget {
               },
               child: Container(
                 constraints: const BoxConstraints(minWidth: 110),
-                padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+                padding: const EdgeInsets.symmetric(vertical: ui_kit.Spacing.$3x, horizontal: ui_kit.Spacing.$4x),
                 decoration: BoxDecoration(
                   color: isActive
-                      ? context.colorsV3.accentSecondaryDefault
-                      : context.colorsV3.accentSecondaryOnAccentSecondary,
-                  borderRadius: BorderRadius.circular(RadiusBorder.l),
+                      ? context.colors.accentSecondaryDefault
+                      : context.colors.accentSecondaryOnAccentSecondary,
+                  borderRadius: BorderRadius.circular(ui_kit.RadiusBorder.l),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -454,17 +455,17 @@ class _PublicTransportRoutes extends StatelessWidget {
                   children: [
                     Text(
                       routes[index].duration.formatDuration(context.l10n),
-                      style: context.textStyleV3.bodyLargeRegular.copyWith(
+                      style: context.textStyles.bodyLargeRegular.copyWith(
                         color: isActive
-                            ? context.colorsV3.accentSecondaryOnAccentSecondary
-                            : context.colorsV3.foregroundDefault,
+                            ? context.colors.accentSecondaryOnAccentSecondary
+                            : context.colors.foregroundDefault,
                       ),
                     ),
-                    Spacing.$1x.heightBox,
+                    ui_kit.Spacing.$1x.heightBox,
                     Text(
                       transfers,
-                      style: context.textStyleV3.bodySmallRegular.copyWith(
-                        color: isActive ? context.colorsV3.accentSecondaryMuted : context.colorsV3.foregroundSoft,
+                      style: context.textStyles.bodySmallRegular.copyWith(
+                        color: isActive ? context.colors.accentSecondaryMuted : context.colors.foregroundSoft,
                       ),
                     ),
                   ],
@@ -472,7 +473,7 @@ class _PublicTransportRoutes extends StatelessWidget {
               ),
             );
           },
-          separatorBuilder: (context, index) => Spacing.$2x.widthBox,
+          separatorBuilder: (context, index) => ui_kit.Spacing.$2x.widthBox,
         ),
       );
 }
