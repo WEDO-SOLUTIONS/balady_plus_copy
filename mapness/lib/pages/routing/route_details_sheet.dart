@@ -71,7 +71,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     _bottomSheetController = MultiStateSheetController(
       behavior: MultiSnappingBehavior(
         models: [
-          OffsetSnappingModel({_PublicTransportRoutes.height + (topHeaderOffset?.getStaticValue() ?? 0.0) + 58.0}),
+          OffsetSnappingModel({_PublicTransportRoutes.height + (topHeaderOffset?.getStaticValue() ?? 0.0)}),
           FractionSnappingModel({0.0}),
           if (_showFooter)
             ComponentsSnappingModel(componentsDescriptions: [
@@ -118,7 +118,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         backgroundColor: context.colors.backgroundSurface4,
         outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
         topHeaderOffset: topHeaderOffset,
-        topHeader: _hasPublicTransportRoutes
+        topHeader: _hasPublicTransportRoutes && widget.publicTransportRoutes.length > 1
             ? _PublicTransportRoutes(
                 routes: widget.publicTransportRoutes,
                 activeIndex: _activeIndex,
@@ -130,6 +130,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
                 },
               )
             : null,
+        dragger: null,
         header: _Header(
           route: _route!,
           destination: widget.destination,
@@ -157,44 +158,36 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
         content: [
           Padding(
             padding: const EdgeInsets.all(ui_kit.Spacing.$4x),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: ui_kit.ContentWrapper(
+              color: context.colors.backgroundSurface1,
               children: [
-                ui_kit.ContentWrapper(
-                  color: context.colors.backgroundSurface1,
-                  children: [
-                    ui_kit.ContentRow(
-                      leading: Icon(
-                        ui_kit.TransportIcons.locationFullLTR,
-                        color: context.colors.accentDefault,
-                        size: 24,
-                      ),
-                      text: ui_kit.ContentRowTextOptions(
-                        title: widget.startPoint?.label ?? context.l10n.myLocation,
-                      ),
+                if ((_transports ?? []).isNotEmpty && _transports!.first is RouteDetailsPublicTransportPedestrian) ...[
+                  ui_kit.ContentRow(
+                    leading: Icon(
+                      ui_kit.TransportIcons.locationFullLTR,
+                      color: context.colors.accentDefault,
+                      size: 24,
                     ),
-                  ],
-                ),
-                ui_kit.Spacing.$2x.heightBox,
+                    text: ui_kit.ContentRowTextOptions(
+                      title: widget.startPoint?.label ?? context.l10n.myLocation,
+                    ),
+                  ),
+                  ui_kit.Spacing.$2x.heightBox,
+                ],
                 ...(_transports ?? [])
                     .map((e) =>
                         e.toWidget(context, lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null))
                     .insertBetween(ui_kit.Spacing.$2x.heightBox),
                 ui_kit.Spacing.$2x.heightBox,
-                ui_kit.ContentWrapper(
-                  color: context.colors.backgroundSurface1,
-                  children: [
-                    ui_kit.ContentRow(
-                      leading: Icon(
-                        ui_kit.GeneralIcons.bulletCircleSolid,
-                        color: context.colors.accentDefault,
-                        size: 24,
-                      ),
-                      text: ui_kit.ContentRowTextOptions(
-                        title: widget.destination?.label ?? context.l10n.destination,
-                      ),
-                    ),
-                  ],
+                ui_kit.ContentRow(
+                  leading: Icon(
+                    ui_kit.GeneralIcons.bulletCircleSolid,
+                    color: context.colors.accentDefault,
+                    size: 24,
+                  ),
+                  text: ui_kit.ContentRowTextOptions(
+                    title: widget.destination?.label ?? context.l10n.destination,
+                  ),
                 ),
               ],
             ),
@@ -248,6 +241,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
       length: transferEntry.length.millimeters,
       routeParts: routeParts,
       lineColor: _getMetroLineColor(route, index, context),
+      lineName: route.transports[index].names.first,
     );
   }
 
@@ -309,7 +303,7 @@ class _HeaderState extends ConsumerState<_Header> {
     final _showArrival = widget.type == RouteDetailsSheetType.driving && arrivalState.value == true;
 
     return Container(
-      color: context.colorsV3.backgroundSurface1,
+      color: context.colors.backgroundSurface1,
       padding: const EdgeInsets.symmetric(horizontal: ui_kit.Spacing.$4x),
       child: SafeArea(
         top: false,
@@ -318,6 +312,9 @@ class _HeaderState extends ConsumerState<_Header> {
             ? YouArrivedHeader(onClose: () => widget.onClose?.call())
             : Column(
                 children: [
+                  const SizedBox(height: ui_kit.Spacing.$1x),
+                  const DraggerContainer(),
+                  const SizedBox(height: ui_kit.Spacing.$1x),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -333,17 +330,14 @@ class _HeaderState extends ConsumerState<_Header> {
                           ),
                           Text(
                             transfers,
-                            style: context.textStyleV3.bodySmallRegular.copyWith(
-                              color: context.colorsV3.foregroundSoft,
+                            style: context.textStyles.bodySmallRegular.copyWith(
+                              color: context.colors.foregroundSoft,
                             ),
                           ),
                           const SizedBox(height: ui_kit.Spacing.$4x),
                         ],
                       ),
-                      ui_kit.AppButton.close(
-                        buttonType: ui_kit.ButtonType.secondary,
-                        onTap: widget.onClose,
-                      ),
+                      ui_kit.AppButton.close(onTap: widget.onClose),
                     ],
                   ),
                   TransportIconsRow(
@@ -404,10 +398,7 @@ class YouArrivedHeader extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            ui_kit.AppButton.close(
-              buttonType: ui_kit.ButtonType.secondary,
-              onTap: onClose,
-            ),
+            ui_kit.AppButton.close(onTap: onClose),
           ],
         ),
       );
@@ -418,7 +409,7 @@ class _PublicTransportRoutes extends StatelessWidget {
   final int activeIndex;
   final void Function(int index) onActiveChanged;
 
-  static const height = 74.0;
+  static const height = 60.0;
 
   const _PublicTransportRoutes({
     required this.routes,
@@ -442,7 +433,7 @@ class _PublicTransportRoutes extends StatelessWidget {
               },
               child: Container(
                 constraints: const BoxConstraints(minWidth: 110),
-                padding: const EdgeInsets.symmetric(vertical: ui_kit.Spacing.$3x, horizontal: ui_kit.Spacing.$4x),
+                padding: const EdgeInsets.all(ui_kit.Spacing.$2x),
                 decoration: BoxDecoration(
                   color: isActive
                       ? context.colors.accentSecondaryDefault

@@ -27,11 +27,13 @@ class RouteDetailsPublicTransportPedestrian extends RouteDetailsPublicTransport 
 class RouteDetailsPublicTransportMetro extends RouteDetailsPublicTransport {
   final List<RoutePart> routeParts;
   final Color? lineColor;
+  final String? lineName;
 
   const RouteDetailsPublicTransportMetro({
     required super.length,
     required this.routeParts,
     this.lineColor,
+    this.lineName,
   });
 }
 

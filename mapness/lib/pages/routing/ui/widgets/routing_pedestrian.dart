@@ -15,8 +15,8 @@ class RoutingPedestrian extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorLine = context.colorsV3.neutralDefault;
-    final textStyle = context.textStyleV3.bodyLargeRegular;
+    final colorLine = context.colors.neutralDefault;
+    final textStyle = context.textStyles.bodyLargeRegular;
     return SizedBox(
       height: 48,
       child: Row(
@@ -33,7 +33,7 @@ class RoutingPedestrian extends StatelessWidget {
               Container(
                 width: 24,
                 height: 24,
-                color: context.colorsV3.backgroundSurface4,
+                color: context.colors.backgroundSurface1,
                 child: Icon(getStepIcon(context), color: colorLine, size: 16),
               ),
             ],
@@ -44,17 +44,17 @@ class RoutingPedestrian extends StatelessWidget {
               if (data.isTransfer)
                 Text(
                   context.l10n.changeLine,
-                  style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
+                  style: textStyle.copyWith(color: context.colors.foregroundDefault),
                 )
               else
                 Text(
                   '${data.lengthInMeters.formatDistance(context.l10n)} ${context.l10n.onFoot}',
-                  style: textStyle.copyWith(color: context.colorsV3.foregroundDefault),
+                  style: textStyle.copyWith(color: context.colors.foregroundDefault),
                 ),
-              Text(' · ', style: textStyle.copyWith(color: context.colorsV3.foregroundSoft)),
+              Text(' · ', style: textStyle.copyWith(color: context.colors.foregroundSoft)),
               Text(
                 '${data.duration} ${context.l10n.min}',
-                style: textStyle.copyWith(color: context.colorsV3.foregroundSoft),
+                style: textStyle.copyWith(color: context.colors.foregroundSoft),
               ),
             ],
           ),

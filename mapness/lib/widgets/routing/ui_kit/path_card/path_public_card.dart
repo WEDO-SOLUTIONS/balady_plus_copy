@@ -163,15 +163,15 @@ class TransportIconsRow extends StatelessWidget {
             children: [
               Text(
                 '...',
-                style: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: context.colorsV3.neutralOnContainer,
+                style: context.textStyles.bodyLargeRegular.copyWith(
+                  color: context.colors.neutralOnContainer,
                 ),
               ),
               Spacing.$1x.widthBox,
               Icon(
                 SystemIcons.arrowCornerRightSmall,
                 size: 16,
-                color: context.colorsV3.foregroundMuted,
+                color: context.colors.foregroundMuted,
               ),
             ],
           ),
@@ -232,8 +232,8 @@ class TransportIconWidget extends StatelessWidget {
         if (time != null)
           Text(
             '$time',
-            style: context.textStyleV3.bodyLargeRegular.copyWith(
-              color: context.colorsV3.neutralOnContainer,
+            style: context.textStyles.bodyLargeRegular.copyWith(
+              color: context.colors.neutralOnContainer,
             ),
           ),
         if (!isLast)
@@ -242,7 +242,7 @@ class TransportIconWidget extends StatelessWidget {
             child: Icon(
               SystemIcons.arrowCornerRightSmall,
               size: 16,
-              color: context.colorsV3.foregroundMuted,
+              color: context.colors.foregroundMuted,
             ),
           ),
       ],

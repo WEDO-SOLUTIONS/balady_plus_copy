@@ -8,9 +8,11 @@ import 'package:mapness/shared/lib/ar_functions.dart';
 class RoutingCollapsibleList extends StatelessWidget {
   final List<String> stations;
   final Color? lineColor;
+  final String? lineName;
   const RoutingCollapsibleList({
     required this.stations,
     this.lineColor,
+    this.lineName,
     super.key,
   });
 
@@ -27,18 +29,41 @@ class RoutingCollapsibleList extends StatelessWidget {
     // Not possible to have only one station but we have to handle this case
     if (stations.length == 1) {
       return ContentWrapper.single(
-        color: context.colorsV3.backgroundSurface1,
-        child: ContentRowV2(
+        color: context.colors.backgroundSurface1,
+        child: ContentRow(
+          crossAxisAlignment: CrossAxisAlignment.start,
           leading: _StationItem(
-            lineColor: lineColor ?? context.colorsV3.neutralDefault,
+            addPadding: true,
+            lineColor: lineColor ?? context.colors.neutralDefault,
           ),
-          text: ContentRowTextOptions(title: stations.first),
+          text: ContentRowTextOptions(
+            title: stations.first,
+            subtitleOptions: ContentRowTextOption(
+              baseColor: context.colors.foregroundSoft,
+              builder: (context) => Row(
+                children: [
+                  Icon(
+                    TransportIcons.metroStation,
+                    size: 18,
+                    color: lineColor ?? context.colors.neutralDefault,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    lineName ?? context.l10n.unknown,
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: context.colors.foregroundSoft,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       );
     }
 
     return ContentWrapper.single(
-      color: context.colorsV3.backgroundSurface1,
+      color: context.colors.backgroundSurface1,
       child: Stack(
         children: [
           // This is line between first and last station. We have to position it correctly
@@ -49,29 +74,57 @@ class RoutingCollapsibleList extends StatelessWidget {
             bottom: 16,
             child: Container(
               width: connectedLineWidth,
-              color: (lineColor ?? context.colorsV3.neutralDefault).withOpacity(0.5),
+              color: (lineColor ?? context.colors.neutralDefault).withOpacity(0.5),
             ),
           ),
           Column(
             children: [
-              ContentRowV2(
-                leading: _StationItem(lineColor: lineColor ?? context.colorsV3.neutralDefault),
-                text: ContentRowTextOptions(title: stations.first),
+              // First station. Start
+              ContentRow(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                leading: _StationItem(
+                  addPadding: true,
+                  lineColor: lineColor ?? context.colors.neutralDefault,
+                ),
+                text: ContentRowTextOptions(
+                  title: stations.first,
+                  subtitleOptions: ContentRowTextOption(
+                    baseColor: context.colors.foregroundSoft,
+                    builder: (context) => Row(
+                      children: [
+                        Icon(
+                          TransportIcons.metroStation,
+                          size: 18,
+                          color: lineColor ?? context.colors.neutralDefault,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          lineName ?? context.l10n.unknown,
+                          style: context.textStyles.bodySmallRegular.copyWith(
+                            color: context.colors.foregroundSoft,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
+
+              // Stations between first and last station.
               if (stations.length > 2)
                 ContentRowExpandableTmp(
                   onTitleTapExpand: true,
-                  expandIconColor: context.colorsV3.foregroundMuted,
+                  expandIconColor: context.colors.foregroundMuted,
                   padding: EdgeInsets.zero,
                   leading: Container(
                     width: linePointCircleSize,
-                    color: context.colorsV3.backgroundSurface1,
+                    color: context.colors.backgroundSurface1,
                     padding: const EdgeInsets.all(3),
                     child: Container(
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: (lineColor ?? context.colorsV3.neutralDefault).withOpacity(0.5),
+                        color: (lineColor ?? context.colors.neutralDefault).withOpacity(0.5),
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -79,7 +132,7 @@ class RoutingCollapsibleList extends StatelessWidget {
                   text: ContentRowTextOptions(
                     title: _getStationsCount(context),
                     titleOptions: ContentRowTextOption(
-                      baseColor: context.colorsV3.foregroundSoft,
+                      baseColor: context.colors.foregroundSoft,
                     ),
                   ),
                   content: Padding(
@@ -93,8 +146,8 @@ class RoutingCollapsibleList extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(vertical: 3.0),
                                   child: Text(
                                     e,
-                                    style: context.textStyleV3.bodySmallRegular.copyWith(
-                                      color: context.colorsV3.foregroundSoft,
+                                    style: context.textStyles.bodySmallRegular.copyWith(
+                                      color: context.colors.foregroundSoft,
                                     ),
                                   ),
                                 ),
@@ -106,9 +159,11 @@ class RoutingCollapsibleList extends StatelessWidget {
                 )
               else
                 const SizedBox(height: Spacing.$4x),
-              ContentRowV2(
+
+              // Final station. Finish
+              ContentRow(
                 leading: _StationItem(
-                  lineColor: lineColor ?? context.colorsV3.neutralDefault,
+                  lineColor: lineColor ?? context.colors.neutralDefault,
                 ),
                 text: ContentRowTextOptions(title: stations.last),
               ),
@@ -146,14 +201,19 @@ class RoutingCollapsibleList extends StatelessWidget {
 
 class _StationItem extends StatelessWidget {
   final Color lineColor;
+  // We have to add padding because of the `ContentRow` widget and bug with
+  // cross alignment.
+  final bool addPadding;
   const _StationItem({
     required this.lineColor,
+    this.addPadding = false,
   });
 
   @override
   Widget build(BuildContext context) => Container(
         width: 14,
         height: 14,
+        margin: addPadding ? const EdgeInsets.only(bottom: 20) : null,
         decoration: BoxDecoration(
           color: lineColor,
           shape: BoxShape.circle,

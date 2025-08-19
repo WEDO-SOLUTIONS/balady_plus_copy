@@ -10,6 +10,7 @@ extension RouteDetailsPublicTransportExt on RouteDetailsPublicTransport {
           RoutingPedestrian(data: this as RouteDetailsPublicTransportPedestrian),
         RouteDetailsPublicTransportMetro() => RoutingCollapsibleList(
             stations: (this as RouteDetailsPublicTransportMetro).routeParts.map((e) => e.stations).flattened.toList(),
+            lineName: (this as RouteDetailsPublicTransportMetro).lineName,
             lineColor: lineColor,
           ),
       };
