@@ -210,8 +210,8 @@ digraph "" {
   "/lib/shared/extensions/brief_route_info_message_ext.dart" [label="brief_route_info_message_ext"];
   "/lib/shared/extensions/date_time_ext.dart" [label="date_time_ext"];
   "/lib/shared/extensions/double_ext.dart" [label="double_ext"];
-  "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart" [label="stateless_botomsheet_controller_hook"];
-  "/lib/shared/hooks/statefull_bottomsheet_controller_hook.dart" [label="statefull_bottomsheet_controller_hook"];
+  "/lib/shared/hooks/multi_state_sheet_controller_hook.dart" [label="multi_state_sheet_controller_hook"];
+  "/lib/shared/hooks/toggle_sheet_controller_hook.dart" [label="toggle_sheet_controller_hook"];
   "/lib/shared/routing/add_photo_page.dart" [label="add_photo_page"];
   "/lib/shared/routing/transculent_page.dart" [label="transculent_page"];
   "/lib/shared/config/environment_config.dart" [label="environment_config"];
@@ -1251,8 +1251,8 @@ digraph "" {
         }
         subgraph "cluster~/lib/shared/hooks" {
           label="hooks";
-          "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
-          "/lib/shared/hooks/statefull_bottomsheet_controller_hook.dart";
+          "/lib/shared/hooks/multi_state_sheet_controller_hook.dart";
+          "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
         }
         subgraph "cluster~/lib/shared/routing" {
           label="routing";
@@ -2619,7 +2619,8 @@ digraph "" {
   "/lib/widgets/profile/profile_header.dart" -> "/lib/widgets/profile/unathorized_profile.dart";
   "/lib/widgets/profile/logout_cell.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/widgets/profile/logout_cell.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/profile/log_out_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/widgets/profile/log_out_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
+  "/lib/widgets/profile/log_out_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/widgets/profile/log_out_sheet.dart" -> "/lib/widgets/profile/slide_to_log_out.dart";
   "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/features/profile/profile_image_provider.dart";
@@ -2649,11 +2650,12 @@ digraph "" {
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/widgets/feedback/images/feedback_image_widget.dart";
   "/lib/widgets/feedback/images/feedback_image_preview.dart" -> "/lib/widgets/feedback/images/feedback_image_item.dart";
   "/lib/widgets/feedback/images/feedback_image_preview.dart" -> "/lib/widgets/feedback/images/feedback_image_wrapper.dart";
+  "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
-  "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" -> "/lib/shared/ui/safe_area_padding.dart";
+  "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
+  "/lib/widgets/feedback/images/feedback_permission_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/widgets/feedback/images/feedback_permission_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/feedback/images/feedback_permission_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/widgets/feedback/images/feedback_permission_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/widgets/feedback/images/feedback_permission_sheet.dart" -> "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart";
   "/lib/widgets/feedback/feedback_bool_toggle.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
   "/lib/widgets/feedback/feedback_bool_toggle.dart" -> "/lib/widgets/feedback/feedback_balady_business.dart";
@@ -2920,7 +2922,9 @@ digraph "" {
   "/lib/widgets/landing/place_preview.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/landing/place_preview.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/_features/common/scroll/no_glowing_scroll_behavior.dart";
+  "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/_generated/assets/assets.gen.dart";
+  "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/entities/free_roam/free_roam_start_state.dart";
   "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
   "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/features/app_analytics/app_analytics.dart";
   "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/features/free_roam/free_roam_starter.dart";
@@ -3038,8 +3042,9 @@ digraph "" {
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/widgets/path_nav/ui/parking_bottom_banner.dart";
   "/lib/widgets/path_nav/ui/better_route_button.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/_features/common/providers/ui_direction.dart";
+  "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/providers/map/navigator_auto_enable_parking.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/providers/map/parking_autoenabled_sheet_provider.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
@@ -3052,8 +3057,9 @@ digraph "" {
   "/lib/widgets/path_nav/ui/parking_bottom_banner.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_banner.dart" -> "/lib/shared/providers/map/navigator_auto_enable_parking.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_banner.dart" -> "/lib/shared/providers/map/parking_autoenabled_sheet_provider.dart";
+  "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/widgets/path_nav/ui/navi_sheet_panel.dart";
   "/lib/widgets/path_nav/ui/path_nav_continue_trip.dart" -> "/lib/entities/path_nav/models/path_nav_eta.dart";
   "/lib/widgets/path_nav/ui/path_nav_continue_trip.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -3132,8 +3138,10 @@ digraph "" {
   "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/landing/follow_control.dart";
   "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
   "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/weather/weather_state_icon.dart";
+  "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/features/weather/provider/forecast_weather_provider.dart";
   "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/widgets/weather/weather_card_header.dart";
+  "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/widgets/weather/weather_controls.dart";
   "/lib/widgets/weather/weather_dashboard.dart" -> "/lib/widgets/weather/weather_day_card.dart";
   "/lib/widgets/favourites/favourites_toggle.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
   "/lib/widgets/favourites/favourites_toggle.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
@@ -3377,7 +3385,8 @@ digraph "" {
   "/lib/shared/ui/sheets/card_header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/content_transition.dart";
   "/lib/shared/ui/sheets/card_header.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/shared/ui/sheets/labeled_draggable_sheet.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
-  "/lib/shared/ui/sheets/error_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/shared/ui/sheets/error_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
+  "/lib/shared/ui/sheets/error_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/shared/ui/sheets/error_sheet.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/shared/ui/share_eta/poi_my_location_action.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/shared/ui/share_eta/poi_my_location_action.dart" -> "/lib/features/poi_card/widgets/footer/footer_style.dart";
@@ -3710,8 +3719,9 @@ digraph "" {
   "/lib/features/road_events/ui/widgets/closed_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
   "/lib/features/road_events/ui/widgets/closed_controls.dart" -> "/lib/widgets/map_dimensions_control/dimension_contrtol.dart";
   "/lib/features/road_events/ui/widgets/closed_card.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
+  "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/providers/map/highlight.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
@@ -3822,11 +3832,11 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_card_header/tab.dart" -> "/lib/features/poi_card/widgets/poi_card_header/content_transition.dart";
   "/lib/features/poi_card/widgets/poi_card_header/tab.dart" -> "/lib/features/poi_card/widgets/poi_tabs.dart";
   "/lib/features/poi_card/widgets/poi_card_header/title.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
-  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/safe_area_padding.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/loading_sheet.dart";
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart" [style=dashed];
@@ -4439,6 +4449,7 @@ digraph "" {
   "/lib/pages/kiblah/kiblah_page.dart" -> "/lib/pages/kiblah/ui/kiblah_compass.dart";
   "/lib/pages/kiblah/kiblah_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/kiblah/kiblah_page.dart" -> "/lib/shared/providers/compass.dart";
+  "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/widgets/lifestyle_layers/layers_sheet_content.dart";
   "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/widgets/lifestyle_layers/parking_details_content.dart";
@@ -4471,6 +4482,7 @@ digraph "" {
   "/lib/pages/free_roam/ui/traffic_parking_control.dart" -> "/lib/shared/providers/map/parking_autoenabled_sheet_provider.dart";
   "/lib/pages/free_roam/ui/traffic_parking_control.dart" -> "/lib/shared/providers/map/parking_state.dart";
   "/lib/pages/free_roam/ui/traffic_parking_control.dart" -> "/lib/shared/providers/map/traffic_state.dart";
+  "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/features/free_roam/free_roam_autostart_settings.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/features/free_roam/free_roam_starter.dart";
@@ -4478,10 +4490,11 @@ digraph "" {
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/_features/common/providers/ui_direction.dart";
+  "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/features/free_roam/free_roam_manager.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/shared/providers/map/sound_settings.dart";
   "/lib/pages/free_roam/ui/road_panel.dart" -> "/lib/pages/free_roam/free_roam_page.dart";
@@ -4559,11 +4572,11 @@ digraph "" {
   "/lib/pages/feedback/feedback_select_type_page.dart" -> "/lib/pages/feedback/feedback_failure_widget.dart";
   "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/ui/error_widget/fullscreen_error_widget.dart";
+  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
-  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/ui/safe_area_padding.dart";
   "/lib/pages/feedback/quick_feedback_photo_page.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
   "/lib/pages/feedback/quick_feedback_photo_page.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
   "/lib/pages/feedback/quick_feedback_photo_page.dart" -> "/lib/features/feedback/feedback_image_error.dart";
@@ -4602,11 +4615,11 @@ digraph "" {
   "/lib/pages/feedback/quick_feedback_page.dart" -> "/lib/pages/feedback/components/feedback_select_options_component_widget.dart";
   "/lib/pages/feedback/quick_feedback_page.dart" -> "/lib/pages/feedback/feedback_failure_widget.dart";
   "/lib/pages/feedback/quick_feedback_page.dart" -> "/lib/pages/feedback/feedback_page.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/features/search/ui/search_scope.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_content.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart";
-  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/shared/ui/safe_area_padding.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" -> "/lib/features/search/models/search_scope.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -4622,6 +4635,7 @@ digraph "" {
   "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/lib/make_address.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/providers/location.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/domain/poi_card_state_mapper.dart";
@@ -4675,6 +4689,7 @@ digraph "" {
   "/lib/pages/debug_overlay/debug_overlay.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/debug_overlay/debug_overlay.dart" -> "/lib/widgets/debug_overlay/bug_button.dart";
   "/lib/pages/debug_overlay/debug_overlay.dart" -> "/lib/widgets/debug_overlay/debug_sheet.dart";
+  "/lib/pages/routing/routing_search.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/ui/search_scope.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
@@ -4682,6 +4697,7 @@ digraph "" {
   "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_bar.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_content.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/shared/providers/map/object_manager.dart";
+  "/lib/pages/routing/routing_points.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/entities/routing/route_point.dart";
@@ -4698,6 +4714,7 @@ digraph "" {
   "/lib/pages/routing/routing_points.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/shared/providers/urbi_analytics.dart";
+  "/lib/pages/routing/routing_routes.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
@@ -4708,17 +4725,18 @@ digraph "" {
   "/lib/pages/routing/routing_routes.dart" -> "/lib/pages/routing/ui/routing_info.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/pages/routing/ui/routing_map_controls.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/shared/constants/metrics_constants.dart";
-  "/lib/pages/routing/routing_routes.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/routing/routing_routes.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/shared/providers/map/object_manager.dart";
+  "/lib/pages/routing/routing_map_select.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/entities/routing/route_point.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/features/routing/providers/nearest_object.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/pages/routing/ui/routing_map_controls.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/lib/geo_point_ext.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/providers/map/camera_padding.dart";
@@ -4727,7 +4745,6 @@ digraph "" {
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/providers/media_query.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/ui/markers/markers.dart";
-  "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/ui/safe_area_padding.dart";
   "/lib/pages/routing/ui/routing_suggest_list.dart" -> "/lib/entities/routing/route_point.dart";
   "/lib/pages/routing/ui/routing_suggest_list.dart" -> "/lib/entry_point.dart";
   "/lib/pages/routing/ui/routing_suggest_list.dart" -> "/lib/features/search/ui/suggest_item.dart";
@@ -4914,19 +4931,20 @@ digraph "" {
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/rubric_marker_type_mapper.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/entities/app_feedback/app_feedback_payload.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/features/app_feedback/app_feedback_canpop.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/features/app_feedback/app_feedback_source_provider.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/features/app_feedback/send_feedback.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
-  "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/shared/ui/safe_area_padding.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/app_feedback_error.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/app_feedback_loading.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/app_feedback_success.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/v2/app_feedback_main.dart";
+  "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/widgets/app_feedback/app_feedback_input.dart";
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/widgets/app_feedback/v2/app_feedback_sheet_header.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
@@ -4951,7 +4969,9 @@ digraph "" {
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/shared/ui/urbi_map.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/widgets/parking_spot/selected_images.dart";
+  "/lib/pages/parking_spot/parking_dialog_page.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/parking_spot/parking_dialog_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/parking_spot/parking_dialog_page.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/stories/stories_page.dart" -> "/lib/features/stories/models/stories_type_data.dart";
   "/lib/pages/stories/stories_page.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/pages/stories/stories_page.dart" -> "/lib/features/stories/providers/story_service.dart";
@@ -4963,11 +4983,12 @@ digraph "" {
   "/lib/pages/map/map_page.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/pages/map/map_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/map/map_page.dart" -> "/lib/shared/providers/map/selected_marker.dart";
+  "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/features/poi_card/domain/model/loading_or_failure_model.dart";
   "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
-  "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/shared/ui/safe_area_padding.dart";
+  "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
+  "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/entities/routing/route_params_point.dart";
@@ -5005,7 +5026,7 @@ digraph "" {
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/extensions/brief_route_info_message_ext.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/extensions/parking_store_model_ext.dart";
-  "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/providers/map/camera_padding.dart";
@@ -5014,7 +5035,6 @@ digraph "" {
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/providers/map/point_of_interest.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/providers/map/selected_marker.dart";
-  "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/shared/ui/safe_area_padding.dart";
   "/lib/pages/poi_card/parking_content.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/pages/poi_card/parking_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/poi_card/parking_content.dart" -> "/lib/shared/extensions/date_time_ext.dart";
@@ -5040,7 +5060,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/constants/constants.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/car_connection.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/location.dart";
@@ -5076,6 +5096,7 @@ digraph "" {
   "/lib/pages/flips_continue/flips_continue.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/map_search/search_page.dart" -> "/lib/pages/map_search/map_search_sheet.dart";
   "/lib/pages/map_search/search_page.dart" -> "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart";
+  "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/features/landing/search_in_rect.dart";
@@ -5182,7 +5203,6 @@ digraph "" {
   "/lib/pages/weather/weather_page.dart" -> "/lib/features/weather/provider/weather_map_controller.dart";
   "/lib/pages/weather/weather_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/weather/weather_page.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
-  "/lib/pages/weather/weather_page.dart" -> "/lib/widgets/weather/weather_controls.dart";
   "/lib/pages/weather/weather_page.dart" -> "/lib/widgets/weather/weather_dashboard.dart";
   "/lib/pages/favourites/favourites_picker.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/pages/favourites/favourites_picker.dart" -> "/lib/shared/extensions/build_context_ext.dart";
