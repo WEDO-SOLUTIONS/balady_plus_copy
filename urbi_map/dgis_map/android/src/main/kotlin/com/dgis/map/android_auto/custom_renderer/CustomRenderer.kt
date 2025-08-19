@@ -4,19 +4,22 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
+import android.graphics.Rect
+import android.util.DisplayMetrics
 import android.view.Surface
 import com.dgis.map.android_auto.SpeedInfoModel
 
 class CustomRenderer {
 
-    // TODO(Sergei): using temporary additional offset until SDK implements visible area rect
-    private val controlsOffset = 68f
     private var surface: Surface? = null
+    private var rendererData: CustomRendererData? = null
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var rightOffset = 0f
+    private var bottomOffset = 0f
 
     fun setSurface(surface: Surface) {
         this.surface = surface
-        clear()
+        clearCanvas()
     }
 
     fun resetSurface() {
@@ -24,14 +27,31 @@ class CustomRenderer {
     }
 
     fun render(customRendererData: CustomRendererData) {
+        rendererData = customRendererData
         withLockedCanvas {
             clearCanvas(it)
             draw(customRendererData, it)
         }
     }
 
+    private fun update() {
+        val data = this.rendererData ?: return
+        render(data)
+    }
+
     fun clear() {
+        rendererData = null
+        clearCanvas()
+    }
+
+    private fun clearCanvas(){
         withLockedCanvas(::clearCanvas)
+    }
+
+    fun onSurfaceStableAreaChanged(displayMetrics: DisplayMetrics, stableArea: Rect) {
+        rightOffset = (displayMetrics.widthPixels - stableArea.right).toFloat()
+        bottomOffset = (displayMetrics.heightPixels - stableArea.bottom).toFloat()
+        update()
     }
 
     private fun withLockedCanvas(block: (canvas: Canvas) -> Unit) {
@@ -64,8 +84,8 @@ class CustomRenderer {
             style = Paint.Style.FILL
             setShadowLayer(2f, 0f, 0f, Color.parseColor("#12000000"))
         }
-        val centerX = canvas.width - 120f
-        val centerY = canvas.height - 51f
+        val centerX = canvas.width - rightOffset - 40f
+        val centerY = canvas.height - bottomOffset - 51f
         canvas.drawCircle(centerX, centerY, 36f, paint)
         paint.apply {
             color = Color.WHITE
@@ -84,8 +104,8 @@ class CustomRenderer {
     }
 
     private fun drawSpeedLimit(speedLimit: Int, exceeded: Boolean, canvas: Canvas) {
-        val centerX = canvas.width - 173f
-        val centerY = canvas.height - 45f
+        val centerX = canvas.width - rightOffset - 93f
+        val centerY = canvas.height - bottomOffset - 45f
         if (exceeded) {
             paint.apply {
                 color = Color.RED

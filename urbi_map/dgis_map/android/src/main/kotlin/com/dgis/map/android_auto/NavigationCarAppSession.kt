@@ -158,6 +158,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
         val right = displayMetrics.widthPixels - stableArea.right
         val bottom = displayMetrics.heightPixels - stableArea.bottom
         carMapController.setCameraPadding(Padding(left, top, right, bottom))
+        customRenderer.onSurfaceStableAreaChanged(displayMetrics, stableArea)
     }
 
     private fun setMapTheme() {
