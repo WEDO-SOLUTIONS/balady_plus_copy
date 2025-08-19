@@ -283,8 +283,7 @@ class NavigationHandler(
                         )
                 }
 
-                val isPublicTransport = options is RouteSearchOptions.PublicTransport
-                if (!isPublicTransport) {
+                if (!options.isPublicTransport) {
                         navigationManager.start(
                                 routeBuildOptions =
                                         RouteBuildOptions(
@@ -323,8 +322,7 @@ class NavigationHandler(
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
 
-                val isPublicTransport = options is RouteSearchOptions.PublicTransport
-                if (!isPublicTransport) {
+                if (!options.isPublicTransport) {
                         navigationManager.startSimulation(
                                 routeBuildOptions =
                                         RouteBuildOptions(
