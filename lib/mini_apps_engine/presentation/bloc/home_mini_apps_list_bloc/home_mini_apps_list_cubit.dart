@@ -93,6 +93,10 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
 
   Future<void> openMiniApp({required String serviceKey, String? path}) async {
     try {
+      /// Fix: This after end the test remoive this if
+      if( serviceKey == "municipalservice" ) {
+        serviceKey = "ServiceKey";
+      }
       MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
           .miniAppsList
           .firstWhere((service) => service.serviceKey == serviceKey)
@@ -106,7 +110,7 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
   }
 
   Future<BaseResponse?> getMiniAppAcessToken(String serviceKey) async {
-    if (serviceKey != "municipalservice") {
+    if (serviceKey == "municipalservice") {
       return BaseResponse(
         code: 200,
         message: "success",
