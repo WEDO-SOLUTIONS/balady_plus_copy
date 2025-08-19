@@ -188,7 +188,7 @@ class MiniAppsEngineBloc
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
-        serviceKey == "smartadvisor" ? "https://drive.usercontent.google.com/download?id=1WLyDour1GL2jsl3Xs6FSLc1VcEpGWtpp&export=download&authuser=0&confirm=t&uuid=56abc878-87ff-4214-b38f-315e4b429a53&at=AN8xHopON99TXiJljfi_pgJmIgBg:1755427757362" : "https://drive.usercontent.google.com/download?id=1xlDLLa9MneHoG1CUH3I2ElZDe8--2sJq&export=download&authuser=0&confirm=t&uuid=77f9c94f-ce58-4109-ac66-6fea4ddf539a&at=AN8xHooUUAdcJSqgy8tP7rI5fGXf:1755427884331",
+        urlDownload,
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
