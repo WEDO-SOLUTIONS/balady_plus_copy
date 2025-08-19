@@ -74,6 +74,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(getPrayerTime);
     registerFunction(downloadAndExtractInAssets);
     registerFunction(openCameraWithUI);
+    registerFunction(openMiniApps);
   }
 
   @pragma('vm:entry-point')
@@ -374,9 +375,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
         true) {
       late BaseResponse response;
-      if (msg != null && msg is Map && msg["miniAppKey"] != null) {
+      if (msg != null && msg is Map ) {
         sl<HomeMiniAppsListCubit>()
-            .openMiniApp(serviceKey: msg["miniAppKey"], path: msg['path']);
+            .openMiniApp(serviceKey: msg["a"], path: msg['b']);
         response = BaseResponse(
           code: 200,
           message: "success",
