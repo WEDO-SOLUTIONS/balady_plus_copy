@@ -44,7 +44,7 @@ class CustomRenderer {
         clearCanvas()
     }
 
-    private fun clearCanvas(){
+    private fun clearCanvas() {
         withLockedCanvas(::clearCanvas)
     }
 
