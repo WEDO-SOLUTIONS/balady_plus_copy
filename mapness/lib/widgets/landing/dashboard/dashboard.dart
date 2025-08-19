@@ -47,7 +47,7 @@ class Dashboard extends ConsumerStatefulWidget {
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
+class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   late FreeRoamStartState freeRoamState;
@@ -93,6 +93,17 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   void dispose() {
     widget.bottomSheetController.removeListener(_scrollListenHandler);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
+
+  ///This method is intended for handling location permission requests
+  /// if it's triggered by someone before Mapness starts.
+  void _checkLocationPermission(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.read(locationProvider.notifier).checkLocationPermission();
+    }
   }
 
   @override
