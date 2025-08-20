@@ -91,7 +91,9 @@ class LatestVersion {
         : null;
     status = json['status'];
     type = json['type'];
-    deepLinkModel = json['deepLinkDto'];
+    deepLinkModel = json['deepLinkDto'] != null
+        ? DeepLinkModel.fromJson(json['deepLinkDto'])
+        : null;
   }
   String? id;
   String? versionDescription;
