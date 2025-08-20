@@ -119,7 +119,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
       textDirection: direction,
       child: MultiStateSheet<ThreeStateSheet>(
         scrollController: _bottomSheetController,
-        backgroundColor: context.colors.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface1,
         outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
         topHeaderOffset: topHeaderOffset,
         topHeader: _hasPublicTransportRoutes && widget.publicTransportRoutes.length > 1
@@ -141,6 +141,13 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
           onClose: () => widget.onClose?.call(),
           type: widget.type,
         ),
+        content: [
+          RoutingPublicTransportContent(
+            data: _transports,
+            startPoint: widget.startPoint,
+            destination: widget.destination,
+          ),
+        ],
         footer: SizedBox(
           width: double.infinity,
           child: ui_kit.AppButton(
@@ -159,13 +166,6 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
             },
           ),
         ),
-        content: [
-          RoutingPublicTransportContent(
-            data: _transports,
-            startPoint: widget.startPoint,
-            destination: widget.destination,
-          ),
-        ],
       ),
     );
   }

@@ -39,28 +39,31 @@ class RoutingPublicTransportContent extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.$4x),
-      child: ContentWrapper(
-        color: context.colors.backgroundSurface1,
-        children: [
-          RoutingPublicTailSector(
-            data: transports,
-            pointLabel: startPoint,
-            type: PedestrianSectorType.first,
-          ),
-          ...filteredTransports().map(
-            (e) => e.toWidget(
-              context,
-              lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null,
+    return ColoredBox(
+      color: context.colors.backgroundSurface4,
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        child: ContentWrapper(
+          color: context.colors.backgroundSurface1,
+          children: [
+            RoutingPublicTailSector(
+              data: transports,
+              pointLabel: startPoint,
+              type: PedestrianSectorType.first,
             ),
-          ),
-          RoutingPublicTailSector(
-            data: transports,
-            pointLabel: destination,
-            type: PedestrianSectorType.last,
-          ),
-        ],
+            ...filteredTransports().map(
+              (e) => e.toWidget(
+                context,
+                lineColor: e is RouteDetailsPublicTransportMetro ? e.lineColor : null,
+              ),
+            ),
+            RoutingPublicTailSector(
+              data: transports,
+              pointLabel: destination,
+              type: PedestrianSectorType.last,
+            ),
+          ],
+        ),
       ),
     );
   }
