@@ -75,6 +75,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(downloadAndExtractInAssets);
     registerFunction(openCameraWithUI);
     registerFunction(openMiniApps);
+    registerFunction(openPdfFile);
   }
 
   @pragma('vm:entry-point')
