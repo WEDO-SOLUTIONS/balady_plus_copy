@@ -372,9 +372,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
 
-    if (checkAppRequirement(serviceKey, RequirementEnum.navigateToSuperAppScreen.name) == true) {
+    if (checkAppRequirement(
+            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
+        true) {
       late BaseResponse response;
-      if (msg != null && msg is String ) {
+      if (msg != null && msg is String) {
         Map data = jsonDecode(msg);
         sl<HomeMiniAppsListCubit>()
             .openMiniApp(serviceKey: data["miniAppKey"], path: data['path']);
@@ -405,12 +407,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void checkPermission(dynamic data, CompletionHandler handler) async {
+  void checkPermission(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.checkPermission.name) ==
         true) {
-      if (data != null && data is Map) {
+      if (msg != null && msg is String) {
+        Map data = jsonDecode(msg);
         String permissionName = data["permission_name"];
         bool state = false;
         BaseResponse response;
@@ -600,9 +603,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    final attachmentSource = msg["attachmentSource"];
+    Map data = jsonDecode(msg);
+    final attachmentSource = data["attachmentSource"];
     final List<String>? attachmentExtension =
-        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>();
+        (data["attachmentExtension"] as List<dynamic>?)?.cast<String>();
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
       var file = await FilePicker.platform.pickFiles(
@@ -707,10 +711,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.launchUri.name) ==
         true) {
-      if (msg != null && msg is Map) {
-        bool canLaunch = await canLaunchUrl(Uri.parse(msg['uri']));
+      if (msg != null && msg is String) {
+        Map data = jsonDecode(msg);
+        bool canLaunch = await canLaunchUrl(Uri.parse(data['uri']));
         if (canLaunch) {
-          await launchUrl(Uri.parse(msg['uri']));
+          await launchUrl(Uri.parse(data['uri']));
         } else {
           BaseResponse response = BaseResponse(
             code: 400,
@@ -738,9 +743,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.openWebView.name) ==
         true) {
-      if (dataUri != null && dataUri is Map) {
-        if (dataUri["url"] != null) {
-          if (dataUri["type"] == "pdf") {
+      if (dataUri != null && dataUri is String) {
+        Map data = jsonDecode(dataUri);
+        if (data["url"] != null) {
+          if (data["type"] == "pdf") {
             NavigationService.navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (_) {
@@ -749,15 +755,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                       title: const Text(""),
                     ),
                     body: SfPdfViewer.network(
-                      dataUri["url"],
+                      data["url"],
                     ),
                   );
                 },
               ),
             );
           } else {
-            CommonFunctions.openBaladyWebView(dataUri["url"],
-                needLogin: dataUri["needLogin"] ?? true);
+            CommonFunctions.openBaladyWebView(data["url"],
+                needLogin: data["needLogin"] ?? true);
           }
         } else {
           BaseResponse response = BaseResponse(
@@ -786,14 +792,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.openWebView.name) ==
         true) {
-      if (dataUri != null && dataUri is Map) {
+      if (dataUri != null && dataUri is String) {
+        Map data = jsonDecode(dataUri);
         NavigationService.navigatorKey.currentState!.push(
           MaterialPageRoute(
             builder: (_) {
               return PdfViewerScreen(
-                pdfData: JsPdfModel.fromJson(
-                  dataUri,
-                ),
+                pdfData: JsPdfModel.fromJson(data),
               );
             },
           ),
@@ -919,13 +924,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
+
   @pragma('vm:entry-point')
-  void sendToCalender(dynamic data, CompletionHandler handler) {
+  void sendToCalender(dynamic mas, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.sendToCalender.name) ==
         true) {
-      if (data != null && data is Map) {
+      if (mas != null && mas is String) {
+        Map data = jsonDecode(mas);
         BaseResponse response = BaseResponse(
           code: 200,
           eventName: "sendToCalender",
@@ -961,7 +968,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           message: "failed to add",
           data: null,
         );
-        if (kDebugMode) print('data: $data');
+        if (kDebugMode) print('data: $mas');
         handler.complete(response.jsonEncodeModel());
       }
     } else {
@@ -980,12 +987,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     if (data != null && data is Map) {
       try {
         final notifications = data['notifications'];
-
         if (notifications != null &&
             notifications is List &&
             notifications.isNotEmpty) {
           final Map<String, List<Map>> notificationsByType = {};
-
           // Process and group notifications
           for (var notification in notifications) {
             if (notification is Map) {
@@ -996,11 +1001,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               notificationsByType[title]!.add(notification);
             }
           }
-
           // For each prayer type, only schedule the next occurrence
           for (var entry in notificationsByType.entries) {
             final notificationsForType = entry.value;
-
             // Sort notifications by date (ascending)
             notificationsForType.sort((a, b) {
               final dateA = DateTime.tryParse(a['scheduled_date'] ?? '') ??
@@ -1009,11 +1012,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                   DateTime(2000);
               return dateA.compareTo(dateB);
             });
-
             // Find the next notification that's in the future
             final now = DateTime.now();
             Map? nextNotification;
-
             for (var notification in notificationsForType) {
               final scheduledDateStr = notification['scheduled_date'] ?? '';
               if (scheduledDateStr.isNotEmpty) {
@@ -1028,12 +1029,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                 }
               }
             }
-
             // If no future notification found, use the first one (for tomorrow)
             nextNotification ??= notificationsForType.isNotEmpty
                 ? notificationsForType.first
                 : null;
-
             // Schedule or cancel the notification
             if (nextNotification != null) {
               final int id = nextNotification['id'] ?? 0;
@@ -1041,11 +1040,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               final String scheduledDateStr =
                   nextNotification['scheduled_date'] ?? '';
               final bool isEnabled = nextNotification['is_enabled'] ?? false;
-
               if (isEnabled && scheduledDateStr.isNotEmpty) {
                 try {
                   final scheduledDate = DateTime.parse(scheduledDateStr);
-
                   // Schedule notification using NotificationService
                   NotificationService.showScheduledNotification(
                       id: id, title: title, scheduledDate: scheduledDate);
@@ -1059,7 +1056,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             }
           }
         }
-
         // Return success response
         BaseResponse response = BaseResponse(
           code: 200,
