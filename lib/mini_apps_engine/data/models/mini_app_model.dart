@@ -9,7 +9,7 @@ class MiniAppModel {
       this.cdnLogoRef,
       this.logoKey,
       this.latestVersion,
-        this.path});
+      this.path});
 
   MiniAppModel.fromJson(dynamic json) {
     id = json['id'];
@@ -65,18 +65,18 @@ class MiniAppModel {
 }
 
 class LatestVersion {
-  LatestVersion({
-    this.id,
-    this.versionDescription,
-    this.versionNumber,
-    this.serviceUrl,
-    this.nafathLogin,
-    this.otpLogin,
-    this.forceUpdate,
-    this.packageMetaDataDto,
-    this.status,
-    this.type,
-  });
+  LatestVersion(
+      {this.id,
+      this.versionDescription,
+      this.versionNumber,
+      this.serviceUrl,
+      this.nafathLogin,
+      this.otpLogin,
+      this.forceUpdate,
+      this.packageMetaDataDto,
+      this.status,
+      this.type,
+      this.deepLinkModel});
 
   LatestVersion.fromJson(dynamic json) {
     id = json['id'];
@@ -91,6 +91,7 @@ class LatestVersion {
         : null;
     status = json['status'];
     type = json['type'];
+    deepLinkModel = json['deepLinkDto'];
   }
   String? id;
   String? versionDescription;
@@ -102,6 +103,7 @@ class LatestVersion {
   PackageMetaDataDto? packageMetaDataDto;
   int? status;
   int? type;
+  DeepLinkModel? deepLinkModel;
   LatestVersion copyWith({
     String? id,
     String? versionDescription,
@@ -187,4 +189,31 @@ class Requirements {
     map['name'] = name;
     return map;
   }
+}
+
+class DeepLinkModel {
+  final String? androidPackageName;
+  final String? iosUrlScheme;
+  final String? appStoreId;
+  final String? playStoreId;
+  final String? deepLinkAndroid;
+  final String? deepLinkIos;
+
+  DeepLinkModel({
+    this.androidPackageName,
+    this.iosUrlScheme,
+    this.appStoreId,
+    this.playStoreId,
+    this.deepLinkAndroid,
+    this.deepLinkIos,
+  });
+
+  factory DeepLinkModel.fromJson(Map<String, dynamic> json) => DeepLinkModel(
+        androidPackageName: json["androidPackageName"],
+        iosUrlScheme: json["iosUrlScheme"],
+        appStoreId: json["appStoreId"],
+        playStoreId: json["playStoreId"],
+        deepLinkAndroid: json["deepLinkAndroid"],
+        deepLinkIos: json["deepLinkIOS"],
+      );
 }
