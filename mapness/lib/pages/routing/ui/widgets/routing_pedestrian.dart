@@ -71,3 +71,53 @@ class RoutingPedestrian extends StatelessWidget {
     }
   }
 }
+
+class RoutingPedestrianV2 extends StatelessWidget {
+  final RouteDetailsPublicTransportPedestrian data;
+  const RoutingPedestrianV2({
+    required this.data,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = context.textStyles.bodyLargeRegular;
+    if (data.isTransfer) {
+      return const SizedBox(height: 58);
+    }
+    return SizedBox(
+      height: 48,
+      child: Row(
+        children: [
+          Spacing.$10x.widthBox,
+          Row(
+            children: [
+              Icon(
+                TransportIcons.pedestrianLTR,
+                color: context.colors.foregroundSoft,
+                size: 16,
+              ),
+              Text(
+                '${data.lengthInMeters.formatDistance(context.l10n)} ${context.l10n.onFoot}',
+                style: textStyle.copyWith(color: context.colors.foregroundSoft),
+              ),
+              Text(' · ', style: textStyle.copyWith(color: context.colors.foregroundSoft)),
+              Text(
+                '${data.duration} ${context.l10n.min}',
+                style: textStyle.copyWith(color: context.colors.foregroundSoft),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData getStepIcon(BuildContext context) {
+    if (Directionality.of(context) == TextDirection.ltr) {
+      return TransportIcons.pedestrianLTR;
+    } else {
+      return TransportIcons.pedestrianRTL;
+    }
+  }
+}
