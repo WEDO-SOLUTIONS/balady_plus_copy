@@ -61,18 +61,18 @@ class PathPublicCard extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(duration, style: context.textStyleV3.bodyLargeSemiBold),
+                    Text(duration, style: context.textStyles.bodyLargeSemiBold),
                     const SizedBox(height: Spacing.$1x),
                     Row(
                       children: <Widget>[
                         Text(
                           transfers,
-                          style: context.textStyleV3.captionMediumRegular,
+                          style: context.textStyles.captionMediumRegular,
                         ),
                         if (additionalInfo != null) ...[
                           Text(
                             '·',
-                            style: context.textStyle.caption,
+                            style: context.textStyles.captionMediumRegular,
                           ),
                           PathBadge(additionalInfo!),
                         ],
@@ -81,8 +81,8 @@ class PathPublicCard extends ConsumerWidget {
                   ],
                 ),
               ),
-              BaladyAppButton(
-                buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+              AppButton(
+                buttonColorScheme: ButtonColorScheme.accentSecondary,
                 onTap: onStartNavigation,
                 primaryLabel: localizations.go.toUpperCase(),
                 innerPadding: const EdgeInsets.symmetric(
@@ -99,9 +99,9 @@ class PathPublicCard extends ConsumerWidget {
             ),
             Spacing.$4x.heightBox,
           ],
-          BaladyAppButton(
-            buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-            buttonType: BaladyButtonType.secondary,
+          AppButton(
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonType: ButtonType.secondary,
             innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
             onTap: () {
               context.router.push(

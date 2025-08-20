@@ -10,7 +10,6 @@ import 'package:mapness/features/routing/providers/public_transport_arrived.dart
 import 'package:mapness/pages/routing/route_details_state_mapper.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
 import 'package:mapness/pages/routing/ui/widgets/public_transport/routing_public_transport_content.dart';
-import 'package:mapness/pages/routing/ui/widgets/routing_pedestrian.dart';
 import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
@@ -441,110 +440,4 @@ class _PublicTransportRoutes extends StatelessWidget {
           separatorBuilder: (context, index) => ui_kit.Spacing.$2x.widthBox,
         ),
       );
-}
-
-class _PedestrianFirstSector extends StatelessWidget {
-  final List<RouteDetailsPublicTransport>? data;
-  final PedestrianSectorType type;
-  final RouteParamsPointWithLabel? pointLabel;
-  const _PedestrianFirstSector({
-    required this.data,
-    required this.type,
-    this.pointLabel,
-  });
-
-// It means that the first sector have to be shown as "My location" + line with pedestrian icon
-  bool get _isFirstPedestrian => (data?.isNotEmpty ?? false) && (data!.first is RouteDetailsPublicTransportPedestrian);
-  bool get _isLastPedestrian => (data?.isNotEmpty ?? false) && (data!.last is RouteDetailsPublicTransportPedestrian);
-
-  static const contentRowStartPadding = ui_kit.Spacing.$4x;
-  static const linePointCircleSize = 14.0;
-  static const connectedLineWidth = 2.0;
-  double get lineStartPosition => contentRowStartPadding + (linePointCircleSize / 2) - (connectedLineWidth / 2);
-
-  double get topPadding => switch (type) {
-        PedestrianSectorType.first => 16 + 14,
-        PedestrianSectorType.last => 0,
-      };
-
-  double get bottomPadding => switch (type) {
-        PedestrianSectorType.first => 0,
-        PedestrianSectorType.last => 16 + 14 + 20,
-      };
-
-  VerticalDirection get verticalDirection => switch (type) {
-        PedestrianSectorType.first => VerticalDirection.down,
-        PedestrianSectorType.last => VerticalDirection.up,
-      };
-
-  bool get showLine => switch (type) {
-        PedestrianSectorType.first => true,
-        PedestrianSectorType.last => (data ?? []).length > 1,
-      };
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_isFirstPedestrian && type == PedestrianSectorType.first) {
-      return const SizedBox.shrink();
-    }
-
-    if (!_isLastPedestrian && type == PedestrianSectorType.last) {
-      return const SizedBox.shrink();
-    }
-
-    final bulletColor = switch (type) {
-      PedestrianSectorType.first => context.colors.accentDefault,
-      PedestrianSectorType.last => context.colors.extra01Default,
-    };
-
-    final defaultPointLabel = switch (type) {
-      PedestrianSectorType.first => context.l10n.myLocation,
-      PedestrianSectorType.last => context.l10n.destination,
-    };
-
-    return Stack(
-      children: [
-        if (showLine)
-          PositionedDirectional(
-            start: lineStartPosition,
-            top: topPadding,
-            bottom: bottomPadding,
-            child: Container(
-              width: connectedLineWidth,
-              color: context.colors.neutralMuted,
-            ),
-          ),
-        Column(
-          verticalDirection: verticalDirection,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ui_kit.ContentRow(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              leading: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Icon(
-                  ui_kit.GeneralIcons.bulletCircleSolid,
-                  color: bulletColor,
-                  size: 14,
-                ),
-              ),
-              text: ui_kit.ContentRowTextOptions(
-                title: pointLabel?.label ?? defaultPointLabel,
-                subtitleOptions: ui_kit.ContentRowTextOption(
-                  baseColor: context.colors.foregroundSoft,
-                  builder: (context) => Text(
-                    'Address',
-                    style: context.textStyles.bodySmallRegular.copyWith(
-                      color: context.colors.foregroundSoft,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            if (showLine) RoutingPedestrianV2(data: data!.first as RouteDetailsPublicTransportPedestrian),
-          ],
-        ),
-      ],
-    );
-  }
 }

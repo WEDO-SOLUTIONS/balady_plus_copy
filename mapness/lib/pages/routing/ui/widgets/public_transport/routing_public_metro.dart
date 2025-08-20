@@ -92,29 +92,6 @@ class RoutingPublicMetro extends StatelessWidget {
   double get lineStartPosition => _contentRowStartPadding + (_linePointCircleSize / 2) - (_connectedLineWidth / 2);
 }
 
-class _StationItem extends StatelessWidget {
-  final Color lineColor;
-  // We have to add padding because of the `ContentRow` widget and bug with
-  // cross alignment.
-  final bool addPadding;
-  const _StationItem({
-    required this.lineColor,
-    this.addPadding = false,
-  });
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: _linePointCircleSize,
-        height: _linePointCircleSize,
-        margin: addPadding ? const EdgeInsets.only(bottom: 20) : null,
-        decoration: BoxDecoration(
-          color: lineColor,
-          shape: BoxShape.circle,
-          boxShadow: Shadows.m,
-        ),
-      );
-}
-
 class RoutingCollapsibleListStations extends StatelessWidget {
   final List<String> stations;
   final Color lineColor;
