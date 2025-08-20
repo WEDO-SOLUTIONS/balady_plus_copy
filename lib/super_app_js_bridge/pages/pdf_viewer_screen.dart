@@ -10,10 +10,8 @@ class PdfViewerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(""),
-      ),
-      body: pdfData.type == "bayes"
+      appBar: AppBar(title: const Text("")),
+      body: pdfData.type == "pdf"
           ? SfPdfViewer.memory(
               pdfData.bytes!,
             )
