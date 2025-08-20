@@ -932,8 +932,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.sendToCalender.name) ==
         true) {
-      if (mas != null && mas is String) {
-        Map data = jsonDecode(mas);
+      Map? data ;
+      if(mas is String) {
+        data =  jsonDecode(mas);
+      } else {
+        data = mas;
+      }
+      if (data != null ) {
         BaseResponse response = BaseResponse(
           code: 200,
           eventName: "sendToCalender",
