@@ -19,7 +19,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: Text(
-          "services".tr(),
+          "AppsTitle".tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w600,
             color: Colors.white,

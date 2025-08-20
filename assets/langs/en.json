@@ -4794,5 +4794,6 @@
   "failed_to_load_diseases": "Failed to load diseases",
   "failed_to_submit_profile": "Failed to submit profile",
   "failed_to_update_profile": "Failed to update profile",
-  "profile_id_not_found": "Profile ID not found. Please reload your profile"
+  "profile_id_not_found": "Profile ID not found. Please reload your profile",
+  "AppsTitle": "Applications"
 }

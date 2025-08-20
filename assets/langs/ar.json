@@ -4571,5 +4571,6 @@
   "failed_to_submit_profile": "فشل في إرسال الملف الشخصي",
   "failed_to_update_profile": "فشل في تحديث الملف الشخصي",
   "profile_id_not_found": "لم يتم العثور على معرف الملف الشخصي. يرجى إعادة تحميل ملفك الشخصي",
-  "cv_uploaded_successfully": "تم رفع السيرة الذاتية بنجاح"
+  "cv_uploaded_successfully": "تم رفع السيرة الذاتية بنجاح",
+  "AppsTitle": "التطبيقات"
 }
