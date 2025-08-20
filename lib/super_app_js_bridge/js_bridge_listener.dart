@@ -120,7 +120,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
-    if (miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' &&
+    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' || miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp' ) &&
         !CommonProperties.isLoggedInMunicipality) {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
