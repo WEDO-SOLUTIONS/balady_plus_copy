@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 part 'feedback_base_dto.g.dart';
 
@@ -46,6 +47,9 @@ sealed class FeedbackBaseDto {
       };
     } catch (e) {
       // TODO(Demezy): remove this when fully update to v2.0 endpoints
+      logger
+        ..log('Error creating FeedbackBaseDto fromJson: ${e.toString()}', logLevel: MapnessLogLevel.critical)
+        ..log('json: ${json.toString()}', logLevel: MapnessLogLevel.critical);
       log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
       log(e.toString());
       log('+++++++++++++++++++++++++++++++++++++++++++++++++++++');

@@ -8,6 +8,7 @@ import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/metrics/lost_gps.dart';
 import 'package:mapness/shared/lib/metrics/route_calculation.dart';
 import 'package:mapness/shared/lib/metrics/search_response_time.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -57,9 +58,10 @@ class AdvancedMetrics {
           AdvancedMetricsConstants.appLoadTime,
           properties: _loadTimeMetrics!.toJson(),
         );
-        print(_loadTimeMetrics.toString());
+        logger.log(_loadTimeMetrics.toString());
       } catch (e) {
-        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.appLoadTime}: ${e.toString()}');
+        logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.appLoadTime}: ${e.toString()}',
+            logLevel: MapnessLogLevel.critical);
       }
     }
   }
@@ -82,9 +84,11 @@ class AdvancedMetrics {
             properties: metrics.toJson(),
           );
           await sharedPrefs.remove(AdvancedMetricsConstants.batteryUsage);
-          print(metrics.toString());
+          logger.log(metrics.toString());
         } catch (e) {
-          print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+          logger.log(
+              '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}',
+              logLevel: MapnessLogLevel.critical);
         }
       }
     }
@@ -95,7 +99,7 @@ class AdvancedMetrics {
     try {
       _batteryInitial = await Battery().batteryLevel;
     } catch (e) {
-      print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+      logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
       return;
     }
     await _measureBattery();
@@ -130,14 +134,18 @@ class AdvancedMetrics {
         state = await Battery().batteryState;
         isInBatterySaveMode = await Battery().isInBatterySaveMode;
       } catch (e) {
-        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+        logger.log(
+            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}',
+            logLevel: MapnessLogLevel.critical);
         return;
       }
       List<double>? location;
       try {
         location = await _getLocation();
       } catch (e) {
-        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.keys.location}::${e.toString()}');
+        logger.log(
+            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.keys.location}::${e.toString()}',
+            logLevel: MapnessLogLevel.critical);
       }
 
       final levelDiff = _batteryInitial! - level;
@@ -197,12 +205,13 @@ class AdvancedMetrics {
           AdvancedMetricsConstants.lostGps,
           properties: _lostGpsLast!.toJson(),
         );
-        print(_lostGpsLast.toString());
+        logger.log(_lostGpsLast.toString());
         _lostGpsLast = null;
         await _lostGPSClean();
         return;
       } catch (e) {
-        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}');
+        logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}',
+            logLevel: MapnessLogLevel.critical);
       }
     }
 
@@ -216,10 +225,11 @@ class AdvancedMetrics {
             AdvancedMetricsConstants.lostGps,
             properties: metrics.toJson(),
           );
-          print(metrics.toString());
+          logger.log(metrics.toString());
           await _lostGPSClean();
         } catch (e) {
-          print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}');
+          logger.log('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}',
+              logLevel: MapnessLogLevel.critical);
         }
       }
     }
@@ -257,10 +267,11 @@ class AdvancedMetrics {
           AdvancedMetricsConstants.routeCalculationTime,
           properties: routeCalculation.toJson(),
         );
-        print(routeCalculation.toString());
+        logger.log(routeCalculation.toString());
       } catch (e) {
-        print(
-            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.routeCalculationTime}::${e.toString()}');
+        logger.log(
+            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.routeCalculationTime}::${e.toString()}',
+            logLevel: MapnessLogLevel.critical);
       }
     }
   }
@@ -292,9 +303,11 @@ class AdvancedMetrics {
           AdvancedMetricsConstants.searchDuration,
           properties: searchResponse.toJson(),
         );
-        print(searchResponse.toString());
+        logger.log(searchResponse.toString());
       } catch (e) {
-        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.searchDuration}::${e.toString()}');
+        logger.log(
+            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.searchDuration}::${e.toString()}',
+            logLevel: MapnessLogLevel.critical);
       }
     }
   }
@@ -315,7 +328,8 @@ class AdvancedMetrics {
       );
       return [location.latitude, location.longitude];
     } catch (e) {
-      print('${AdvancedMetricsConstants.debugConsole}::Location: ${e.toString()}');
+      logger.log('${AdvancedMetricsConstants.debugConsole}::Location: ${e.toString()}',
+          logLevel: MapnessLogLevel.critical);
     }
     return null;
   }

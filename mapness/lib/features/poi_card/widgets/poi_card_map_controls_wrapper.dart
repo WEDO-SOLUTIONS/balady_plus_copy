@@ -1,12 +1,12 @@
 import 'dart:math';
 
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:sheetify/sheetify.dart';
 
 class PoiCardMapControlsWrapper extends StatefulWidget {
-  final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
+  final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
   final int? objectIdForIndoorLevels;
 
   const PoiCardMapControlsWrapper({

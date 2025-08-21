@@ -12,6 +12,7 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
+import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
 
 class PoiCardFooter extends HookConsumerWidget {
   static const double height = 40;
@@ -25,7 +26,7 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
   final LatLng? closestPoint;
-  final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
+  final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
   const PoiCardFooter({
     required this.share,

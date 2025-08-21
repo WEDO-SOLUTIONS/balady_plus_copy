@@ -10,6 +10,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'iwish_entity.g.dart';
@@ -47,7 +48,7 @@ class _IwishEntity extends _$IwishEntity {
     } on DioException catch (e) {
       if (kDebugMode) {
         final error = pb.ErrorResponse.fromBuffer(e.response?.data as List<int>);
-        print(error.toDebugString());
+        logger.log(error.toDebugString(), logLevel: MapnessLogLevel.critical);
       }
     }
     await mixpanel?.track('IwishFeedbackEntity: submitFeedback');
@@ -62,7 +63,7 @@ class _IwishEntity extends _$IwishEntity {
 
     final response = pb.IWishItemResponse.fromBuffer(raw.data as List<int>).object;
     final point = response.location.point;
-    debugPrint('${response.toProto3Json()}');
+    logger.log('${response.toProto3Json()}');
 
     await ref.read(selectedMarkerProvider.notifier).showMarker(
           Markers.pinMarker(

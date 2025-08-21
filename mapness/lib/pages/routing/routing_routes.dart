@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
@@ -16,11 +17,12 @@ import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
@@ -85,13 +87,14 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    final sheetController = useStatelessBottomsheetController(
+    final sheetController = useToggleSheetController(
       isInteractive: false,
     );
 
-    return StatelessBottomSheet(
+    return ToggleSheet(
       backgroundColor: context.colors.backgroundSurface4,
-      draggerColor: context.colors.backgroundSurface4,
+      safeAreaColor: context.colors.backgroundSurface4,
+      dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
       scrollController: sheetController,
       outside: const RoutingMapControls(),
       header: Column(

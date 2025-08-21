@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LocationSetupHelper with WidgetsBindingObserver {
@@ -10,7 +11,7 @@ class LocationSetupHelper with WidgetsBindingObserver {
 
   final DgisMapController controller;
 
-  final _log = (String m) => debugPrint('🛰️ [LOCATION] $m');
+  final _log = (String m) => logger.log('🛰️ [LOCATION] $m');
 
   final _completer = Completer<void>();
   bool _requestInProgress = false;
@@ -21,16 +22,14 @@ class LocationSetupHelper with WidgetsBindingObserver {
       await _tryActivate();
       // wait until activate() says "done"
       await _completer.future;
-    } finally {
-      WidgetsBinding.instance.removeObserver(this);
+    } catch (e) {
+      _log('$e');
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && !_completer.isCompleted) {
-      _log('app RESUMED → checking status again');
-      // dialog closed → can recheck
+    if (state == AppLifecycleState.resumed) {
       _tryActivate();
     }
   }

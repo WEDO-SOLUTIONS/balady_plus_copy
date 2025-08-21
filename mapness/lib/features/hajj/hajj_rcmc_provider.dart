@@ -7,8 +7,9 @@ import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
 part 'hajj_rcmc_provider.g.dart';
 
@@ -28,7 +29,11 @@ class _HajjRcmc extends _$HajjRcmc {
   Dio get _dio => ref.read(baseDioProvider)
     ..interceptors.clear()
     ..interceptors.add(
-      PrettyDioLogger(responseBody: false),
+      TalkerDioLogger(
+        settings: const TalkerDioLoggerSettings(
+          printResponseData: false,
+        ),
+      ),
     );
 
   MapObjectManager get _objectManager => ref.watch(

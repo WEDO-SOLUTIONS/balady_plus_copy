@@ -3,8 +3,9 @@ import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
+import 'package:sheetify/sheetify.dart';
 
-class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> {
+class NaviSearchHeader extends SheetAnimatedWidget<ThreeStateSheet> {
   final bool requestFocus;
   final VoidCallback onClose;
   final Color backgroundColor;
@@ -14,11 +15,11 @@ class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> 
     required this.onClose,
     required this.backgroundColor,
     super.key,
-  }) : super(defaultState: ThreeStateBottomSheet.open);
+  }) : super(defaultState: ThreeStateSheet.open);
 
   @override
-  Widget build(BuildContext context, ThreeStateBottomSheet state, double interpolation) {
-    final bottomPadding = interpolation == 0.0 && state == ThreeStateBottomSheet.hidden ? (Spacing.$8x) : (Spacing.$4x);
+  Widget build(BuildContext context, ThreeStateSheet state, double interpolation) {
+    final bottomPadding = interpolation == 0.0 && state == ThreeStateSheet.hidden ? (Spacing.$8x) : (Spacing.$4x);
 
     return Consumer(
       builder: (context, ref, child) => Container(
@@ -47,7 +48,7 @@ class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> 
               child: MapSearchBar(
                 requestFocus: requestFocus,
                 onClose: onClose,
-                isCloseButton: interpolation == 0.0 && state == ThreeStateBottomSheet.hidden,
+                isCloseButton: interpolation == 0.0 && state == ThreeStateSheet.hidden,
               ),
             ),
           ],

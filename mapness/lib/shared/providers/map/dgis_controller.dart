@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -20,7 +19,7 @@ final GeoPointMessage _kingdomTower = GeoPointMessage(latitude: 24.712301, longi
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
-
+  late LocationSetupHelper _locationHelper;
   final _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
@@ -87,15 +86,15 @@ class DgisController extends _$DgisController {
       // Voice
       await controller.installVoice('voice-saud');
     } on PlatformException catch (e) {
-      debugPrint('Voice installation error: $e');
+      logger.log('Voice installation error: $e');
     }
   }
 
   Future<void> _setupLocation(DgisMapController controller) async {
     await _setDefaultLocation(controller);
 
-    final helper = LocationSetupHelper(controller);
-    await helper.run();
+    _locationHelper = LocationSetupHelper(controller);
+    await _locationHelper.run();
 
     // at this point, geolocation is either activated,
     // or the user has definitively denied it (the helper will timeout

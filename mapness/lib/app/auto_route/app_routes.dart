@@ -59,9 +59,12 @@ class AppRouter extends RootStackRouter {
               page: PathNavRoute.page,
               fullscreenDialog: true,
             ),
-            AppRoute(
+            CustomRoute(
               path: 'search',
               page: SearchRoute.page,
+              durationInMilliseconds: 100,
+              reverseDurationInMilliseconds: 100,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
             AppRoute(
               path: 'navi_search',

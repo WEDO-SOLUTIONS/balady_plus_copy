@@ -7,8 +7,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/small_chip_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+import 'package:sheetify/toggle_sheet/toggle_sheet.dart';
 
 class SelectionDialogViewWidget<T> extends HookWidget {
   final SelectionDialogView<T> selectionDialogView;
@@ -26,17 +27,16 @@ class SelectionDialogViewWidget<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialogView.tapCross(context));
+    final scrollController = useToggleSheetController(onClose: (_) => selectionDialogView.tapCross(context));
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
-    return StatelessBottomSheet(
+    return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: backgroundColor,
       outside: GestureDetector(
         onTap: context.router.popForced,
       ),
-      draggerColor: backgroundColor,
       header: Padding(
         padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
         child: Row(

@@ -6,11 +6,12 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_content.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_search_bar.dart';
-import 'package:mapness/shared/ui/safe_area_padding.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class FeedbackAddressSuggester extends ConsumerStatefulWidget {
@@ -23,7 +24,7 @@ class FeedbackAddressSuggester extends ConsumerStatefulWidget {
 }
 
 class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSuggester> {
-  late final StatelessBottomSheetController _dgisSheetController;
+  late final ToggleSheetController _dgisSheetController;
   final kbVisibilityController = KeyboardVisibilityController();
   late final StreamSubscription<bool> _keyboardVisible;
 
@@ -33,8 +34,8 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
   @override
   void initState() {
     super.initState();
-    _dgisSheetController = StatelessBottomSheetController(
-        heightModel: BottomSheetHeightModel.aspect(
+    _dgisSheetController = ToggleSheetController(
+        heightModel: ToggleSheetHeightModel.fraction(
           .98,
         ),
         onClose: (_) {
@@ -54,33 +55,30 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
   @override
   Widget build(BuildContext context) => SearchScope(
         named: SearchScopeEnum.feedback,
-        child: LayoutBuilder(
-          builder: (context, constraints) => NotificationListener<ScrollNotification>(
-            onNotification: _onNotification,
-            child: SafeAreaPadding(
-              child: StatelessBottomSheet(
-                key: const ValueKey('FEEDBACK SEARCH SHEET'),
-                physics: const BouncingScrollPhysics(),
-                scrollController: _dgisSheetController,
-                backgroundColor: context.colors.backgroundSurface4,
-                safeAreaColor: context.colors.backgroundSurface4,
-                header: ColoredBox(
-                  color: context.colors.backgroundSurface1,
-                  child: const Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                        child: FeedbackAddressSearchBar(),
-                      ),
-                      SizedBox(height: Spacing.$4x),
-                    ],
+        child: NotificationListener<ScrollNotification>(
+          onNotification: _onNotification,
+          child: ToggleSheet(
+            key: const ValueKey('FEEDBACK SEARCH SHEET'),
+            physics: const BouncingScrollPhysics(),
+            scrollController: _dgisSheetController,
+            backgroundColor: context.colors.backgroundSurface4,
+            safeAreaColor: context.colors.backgroundSurface4,
+            dragger: const SheetDragger(),
+            header: ColoredBox(
+              color: context.colors.backgroundSurface1,
+              child: const Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    child: FeedbackAddressSearchBar(),
                   ),
-                ),
-                sliverBeforeContent: FeedbackAddressContent(
-                  showMyLocation: false,
-                  scrollController: _dgisSheetController,
-                ),
+                  SizedBox(height: Spacing.$4x),
+                ],
               ),
+            ),
+            sliver: FeedbackAddressContent(
+              showMyLocation: false,
+              scrollController: _dgisSheetController,
             ),
           ),
         ),
