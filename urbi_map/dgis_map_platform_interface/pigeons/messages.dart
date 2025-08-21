@@ -2080,6 +2080,9 @@ abstract class MapApi {
 
   @async
   bool getCarConnectionState();
+
+  @async
+  void setMaxFps(int? maxFps);
 }
 
 @FlutterApi()

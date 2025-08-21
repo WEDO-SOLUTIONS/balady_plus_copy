@@ -680,6 +680,10 @@ class DgisMapController {
 
   /// Getting Android Auto/CarPlay connection state
   Future<bool> getCarConnectionState() => _instance.getCarConnectionState();
+
+
+  /// Set map max fps
+  Future<void> setMaxFps(int? maxFps) => _instance.setMaxFps(maxFps);
 }
 
 /// Extension methods for `WeekTimeSearchMessage`.
