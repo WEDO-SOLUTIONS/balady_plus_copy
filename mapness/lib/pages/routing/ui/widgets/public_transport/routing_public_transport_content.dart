@@ -1,7 +1,9 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
 import 'package:mapness/pages/routing/ui/models/roution_details_ext.dart';
@@ -10,6 +12,8 @@ import 'package:mapness/pages/routing/ui/widgets/public_transport/routing_public
 import 'package:mapness/pages/routing/ui/widgets/public_transport/routing_public_expandable.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
+import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 
 part 'routing_public_tail_sector.dart';

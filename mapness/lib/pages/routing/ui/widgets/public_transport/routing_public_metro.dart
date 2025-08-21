@@ -112,40 +112,56 @@ class RoutingCollapsibleListStations extends StatelessWidget {
           top: Spacing.$3x,
           bottom: Spacing.$3x,
         ),
-        leading: Container(
-          width: _linePointCircleSize,
-          color: context.colors.backgroundSurface1,
-          padding: const EdgeInsets.all(3),
-          child: Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: lineColor.withOpacity(0.5),
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
+        leading: (isExpanded) => isExpanded
+            ? const SizedBox(width: _linePointCircleSize)
+            : Container(
+                width: _linePointCircleSize,
+                color: context.colors.backgroundSurface1,
+                padding: const EdgeInsets.all(3),
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: lineColor.withOpacity(0.5),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
         firstText: _getStationsCount(context),
-        content: Padding(
-          padding: const EdgeInsetsDirectional.only(
-              start: _contentRowStartPadding + _linePointCircleSize + _connectedLineWidth / 2),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: _getStationsNames()
-                    ?.map(
-                      (e) => Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 3.0),
-                        child: Text(
-                          e,
-                          style: context.textStyles.bodySmallRegular.copyWith(
-                            color: context.colors.foregroundDefault,
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: _getStationsNames()
+                  ?.map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: _linePointCircleSize,
+                            color: context.colors.backgroundSurface1,
+                            padding: const EdgeInsets.all(3),
+                            child: Container(
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: lineColor.withOpacity(0.5),
+                                shape: BoxShape.circle,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: Spacing.$3x),
+                          Text(
+                            e,
+                            style: context.textStyles.bodySmallRegular.copyWith(
+                              color: context.colors.foregroundDefault,
+                            ),
+                          ),
+                        ],
                       ),
-                    )
-                    .toList() ??
-                [],
-          ),
+                    ),
+                  )
+                  .toList() ??
+              [],
         ),
       );
 

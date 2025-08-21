@@ -16,7 +16,8 @@ class RoutingPublicExpandable extends StatefulWidget {
     this.onTitleTap,
     super.key,
   });
-  final Widget leading;
+  // ignore: avoid_positional_boolean_parameters
+  final Widget Function(bool isExpanded) leading;
   final String firstText;
   final String? secondText;
   final EdgeInsetsGeometry padding;
@@ -39,7 +40,7 @@ class _RoutingPublicExpandableState extends State<RoutingPublicExpandable> {
             _toggleFunction ??= toggleFunction;
             return Row(
               children: [
-                widget.leading,
+                widget.leading(isExpanded),
                 Spacing.$3x.widthBox,
                 CupertinoButton(
                   onPressed: _toggleFunction,
@@ -88,13 +89,8 @@ class _RoutingPublicExpandableState extends State<RoutingPublicExpandable> {
               ],
             );
           },
-          content: Container(
+          content: SizedBox(
             width: double.infinity,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(RadiusBorder.baseSharp),
-              ),
-            ),
             child: widget.content,
           ),
         ),

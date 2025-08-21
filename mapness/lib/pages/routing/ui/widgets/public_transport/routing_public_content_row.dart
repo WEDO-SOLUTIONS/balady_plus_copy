@@ -27,7 +27,7 @@ class RoutingPublicContentRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _StationItem(lineColor: leadingIconColor),
+          _BulletPoint(lineColor: leadingIconColor),
           Spacing.$3x.widthBox,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,9 +68,9 @@ class RoutingPublicContentRow extends StatelessWidget {
   }
 }
 
-class _StationItem extends StatelessWidget {
+class _BulletPoint extends StatelessWidget {
   final Color lineColor;
-  const _StationItem({required this.lineColor});
+  const _BulletPoint({required this.lineColor});
 
   @override
   Widget build(BuildContext context) => Container(

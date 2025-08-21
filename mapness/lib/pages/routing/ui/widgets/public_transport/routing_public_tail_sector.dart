@@ -5,7 +5,7 @@ enum PedestrianSectorType {
   last,
 }
 
-class RoutingPublicTailSector extends StatelessWidget {
+class RoutingPublicTailSector extends ConsumerWidget {
   final List<RouteDetailsPublicTransport>? data;
   final PedestrianSectorType type;
   final RouteParamsPointWithLabel? pointLabel;
@@ -43,7 +43,7 @@ class RoutingPublicTailSector extends StatelessWidget {
       };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     if (!_isFirstPedestrian && type == PedestrianSectorType.first) {
       return const SizedBox(height: Spacing.$3x);
     }
@@ -71,6 +71,8 @@ class RoutingPublicTailSector extends StatelessWidget {
       PedestrianSectorType.first => Spacing.$3x + Spacing.$4x,
       PedestrianSectorType.last => Spacing.$4x,
     };
+
+    final address = addressById(pointLabel?.value?.objectId, ref);
 
     return Stack(
       children: [
@@ -117,10 +119,13 @@ class RoutingPublicTailSector extends StatelessWidget {
                         ),
                       ),
                       Spacing.$1x.heightBox,
-                      Text(
-                        'Address',
-                        style: context.textStyles.bodySmallRegular.copyWith(
-                          color: context.colors.foregroundSoft,
+                      FutureBuilder(
+                        future: address,
+                        builder: (context, snapshot) => Text(
+                          snapshot.data ?? context.l10n.loading,
+                          style: context.textStyles.bodySmallRegular.copyWith(
+                            color: context.colors.foregroundSoft,
+                          ),
                         ),
                       ),
                     ],
@@ -138,5 +143,15 @@ class RoutingPublicTailSector extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Future<String?> addressById(int? objectId, WidgetRef ref) async {
+    if (objectId == null) {
+      return null;
+    }
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    final object = await dgisController.searchByObjectId(DgisObjectIdMessage(objectId: objectId, entranceId: 0));
+
+    return object.makeFullAddress();
   }
 }
