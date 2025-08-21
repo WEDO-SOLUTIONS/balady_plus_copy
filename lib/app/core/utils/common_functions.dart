@@ -228,13 +228,12 @@ class CommonFunctions {
       try {
         await locationService.checkLocationSettings(settings);
       } catch (e) {
-        debugPrint('amr catch ${e.toString()}');
+        debugPrint('catch ${e.toString()}');
       }
 
       final location = await locationService.getLastLocation();
 
       if (location.latitude != null && location.longitude != null) {
-        debugPrint('amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
         return LatLng(latitude: location.latitude!, longitude: location.longitude!);
       } else {
         await locationService.requestLocationUpdates(request);

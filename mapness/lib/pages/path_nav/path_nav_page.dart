@@ -18,6 +18,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
@@ -454,9 +455,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final route = ref.read(etaRouteInfoProvider);
     final pathInfo = ref.read(pathNavEtaProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final location = ref.read(cityByLocationProvider.notifier);
+    final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
+    final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
+
     ref.read(appAnalyticsProvider).navigationCompleted(
           origin: route.startPoint?.analyticsLabel ?? '',
           destination: route.endPoint?.analyticsLabel ?? '',
+          originCity: originCity.name,
+          destinationCity: destinationCity.name,
           spentTime: pathInfo?.spentTime ?? Duration.zero,
         );
     await _stopActiveSharing();

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_insider/flutter_insider.dart';
+
 // ignore: implementation_imports
 import 'package:flutter_insider/src/identifiers.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
@@ -25,12 +26,16 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   void navigationStarted({
     required String originLocation,
     required String destinationLocation,
+    required String destinationCity,
+    required String originCity,
     required int estimateTime,
     required double estimateDistance,
   }) {
     FlutterInsider.Instance.tagEvent('navigation_started')
         .addParameterWithString('origin', originLocation)
         .addParameterWithString('destination', destinationLocation)
+        .addParameterWithString('origin_city', originCity)
+        .addParameterWithString('destination_city', destinationCity)
         .addParameterWithDouble('estimated_time', estimateTime.toDouble())
         .addParameterWithDouble('estimated_distance', estimateDistance)
         .build();
@@ -40,12 +45,16 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   void navigationHalfWay({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
     required String midPoint,
   }) {
     FlutterInsider.Instance.tagEvent('navigation_half_way')
         .addParameterWithString('origin', origin)
         .addParameterWithString('destination', destination)
+        .addParameterWithString('origin_city', originCity)
+        .addParameterWithString('destination_city', destinationCity)
         .addParameterWithInt('time_to_midway', spentTime.inSeconds)
         .addParameterWithString('midway_point', midPoint)
         .build();
@@ -91,9 +100,7 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   void categorySelected(String category) {
-    FlutterInsider.Instance.tagEvent('category_selected')
-        .addParameterWithString('category', category)
-        .build();
+    FlutterInsider.Instance.tagEvent('category_selected').addParameterWithString('category', category).build();
   }
 
   @override
@@ -110,11 +117,15 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   void navigationCompleted({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
   }) {
     FlutterInsider.Instance.tagEvent('navigation_completed')
         .addParameterWithString('origin', origin)
         .addParameterWithString('destination', destination)
+        .addParameterWithString('origin_city', originCity)
+        .addParameterWithString('destination_city', destinationCity)
         .addParameterWithInt('time_to_reach', spentTime.inSeconds)
         .build();
   }
@@ -168,9 +179,20 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   void transportModeSelected({required String type}) {
-     FlutterInsider.Instance.tagEvent('transport_mode_selected')
+    FlutterInsider.Instance.tagEvent('transport_mode_selected')
         .addParameterWithString('event_name', 'transport_mode_selected')
         .addParameterWithString('mode', type)
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  @override
+  void userMovementDetected({required String destinationCity, required String originCity}) {
+    FlutterInsider.Instance.tagEvent('user_movement_detected')
+        .addParameterWithString('event_name', 'user_movement_detected')
+        .addParameterWithString('origin', originCity)
+        .addParameterWithString('destination', destinationCity)
+        .addParameterWithString('value', originCity == destinationCity ? 'Yes' : 'No')
         .addParameterWithString('timestamp', now)
         .build();
   }

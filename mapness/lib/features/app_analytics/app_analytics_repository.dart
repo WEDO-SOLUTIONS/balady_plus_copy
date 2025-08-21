@@ -8,13 +8,22 @@ abstract interface class AppAnalyticsRepository {
   void navigationStarted({
     required String originLocation,
     required String destinationLocation,
+    required String destinationCity,
+    required String originCity,
     required int estimateTime,
     required double estimateDistance,
+  });
+
+  void userMovementDetected({
+    required String destinationCity,
+    required String originCity,
   });
 
   void navigationHalfWay({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
     required String midPoint,
   });
@@ -22,6 +31,8 @@ abstract interface class AppAnalyticsRepository {
   void navigationCompleted({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
   });
 
