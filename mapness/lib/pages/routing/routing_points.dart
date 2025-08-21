@@ -190,6 +190,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   Future<void> _onTap(int index, BuildContext context, WidgetRef ref) async {
+    print('amr');
     Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
         group: MetricsConstants.routesTag,
         action: MetricAction.tap.toString(),

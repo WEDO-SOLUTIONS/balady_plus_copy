@@ -4,6 +4,8 @@ import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
@@ -65,6 +67,7 @@ class Search extends _$Search {
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
+
   bool get searchFromSuggest => _previousType == SearchType.searchByQuery;
 
   @override
@@ -341,7 +344,15 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
-
+      // todo: see how to add location here
+      // final location = ref.read(cityByLocationProvider.notifier);
+      // ref.read(appAnalyticsProvider).navigationSearch(
+      //   destinationCity: location,
+      //   keyword: query,
+      //   originCity: originCity,
+      //   isResultsFound: results.firstPage!=null || results.firstPage!.items.isNotEmpty,
+      //   resultCount: results.firstPage?.items.length??0,
+      // );
       _result = results;
       // -- Analytics
       if (state is SearchStateEmpty) {

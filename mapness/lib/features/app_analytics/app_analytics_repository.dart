@@ -4,6 +4,7 @@ abstract interface class AppAnalyticsRepository {
   void onboardingFlowSkipped();
 
   void onboardingFlowCompleted();
+  void navigationSearch({required String destinationCity, required String keyword, required String originCity, required bool isResultsFound, required int resultCount});
 
   void navigationStarted({
     required String originLocation,

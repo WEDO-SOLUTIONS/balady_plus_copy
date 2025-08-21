@@ -196,4 +196,22 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
         .addParameterWithString('timestamp', now)
         .build();
   }
+
+  @override
+  void navigationSearch(
+      {required String destinationCity,
+      required String keyword,
+      required String originCity,
+      required bool isResultsFound,
+      required int resultCount}) {
+    FlutterInsider.Instance.tagEvent('navigation_search')
+        .addParameterWithString('event_name', 'navigation_search')
+        .addParameterWithString('keyword', keyword)
+        .addParameterWithString('origin', originCity)
+        .addParameterWithString('destination', destinationCity)
+        .addParameterWithString('timestamp', now)
+        .addParameterWithBoolean('results_found', isResultsFound)
+        .addParameterWithInt('result_count', resultCount)
+        .build();
+  }
 }
