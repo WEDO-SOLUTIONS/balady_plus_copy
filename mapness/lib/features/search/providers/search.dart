@@ -4,8 +4,6 @@ import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/app_analytics/app_analytics.dart';
-import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
