@@ -74,8 +74,6 @@ class _CityByLocation extends _$CityByLocation {
     }
 
     final item = geocoderData.result.items.first;
-    final city = City.fromJson(item.toJson());
-    print('amr city.name ${city.name}');
-    return city;
+    return City.fromJson(item.toJson());
   }
 }
