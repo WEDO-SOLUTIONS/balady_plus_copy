@@ -256,7 +256,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           ),
         ),
         const Expanded(
-          child: RoutingMapControls(key: ValueKey('OffersOnMapWidgetRoutingMapControls'), useSafeArea: false),
+          child: RoutingMapControls(
+            key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
+            useSafeArea: false,
+          ),
         ),
         Spacing.$5x.heightBox
       ],

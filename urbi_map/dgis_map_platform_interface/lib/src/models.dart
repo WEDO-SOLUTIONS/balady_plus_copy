@@ -60,7 +60,7 @@ class SimpleClusterObject {
   /// Base class constructor
   SimpleClusterObject(
     this._api,
-    this.id,
+    this._id,
     this.position,
     this.objectCount,
     this.markers,
@@ -104,7 +104,7 @@ class SimpleClusterObject {
 
   /// Sets cluster icon. Should be called only inside onTap handler
   Future<void> setIcon(String icon) async {
-    await _api.setClusterIcon(id, icon);
+    await _api.setClusterIcon(_id, icon);
   }
 }
 

@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -17,6 +17,10 @@ import 'package:mapness/features/saudi_pass/widgets/offers_bottom_sheet_widget.d
 import 'package:mapness/features/saudi_pass/widgets/offers_on_map_widget.dart';
 import 'package:mapness/pages/poi_card/poi_card_error_or_loading.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
+import 'package:sheetify/multi_state_sheet/state_snapping/behaviors/multi_snapping_behavior.dart';
+import 'package:sheetify/multi_state_sheet/state_snapping/models/components_snapping_model.dart';
+import 'package:sheetify/multi_state_sheet/state_snapping/models/fraction_snapping_model.dart';
 
 @RoutePage()
 class OfferListBottomSheetMapPage extends HookConsumerWidget {
@@ -30,10 +34,10 @@ class OfferListBottomSheetMapPage extends HookConsumerWidget {
     final colors = context.colors;
 
     final scrollController = useMemoized(
-      () => StatefulBottomSheetController<PoiCardBottomSheetState>(
+      () => MultiStateSheetController<PoiCardBottomSheetState>(
         behavior: MultiSnappingBehavior(
           models: [
-            AspectRatioSnappingModel({0.0, if (offersId.length == 1) .3 else 0.8}),
+            FractionSnappingModel({0.0, if (offersId.length == 1) .3 else 0.8}),
             ComponentsSnappingModel(
               componentsDescriptions: [
                 SnapComponent.merge(
@@ -75,16 +79,15 @@ class OfferListBottomSheetMapPage extends HookConsumerWidget {
 
     return SafeArea(
       top: false,
-      child: StatefulBottomSheet(
+      child: MultiStateSheet(
         outside: PoiCardMapControlsWrapper(
           bottomSheetController: scrollController,
           objectIdForIndoorLevels: null,
         ),
         scrollController: scrollController,
-        draggerColor: backgroundColor,
         backgroundColor: backgroundColor,
         header: Padding(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+          padding: const EdgeInsets.only(left: uikit.Spacing.$4x, right: uikit.Spacing.$4x, bottom: uikit.Spacing.$3x),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -98,8 +101,8 @@ class OfferListBottomSheetMapPage extends HookConsumerWidget {
                   style: context.textStyles.bodySmallRegular,
                 ),
               ]),
-              AppButton.close(
-                primaryIcon: SystemIcons.closeSmall,
+              uikit.AppButton.close(
+                primaryIcon: uikit.SystemIcons.closeSmall,
                 onTap: () async {
                   final showMapOffers = ref.read(showMapOffersProvider.notifier);
                   await showMapOffers.removeMarker(offerPoiPinId);
@@ -112,18 +115,18 @@ class OfferListBottomSheetMapPage extends HookConsumerWidget {
         content: [OffersBottomSheetWidget(list)],
         footer: Padding(
           padding: const EdgeInsets.only(
-            left: Spacing.$4x,
-            right: Spacing.$4x,
-            bottom: Spacing.$4x,
+            left: uikit.Spacing.$4x,
+            right: uikit.Spacing.$4x,
+            bottom: uikit.Spacing.$4x,
           ),
-          child: AppButton(
-            size: ButtonSize.large,
-            primaryIcon: TransportIcons.locationDirectionNavigator,
+          child: uikit.AppButton(
+            size: uikit.ButtonSize.large,
+            primaryIcon: uikit.TransportIcons.locationDirectionNavigator,
             iconColor: colors.accentSecondaryOnAccentSecondary,
             primaryLabel: '${l10n.poiCardDirections} $durationString',
             color: colors.accentSecondaryDefault,
             textColor: colors.accentSecondaryOnAccentSecondary,
-            buttonColorScheme: ButtonColorScheme.accent,
+            buttonColorScheme: uikit.ButtonColorScheme.accent,
             onTap: first == null ? null : () => _openNavigationPage(context, first),
           ),
         ),
