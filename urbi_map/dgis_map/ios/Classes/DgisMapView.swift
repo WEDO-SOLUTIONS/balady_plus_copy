@@ -1235,8 +1235,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         carPlayHandler?.getConnectionState(completion: completion)
     }
     
-    func setMaxFps(maxFps: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
-        mapFactory?.energyConsumption.maxFps = Int(maxFps)
+    func setMaxFps(maxFps: Int64?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        if let fps = maxFps {
+            mapFactory?.energyConsumption.maxFps = Int(fps)
+        } else {
+            mapFactory?.energyConsumption.maxFps = nil
+        }
+        
         completion(Result.success(()))
     }
 }
