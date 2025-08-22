@@ -7,11 +7,13 @@ class SaudiPassScaffold extends StatelessWidget {
   final VoidCallback onBackButton;
   final String title;
   final Widget body;
+  final VoidCallback? onShowOnMapPressed;
 
   const SaudiPassScaffold({
     required this.onBackButton,
     required this.body,
     required this.title,
+    this.onShowOnMapPressed,
     super.key,
   });
 
@@ -29,6 +31,12 @@ class SaudiPassScaffold extends StatelessWidget {
               onPressed: onBackButton,
               icon: SystemIcons.arrowCornerLeftLarge,
             ),
+            trailing: onShowOnMapPressed != null
+                ? ActionModel(
+                    onPressed: onShowOnMapPressed,
+                    icon: GeneralIcons.map,
+                  )
+                : null,
           ),
           body: body,
         ),

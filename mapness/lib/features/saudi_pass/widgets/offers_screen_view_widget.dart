@@ -30,6 +30,15 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
         child: FutureBuilder<OffersFiltersView>(
             future: widget.offersScreenView.offersFiltersFuture,
             builder: (_, s) => SaudiPassScaffold(
+                  onShowOnMapPressed: s.hasData
+                      ? () => context.router.push(
+                            OffersOnMapRoute(
+                              city: s.data!.city.name,
+                              categories: s.data!.categories,
+                              recommendedTypes: s.data!.recommendedTypes,
+                            ),
+                          )
+                      : null,
                   onBackButton: () => context.router.popForced(_hasChangeFavorites),
                   title: context.l10n.saudiPassOffersPageTitle,
                   body: ListenableBuilder(
@@ -54,43 +63,16 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                           ),
                         ),
                         Expanded(
-                          child: Stack(
+                          child: IndexedStack(
+                            index: _filtersIndex,
                             children: [
-                              Positioned(
-                                child: IndexedStack(
-                                  index: _filtersIndex,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                                      child: PrefsContentWidget(widget.offersScreenView),
-                                    ),
-                                    OffersViewWidget(
-                                      widget.offersScreenView,
-                                      onChangeOffers: () => _hasChangeFavorites = true,
-                                    ),
-                                  ],
-                                ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                                child: PrefsContentWidget(widget.offersScreenView),
                               ),
-                              Positioned(
-                                bottom: MediaQuery.of(context).padding.bottom + Spacing.$4x,
-                                left: 0,
-                                right: 0,
-                                child: Align(
-                                  child: AppButton(
-                                    innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
-                                    buttonColorScheme: ButtonColorScheme.accentSecondary,
-                                    primaryIcon: GeneralIcons.map,
-                                    primaryLabel: context.l10n.map,
-                                    onTap: () {
-                                      context.router.push(
-                                        OffersOnMapRoute(
-                                          categories: s.data!.categories,
-                                          recommendedTypes: s.data!.recommendedTypes,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
+                              OffersViewWidget(
+                                widget.offersScreenView,
+                                onChangeOffers: () => _hasChangeFavorites = true,
                               ),
                             ],
                           ),

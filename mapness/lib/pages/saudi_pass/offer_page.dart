@@ -40,7 +40,7 @@ class OfferPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colorsV3;
+    final colors = context.colors;
     final offerProvider = ref.watch(offerDetailsProvider(offerId));
 
     return Material(
@@ -49,7 +49,7 @@ class OfferPage extends HookConsumerWidget {
         child: Scaffold(
           appBar: BaladyTopBar.iconAndText(
             title: context.l10n.offer,
-            textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
+            textStyle: context.textStyles.bodyLargeSemiBold.copyWith(
               color: colors.foregroundDefault,
             ),
             leading: ActionModel(
@@ -60,7 +60,7 @@ class OfferPage extends HookConsumerWidget {
           body: offerProvider.isLoading
               ? Center(child: Loading.large())
               : offerProvider.hasError
-                  ? const _ErrorWidget()
+                  ? const ErrorWidget()
                   : _Content(offerId: offerId),
         ),
       ),
@@ -68,8 +68,8 @@ class OfferPage extends HookConsumerWidget {
   }
 }
 
-class _ErrorWidget extends StatelessWidget {
-  const _ErrorWidget({Key? key}) : super(key: key);
+class ErrorWidget extends StatelessWidget {
+  const ErrorWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => Column(
@@ -80,7 +80,7 @@ class _ErrorWidget extends StatelessWidget {
             errorLabel: context.l10n.offerNotAvailableDescription,
             withRetryButton: false,
             onRetry: () {},
-            backgroundColor: context.colorsV3.backgroundSurface4,
+            backgroundColor: context.colors.backgroundSurface4,
           ),
           const Spacer(),
           const SizedBox(height: 96),
@@ -106,8 +106,8 @@ class _Content extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colorsV3;
-    final textStyle = context.textStyleV3;
+    final colors = context.colors;
+    final textStyle = context.textStyles;
     final titleStyle = textStyle.captionSmallRegular.copyWith(
       color: colors.foregroundSoft,
     );
@@ -235,13 +235,13 @@ class _Content extends HookConsumerWidget {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: BaladyAppButton(
+                                  child: AppButton(
                                     primaryIcon: TransportIcons.locationDirectionNavigator,
                                     iconColor: colors.accentSecondaryOnContainer,
                                     primaryLabel: '${l10n.poiCardDirections} $durationString',
                                     color: colors.accentSecondaryContainerDefault,
                                     textColor: colors.accentSecondaryOnContainer,
-                                    buttonColorScheme: BaladyButtonColorScheme.accent,
+                                    buttonColorScheme: ButtonColorScheme.accent,
                                     onTap: () => _openNavigationPage(context, l10n, offer),
                                   ),
                                 ),
@@ -469,7 +469,7 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       children: [
                         Text(
                           title.length > 250 ? '${title.substring(0, 250)}...' : title,
-                          style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
+                          style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
                         ),
                         if (hasDiscount)
                           Padding(
@@ -477,7 +477,7 @@ class _OfferPreviewByGroup extends StatelessWidget {
                             child: Text.rich(
                               discount!,
                               maxLines: 1,
-                              style: context.textStyleV3.h1SemiBold.copyWith(color: context.colorsV3.staticWhite),
+                              style: context.textStyles.h1SemiBold.copyWith(color: context.colors.staticWhite),
                             ),
                           ),
                       ],

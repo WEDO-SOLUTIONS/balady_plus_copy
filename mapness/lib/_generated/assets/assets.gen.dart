@@ -358,6 +358,9 @@ class $AssetsIconsSvgGen {
   SvgGenImage get icOffersClusteringMarkerDark =>
       const SvgGenImage('assets/icons/svg/ic_offers_clustering_marker_dark.svg');
 
+  /// File path: assets/icons/svg/ic_offers_pin.svg
+  SvgGenImage get icOffersPin => const SvgGenImage('assets/icons/svg/ic_offers_pin.svg');
+
   /// File path: assets/icons/svg/ic_parking_spot.svg
   SvgGenImage get icParkingSpot => const SvgGenImage('assets/icons/svg/ic_parking_spot.svg');
 
@@ -492,6 +495,7 @@ class $AssetsIconsSvgGen {
         icOfferMarkerDark,
         icOffersClusteringMarker,
         icOffersClusteringMarkerDark,
+        icOffersPin,
         icParkingSpot,
         icPhone,
         icPinNew,

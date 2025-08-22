@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -23,14 +25,19 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
+
+const offerPoiPinId = 'offer_poi_pin_id';
 
 class OffersOnMapWidget extends StatefulHookConsumerWidget {
   final Set<lookups_body.Category> categories;
   final Set<lookups_body.RecommendedType> recommendedTypes;
+  final String city;
 
   const OffersOnMapWidget({
     required this.categories,
     required this.recommendedTypes,
+    required this.city,
     super.key,
   });
 
@@ -39,20 +46,12 @@ class OffersOnMapWidget extends StatefulHookConsumerWidget {
 }
 
 class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
+  final _settings = MapObjectManagerSettings.mappness();
   static const double _kMarkerWidth = 32.0;
   static const double _kClusterLogicalPixel = 70;
   static const double _kClusterMaxZoom = 20;
   static const double _kClusterFitPaddingDp = 40.0;
   static const double _kClusterIconSize = 32.0;
-  late final StatelessBottomSheetController _bottomsheetController;
-
-  @override
-  void initState() {
-    super.initState();
-    _bottomsheetController = StatelessBottomSheetController(
-      onClose: (controller) => context.router.popForced(),
-    );
-  }
 
   MarkerTextStyleMessage _buildTextStyle({
     required bool isArabic,
@@ -75,23 +74,25 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     final text = item.name.breakMarkerLabel(maxCharsPerLine: 20);
     final hasArabic = text.containsArabic() || isRtl;
 
+    final options = MarkerOptionsMessage(
+      text: text,
+      textStyle: _buildTextStyle(isArabic: hasArabic, isDark: isDark),
+      position: GeoPointWithElevationMessage(
+        latitude: double.tryParse(item.location.latitude) ?? 0.0,
+        longitude: double.tryParse(item.location.longitude) ?? 0.0,
+        elevation: 0,
+      ),
+      isVisible: true,
+      icon: SvgMarkerIcon(
+        svgPath: isDark ? Assets.icons.svg.icOfferMarkerDark.keyName : Assets.icons.svg.icOfferMarker.keyName,
+        width: _kMarkerWidth,
+      ),
+    );
+
     return Marker(
       id: item.id,
-      onTap: () => context.router.push(OfferRoute(offerId: item.id)),
-      options: MarkerOptionsMessage(
-        text: text,
-        textStyle: _buildTextStyle(isArabic: hasArabic, isDark: isDark),
-        position: GeoPointWithElevationMessage(
-          latitude: double.tryParse(item.location.latitude) ?? 0.0,
-          longitude: double.tryParse(item.location.longitude) ?? 0.0,
-          elevation: 0,
-        ),
-        isVisible: true,
-        icon: SvgMarkerIcon(
-          svgPath: isDark ? Assets.icons.svg.icOfferMarkerDark.keyName : Assets.icons.svg.icOfferMarker.keyName,
-          width: _kMarkerWidth,
-        ),
-      ),
+      onTap: () => _onTapMarker(item, text, options),
+      options: options,
     );
   }
 
@@ -111,30 +112,64 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         ),
       );
 
-  Future<void> _onClusterTap(
-      SimpleClusterObject simpleClusterObject,
-      CameraPosition cameraPosition,
-      ) async {
+  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject, CameraPosition cameraPosition) async {
     final media = ref.read(mediaQueryInfoProvider);
+    final _cameraPosition = ref.read(cameraPositionProvider);
     final dpr = media?.devicePixelRatio ?? 1.0;
     final padding = (_kClusterFitPaddingDp * dpr).ceil();
 
-    await cameraPosition.animateToMarkers(
-      simpleClusterObject.markers.toMarkers(),
-      options: CalcPositionOptionsMessage(
-        screenArea: CameraSetPaddingMessage(
-          leftPadding: padding * 2,
-          topPadding: padding,
-          rightPadding: padding * 2,
-          bottomPadding: padding,
+    if (_cameraPosition?.zoom == null || (_cameraPosition?.zoom ?? 0) > 16) {
+      final showMapOffers = ref.read(showMapOffersProvider.notifier);
+      await showMapOffers.showMarker(
+        Markers.pinMarker(
+          GeoPointWithElevationMessage(
+            latitude: simpleClusterObject.position.latitude,
+            longitude: simpleClusterObject.position.longitude,
+            elevation: 0,
+          ),
+          icon: Assets.icons.svg.icOffersPin.keyName,
+          id: offerPoiPinId,
         ),
+      );
+
+      final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
+      await context.router.push(OfferListBottomSheetMapRoute(offersId: ids));
+    } else {
+      await cameraPosition.animateToMarkers(
+        simpleClusterObject.markers.toMarkers(),
+        options: CalcPositionOptionsMessage(
+          screenArea: CameraSetPaddingMessage(
+            leftPadding: padding * 2,
+            topPadding: padding,
+            rightPadding: padding * 2,
+            bottomPadding: padding,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onTapMarker(Offer item, String? text, MarkerOptionsMessage options) async {
+    final showMapOffers = ref.read(showMapOffersProvider.notifier);
+    await showMapOffers.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: double.tryParse(item.location.latitude) ?? 0,
+          longitude: double.tryParse(item.location.longitude) ?? 0,
+          elevation: 1,
+        ),
+        text: text,
+        textStyle: options.textStyle,
+        icon: Assets.icons.svg.icOffersPin.keyName,
+        id: offerPoiPinId,
       ),
     );
+
+    await context.router.push(OfferListBottomSheetMapRoute(offersId: [item.id]));
   }
 
   @override
   Widget build(BuildContext context) {
-    final settings = MapObjectManagerSettings.mappness();
     final showMapOffers = ref.watch(showMapOffersProvider.notifier);
     final cameraPosition = ref.read(cameraPositionProvider.notifier);
 
@@ -152,10 +187,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
 
-      final objectManager = ref.watch(
+      final mapObjectManager = ref.watch(
         mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
+          named: _settings.name,
+          layerId: _settings.layerId,
           clustering: ClusteringMapObjectManager(
             options: ClusteringMapObjectManagerOptionsMessage(
               logicalPixel: _kClusterLogicalPixel,
@@ -169,8 +204,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
       final markers = next.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
 
-      await objectManager.removeAllMarkers();
-      await objectManager.addMarkers(markers);
+      await mapObjectManager.removeAllMarkers();
+      await mapObjectManager.addMarkers(markers);
 
       final userPos = ref.read(locationProvider);
       if (userPos == null) {
@@ -181,32 +216,49 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       final zoom = await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
 
       await cameraPosition.animateTo(CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
+
+      await showMapOffers.initObjectManager(mapObjectManager);
     });
 
-    return StatelessBottomSheet(
-      scrollController: _bottomsheetController,
-      outside: const RoutingMapControls(key: ValueKey('OffersOnMapWidgetRoutingMapControls')),
-      content: [
-        ContentRow(
-          text: ContentRowTextOptions(
-            titleOptions: ContentRowTextOption(
-              builder: (context) => Center(
-                child: Text(
-                  context.l10n.allOffers,
-                  style: context.textStyles.h3Medium.copyWith(
-                    color: context.colors.foregroundDefault,
-                  ),
+    return Column(
+      children: [
+        Container(
+          height: 130,
+          color: context.colors.backgroundSurface4,
+          child: Stack(
+            children: [
+              BaladyTopBar.iconAndText(
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+                title: context.l10n.offers,
+                textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+                colorEnabled: context.colors.foregroundDefault,
+                leading: ActionModel(
+                  onPressed: () => context.router.popForced(),
+                  icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
-            ),
-          ),
-          trailing: ContentRowCustomTrailingOptions(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => context.router.popForced(),
-            ),
+              Positioned.fill(
+                top: 90,
+                child: Material(
+                  color: Colors.transparent,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: Center(
+                      child: Text(
+                        '${widget.city}, ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero}, ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}',
+                        style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ],
           ),
         ),
+        const Expanded(
+          child: RoutingMapControls(key: ValueKey('OffersOnMapWidgetRoutingMapControls'), useSafeArea: false),
+        ),
+        Spacing.$5x.heightBox
       ],
     );
   }

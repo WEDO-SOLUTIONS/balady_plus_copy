@@ -208,6 +208,10 @@ extension BigIconPath on String {
       'ic_police_station.svg': Assets.icons.svg.placesBigNew.icPoliceStation.keyName,
       'ic_lost_and_found.svg': Assets.icons.svg.placesBigNew.icLostAndFound.keyName,
       'ic_stairs.svg': Assets.icons.svg.placesBigNew.icStairs.keyName,
+      'ic_offer_marker.svg': Assets.icons.svg.icOffersPin.keyName,
+      'ic_offers_clustering_marker.svg': Assets.icons.svg.icOffersPin.keyName,
+      'ic_offers_clustering_marker_dark.svg': Assets.icons.svg.icOffersPin.keyName,
+      'ic_offer_marker_dark.svg': Assets.icons.svg.icOffersPin.keyName,
     };
 
     return bigIcons[iconName] ?? Markers.defaultPinNew;

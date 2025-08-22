@@ -27,6 +27,9 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
   Set<Category> get categories => categoriesSelected;
 
   @override
+  City get city => citySelected;
+
+  @override
   Set<RecommendedType> get recommendedTypes => recommendedTypesSelected;
 
   @override
