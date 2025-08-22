@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/widgets/dragger_contrainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,11 +23,10 @@ import 'package:sheetify/multi_state_sheet/state_snapping/behaviors/multi_snappi
 import 'package:sheetify/multi_state_sheet/state_snapping/models/components_snapping_model.dart';
 import 'package:sheetify/multi_state_sheet/state_snapping/models/fraction_snapping_model.dart';
 
-@RoutePage()
-class OfferListBottomSheetMapPage extends HookConsumerWidget {
+class OfferListBottomSheetMapWidget extends HookConsumerWidget {
   final List<String> offersId;
 
-  const OfferListBottomSheetMapPage({required this.offersId, super.key});
+  const OfferListBottomSheetMapWidget({required this.offersId, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +37,7 @@ class OfferListBottomSheetMapPage extends HookConsumerWidget {
       () => MultiStateSheetController<PoiCardBottomSheetState>(
         behavior: MultiSnappingBehavior(
           models: [
-            FractionSnappingModel({0.0, if (offersId.length == 1) .3 else 0.8}),
+            FractionSnappingModel({0.0, if (offersId.length == 1) .3 else 1}),
             ComponentsSnappingModel(
               componentsDescriptions: [
                 SnapComponent.merge(
@@ -77,58 +77,61 @@ class OfferListBottomSheetMapPage extends HookConsumerWidget {
       final n => '${n.toInt()} ${l10n.km}',
     };
 
-    return SafeArea(
-      top: false,
-      child: MultiStateSheet(
-        outside: PoiCardMapControlsWrapper(
-          bottomSheetController: scrollController,
-          objectIdForIndoorLevels: null,
+    final outsideWidget = PoiCardMapControlsWrapper(
+      bottomSheetController: scrollController,
+      objectIdForIndoorLevels: null,
+    );
+
+    final headerWidget = Padding(
+      padding: const EdgeInsets.only(left: uikit.Spacing.$4x, right: uikit.Spacing.$4x, bottom: uikit.Spacing.$3x),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              '${offersId.length} ${l10n.offers}',
+              style: context.textStyles.h4SemiBold,
+            ),
+            Text(
+              l10n.selectedLocation,
+              style: context.textStyles.bodySmallRegular,
+            ),
+          ]),
+          uikit.AppButton.close(
+            primaryIcon: uikit.SystemIcons.closeSmall,
+            onTap: () async {
+              final showMapOffers = ref.read(showMapOffersProvider.notifier);
+              await showMapOffers.removeMarker(offerPoiPinId);
+              context.router.popForced();
+            },
+          ),
+        ],
+      ),
+    );
+
+    return MultiStateSheet(
+      outside: outsideWidget,
+      scrollController: scrollController,
+      backgroundColor: backgroundColor,
+      dragger: DraggerContainer(color: backgroundColor),
+      header: headerWidget,
+      content: [OffersBottomSheetWidget(list)],
+      footer: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.only(
+          left: uikit.Spacing.$4x,
+          right: uikit.Spacing.$4x,
+          bottom: uikit.Spacing.$4x,
         ),
-        scrollController: scrollController,
-        backgroundColor: backgroundColor,
-        header: Padding(
-          padding: const EdgeInsets.only(left: uikit.Spacing.$4x, right: uikit.Spacing.$4x, bottom: uikit.Spacing.$3x),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  '${offersId.length} ${l10n.offers}',
-                  style: context.textStyles.h4SemiBold,
-                ),
-                Text(
-                  l10n.selectedLocation,
-                  style: context.textStyles.bodySmallRegular,
-                ),
-              ]),
-              uikit.AppButton.close(
-                primaryIcon: uikit.SystemIcons.closeSmall,
-                onTap: () async {
-                  final showMapOffers = ref.read(showMapOffersProvider.notifier);
-                  await showMapOffers.removeMarker(offerPoiPinId);
-                  context.router.popForced();
-                },
-              ),
-            ],
-          ),
-        ),
-        content: [OffersBottomSheetWidget(list)],
-        footer: Padding(
-          padding: const EdgeInsets.only(
-            left: uikit.Spacing.$4x,
-            right: uikit.Spacing.$4x,
-            bottom: uikit.Spacing.$4x,
-          ),
-          child: uikit.AppButton(
-            size: uikit.ButtonSize.large,
-            primaryIcon: uikit.TransportIcons.locationDirectionNavigator,
-            iconColor: colors.accentSecondaryOnAccentSecondary,
-            primaryLabel: '${l10n.poiCardDirections} $durationString',
-            color: colors.accentSecondaryDefault,
-            textColor: colors.accentSecondaryOnAccentSecondary,
-            buttonColorScheme: uikit.ButtonColorScheme.accent,
-            onTap: first == null ? null : () => _openNavigationPage(context, first),
-          ),
+        child: uikit.AppButton(
+          size: uikit.ButtonSize.large,
+          primaryIcon: uikit.TransportIcons.locationDirectionNavigator,
+          iconColor: colors.accentSecondaryOnAccentSecondary,
+          primaryLabel: '${l10n.poiCardDirections} $durationString',
+          color: colors.accentSecondaryDefault,
+          textColor: colors.accentSecondaryOnAccentSecondary,
+          buttonColorScheme: uikit.ButtonColorScheme.accent,
+          onTap: first == null ? null : () => _openNavigationPage(context, first),
         ),
       ),
     );

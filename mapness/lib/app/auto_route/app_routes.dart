@@ -245,10 +245,6 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_offers_on_map_screen',
               page: OffersOnMapRoute.page,
             ),
-            AppRoute(
-              path: 'saudi_pass_offers_list_on_bottom_sheet',
-              page: OfferListBottomSheetMapRoute.page,
-            ),
             CustomRoute(
               path: 'saudi_pass_type_selection_dialog',
               page: TypeSelectionDialogViewRoute.page,

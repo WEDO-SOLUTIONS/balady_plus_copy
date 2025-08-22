@@ -104,7 +104,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
         PoiCardWidgetRoute.page,
         RoutingRoutesRoute.page,
         HajjPoiCardRoute.page,
-        OfferListBottomSheetMapRoute.page,
       ],
     );
   }

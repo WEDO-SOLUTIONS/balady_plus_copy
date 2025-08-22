@@ -1,15 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/features/saudi_pass/pages/offers_list_bottom_sheet_map_page.dart';
 import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
@@ -52,6 +51,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   static const double _kClusterMaxZoom = 20;
   static const double _kClusterFitPaddingDp = 40.0;
   static const double _kClusterIconSize = 32.0;
+  final ValueNotifier<List<String>> _notifierIds = ValueNotifier([]);
 
   MarkerTextStyleMessage _buildTextStyle({
     required bool isArabic,
@@ -133,7 +133,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       );
 
       final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
-      await context.router.push(OfferListBottomSheetMapRoute(offersId: ids));
+      _notifierIds.value = ids;
     } else {
       await cameraPosition.animateToMarkers(
         simpleClusterObject.markers.toMarkers(),
@@ -165,7 +165,13 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
     );
 
-    await context.router.push(OfferListBottomSheetMapRoute(offersId: [item.id]));
+    _notifierIds.value = [item.id];
+  }
+
+  @override
+  void dispose() {
+    _notifierIds.dispose();
+    super.dispose();
   }
 
   @override
@@ -184,8 +190,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     });
 
     ref.listen(showMapOffersProvider, (prev, next) async {
-      final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-      final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+      final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
+      final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
 
       final mapObjectManager = ref.watch(
         mapObjectManagerProvider(
@@ -255,13 +261,21 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             ],
           ),
         ),
-        const Expanded(
-          child: RoutingMapControls(
-            key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
-            useSafeArea: false,
-          ),
+        ValueListenableBuilder(
+          valueListenable: _notifierIds,
+          builder: (context, val, _) {
+            if (val.isEmpty) {
+              return const Expanded(
+                child: RoutingMapControls(
+                  key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
+                  useSafeArea: false,
+                ),
+              );
+            }
+
+            return Expanded(child: OfferListBottomSheetMapWidget(offersId: val));
+          },
         ),
-        Spacing.$5x.heightBox
       ],
     );
   }
