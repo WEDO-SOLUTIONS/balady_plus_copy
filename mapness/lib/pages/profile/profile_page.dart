@@ -113,11 +113,11 @@ class ProfilePage extends HookConsumerWidget {
                                                           context.l10n.account,
                                                     ),
                                                   ),
-
-                                                  if (CommonProperties.isLoggedInMunicipality) ContentRow(
+                                                  if (CommonProperties.isLoggedInMunicipality) ContentRowV2(
                                                     isDividerEnabled: true,
                                                     onTap: () =>
                                                     CommonFunctions.openVolunteerProfileScreen(),
+
                                                     trailing: trailing,
                                                     leading: leadingIconBuilder(
                                                         Icons.favorite),
@@ -125,7 +125,7 @@ class ProfilePage extends HookConsumerWidget {
                                                       title:
                                                           'volunteer_info'.tr(),
                                                     ),
-                                                  ) else const SizedBox.shrink(),
+                                                  )else const SizedBox.shrink(),
                                                 ],
                                               ),
                                       ),

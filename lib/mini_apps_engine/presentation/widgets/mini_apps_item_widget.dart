@@ -100,6 +100,9 @@ class MiniAppsItemWidget extends StatelessWidget {
     } else if (miniApp.latestVersion?.otpLogin == true) {
       CommonFunctions.onLogin();
     } else {
+      if(miniApp.serviceKey == "volunteerapp") {
+        miniApp.path = "/#Volunteer_Home_Screen";
+      }
       NavigationService.pushNamed(
         routeName: RouteName.miniAppsMainScreen,
         args: miniApp,

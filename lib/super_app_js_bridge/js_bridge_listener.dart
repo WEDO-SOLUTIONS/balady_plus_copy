@@ -122,7 +122,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
-    if (miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' &&
+    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' || miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp' ) &&
         !CommonProperties.isLoggedInMunicipality) {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
@@ -604,10 +604,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
-    Map data = jsonDecode(msg);
-    final attachmentSource = data["attachmentSource"];
-    final List<String>? attachmentExtension =
-        (data["attachmentExtension"] as List<dynamic>?)?.cast<String>();
+    final attachmentSource = msg["attachmentSource"];
+    final List<String>? attachmentExtension =msg["attachmentExtension"]!= null?
+        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>():[];
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
       var file = await FilePicker.platform.pickFiles(
@@ -819,7 +818,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void trackLogs(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
-      if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
+
       BaseResponse response = BaseResponse(
         code: 200,
         eventName: "trackLogs",
