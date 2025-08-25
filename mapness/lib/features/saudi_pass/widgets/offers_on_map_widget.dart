@@ -47,7 +47,7 @@ class OffersOnMapWidget extends StatefulHookConsumerWidget {
 class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   final _settings = MapObjectManagerSettings.mappness();
   static const double _kMarkerWidth = 32.0;
-  static const double _kClusterLogicalPixel = 70;
+  static const double _kClusterLogicalPixel = 40;
   static const double _kClusterMaxZoom = 20;
   static const double _kClusterFitPaddingDp = 40.0;
   static const double _kClusterIconSize = 32.0;
@@ -226,6 +226,12 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       await showMapOffers.initObjectManager(mapObjectManager);
     });
 
+    final typesStringBar = widget.recommendedTypes.isNotEmpty
+        ? ' ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero},'
+        : '';
+    final categoryStringBar = widget.categories.isNotEmpty
+        ? ' ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}'
+        : '';
     return Column(
       children: [
         Container(
@@ -239,7 +245,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                 textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                 colorEnabled: context.colors.foregroundDefault,
                 leading: ActionModel(
-                  onPressed: () => context.router.popForced(),
+                  onPressed: () {
+                    context.router.popForced();
+                    showMapOffers.removeMarker(offerPoiPinId);
+                  },
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
@@ -251,7 +260,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                     width: double.infinity,
                     child: Center(
                       child: Text(
-                        '${widget.city}, ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero}, ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}',
+                        '${widget.city},$typesStringBar$categoryStringBar',
                         style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                       ),
                     ),

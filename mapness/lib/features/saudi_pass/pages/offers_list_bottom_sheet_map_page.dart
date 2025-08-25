@@ -1,9 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/widgets/dragger_contrainer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -18,10 +16,8 @@ import 'package:mapness/features/saudi_pass/widgets/offers_bottom_sheet_widget.d
 import 'package:mapness/features/saudi_pass/widgets/offers_on_map_widget.dart';
 import 'package:mapness/pages/poi_card/poi_card_error_or_loading.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
-import 'package:sheetify/multi_state_sheet/state_snapping/behaviors/multi_snapping_behavior.dart';
-import 'package:sheetify/multi_state_sheet/state_snapping/models/components_snapping_model.dart';
-import 'package:sheetify/multi_state_sheet/state_snapping/models/fraction_snapping_model.dart';
+import 'package:mapness/shared/hooks/multi_state_sheet_controller_hook.dart';
+import 'package:sheetify/sheetify.dart';
 
 class OfferListBottomSheetMapWidget extends HookConsumerWidget {
   final List<String> offersId;
@@ -30,29 +26,27 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final showMapOffers = ref.read(showMapOffersProvider.notifier);
     final l10n = context.l10n;
     final colors = context.colors;
+    final mediaQueryHeight = MediaQuery.of(context).size.height;
+    const offersOneHeightOffset = 400.0;
 
-    final scrollController = useMemoized(
-      () => MultiStateSheetController<PoiCardBottomSheetState>(
-        behavior: MultiSnappingBehavior(
-          models: [
-            FractionSnappingModel({0.0, if (offersId.length == 1) .3 else 1}),
-            ComponentsSnappingModel(
-              componentsDescriptions: [
-                SnapComponent.merge(
-                  a: const SnapComponent.size(component: Components.header),
-                  b: const SnapComponent.size(component: Components.footer),
-                  merge: (a, b) => a + b,
-                ),
-              ],
-            )
-          ],
-        ),
-        stateMapper: const PoiCardStateMapper(),
-        initialState: PoiCardBottomSheetState.halfOpen,
+    final scrollController = useMultiStateSheetController(
+      mapper: const PoiCardStateMapper(),
+      initialState: PoiCardBottomSheetState.halfOpen,
+      behavior: MultiSnappingBehavior(
+        models: [
+          OffsetSnappingModel({mediaQueryHeight, if (offersId.length == 1) offersOneHeightOffset else 0.0}),
+          ComponentsSnappingModel(componentsDescriptions: [
+            SnapComponent.merge(
+              a: const SnapComponent.size(component: Components.header),
+              b: const SnapComponent.size(component: Components.footer),
+              merge: (a, b) => a + b,
+            ),
+          ])
+        ],
       ),
-      [offersId.length],
     );
 
     final backgroundColor = context.colors.backgroundSurface4;
@@ -100,7 +94,6 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
           uikit.AppButton.close(
             primaryIcon: uikit.SystemIcons.closeSmall,
             onTap: () async {
-              final showMapOffers = ref.read(showMapOffersProvider.notifier);
               await showMapOffers.removeMarker(offerPoiPinId);
               context.router.popForced();
             },
@@ -113,7 +106,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
       outside: outsideWidget,
       scrollController: scrollController,
       backgroundColor: backgroundColor,
-      dragger: DraggerContainer(color: backgroundColor),
+      dragger: DraggerContainer(backgroundColor: backgroundColor, draggerColor: context.colors.backgroundSurface5),
       header: headerWidget,
       content: [OffersBottomSheetWidget(list)],
       footer: Container(

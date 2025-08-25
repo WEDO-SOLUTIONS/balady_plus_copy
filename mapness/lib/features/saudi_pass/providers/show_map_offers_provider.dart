@@ -7,7 +7,6 @@ import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -61,24 +60,9 @@ class ShowMapOffers extends _$ShowMapOffers {
       _hideMarker(currentSearchMarker);
     }
 
+    await mapObjectManager?.removeAllMarkers();
     await selectPinMapObjectManager.removeAllMarkers();
     await selectPinMapObjectManager.addMarker(marker);
-
-    final current = ref.read(cameraPositionProvider);
-    if (current == null) {
-      return;
-    }
-
-    if (currentSearchMarker == null) {
-      await ref.read(cameraPositionProvider.notifier).animateTo(
-            CameraPositionMessage(
-              point: current.point,
-              zoom: current.zoom - 0.3,
-              tilt: current.tilt,
-              bearing: current.bearing,
-            ),
-          );
-    }
   }
 
   Future<void> removeMarker(String id) async {
