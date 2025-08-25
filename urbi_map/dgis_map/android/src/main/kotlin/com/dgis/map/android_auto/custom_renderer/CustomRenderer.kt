@@ -4,18 +4,29 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
-import android.graphics.Rect
-import android.util.DisplayMetrics
 import android.view.Surface
 import com.dgis.map.android_auto.SpeedInfoModel
+import com.dgis.map.android_auto.StableAreaPaddingProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class CustomRenderer {
+class CustomRenderer(private val paddingProvider: StableAreaPaddingProvider) : AutoCloseable {
 
     private var surface: Surface? = null
     private var rendererData: CustomRendererData? = null
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
-    private var rightOffset = 0f
-    private var bottomOffset = 0f
+    private var paddingFlowJob: Job? = null
+
+    init {
+        paddingFlowJob = CoroutineScope(Dispatchers.Default).launch {
+            paddingProvider.paddingFlow.collect {
+                withContext(Dispatchers.Main) { update() }
+            }
+        }
+    }
 
     fun setSurface(surface: Surface) {
         this.surface = surface
@@ -48,12 +59,6 @@ class CustomRenderer {
         withLockedCanvas(::clearCanvas)
     }
 
-    fun onSurfaceStableAreaChanged(displayMetrics: DisplayMetrics, stableArea: Rect) {
-        rightOffset = (displayMetrics.widthPixels - stableArea.right).toFloat()
-        bottomOffset = (displayMetrics.heightPixels - stableArea.bottom).toFloat()
-        update()
-    }
-
     private fun withLockedCanvas(block: (canvas: Canvas) -> Unit) {
         val surface = this.surface ?: return
         var canvas: Canvas? = null
@@ -84,8 +89,8 @@ class CustomRenderer {
             style = Paint.Style.FILL
             setShadowLayer(2f, 0f, 0f, Color.parseColor("#12000000"))
         }
-        val centerX = canvas.width - rightOffset - 40f
-        val centerY = canvas.height - bottomOffset - 51f
+        val centerX = canvas.width - paddingProvider.paddingFlow.value.right - 40f
+        val centerY = canvas.height - paddingProvider.paddingFlow.value.bottom - 51f
         canvas.drawCircle(centerX, centerY, 36f, paint)
         paint.apply {
             color = Color.WHITE
@@ -104,8 +109,8 @@ class CustomRenderer {
     }
 
     private fun drawSpeedLimit(speedLimit: Int, exceeded: Boolean, canvas: Canvas) {
-        val centerX = canvas.width - rightOffset - 93f
-        val centerY = canvas.height - bottomOffset - 45f
+        val centerX = canvas.width - paddingProvider.paddingFlow.value.right - 93f
+        val centerY = canvas.height - paddingProvider.paddingFlow.value.bottom - 45f
         if (exceeded) {
             paint.apply {
                 color = Color.RED
@@ -137,6 +142,10 @@ class CustomRenderer {
 
     private fun clearCanvas(canvas: Canvas) {
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+    }
+
+    override fun close() {
+        paddingFlowJob?.cancel()
     }
 }
 
