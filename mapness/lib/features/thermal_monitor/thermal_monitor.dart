@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:mapness/features/thermal_monitor/data/thermal_config.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
@@ -16,6 +19,18 @@ class ThermalMonitor extends _$ThermalMonitor {
 
     final controller = await ref.watch(dgisControllerProvider.future);
 
+    ThermalConfig config;
+    try {
+      config = ThermalConfig.fromJson(jsonDecode((await AppConfigLoader.getThermalStatusData()) ?? ''));
+    } catch (_) {
+      config = ThermalConfig.initial;
+    }
+
+    logger.log(
+      'Thermal monitor activated with config: $config',
+      logLevel: MapnessLogLevel.info,
+    );
+
     final stream = MergeStream([
       thermal.thermalStatus.asStream(),
       thermal.onThermalStatusChanged,
@@ -27,21 +42,21 @@ class ThermalMonitor extends _$ThermalMonitor {
 
       switch (thermalStatus) {
         case ThermalStatus.none:
-          fps = null;
+          fps = config.idleTemperature;
           logLevel = MapnessLogLevel.verbose;
         case ThermalStatus.light:
-          fps = 30;
+          fps = config.lightTemperature;
           logLevel = MapnessLogLevel.info;
         case ThermalStatus.moderate:
-          fps = 20;
+          fps = config.moderateTemperature;
           logLevel = MapnessLogLevel.warning;
         case ThermalStatus.severe:
-          fps = 15;
+          fps = config.severeTemperature;
           logLevel = MapnessLogLevel.warning;
         case ThermalStatus.emergency:
         case ThermalStatus.shutdown:
         case ThermalStatus.critical:
-          fps = 10;
+          fps = config.criticalTemperature;
           logLevel = MapnessLogLevel.warning;
       }
 
