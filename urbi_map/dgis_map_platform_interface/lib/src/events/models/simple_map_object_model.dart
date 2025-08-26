@@ -1,8 +1,8 @@
 class SimpleMapObjectModel {
-
   factory SimpleMapObjectModel.fromJson(Map<String, dynamic> json) {
-    final levelIdMap = _asMap(json['levelId']); // _Map<Object?, Object?> -> Map<String, dynamic>
-    final boundsMap  = _asMap(json['bounds']);
+    final levelIdMap = _asMap(
+        json['levelId']); // _Map<Object?, Object?> -> Map<String, dynamic>
+    final boundsMap = _asMap(json['bounds']);
 
     return SimpleMapObjectModel(
       id: json['id'] as String?,
@@ -31,12 +31,12 @@ class SimpleMapObjectModel {
   final GeoRectModel bounds;
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'isVisible': isVisible,
-    'zIndex': zIndex,
-    'levelId': levelId?.toJson(),
-    'bounds': bounds.toJson(),
-  };
+        'id': id,
+        'isVisible': isVisible,
+        'zIndex': zIndex,
+        'levelId': levelId?.toJson(),
+        'bounds': bounds.toJson(),
+      };
 }
 
 // ---------- helpers ----------
@@ -57,7 +57,6 @@ class LevelIdModel {
 }
 
 class GeoRectModel {
-
   const GeoRectModel({
     required this.southWest,
     required this.northEast,
@@ -66,26 +65,25 @@ class GeoRectModel {
   });
 
   factory GeoRectModel.fromJson(Map<String, dynamic> json) => GeoRectModel(
-    southWest: GeoPointModel.fromJson(_asMap(json['southWest'])),
-    northEast: GeoPointModel.fromJson(_asMap(json['northEast'])),
-    isValid: (json['isValid'] as bool?) ?? false,
-    isDegenerate: (json['isDegenerate'] as bool?) ?? false,
-  );
+        southWest: GeoPointModel.fromJson(_asMap(json['southWest'])),
+        northEast: GeoPointModel.fromJson(_asMap(json['northEast'])),
+        isValid: (json['isValid'] as bool?) ?? false,
+        isDegenerate: (json['isDegenerate'] as bool?) ?? false,
+      );
   final GeoPointModel southWest;
   final GeoPointModel northEast;
   final bool isValid;
   final bool isDegenerate;
 
   Map<String, dynamic> toJson() => {
-    'southWest': southWest.toJson(),
-    'northEast': northEast.toJson(),
-    'isValid': isValid,
-    'isDegenerate': isDegenerate,
-  };
+        'southWest': southWest.toJson(),
+        'northEast': northEast.toJson(),
+        'isValid': isValid,
+        'isDegenerate': isDegenerate,
+      };
 }
 
 class GeoPointModel {
-
   const GeoPointModel({
     required this.latitude,
     required this.longitude,
@@ -93,17 +91,17 @@ class GeoPointModel {
   });
 
   factory GeoPointModel.fromJson(Map<String, dynamic> json) => GeoPointModel(
-    latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
-    longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
-    isValid: (json['isValid'] as bool?) ?? false,
-  );
+        latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+        longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+        isValid: (json['isValid'] as bool?) ?? false,
+      );
   final double latitude;
   final double longitude;
   final bool isValid;
 
   Map<String, dynamic> toJson() => {
-    'latitude': latitude,
-    'longitude': longitude,
-    'isValid': isValid,
-  };
+        'latitude': latitude,
+        'longitude': longitude,
+        'isValid': isValid,
+      };
 }

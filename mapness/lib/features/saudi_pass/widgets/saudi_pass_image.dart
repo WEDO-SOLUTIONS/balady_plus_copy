@@ -25,7 +25,8 @@ class SaudiPassImage extends ConsumerWidget {
 
     final imageUri = repository.getPromotionsImagesUri(imageId: imageId);
     return GestureDetector(
-      onTap: () =>  context.router.push(PhotoViewerRoute(photoPaths: [imageUri.url], currentPhotoIndex: 0)),
+      onTap: () => context.router.push(
+          PhotoViewerRoute(photoPaths: [imageUri.url], currentPhotoIndex: 0)),
       child: CachedNetworkImage(
         imageUrl: imageUri.url,
         httpHeaders: imageUri.headers,

@@ -10,7 +10,8 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_pass/pages/offers_list_bottom_sheet_map_page.dart';
 import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
-import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart'
+    as lookups_body;
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -84,7 +85,9 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
       isVisible: true,
       icon: SvgMarkerIcon(
-        svgPath: isDark ? Assets.icons.svg.icOfferMarkerDark.keyName : Assets.icons.svg.icOfferMarker.keyName,
+        svgPath: isDark
+            ? Assets.icons.svg.icOfferMarkerDark.keyName
+            : Assets.icons.svg.icOfferMarker.keyName,
         width: _kMarkerWidth,
       ),
     );
@@ -102,17 +105,23 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     required int objectCount,
   }) =>
       SimpleClusterOptionsMessage(
-        icon: isDark ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName.markerIcon(size: _kClusterIconSize) : Assets.icons.svg.icOffersClusteringMarker.keyName.markerIcon(size: _kClusterIconSize),
+        icon: isDark
+            ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName
+                .markerIcon(size: _kClusterIconSize)
+            : Assets.icons.svg.icOffersClusteringMarker.keyName
+                .markerIcon(size: _kClusterIconSize),
         text: objectCount.toString(),
         textStyle: MarkerTextStyleMessage(
-          textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+          textPlacement: MarkerTextPlacementMessage(
+              placement: TextPlacementMessage.centerCenter),
           color: Colors.white.value,
           fontSize: 13,
           fontName: isRtl ? poiMapFontAr : poiMapFontEn,
         ),
       );
 
-  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject, CameraPosition cameraPosition) async {
+  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject,
+      CameraPosition cameraPosition) async {
     final media = ref.read(mediaQueryInfoProvider);
     final _cameraPosition = ref.read(cameraPositionProvider);
     final dpr = media?.devicePixelRatio ?? 1.0;
@@ -149,7 +158,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     }
   }
 
-  Future<void> _onTapMarker(Offer item, String? text, MarkerOptionsMessage options) async {
+  Future<void> _onTapMarker(
+      Offer item, String? text, MarkerOptionsMessage options) async {
     final showMapOffers = ref.read(showMapOffersProvider.notifier);
     await showMapOffers.showMarker(
       Markers.pinMarker(
@@ -183,7 +193,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       showMapOffers.switchOffersVisibility(
         enabled: true,
         category: widget.categories.isEmpty ? null : widget.categories,
-        promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+        promotionsType:
+            widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
       );
 
       return () => showMapOffers.switchOffersVisibility(enabled: false);
@@ -203,12 +214,15 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
               maxZoom: _kClusterMaxZoom,
             ),
             onTap: (cluster) => _onClusterTap(cluster, cameraPosition),
-            renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
+            renderCluster: (count) => _clusterOptions(
+                isRtl: isRtl, isDark: isDark, objectCount: count),
           ),
         ).notifier,
       );
 
-      final markers = next.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
+      final markers = next
+          .map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark))
+          .toList();
 
       await mapObjectManager.removeAllMarkers();
       await mapObjectManager.addMarkers(markers);
@@ -218,10 +232,13 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         return;
       }
 
-      final gp = GeoPointMessage(latitude: userPos.latitude, longitude: userPos.longitude);
-      final zoom = await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
+      final gp = GeoPointMessage(
+          latitude: userPos.latitude, longitude: userPos.longitude);
+      final zoom =
+          await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
 
-      await cameraPosition.animateTo(CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
+      await cameraPosition.animateTo(
+          CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
 
       await showMapOffers.initObjectManager(mapObjectManager);
     });
@@ -242,7 +259,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
               BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.offers,
-                textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+                textStyle: context.textStyles.bodyLargeSemiBold
+                    .copyWith(color: context.colors.foregroundDefault),
                 colorEnabled: context.colors.foregroundDefault,
                 leading: ActionModel(
                   onPressed: () {
@@ -261,7 +279,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                     child: Center(
                       child: Text(
                         '${widget.city}$typesStringBar$categoryStringBar',
-                        style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                        style: context.textStyles.captionLargeRegular
+                            .copyWith(color: context.colors.foregroundSoft),
                       ),
                     ),
                   ),
@@ -282,7 +301,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
               );
             }
 
-            return Expanded(child: OfferListBottomSheetMapWidget(offersId: val));
+            return Expanded(
+                child: OfferListBottomSheetMapWidget(offersId: val));
           },
         ),
       ],

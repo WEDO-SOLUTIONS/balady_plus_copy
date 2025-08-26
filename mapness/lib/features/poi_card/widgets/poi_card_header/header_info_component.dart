@@ -65,7 +65,8 @@ class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
         );
 
   @override
-  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
+  Widget build(BuildContext context, PoiCardBottomSheetState state,
+      double interpolation) {
     if (state.index > PoiCardBottomSheetState.halfOpen.index) {
       return const SizedBox.shrink();
     }
@@ -108,7 +109,9 @@ class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
                 style: context.textStyle.footNoteBold.copyWith(
                     // This file will be deleted in the nearest future
                     // color: worktime!.color,
-                    ),)
+                    ),
+              )
+
             ///TODO: (ve) do not remove
             // if (showBadges)
             //   Padding(
