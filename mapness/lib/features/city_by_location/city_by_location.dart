@@ -77,7 +77,6 @@ class _CityByLocation extends _$CityByLocation {
       final item = geocoderData.result.items.first;
       return City.fromJson(item.toJson());
     } catch (ex) {
-      print('catch $ex');
       return defaultCity;
     }
   }
