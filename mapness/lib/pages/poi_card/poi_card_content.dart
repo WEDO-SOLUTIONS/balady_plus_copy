@@ -145,6 +145,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
 
+    final offers = ref.watch(poiOffersProvider);
+    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
+
     return Directionality(
       textDirection: Directionality.of(context),
       child: MultiStateSheet(
@@ -209,45 +212,58 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 )
                 .setMapObjectManagerIsVisible(isVisible: false);
 
-            _openRoutingRoutes(
-              context,
-              widget.data.id!.objectId,
-              widget.data.title,
-              RouteParamsPoint(
-                latitude: widget.data.markerPosition!.latitude,
-                longitude: widget.data.markerPosition!.longitude,
-                objectId: widget.data.id?.objectId,
-                entranceId: widget.data.id?.entranceId,
-                levelId: widget.data.levelId,
-              ),
-            );
-          },
-          onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item),
-        ),
-        header: PoiHeader(
-          title: widget.data.address?.buildingName ?? widget.data.title,
-          subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
-          subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
-              ? [
-                  const TextSpan(text: ' • '),
-                  WidgetSpan(
-                    child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
-                    baseline: TextBaseline.ideographic,
-                    alignment: PlaceholderAlignment.middle,
-                  ),
-                  TextSpan(text: ' $poiHeaderSubTitle'),
-                ]
-              : [],
-          parkingInfo: widget.data.parkingInfo,
-          poiCardState: poiCardState,
-          tabController: _tabController,
-          data: widget.data,
-          onTapClose: () {
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.exitButton,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-            );
+              _openRoutingRoutes(
+                context,
+                widget.data.id!.objectId,
+                widget.data.title,
+                RouteParamsPoint(
+                  latitude: widget.data.markerPosition!.latitude,
+                  longitude: widget.data.markerPosition!.longitude,
+                  objectId: widget.data.id?.objectId,
+                  entranceId: widget.data.id?.entranceId,
+                  levelId: widget.data.levelId,
+                ),
+              );
+            },
+            onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item),
+          ),
+          header: PoiHeader(
+            title: widget.data.address?.buildingName ?? widget.data.title,
+            subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
+            subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
+                ? [
+                    const TextSpan(text: ' • '),
+                    WidgetSpan(
+                      child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
+                      baseline: TextBaseline.ideographic,
+                      alignment: PlaceholderAlignment.middle,
+                    ),
+                    TextSpan(text: ' $poiHeaderSubTitle'),
+                    if (hasOffers) ...[
+                      const TextSpan(text: ' • '),
+                      WidgetSpan(
+                        child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
+                        baseline: TextBaseline.ideographic,
+                        alignment: PlaceholderAlignment.middle,
+                      ),
+                      TextSpan(
+                        text: ' ${context.l10n.offer}',
+                        style:
+                            context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
+                      ),
+                    ]
+                  ]
+                : [],
+            parkingInfo: widget.data.parkingInfo,
+            poiCardState: poiCardState,
+            tabController: _tabController,
+            data: widget.data,
+            onTapClose: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.poiKeys.exitButton,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+              );
 
             ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
             ref.read(parkingManageProvider.notifier).restoreMarker();
