@@ -38,6 +38,8 @@ class CitySelectionDialogViewWidget extends HookWidget {
         barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
           function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
         ),
+        backgroundColor: context.colors.backgroundSurface2,
+        safeAreaColor: context.colors.backgroundSurface2,
         startConfig: ToggleSheetStart.instant,
         scrollController: scrollController,
         header: Padding(
