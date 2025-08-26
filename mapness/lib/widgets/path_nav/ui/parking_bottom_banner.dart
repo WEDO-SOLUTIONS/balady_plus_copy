@@ -13,12 +13,13 @@ import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
+import 'package:sheetify/sheetify.dart';
 
 class ParkingBanner extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
   final bool isHomeOrWork;
   final RouteSearchOptionsMessage navigatorType;
-  final StatelessBottomSheetController? bottomSheetController;
+  final ToggleSheetController? bottomSheetController;
 
   const ParkingBanner({
     required this.navigationState,

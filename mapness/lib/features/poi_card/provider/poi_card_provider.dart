@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -24,6 +22,7 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'poi_card_provider.g.dart';
@@ -170,7 +169,7 @@ class PoiCardProvider extends _$PoiCardProvider {
         final json = jsonEncode(poiCardState.toJson());
         await poiBox.put(poiCardStateKey, json);
       } catch (e, s) {
-        debugPrint('$e');
+        logger.log('Error saving poi card state to cache: $e', logLevel: MapnessLogLevel.critical);
         state = AsyncValue.error(e, s);
       }
       return poiCardState;
@@ -199,6 +198,7 @@ class PoiCardProvider extends _$PoiCardProvider {
 
       return response;
     } catch (_) {
+      logger.log('Error fetching organizations data', logLevel: MapnessLogLevel.critical);
       return null;
     }
   }
@@ -236,7 +236,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       }
       return stateFromJson;
     } catch (e, _) {
-      debugPrint('$e');
+      logger.log('Cached data error: $e', logLevel: MapnessLogLevel.critical);
       return null;
     }
   }

@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/saudi_pass/views/city_selection_dialog_view.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+import 'package:sheetify/sheetify.dart';
 
 class CitySelectionDialogViewWidget extends HookWidget {
   final CitySelectionDialogView citySelectionDialogView;
@@ -16,9 +17,9 @@ class CitySelectionDialogViewWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useStatelessBottomsheetController(
+    final scrollController = useToggleSheetController(
       onClose: (_) => context.router.popForced(),
-      heightModel: BottomSheetAspectRatioHeightModel(1.0),
+      heightModel: ToggleSheetHeightModel.fraction(1.0),
     );
 
     final textEditingController = useTextEditingController();
@@ -33,11 +34,11 @@ class CitySelectionDialogViewWidget extends HookWidget {
 
     return SafeArea(
       bottom: false,
-      child: StatelessBottomSheet(
-        backgroundColorDelegate: StatelessSheetDelegateFunction<Color?>(
+      child: ToggleSheet(
+        barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
           function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
         ),
-        startConfig: BottomSheetStart.instant,
+        startConfig: ToggleSheetStart.instant,
         scrollController: scrollController,
         header: Padding(
           padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
@@ -49,7 +50,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
             ],
           ),
         ),
-        sliverBeforeContent: SliverFillRemaining(
+        sliver: SliverFillRemaining(
           child: Column(
             children: [
               Padding(

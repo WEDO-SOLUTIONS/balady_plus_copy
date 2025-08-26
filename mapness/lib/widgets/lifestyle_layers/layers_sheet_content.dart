@@ -46,6 +46,7 @@ class LayersSheetContent extends ConsumerWidget {
                       onClose();
                     },
                     padding: EdgeInsets.zero,
+                    innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
                   ),
                 ],
               ),

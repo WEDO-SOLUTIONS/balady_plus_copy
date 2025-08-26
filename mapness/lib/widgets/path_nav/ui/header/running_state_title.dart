@@ -12,19 +12,26 @@ class _RunningStateTitle extends StatelessWidget {
     final eta = this.eta;
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        _NaviTime(
-          title: eta != null ? eta.timeEta : '--',
-          subTitle: eta != null ? eta.timeEtaUnits.getDescription(context) : '--',
+        Expanded(
+          child: _NaviTime(
+            title: eta != null ? eta.timeEta : '--',
+            subTitle: eta != null ? eta.timeEtaUnits.getDescription(context) : '--',
+          ),
         ),
-        _NaviTime(
-          title: eta != null ? eta.arrivalTime : '--',
-          subTitle: context.l10n.arrival,
+        Expanded(
+          flex: 2,
+          child: _NaviTime(
+            title: eta != null ? eta.arrivalTime : '--',
+            subTitle: context.l10n.arrival,
+          ),
         ),
-        _NaviTime(
-          title: eta != null ? formatDistance(eta.distanceEta) : '--',
-          subTitle: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
+        Expanded(
+          child: _NaviTime(
+            title: eta != null ? formatDistance(eta.distanceEta) : '--',
+            subTitle: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
+          ),
         ),
       ].insertBetween(Spacing.$1x.widthBox).toList(),
     );

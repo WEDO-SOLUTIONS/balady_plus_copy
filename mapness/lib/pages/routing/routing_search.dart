@@ -3,10 +3,11 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
@@ -14,6 +15,7 @@ import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/pages/routing/ui/routing_search_bar.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class RoutingSearchSheetPage extends ConsumerStatefulWidget {
@@ -33,7 +35,7 @@ class RoutingSearchSheetPage extends ConsumerStatefulWidget {
 }
 
 class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> with WidgetsBindingObserver {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _statefulBottomSheetController;
+  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -42,12 +44,29 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
   bool visible = true;
   bool isFirstLaunch = false;
 
+  final outsideOpacityDelegate = StatefulSheetDelegateFunction<double, ThreeStateSheet>(
+    function: (controller) {
+      final fraction = controller.fraction;
+      final interpolation = controller.interpolation;
+      final state = controller.state;
+
+      final isSheetCoversHalfOfTheScreen = fraction > 0.4;
+      final isSheetStateOpen = state == ThreeStateSheet.open;
+      final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+
+      final isFull = (controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+          isSheetCoversHalfOfTheScreen;
+
+      return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+    },
+  );
+
   @override
   void initState() {
     super.initState();
-    _statefulBottomSheetController = StatefulBottomSheetController(
-      initialState: ThreeStateBottomSheet.expanded,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: {
+    _multiStateSheetController = MultiStateSheetController(
+      initialState: ThreeStateSheet.expanded,
+      behavior: FractionSnappingBehavior(fractions: {
         0.0,
         if (Platform.isIOS) .3 else .38,
         if (Platform.isIOS) .931 else .98,
@@ -75,7 +94,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
 
   @override
   void dispose() {
-    _statefulBottomSheetController.dispose();
+    _multiStateSheetController.dispose();
     _keyboardVisible.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -100,51 +119,35 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
-            child: SafeArea(
-              bottom: false,
-              child: StatefulBottomSheet<ThreeStateBottomSheet>(
-                keepContentBehindFooter: true,
-                scrollController: _statefulBottomSheetController,
-                outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
-                  function: (controller) {
-                    final aspectRatio = controller.aspectRatio;
-                    final interpolation = controller.interpolation;
-                    final state = controller.state;
-
-                    final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-                    final isSheetStateOpen = state == ThreeStateBottomSheet.open;
-                    final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
-
-                    final isFull = (_statefulBottomSheetController.isEnabled &&
-                            isSheetStateOpen &&
-                            isSheetScrolledForHalfOfTheState) ||
-                        isSheetCoversHalfOfTheScreen;
-
-                    return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-                  },
-                ),
-                outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-                key: const ValueKey('ROUTING SEARCH SHEET'),
-                header: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: RoutingSearchBar(
-                        placeholder: widget.placeholder,
-                      ),
+            child: MultiStateSheet<ThreeStateSheet>(
+              keepContentBehindFooter: true,
+              resizeToAvoidViewPadding: true,
+              scrollController: _multiStateSheetController,
+              backgroundColor: context.colors.backgroundSurface1,
+              safeAreaColor: context.colors.backgroundSurface1,
+              dragger: const SheetDragger(),
+              outsideOpacityDelegate: outsideOpacityDelegate,
+              outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
+              key: const ValueKey('ROUTING SEARCH SHEET'),
+              header: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: RoutingSearchBar(
+                      placeholder: widget.placeholder,
                     ),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                  ],
-                ),
-                content: [
-                  RoutingSearchContent(
-                    showMyLocation: widget.showMyLocation,
-                    bottomSheetContentScrollController: _statefulBottomSheetController,
+                  ),
+                  const SizedBox(
+                    height: 16,
                   ),
                 ],
               ),
+              content: [
+                RoutingSearchContent(
+                  showMyLocation: widget.showMyLocation,
+                  bottomSheetContentScrollController: _multiStateSheetController,
+                ),
+              ],
             ),
           ),
         ],
@@ -174,14 +177,14 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState || _statefulBottomSheetController.state == ThreeStateBottomSheet.expanded) {
+    if (!kbState || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
 
-    _statefulBottomSheetController.setState(ThreeStateBottomSheet.expanded);
+    _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 
   void _collapseBottomSheet() {
-    _statefulBottomSheetController.setState(ThreeStateBottomSheet.open);
+    _multiStateSheetController.setState(ThreeStateSheet.open);
   }
 }

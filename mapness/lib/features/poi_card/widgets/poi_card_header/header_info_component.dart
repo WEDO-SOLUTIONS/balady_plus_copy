@@ -14,6 +14,7 @@ import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transi
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:sheetify/sheetify.dart';
 
 class HeaderInfoComponent extends ConsumerWidget {
   final DirectoryObjectMessage data;
@@ -50,7 +51,7 @@ class HeaderInfoComponent extends ConsumerWidget {
   }
 }
 
-class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final PoiContentFullAddressModel fullAddress;
   final ContentWorkTimeModel? workTime;
   final bool hasOffers;

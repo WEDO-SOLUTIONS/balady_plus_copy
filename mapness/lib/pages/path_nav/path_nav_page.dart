@@ -31,7 +31,7 @@ import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -45,11 +45,12 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
-import 'package:urbi_analytics/logger.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 enum PathNavPageInitAction { startNavigation, restoreFromState }
@@ -86,7 +87,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool wasSetActive = true;
   Timer? timer;
 
-  late uikit.StatelessBottomSheetController sheetController;
+  late ToggleSheetController sheetController;
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -235,12 +236,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Widget build(BuildContext context) {
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
-    sheetController = useStatelessBottomsheetController(
+    sheetController = useToggleSheetController(
       onClose: (_) {},
       clipByHeader: true,
       resetContentScrollOnClosed: true,
     )..updateHeightModel(
-        isPortrait ? null : uikit.BottomSheetHeightModel.offset(uikit.Spacing.$3x),
+        isPortrait ? null : ToggleSheetHeightModel.offset(uikit.Spacing.$3x),
       );
 
     void onSheetHeightChanged() {
@@ -672,7 +673,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       await ref.read(shareEtaProvider.notifier).stopSharingAndClearCurrent();
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     }
   }
 

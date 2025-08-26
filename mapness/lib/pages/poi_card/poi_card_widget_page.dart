@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' show General16Icons, SliverFillAfter, Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
@@ -48,7 +49,7 @@ import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/parking_store_model_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -57,7 +58,7 @@ import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
-import 'package:mapness/shared/ui/safe_area_padding.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 

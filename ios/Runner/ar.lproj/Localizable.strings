@@ -7,11 +7,15 @@
 "tripPreviewStartButton" = "بدء";
 "tripPreviewMoreRoutesButton" = "مسارات بديلة";
 "tripPreviewBackButton" = "رجوع";
+"tripFinishedAlertTitle" = "لقد وصلت";
+"tripFinishedAlertEndTripButton" = "إنهاء الرحلة";
+"tripFinishedAlertNewRouteButton" = "مسار جديد";
 "searchScreenGridHistory" = "تاريخ";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "لم يتم العثور على شيء";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "حاول تغيير استعلامك قليلاً";
 "anyScreenBackButton" = "رجوع";
 "historyScreenEmptyPlaceholderTitle" = "لا يوجد شيء هنا بعد";
+"historyScreenEmptyPlaceholderSubtitleTitle" = "يمكنك إضافة اختيارك الأول من الأماكن والشركات المفضلة على هاتفك";
 "historyScreenSearchBackButton" = "بحث";
 "settingsScreenTitle" = "الإعدادات";
 "settingsScreenTraffic" = "حركة المرور";

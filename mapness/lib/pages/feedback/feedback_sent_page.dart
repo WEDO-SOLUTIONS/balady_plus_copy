@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/feedback/submit_feedback.dart';
 import 'package:mapness/pages/feedback/feedback_sheet_widget.dart';
-import 'package:urbi_analytics/logger.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 @RoutePage()
 class FeedbackSentPage extends HookConsumerWidget {
@@ -33,10 +33,7 @@ class FeedbackSentPage extends HookConsumerWidget {
       },
       loading: () => FeedbackSheetState.loading,
       error: (error, stack) {
-        log(
-          'Error submitting feedback: $error\nStacktrace:\n$stack',
-          kind: LogFilterKind.error,
-        );
+        logger.log('Error submitting feedback: $error\nStacktrace:\n$stack', logLevel: MapnessLogLevel.critical);
         return FeedbackSheetState.failure;
       },
     );

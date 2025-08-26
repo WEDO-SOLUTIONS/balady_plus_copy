@@ -28,8 +28,8 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:urbi_analytics/logger.dart';
 
 part 'eta_geo_subscriber.g.dart';
 
@@ -106,7 +106,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         await _createUserRoute();
       }
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     }
   }
 
@@ -116,7 +116,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       EtaWebsocket().clearInfoListeners();
       await EtaWebsocket().stop();
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
       _lastActiveRoute = null;
 
@@ -288,7 +288,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
               ),
             );
       } catch (e) {
-        log(e.toString());
+        logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
       }
     });
   }

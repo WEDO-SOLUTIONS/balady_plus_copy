@@ -137,20 +137,21 @@ class EnvironmentConfig {
       saudiPassApi: 'https://apiservices.balady.gov.sa/');
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
-      proxy: 'https://sa1.ops.2gis.dev',
-      url: 'https://momrah-balady.public-poc.urbi.ae/api/1.0/',
-      meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-      weatherApi: 'https://sa1.ops.2gis.dev/',
-      jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
-      twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
-      baseApiDomain: 'urbi.ae',
-      shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+        proxy: 'https://sa1.ops.2gis.dev',
+        url: 'https://momrah-balady.iaas.urbi-sa.com/api/1.0/',
+        meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+        weatherApi: 'https://sa1.ops.2gis.dev/',
+        jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
+        twinsApi: 'https://momrah-twins-api.iaas.urbi-sa.com/v1',
+        baseApiDomain: 'urbi.ae',
+        shareEtaApi: 'https://momrah-balady-dev-geo.iaas.urbi-sa.com',
 
-      /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
-      feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae/api/2.0/',
-      appFeedbackApi: 'https://momrah-balady-dev.public-poc.urbi.ae/api',
-      appFeedbackEnable: true,
-      bssApi: 'https://s1.bss.2gis.com',
-      baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
-      saudiPassApi: 'https://apiservicesstg.balady.gov.sa/');
+        /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
+        feedbackApi: 'https://momrah-balady-discrepancy.iaas.urbi-sa.com/api/2.0/',
+        appFeedbackApi: 'https://momrah-balady-dev.iaas.urbi-sa.com/api',
+        appFeedbackEnable: true,
+        bssApi: 'https://s1.bss.2gis.com',
+        baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+      );
 }

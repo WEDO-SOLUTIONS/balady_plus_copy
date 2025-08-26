@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:sheetify/sheetify.dart';
 
 class JoyParksCardV2 extends ConsumerWidget {
-  final StatefulBottomSheetController controller;
+  final MultiStateSheetController controller;
 
   const JoyParksCardV2({required this.controller, super.key});
 
@@ -19,7 +20,7 @@ class JoyParksCardV2 extends ConsumerWidget {
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: GestureDetector(
             onTap: () {
-              controller.setState(ThreeStateBottomSheet.hidden);
+              controller.setState(ThreeStateSheet.hidden);
 
               // ref.read(layersControlsProvider.notifier).toggleIwish();
             },

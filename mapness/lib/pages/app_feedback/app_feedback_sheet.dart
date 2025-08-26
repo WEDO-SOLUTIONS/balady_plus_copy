@@ -4,17 +4,18 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
-import 'package:mapness/shared/ui/safe_area_padding.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_loading.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_success.dart';
 import 'package:mapness/widgets/app_feedback/v2/app_feedback_main.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class AppFeedbackSheet extends HookConsumerWidget {
@@ -64,7 +65,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     ref.watch(appFeedbackCanPopProvider.select((_) => null));
 
-    void onCloseBottomSheet(StatelessBottomSheetController controller) {
+    void onCloseBottomSheet(ToggleSheetController controller) {
       final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
       final isInitial = ref.read(sendFeedbackProvider).valueOrNull == AppFeedbackState.initial;
 
@@ -76,52 +77,49 @@ class AppFeedbackSheet extends HookConsumerWidget {
       }
     }
 
-    final scrollController = useStatelessBottomsheetController(onClose: onCloseBottomSheet);
-    final backgroundColorDelegate = StatelessSheetDelegateFunction<Color?>(
+    final scrollController = useToggleSheetController(onClose: onCloseBottomSheet);
+    final backgroundColorDelegate = ToggleSheetDelegateFunction<Color?>(
       function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
     );
 
     return FeedbackSourceProvider(
       source: source,
-      child: SafeAreaPadding(
-        bottom: false,
-        child: StatelessBottomSheet(
-          scrollController: scrollController,
-          backgroundColor: context.colors.backgroundSurface4,
-          safeAreaColor: context.colors.backgroundSurface4,
-          draggerColor: context.colors.backgroundSurface4,
-          startConfig: BottomSheetStart.instant,
-          onWillPop: Future.value(source is FeedbackSourceOffer),
-          backgroundColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,
-          content: [
-            sendFeedbackState.when(
-              data: (data) => switch (data) {
-                AppFeedbackState.initial => AppFeedbackMain(
-                    initialRating: initialRating,
-                    onNeedPopConfirm: source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
-                  ),
-                AppFeedbackState.loading => const AppFeedbackLoading(),
-                AppFeedbackState.success => const Padding(
-                    padding: _sheetPadding,
-                    child: AppFeedbackSuccess(),
-                  ),
-                AppFeedbackState.error => Padding(
-                    padding: _sheetPadding,
-                    child: AppFeedbackError(
-                      onRetry: ref.read(sendFeedbackProvider.notifier).retry,
-                    ),
-                  ),
-              },
-              loading: () => const AppFeedbackLoading(),
-              error: (_, __) => Padding(
-                padding: _sheetPadding,
-                child: AppFeedbackError(
-                  onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+      child: ToggleSheet(
+        startConfig: ToggleSheetStart.instant,
+        scrollController: scrollController,
+        backgroundColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+        shouldPop: (_) => source is FeedbackSourceOffer,
+        barrierColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,
+        content: [
+          sendFeedbackState.when(
+            data: (data) => switch (data) {
+              AppFeedbackState.initial => AppFeedbackMain(
+                  initialRating: initialRating,
+                  onNeedPopConfirm: () => source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
                 ),
+              AppFeedbackState.loading => const AppFeedbackLoading(),
+              AppFeedbackState.success => const Padding(
+                  padding: _sheetPadding,
+                  child: AppFeedbackSuccess(),
+                ),
+              AppFeedbackState.error => Padding(
+                  padding: _sheetPadding,
+                  child: AppFeedbackError(
+                    onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+                  ),
+                ),
+            },
+            loading: () => const AppFeedbackLoading(),
+            error: (_, __) => Padding(
+              padding: _sheetPadding,
+              child: AppFeedbackError(
+                onRetry: ref.read(sendFeedbackProvider.notifier).retry,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

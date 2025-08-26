@@ -39,7 +39,7 @@ packages:
     source: hosted
     version: "5.1.1"
   analyzer:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: analyzer
       sha256: b652861553cd3990d8ed361f7979dc6d7053a9ac8843fa73820ab68ce5410139
@@ -47,7 +47,7 @@ packages:
     source: hosted
     version: "6.7.0"
   analyzer_plugin:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: analyzer_plugin
       sha256: "9661b30b13a685efaee9f02e5d01ed9f2b423bd889d28a304d02d704aee69161"
@@ -607,7 +607,7 @@ packages:
     source: hosted
     version: "0.7.0"
   custom_lint_builder:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: custom_lint_builder
       sha256: "42cdc41994eeeddab0d7a722c7093ec52bd0761921eeb2cbdbf33d192a234759"
@@ -1106,7 +1106,7 @@ packages:
     source: hosted
     version: "5.10.0"
   flutter_hms_gms_availability:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_hms_gms_availability
       sha256: e10cf8692d6265524ede42f2f0f22af66254dd34860b59491b22b34c0327f892
@@ -1656,6 +1656,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  group_button:
+    dependency: transitive
+    description:
+      name: group_button
+      sha256: "0610fcf28ed122bfb4b410fce161a390f7f2531d55d1d65c5375982001415940"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.3.4"
   gtk:
     dependency: transitive
     description:
@@ -2826,6 +2834,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  sheetify:
+    dependency: "direct main"
+    description:
+      name: sheetify
+      sha256: "1b677152c95a77ae00e6163cd6ca2a3dd26a6fc2ff28c57ee333459babbcbd6e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
+  sheetify_lint:
+    dependency: "direct dev"
+    description:
+      name: sheetify_lint
+      sha256: "353fd9008b788c7f1c5535b440e25b6d6430c8a6d6a93773ee6a7c9857e1fb2d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   shelf:
     dependency: transitive
     description:
@@ -2879,7 +2903,7 @@ packages:
     source: hosted
     version: "1.1.1"
   smooth_corner:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: smooth_corner
       sha256: "1e920cffd9644d6f51f9a99674652f8c00f2e9074b275f3edde0de1441ba78e9"
@@ -3104,21 +3128,29 @@ packages:
     source: hosted
     version: "3.3.0+3"
   talker:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: talker
-      sha256: "45abef5b92f9b9bd42c3f20133ad4b20ab12e1da2aa206fc0a40ea874bed7c5d"
+      sha256: "30bbc526bb2e7d465c630f087479616b6b84570728539fde536a3b652acad2f6"
       url: "https://pub.dev"
     source: hosted
-    version: "4.7.1"
+    version: "4.4.1"
   talker_dio_logger:
     dependency: "direct main"
     description:
       name: talker_dio_logger
-      sha256: a20e1945a1e41c91594956a067bf740b9dc12007e0d4b7191ce13e5044c8c0d2
+      sha256: "310f7d1eec2c890183b726f8b4c4e5dcb9104034aefd10e8c5f13686acac305b"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.2"
+    version: "4.4.1"
+  talker_flutter:
+    dependency: "direct main"
+    description:
+      name: talker_flutter
+      sha256: "51e1f26a726dced6952c2070ae2bc7e23393c319e2f98def2009fdbcdfbda7aa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.1"
   talker_logger:
     dependency: transitive
     description:

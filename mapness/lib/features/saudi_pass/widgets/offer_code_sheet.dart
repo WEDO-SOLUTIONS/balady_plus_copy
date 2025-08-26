@@ -4,7 +4,8 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_redeem_provider.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:sheetify/toggle_sheet/toggle_sheet.dart';
 
 class OfferCodeSheet extends HookConsumerWidget {
   final String code;
@@ -24,7 +25,7 @@ class OfferCodeSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final redeemState = ref.watch(offerRedeemProvider(offerId));
 
-    final bottomSheetController = useStatelessBottomsheetController(
+    final bottomSheetController = useToggleSheetController(
       onClose: (_) {
         Navigator.of(context).pop(ref.read(offerRedeemProvider(offerId)) == OfferRedeemState.redeemed);
       },
@@ -35,8 +36,7 @@ class OfferCodeSheet extends HookConsumerWidget {
         Navigator.of(context).pop(ref.read(offerRedeemProvider(offerId)) == OfferRedeemState.redeemed);
         return Future.value(false);
       },
-      child: StatelessBottomSheet(
-        draggerColor: context.colorsV3.backgroundSurface2,
+      child: ToggleSheet(
         backgroundColor: context.colorsV3.backgroundSurface2,
         content: [
           Padding(

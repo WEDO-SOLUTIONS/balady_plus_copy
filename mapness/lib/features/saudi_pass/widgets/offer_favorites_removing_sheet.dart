@@ -3,7 +3,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:sheetify/toggle_sheet/toggle_sheet.dart';
 
 class OfferFavoritesRemovingSheet extends HookWidget {
   final String title;
@@ -23,10 +24,10 @@ class OfferFavoritesRemovingSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomSheetController = useStatelessBottomsheetController(
+    final bottomSheetController = useToggleSheetController(
       onClose: (_) => Navigator.of(context).pop(),
     );
-    return StatelessBottomSheet(
+    return ToggleSheet(
       content: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),

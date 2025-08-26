@@ -8,6 +8,7 @@ import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transi
 import 'package:mapness/features/poi_card/widgets/poi_card_header/subtitle.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/title.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
+import 'package:sheetify/sheetify.dart';
 
 class HajjPoiHeader extends ConsumerWidget {
   final PoiMarkerRcmc poiMarkerRcmc;
@@ -48,7 +49,7 @@ class HajjPoiHeader extends ConsumerWidget {
       );
 }
 
-class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final PoiMarkerRcmc poiMarkerRcmc;
 
   const _HeaderInfoWidget({

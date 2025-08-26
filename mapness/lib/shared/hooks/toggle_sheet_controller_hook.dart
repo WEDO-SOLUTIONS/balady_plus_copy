@@ -1,22 +1,22 @@
-import 'package:balady_uikit/components.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:sheetify/sheetify.dart';
 
-/// Creates a [StatelessBottomSheetController] that will be disposed automatically.
+/// Creates a [ToggleSheetController] that will be disposed automatically.
 ///
 /// See also:
-/// - [StatelessBottomSheetController]
-StatelessBottomSheetController useStatelessBottomsheetController({
-  BottomSheetOnCloseCallback? onClose,
+/// - [ToggleSheetController]
+ToggleSheetController useToggleSheetController({
+  ToggleSheetOnCloseCallback? onClose,
   List<Object?>? keys,
   double? durationMultiplier,
   bool isInteractive = true,
   bool clipByHeader = false,
   bool resetContentScrollOnClosed = false,
-  BottomSheetHeightModel? heightModel,
+  ToggleSheetHeightModel? heightModel,
 }) =>
     use(
-      _StatelessBottomSheetControllerHook(
+      _ToggleSheetControllerHook(
         keys: keys,
         durationMultiplier: durationMultiplier,
         onClose: onClose,
@@ -27,15 +27,15 @@ StatelessBottomSheetController useStatelessBottomsheetController({
       ),
     );
 
-class _StatelessBottomSheetControllerHook extends Hook<StatelessBottomSheetController> {
+class _ToggleSheetControllerHook extends Hook<ToggleSheetController> {
   final double? durationMultiplier;
-  final BottomSheetOnCloseCallback? onClose;
+  final ToggleSheetOnCloseCallback? onClose;
   final bool isInteractive;
-  final BottomSheetHeightModel? heightModel;
+  final ToggleSheetHeightModel? heightModel;
   final bool clipByHeader;
   final bool resetContentScrollOnClosed;
 
-  const _StatelessBottomSheetControllerHook({
+  const _ToggleSheetControllerHook({
     this.onClose,
     this.durationMultiplier,
     this.isInteractive = true,
@@ -46,23 +46,22 @@ class _StatelessBottomSheetControllerHook extends Hook<StatelessBottomSheetContr
   }) : super(keys: keys);
 
   @override
-  HookState<StatelessBottomSheetController, Hook<StatelessBottomSheetController>> createState() =>
-      _StatelessBottomSheetControllerHookState();
+  HookState<ToggleSheetController, Hook<ToggleSheetController>> createState() => _ToggleSheetControllerHookState();
 }
 
-class _StatelessBottomSheetControllerHookState
-    extends HookState<StatelessBottomSheetController, _StatelessBottomSheetControllerHook> {
+class _ToggleSheetControllerHookState extends HookState<ToggleSheetController, _ToggleSheetControllerHook> {
   late final controller = hook.onClose == null
-      ? StatelessBottomSheetController(
+      ? ToggleSheetController(
           durationMultiplier: hook.durationMultiplier ?? 1.0,
           isInteractive: hook.isInteractive,
           heightModel: hook.heightModel,
           clipByHeader: hook.clipByHeader,
           resetContentScrollOnClosed: hook.resetContentScrollOnClosed,
+          onClose: (c) => c.open(),
         )
-      : StatelessBottomSheetController(
+      : ToggleSheetController(
           durationMultiplier: hook.durationMultiplier ?? 1.0,
-          onClose: hook.onClose!,
+          onClose: hook.onClose,
           isInteractive: hook.isInteractive,
           heightModel: hook.heightModel,
           clipByHeader: hook.clipByHeader,
@@ -70,11 +69,11 @@ class _StatelessBottomSheetControllerHookState
         );
 
   @override
-  StatelessBottomSheetController build(BuildContext context) => controller;
+  ToggleSheetController build(BuildContext context) => controller;
 
   @override
   void dispose() => controller.dispose();
 
   @override
-  String get debugLabel => 'useStatelessBottomSheetController';
+  String get debugLabel => 'useToggleSheetController';
 }

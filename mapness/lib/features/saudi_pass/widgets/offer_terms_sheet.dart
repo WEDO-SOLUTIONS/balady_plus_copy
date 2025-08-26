@@ -3,7 +3,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:sheetify/sheetify.dart';
 
 class OfferTermsSheet extends HookWidget {
   final String terms;
@@ -19,10 +20,10 @@ class OfferTermsSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomSheetController = useStatelessBottomsheetController(
+    final bottomSheetController = useToggleSheetController(
       onClose: (_) => Navigator.of(context).pop(),
     );
-    return StatelessBottomSheet(
+    return ToggleSheet(
       header: Padding(
         padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
         child: Row(
