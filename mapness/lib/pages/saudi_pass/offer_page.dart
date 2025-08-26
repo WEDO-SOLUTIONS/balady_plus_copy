@@ -158,6 +158,7 @@ class _Content extends HookConsumerWidget {
                               discount: discount,
                               offer: offer,
                             ),
+                          // todo[amr] they use the image form not logo no I left this because if they decided to return back again
                           // else
                           // _OfferPreviewByGroup(
                           //   offersGroup: offer.offerGroup,
@@ -562,12 +563,13 @@ class _OfferPreviewByBusiness extends StatelessWidget {
             ),
           ),
           Spacing.$3x.widthBox,
-          ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+          Expanded(
             child: SizedBox(
-              width: 48,
-              height: 48,
-              child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
+              height: 100,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
+              ),
             ),
           ),
         ],
