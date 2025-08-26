@@ -227,7 +227,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     });
 
     final typesStringBar = widget.recommendedTypes.isNotEmpty
-        ? ' ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero},'
+        ? ', ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero},'
         : '';
     final categoryStringBar = widget.categories.isNotEmpty
         ? ' ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}'
@@ -260,7 +260,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                     width: double.infinity,
                     child: Center(
                       child: Text(
-                        '${widget.city},$typesStringBar$categoryStringBar',
+                        '${widget.city}$typesStringBar$categoryStringBar',
                         style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                       ),
                     ),
