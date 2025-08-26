@@ -67,13 +67,18 @@ class _CityByLocation extends _$CityByLocation {
     if (lat == null || lng == null) {
       return defaultCity;
     }
-    final geocoderData = await _admDivCityByPosition(latitude: lat, longitude: lng);
+    try {
+      final geocoderData = await _admDivCityByPosition(latitude: lat, longitude: lng);
 
-    if (geocoderData.result.items.isEmpty) {
+      if (geocoderData.result.items.isEmpty) {
+        return defaultCity;
+      }
+
+      final item = geocoderData.result.items.first;
+      return City.fromJson(item.toJson());
+    } catch (ex) {
+      print('catch $ex');
       return defaultCity;
     }
-
-    final item = geocoderData.result.items.first;
-    return City.fromJson(item.toJson());
   }
 }
