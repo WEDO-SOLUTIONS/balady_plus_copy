@@ -29,5 +29,6 @@ class ThermalConfig {
   );
 
   @override
-  String toString() => 'ThermalConfig($idleTemperature, $lightTemperature, $moderateTemperature, $severeTemperature, $criticalTemperature)';
+  String toString() =>
+      'ThermalConfig($idleTemperature, $lightTemperature, $moderateTemperature, $severeTemperature, $criticalTemperature)';
 }
