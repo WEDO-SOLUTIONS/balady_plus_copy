@@ -602,20 +602,40 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
-    String serviceKey = "municipalservice"; //for testing only
-    //String serviceKey =  msg["serviceKey"];
-    final attachmentSource = msg["attachmentSource"];
-    final List<String>? attachmentExtension =msg["attachmentExtension"]!= null?
-        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>():[];
-    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
-        true) {
+    print('raw msg : $msg');
+
+    // Ensure msg is always a Map<String, dynamic>
+    late final Map<String, dynamic> data;
+    if (msg is String) {
+      try {
+        data = jsonDecode(msg) as Map<String, dynamic>;
+      } catch (e) {
+        print("❌ Failed to decode msg as JSON: $e");
+        data = {};
+      }
+    } else if (msg is Map) {
+      data = Map<String, dynamic>.from(msg);
+    } else {
+      print("❌ Unsupported msg type: ${msg.runtimeType}");
+      data = {};
+    }
+
+    // Extract values safely
+    final String serviceKey = data["serviceKey"]?.toString() ?? "municipalservice";
+    final String? attachmentSource = data["attachmentSource"]?.toString();
+    final List<String> attachmentExtension = data["attachmentExtension"] != null
+        ? (data["attachmentExtension"] as List<dynamic>)
+        .map((e) => e.toString())
+        .toList()
+        : [];
+
+    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) == true) {
       var file = await FilePicker.platform.pickFiles(
-        type:
-            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
+        type: (attachmentSource == "gallery" ? FileType.image : FileType.custom),
         allowMultiple: false,
-        allowedExtensions:
-            attachmentSource == "gallery" ? [] : attachmentExtension,
+        allowedExtensions: attachmentSource == "gallery" ? [] : attachmentExtension,
       );
+
       late BaseResponse response;
       try {
         if (file != null && file.files.isNotEmpty) {
@@ -625,29 +645,32 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName = path.isNotEmpty
-                  ? path.split('/').last
-                  : ('attachment_name').tr();
+              String fileName =
+              path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
-              JsFilesModel file = JsFilesModel(
-                  fileBase64: base64File,
-                  fileName: fileName,
-                  // fileBytes: fileBytes,
-                  filePath: path);
+
+              JsFilesModel pickedFile = JsFilesModel(
+                fileBase64: base64File,
+                fileName: fileName,
+                filePath: path,
+              );
+
               response = BaseResponse(
-                  code: 200,
-                  message: "success",
-                  data: file,
-                  eventName: "openFilePicker");
+                code: 200,
+                message: "success",
+                data: pickedFile,
+                eventName: "openFilePicker",
+              );
             }
           }
         } else {
           response = BaseResponse(
-              code: 300,
-              message: "Can't get file",
-              data: null,
-              eventName: "openFilePicker");
+            code: 300,
+            message: "Can't get file",
+            data: null,
+            eventName: "openFilePicker",
+          );
         }
       } on PlatformException catch (_) {
         response = BaseResponse(
@@ -657,6 +680,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
+
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -668,6 +692,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
+
 
   /// TODO: Need To Test
   @pragma('vm:entry-point')
