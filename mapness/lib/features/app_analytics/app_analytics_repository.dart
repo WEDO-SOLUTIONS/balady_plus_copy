@@ -4,7 +4,12 @@ abstract interface class AppAnalyticsRepository {
   void onboardingFlowSkipped();
 
   void onboardingFlowCompleted();
-  void navigationSearch({required String destinationCity, required String keyword, required String originCity, required bool isResultsFound, required int resultCount});
+  void navigationSearch(
+      {required String destinationCity,
+      required String keyword,
+      required String originCity,
+      required bool isResultsFound,
+      required int resultCount});
 
   void navigationStarted({
     required String originLocation,
@@ -58,5 +63,4 @@ abstract interface class AppAnalyticsRepository {
   void networkConnectionType({required String type});
 
   void transportModeSelected({required String type});
-
 }

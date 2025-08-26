@@ -127,7 +127,7 @@ class Helpers {
             timeLimit: duration ?? const Duration(seconds: 13)),
       );
       //    EasyLoading.dismiss();
-      return LatLng(latitude:position.latitude,longitude: position.longitude);
+      return LatLng(latitude: position.latitude, longitude: position.longitude);
     } catch (error, stackTrace) {
       return CommonFunctions.handelLocationCatch(false, error, stackTrace);
     }
@@ -204,7 +204,6 @@ class Helpers {
       return ("mobile_number_err1").tr();
     }
   }
-
 
   static String? validateIBAN(String? iban) {
     RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');
