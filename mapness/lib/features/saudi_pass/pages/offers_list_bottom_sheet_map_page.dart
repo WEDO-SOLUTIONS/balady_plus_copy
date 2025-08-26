@@ -30,14 +30,14 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
     final l10n = context.l10n;
     final colors = context.colors;
     final mediaQueryHeight = MediaQuery.of(context).size.height;
-    const offersOneHeightOffset = 400.0;
+    const offersOneHeightOffset = 250.0;
 
     final scrollController = useMultiStateSheetController(
       mapper: const PoiCardStateMapper(),
       initialState: PoiCardBottomSheetState.halfOpen,
       behavior: MultiSnappingBehavior(
         models: [
-          OffsetSnappingModel({mediaQueryHeight, if (offersId.length == 1) offersOneHeightOffset else 0.0}),
+          SizeSnappingModel({0.0, if (offersId.length == 1) offersOneHeightOffset else mediaQueryHeight}),
           ComponentsSnappingModel(componentsDescriptions: [
             SnapComponent.merge(
               a: const SnapComponent.size(component: Components.header),

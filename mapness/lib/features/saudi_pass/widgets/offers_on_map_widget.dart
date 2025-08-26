@@ -227,10 +227,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     });
 
     final typesStringBar = widget.recommendedTypes.isNotEmpty
-        ? ', ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero},'
+        ? ', ${widget.recommendedTypes.length} ${context.l10n.saudiPassOffersPreferencesTypesPluralZero}'
         : '';
     final categoryStringBar = widget.categories.isNotEmpty
-        ? ' ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}'
+        ? ', ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}'
         : '';
     return Column(
       children: [
