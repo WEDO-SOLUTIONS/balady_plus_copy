@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:mapness/features/thermal_monitor/data/thermal_config.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,33 +39,27 @@ class ThermalMonitor extends _$ThermalMonitor {
 
     final subscription = stream.listen((thermalStatus) async {
       final int? fps;
-      final MapnessLogLevel logLevel;
 
       switch (thermalStatus) {
         case ThermalStatus.none:
           fps = config.idleTemperature;
-          logLevel = MapnessLogLevel.verbose;
         case ThermalStatus.light:
           fps = config.lightTemperature;
-          logLevel = MapnessLogLevel.info;
         case ThermalStatus.moderate:
           fps = config.moderateTemperature;
-          logLevel = MapnessLogLevel.warning;
         case ThermalStatus.severe:
           fps = config.severeTemperature;
-          logLevel = MapnessLogLevel.warning;
         case ThermalStatus.emergency:
         case ThermalStatus.shutdown:
         case ThermalStatus.critical:
           fps = config.criticalTemperature;
-          logLevel = MapnessLogLevel.warning;
       }
 
-      logger.log(
-        'Received thermal status - $thermalStatus, selected fps - $fps',
-        logLevel: logLevel,
+      unawaited(
+        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
+              'Received thermal status - $thermalStatus, selected fps - $fps',
+            ),
       );
-
       await controller.setMaxFps(fps);
     });
 
