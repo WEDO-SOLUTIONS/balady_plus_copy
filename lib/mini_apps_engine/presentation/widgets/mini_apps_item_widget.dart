@@ -111,29 +111,30 @@ class MiniAppsItemWidget extends StatelessWidget {
               path: "#Volunteer_Home_Screen",
             );
       } else {
-        NavigationService.pushNamed(
-          routeName: RouteName.miniAppsMainScreen,
-          args: miniApp,
-        );
-      }
-       if (miniApp.latestVersion?.deepLinkModel != null) {
-        try {
-          await AppLaunchService.launchApp(
-            deepLinkInfo: miniApp.latestVersion!.deepLinkModel!,
-            //deepLink: deeplink,
+
+        if (miniApp.latestVersion?.deepLinkModel != null) {
+          try {
+            await AppLaunchService.launchApp(
+              deepLinkInfo: miniApp.latestVersion!.deepLinkModel!,
+              //deepLink: deeplink,
+            );
+          } catch (e) {
+           CommonFunctions.showError('launch_failed'.tr());
+          }
+        } else {
+          NavigationService.pushNamed(
+            routeName: RouteName.miniAppsMainScreen,
+            args: miniApp,
           );
-        } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('launch_failed'.tr())),
-          );
-          debugPrint('Error launching app: $e');
         }
-      } else {
-        NavigationService.pushNamed(
-          routeName: RouteName.miniAppsMainScreen,
-          args: miniApp,
-        );
+
+
+
+
+
+
       }
+
     }
   }
 }
