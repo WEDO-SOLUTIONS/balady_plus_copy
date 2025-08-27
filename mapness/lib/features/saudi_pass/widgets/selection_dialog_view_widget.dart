@@ -33,7 +33,8 @@ class SelectionDialogViewWidget<T> extends HookWidget {
 
     return ToggleSheet(
       scrollController: scrollController,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? context.colors.backgroundSurface2,
+      safeAreaColor: context.colors.backgroundSurface2,
       outside: GestureDetector(
         onTap: context.router.popForced,
       ),
