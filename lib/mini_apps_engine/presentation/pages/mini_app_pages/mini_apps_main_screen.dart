@@ -53,12 +53,12 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
 
-    HomeMiniAppsListSuccessState state = context
-        .read<HomeMiniAppsListCubit>()
-        .state as HomeMiniAppsListSuccessState;
+    HomeMiniAppsListState state = context.read<HomeMiniAppsListCubit>().state;
 
     return BlocProvider<MiniAppsEngineBloc>(
-      create: (context) => data.serviceKey == "municipalservice" && !(state.municipalAppBloc?.isClosed ?? true) &&
+      create: (context) => state is HomeMiniAppsListSuccessState &&
+              data.serviceKey == "municipalservice" &&
+              !(state.municipalAppBloc?.isClosed ?? true) &&
               state.municipalAppBloc?.state is MiniAppsEngineLoadedState
           ? state.municipalAppBloc!
           : MiniAppsEngineBloc(miniApp: data),
