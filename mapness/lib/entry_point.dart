@@ -14,6 +14,8 @@ import 'package:dgis_map/library.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
+import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -168,6 +170,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         }
       },
     );
+
+    initInsider();
   }
 
   @override
@@ -363,6 +367,43 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await Future.delayed(duration);
     }
   }
+
+
+  // implement insider deep link for ios
+
+  Future initInsider() async {
+    if (!mounted) return;
+    // FIXME-INSIDER: Please change with your partner name and app group.
+    await FlutterInsider.Instance.init(
+        "baladyappuat", "group.movingViolations",
+            (int type, dynamic data) {
+          switch (type) {
+            case InsiderCallbackAction.NOTIFICATION_OPEN:
+              if(Platform.isIOS) {
+                if (data != null && data.containsKey('url')) {
+                  final url = Uri.parse(data['url']);
+                  openAppLink(url);
+                  return;
+                }
+              }
+              break;
+            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+              break;
+            default:
+              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+              break;
+          }
+        });
+
+    // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
+    await FlutterInsider.Instance.setActiveForegroundPushView();
+    await FlutterInsider.Instance.registerWithQuietPermission(false);
+
+  }
+
+
+
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
