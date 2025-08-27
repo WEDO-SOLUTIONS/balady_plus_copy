@@ -302,7 +302,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             }
 
             return Expanded(
-                child: OfferListBottomSheetMapWidget(offersId: val));
+              child: OfferListBottomSheetMapWidget(offersId: val),
+            );
           },
         ),
       ],

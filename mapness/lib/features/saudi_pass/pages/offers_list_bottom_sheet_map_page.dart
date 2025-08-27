@@ -29,7 +29,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
     final showMapOffers = ref.read(showMapOffersProvider.notifier);
     final l10n = context.l10n;
     final colors = context.colors;
-    final mediaQueryHeight = MediaQuery.of(context).size.height;
+    final mediaQueryHeight = MediaQuery.sizeOf(context).height;
     const offersOneHeightOffset = 250.0;
 
     final scrollController = useMultiStateSheetController(
@@ -62,7 +62,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
     }
 
     final list = offersAsync.value ?? const <OfferDetails>[];
-    final first = list.isNotEmpty ? list.first : null;
+    final first = list.firstOrNull;
 
     final duration = first?.briefDurationTo;
     final durationString = switch (duration) {

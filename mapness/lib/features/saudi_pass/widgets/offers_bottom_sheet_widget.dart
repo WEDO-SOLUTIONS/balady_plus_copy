@@ -27,9 +27,8 @@ class OffersBottomSheetWidget extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ...offers.map((e) => _OfferViewWidgetDetails(e)),
-          ]
+          children: offers
+              .map<Widget>((e) => _OfferViewWidgetDetails(e))
               .insertBetween(
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),

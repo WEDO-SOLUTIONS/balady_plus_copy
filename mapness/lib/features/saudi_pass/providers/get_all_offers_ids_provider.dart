@@ -9,7 +9,17 @@ class GetAllOffersIds extends _$GetAllOffersIds {
   @override
   Future<List<OfferDetails>> build(List<String> ids) async {
     state = const AsyncLoading();
-    final offers = await Future.wait(ids.map((id) => ref.read(offerDetailsProvider(id).future)));
+    final offers = (await Future.wait(
+      ids.map((id) async {
+        try {
+          return await ref.read(offerDetailsProvider(id).future);
+        } catch (e, _) {
+          return null;
+        }
+      }),
+    ))
+        .nonNulls
+        .toList();
     state = AsyncData(offers);
     return offers;
   }
