@@ -1106,7 +1106,7 @@ packages:
     source: hosted
     version: "5.10.0"
   flutter_hms_gms_availability:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_hms_gms_availability
       sha256: e10cf8692d6265524ede42f2f0f22af66254dd34860b59491b22b34c0327f892
@@ -1362,10 +1362,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_picker_plus
-      sha256: "5584ac52ed6fbbb92164aa09ef80aa4a251f4351b076834c75b9c90dee34f57e"
-      url: "https://pub.dev"
+      sha256: f36e0e7e14c794551bf76833d31c3b5b2719635d230e30cb144176431a86f3ec
+      url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.5.0"
+    version: "1.5.4"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
