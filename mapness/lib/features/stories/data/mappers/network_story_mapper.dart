@@ -6,6 +6,7 @@ import 'package:mapness/features/stories/models/story_frame_texts.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
 import 'package:mapness/features/stories/models/story_thumbnail_data.dart';
 import 'package:mapness/features/stories/models/story_typedefs.dart';
+import 'package:mapness/features/stories/models/story_video_data.dart';
 
 extension NetworkStoryResponseMapper on NetworkStoriesResponse {
   List<StoryData> toDomain() => stories.map((e) => e.toDomain()).toList();
@@ -15,7 +16,15 @@ extension NetworkStoryMapper on NetworkStory {
   StoryData toDomain() => StoryData(
         storyId: id,
         frames: frames.map((e) => e.toDomain(id)).toList(),
+        videos: videos.map((e) => e.toDomain()).toList(),
         thumbnail: preview.toDomain(),
+      );
+}
+
+extension NetworkStoryVideoMapper on NetworkStoryVideo {
+  StoryVideoData toDomain() => StoryVideoData(
+        url: url,
+        resolution: resolution,
       );
 }
 
