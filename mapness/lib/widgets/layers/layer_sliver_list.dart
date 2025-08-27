@@ -7,6 +7,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/providers/map/traffic_state.dart' as traffic;
 
 class LayerSliverList extends ConsumerWidget {
   final List<layers_state.LayerType> layerType;
@@ -55,7 +56,14 @@ class LayerSliverList extends ConsumerWidget {
             } else {
               watch.handleTap(value);
             }
+            if (value == layers_state.LayerType.metro) {
+              final trafficState = ref.read(traffic.trafficStateProvider.notifier);
+              if (trafficState.isTrafficEnabled) {
+                ref.read(traffic.trafficStateProvider.notifier).onTrafficTap();
+              }
+            }
           },
+          // ignore: deprecated_member_use
           options: ContentRowOptions(
             padding: EdgeInsets.zero,
             wrapperEnabled: true,

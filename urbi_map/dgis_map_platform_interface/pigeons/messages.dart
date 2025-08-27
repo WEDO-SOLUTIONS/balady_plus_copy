@@ -600,6 +600,84 @@ class PublicTransportDirectoryRouteInfoMessage {
   final List<PublicTransportRouteDirectionMessage> directions;
 }
 
+class RouteDistanceMessage {
+  const RouteDistanceMessage({
+    required this.millimeters,
+  });
+
+  final int millimeters;
+}
+
+class RoutePointMessage {
+  const RoutePointMessage({
+    required this.distance,
+  });
+
+  final RouteDistanceMessage distance;
+}
+
+class PublicTransportInfoMessage {
+  const PublicTransportInfoMessage({
+    required this.type,
+    required this.names,
+    required this.suggestedCarNumbers,
+    required this.boardingSuggest,
+    required this.color,
+    required this.routeLogo,
+  });
+
+  final PublicTransportRouteTypeMessage type;
+  final List<String> names;
+  final List<int> suggestedCarNumbers;
+  final String boardingSuggest;
+  final int? color;
+  final String routeLogo;
+}
+
+class PublicTransportStopMessage {
+  const PublicTransportStopMessage({
+    required this.coordinates,
+    required this.name,
+  });
+
+  final GeoPointMessage coordinates;
+  final String name;
+}
+
+class PublicRoutePartMessage {
+  const PublicRoutePartMessage({
+    required this.transports,
+    required this.intermediateStops,
+  });
+
+  final List<PublicTransportInfoMessage> transports;
+  final List<PublicTransportStopMessage> intermediateStops;
+}
+
+class PublicTransportTransferMessage {
+  const PublicTransportTransferMessage({
+    required this.startPointName,
+    required this.finishPointName,
+    required this.routeParts,
+  });
+
+  final String startPointName;
+  final String finishPointName;
+  final List<PublicRoutePartMessage> routeParts;
+}
+
+class PublicTransportTransferRouteLongEntryMessage {
+  const PublicTransportTransferRouteLongEntryMessage({
+    required this.point,
+    required this.length,
+    required this.value,
+  });
+
+  final RoutePointMessage point;
+  final RouteDistanceMessage length;
+  final PublicTransportTransferMessage value;
+}
+
 enum SortingTypeMessage {
   byRelevance,
   byDistance,
@@ -1315,6 +1393,34 @@ class BriefRouteInfoMessage {
   final BriefExtraRouteInfoMessage extraInfo;
 }
 
+/// Represents detailed route information returned by findRoute method
+class RouteInfoMessage {
+  RouteInfoMessage({
+    required this.distance,
+    required this.duration,
+    required this.stairwayCount,
+    required this.gateCount,
+    required this.altitudes,
+    this.geometry,
+    this.publicTransportTransfers,
+  });
+
+  final double distance;
+  final double duration;
+  final int stairwayCount;
+  final int gateCount;
+  final List<int> altitudes;
+  final List<GeoPointMessage>? geometry;
+  final List<PublicTransportTransferMessage>? publicTransportTransfers;
+}
+
+/// Represents a list of routes returned by findRoute method
+class FindRouteResultMessage {
+  FindRouteResultMessage(this.routes);
+
+  final List<RouteInfoMessage> routes;
+}
+
 class VoiceMessage {
   const VoiceMessage(this.language, this.packageMessage);
 
@@ -1912,6 +2018,13 @@ abstract class MapApi {
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
     RouteSearchPointMessage? finishPoint,
+  );
+
+  @async
+  FindRouteResultMessage findRoute(
+    RouteSearchPointMessage startPoint,
+    RouteSearchPointMessage finishPoint,
+    RouteSearchOptionsMessage navType,
   );
 
   @async

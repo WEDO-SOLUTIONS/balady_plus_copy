@@ -961,8 +961,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             )))
             return
         }
+        let isPublicTransport = routeHandler.options == .publicTransport(PublicTransportRouteSearchOptions())
+        self.routeHandler?.setRoutesVisible(isPublicTransport)
+        if (isPublicTransport) {
+            self.routeHandler?.setShowOnlyActiveRoute(true)
+        }
         
-        self.routeHandler?.setRoutesVisible(false)
+        
         self.navigationHandler?.startNavigation(
             finishPoint: routeHandler.finishPoint,
             options: routeHandler.options,
@@ -986,8 +991,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             )))
             return
         }
+        let isPublicTransport = routeHandler.options == .publicTransport(PublicTransportRouteSearchOptions())
+        self.routeHandler?.setRoutesVisible(isPublicTransport)
+        if (isPublicTransport) {
+            self.routeHandler?.setShowOnlyActiveRoute(true)
+        }
         
-        self.routeHandler?.setRoutesVisible(false)
         self.navigationHandler?.startSimulation(
             finishPoint: routeHandler.finishPoint,
             options: routeHandler.options,
@@ -1113,6 +1122,20 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             routeSearchOptionsConverted,
             startPoint: startSearchPoint,
             finishPoint: finishSearchPoint,
+            completion: completion
+        )
+    }
+
+    func findRoute(startPoint: RouteSearchPointMessage, finishPoint: RouteSearchPointMessage, navType: RouteSearchOptionsMessage, completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void) {
+        let routeSearchOptions = navType.toRouteSearchOptions()
+        
+        let startSearchPoint = startPoint.toRouteSearchPoint()
+        let finishSearchPoint = finishPoint.toRouteSearchPoint()
+        
+        routeHandler?.findRoute(
+            startPoint: startSearchPoint,
+            finishPoint: finishSearchPoint,
+            routeSearchOptions: routeSearchOptions,
             completion: completion
         )
     }

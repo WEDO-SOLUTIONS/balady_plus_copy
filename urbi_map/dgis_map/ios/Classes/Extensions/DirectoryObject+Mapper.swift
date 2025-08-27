@@ -639,6 +639,26 @@ extension PublicTransportRouteType {
     }
 }
 
+extension PublicTransportType {
+    var toMessage: PublicTransportRouteTypeMessage {
+        switch self {
+        case .aeroexpress: return .aeroexpress
+        case .bus: return .bus
+        case .cableCar: return .cableCar
+        case .funicularRailway: return .funicularRailway
+        case .lightMetro: return .lightMetro
+        case .metro: return .metro
+        case .monorail: return .monorail
+        case .premetro: return .premetro
+        case .trolleybus: return .trolleybus
+        case .tram: return .tram
+        case .shuttleBus: return .shuttleBus
+        case .suburbanTrain: return .suburbanTrain
+        @unknown default: return .bus
+        }
+    }
+}
+
 extension GroupItem {
     func toMessage() -> GroupItemMessage {
         return GroupItemMessage(

@@ -69,6 +69,55 @@ class Routes extends _$Routes {
 }
 
 @riverpod
+class PublicTransportRoutes extends _$PublicTransportRoutes {
+  @override
+  Future<List<BriefPublicTransportModel>> build({
+    required RouteParamsPoint? startPoint,
+    required RouteParamsPoint? finishPoint,
+    required RouteSearchOptionsMessage navType,
+    bool? showOnlyActiveRoute,
+    Duration? timeout,
+  }) async {
+    await AdvancedMetrics.instance.startRouteCalculation(
+      startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
+      finishPoint != null ? [finishPoint.latitude, finishPoint.longitude] : null,
+    );
+
+    final dgisController = ref.watch(dgisControllerProvider);
+    final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+
+    final params = RouteEditorRouteParamsMessage(
+      startPoint: startPoint?.pointMessage,
+      finishPoint: finishPoint?.pointMessage,
+      options: navType,
+      showOnlyActiveRoute: showOnlyActiveRoute,
+      searchParams: CarRouteSearchOptionParamsMessage(
+        avoidTollRoads: searchOptions.avoidTollRoads,
+        avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
+      ),
+    );
+
+    final cancelableCompleter = CancelableCompleter<List<BriefPublicTransportModel>>();
+    final publicTransportRoutesSubscription = dgisController.value?.publicTransportRoutesChangedEvents.listen((event) {
+      if (!cancelableCompleter.isCompleted && navType == RouteSearchOptionsMessage.publicTransport) {
+        cancelableCompleter.complete(event.routes);
+      }
+    });
+
+    ref.onDispose(() {
+      publicTransportRoutesSubscription?.cancel();
+      cancelableCompleter.operation.cancel();
+    });
+
+    await dgisController.value?.setRouteParams(params);
+    return cancelableCompleter.operation.value.timeout(
+      timeout ?? const Duration(seconds: 30),
+      onTimeout: () => throw TimeoutException('Timeout while waiting for public transport routes'),
+    );
+  }
+}
+
+@riverpod
 class ActiveRoute extends _$ActiveRoute {
   @override
   int build() {

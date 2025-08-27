@@ -72,6 +72,7 @@ class BriefPublicTransportModel(route: TrafficRoute) {
      */
     val transferCount : Int = _transfers.transferCount
     val onFootDuration: Long = route.onFootDuration.inSeconds
+    val publicTransportTransferRouteLongEntry: List<Map<String, Any?>> = _transfers.map { it.toMap() }
 
     fun toMap(): Map<String, Any>  {
         return mapOf(
@@ -79,6 +80,7 @@ class BriefPublicTransportModel(route: TrafficRoute) {
             "transports" to transports.map { it.toMap() },
             "transferCount" to transferCount,
             "onFootDuration" to onFootDuration,
+            "publicTransportTransferRouteLongEntry" to publicTransportTransferRouteLongEntry,
         )
     }
 }
@@ -173,3 +175,50 @@ internal val PublicTransportTransfer.transportIcon: BriefPublicTransportModel.Tr
 
         return icon
     }
+
+// - PUBLIC TRANSPORT FOR ROUTE
+
+fun PublicTransportTransferRouteLongEntry.toMap(): Map<String, Any?> {
+    // Point property - RoutePoint with distance
+    val point: Map<String, Any?> = mapOf(
+        "distance" to mapOf(
+            "millimeters" to this.point.distance.millimeters
+        )
+    )
+    
+    // Length property - RouteDistance
+    val length: Map<String, Any?> = mapOf(
+        "millimeters" to this.length.millimeters
+    )
+    
+    // Value property - PublicTransportTransfer
+    val value: Map<String, Any?> = mapOf(
+        "startPointName" to this.value.startPointName,
+        "finishPointName" to this.value.finishPointName,
+        "routeParts" to this.value.routeParts.map { routePart ->
+            mapOf(
+                "transports" to routePart.transports.map { transport ->
+                    mapOf(
+                        "type" to transport.type.name,
+                        "names" to transport.names,
+                        "suggestedCarNumbers" to transport.suggestedCarNumbers,
+                        "boardingSuggest" to transport.boardingSuggest,
+                        "routeLogo" to transport.routeLogo,
+                        "color" to transport.color
+                    )
+                },
+                "intermediateStops" to routePart.intermediateStops.map { stop ->
+                    mapOf(
+                        "name" to stop.name
+                    )
+                }
+            )
+        }
+    )
+    
+    return mapOf(
+        "point" to point,
+        "length" to length,
+        "value" to value
+    )
+}
