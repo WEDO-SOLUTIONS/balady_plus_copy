@@ -35,7 +35,8 @@ class MapSearchResults extends ConsumerWidget {
 
     void _sendSuggestionPressed() {
       final scope = context.read<SearchScope>();
-      final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
+      final isFromSuggest =
+          ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
       if (isFromSuggest) {
         ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
@@ -61,15 +62,19 @@ class MapSearchResults extends ConsumerWidget {
           result: item,
           offers: offers,
           language: language,
-          myLocation:
-          myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+          myLocation: myLocation == null
+              ? null
+              : GeoPointMessage(
+                  latitude: myLocation.latitude,
+                  longitude: myLocation.longitude),
           onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
         ),
       ),
     );
   }
 
-  void _onResultTap(BuildContext context, DirectoryObjectMessage item, void Function() sendSuggestionPressed) {
+  void _onResultTap(BuildContext context, DirectoryObjectMessage item,
+      void Function() sendSuggestionPressed) {
     if (item.id == null) {
       return;
     }

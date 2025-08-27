@@ -21,12 +21,12 @@ class SaudiPassScaffold extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: Scaffold(
-          backgroundColor: context.colorsV2.backgroundSurface4,
+          backgroundColor: context.colors.backgroundSurface4,
           appBar: BaladyTopBar.iconAndText(
             systemUiOverlayStyle: SystemUiOverlayStyle.dark,
             title: title,
-            textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(color: context.colorsV3.foregroundDefault),
-            colorEnabled: context.colorsV2.foregroundDefault,
+            textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+            colorEnabled: context.colors.foregroundDefault,
             leading: ActionModel(
               onPressed: onBackButton,
               icon: SystemIcons.arrowCornerLeftLarge,

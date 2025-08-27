@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -23,7 +24,8 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
   bool _hasChangeFavorites = false;
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context) => Container(
+        color: context.colors.backgroundSurface4,
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: FutureBuilder<OffersFiltersView>(
             future: widget.offersScreenView.offersFiltersFuture,
@@ -31,6 +33,7 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                   onShowOnMapPressed: s.hasData
                       ? () => context.router.push(
                             OffersOnMapRoute(
+                              city: s.data!.city.name,
                               categories: s.data!.categories,
                               recommendedTypes: s.data!.recommendedTypes,
                             ),

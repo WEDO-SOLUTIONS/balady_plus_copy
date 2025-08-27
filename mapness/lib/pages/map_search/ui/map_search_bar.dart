@@ -14,7 +14,8 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/statistic/providers/statistics_provider.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
+import 'package:mapness/shared/constants/metrics_constants.dart'
+    as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -72,20 +73,24 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     ref
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(searchProvider(scope.value), (previous, next) {
-      final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
+        final isSearchInRectRequest = ref
+            .read(searchInRectProvider(scope.value))
+            .isSearchInThisAreaRequest;
         if (next.searchText.isEmpty) {
           ref.read(searchInRectProvider(scope.value).notifier).update();
         }
 
-      _updateText(next.searchText);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (next is SearchStateLoading) {
-          _focusNode.unfocus();
-        } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
-          _focusNode.requestFocus();
-        }
+        _updateText(next.searchText);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (next is SearchStateLoading) {
+            _focusNode.unfocus();
+          } else if (next is SearchStateResults &&
+              !isSearchInRectRequest &&
+              previous is SearchStateLoading) {
+            _focusNode.requestFocus();
+          }
+        });
       });
-    });
 
     return BaladySearchWithBackButtonV2(
       searchInput: BaladyTextInput.search(
@@ -94,7 +99,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
-            ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
+            ref
+                .read(searchProvider(scope.value).notifier)
+                .searchQueryChanged(query);
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
               group: metric_const.MetricsConstants.searchTag,
@@ -105,7 +112,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onTap: () {
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
+            ref
+                .read(advertMetricsProvider.notifier)
+                .sendEvent(AdvertMetricsKeys.journeySearch);
             _controller.selection = TextSelection.fromPosition(
               TextPosition(
                 offset: _controller.text.length,

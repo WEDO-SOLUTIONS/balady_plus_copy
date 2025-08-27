@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:dgis_map/library.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_city_by_location_riverpod.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
+import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,10 +16,15 @@ part 'show_map_offers_provider.g.dart';
 
 @riverpod
 class ShowMapOffers extends _$ShowMapOffers {
-  final _settings = MapObjectManagerSettings.mappness();
-  bool toggleShowMap = false;
+  final _hidePoi = 'hidePoi';
+  final _settings = MapObjectManagerSettings.selectedMarker();
 
-  MapObjectManager get objectManager => ref.read(
+  bool toggleShowMap = false;
+  Marker? _hiddenMarker;
+
+  MapObjectManager? mapObjectManager;
+
+  MapObjectManager get selectPinMapObjectManager => ref.read(
         mapObjectManagerProvider(
           named: _settings.name,
           layerId: _settings.layerId,
@@ -28,21 +35,78 @@ class ShowMapOffers extends _$ShowMapOffers {
   List<Offer> build() {
     ref.onDispose(() {
       final dgis = ref.read(dgisControllerProvider).value;
-      unawaited(dgis?.setMapAttributeBool('hidePoi', value: false));
-      unawaited(objectManager.removeAllMarkers());
+      unawaited(dgis?.setMapAttributeBool(_hidePoi, value: false));
+      unawaited(mapObjectManager?.removeAllMarkers());
     });
     return [];
   }
 
-  Future<void> switchOffersVisibility(
-      {required bool enabled, Set<Category>? category, Set<RecommendedType>? promotionsType}) async {
+  // TODO(Ayat): rewire
+  Future<void> initObjectManager(MapObjectManager mapObjectManager) async {
+    this.mapObjectManager = mapObjectManager;
+  }
+
+  Future<void> showMarker(Marker marker) async {
+    _showHiddenMarkerIfPresent();
+
+    final position = LatLng(
+      latitude: marker.options.position.latitude,
+      longitude: marker.options.position.longitude,
+    );
+
+    final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
+    if (currentSearchMarker != null) {
+      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
+      _hideMarker(currentSearchMarker);
+    }
+
+    await mapObjectManager?.removeAllMarkers();
+    await selectPinMapObjectManager.removeAllMarkers();
+    await selectPinMapObjectManager.addMarker(marker);
+  }
+
+  Future<void> removeMarker(String id) async {
+    _showHiddenMarkerIfPresent();
+    await selectPinMapObjectManager.removeMarkerById(id);
+  }
+
+  Future<void> removeAllMarkers() async {
+    await selectPinMapObjectManager.removeAllMarkers();
+    _showHiddenMarkerIfPresent();
+  }
+
+  void _hideMarker(Marker marker) {
+    _hiddenMarker = marker;
+    _setMarkerIsVisible(marker, isVisible: false);
+  }
+
+  void _showHiddenMarkerIfPresent() {
+    final marker = _hiddenMarker;
+    if (marker != null) {
+      _setMarkerIsVisible(marker, isVisible: true);
+      _hiddenMarker = null;
+    }
+  }
+
+  Future<void> _setMarkerIsVisible(Marker marker, {required bool isVisible}) async {
+    await mapObjectManager?.setMarkerOptions(
+      marker.id,
+      ChangeMarkerOptionsMessage(isVisible: marker.options.isVisible = isVisible),
+    );
+  }
+
+  Future<void> switchOffersVisibility({
+    required bool enabled,
+    Set<Category>? category,
+    Set<RecommendedType>? promotionsType,
+  }) async {
     toggleShowMap = enabled;
 
     final dgis = ref.read(dgisControllerProvider).value;
-    unawaited(dgis?.setMapAttributeBool('hidePoi', value: toggleShowMap));
+    unawaited(dgis?.setMapAttributeBool(_hidePoi, value: toggleShowMap));
 
     if (toggleShowMap == false) {
-      unawaited(objectManager.removeAllMarkers());
+      unawaited(mapObjectManager?.removeAllMarkers());
       return;
     }
 

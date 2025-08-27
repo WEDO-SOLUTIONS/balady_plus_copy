@@ -59,6 +59,8 @@ abstract class OffersFiltersView implements Listenable {
 
   Set<lookups_body.Category> get categories;
 
+  lookups_body.City get city;
+
   Set<lookups_body.RecommendedType> get recommendedTypes;
 }
 

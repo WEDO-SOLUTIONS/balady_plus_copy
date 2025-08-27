@@ -24,12 +24,12 @@ class CitySelectionDialogViewWidget extends HookWidget {
 
     final textEditingController = useTextEditingController();
 
-    useEffect(() {
-      void inputListener() => citySelectionDialogView.onSearchInput(textEditingController.text);
-      textEditingController.addListener(inputListener);
-      return textEditingController.dispose;
-    }, [textEditingController]);
+    useListenable(textEditingController);
 
+    useEffect(() {
+      citySelectionDialogView.onSearchInput(textEditingController.text);
+      return null;
+    }, [textEditingController.text]);
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
     return SafeArea(
@@ -47,7 +47,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyleV3.h2SemiBold),
+              Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyles.h2SemiBold),
               CustomCloseButton(onClose: context.router.popForced),
             ],
           ),
@@ -57,11 +57,14 @@ class CitySelectionDialogViewWidget extends HookWidget {
             children: [
               Padding(
                 padding: horizontalPadding,
-                child: BaladySearchWithBackButton(
-                  searchInput: BaladyInput.searchV2(
-                    autofocus: true,
+                child: BaladySearchWithBackButtonV2(
+                  searchInput: BaladyTextInput(
+                    config: BaladyInputConfig(
+                      autofocus: true,
+                      hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
+                      isDisposed: false,
+                    ),
                     controller: textEditingController,
-                    hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
                   ),
                 ),
               ),
@@ -112,19 +115,19 @@ class SearchViewWidget extends StatelessWidget {
           onTap: () => view.onTap(context),
           leading: Icon(
             SystemIcons.search,
-            color: view.isMagnifierVisible ? context.colorsV2.foregroundMuted : Colors.transparent,
+            color: view.isMagnifierVisible ? context.colors.foregroundMuted : Colors.transparent,
           ),
           text: ContentRowTextOptions(
             titleOptions: ContentRowTextOption(
               builder: (context) {
-                final color = context.colorsV2.foregroundDefault;
+                final color = context.colors.foregroundDefault;
                 return Text.rich(
                   TextSpan(
                     children: highlightedTextSpans(
                       source: view.title,
                       search: citySelectionDialogView.search,
-                      highlightStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(color: color),
-                      baseStyle: context.textStyleV3.bodySmallRegular.copyWith(color: color),
+                      highlightStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: color),
+                      baseStyle: context.textStyles.bodySmallRegular.copyWith(color: color),
                     ),
                   ),
                 );
