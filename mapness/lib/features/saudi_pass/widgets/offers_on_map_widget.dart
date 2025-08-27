@@ -32,7 +32,7 @@ const offerPoiPinId = 'offer_poi_pin_id';
 class OffersOnMapWidget extends StatefulHookConsumerWidget {
   final Set<lookups_body.Category> categories;
   final Set<lookups_body.RecommendedType> recommendedTypes;
-  final String city;
+  final lookups_body.City city;
 
   const OffersOnMapWidget({
     required this.categories,
@@ -192,12 +192,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     useEffect(() {
       showMapOffers.switchOffersVisibility(
         enabled: true,
+        cityId: widget.city.id,
         category: widget.categories.isEmpty ? null : widget.categories,
         promotionsType:
             widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
       );
 
-      return () => showMapOffers.switchOffersVisibility(enabled: false);
+      return () => showMapOffers.switchOffersVisibility(
+            enabled: false,
+            cityId: widget.city.id,
+          );
     });
 
     ref.listen(showMapOffersProvider, (prev, next) async {
@@ -278,9 +282,8 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                     width: double.infinity,
                     child: Center(
                       child: Text(
-                        '${widget.city}$typesStringBar$categoryStringBar',
-                        style: context.textStyles.captionLargeRegular
-                            .copyWith(color: context.colors.foregroundSoft),
+                        '${widget.city.name}$typesStringBar$categoryStringBar',
+                        style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                       ),
                     ),
                   ),

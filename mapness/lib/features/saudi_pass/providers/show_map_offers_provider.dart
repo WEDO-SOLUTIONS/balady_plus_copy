@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/features/saudi_pass/providers/saudi_pass_city_by_location_riverpod.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
@@ -97,6 +96,7 @@ class ShowMapOffers extends _$ShowMapOffers {
 
   Future<void> switchOffersVisibility({
     required bool enabled,
+    required String cityId,
     Set<Category>? category,
     Set<RecommendedType>? promotionsType,
   }) async {
@@ -119,8 +119,6 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
 
     try {
-      final cityId = await ref.read(saudiPassCityIdByLocationProvider.future);
-
       final recommendedTypes = preferences?.recommendedTypes.toSet() ?? promotionsType ?? {};
       final categories = preferences?.categories.toSet() ?? category ?? {};
       final cities = <String>{
@@ -147,9 +145,9 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> toggleOffersOnMap() async {
+  Future<void> toggleOffersOnMap(String cityId) async {
     toggleShowMap = !toggleShowMap;
 
-    await switchOffersVisibility(enabled: toggleShowMap);
+    await switchOffersVisibility(enabled: toggleShowMap, cityId: cityId);
   }
 }

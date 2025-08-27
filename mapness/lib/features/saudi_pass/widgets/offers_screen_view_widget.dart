@@ -33,7 +33,7 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                   onShowOnMapPressed: s.hasData
                       ? () => context.router.push(
                             OffersOnMapRoute(
-                              city: s.data!.city.name,
+                              city: s.data!.city,
                               categories: s.data!.categories,
                               recommendedTypes: s.data!.recommendedTypes,
                             ),
