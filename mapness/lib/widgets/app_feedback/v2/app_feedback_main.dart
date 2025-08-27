@@ -84,13 +84,16 @@ class AppFeedbackMain extends HookConsumerWidget {
           ),
         ),
         const SizedBox(height: Spacing.$4x),
-        ValueListenableBuilder(
-          valueListenable: rating,
-          builder: (context, ratingValue, _) => RatingBar(
-            rating: ratingValue,
-            onRatingChanged: (value) {
-              rating.value = value;
-            },
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: ValueListenableBuilder(
+            valueListenable: rating,
+            builder: (context, ratingValue, _) => RatingBar(
+              rating: ratingValue,
+              onRatingChanged: (value) {
+                rating.value = value;
+              },
+            ),
           ),
         ),
         Padding(
