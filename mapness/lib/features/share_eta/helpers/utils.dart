@@ -18,7 +18,7 @@ import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:urbi_analytics/logger.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 class EtaUtils {
   static Future<img.Image> processImage(String imgUrl, int imgSize, {bool isUnavailable = false}) async {
@@ -95,7 +95,7 @@ class EtaUtils {
       // Wait for location to be available
       await completer.future;
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
       _locationListener?.close();
     }
@@ -122,6 +122,7 @@ class EtaUtils {
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
         unawaited(ref.read(appRouterProvider).push(EtaRouteRoute(latitude: latitude, longitude: longitude)));
       } catch (e) {
+        logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showEtaExpired(rootNavigatorKey.currentContext!);
         });
@@ -164,6 +165,7 @@ class EtaUtils {
         }
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
       } catch (e) {
+        logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showLiveLocationExpired(rootNavigatorKey.currentContext!);
         });

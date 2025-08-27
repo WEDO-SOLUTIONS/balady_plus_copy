@@ -7,11 +7,15 @@
 "tripPreviewStartButton" = "Start";
 "tripPreviewMoreRoutesButton" = "Route Options";
 "tripPreviewBackButton" = "Back";
+"tripFinishedAlertTitle" = "You arrived";
+"tripFinishedAlertEndTripButton" = "End trip";
+"tripFinishedAlertNewRouteButton" = "New route";
 "searchScreenGridHistory" = "History";
 "keyboardSearchScreenEmptyPlaceholderTitle" = "Nothing was found";
 "keyboardSearchScreenEmptyPlaceholderSubtitle" = "Try changing your query a little";
 "anyScreenBackButton" = "Back";
 "historyScreenEmptyPlaceholderTitle" = "There's nothing here yet";
+"historyScreenEmptyPlaceholderSubtitleTitle" = "You can add your first selection of favorite places and companies on your phone";
 "historyScreenSearchBackButton" = "Search";
 "settingsScreenTitle" = "Settings";
 "settingsScreenTraffic" = "Traffic";

@@ -17,6 +17,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/language_detector.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
@@ -423,8 +424,8 @@ class Search extends _$Search {
     );
     // We need it to track request in logs and look on it.
     // Why do we use print for this: see `Future<void> runMapnessApp`
-    // ignore: avoid_print
-    print(
+
+    logger.log(
         '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
     ref.read(searchInRectProvider(scope).notifier).searchInThisAreaSwitch(value: true);
@@ -472,9 +473,7 @@ class Search extends _$Search {
       },
     );
     // We need it to track request in logs and look on it.
-    // Why do we use print for this: see `Future<void> runMapnessApp`
-    // ignore: avoid_print
-    print(
+    logger.log(
       '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $status',
     );
   }

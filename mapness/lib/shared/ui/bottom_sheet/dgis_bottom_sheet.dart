@@ -12,6 +12,7 @@ import 'package:mapness/shared/ui/bottom_sheet/lib/scroll_listeners.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/vertival_scroll_listener.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/widget_size_notifier.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 // Map controls builder type
 typedef MapControlsBuilder = Widget Function(
@@ -718,9 +719,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
 
   void _printDebugLog(String text) {
     if (kDebugMode && widget.printDebugLogs) {
-      // ignore: avoid_print
-      print(text);
-      // logger.debug(text, tags: [LogTag.bottomSheet]);
+      logger.log(text);
     }
   }
 

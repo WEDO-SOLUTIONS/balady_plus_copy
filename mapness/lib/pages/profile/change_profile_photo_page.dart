@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
@@ -14,6 +13,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 @RoutePage()
@@ -85,7 +85,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
     try {
       image = await picker.pickImage(source: ImageSource.gallery);
     } catch (e) {
-      log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     }
 
     if (image == null) {

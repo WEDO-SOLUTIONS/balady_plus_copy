@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
@@ -65,11 +64,10 @@ import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
-import 'package:share_plus/share_plus.dart';
 
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
@@ -137,6 +135,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   @override
   void initState() {
     super.initState();
+    logger.init();
     initMixpanel();
     initDeepLinks();
     listenNavigationEvents();
@@ -287,7 +286,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     try {
       await controller.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
     } catch (ex) {
-      debugPrint('Error setting camera position point: $ex');
+      logger.log('Error setting camera position point: $ex', logLevel: MapnessLogLevel.error);
     }
   }
 
@@ -301,11 +300,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> initMixpanel() async {
+    logger.log('Initializing Mixpanel...');
     mixpanel = await Mixpanel.init(
       '2d045d85e25087812e92c62b84d6fbc3',
       trackAutomaticEvents: true,
     );
     mixpanel?.setLoggingEnabled(true);
+    logger.log('Mixpanel initialized successfully');
+
     final config = FlutterUxConfig(
       enableAdvancedGestureRecognition: true,
       enableCrashHandling: true,
@@ -315,6 +317,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       enableAutomaticScreenNameTagging: false,
     );
     await FlutterUxcam.startWithConfiguration(config);
+    logger.log('UXCam started with configuration');
   }
 
   Future<void> initDeepLinks() async {
@@ -324,7 +327,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
       if (kDebugMode) {
-        print('_linkSubscription $uri');
+        logger.log('Deep link received: $uri');
       }
       openAppLink(uri, isFirstRun: appLink != null);
     });
@@ -726,50 +729,17 @@ Future<void> setupMapness(EnvType envType) async {
   );
 }
 
-class MapnessLogger {
-  static late File _logsFile;
-
-  static Future<void> init() async {
-    final directory = await getApplicationDocumentsDirectory();
-    _logsFile = File('${directory.path}/balady-logs.txt');
-
-    await _logsFile.writeAsString('');
-  }
-
-  static void append(String line) {
-    _logsFile.writeAsString('$line\n', mode: FileMode.append);
-  }
-
-  static void share() {
-    Share.shareXFiles(
-      [
-        XFile(_logsFile.path),
-      ],
-    );
-  }
-}
-
 Future<void> runMapnessApp(EnvType envType, FutureOr<void> Function() main) async {
-  await Zone.current.fork(
-    specification: ZoneSpecification(
-      print: (self, parent, zone, line) {
-        MapnessLogger.append(line);
-        parent.print(zone, line);
-      },
-    ),
-  ).run(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await MapnessLogger.init();
-    await initHive();
+  WidgetsFlutterBinding.ensureInitialized();
+  await initHive();
 
-    final hostFlutterApi = _HostFlutterApi();
-    HostFlutterApi.setUp(hostFlutterApi);
+  final hostFlutterApi = _HostFlutterApi();
+  HostFlutterApi.setUp(hostFlutterApi);
 
-    await AppConfigLoader.init(envType);
-    await hostFlutterApi.appRunCompleter.future;
+  await AppConfigLoader.init(envType);
+  await hostFlutterApi.appRunCompleter.future;
 
-    await main();
-  });
+  await main();
 }
 
 Future<void> initHive() async {

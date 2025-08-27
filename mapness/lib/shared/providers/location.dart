@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -50,7 +50,7 @@ class _Location extends _$Location {
             ref.onDispose(locationSubscription.cancel);
           }
         } catch (ex) {
-          debugPrint(ex.toString());
+          logger.log('Error listening to HMS stream: ${ex.toString()}');
         }
       } else {
         try {
@@ -67,7 +67,7 @@ class _Location extends _$Location {
 
           return null;
         } catch (ex) {
-          debugPrint(ex.toString());
+          logger.log('Error listening to Geolocator stream: ${ex.toString()}');
         }
       }
     });
@@ -140,7 +140,7 @@ class _Location extends _$Location {
         }
       }
     } catch (ex) {
-      debugPrint(ex.toString());
+      logger.log('Error checking location permission: ${ex.toString()}');
     }
 
     return false;

@@ -1,6 +1,6 @@
 enum Language: String {
-    case en = "english"
-    case ar = "arabic"
+    case en
+    case ar
 
     var identifier: String {
         switch self {

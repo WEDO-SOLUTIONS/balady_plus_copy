@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'object_manager.g.dart';
@@ -161,7 +161,7 @@ class MapObjectManager extends _$MapObjectManager {
             ),
       );
     } catch (ex, __) {
-      debugPrint(ex.toString());
+      logger.log('Error removing marker: ${ex.toString()}');
     }
   }
 

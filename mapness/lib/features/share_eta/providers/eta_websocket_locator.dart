@@ -6,7 +6,7 @@ import 'dart:math';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/models/ws_config.dart';
-import 'package:urbi_analytics/logger.dart' as analitics;
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 typedef ConnectionStatus = void Function({bool status});
 typedef EtaInfoCallback<T> = void Function(EtaInfoModel<T> etaInfo);
@@ -141,7 +141,7 @@ class EtaWebsocket {
         await _reconnect();
         return;
       } catch (e) {
-        analitics.log('Reconnecting attempt $i failed. Error: $e');
+        logger.log('Reconnecting attempt $i failed. Error: $e', logLevel: MapnessLogLevel.critical);
       }
       if (i == _reconnectingAttempts - 1) {
         throw Exception('Failed to reconnect');
@@ -244,13 +244,13 @@ class EtaWebsocket {
               return;
             }
           } catch (e) {
-            analitics.log(e.toString());
+            logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
           }
         },
 
         // First iteration we don't need to handle errors
         onError: (error) {
-          analitics.log(e.toString());
+          logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
           return _stop();
         },
       );
@@ -266,7 +266,7 @@ class EtaWebsocket {
       await _subscription?.cancel();
       await _ws?.close();
     } catch (e) {
-      analitics.log(e.toString());
+      logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
       _ws = null;
       _subscription = null;
