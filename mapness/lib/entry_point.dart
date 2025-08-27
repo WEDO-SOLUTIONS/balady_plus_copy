@@ -30,6 +30,8 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
+import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
@@ -767,5 +769,15 @@ class _HostFlutterApi extends HostFlutterApi {
   Future<VendorConfigContentMessage> getAppConfig() async {
     final vendorConfigLocal = await AppConfigLoader.getAppConfig();
     return VendorConfigContentMessage(content: vendorConfigLocal);
+  }
+
+  @override
+  Future<FavouritesStateMessage> getFavourites() async {
+    final favouritesState = await getFavouritesStateFromHive();
+    return FavouritesStateMessage(
+      home: favouritesState.home?.message,
+      work: favouritesState.work?.message,
+      items: favouritesState.items.map((item) => item.message).toList(),
+    );
   }
 }

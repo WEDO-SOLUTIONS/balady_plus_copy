@@ -125,7 +125,7 @@ class SearchScreen(
                                     RoutePreviewScreen(
                                         carContext,
                                         mapController,
-                                        item,
+                                        item.toRoutePreviewParams(),
                                     )
                                 )
                             }.build()
@@ -161,7 +161,7 @@ class SearchScreen(
                                 RoutePreviewScreen(
                                     carContext,
                                     mapController,
-                                    dgisObject.item,
+                                    dgisObject.item.toRoutePreviewParams(),
                                 )
                             )
                         }.build()

@@ -17,6 +17,7 @@
   <string name="grant_access_action">Grant Access</string>
 
   <!-- Search -->
+  <string name="search_title">Search</string>
   <string name="search_history">History</string>
   <string name="search_mosques">Mosques</string>
   <string name="search_fuel">Fuel</string>
@@ -35,6 +36,7 @@
   <string name="phone_button">Phone</string>
 
   <!-- Common -->
+  <string name="app">Balady</string>
   <string name="driving_notification_title">Driving with Balady</string>
   <string name="you_dont_seem_to_have_internet_description">You don\'t seem to have internet connection. Please check the connection</string>
   <string name="meter">m</string>
@@ -63,4 +65,11 @@
   <string name="route_avoid_toll_roads">Avoid toll roads</string>
   <string name="route_avoid_unpaved_roads">Avoid unpaved roads</string>
   <string name="route_suggest_better_route">Suggest a route better</string>
+
+  <!-- Favourites -->
+  <string name="favourites_home">Home</string>
+  <string name="favourites_work">Work</string>
+  <string name="favourites_title">Favorites</string>
+  <string name="no_favourites_title">There\'s nothing here yet</string>
+  <string name="no_favourites_subtitle">You can add your first selection of favorite places and companies on your phone</string>
 </resources>
