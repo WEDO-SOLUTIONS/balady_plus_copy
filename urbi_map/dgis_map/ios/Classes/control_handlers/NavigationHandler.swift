@@ -309,7 +309,7 @@ class NavigationHandler {
             context: context,
             controllerSettings:  MyLocationControllerSettings(
                 coordinatesThreshold: Meter(value: 10),
-                bearingThreshold: Bearing(value: 90),
+                bearingThreshold: Bearing(value: 90)
             )
         ))
         
