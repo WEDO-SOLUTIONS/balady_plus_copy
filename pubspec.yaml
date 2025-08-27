@@ -254,6 +254,8 @@ dependencies:
   pdf: ^3.11.3
   flutter_launcher_icons: ^0.14.3
   in_app_review: ^2.0.10
+  external_app_launcher: ^4.0.3
+  store_redirect: ^2.0.4
 
 dependency_overrides:
   # for dio_http_cache
