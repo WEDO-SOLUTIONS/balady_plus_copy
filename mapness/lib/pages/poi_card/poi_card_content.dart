@@ -227,17 +227,29 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         header: PoiHeader(
           title: widget.data.address?.buildingName ?? widget.data.title,
           subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
-          subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
-              ? [
-                  const TextSpan(text: ' • '),
-                  WidgetSpan(
-                    child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
-                    baseline: TextBaseline.ideographic,
-                    alignment: PlaceholderAlignment.middle,
-                  ),
-                  TextSpan(text: ' $poiHeaderSubTitle'),
-                ]
-              : [],
+          subTitleExtraInlineSpans: [
+            if (poiHeaderSubTitle != null) ...[
+              const TextSpan(text: ' • '),
+              WidgetSpan(
+                child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+              ),
+              TextSpan(text: ' $poiHeaderSubTitle'),
+            ],
+            WidgetSpan(
+              child: Padding(
+                padding:  const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                child: Icon(
+                  (widget.data.parkingInfo?.isPaid ?? false) ? GeneralIcons.money : GeneralIcons.checkmarkCircle,
+                  size: 16,
+                  color: context.colors.foregroundSoft,
+                ),
+              ),
+              baseline: TextBaseline.ideographic,
+              alignment: PlaceholderAlignment.middle,
+            ),
+          ],
           parkingInfo: widget.data.parkingInfo,
           poiCardState: poiCardState,
           tabController: _tabController,

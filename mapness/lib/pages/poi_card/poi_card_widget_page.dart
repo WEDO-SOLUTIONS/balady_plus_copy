@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' show General16Icons, SliverFillAfter, Spacing;
+import 'package:balady_uikit/balady_uikit.dart' show General16Icons, GeneralIcons, SliverFillAfter, Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
