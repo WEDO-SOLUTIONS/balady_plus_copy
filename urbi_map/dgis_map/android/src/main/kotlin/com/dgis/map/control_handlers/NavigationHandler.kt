@@ -458,11 +458,11 @@ class NavigationHandler(
                         Result.success(
                                 BetterRouteSettingsMessage(
                                         betterRouteTimeCostThreshold =
-                                                settings.routeSearchDelay.inSeconds,
-                                        betterRouteLengthThreshold =
                                                 settings.betterRouteTimeCostThreshold.inSeconds,
-                                        routeSearchDelay =
+                                        betterRouteLengthThreshold =
                                                 settings.betterRouteLengthThreshold.millimeters,
+                                        routeSearchDelay =
+                                                settings.routeSearchDelay.inSeconds,
                                 )
                         )
                 )
