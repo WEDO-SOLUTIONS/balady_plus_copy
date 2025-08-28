@@ -172,10 +172,14 @@ digraph "" {
   "/lib/features/stories/ui/frame/story_frame_content.dart" [label="story_frame_content"];
   "/lib/features/stories/ui/frame/frame_progress_indicator.dart" [label="frame_progress_indicator"];
   "/lib/features/stories/ui/frame/story_frame_action_button.dart" [label="story_frame_action_button"];
+  "/lib/features/stories/ui/fullscreen_strory_error.dart" [label="fullscreen_strory_error"];
+  "/lib/features/stories/ui/fullscreen_story_content.dart" [label="fullscreen_story_content"];
   "/lib/features/stories/ui/stories_transition.dart" [label="stories_transition"];
   "/lib/features/stories/ui/stories_fullscreen.dart" [label="stories_fullscreen"];
+  "/lib/features/stories/ui/story_video_player.dart" [label="story_video_player"];
   "/lib/features/stories/ui/story_args_provider.dart" [label="story_args_provider"];
   "/lib/features/stories/ui/story_frames_player.dart" [label="story_frames_player"];
+  "/lib/features/stories/ui/models/video_story_state.dart" [label="video_story_state"];
   "/lib/features/stories/data/mappers/network_story_mapper.dart" [label="network_story_mapper"];
   "/lib/features/stories/models/story_frame_controller.dart" [label="story_frame_controller"];
   "/lib/features/stories/models/story_thumbnail_data.dart" [label="story_thumbnail_data"];
@@ -187,6 +191,7 @@ digraph "" {
   "/lib/features/stories/models/story_frame_texts.dart" [label="story_frame_texts"];
   "/lib/features/stories/models/stories_type_data.dart" [label="stories_type_data"];
   "/lib/features/stories/models/story_typedefs.dart" [label="story_typedefs"];
+  "/lib/features/stories/models/story_video_data.dart" [label="story_video_data"];
   "/lib/features/routing/providers/public_transport_visibility.dart" [label="public_transport_visibility"];
   "/lib/features/routing/providers/nearest_object.dart" [label="nearest_object"];
   "/lib/features/routing/providers/routes_helper.dart" [label="routes_helper"];
@@ -1265,8 +1270,11 @@ digraph "" {
           }
           subgraph "cluster~/lib/features/stories/ui" {
             label="ui";
+            "/lib/features/stories/ui/fullscreen_strory_error.dart";
+            "/lib/features/stories/ui/fullscreen_story_content.dart";
             "/lib/features/stories/ui/stories_transition.dart";
             "/lib/features/stories/ui/stories_fullscreen.dart";
+            "/lib/features/stories/ui/story_video_player.dart";
             "/lib/features/stories/ui/story_args_provider.dart";
             "/lib/features/stories/ui/story_frames_player.dart";
             subgraph "cluster~/lib/features/stories/ui/frame" {
@@ -1275,6 +1283,10 @@ digraph "" {
               "/lib/features/stories/ui/frame/story_frame_content.dart";
               "/lib/features/stories/ui/frame/frame_progress_indicator.dart";
               "/lib/features/stories/ui/frame/story_frame_action_button.dart";
+            }
+            subgraph "cluster~/lib/features/stories/ui/models" {
+              label="models";
+              "/lib/features/stories/ui/models/video_story_state.dart";
             }
           }
           subgraph "cluster~/lib/features/stories/data" {
@@ -1296,6 +1308,7 @@ digraph "" {
             "/lib/features/stories/models/story_frame_texts.dart";
             "/lib/features/stories/models/stories_type_data.dart";
             "/lib/features/stories/models/story_typedefs.dart";
+            "/lib/features/stories/models/story_video_data.dart";
           }
         }
         subgraph "cluster~/lib/features/routing" {
@@ -2996,6 +3009,8 @@ digraph "" {
   "/lib/features/stories/ui/frame/story_frame_widget.dart" -> "/lib/features/stories/ui/story_args_provider.dart";
   "/lib/features/stories/ui/frame/story_frame_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/stories/ui/frame/story_frame_widget.dart" -> "/lib/shared/ui/loading_image/loading_shimmer_image.dart";
+  "/lib/features/stories/ui/fullscreen_strory_error.dart" -> "/lib/_generated/assets/assets.gen.dart";
+  "/lib/features/stories/ui/fullscreen_strory_error.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/stories/ui/stories_transition.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/features/stories/ui/stories_fullscreen.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
   "/lib/features/stories/ui/stories_fullscreen.dart" -> "/lib/features/app_analytics/app_analytics.dart";
@@ -3006,6 +3021,10 @@ digraph "" {
   "/lib/features/stories/ui/stories_fullscreen.dart" -> "/lib/features/stories/providers/story_service.dart";
   "/lib/features/stories/ui/stories_fullscreen.dart" -> "/lib/features/stories/ui/story_args_provider.dart";
   "/lib/features/stories/ui/stories_fullscreen.dart" -> "/lib/features/stories/ui/story_frames_player.dart";
+  "/lib/features/stories/ui/stories_fullscreen.dart" -> "/lib/features/stories/ui/story_video_player.dart";
+  "/lib/features/stories/ui/story_video_player.dart" -> "/lib/features/stories/models/story_frame_theme_data.dart";
+  "/lib/features/stories/ui/story_video_player.dart" -> "/lib/features/stories/ui/fullscreen_strory_error.dart";
+  "/lib/features/stories/ui/story_video_player.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/stories/ui/story_args_provider.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/stories/models/story_data.dart";
@@ -3022,11 +3041,13 @@ digraph "" {
   "/lib/features/stories/data/mappers/network_story_mapper.dart" -> "/lib/features/stories/models/story_frame_theme_data.dart";
   "/lib/features/stories/data/mappers/network_story_mapper.dart" -> "/lib/features/stories/models/story_thumbnail_data.dart";
   "/lib/features/stories/data/mappers/network_story_mapper.dart" -> "/lib/features/stories/models/story_typedefs.dart";
+  "/lib/features/stories/data/mappers/network_story_mapper.dart" -> "/lib/features/stories/models/story_video_data.dart";
   "/lib/features/stories/models/story_frame_data.dart" -> "/lib/features/stories/models/story_frame_action.dart";
   "/lib/features/stories/models/story_frame_data.dart" -> "/lib/features/stories/models/story_frame_texts.dart";
   "/lib/features/stories/models/story_frame_data.dart" -> "/lib/features/stories/models/story_frame_theme_data.dart";
   "/lib/features/stories/models/story_data.dart" -> "/lib/features/stories/models/story_frame_data.dart";
   "/lib/features/stories/models/story_data.dart" -> "/lib/features/stories/models/story_thumbnail_data.dart";
+  "/lib/features/stories/models/story_data.dart" -> "/lib/features/stories/models/story_video_data.dart";
   "/lib/features/stories/models/story_frame_texts.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/features/stories/models/stories_type_data.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/features/stories/models/stories_type_data.dart" -> "/lib/features/stories/models/story_data.dart";
