@@ -230,14 +230,21 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
       await mapObjectManager.removeAllMarkers();
       await mapObjectManager.addMarkers(markers);
-
-      final userPos = ref.read(locationProvider);
-      if (userPos == null) {
-        return;
+      double lat, lng;
+      if (markers.isNotEmpty) {
+        final firstPosition = markers.first.options.position;
+        lat = firstPosition.latitude;
+        lng = firstPosition.longitude;
+      } else {
+        final userPos = ref.read(locationProvider);
+        if (userPos == null) {
+          return;
+        }
+        lat = userPos.latitude;
+        lng = userPos.longitude;
       }
 
-      final gp = GeoPointMessage(
-          latitude: userPos.latitude, longitude: userPos.longitude);
+      final gp = GeoPointMessage(latitude: lat, longitude: lng);
       final zoom =
           await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
 
