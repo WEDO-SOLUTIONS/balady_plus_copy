@@ -109,26 +109,33 @@ class RoutingPublicTailSector extends ConsumerWidget {
                     size: _linePointCircleSize,
                   ),
                   Spacing.$3x.widthBox,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        pointLabel?.label ?? defaultPointLabel,
-                        style: context.textStyles.bodyLargeRegular.copyWith(
-                          color: context.colors.foregroundDefault,
-                        ),
-                      ),
-                      Spacing.$1x.heightBox,
-                      FutureBuilder(
-                        future: address,
-                        builder: (context, snapshot) => Text(
-                          snapshot.data ?? context.l10n.loading,
-                          style: context.textStyles.bodySmallRegular.copyWith(
-                            color: context.colors.foregroundSoft,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          pointLabel?.label ?? defaultPointLabel,
+                          style: context.textStyles.bodyLargeRegular.copyWith(
+                            color: context.colors.foregroundDefault,
                           ),
                         ),
-                      ),
-                    ],
+                        Spacing.$1x.heightBox,
+                        FutureBuilder(
+                          future: address,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                snapshot.data ?? context.l10n.loading,
+                                style: context.textStyles.bodySmallRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),

@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/public_transport_arrived.dart';
+import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/route_details_state_mapper.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
+import 'package:mapness/pages/routing/ui/models/two_state_ext.dart';
 import 'package:mapness/pages/routing/ui/widgets/public_transport/routing_public_transport_content.dart';
-import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
-import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -55,14 +55,15 @@ class RouteDetailsPage extends ConsumerStatefulWidget {
 }
 
 class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
-  late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController;
+  late final MultiStateSheetController<TwoStateSheet> _bottomSheetController;
   List<RouteDetailsPublicTransport>? _transports;
   int _activeIndex = 0;
   late BriefPublicTransportModel? _route;
 
   bool get _hasPublicTransportRoutes => widget.publicTransportRoutes.isNotEmpty && widget.onActiveChanged != null;
+  bool get _showTopHeaderRoutes => _hasPublicTransportRoutes && widget.publicTransportRoutes.length > 1;
   StatefulSheetDelegate<double>? get topHeaderOffset =>
-      _hasPublicTransportRoutes ? const StatefulSheetDelegateValue(value: 16.0) : null;
+      _showTopHeaderRoutes ? const StatefulSheetDelegateValue(value: 16.0) : null;
 
   static const contentRowStartPadding = ui_kit.Spacing.$4x;
   static const linePointCircleSize = 14.0;
@@ -75,16 +76,8 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     _bottomSheetController = MultiStateSheetController(
       behavior: MultiSnappingBehavior(
         models: [
-          OffsetSnappingModel({_PublicTransportRoutes.height + (topHeaderOffset?.getStaticValue() ?? 0.0)}),
           FractionSnappingModel({0.0}),
-          if (_showFooter)
-            ComponentsSnappingModel(componentsDescriptions: [
-              SnapComponent.merge(
-                a: const SnapComponent.size(component: Components.header),
-                b: const SnapComponent.size(component: Components.footer),
-                merge: (a, b) => a + b,
-              ),
-            ])
+          OffsetSnappingModel({_PublicTransportRoutes.height + 16.0}),
         ],
       ),
       stateMapper: const RouteDetailsStateMapperV2(),
@@ -117,12 +110,13 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
 
     return Directionality(
       textDirection: direction,
-      child: MultiStateSheet<ThreeStateSheet>(
+      child: MultiStateSheet<TwoStateSheet>(
         scrollController: _bottomSheetController,
-        backgroundColor: context.colors.backgroundSurface1,
+        backgroundColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface1,
         outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
         topHeaderOffset: topHeaderOffset,
-        topHeader: _hasPublicTransportRoutes && widget.publicTransportRoutes.length > 1
+        topHeader: _showTopHeaderRoutes
             ? _PublicTransportRoutes(
                 routes: widget.publicTransportRoutes,
                 activeIndex: _activeIndex,
@@ -148,22 +142,25 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
             destination: widget.destination,
           ),
         ],
-        footer: SizedBox(
-          width: double.infinity,
-          child: ui_kit.AppButton(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).padding.bottom + ui_kit.Spacing.$2x,
-              left: ui_kit.Spacing.$4x,
-              right: ui_kit.Spacing.$4x,
-              top: ui_kit.Spacing.$3x,
+        footer: ColoredBox(
+          color: context.colors.backgroundSurface1,
+          child: SizedBox(
+            width: double.infinity,
+            child: ui_kit.AppButton(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).padding.bottom + ui_kit.Spacing.$2x,
+                left: ui_kit.Spacing.$4x,
+                right: ui_kit.Spacing.$4x,
+                top: ui_kit.Spacing.$3x,
+              ),
+              buttonColorScheme: ui_kit.ButtonColorScheme.accentSecondary,
+              size: ui_kit.ButtonSize.large,
+              primaryLabel: widget.buttonLabel,
+              onTap: () {
+                context.router.popForced();
+                widget.onPressed?.call();
+              },
             ),
-            buttonColorScheme: ui_kit.ButtonColorScheme.accentSecondary,
-            size: ui_kit.ButtonSize.large,
-            primaryLabel: widget.buttonLabel,
-            onTap: () {
-              context.router.popForced();
-              widget.onPressed?.call();
-            },
           ),
         ),
       ),
@@ -240,10 +237,9 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
     return null;
   }
 
-  bool get _showFooter => widget.type == RouteDetailsSheetType.about;
-  ThreeStateSheet get _initialState => switch (widget.type) {
-        RouteDetailsSheetType.about => ThreeStateSheet.expanded,
-        RouteDetailsSheetType.driving => ThreeStateSheet.hidden,
+  TwoStateSheet get _initialState => switch (widget.type) {
+        RouteDetailsSheetType.about => TwoStateSheet.expanded,
+        RouteDetailsSheetType.driving => TwoStateSheet.hidden,
       };
 }
 
@@ -268,6 +264,7 @@ class _HeaderState extends ConsumerState<_Header> {
   @override
   Widget build(BuildContext context) {
     final duration = widget.route.duration.formatDuration(context.l10n);
+    final durationByFoot = '${widget.route.durationInMinutes()} ${context.l10n.min}';
     final transfers = ArPlurals.transfers(widget.route.transferCount, context.l10n);
     final p = publicTransportArrivedProvider(
       destination: (widget.destination?.value?.latitude, widget.destination?.value?.longitude),
@@ -286,14 +283,16 @@ class _HeaderState extends ConsumerState<_Header> {
             : Column(
                 children: [
                   const SizedBox(height: ui_kit.Spacing.$1x),
-                  const DraggerContainer(),
+                  DraggerContainer(
+                    draggerColor: context.colors.backgroundSurface5,
+                  ),
                   const SizedBox(height: ui_kit.Spacing.$1x),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const SizedBox(width: 64),
                       Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             duration,
@@ -301,23 +300,24 @@ class _HeaderState extends ConsumerState<_Header> {
                               color: context.colors.foregroundDefault,
                             ),
                           ),
-                          Text(
-                            transfers,
-                            style: context.textStyles.bodySmallRegular.copyWith(
-                              color: context.colors.foregroundSoft,
-                            ),
+                          RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                  text: transfers,
+                                  style: context.textStyles.bodySmallRegular.copyWith(
+                                    color: context.colors.foregroundDefault,
+                                  )),
+                              TextSpan(
+                                  text: ' • $durationByFoot',
+                                  style: context.textStyles.bodySmallRegular.copyWith(
+                                    color: context.colors.foregroundSoft,
+                                  )),
+                            ]),
                           ),
-                          const SizedBox(height: ui_kit.Spacing.$4x),
                         ],
                       ),
-                      ui_kit.AppButton.close(onTap: widget.onClose),
+                      ui_kit.AppButton.close(onTap: widget.onClose, padding: EdgeInsets.zero),
                     ],
-                  ),
-                  TransportIconsRow(
-                    transports: widget.route.transports,
-                    pubs: widget.route.publicTransportTransferRouteLongEntry,
-                    isLarge: true,
-                    mainAxisAlignment: MainAxisAlignment.center,
                   ),
                   const SizedBox(height: ui_kit.Spacing.$4x),
                 ],

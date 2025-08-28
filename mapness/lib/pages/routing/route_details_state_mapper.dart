@@ -31,31 +31,31 @@ final class RouteDetailsStateMapper implements BottomSheetStateMapper<ThreeState
   }
 }
 
-final class RouteDetailsStateMapperV2 implements sheetify.SheetStateMapper<sheetify.ThreeStateSheet> {
+enum TwoStateSheet {
+  hidden,
+  expanded,
+}
+
+final class RouteDetailsStateMapperV2 implements sheetify.SheetStateMapper<TwoStateSheet> {
   const RouteDetailsStateMapperV2();
 
   @override
-  sheetify.ThreeStateSheet state(int state) => switch (state) {
-        0 => sheetify.ThreeStateSheet.hidden,
-        1 => sheetify.ThreeStateSheet.open,
-        _ => sheetify.ThreeStateSheet.expanded,
+  TwoStateSheet state(int state) => switch (state) {
+        0 => TwoStateSheet.hidden,
+        _ => TwoStateSheet.expanded,
       };
 
   @override
-  int index(sheetify.ThreeStateSheet state) => state.index.clamp(0, 2);
+  int index(TwoStateSheet state) => state.index.clamp(0, 2);
 
   @override
-  bool shouldPopOn(sheetify.MultiStateSheetController<sheetify.ThreeStateSheet> controller) {
+  bool shouldPopOn(sheetify.MultiStateSheetController<TwoStateSheet> controller) {
     switch (controller.closestState) {
-      case sheetify.ThreeStateSheet.hidden:
+      case TwoStateSheet.hidden:
         return true;
 
-      case sheetify.ThreeStateSheet.open:
-        controller.setState(sheetify.ThreeStateSheet.hidden);
-        return false;
-
-      case sheetify.ThreeStateSheet.expanded:
-        controller.setState(sheetify.ThreeStateSheet.open);
+      case TwoStateSheet.expanded:
+        controller.setState(TwoStateSheet.hidden);
         return false;
     }
   }
