@@ -25,22 +25,16 @@ enum Error {
   ERROR_INTERNAL_SERVER_ERROR = 4;
 }
 
-message Image {
-  string url = 1;
-}
+message Image { string url = 1; }
 
 message Point {
-  double latitude = 1; // Y
+  double latitude = 1;  // Y
   double longitude = 2; // X
 }
 
-message Color {
-  string hex = 1;
-}
+message Color { string hex = 1; }
 
-message TextStyle {
-  Color color = 1;
-}
+message TextStyle { Color color = 1; }
 
 enum FavouriteItemType {
   FAVOURITE_ITEM_TYPE_UNKNOWN = 0;
@@ -79,8 +73,13 @@ enum IWishCategory {
   IWISH_CATEGORY_JOY_PARKS = 1;
 }
 
-// Base requests & responses
+enum IWishFeedbackRating {
+  IWISH_FEEDBACK_RATING_HAPPY = 0;
+  IWISH_FEEDBACK_RATING_NEUTRAL = 1;
+  IWISH_FEEDBACK_RATING_UPSET = 2;
+}
 
+// Base requests & responses
 message ErrorResponse {
   message ErrorMessage {
     Error type = 1;
@@ -106,20 +105,23 @@ message Story {
     string title = 2;
   }
 
+  message Video {
+    string url = 1;
+    string resolution = 2;
+  }
+
   message Frame {
-    message Content{
-      repeated Image images = 1;
-    }
+    message Content { repeated Image images = 1; }
 
     message Style {
       optional TextStyle title = 1;
       optional TextStyle description = 2;
+      optional TextStyle background_color = 3;
     }
+    
 
     message ActionButton {
-      message Link {
-        string url = 1;
-      }
+      message Link { string url = 1; }
 
       message Style {
         optional Color background_color = 1;
@@ -147,6 +149,7 @@ message Story {
   repeated Frame frames = 3;
   bool is_viewed = 4; // deprecated
   optional int32 activate_every_n_launches = 5;
+  repeated Video videos = 6;
 }
 
 message StoriesResponse {
@@ -157,9 +160,7 @@ message StoriesResponse {
 // Happiness Map
 
 message HappinessRequest {
-  message Tag {
-    string name = 1;
-  }
+  message Tag { string name = 1; }
 
   Point point = 1;
   bool is_positive = 2;
@@ -170,9 +171,7 @@ message HappinessRequest {
 // Favourites
 
 message FavouriteItemPlace {
-  message Location {
-    Point point = 1;
-  }
+  message Location { Point point = 1; }
 
   message Entity {
     EntitySourceType source_type = 1;
@@ -225,27 +224,40 @@ message DeleteFavouriteItemsRequest {
 }
 
 // iWish
+message Category {
+  int32 id = 1;
+  string name_en = 2;
+  string name_ar = 3;
+  string icon_url = 4;
+}
 
 message IWishObjectMarker {
-  message Location {
-    Point point = 1;
-  }
+  message Location { Point point = 1; }
 
   string id = 1;
-  IWishCategory category = 2;
+  IWishCategory category = 2 [ deprecated = true ];
   Location location = 3;
   IWishState state = 4;
+  Category iwish_category = 5;
+  string address = 6;
+  string photo = 7;
+  string name = 8;
+  double distance = 9;
+}
+
+message Location { Point point = 1; }
+
+message IWishObjectMarkerV2 {
+  string id = 1;
+  string name = 2;
+  Location location = 3;
 }
 
 message IWishObject {
-  message Location {
-    Point point = 1;
-  }
+  message Location { Point point = 1; }
 
   message Variant {
-    message Preview {
-      Image image = 1;
-    }
+    message Preview { Image image = 1; }
 
     int32 id = 1;
     string title = 2;
@@ -258,9 +270,7 @@ message IWishObject {
     bool is_feedback_sent = 2;
   }
 
-  message Photo {
-    Image image = 1;
-  }
+  message Photo { Image image = 1; }
 
   message Metadata {
     optional string area_name = 1;
@@ -270,7 +280,7 @@ message IWishObject {
   }
 
   string id = 1;
-  IWishCategory category = 2;
+  IWishCategory category = 2 [ deprecated = true ];
   IWishState state = 3;
   Location location = 4;
   string title = 5;
@@ -281,29 +291,34 @@ message IWishObject {
   bool feedback_sent = 10;
   Metadata metadata = 11;
   IWishSize size = 12;
+  Category iwish_category = 13;
+  repeated IWishTag iwish_tags = 14;
 }
 
-message IWishMarkersResponse {
-  repeated IWishObjectMarker markers = 1;
+message IWishTag {
+  int32 id = 1;
+  string title_en = 2;
+  string title_ar = 3;
+  string icon_url = 4;
 }
 
-message IWishItemResponse {
-  IWishObject object = 1;
-}
+message IWishMarkersResponse { repeated IWishObjectMarker markers = 1; }
 
-message IWishVoteRequest {
-  int32 variant_id = 1;
-}
+message IWishMarkersResponseV2 { repeated IWishObjectMarkerV2 markers = 1; }
+
+message IWishItemResponse { IWishObject object = 1; }
+
+message IWishVoteRequest { int32 variant_id = 1; }
 
 message IWishFeedbackRequest {
-  message Tag {
-    string name = 1;
-  }
+  message Tag { string name = 1; }
 
-  int32 rating = 1;
+  IWishFeedbackRating rating = 1;
   repeated Tag tags = 2;
   optional string text = 3;
 }
+
+message IWishDeleteAllFeedbacksRequest { repeated string user_ids = 1; }
 
 // Interesting Places
 
@@ -313,9 +328,7 @@ message InterestingPlace {
     Image image = 2;
   }
 
-  message Location {
-    Point point = 1;
-  }
+  message Location { Point point = 1; }
 
   message Entity {
     EntitySourceType source_type = 1;
@@ -327,6 +340,10 @@ message InterestingPlace {
   Location location = 3;
   optional Entity entity = 4;
   repeated InterestingPlaceTag tags = 5;
+  optional float distance =
+      6;           // Distance between user location and the place in meters
+  bool pinned = 7; // Pinned is a sign that the interesting place order is fixed
+                   // regardless of sorting
 }
 
 message InterestingPlacesResponse {
@@ -334,9 +351,7 @@ message InterestingPlacesResponse {
 }
 
 message Profile {
-  message Photo {
-    Image image = 1;
-  }
+  message Photo { Image image = 1; }
 
   reserved 5;
   optional Photo photo = 6;
@@ -345,4 +360,36 @@ message Profile {
 message ProfileResponse {
   reserved 1;
   Profile profile = 2;
+}
+
+message CategoryResponse { repeated Category categories = 1; }
+
+// Static Assets
+
+message StaticAsset { string icons_url = 1; }
+
+message CreateFeedbackRequest {
+  message Context {
+    string appVersion = 1;
+    string mobileOS = 2;
+    string locale = 3;
+    optional string authId = 4;
+    string feedbackSource = 5;
+    string deviceId = 6;
+  }
+
+  message Review {
+    string text = 1;
+    int32  stars = 2;
+    repeated string tags = 3;
+  }
+
+  string reviewText = 1; // backward compatibility
+  Context context = 2;
+  Review review = 3;
+}
+
+message UpdateUserIdRequest {
+  string old_uuid = 1;
+  string new_uuid = 2;
 }

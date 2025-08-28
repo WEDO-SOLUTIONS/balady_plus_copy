@@ -83,7 +83,7 @@ class EnvironmentConfig {
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
-        url: 'https://momrah-balady-dev.public-poc.urbi.ae/api/1.0/',
+        url: 'https://momrah-balady-dev.iaas.urbi-sa.com/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://sa1.ops.2gis.dev/',
         jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
