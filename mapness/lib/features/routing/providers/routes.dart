@@ -212,6 +212,7 @@ class BetterRouteSettings extends _$BetterRouteSettings {
     final betterRoute = ref.read(betterRouteSuggestionsProvider);
     await dgisController.value?.setBetterRouteEnabled(enabled: betterRoute);
     await dgisController.value?.setBetterRouteSettings(settings);
-    state = AsyncData(settings);
+    final updatedSettings = await dgisController.value?.getBetterRouteSettings();
+    state = AsyncData(updatedSettings);
   }
 }
