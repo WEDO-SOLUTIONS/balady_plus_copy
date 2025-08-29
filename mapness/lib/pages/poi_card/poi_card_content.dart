@@ -249,17 +249,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             widget.closestPoint,
           ),
           onTapCar: () {
-            final mapSetting = MapObjectManagerSettings.search();
-            ref
-                .read(
-                  mapObjectManagerProvider(
-                    named: mapSetting.name,
-                    layerId: mapSetting.layerId,
-                  ).notifier,
-                )
-                .setMapObjectManagerIsVisible(isVisible: false);
             _bssOnRouteTap();
-            _openRoutingRoutes(
+            _onDirectionsTap(
               context,
               widget.data.id!.objectId,
               widget.data.title,
@@ -270,6 +261,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 entranceId: widget.data.id?.entranceId,
                 levelId: widget.data.levelId,
               ),
+              ref,
             );
           },
           onTapFavorite: (item) {
