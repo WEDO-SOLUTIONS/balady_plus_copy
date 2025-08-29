@@ -9,10 +9,12 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -90,7 +92,19 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         final language = ref.read(appLanguageProvider);
         final query = quickFilter.query[language];
         if (query != null) {
-          ref.read(SendStatisticProvider(query).future);
+          ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: const BssUIElement(
+                    name: BssUIElementNames.searchStart,
+                    ownerName: BssUIElementNames.searchBar,
+                  ),
+                  payload: BssPayload(
+                    searchRequest: BssSearchRequest(text: query),
+                  ),
+                ),
+              );
         }
         context.router.push(SearchRoute(requestFocus: false));
         WidgetsBinding.instance.addPostFrameCallback((_) {

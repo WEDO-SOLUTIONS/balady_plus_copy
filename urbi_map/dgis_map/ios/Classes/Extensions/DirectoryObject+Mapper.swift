@@ -26,16 +26,18 @@ extension DirectoryObject {
             workStatus: self.workStatus?.toMessage(),
             levelId: self.levelId?.value != nil ? Int64(self.levelId!.value): nil,
             buildingLevels: self.buildingLevels?.toMessage(),
-            buildingInfo: self.buildingInfo.toMessage(),
             entrances: self.entrances.map {
                 $0.toMessage()
             },
             tradeLicense: self.tradeLicense?.toMessage(),
+            buildingInfo: self.buildingInfo.toMessage(),
             rubricIds: self.rubricIds.map {
                 Int64($0.value)
             },
+            orgInfo: self.orgInfo?.toMessage(),
+            group: self.group.map { $0.toMessage() },
             routeInfos: self.routeInfos.map { $0.toMessage() },
-            group: self.group.map { $0.toMessage() }
+            platformIds: self.platformIds.map { $0.toMessage() }
         )
     }
     
@@ -665,5 +667,12 @@ extension GroupItem {
             id: self.id.toMessage(),
             type: self.type.toMessage()
         )
+    }
+}
+
+
+extension OrgInfo {
+    func toMessage() -> OrgInfoMessage {
+        OrgInfoMessage(branchCount: Int64(self.branchCount), id: Int64(self.id.value), name: self.name)
     }
 }
