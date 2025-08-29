@@ -19,6 +19,23 @@ class ParkingContent extends ConsumerWidget {
       hasScrollBody: false,
       child: Column(
         children: [
+          ContentWrapper(
+            color: context.colors.backgroundSurface1,
+            children: [
+              ContentRowV2(
+                text: ContentRowTextOptions(
+                  title: context.l10n.location,
+                  titleOptions: const ContentRowTextOption(isBold: true),
+                  subtitle: parkingManage?.address,
+                  subtitleOptions: const ContentRowTextOption(
+                    maxLines: 99,
+                  ),
+                ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+              )
+            ],
+          ),
+          Spacing.$4x.heightBox,
           if (parkingManage?.comment.isNotEmpty == true)
             Container(
               width: double.infinity,
@@ -61,7 +78,7 @@ class ParkingContent extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      context.l10n.youLeftYouCar(dateParking.hoursAndMinutes().$1, dateParking.hoursAndMinutes().$2),
+                      '${parkingManage?.dateTime.formattedHourMinute()}, ${context.l10n.youLeftYouCar(dateParking.differentNowHoursAndMinutes().$1, dateParking.differentNowHoursAndMinutes().$2)}',
                       style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                     ),
                     Spacing.$1x.heightBox,
@@ -74,26 +91,9 @@ class ParkingContent extends ConsumerWidget {
               ],
             ),
           ),
-          Spacing.$4x.heightBox,
-          ContentWrapper(
-            color: context.color.surfaceBasePrimary,
-            children: [
-              ContentRowV2(
-                text: ContentRowTextOptions(
-                  title: context.l10n.location,
-                  titleOptions: const ContentRowTextOption(isBold: true),
-                  subtitle: parkingManage?.address,
-                  subtitleOptions: const ContentRowTextOption(
-                    maxLines: 99,
-                  ),
-                ),
-                crossAxisAlignment: CrossAxisAlignment.start,
-              )
-            ],
-          ),
           const Spacer(),
           Text(
-            context.l10n.dataStoredFor,
+            '${context.l10n.dataStoredFor} ${parkingManage?.dateTime.formattedHourMinute()}',
             style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
           ),
           Spacing.$4x.heightBox,

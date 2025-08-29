@@ -12,12 +12,19 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:provider/provider.dart';
 
 class SuggestItem extends ConsumerWidget {
   final SuggestMessage suggest;
+  final int index;
+  final BssSuggestList? suggestList;
+  final BssSearchRequest? searchRequest;
   final GeoPointMessage? myLocation;
   final bool isLast;
   final Color? iconColor;
@@ -26,7 +33,10 @@ class SuggestItem extends ConsumerWidget {
 
   const SuggestItem({
     required this.suggest,
+    required this.index,
     required this.onObjectTap,
+    this.suggestList,
+    this.searchRequest,
     this.myLocation,
     this.isLast = false,
     this.iconColor,
@@ -59,12 +69,15 @@ class SuggestItem extends ConsumerWidget {
     }
 
     void _onSuggestTap() {
+      BssHistoryHandlingType? handlingType;
       if (incompleteText != null) {
         ref.read(searchProvider(scope.value).notifier).fetchSuggest(incompleteText.queryText);
+        handlingType = BssHistoryHandlingType.incompleteQuery;
       } else if (performSearch != null) {
         ref.read(searchProvider(scope.value).notifier).searchByQuery(performSearch.searchQuery, suggest.title.text);
         final historyObject = SearchHistoryItem.fromQuery(query: suggest.title.text);
         ref.read(searchHistoryProvider(scope.value).notifier).put(historyObject);
+        handlingType = BssHistoryHandlingType.searchSuggestedText;
       } else if (object != null) {
         final objectItem = object.item;
         final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);
@@ -72,8 +85,25 @@ class SuggestItem extends ConsumerWidget {
         ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
             );
+        handlingType = BssHistoryHandlingType.openRecord;
         onObjectTap(objectItem);
       }
+      ref.read(bssServiceProvider.notifier).sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.suggestItem,
+                ownerName: BssUIElementNames.suggestList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                searchRequest: searchRequest,
+                suggestList: suggestList,
+                suggestItem: suggest.toBss(handlingType ?? BssHistoryHandlingType.searchSuggestedText),
+              ),
+            ),
+          );
     }
 
     return ContentRow(

@@ -26,6 +26,7 @@ import ru.dgis.sdk.map.Map as DgisMap
 import ru.dgis.sdk.platform.Locale
 import ru.dgis.sdk.platform.getLocaleManager
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
+import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 
 class DgisMapView(
@@ -790,7 +791,12 @@ class DgisMapView(
                             callback(Result.failure(Exception("RouteHandler not initialized")))
                             return
                         }
-        routeHandler.setRoutesVisible(false)
+        val isPublicTransport = routeHandler.options?.isPublicTransport ?: false
+        routeHandler.setRoutesVisible(isPublicTransport)
+        if (isPublicTransport) {
+            routeHandler.setShowOnlyActiveRoute(true)
+        }
+        
         navigationHandler.startNavigation(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
@@ -1137,6 +1143,24 @@ class DgisMapView(
                     }
                     onError { error -> callback(Result.failure(error)) }
                 }
+    }
+
+    override fun findRoute(
+            startPoint: RouteSearchPointMessage,
+            finishPoint: RouteSearchPointMessage,
+            navType: RouteSearchOptionsMessage,
+            callback: (Result<FindRouteResultMessage>) -> Unit
+    ) {
+        val routeSearchOptions = navType.toRouteSearchOptions()
+        val startSearchPoint = startPoint.toRouteSearchPoint()
+        val finishSearchPoint = finishPoint.toRouteSearchPoint()
+        
+        routeHandler?.findRoute(
+            startPoint = startSearchPoint,
+            finishPoint = finishSearchPoint,
+            routeSearchOptions = routeSearchOptions,
+            callback = callback
+        )
     }
 
     override fun toggleHeatmap(message: WeatherMapMessage, callback: (Result<Boolean>) -> Unit) {

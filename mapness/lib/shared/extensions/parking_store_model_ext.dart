@@ -9,12 +9,12 @@ extension ParkingStoreModelExt on ParkingStoreModel {
         types: [],
         title: context.l10n.yourParkingSpot,
         titleAddition: '',
-        subtitle: address,
+        subtitle: context.l10n.disappearsIn24H,
         about: '',
         attributes: [],
         contextAttributes: [],
         contactInfos: [],
-        buildingInfo: BuildingInfoMessage(),
+        buildingInfo: BuildingInfoMessage(buildingName: address),
         entrances: [],
         rubricIds: [],
         routeInfos: [],
@@ -28,5 +28,6 @@ extension ParkingStoreModelExt on ParkingStoreModel {
           longitude: lon,
           elevation: 0,
         ),
+        platformIds: [],
       );
 }

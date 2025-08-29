@@ -1,8 +1,9 @@
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' show RadiusBorder;
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
+import 'package:sheetify/sheetify.dart';
 
-final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSheetState> {
+final class PoiCardStateMapper implements SheetStateMapper<PoiCardBottomSheetState> {
   const PoiCardStateMapper();
 
   @override
@@ -13,7 +14,7 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
   int index(PoiCardBottomSheetState state) => state.index;
 
   @override
-  bool shouldPopOn(StatefulBottomSheetController<PoiCardBottomSheetState> controller) {
+  bool shouldPopOn(MultiStateSheetController<PoiCardBottomSheetState> controller) {
     switch (controller.closestState) {
       case PoiCardBottomSheetState.hidden:
         controller.reset();
@@ -33,10 +34,10 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
   }
 
   /// Delegate method for calculate background fill color inside bottom sheet.
-  static const StatefulSheetDelegateFunction<Color?, PoiCardBottomSheetState> backgroundColorDelegate =
-      StatefulSheetDelegateFunction(function: _backgroundColorDelegate);
+  static const StatefulSheetDelegateFunction<Color?, PoiCardBottomSheetState> barrierColorDelegate =
+      StatefulSheetDelegateFunction(function: _barrierColorDelegate);
 
-  static Color? _backgroundColorDelegate(StatefulBottomSheetController<PoiCardBottomSheetState> controller) {
+  static Color? _barrierColorDelegate(MultiStateSheetController<PoiCardBottomSheetState> controller) {
     final state = controller.state;
     final interpolation = controller.interpolation;
 
@@ -55,7 +56,7 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
   static const StatefulSheetDelegateFunction<double, PoiCardBottomSheetState> topHeaderOffsetDelegate =
       StatefulSheetDelegateFunction(function: _topHeaderOffsetDelegate);
 
-  static double _topHeaderOffsetDelegate(StatefulBottomSheetController<PoiCardBottomSheetState> controller) {
+  static double _topHeaderOffsetDelegate(MultiStateSheetController<PoiCardBottomSheetState> controller) {
     final state = controller.state;
     final interpolation = controller.interpolation;
 

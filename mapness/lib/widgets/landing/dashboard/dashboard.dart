@@ -3,14 +3,16 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
@@ -31,6 +33,7 @@ import 'package:mapness/widgets/landing/drive_back_home_card.dart';
 import 'package:mapness/widgets/landing/place_preview.dart';
 import 'package:mapness/widgets/landing/quick_action_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
+import 'package:sheetify/sheetify.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
@@ -38,14 +41,47 @@ class Dashboard extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
+class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
+
+  late FreeRoamStartState freeRoamState;
+
+  late final outsideOpacityDelegate = StatefulSheetDelegateFunction<double, ThreeStateSheet>(
+    function: (controller) {
+      final fraction = controller.fraction;
+      final interpolation = controller.interpolation;
+      final state = controller.state;
+
+      final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+
+      final isSheetCoversHalfOfTheScreen = fraction > 0.4;
+      final isSheetStateOpen = state == ThreeStateSheet.open;
+      final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+
+      final isFull = isGoToNavigatorShown ||
+          (!controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+          isSheetCoversHalfOfTheScreen;
+
+      return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+    },
+  );
+  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
+    final state = controller.state;
+
+    if (state == ThreeStateBottomSheet.expanded) {
+      return Colors.black.withOpacity(.4);
+    }
+    if (state == ThreeStateBottomSheet.open) {
+      return Colors.black.withOpacity(.4 * controller.interpolation);
+    }
+    return null;
+  });
 
   @override
   void initState() {
@@ -60,21 +96,36 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
+
+  ///This method is intended for handling location permission requests
+  /// if it's triggered by someone before Mapness starts.
+  void _checkLocationPermission(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.read(locationProvider.notifier).checkLocationPermission();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.listen(layersControlsProvider, (previous, next) {
       if (next.layersVisible) {
-        widget.bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+        widget.bottomSheetController.setState(ThreeStateSheet.hidden);
       }
     });
 
-    return SafeArea(
-      bottom: false,
-      child: StatefulBottomSheet<ThreeStateBottomSheet>(
+    freeRoamState = ref.watch(freeRoamStarterProvider);
+
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
+      child: MultiStateSheet<ThreeStateSheet>(
         animateOpening: false,
         keepContentBehindFooter: true,
+        useSafeArea: false,
         scrollController: widget.bottomSheetController,
         topHeader: MapHiddenStateControls(widget.bottomSheetController),
         backgroundColor: context.colors.backgroundSurface2,
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
         header: const DashboardHeader(),
         footer: IgnorePointer(
           child: SizedBox(
@@ -95,39 +146,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             ),
           ),
         ),
-        backgroundColorDelegate: StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
-          final state = controller.state;
-
-          if (state == ThreeStateBottomSheet.expanded) {
-            return Colors.black.withOpacity(.4);
-          }
-          if (state == ThreeStateBottomSheet.open) {
-            return Colors.black.withOpacity(.4 * controller.interpolation);
-          }
-          return null;
-        }),
+        barrierColorDelegate: barrierColorDelegate,
         outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
-        outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
-          function: (controller) {
-            final aspectRatio = controller.aspectRatio;
-            final interpolation = controller.interpolation;
-            final state = controller.state;
-
-            final freeRoamState = ref.watch(freeRoamStarterProvider);
-            final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
-
-            final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-            final isSheetStateOpen = state == ThreeStateBottomSheet.open;
-            final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
-
-            final isFull = isGoToNavigatorShown ||
-                (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-                isSheetCoversHalfOfTheScreen;
-
-            return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-          },
-        ),
-        sliverBeforeContent: SliverPersistentHeader(
+        outsideOpacityDelegate: outsideOpacityDelegate,
+        sliver: SliverPersistentHeader(
           delegate: DashboardHeaderDelegate(vsync: this),
           pinned: true,
           floating: true,
@@ -229,7 +251,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   void _openParking() {
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
     widget.bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
-    widget.bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    widget.bottomSheetController.setState(ThreeStateSheet.hidden);
     ref.read(layersControlsProvider.notifier).enableParking();
   }
 
@@ -293,10 +315,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   void _scrollListenHandler() {
-    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.aspectRatio) * 2);
+    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
 
     Future.delayed(Duration.zero, () {
-      if (widget.bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+      if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(
               MapControlsStateDashboard(),
             );

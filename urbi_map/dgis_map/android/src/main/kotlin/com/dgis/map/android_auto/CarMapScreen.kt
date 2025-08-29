@@ -6,9 +6,11 @@ import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
+import androidx.car.app.navigation.model.MapController
 import androidx.car.app.navigation.model.PanModeListener
 import androidx.core.graphics.drawable.IconCompat
 import com.dgis.map.R
+import com.dgis.map.android_auto.settings.SettingsScreen
 
 abstract class CarMapScreen(carContext: CarContext, private val mapController: CarMapController) :
     Screen(carContext) {
@@ -34,6 +36,33 @@ abstract class CarMapScreen(carContext: CarContext, private val mapController: C
             .addAction(zoomOutAction).addAction(buildFollowMyLocationAction(navigation)).build()
     }
 
+    fun buildMapController() =
+        MapController.Builder().setMapActionStrip(buildMapActionStrip()).build()
+
+    val searchAction =
+        Action.Builder()
+            .setIcon(
+                CarIcon.Builder(
+                    IconCompat.createWithResource(
+                        carContext,
+                        R.drawable.search
+                    )
+                )
+                    .build()
+            )
+            .setOnClickListener {
+                screenManager.push(CategorySearchScreen(carContext, mapController))
+            }
+            .build()
+
+    val settingsAction =
+        Action.Builder()
+            .setIcon(buildCarIcon(R.drawable.settings))
+            .setOnClickListener {
+                screenManager.push(SettingsScreen(carContext, mapController))
+            }
+            .build()
+
     private val zoomInAction = Action.Builder().setIcon(buildCarIcon(R.drawable.zoom_plus))
         .setOnClickListener { mapController.zoomIn() }.build()
 
@@ -42,10 +71,10 @@ abstract class CarMapScreen(carContext: CarContext, private val mapController: C
 
     private fun buildFollowMyLocationAction(navigation: Boolean) =
         Action.Builder().setIcon(buildCarIcon(R.drawable.location)).setOnClickListener {
-                if (navigation) {
-                    mapController.followNavigation()
-                } else {
-                    mapController.showMyLocation()
-                }
-            }.build()
+            if (navigation) {
+                mapController.followNavigation()
+            } else {
+                mapController.showMyLocation()
+            }
+        }.build()
 }

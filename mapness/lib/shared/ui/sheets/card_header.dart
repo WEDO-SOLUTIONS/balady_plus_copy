@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+import 'package:sheetify/sheetify.dart';
 
 sealed class CardHeaderData {
   Widget get build;
@@ -37,7 +38,7 @@ class CardHeaderWidget extends CardHeaderData {
   Widget get build => child;
 }
 
-class CardHeader extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class CardHeader extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final Function()? onTapClose;
   final BorderRadius borderRadius;
 

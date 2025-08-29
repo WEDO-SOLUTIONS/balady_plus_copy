@@ -17,14 +17,12 @@ class PublicTransportHandler(
     fun onRoutesChanged() {
         val trafficRoutes = routeHandler.getPublicTransportRoutes()
 
-        trafficRoutes.takeIf(List<TrafficRoute>::isNotEmpty)?.let {
-            val briefs = it.map(::BriefPublicTransportModel)
+        val briefs = trafficRoutes.map(::BriefPublicTransportModel)
 
-            eventSink.success(mapOf(
-                "event" to Events.onPublicTransportRoutesChanged.name,
-                "routes" to briefs.map(BriefPublicTransportModel::toMap),
-            ))
-        }
+        eventSink.success(mapOf(
+            "event" to Events.onPublicTransportRoutesChanged.name,
+            "routes" to briefs.map(BriefPublicTransportModel::toMap),
+        ))
     }
 
     fun onActiveRouteChanged() {

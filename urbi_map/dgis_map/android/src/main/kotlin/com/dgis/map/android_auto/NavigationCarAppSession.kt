@@ -129,6 +129,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     override fun onMapReady(map: Map) {
         setMapTheme()
         carMapController.onMapReady(map, getLocale())
+        navigationScreen?.onMapReady()
     }
 
     override fun onMapReadyException(exception: Exception) {

@@ -3,15 +3,13 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/typedef/app_typedef.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/widgets/routing/ui_kit/path_card/extensions/icon_from_type.dart';
-import 'package:mapness/widgets/routing/ui_kit/path_card/extensions/priority_color.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_localization.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_wrapper.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_status.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 part 'icon_and_block.dart';
-part 'path_status.dart';
 
 /// This widget is used to show a path card with the duration, distance and additional information
 ///
@@ -83,7 +81,7 @@ class PathCard extends StatelessWidget {
                               '·',
                               style: context.textStyles.captionMediumRegular,
                             ),
-                            _PathBadge(additionalInfo!),
+                            PathBadge(additionalInfo!),
                           ],
                         ]
                             .insertBetween(

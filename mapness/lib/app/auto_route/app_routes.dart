@@ -95,6 +95,10 @@ class AppRouter extends RootStackRouter {
               page: RoutingRoutesRoute.page,
             ),
             AppRoute(
+              path: 'public_routing_details',
+              page: RouteDetailsRoute.page,
+            ),
+            AppRoute(
               transitionsBuilder: TransitionsBuilders.slideBottom,
               durationInMilliseconds: 250,
               path: 'routingSearch',

@@ -17,10 +17,7 @@ class PublicTransportHandler {
 
     func onRoutesChanged() {        
         let trafficRoutes = routeHandler.getPublicTransportRoutes()
-        guard !trafficRoutes.isEmpty else {
-            return
-        }
-
+        
         let briefs = trafficRoutes.map { BriefPublicTransportModel(route: $0) }
 
         eventChannel.success([

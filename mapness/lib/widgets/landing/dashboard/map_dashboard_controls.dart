@@ -14,9 +14,10 @@ import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
+import 'package:sheetify/sheetify.dart';
 
 class MapDashboardControls extends ConsumerWidget {
-  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> scrollController;
+  final MultiStateSheetController<ThreeStateSheet> scrollController;
 
   const MapDashboardControls(
     this.scrollController, {
@@ -56,7 +57,7 @@ class MapDashboardControls extends ConsumerWidget {
                       const IndoorControl(),
                       const Spacer(),
                       SizedBox(
-                        height: scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                        height: scrollController.state == ThreeStateSheet.hidden
                             ? controlsHeight * (1 - scrollController.interpolation)
                             : 0,
                       )

@@ -30,7 +30,7 @@ class AppCloseButton extends StatelessWidget {
 
 class CustomCloseButton extends StatelessWidget {
   final EdgeInsets? padding;
-  const CustomCloseButton({super.key, this.onClose, this.padding = const EdgeInsets.only(bottom: Spacing.$4x)});
+  const CustomCloseButton({super.key, this.onClose, this.padding});
 
   final Function()? onClose;
   static const borderRadius = BorderRadius.all(Radius.circular(8));

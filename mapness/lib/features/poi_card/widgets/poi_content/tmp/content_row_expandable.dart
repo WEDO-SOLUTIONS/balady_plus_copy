@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 
 /// [ContentRowExpandableTmp] is a temporary widget to replace [ContentRowExpandable]
 /// We must to move it to UIKit and replace it.
-class ContentRowExpandableTmp extends StatelessWidget {
+class ContentRowExpandableTmp extends StatefulWidget {
   const ContentRowExpandableTmp({
     required this.content,
     this.expandIconColor,
@@ -16,8 +16,10 @@ class ContentRowExpandableTmp extends StatelessWidget {
     this.trailing,
     this.supportTitleRTL = true,
     this.onTitleTap,
-    this.padding,
+    this.margin = const EdgeInsets.all(0),
+    this.padding = const EdgeInsets.only(top: Spacing.$3x),
     this.count,
+    this.onTitleTapExpand = false,
     super.key,
   });
 
@@ -26,52 +28,64 @@ class ContentRowExpandableTmp extends StatelessWidget {
   final Widget? trailing;
   final Color? expandIconColor;
   final bool supportTitleRTL;
-  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry margin;
+  final EdgeInsetsGeometry padding;
   final void Function()? onTitleTap;
   final Widget content;
   final int? count;
+  final bool onTitleTapExpand;
+
+  @override
+  State<ContentRowExpandableTmp> createState() => _ContentRowExpandableTmpState();
+}
+
+class _ContentRowExpandableTmpState extends State<ContentRowExpandableTmp> {
+  dynamic Function({bool animated})? _toggleFunction;
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: padding ?? EdgeInsets.zero,
+        padding: widget.margin,
         child: Stack(
           alignment: AlignmentDirectional.topEnd,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: Spacing.$3x),
+              padding: widget.padding,
               child: ExpansionWidget(
                 duration: const Duration(milliseconds: 100),
-                titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => ContentRow(
-                  text: const ContentRowTextOptions(title: ''),
-                  trailing: ContentRowCustomTrailingOptions(
-                    builder: (context) => CupertinoButton(
-                      onPressed: toggleFunction,
-                      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
-                      minSize: 0,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (count != null)
-                            Text(
-                              count.toString(),
-                              style: context.textStyles.bodySmallSemiBold.copyWith(
-                                color: context.colors.foregroundMuted,
+                titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) {
+                  _toggleFunction ??= toggleFunction;
+                  return ContentRow(
+                    text: const ContentRowTextOptions(title: ''),
+                    trailing: ContentRowCustomTrailingOptions(
+                      builder: (context) => CupertinoButton(
+                        onPressed: toggleFunction,
+                        padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+                        minSize: 0,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (widget.count != null)
+                              Text(
+                                widget.count.toString(),
+                                style: context.textStyles.bodySmallSemiBold.copyWith(
+                                  color: context.colors.foregroundMuted,
+                                ),
+                              ),
+                            if (widget.trailing != null) widget.trailing!,
+                            Transform.rotate(
+                              angle: pi * animationValue,
+                              child: Icon(
+                                SystemIcons.arrowCornerDownSmall,
+                                size: AppSizes.xxs,
+                                color: widget.expandIconColor,
                               ),
                             ),
-                          if (trailing != null) trailing!,
-                          Transform.rotate(
-                            angle: pi * animationValue,
-                            child: Icon(
-                              SystemIcons.arrowCornerDownSmall,
-                              size: AppSizes.xxs,
-                              color: expandIconColor,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
                 content: Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
@@ -79,7 +93,7 @@ class ContentRowExpandableTmp extends StatelessWidget {
                       bottom: Radius.circular(RadiusBorder.baseSharp),
                     ),
                   ),
-                  child: content,
+                  child: widget.content,
                 ),
               ),
             ),
@@ -87,10 +101,15 @@ class ContentRowExpandableTmp extends StatelessWidget {
               // padding + text + icon + padding
               padding: const EdgeInsetsDirectional.only(end: Spacing.$4x + Spacing.$2x + AppSizes.xxs + Spacing.$4x),
               child: ContentRow(
-                supportTitleRTL: supportTitleRTL,
-                onTap: onTitleTap,
-                leading: leading,
-                text: text,
+                supportTitleRTL: widget.supportTitleRTL,
+                onTap: () {
+                  if (widget.onTitleTapExpand) {
+                    _toggleFunction?.call();
+                  }
+                  widget.onTitleTap?.call();
+                },
+                leading: widget.leading,
+                text: widget.text,
               ),
             ),
           ],

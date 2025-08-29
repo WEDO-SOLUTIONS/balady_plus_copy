@@ -44,6 +44,7 @@ class RoutingSuggestList extends ConsumerWidget {
             physics: const NeverScrollableScrollPhysics(),
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemBuilder: (context, index) => SuggestItem(
+              index: index,
               suggest: suggests[index],
               myLocation: myLocation == null
                   ? null

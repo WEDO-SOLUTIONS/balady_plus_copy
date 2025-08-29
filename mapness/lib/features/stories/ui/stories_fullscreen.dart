@@ -14,6 +14,7 @@ import 'package:mapness/features/stories/providers/local_stories_service.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/features/stories/ui/story_frames_player.dart';
+import 'package:mapness/features/stories/ui/story_video_player.dart';
 
 class StoriesFullscreen extends ConsumerStatefulWidget {
   final String initialStoryId;
@@ -154,6 +155,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
             return const SizedBox.shrink();
           }
           final stories = snapshot.data ?? const [];
+
           return ValueListenableBuilder(
             valueListenable: _currentPageNotifier,
             builder: (_, page, __) => TransformerPageView(
@@ -161,12 +163,18 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
               index: page,
               controller: _indexController,
               itemCount: stories.length,
-              itemBuilder: (_, index) => StoryFramesPlayer(
-                controller: _storyFrameController,
-                story: stories[index],
-                onNextStory: _nextStory,
-                onPreviousStory: _previousStory,
-              ),
+              itemBuilder: (context, index) => stories[index].videos.isNotEmpty
+                  ? StoryVideoPlayer(
+                      videoUrls: stories[index].videos.map((e) => e.url).toList(),
+                      onNextStory: _nextStory,
+                      onPreviousStory: _previousStory,
+                    )
+                  : StoryFramesPlayer(
+                      controller: _storyFrameController,
+                      story: stories[index],
+                      onNextStory: _nextStory,
+                      onPreviousStory: _previousStory,
+                    ),
             ),
           );
         },

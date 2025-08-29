@@ -75,7 +75,6 @@ class RoutingMapControls extends ConsumerWidget {
                 valueListenable: bottomHeightNotifier!,
                 builder: (context, value, _) => value.heightBox,
               ),
-            if (bottomHeightNotifier == null) uikit.Spacing.$3x.heightBox
           ],
         ),
       );

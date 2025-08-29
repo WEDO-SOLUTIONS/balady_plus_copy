@@ -11,9 +11,10 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:sheetify/multi_state_sheet/animated_state_components/sheet_base_components.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
-class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   static const photosMinHeight = 96.0;
   static const photosMaxHeight = 156.0 + PoiHeader.poiHeaderBorderRadius;
 

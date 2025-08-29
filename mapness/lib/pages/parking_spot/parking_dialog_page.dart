@@ -5,11 +5,14 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
-class ParkingDialogPage extends ConsumerWidget {
+class ParkingDialogPage extends HookConsumerWidget {
   final String title;
   final String? desc;
   final VoidCallback onAcceptTab;
@@ -25,11 +28,14 @@ class ParkingDialogPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = StatelessBottomSheetController();
+    final controller = useToggleSheetController();
 
     final bottomPadding = math.max(MediaQuery.of(context).viewPadding.bottom, Spacing.px);
-    return StatelessBottomSheet(
+    return ToggleSheet(
       scrollController: controller,
+      backgroundColor: context.colors.backgroundSurface1,
+      safeAreaColor: context.colors.backgroundSurface1,
+      dragger: const SheetDragger(),
       content: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
