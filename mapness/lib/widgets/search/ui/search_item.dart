@@ -1,11 +1,9 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
@@ -18,6 +16,7 @@ import 'package:mapness/shared/providers/analytic/models/extensions/directory_ob
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -154,6 +153,7 @@ class SearchItem extends ConsumerWidget {
                   ),
                 ),
               ),
+              SearchItemQuickActions(directoryObject: result),
             ],
           ),
         ),
