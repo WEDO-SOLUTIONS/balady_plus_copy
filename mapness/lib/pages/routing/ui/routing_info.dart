@@ -14,6 +14,7 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
@@ -243,13 +244,22 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
   }
 
-  void _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) {
+  Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
     _navigationStarted = true;
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
+    final location = ref.read(cityByLocationProvider.notifier);
+    final originCity = await location.getCityByLatLng(
+      lat: widget.pointsWithLabel.first.value?.latitude,
+      lng: widget.pointsWithLabel.first.value?.longitude,
+    );
+    final destinationCity = await location.getCityByLatLng(
+      lat: widget.pointsWithLabel.lastOrNull?.value?.latitude,
+      lng: widget.pointsWithLabel.lastOrNull?.value?.longitude,
+    );
 
     for (final settings in [mapSetting, markerSettings]) {
-      ref
+      await ref
           .read(
             mapObjectManagerProvider(
               named: settings.name,
@@ -277,11 +287,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     ref.read(appAnalyticsProvider).navigationStarted(
           originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
           destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
+          originCity: originCity.name,
+          destinationCity: destinationCity.name,
           estimateTime: route.duration,
           estimateDistance: route.distance,
         );
 
-    ref.read(urbiAnalyticsProvider).track(
+    await ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
       properties: {
         'duration': route.duration,
@@ -289,7 +301,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       },
     );
 
-    context.router.pushAndPopUntil(
+    await context.router.pushAndPopUntil(
         PathNavRoute(
           navType: navigatingType,
           isHomeOrWork: widget.isHomeOrWork,

@@ -54,6 +54,7 @@ import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/analytic/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/bss_dio.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -148,7 +149,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initMixpanel();
     initDeepLinks();
     listenNavigationEvents();
-
+    checkConnection();
+    ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
@@ -167,6 +169,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
     });
+  }
+  Future<void> checkConnection() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.mobile)) {
+      ref
+          .read(appAnalyticsProvider)
+          .networkConnectionType(type: ConnectivityResult.mobile.name);
+    } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      ref
+          .read(appAnalyticsProvider)
+          .networkConnectionType(type: ConnectivityResult.wifi.name);
+    }
   }
 
   @override
