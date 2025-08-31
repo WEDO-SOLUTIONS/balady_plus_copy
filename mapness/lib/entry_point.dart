@@ -10,6 +10,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +37,8 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
-import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/search/providers/search_region.dart'
+    show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -54,7 +55,6 @@ import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/analytic/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/bss_dio.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';

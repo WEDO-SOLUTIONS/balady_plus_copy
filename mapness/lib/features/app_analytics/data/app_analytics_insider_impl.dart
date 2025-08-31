@@ -100,7 +100,9 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   void categorySelected(String category) {
-    FlutterInsider.Instance.tagEvent('category_selected').addParameterWithString('category', category).build();
+    FlutterInsider.Instance.tagEvent('category_selected')
+        .addParameterWithString('category', category)
+        .build();
   }
 
   @override
@@ -110,7 +112,9 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   void quickActionSelected(String action) {
-    FlutterInsider.Instance.tagEvent('quick_action_used').addParameterWithString('action', action).build();
+    FlutterInsider.Instance.tagEvent('quick_action_used')
+        .addParameterWithString('action', action)
+        .build();
   }
 
   @override
@@ -187,12 +191,14 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   }
 
   @override
-  void userMovementDetected({required String destinationCity, required String originCity}) {
+  void userMovementDetected(
+      {required String destinationCity, required String originCity}) {
     FlutterInsider.Instance.tagEvent('user_movement_detected')
         .addParameterWithString('event_name', 'user_movement_detected')
         .addParameterWithString('origin', originCity)
         .addParameterWithString('destination', destinationCity)
-        .addParameterWithString('value', originCity == destinationCity ? 'Yes' : 'No')
+        .addParameterWithString(
+            'value', originCity == destinationCity ? 'Yes' : 'No')
         .addParameterWithString('timestamp', now)
         .build();
   }
