@@ -105,8 +105,9 @@ class MapSuggestList extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: Spacing.$1_5x),
             child: uikit.AppButton(
               buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
+              buttonType: uikit.ButtonType.secondary,
               primaryIcon: uikit.SystemIcons.search,
-              primaryLabel: context.l10n.searchMore,
+              primaryLabel: context.l10n.showResults,
               onTap: () {
                 final scope = context.read<SearchScope>();
                 final search = ref.read(searchProvider(scope.value).notifier);

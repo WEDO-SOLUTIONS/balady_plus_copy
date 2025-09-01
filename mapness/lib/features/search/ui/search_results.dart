@@ -3,9 +3,13 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_pagination.dart';
 import 'package:mapness/features/search/ui/add_place_item.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart';
 
 class SearchResults extends ConsumerStatefulWidget {
   final SearchResultMessage results;
@@ -64,14 +68,23 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     }
   }
 
+  // Don't show alternative search button if we are in google search
+  bool _getShowAlternativeSearchButton() {
+    final scope = context.read<SearchScope>();
+    return !ref.read(searchProvider(scope.value).notifier).isGoogleSearch;
+  }
+
   @override
   Widget build(BuildContext context) {
+    void _onAlternativeSearchPressed() {
+      final scope = context.read<SearchScope>();
+      ref.read(searchProvider(scope.value).notifier).alternativeSearch();
+    }
+
     final results = ref.watch(searchPaginationProvider(widget.results));
     if (results.isEmpty) {
       return MapSearchEmpty(isShowAddPlaceButton: _isShowAddPlace);
     }
-    // If the result list is not empty add AddPlaceItem at the end of the list
-    final totalCount = results.length + (_isShowAddPlace ? 1 : 0);
 
     return ListView.separated(
       shrinkWrap: true,
@@ -82,21 +95,78 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        if (index == results.length && _isShowAddPlace) {
-          if (_hasNext) {
-            return widget.loaderBuilder(context);
-          }
-          return AddPlaceItem(
-            onTapMetrics: () {
-              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
-            },
+        // Calculate how many "Show Results" buttons we've inserted so far
+        final buttonsInserted = index ~/ 11; // Every 11th position (after every 10 results)
+
+        // Calculate the actual result index
+        final actualResultIndex = index - buttonsInserted;
+
+        // Check if this position should show a "Show Results" button (every 11th position)
+        if (index > 0 && index % 11 == 0 && _getShowAlternativeSearchButton()) {
+          return AppButton(
+            onTap: _onAlternativeSearchPressed,
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonType: ButtonType.secondary,
+            primaryLabel: context.l10n.showMore,
+            primaryIcon: SystemIcons.search,
           );
         }
 
-        return widget.itemBuilder(context, results[index], index);
+        // Check if we've reached the end and should show loader or AddPlaceItem
+        if (actualResultIndex >= results.length) {
+          // If we have less than 10 items and haven't shown the button yet, show it here
+          if (results.length < 10 && index == results.length && _getShowAlternativeSearchButton()) {
+            return AppButton(
+              onTap: _onAlternativeSearchPressed,
+              buttonColorScheme: ButtonColorScheme.accentSecondary,
+              buttonType: ButtonType.secondary,
+              primaryLabel: context.l10n.showMore,
+              primaryIcon: SystemIcons.search,
+            );
+          }
+
+          if (_isShowAddPlace) {
+            if (_hasNext) {
+              return widget.loaderBuilder(context);
+            }
+            return AddPlaceItem(
+              onTapMetrics: () {
+                ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
+              },
+              googleSearchOnTap: _onAlternativeSearchPressed,
+            );
+          }
+          return const SizedBox.shrink();
+        }
+
+        return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex);
       },
-      itemCount: totalCount,
+      itemCount: _calculateTotalItemCount(results.length),
       separatorBuilder: (context, index) => const SizedBox(height: 12),
     );
+  }
+
+  int _calculateTotalItemCount(int resultsLength) {
+    if (resultsLength == 0) {
+      return 0;
+    }
+
+    // Base count: results + 1 (loader/AddPlaceItem)
+    final baseCount = resultsLength + (_isShowAddPlace ? 1 : 0);
+
+    // Only add buttons if not in Google search
+    if (_getShowAlternativeSearchButton()) {
+      // Add "Show Results" buttons every 11th position
+      int buttonsToAdd = (resultsLength - 1) ~/ 10;
+
+      // If we have less than 10 items, add one more button at the end
+      if (resultsLength < 10 && resultsLength > 0) {
+        buttonsToAdd += 1;
+      }
+
+      return baseCount + buttonsToAdd;
+    }
+
+    return baseCount;
   }
 }

@@ -6,6 +6,7 @@ class _PoiCardContent extends ConsumerStatefulWidget {
   final int objectId;
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
+  final PoiCardDataFromGoogle? poiCardDataFromGoogle;
 
   const _PoiCardContent({
     required this.data,
@@ -13,6 +14,7 @@ class _PoiCardContent extends ConsumerStatefulWidget {
     required this.poiCardState,
     this.closestPoint,
     this.cameraConfig,
+    this.poiCardDataFromGoogle,
   });
 
   @override
@@ -42,6 +44,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     stateMapper: const PoiCardStateMapper(),
     initialState: PoiCardBottomSheetState.halfOpen,
   );
+
+  bool get isGooglePoi => widget.poiCardDataFromGoogle != null;
 
   @override
   void didUpdateWidget(covariant _PoiCardContent oldWidget) {
@@ -155,7 +159,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
-    final name = widget.data.buildingInfo.buildingName;
+    final name = isGooglePoi ? widget.poiCardDataFromGoogle?.displayName : widget.data.buildingInfo.buildingName;
     if (name != null && parkingPoi == false) {
       widget.data.title = name;
     }
@@ -203,7 +207,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             bottomSheetController: _bottomSheetController,
             // we should not use objectIdForIndoorLevels if POI has levelId
             objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId),
-        topHeader: PoiPhotosHeader(objectId: widget.objectId),
+        topHeader: isGooglePoi ? null : PoiPhotosHeader(objectId: widget.objectId),
         topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
         footer: PoiCardFooter(
           closestPoint: widget.closestPoint,
@@ -274,7 +278,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           },
         ),
         header: PoiHeader(
-          title: widget.data.address?.buildingName ?? widget.data.title,
+          title: widget.data.address?.buildingName ?? widget.poiCardDataFromGoogle?.displayName ?? widget.data.title,
           subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
           subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
               ? [

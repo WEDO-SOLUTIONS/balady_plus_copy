@@ -3,6 +3,7 @@ part of 'poi_card_widget_page.dart';
 class _PoiCardWrapper extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
+  final PoiCardDataFromGoogle? poiCardDataFromGoogle;
 
   final LatLng? closestPoint;
 
@@ -10,6 +11,7 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
     required this.objectId,
     required this.closestPoint,
     this.cameraConfig,
+    this.poiCardDataFromGoogle,
     super.key,
   });
 
@@ -152,6 +154,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       poiCardState: poiCardState,
       closestPoint: widget.closestPoint,
       cameraConfig: widget.cameraConfig,
+      poiCardDataFromGoogle: widget.poiCardDataFromGoogle,
     );
   }
 }
