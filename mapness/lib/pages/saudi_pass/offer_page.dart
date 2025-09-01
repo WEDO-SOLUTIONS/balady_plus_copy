@@ -274,7 +274,7 @@ class _Content extends HookConsumerWidget {
                   children: [
                     Expanded(
                       child: AppButton(
-                        buttonColorScheme: ButtonColorScheme.primary,
+                        buttonColorScheme: ButtonColorScheme.accentSecondary,
                         onTap: () => _useCode(context, ref, offer.id, code, showCode),
                         primaryIcon: SystemIcons.code,
                         primaryLabel: l10n.useCode,
@@ -674,12 +674,14 @@ class _FavoriteIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => !offer.favorite
       ? AppButton(
-          buttonColorScheme: ButtonColorScheme.secondary,
+          buttonColorScheme: ButtonColorScheme.neutral,
+          buttonType: ButtonType.secondary,
           onTap: () => changeFavorite(favorite: true),
           primaryIcon: GeneralIcons.heart,
         )
       : AppButton(
-          buttonColorScheme: ButtonColorScheme.secondary,
+          buttonColorScheme: ButtonColorScheme.accentSecondary,
+          buttonType: ButtonType.secondary,
           onTap: () => changeFavorite(favorite: false),
           primaryIcon: GeneralIcons.filledHeart,
         );
