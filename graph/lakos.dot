@@ -276,6 +276,7 @@ digraph "" {
   "/lib/features/poi_card/domain/model/poi_sheet_sizes.dart" [label="poi_sheet_sizes"];
   "/lib/features/poi_card/domain/model/qr_trade_license.dart" [label="qr_trade_license"];
   "/lib/features/poi_card/data/qr_license_service.dart" [label="qr_license_service"];
+  "/lib/features/poi_card/data/poi_data_google.dart" [label="poi_data_google"];
   "/lib/features/poi_card/data/qr_license_repository.dart" [label="qr_license_repository"];
   "/lib/features/poi_card/data/qr_license_datasource.dart" [label="qr_license_datasource"];
   "/lib/features/poi_card/data/poi_data_service.dart" [label="poi_data_service"];
@@ -1498,6 +1499,7 @@ digraph "" {
           subgraph "cluster~/lib/features/poi_card/data" {
             label="data";
             "/lib/features/poi_card/data/qr_license_service.dart";
+            "/lib/features/poi_card/data/poi_data_google.dart";
             "/lib/features/poi_card/data/qr_license_repository.dart";
             "/lib/features/poi_card/data/qr_license_datasource.dart";
             "/lib/features/poi_card/data/poi_data_service.dart";
@@ -3185,9 +3187,12 @@ digraph "" {
   "/lib/features/search/providers/search_region.dart" -> "/lib/shared/providers/base_dio.dart";
   "/lib/features/search/providers/search_region.dart" -> "/lib/shared/providers/vendor_config.dart";
   "/lib/features/search/ui/search_results.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
+  "/lib/features/search/ui/search_results.dart" -> "/lib/features/search/models/search_scope.dart";
+  "/lib/features/search/ui/search_results.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/features/search/ui/search_results.dart" -> "/lib/features/search/providers/search_pagination.dart";
   "/lib/features/search/ui/search_results.dart" -> "/lib/features/search/ui/add_place_item.dart";
   "/lib/features/search/ui/search_results.dart" -> "/lib/pages/map_search/ui/map_search_empty.dart";
+  "/lib/features/search/ui/search_results.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/search/ui/suggest_item.dart" -> "/lib/entities/search/models/search_history.dart";
   "/lib/features/search/ui/suggest_item.dart" -> "/lib/features/search/models/search_scope.dart";
   "/lib/features/search/ui/suggest_item.dart" -> "/lib/features/search/providers/search.dart";
@@ -4464,6 +4469,8 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_wrapper.dart" -> "/lib/_features/common/providers/ui_direction.dart";
   "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
+  "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/features/search/models/search_scope.dart";
+  "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/map_search/ui/map_lost_internet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/map_search/ui/map_lost_internet.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
@@ -4497,6 +4504,7 @@ digraph "" {
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/features/poi_card/data/poi_data_google.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/features/search/models/search_scope.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/features/search/providers/search.dart";
@@ -4614,6 +4622,7 @@ digraph "" {
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/favourites/mappers/directory_object_message_mapper.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/parking_spot/parking_manage.dart";
+  "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/data/poi_data_google.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/domain/model/loading_or_failure_model.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart";
