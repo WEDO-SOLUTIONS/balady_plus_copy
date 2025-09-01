@@ -154,7 +154,7 @@ class _Content extends HookConsumerWidget {
                           if (offerImage != null)
                             _OfferPreviewByBusiness(
                               imageId: offerImage,
-                              description: offer.description,
+                              title: offer.name,
                               discount: discount,
                               offer: offer,
                             ),
@@ -508,13 +508,13 @@ class _OfferPreviewByGroup extends StatelessWidget {
 
 class _OfferPreviewByBusiness extends StatelessWidget {
   final String? imageId;
-  final String description;
+  final String title;
   final TextSpan? discount;
   final OfferDetails offer;
 
   const _OfferPreviewByBusiness({
     required this.imageId,
-    required this.description,
+    required this.title,
     this.discount,
     required this.offer,
   });
@@ -547,8 +547,8 @@ class _OfferPreviewByBusiness extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  description,
-                  style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
+                  title.length > 250 ? '${title.substring(0, 250)}...' : title,
+                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
                 ),
                 if (hasDiscount)
                   Padding(
