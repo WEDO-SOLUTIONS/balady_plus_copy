@@ -32,8 +32,7 @@ class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
   }) =>
       context.router.pushNativeRoute(
         PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              FeedbackSourceProvider(
+          pageBuilder: (context, animation, secondaryAnimation) => FeedbackSourceProvider(
             source: FeedbackSource.main,
             child: AppFeedbackSheetV2(rating: rating),
           ),
@@ -129,8 +128,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                   ),
                   const SizedBox(height: Spacing.$2x),
                   Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                     child: Text(
                       context.l10n.yourOpinionHelpUsImproveUserExperience,
                       style: context.textStyles.bodySmallRegular.copyWith(
@@ -156,14 +154,11 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                       size: ButtonSize.large,
                       primaryLabel: context.l10n.appFeedbackSubmitButton,
                       onTap: () {
-                        ref
-                            .read(collectFeedbackProvider.notifier)
-                            .collectFeedback(
+                        ref.read(collectFeedbackProvider.notifier).collectFeedback(
                               stars: rating,
                               tags: selectedTags
                                   .map(
-                                    (tag) =>
-                                        AppFeedbackTagMapperV2.getSourceTagText(
+                                    (tag) => AppFeedbackTagMapperV2.getSourceTagText(
                                       tag,
                                     ),
                                   )
@@ -199,6 +194,7 @@ class _FeedbackInput extends ConsumerStatefulWidget {
   final int rating;
   final Function(Set<TagV2>) onTagsChanged;
   final Function(String) onTextChanged;
+
   const _FeedbackInput({
     required this.rating,
     required this.onTagsChanged,
@@ -239,9 +235,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.rating > 3
-                    ? context.l10n.appFeedbackRating5
-                    : context.l10n.appFeedbackRating1,
+                widget.rating > 3 ? context.l10n.appFeedbackRating5 : context.l10n.appFeedbackRating1,
                 style: context.textStyles.bodyLargeSemiBold,
               ),
               const SizedBox(height: Spacing.$5x),
@@ -250,10 +244,8 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      AppFeedbackTagMapperV2.getLocalizedTitle(
-                          context.l10n, tagGroup.type),
-                      style: context.textStyles.bodySmallRegular
-                          .copyWith(color: context.colors.foregroundSoft),
+                      AppFeedbackTagMapperV2.getLocalizedTitle(context.l10n, tagGroup.type),
+                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                     ),
                     const SizedBox(height: Spacing.$3x),
                     Wrap(
@@ -275,8 +267,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                             },
                             type: ChipsType.neutral,
                             options: ChipsLabelOptions(
-                              labelFirst:
-                                  AppFeedbackTagMapperV2.getLocalizedText(
+                              labelFirst: AppFeedbackTagMapperV2.getLocalizedText(
                                 context.l10n,
                                 tag,
                               ),

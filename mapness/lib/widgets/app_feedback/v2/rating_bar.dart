@@ -39,9 +39,7 @@ class RatingBar extends StatelessWidget {
                     width: ratingItemSize,
                     height: ratingItemSize,
                     key: ValueKey('rating_star-$index-$isActive'),
-                    isActive
-                        ? Assets.imagesSvg.activeStar.keyName
-                        : Assets.imagesSvg.inactiveStar.keyName,
+                    isActive ? Assets.imagesSvg.activeStar.keyName : Assets.imagesSvg.inactiveStar.keyName,
                   ),
                 ),
               ),

@@ -5,7 +5,6 @@ import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/app_feedback/app_feedback_dio.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
-import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockDio extends Mock implements Dio {}

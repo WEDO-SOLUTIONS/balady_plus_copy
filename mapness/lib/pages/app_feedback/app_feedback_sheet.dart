@@ -35,8 +35,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
         context: context,
         builder: (ctx) => CupertinoAlertDialog(
               title: Text(context.l10n.appFeedbackUnsavedChanges),
-              content: Text(context.l10n
-                  .appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
+              content: Text(context.l10n.appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
               actions: [
                 CupertinoDialogAction(
                   isDefaultAction: true,
@@ -67,8 +66,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     void onCloseBottomSheet(ToggleSheetController controller) {
       final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
-      final isInitial =
-          ref.read(sendFeedbackProvider) == AppFeedbackState.initial;
+      final isInitial = ref.read(sendFeedbackProvider) == AppFeedbackState.initial;
 
       if (feedbackCanpop || !isInitial) {
         context.router.popForced();
@@ -78,8 +76,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
       }
     }
 
-    final scrollController =
-        useToggleSheetController(onClose: onCloseBottomSheet);
+    final scrollController = useToggleSheetController(onClose: onCloseBottomSheet);
 
     return FeedbackSourceProvider(
       source: source,
@@ -88,8 +85,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
         scrollController: scrollController,
         backgroundColor: context.colors.backgroundSurface4,
         safeAreaColor: context.colors.backgroundSurface4,
-        dragger:
-            SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
         shouldPop: (_) => false,
         content: [
           switch (sendFeedbackState) {

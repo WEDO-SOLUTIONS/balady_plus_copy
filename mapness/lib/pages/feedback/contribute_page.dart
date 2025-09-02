@@ -55,8 +55,7 @@ class _ContributePageState extends State<ContributePage> {
                           color: context.colors.backgroundSurface4,
                           child: Container(
                             height: 70,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: Spacing.$3x),
+                            padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
                             child: Center(
                               child: Row(
                                 children: [
@@ -102,8 +101,7 @@ class _ContributePageState extends State<ContributePage> {
                           width: double.infinity,
                           child: AppButton(
                             primaryLabel: context.l10n.addPlace,
-                            buttonColorScheme:
-                                ButtonColorScheme.accentSecondary,
+                            buttonColorScheme: ButtonColorScheme.accentSecondary,
                             onTap: () {
                               context.router.push(QuickFeedbackRoute());
                             },
