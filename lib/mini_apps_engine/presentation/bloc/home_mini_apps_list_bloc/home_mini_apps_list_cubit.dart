@@ -61,16 +61,25 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
 
   Future<void> openMiniApp({required String serviceKey, String? path}) async {
     try {
-      MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
-          .miniAppsList
-          .firstWhere((service) => service.serviceKey == serviceKey)
-          .copyWith();
-      miniApp.path = path;
-      NavigationService.pushNamed(
-        routeName: RouteName.miniAppsMainScreen,
-        args: miniApp,
-      );
-    } catch (_) {}
+      if(state is HomeMiniAppsListLoadingState) {
+        await Future.delayed(const Duration(seconds: 5));
+      }
+        MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
+            .miniAppsList
+            .firstWhere((service) => service.serviceKey == serviceKey)
+            .copyWith();
+
+
+        miniApp.path = path;
+        NavigationService.pushNamed(
+          routeName: RouteName.miniAppsMainScreen,
+          args: miniApp,
+        );
+
+    } catch (e) {
+
+     // CommonFunctions.showSuccess(e.toString());
+    }
   }
 
   Future<BaseResponse?> getMiniAppAcessToken(String serviceKey) async {

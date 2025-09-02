@@ -17,6 +17,7 @@ import 'app/events_logs/balady_logs.dart';
 void main() async {
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
+
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.stg);
       await setupMapness(EnvType.stg);

@@ -5,7 +5,6 @@ import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
@@ -379,7 +378,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
     await FlutterInsider.Instance.init(
-        "baladyapp", "group.movingViolations",
+        "baladyappuat", "group.movingViolations",
             (int type, dynamic data) {
           switch (type) {
             case InsiderCallbackAction.NOTIFICATION_OPEN:
@@ -477,8 +476,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (homeWidget != null) {
       await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty&& serviceKey !='/poi-map') {
-      await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 3));
+    } else if (serviceKey.isNotEmpty&& serviceKey !='/poi-map' && serviceKey.startsWith('/app')) {
       MiniAppModel app= MiniAppModel();
       var subPath;
       if(dtId!= null && path!= null)
@@ -490,7 +488,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         subPath = '/#$path';
       }
 
-      app=app.copyWith(serviceKey: serviceKey.replaceAll('/', ''),path: subPath);
+      app=app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''),path: subPath);
 
       CommonFunctions.openMiniApp(app);
     }
