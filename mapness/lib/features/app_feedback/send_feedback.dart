@@ -17,7 +17,7 @@ class SendFeedback extends _$SendFeedback {
   Dio? _feedbackDio;
 
   @override
-  Future<AppFeedbackState> build() async {
+  AppFeedbackState build() {
     _feedbackDio = ref.watch(appFeedbackDioProvider).valueOrNull;
     final collectFeedbackRef = ref.read(collectFeedbackProvider.notifier);
 
@@ -40,7 +40,7 @@ class SendFeedback extends _$SendFeedback {
     if (payload != null) {
       await sendFeedback(payload);
     } else {
-      await update((_) async => AppFeedbackState.error);
+      state = AppFeedbackState.error;
     }
   }
 
@@ -50,16 +50,16 @@ class SendFeedback extends _$SendFeedback {
         throw Exception('Feedback payload is null or Dio not initialized');
       }
 
-      await update((_) async => AppFeedbackState.loading);
+      state = AppFeedbackState.loading;
 
       await _feedbackDio?.post(
         '/1.0/feedbacks',
         data: payload.toJson(),
       );
 
-      await update((_) async => AppFeedbackState.success);
+      state = AppFeedbackState.success;
     } catch (e, st) {
-      await update((_) async => AppFeedbackState.error);
+      state = AppFeedbackState.error;
       logger.log('Failed to send feedback ${e.toString()}');
       Metrics.logException(e, st);
     }
