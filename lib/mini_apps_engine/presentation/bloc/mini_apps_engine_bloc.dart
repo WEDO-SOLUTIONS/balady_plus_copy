@@ -289,7 +289,7 @@ class MiniAppsEngineBloc
     final random = Random();
     int newPort = 1000 + random.nextInt(9999); // 8080 to 8090 inclusive
 
-    if (newPort != oldPort && newPort == 1234) {
+    if (newPort != oldPort && newPort != 1245) {
       return newPort;
     } else {
       return generateRandomPort(oldPort, serviceName);
