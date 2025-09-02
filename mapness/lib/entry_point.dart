@@ -4,10 +4,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
@@ -422,8 +424,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
     final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
     final serviceKey = url.path;//queryParameters[BaldayDeeplink.serviceKey];
-    final nafathLogin = url.queryParameters[BaldayDeeplink.nafathLogin];
-    final otpLogin = url.queryParameters[BaldayDeeplink.otpLogin];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
 
@@ -480,8 +480,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (serviceKey.isNotEmpty&& serviceKey !='/poi-map') {
       await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 3));
       MiniAppModel app= MiniAppModel();
-      ///#Volunteer_Home_Screen'
-
       var subPath;
       if(dtId!= null && path!= null)
       {
@@ -492,16 +490,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         subPath = '/#$path';
       }
 
-      app=app.copyWith(serviceKey: serviceKey.replaceAll('/', ''),path: subPath,latestVersion:LatestVersion(nafathLogin:bool.tryParse(nafathLogin??'false') ,otpLogin:bool.tryParse(otpLogin??'false')));
+      app=app.copyWith(serviceKey: serviceKey.replaceAll('/', ''),path: subPath);
 
       CommonFunctions.openMiniApp(app);
     }
-
-
-
-
-
-
 
     else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
@@ -572,20 +564,33 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+
+    await sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: "islamicservice",
+      path:  "#Quran_Show_All_Surahs_Page",
+    );
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+
+    await sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: "islamicservice",
+      path:  "#Athkar_Page",
+    );
   }
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
-
-    await NavigationService.navigatorKey.currentState!.pushNamed(
-      RouteName.vDAllTypesScreen,
+    await sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: "snapandsend",
     );
+
+    // await NavigationService.navigatorKey.currentState!.pushNamed(
+    //   RouteName.vDAllTypesScreen,
+    // );
   }
 
   Future<void> _openQuickFilter(String filter) async {

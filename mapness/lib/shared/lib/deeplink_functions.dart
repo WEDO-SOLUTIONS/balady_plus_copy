@@ -13,10 +13,9 @@ class BaldayDeeplink {
   static const String tokenId = 'tokenId';
   static const String homeWidget = 'homeWidget';
   static const String serviceKey = 'serviceKey';
-  static const String miniAppPath = 'path';
+  static const String miniAppPath = 'pt';
   static const String miniAppItemId = 'dt_Id';
-  static const String nafathLogin = 'nafathLogin';
-  static const String otpLogin = 'otpLogin';
+
 
   static String get baseAuthorityWithScheme => 'https://$baseAuthority';
 
