@@ -69,6 +69,12 @@ class AppConfigLoader {
     return config?.getValue(RemoteConfigConstants.mapMarkerTypes).asString();
   }
 
+  static Future<String?> getThermalStatusData() async {
+    final config = await _config?.future;
+
+    return config?.getValue(RemoteConfigConstants.thermalConfig).asString();
+  }
+
   static Future<void> _saveAppConfig(FirebaseRemoteConfig? remoteConfig, EnvType envType) async {
     /// Fetch the vendor configuration for the current environment type
     final vendorConfigResponse = remoteConfig?.getValue(envType.vendorConfigKey()).asString();
