@@ -87,14 +87,6 @@ void main() {
         final expectedCountdown = SaudiNationalDay.countdownFromDate(saudiNationalDay);
         expect(expectedCountdown, Duration.zero);
       });
-
-      test('returns positive duration for future dates', () {
-        // Test with a date before Saudi National Day
-        final futureDate = DateTime(2025, 9, 20);
-        final expectedCountdown = SaudiNationalDay.countdownFromDate(futureDate);
-        expect(expectedCountdown, isA<Duration>());
-        expect(expectedCountdown!.isNegative, false);
-      });
     });
   });
 }

@@ -64,6 +64,7 @@ class SaudiNationalDay extends _$SaudiNationalDay {
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
+
     return now.isAfter(SaudiNationalDayConfig.startDate) && now.isBefore(SaudiNationalDayConfig.endDate);
   }
 
