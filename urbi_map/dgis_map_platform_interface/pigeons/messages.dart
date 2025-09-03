@@ -2109,6 +2109,9 @@ abstract class HostFlutterApi {
   @async
   FavouritesStateMessage getFavourites();
 
+  @async
+  bool isAuthorized();
+
   void runMain();
 }
 

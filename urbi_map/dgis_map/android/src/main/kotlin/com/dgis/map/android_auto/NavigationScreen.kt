@@ -63,6 +63,7 @@ class NavigationScreen(
     private val appManager: AppManager
     private val hostFlutterApi: HostFlutterApi
     private var favouritesUpdateJob: Job? = null
+    private var isAuthorized: Boolean = false
 
     init {
         navigationManager =
@@ -474,6 +475,9 @@ class NavigationScreen(
     }
 
     private fun getFavourites(forceUpdate: Boolean = false) {
+        FlutterProvider.getHostFlutterApi(carContext).isAuthorized {
+            isAuthorized = it.getOrNull() ?: false
+        }
         FlutterProvider.getHostFlutterApi(carContext).getFavourites { result ->
             handleFavouritesMessage(result.getOrNull()) {
                 favourites = it
