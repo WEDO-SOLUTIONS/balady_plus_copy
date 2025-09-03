@@ -88,7 +88,7 @@ class MiniAppsItemWidget extends StatelessWidget {
 
   void _handleTap(BuildContext context) async {
     if (miniApp.latestVersion?.nafathLogin == true &&
-        !CommonProperties.isLoggedInMunicipality) {
+        !CommonProperties.isLoggedInMunicipality && miniApp.latestVersion?.deepLinkModel==null) {
       showDialog(
         context: context,
         builder: (ctx) => NeedLoginDialog(
@@ -102,7 +102,7 @@ class MiniAppsItemWidget extends StatelessWidget {
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true) {
+    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel==null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
@@ -127,11 +127,6 @@ class MiniAppsItemWidget extends StatelessWidget {
             args: miniApp,
           );
         }
-
-
-
-
-
 
       }
 
