@@ -40,7 +40,7 @@ void main() {
     });
 
     test('Send feedback init values', () async {
-      final state = await container.read(sendFeedbackProvider.future);
+      final state = container.read(sendFeedbackProvider);
 
       expect(state, isNotNull);
       expect(state, AppFeedbackState.initial);
@@ -52,7 +52,7 @@ void main() {
 
       await container.read(sendFeedbackProvider.notifier).sendFeedback(mockPayload);
 
-      final state = container.read(sendFeedbackProvider).valueOrNull;
+      final state = container.read(sendFeedbackProvider);
       expect(state, isNotNull);
       expect(state, AppFeedbackState.success);
     });
@@ -63,7 +63,7 @@ void main() {
 
       await container.read(sendFeedbackProvider.notifier).sendFeedback(mockPayload);
 
-      final state = container.read(sendFeedbackProvider).valueOrNull;
+      final state = container.read(sendFeedbackProvider);
       expect(state, AppFeedbackState.error);
     });
 
@@ -72,7 +72,7 @@ void main() {
 
       await container.read(sendFeedbackProvider.notifier).sendFeedback(mockPayload);
 
-      final state = container.read(sendFeedbackProvider).valueOrNull;
+      final state = container.read(sendFeedbackProvider);
       expect(state, AppFeedbackState.error);
     });
 
@@ -81,7 +81,7 @@ void main() {
 
       await container.read(sendFeedbackProvider.notifier).retry();
 
-      final state = container.read(sendFeedbackProvider).valueOrNull;
+      final state = container.read(sendFeedbackProvider);
       expect(state, AppFeedbackState.error);
     });
 
@@ -94,7 +94,7 @@ void main() {
 
       await nullDioContainer.read(sendFeedbackProvider.notifier).sendFeedback(mockPayload);
 
-      final state = nullDioContainer.read(sendFeedbackProvider).valueOrNull;
+      final state = nullDioContainer.read(sendFeedbackProvider);
 
       nullDioContainer.dispose();
       expect(state, AppFeedbackState.error);
@@ -109,9 +109,7 @@ void main() {
           .thenAnswer((_) async => Response(requestOptions: RequestOptions()));
 
       container.listen(sendFeedbackProvider, (_, state) {
-        if (state.hasValue && state.valueOrNull != null) {
-          states.add(state.valueOrNull!);
-        }
+        states.add(state);
       }, fireImmediately: true);
 
       await container.read(sendFeedbackProvider.notifier).sendFeedback(mockPayload);

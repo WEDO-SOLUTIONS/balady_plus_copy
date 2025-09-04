@@ -77,6 +77,10 @@ class Routes {
           page: FlipsContinueRoute.page,
         ),
         CustomRoute(
+          path: '/contribute',
+          page: ContributeRoute.page,
+        ),
+        CustomRoute(
           path: '/addPhoto',
           page: AddPhotoRoute.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,
