@@ -73,17 +73,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
             return;
           }
 
-          final mapSetting = MapObjectManagerSettings.search();
-          ref
-              .read(
-                mapObjectManagerProvider(
-                  named: mapSetting.name,
-                  layerId: mapSetting.layerId,
-                ).notifier,
-              )
-              .setMapObjectManagerIsVisible(isVisible: false);
-
-          _openRoutingRoutes(
+          _onDirectionsTap(
             context,
             objectId,
             '',
@@ -92,6 +82,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
               longitude: closestPoint.longitude,
               objectId: objectId,
             ),
+            ref,
           );
         },
         onTapFavorite: (item) =>

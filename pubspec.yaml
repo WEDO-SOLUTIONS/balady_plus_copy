@@ -271,6 +271,7 @@ dependency_overrides:
   sentry_flutter: 8.14.2
   sentry_dio: 8.14.2
   flutter_pdfview: 1.4.0
+  mocktail: ^1.0.4
 
 dev_dependencies:
   build_runner: ^2.4.12

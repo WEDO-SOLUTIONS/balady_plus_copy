@@ -69,6 +69,7 @@ import 'package:urbi_utils/urbi_utils.dart';
 part 'poi_card_content.dart';
 part 'poi_card_no_info.dart';
 part 'poi_card_wrapper.dart';
+part 'poi_functions.dart';
 
 @RoutePage()
 class PoiCardWidgetPage extends StatelessWidget {
