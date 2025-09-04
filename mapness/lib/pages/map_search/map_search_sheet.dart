@@ -165,7 +165,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
               scrollController: _multiStateSheetController,
-              animateOpening: false,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: containerColor,
