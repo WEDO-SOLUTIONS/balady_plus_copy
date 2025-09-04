@@ -98,7 +98,6 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: SystemIcons.share,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
-          // onPressed: throttledShare,
         ),
       ),
       if (phoneNumber != null)
