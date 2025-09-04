@@ -79,6 +79,7 @@ digraph "" {
   "/lib/entities/favourites/favourites_state.dart" [label="favourites_state"];
   "/lib/entities/favourites/favourite_item.dart" [label="favourite_item"];
   "/lib/entities/app_feedback/app_feedback_payload.dart" [label="app_feedback_payload"];
+  "/lib/entities/app_feedback/app_feedback_tag_mapper_v2.dart" [label="app_feedback_tag_mapper_v2"];
   "/lib/entities/app_feedback/app_feedback_tag_mapper.dart" [label="app_feedback_tag_mapper"];
   "/lib/entities/mini_apps/presentation_mode.dart" [label="presentation_mode"];
   "/lib/entities/metro/metro_line_model.dart" [label="metro_line_model"];
@@ -677,6 +678,7 @@ digraph "" {
   "/lib/pages/poi_card/poi_card_wrapper.dart" [label="poi_card_wrapper"];
   "/lib/pages/poi_card/parking_content.dart" [label="parking_content"];
   "/lib/pages/poi_card/poi_card_content.dart" [label="poi_card_content"];
+  "/lib/pages/poi_card/poi_functions.dart" [label="poi_functions"];
   "/lib/pages/poi_card/poi_card_widget_page.dart" [label="poi_card_widget_page"];
   "/lib/pages/poi_card/poi_card_no_info.dart" [label="poi_card_no_info"];
   "/lib/pages/feedback/quick_feedback_page.dart" [label="quick_feedback_page"];
@@ -695,10 +697,12 @@ digraph "" {
   "/lib/pages/feedback/components/feedback_form_widget.dart" [label="feedback_form_widget"];
   "/lib/pages/feedback/feedback_sheet_widget.dart" [label="feedback_sheet_widget"];
   "/lib/pages/feedback/feedback_failure_widget.dart" [label="feedback_failure_widget"];
+  "/lib/pages/feedback/contribute_page.dart" [label="contribute_page"];
   "/lib/pages/favourites/favourites_search.dart" [label="favourites_search"];
   "/lib/pages/favourites/favourites_picker.dart" [label="favourites_picker"];
   "/lib/pages/favourites/favourites_page.dart" [label="favourites_page"];
   "/lib/pages/app_feedback/app_feedback_sheet.dart" [label="app_feedback_sheet"];
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" [label="app_feedback_sheet_v2"];
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" [label="app_feedback_input_sheet"];
   "/lib/pages/lifestyle_layers/layers_sheet.dart" [label="layers_sheet"];
   "/lib/pages/kiblah/providers/kaaba_haptics.dart" [label="kaaba_haptics"];
@@ -821,9 +825,14 @@ digraph "" {
   "/lib/widgets/quick_filters/ui/quick_filter.dart" [label="quick_filter"];
   "/lib/widgets/quick_filters/models/filter_item.dart" [label="filter_item"];
   "/lib/widgets/search/ui/search_tap_handler.dart" [label="search_tap_handler"];
+  "/lib/widgets/search/ui/working_hours_from_opening_hours_message.dart" [label="working_hours_from_opening_hours_message"];
   "/lib/widgets/search/ui/search_history_collapsible.dart" [label="search_history_collapsible"];
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" [label="search_item_quick_actions"];
+  "/lib/widgets/search/ui/directory_object_car_estimate.dart" [label="directory_object_car_estimate"];
   "/lib/widgets/search/ui/search_item.dart" [label="search_item"];
+  "/lib/widgets/search/ui/working_hours_strings.dart" [label="working_hours_strings"];
   "/lib/widgets/search/ui/search_history_empty.dart" [label="search_history_empty"];
+  "/lib/widgets/search/ui/working_hours.dart" [label="working_hours"];
   "/lib/widgets/search/lib/build_suggest_title.dart" [label="build_suggest_title"];
   "/lib/widgets/path_nav/ui/end_trip_modal.dart" [label="end_trip_modal"];
   "/lib/widgets/path_nav/ui/parking_bottom_banner.dart" [label="parking_bottom_banner"];
@@ -1083,6 +1092,7 @@ digraph "" {
         subgraph "cluster~/lib/entities/app_feedback" {
           label="app_feedback";
           "/lib/entities/app_feedback/app_feedback_payload.dart";
+          "/lib/entities/app_feedback/app_feedback_tag_mapper_v2.dart";
           "/lib/entities/app_feedback/app_feedback_tag_mapper.dart";
         }
         subgraph "cluster~/lib/entities/mini_apps" {
@@ -2251,6 +2261,7 @@ digraph "" {
           "/lib/pages/poi_card/poi_card_wrapper.dart";
           "/lib/pages/poi_card/parking_content.dart";
           "/lib/pages/poi_card/poi_card_content.dart";
+          "/lib/pages/poi_card/poi_functions.dart";
           "/lib/pages/poi_card/poi_card_widget_page.dart";
           "/lib/pages/poi_card/poi_card_no_info.dart";
         }
@@ -2263,6 +2274,7 @@ digraph "" {
           "/lib/pages/feedback/feedback_page.dart";
           "/lib/pages/feedback/feedback_sheet_widget.dart";
           "/lib/pages/feedback/feedback_failure_widget.dart";
+          "/lib/pages/feedback/contribute_page.dart";
           subgraph "cluster~/lib/pages/feedback/feedback_address" {
             label="feedback_address";
             "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart";
@@ -2288,6 +2300,7 @@ digraph "" {
         subgraph "cluster~/lib/pages/app_feedback" {
           label="app_feedback";
           "/lib/pages/app_feedback/app_feedback_sheet.dart";
+          "/lib/pages/app_feedback/app_feedback_sheet_v2.dart";
           "/lib/pages/app_feedback/app_feedback_input_sheet.dart";
         }
         subgraph "cluster~/lib/pages/lifestyle_layers" {
@@ -2523,9 +2536,14 @@ digraph "" {
           subgraph "cluster~/lib/widgets/search/ui" {
             label="ui";
             "/lib/widgets/search/ui/search_tap_handler.dart";
+            "/lib/widgets/search/ui/working_hours_from_opening_hours_message.dart";
             "/lib/widgets/search/ui/search_history_collapsible.dart";
+            "/lib/widgets/search/ui/search_item_quick_actions.dart";
+            "/lib/widgets/search/ui/directory_object_car_estimate.dart";
             "/lib/widgets/search/ui/search_item.dart";
+            "/lib/widgets/search/ui/working_hours_strings.dart";
             "/lib/widgets/search/ui/search_history_empty.dart";
+            "/lib/widgets/search/ui/working_hours.dart";
           }
           subgraph "cluster~/lib/widgets/search/lib" {
             label="lib";
@@ -4170,7 +4188,6 @@ digraph "" {
   "/lib/pages/profile/settings_page.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/profile/image_editor_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
-  "/lib/pages/profile/profile_page.dart" -> "/lib/shared/constants/constants.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/widgets/profile/log_out_sheet.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/widgets/profile/profile_header.dart";
@@ -4757,6 +4774,9 @@ digraph "" {
   "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/ui/error_widget/fullscreen_error_widget.dart";
+  "/lib/pages/feedback/contribute_page.dart" -> "/lib/pages/app_feedback/app_feedback_sheet_v2.dart";
+  "/lib/pages/feedback/contribute_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/feedback/contribute_page.dart" -> "/lib/widgets/app_feedback/v2/rating_bar.dart";
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/features/favourites/mappers/directory_object_message_mapper.dart";
@@ -4795,6 +4815,18 @@ digraph "" {
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/app_feedback_loading.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/app_feedback_success.dart";
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/v2/app_feedback_main.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/_features/common/widgets/dragger.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/entities/app_feedback/app_feedback_payload.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/entities/app_feedback/app_feedback_tag_mapper_v2.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/features/app_feedback/app_feedback_source_provider.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/features/app_feedback/collect_feedback.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/features/app_feedback/send_feedback.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/widgets/app_feedback/app_feedback_error.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/widgets/app_feedback/app_feedback_loading.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/widgets/app_feedback/app_feedback_success.dart";
+  "/lib/pages/app_feedback/app_feedback_sheet_v2.dart" -> "/lib/widgets/app_feedback/v2/rating_bar.dart";
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
@@ -5274,25 +5306,44 @@ digraph "" {
   "/lib/widgets/quick_filters/ui/quick_filters.dart" -> "/lib/widgets/quick_filters/models/filter_item.dart";
   "/lib/widgets/quick_filters/ui/quick_filters.dart" -> "/lib/widgets/quick_filters/ui/quick_filter.dart";
   "/lib/widgets/quick_filters/ui/quick_filter.dart" -> "/lib/widgets/quick_filters/models/filter_item.dart";
+  "/lib/widgets/search/ui/working_hours_from_opening_hours_message.dart" -> "/lib/widgets/search/ui/working_hours.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/entities/search/models/search_history.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/providers/analytic/bss_service.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/providers/analytic/models/bss_request.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/providers/analytic/models/payload/bss_payload.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/ui/dismissible/app_dismissible.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/entities/favourites/favourite_item.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/entities/routing/route_params_point.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/features/poi_card/enums/contacts_info_type.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/features/poi_card/provider/poi_card_actions_provider.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/pages/poi_card/poi_card_widget_page.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/widgets/helpers/throttled_callback_widget.dart";
+  "/lib/widgets/search/ui/directory_object_car_estimate.dart" -> "/lib/entities/routing/route_search_point.dart";
+  "/lib/widgets/search/ui/directory_object_car_estimate.dart" -> "/lib/features/poi_card/extensions/geopoint_mapper.dart";
+  "/lib/widgets/search/ui/directory_object_car_estimate.dart" -> "/lib/shared/extensions/brief_route_info_message_ext.dart";
+  "/lib/widgets/search/ui/directory_object_car_estimate.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/search/ui/directory_object_car_estimate.dart" -> "/lib/shared/providers/map/find_brief_route_info.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/domain/dto/dgis_photos_dto.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/lib/common_functions.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/lib/make_address.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/providers/analytic/bss_service.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/providers/analytic/models/bss_request.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/providers/analytic/models/extensions/directory_obj_ext.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/providers/analytic/models/payload/bss_payload.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/providers/app_language.dart";
-  "/lib/widgets/search/ui/search_item.dart" -> "/lib/widgets/routing/lib/duration_distance_fmt.dart";
+  "/lib/widgets/search/ui/search_item.dart" -> "/lib/widgets/search/ui/directory_object_car_estimate.dart";
+  "/lib/widgets/search/ui/search_item.dart" -> "/lib/widgets/search/ui/search_item_quick_actions.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/widgets/search/ui/search_tap_handler.dart";
+  "/lib/widgets/search/ui/search_item.dart" -> "/lib/widgets/search/ui/working_hours_from_opening_hours_message.dart";
+  "/lib/widgets/search/ui/search_item.dart" -> "/lib/widgets/search/ui/working_hours_strings.dart";
+  "/lib/widgets/search/ui/working_hours_strings.dart" -> "/lib/widgets/search/ui/working_hours.dart";
   "/lib/widgets/search/ui/search_history_empty.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/shared/extensions/build_context_ext.dart";
