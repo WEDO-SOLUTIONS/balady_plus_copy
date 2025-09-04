@@ -383,6 +383,8 @@ digraph "" {
   "/lib/features/weather/data/repository/weather_repository.dart" [label="weather_repository"];
   "/lib/features/weather/data/datasources/weather_remote_datasource.dart" [label="weather_remote_datasource"];
   "/lib/features/weather/data/models/weather_model.dart" [label="weather_model"];
+  "/lib/features/thermal_monitor/thermal_monitor.dart" [label="thermal_monitor"];
+  "/lib/features/thermal_monitor/data/thermal_config.dart" [label="thermal_config"];
   "/lib/_features/common/animated/animated_scroll_view_item.dart" [label="animated_scroll_view_item"];
   "/lib/_features/common/providers/permissions.dart" [label="permissions"];
   "/lib/_features/common/providers/ui_direction.dart" [label="ui_direction"];
@@ -1699,6 +1701,14 @@ digraph "" {
               label="models";
               "/lib/features/weather/data/models/weather_model.dart";
             }
+          }
+        }
+        subgraph "cluster~/lib/features/thermal_monitor" {
+          label="thermal_monitor";
+          "/lib/features/thermal_monitor/thermal_monitor.dart";
+          subgraph "cluster~/lib/features/thermal_monitor/data" {
+            label="data";
+            "/lib/features/thermal_monitor/data/thermal_config.dart";
           }
         }
       }
@@ -3741,6 +3751,11 @@ digraph "" {
   "/lib/features/weather/data/datasources/weather_remote_datasource.dart" -> "/lib/entry_point.dart";
   "/lib/features/weather/data/datasources/weather_remote_datasource.dart" -> "/lib/shared/utils/logger/logger.dart";
   "/lib/features/weather/data/models/weather_model.dart" -> "/lib/entities/weather/weather_info.dart";
+  "/lib/features/thermal_monitor/thermal_monitor.dart" -> "/lib/features/thermal_monitor/data/thermal_config.dart";
+  "/lib/features/thermal_monitor/thermal_monitor.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/features/thermal_monitor/thermal_monitor.dart" -> "/lib/shared/providers/urbi_analytics.dart";
+  "/lib/features/thermal_monitor/thermal_monitor.dart" -> "/lib/shared/utils/app_config_loader.dart";
+  "/lib/features/thermal_monitor/thermal_monitor.dart" -> "/lib/shared/utils/logger/logger.dart";
   "/lib/_features/common/providers/ui_direction.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/_features/common/providers/route_onboarding.dart" -> "/lib/shared/providers/hive.dart";
   "/lib/_features/common/providers/eager_init.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
@@ -4140,6 +4155,7 @@ digraph "" {
   "/lib/pages/iwish/iwish_feedback_comment.dart" -> "/lib/widgets/iwish/ui/iwish_text_editing_field.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
+  "/lib/pages/landing/landing_page.dart" -> "/lib/features/thermal_monitor/thermal_monitor.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/lib/urbi_metrics_utils.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/map/camera_padding.dart";
