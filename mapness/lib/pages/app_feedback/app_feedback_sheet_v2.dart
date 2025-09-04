@@ -70,14 +70,14 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   late final ToggleSheetController scrollController = ToggleSheetController(
     onClose: (_) => context.router.popForced(),
   );
-  late int rating;
+  final ValueNotifier<int> rating = ValueNotifier(0);
   Set<TagV2> selectedTags = Set.identity();
   String feedbackText = '';
 
   @override
   void initState() {
     super.initState();
-    rating = widget.rating ?? 0;
+    rating.value = widget.rating ?? 0;
   }
 
   @override
@@ -113,13 +113,16 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
               child: Column(
                 children: [
                   const SizedBox(height: Spacing.$2x),
-                  RatingBar(
-                    rating: rating,
-                    onRatingChanged: (value) {
-                      setState(() {
-                        rating = value;
-                      });
-                    },
+                  ValueListenableBuilder(
+                    valueListenable: rating,
+                    builder: (context, value, _) => RatingBar(
+                      rating: value,
+                      onRatingChanged: (value) {
+                        setState(() {
+                          rating.value = value;
+                        });
+                      },
+                    ),
                   ),
                   const SizedBox(height: Spacing.$3x),
                   Text(
@@ -137,14 +140,17 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                     ),
                   ),
                   const SizedBox(height: Spacing.$8x),
-                  _FeedbackInput(
-                    rating: rating,
-                    onTagsChanged: (tags) {
-                      selectedTags = tags;
-                    },
-                    onTextChanged: (text) {
-                      feedbackText = text;
-                    },
+                  ValueListenableBuilder(
+                    valueListenable: rating,
+                    builder: (context, value, _) => _FeedbackInput(
+                      rating: value,
+                      onTagsChanged: (tags) {
+                        selectedTags = tags;
+                      },
+                      onTextChanged: (text) {
+                        feedbackText = text;
+                      },
+                    ),
                   ),
                   const SizedBox(height: Spacing.$8x),
                   SizedBox(
@@ -155,7 +161,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                       primaryLabel: context.l10n.appFeedbackSubmitButton,
                       onTap: () {
                         ref.read(collectFeedbackProvider.notifier).collectFeedback(
-                              stars: rating,
+                              stars: rating.value,
                               tags: selectedTags
                                   .map(
                                     (tag) => AppFeedbackTagMapperV2.getSourceTagText(
