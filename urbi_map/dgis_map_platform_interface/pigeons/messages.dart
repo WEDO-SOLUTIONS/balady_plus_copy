@@ -1983,6 +1983,11 @@ abstract class MapApi {
   @async
   void setPublicTransportActiveRoute(int routeIndex);
 
+  // TODO: Do all logic like in [toggleVoiceInstruction]. You have to
+  // send notification to native side and send it to CarPlay and Android Auto.
+  @async
+  void authorizationNotification(bool isAuthorized);
+
   @async
   void favouritesUpdateNotification(FavouritesStateMessage favouritesState);
 
