@@ -475,8 +475,8 @@ class NavigationScreen(
     }
 
     private fun getFavourites(forceUpdate: Boolean = false) {
-        FlutterProvider.getHostFlutterApi(carContext).isAuthorized {
-            isAuthorized = it.getOrNull() ?: false
+        FlutterProvider.getHostFlutterApi(carContext).isAuthorized { result ->
+            isAuthorized = result.getOrNull() ?: false
         }
         FlutterProvider.getHostFlutterApi(carContext).getFavourites { result ->
             handleFavouritesMessage(result.getOrNull()) {

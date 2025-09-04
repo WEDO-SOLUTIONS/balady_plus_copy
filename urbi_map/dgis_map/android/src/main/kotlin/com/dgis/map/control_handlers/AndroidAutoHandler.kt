@@ -18,6 +18,16 @@ class AndroidAutoHandler(
     fun getConnectionState(): Boolean {
         return carConnection.type.value == CarConnection.CONNECTION_TYPE_PROJECTION
     }
+    
+    fun onAuthorizationChanged(isAuthorized: Boolean) {
+        // Update authorization state for Android Auto
+        eventSink.success(
+            mapOf(
+                "event" to Event.authorizationChanged.name,
+                "isAuthorized" to isAuthorized,
+            )
+        )
+    }
 
     private fun onConnectionStateUpdated(connectionState: Int) {
         val connected = when (connectionState) {
@@ -38,7 +48,8 @@ class AndroidAutoHandler(
     }
 
     private enum class Event {
-        carConnectionEvent;
+        carConnectionEvent,
+        authorizationChanged;
     }
 }
 
