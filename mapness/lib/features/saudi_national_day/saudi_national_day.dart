@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'saudi_national_day.g.dart';
@@ -64,7 +65,6 @@ class SaudiNationalDay extends _$SaudiNationalDay {
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
-
     return now.isAfter(SaudiNationalDayConfig.startDate) && now.isBefore(SaudiNationalDayConfig.endDate);
   }
 
