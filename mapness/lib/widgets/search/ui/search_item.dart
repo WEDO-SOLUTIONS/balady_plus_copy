@@ -174,21 +174,4 @@ class SearchItem extends ConsumerWidget {
       ),
     );
   }
-
-  Future<double?> _calculateDistance({GeoPointWithElevationMessage? markerPoint, GeoPointMessage? myLocationPoint}) {
-    if (markerPoint == null || myLocationPoint == null) {
-      // Return null by default
-      return Future.value();
-    }
-
-    return Future.delayed(
-      Duration.zero,
-      () => CommonFunctions.distance(
-        result.markerPosition!.latitude,
-        result.markerPosition!.longitude,
-        myLocation!.latitude,
-        myLocation!.longitude,
-      ),
-    );
-  }
 }
