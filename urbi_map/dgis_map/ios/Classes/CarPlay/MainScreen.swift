@@ -248,6 +248,11 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         // Update sound settings in the current settings screen if it exists
         currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
     }
+    
+    func onAuthorizationChanged(isAuthorized: Bool) {
+        self.isAuthorized = isAuthorized
+        buildLeadButtons()
+    }
 
     private func closeSettingsScreen() {
         interfaceController.popTemplate(animated: true, completion: nil)
