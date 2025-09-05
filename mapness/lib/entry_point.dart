@@ -30,12 +30,14 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
+import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
-import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -48,6 +50,11 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
+import 'package:mapness/shared/providers/analytic/bss_common.dart';
+import 'package:mapness/shared/providers/analytic/bss_dio.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
@@ -139,22 +146,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initDeepLinks();
     listenNavigationEvents();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
       // Init camera position point
-      initCameraPositionPoint();
+      await initCameraPositionPoint();
       // TODO(Scroollocker): Disable this feature. Because need to research fail restore cases
       // restoreState();
-      clearCache();
+      await clearCache();
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
-      // TODO: Dmitrii.P: Is it the right place to call this method?
-      // Maybe we should call it upper or in the different places too?
+      // Initialization of BSS and Search Region singleton services
+      _initBssService();
+      await ref.read(initializeSearchRegionServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
-      AdvancedMetrics.instance.stopMeasureStartup(track: track);
-      AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
-      AdvancedMetrics.instance.startMeasureBattery();
+      await AdvancedMetrics.instance.stopMeasureStartup(track: track);
+      await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
+      await AdvancedMetrics.instance.startMeasureBattery();
     });
   }
 
@@ -165,6 +173,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     _navigationEventsListener?.cancel();
 
     super.dispose();
+  }
+
+  void _initBssService() {
+    ref
+      ..watch(bssDioProvider)
+      ..watch(bssCommonProvider);
   }
 
   Future<void> restoreState() async {
@@ -520,7 +534,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final query = quickFilter.query[language];
     if (query != null) {
-      unawaited(ref.read(SendStatisticProvider(query).future));
+      unawaited(
+        ref.read(bssServiceProvider.notifier).sendEvent(
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.deeplink,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.searchStart,
+                  ownerName: BssUIElementNames.searchBar,
+                ),
+                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+              ),
+            ),
+      );
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -767,5 +793,15 @@ class _HostFlutterApi extends HostFlutterApi {
   Future<VendorConfigContentMessage> getAppConfig() async {
     final vendorConfigLocal = await AppConfigLoader.getAppConfig();
     return VendorConfigContentMessage(content: vendorConfigLocal);
+  }
+
+  @override
+  Future<FavouritesStateMessage> getFavourites() async {
+    final favouritesState = await getFavouritesStateFromHive();
+    return FavouritesStateMessage(
+      home: favouritesState.home?.message,
+      work: favouritesState.work?.message,
+      items: favouritesState.items.map((item) => item.message).toList(),
+    );
   }
 }

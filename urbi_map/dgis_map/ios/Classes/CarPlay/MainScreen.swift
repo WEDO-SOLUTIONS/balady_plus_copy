@@ -11,6 +11,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     unowned private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler?
     private let container: DGis.Container
+    unowned private let hostFlutterApi: HostFlutterApi
 
     init(
         map: Map,
@@ -21,7 +22,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         eventProcessor: IMapEventProcessor,
         navigationManager: NavigationManager,
         userDefaultsPublished: UserDefaultsPublished,
-        eventChannel: DgisStreamHandler?
+        eventChannel: DgisStreamHandler?,
+        hostFlutterApi: HostFlutterApi
     ) {
         self.map = map
         self.container = container
@@ -30,6 +32,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             context: try! container.context, routeEditor: routeEditor,
             calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
+        self.trafficRouter = TrafficRouter(context: try! container.context)
         map.addSource(source: routeEditorSource)
         self.dgisCarPlayMapView = dgisCarPlayMapView
         self.interfaceController = interfaceController
@@ -45,11 +48,13 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             model: model,
             mapTemplate: mapTemplate
         )
+        self.hostFlutterApi = hostFlutterApi
     }
 
     private let mapTemplate: CPMapTemplate
     private let routeEditor: RouteEditor
     private let routeEditorSource: RouteEditorSource
+    private let trafficRouter: TrafficRouter
     private lazy var zoomControlModel = ZoomControlModel(map: map)
     private let trafficControlModel: TrafficControlModel
     private let model: Model
@@ -205,6 +210,19 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         screen.createTemplate().show(with: interfaceController)
     }
 
+    private func onFavoritesTap(_: CPBarButton) {
+        let template = FavoritesScreen.createTemplate()
+        let screen = FavoritesScreen(
+            listTemplate: template,
+            interfaceController: interfaceController,
+            hostFlutterApi: hostFlutterApi,
+            searchNavigation: self,
+            trafficRouter: trafficRouter,
+            locationService: try! container.locationService
+        )
+        screen.show()
+    }
+
     private func onSettingsBarTap(_: CPBarButton) {
         let screen = SettingsScreen(
             onBackTap: { [weak self] _ in self?.closeSettingsScreen() },
@@ -349,13 +367,20 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func makeSecondLeadButton() -> (() -> CPBarButton)? {
         if isPanningInterfaceVisible { return nil }
-        guard let trip = startedTrip else { return nil }
-        return makeRouteHeaderButton(trip)
+        if let trip = startedTrip { return makeRouteHeaderButton(trip) }
+        if isRoutesShown { return nil }
+        return makeFavoritesButton
     }
 
     private func makeSearchButton() -> CPBarButton {
         return CPBarButton(
             image: UIImage(named: "Search")!, handler: onSearchBarTap
+        )
+    }
+
+    private func makeFavoritesButton() -> CPBarButton {
+        return CPBarButton(
+            image: UIImage(named: "Bookmark")!, handler: onFavoritesTap
         )
     }
 
@@ -454,6 +479,17 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         guard let geoPoint = directoryObject.markerPosition?.point
         else { return }
 
+        let addressFormatted = directoryObject.address?.addressToString() ?? ""
+
+        navigate(
+            to: geoPoint, destinationName: directoryObject.title,
+            additionalInformation: addressFormatted)
+    }
+
+    func navigate(
+        to geoPoint: GeoPoint, destinationName: String,
+        additionalInformation: String
+    ) {
         let finishPoint = RouteSearchPoint(coordinates: geoPoint)
         let carRouteSearchOptions = CarRouteSearchOptions()
         let routeSearchOptions = RouteSearchOptions.car(carRouteSearchOptions)
@@ -479,7 +515,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 [self]
                 routeEditorRoutesInfo in
                 showTripPreview(
-                    to: directoryObject, with: routeEditorRoutesInfo
+                    to: destinationName, with: additionalInformation,
+                    with: routeEditorRoutesInfo
                 )
             }
 
@@ -487,7 +524,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func showTripPreview(
-        to directoryObject: DirectoryObject,
+        to destinationName: String,
+        with additionalInformation: String,
         with routeEditorRoutesInfo: RouteEditorRoutesInfo
     ) {
         guard !routeEditorRoutesInfo.routes.isEmpty else { return }
@@ -495,7 +533,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         routesInfoChannelCancellable?.cancel()
 
         let trip = createCPTrip(
-            to: directoryObject, with: routeEditorRoutesInfo
+            to: destinationName,
+            with: additionalInformation,
+            with: routeEditorRoutesInfo
         )
 
         showRoutes(for: trip)
@@ -522,15 +562,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         routeEditorSource.setRoutesVisible(visible: isRoutesShown)
 
         let textConfiguration = CPTripPreviewTextConfiguration(
-            startButtonTitle: NSLocalizedString(
-                "tripPreviewStartButton", comment: ""
-            ),
-            additionalRoutesButtonTitle: NSLocalizedString(
-                "tripPreviewMoreRoutesButton", comment: ""
-            ),
-            overviewButtonTitle: NSLocalizedString(
-                "tripPreviewBackButton", comment: ""
-            )
+            startButtonTitle: "tripPreviewStartButton".localized,
+            additionalRoutesButtonTitle: "tripPreviewMoreRoutesButton"
+                .localized,
+            overviewButtonTitle: "tripPreviewBackButton".localized
         )
 
         if self.startedTrip == nil {
@@ -572,7 +607,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func createCPTrip(
-        to directoryObject: DirectoryObject,
+        to destinationName: String,
+        with additionalInformation: String,
         with routeEditorRoutesInfo: RouteEditorRoutesInfo
     ) -> CPTrip {
         let routeEditorRouteParams = routeEditorRoutesInfo.routeParams
@@ -584,30 +620,28 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         let destination = MKMapItem(
             placemark: MKPlacemark(coordinate: clLocationCoordinate2D)
         )
-        destination.name = directoryObject.title
+        destination.name = destinationName
         return CPTrip(
             origin: MKMapItem(),
             destination: destination,
             routeChoices: routeEditorRoutesInfo.routes.map {
                 trafficRoute in
-                createCPRouteChoice(trafficRoute, directoryObject)
+                createCPRouteChoice(trafficRoute, additionalInformation)
             }
         )
     }
 
     private func createCPRouteChoice(
-        _ trafficRoute: TrafficRoute, _ directoryObject: DirectoryObject
+        _ trafficRoute: TrafficRoute, _ additionalInformation: String
     )
         -> CPRouteChoice
     {
         let duration = trafficRoute.traffic.durations.duration
 
-        let durationFormatter = DateComponentsFormatter()
-        durationFormatter.allowedUnits =
-            duration > 3600 ? [.hour, .minute] : [.minute]
-        durationFormatter.unitsStyle = .short
-        durationFormatter.zeroFormattingBehavior = [.default]
-        let durationFormatted = durationFormatter.string(from: duration) ?? "--"
+        let locale = userDefaultsPublished.language.locale
+
+        let durationFormatted = duration.minutesWithinHourOrHoursAndMinutes(
+            overrideLocale: locale)
 
         let distance = trafficRoute.route.geometry.last?.point.distance
         let distanceMeasurement = Measurement(
@@ -615,19 +649,12 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             unit: UnitLength.millimeters
         )
 
-        let measurementFormatter = MeasurementFormatter()
-        measurementFormatter.unitStyle = .medium
-        measurementFormatter.unitOptions = .providedUnit
-        measurementFormatter.numberFormatter.decimalSeparator = ","
-        let distanceFormatted = measurementFormatter.string(
-            from: distanceMeasurement.formatDistance
-        )
-
-        let addressFormatted = directoryObject.address?.addressToString() ?? ""
+        let distanceFormatted = distanceMeasurement.formatDistance
+            .formatWithComma(overrideLocale: locale)
 
         return CPRouteChoice(
             summaryVariants: [durationFormatted],
-            additionalInformationVariants: [addressFormatted],
+            additionalInformationVariants: [additionalInformation],
             selectionSummaryVariants: [distanceFormatted]
         )
     }
@@ -727,6 +754,35 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             secondaryAction: closeButton,
             duration: TimeInterval(-1)
         )
+    }
+}
+
+extension TimeInterval {
+    func minutesWithinHourOrHoursAndMinutes(
+        overrideLocale: Foundation.Locale? = nil
+    ) -> String {
+        let durationFormatter = DateComponentsFormatter()
+        durationFormatter.allowedUnits =
+            self > 3600 ? [.hour, .minute] : [.minute]
+        durationFormatter.unitsStyle = .short
+        durationFormatter.zeroFormattingBehavior = [.default]
+        if let overrideLocale = overrideLocale {
+            durationFormatter.calendar?.locale = overrideLocale
+        }
+        return durationFormatter.string(from: self) ?? "--"
+    }
+}
+
+extension Measurement<UnitLength> {
+    func formatWithComma(overrideLocale: Foundation.Locale? = nil) -> String {
+        let measurementFormatter = MeasurementFormatter()
+        measurementFormatter.unitStyle = .medium
+        measurementFormatter.unitOptions = .providedUnit
+        if let overrideLocale = overrideLocale {
+            measurementFormatter.locale = overrideLocale
+        }
+        measurementFormatter.numberFormatter.decimalSeparator = ","
+        return measurementFormatter.string(from: self)
     }
 }
 

@@ -54,7 +54,7 @@ class PathNavMapControls extends StatelessWidget {
         builder: (context, ref, child) {
           final message = ref.watch(pathNavMessageProvider);
           final maneuver = ref.watch(pathNavManeuverProvider);
-          final isPedestrian = navType == RouteSearchOptionsMessage.pedestrian;
+          final isPedestrian = navType != RouteSearchOptionsMessage.car;
           final info = ref.watch(pathNavSpeedInfoProvider);
 
           // This made to remove yellow lines under the text

@@ -1,5 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +11,18 @@ import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart'
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
+import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
+import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
+import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 const prefixMapping = {
   'region': 'منطقة',
@@ -39,6 +47,8 @@ class SearchItem extends ConsumerWidget {
   final DirectoryObjectMessage result;
   final List<Offer> offers;
   final Color? contentColor;
+  final int index;
+  final BssSearchResultList? searchResultList;
 
   final void Function() onTap;
 
@@ -49,6 +59,8 @@ class SearchItem extends ConsumerWidget {
     required this.offers,
     this.myLocation,
     this.contentColor,
+    this.index = 0,
+    this.searchResultList,
     super.key,
   });
 
@@ -73,91 +85,96 @@ class SearchItem extends ConsumerWidget {
       };
     }
 
-    return Material(
-      color: contentColor ?? context.colors.backgroundSurface1,
-      shape: smoothBorder(RadiusBorder.xl),
-      child: SearchTapHandler(
-        onTap: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (photosUrls.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: Spacing.$3x),
-                child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
-              ),
-            ContentRow(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              text: ContentRowTextOptions(
-                title: result.title,
-                titleOptions: const ContentRowTextOption(isBold: true),
-                subtitle: subtitle,
-                subtitleOptions: ContentRowTextOption(
-                  baseColor: context.colors.foregroundDefault,
+    final closedStatus = result.openingHours?.toWorkingHours().closedStatus(DateTime.now(), context.l10n) ?? '';
+
+    return VisibilityDetector(
+      key: Key('searchResult: ${result.id?.objectId}'),
+      onVisibilityChanged: (visibilityInfo) {
+        final visiblePercentage = visibilityInfo.visibleFraction * 100;
+        if (visiblePercentage > 50) {
+          ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.view,
+                  uiElement: BssUIElement(
+                    name: BssUIElementNames.placeCardMini,
+                    ownerName: BssUIElementNames.searchResultList,
+                    position: index + 1,
+                  ),
+                  payload: BssPayload(
+                    placeItem: result.toBss(index),
+                    searchResultList: searchResultList,
+                  ),
                 ),
-                subtitleExtra: result.makeAddress(),
-                subtitleExtraOptions: ContentRowTextOption(
-                  builder: (context) => Column(
+              );
+        }
+      },
+      child: Material(
+        color: contentColor ?? context.colors.backgroundSurface1,
+        shape: smoothBorder(RadiusBorder.xl),
+        child: SearchTapHandler(
+          onTap: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (photosUrls.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$3x),
+                  child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
+                ),
+              Padding(
+                padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+                child: DefaultTextStyle(
+                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        result.makeAddress(),
-                        maxLines: 1,
-                        style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                        result.title,
+                        style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                       ),
-                      if (offers.isNotEmpty)
-                        const Padding(
-                          padding: EdgeInsets.only(top: Spacing.$2x),
-                          child: OffersBadge(),
+                      Spacing.$1x.heightBox,
+                      Text.rich(
+                        TextSpan(
+                          text: subtitle,
+                          children: [
+                            if (closedStatus.isNotEmpty)
+                              TextSpan(
+                                text: ' • ',
+                                style:
+                                    context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                              ),
+                            if (closedStatus.isNotEmpty)
+                              TextSpan(
+                                text: closedStatus,
+                                style: context.textStyles.bodySmallRegular
+                                    .copyWith(color: context.colors.errorOnContainer),
+                              ),
+                          ],
                         ),
+                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+                      ),
+                      Spacing.$1x.heightBox,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              result.makeAddress(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          DirectoryObjectCarEstimate(result),
+                        ],
+                      ),
                     ],
                   ),
                 ),
               ),
-              trailing: ContentRowCustomTrailingOptions(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
-                  child: FutureBuilder<double?>(
-                    future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const SizedBox.shrink();
-                      }
-                      final distanceKm = snapshot.data;
-                      if (distanceKm == null || !context.mounted) {
-                        return const SizedBox.shrink();
-                      }
-                      return ContentRowTrailingText(
-                        options: ContentRowTextTrailingOptions(
-                          text: (distanceKm * 1000).formatDistance(context.l10n),
-                          textStyle:
-                              context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundSoft),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ],
+              SearchItemQuickActions(directoryObject: result),
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Future<double?> _calculateDistance({GeoPointWithElevationMessage? markerPoint, GeoPointMessage? myLocationPoint}) {
-    if (markerPoint == null || myLocationPoint == null) {
-      // Return null by default
-      return Future.value();
-    }
-
-    return Future.delayed(
-      Duration.zero,
-      () => CommonFunctions.distance(
-        result.markerPosition!.latitude,
-        result.markerPosition!.longitude,
-        myLocation!.latitude,
-        myLocation!.longitude,
       ),
     );
   }

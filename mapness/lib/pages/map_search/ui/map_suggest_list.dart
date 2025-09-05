@@ -15,6 +15,9 @@ import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 
@@ -31,6 +34,7 @@ class MapSuggestList extends ConsumerWidget {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
     final myLocation = ref.watch(locationProvider);
     final contentColor = context.colors.backgroundSurface1;
+    final searchText = ref.read(searchProvider(context.read<SearchScope>().value)).searchText;
 
     void onObjectTap(DirectoryObjectMessage object) {
       final objectId = object.id?.objectId;
@@ -84,6 +88,9 @@ class MapSuggestList extends ConsumerWidget {
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
                 itemBuilder: (context, index) => SuggestItem(
                   suggest: suggests[index],
+                  index: index,
+                  suggestList: BssSuggestList(size: suggests.length),
+                  searchRequest: BssSearchRequest(text: searchText),
                   myLocation: myLocation == null
                       ? null
                       : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
@@ -98,8 +105,9 @@ class MapSuggestList extends ConsumerWidget {
             padding: const EdgeInsets.only(bottom: Spacing.$1_5x),
             child: uikit.AppButton(
               buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
+              buttonType: uikit.ButtonType.secondary,
               primaryIcon: uikit.SystemIcons.search,
-              primaryLabel: context.l10n.searchMore,
+              primaryLabel: context.l10n.showResults,
               onTap: () {
                 final scope = context.read<SearchScope>();
                 final search = ref.read(searchProvider(scope.value).notifier);
@@ -110,6 +118,19 @@ class MapSuggestList extends ConsumerWidget {
 
                 ref.read(urbiAnalyticsProvider).track(
                       '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
+                    );
+                ref.read(bssServiceProvider.notifier).sendEvent(
+                      BssRequest(
+                        eventType: BSSEventType.action,
+                        actionType: BSSActionType.tap,
+                        uiElement: const BssUIElement(
+                          name: BssUIElementNames.searchMoreButton,
+                          ownerName: BssUIElementNames.suggestList,
+                        ),
+                        payload: BssPayload(
+                          searchRequest: BssSearchRequest(text: searchText),
+                        ),
+                      ),
                     );
               },
             ),

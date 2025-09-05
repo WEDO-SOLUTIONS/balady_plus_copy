@@ -3,7 +3,6 @@ package com.dgis.map.android_auto
 import android.graphics.Color
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
-import androidx.car.app.ScreenManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.Alert
@@ -30,10 +29,14 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.dgis.FlutterProvider
 import com.dgis.map.R
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
-import com.dgis.map.android_auto.settings.SettingsScreen
+import com.dgis.map.map_api.FavouritesStateMessage
+import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
+import ru.dgis.sdk.routing.RouteSearchPoint
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
@@ -53,7 +56,7 @@ class NavigationScreen(
             carContext.getCarService(NavigationManager::class.java).apply {
                 setNavigationManagerCallback(
                     object : NavigationManagerCallback {
-                        override fun onStopNavigation() = stopNavigation()
+                        override fun onStopNavigation() = stopNavigation(bySystem = true)
                         override fun onAutoDriveEnabled() =
                             mapController.startNavigationSimulation()
                     }
@@ -67,11 +70,17 @@ class NavigationScreen(
                     mapController.setNavigationListener(this@NavigationScreen)
                 }
 
+                override fun onResume(owner: LifecycleOwner) {
+                    showFavourites()
+                }
+
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                 }
             }
         )
+
+        getFavourites()
     }
 
     private var isEndTripShown: Boolean = false
@@ -87,6 +96,8 @@ class NavigationScreen(
     private var destinationTravelEstimate: TravelEstimate? = null
     private var speedInfo = SpeedInfoModel()
 
+    private var favourites: FavouritesStateMessage? = null
+
     private val isNavigation: Boolean
         get() = navigationState == NavigationState.NAVIGATION
                 || navigationState == NavigationState.REROUTING
@@ -96,10 +107,7 @@ class NavigationScreen(
 
     override fun onGetTemplate(): Template {
         val actionStrip = ActionStrip.Builder()
-        if (!isNavigation) {
-            //            TODO(Sergei): add favourite screen
-            //            actionStrip.addAction(favouriteAction)
-        } else {
+        if (isNavigation) {
             actionStrip.addAction(routeOverviewAction)
         }
         actionStrip.addAction(searchAction)
@@ -317,12 +325,16 @@ class NavigationScreen(
         renderSpeedInfo()
     }
 
+    fun onMapReady() {
+        showFavourites()
+    }
+
     private fun renderSpeedInfo() {
         if (!isNavigation && !isFreeRoam) return
         customRenderer.render(CustomRendererData(speedInfo))
     }
 
-    private fun stopNavigation() {
+    private fun stopNavigation(bySystem: Boolean = false) {
         navigationState = NavigationState.DISABLED
         speedInfo = SpeedInfoModel()
         step = null
@@ -334,18 +346,9 @@ class NavigationScreen(
         val notification = NavigationCarAppService.getDefaultNotification(carContext)
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
-    }
-
-    private fun openFavorites() {
-        // TODO(Sergei): open favourites screen
-    }
-
-    private fun openSearch() {
-        screenManager.push(CategorySearchScreen(carContext, mapController))
-    }
-
-    private fun openSettings() {
-        screenManager.push(SettingsScreen(carContext, mapController))
+        if (!bySystem) {
+            showFavourites()
+        }
     }
 
     private fun showEndTrip() {
@@ -435,6 +438,66 @@ class NavigationScreen(
         return maneuver.build()
     }
 
+    private fun getFavourites() {
+        FlutterProvider.getHostFlutterApi(carContext).getFavourites {
+            favourites = it.getOrNull()
+            if (mapController.isMapReady) {
+                showFavourites()
+            }
+        }
+    }
+
+    private fun showFavourites() {
+        val favourites = this.favourites
+        if (favourites == null || screenManager.top !is NavigationScreen) return
+
+
+        val myLocation = mapController.getMyLocation() ?: return
+        val home = favourites.home
+        val work = favourites.work
+        val startPoint = RouteSearchPoint(GeoPoint(myLocation.latitude, myLocation.longitude))
+        val points = mutableListOf<BriefRouteInfoSearchPoints>()
+        if (home != null) {
+            val coordinates = home.coordinates
+            val finishPoint =
+                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
+            points.add(BriefRouteInfoSearchPoints(startPoint, finishPoint))
+        }
+        if (work != null) {
+            val coordinates = work.coordinates
+            val finishPoint =
+                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
+            points.add(BriefRouteInfoSearchPoints(startPoint, finishPoint))
+        }
+
+        if (points.isEmpty()) {
+            screenManager.push(FavouritesPreviewScreen(carContext, mapController, favourites))
+            return
+        }
+
+        mapController.getBriefRouteInfos(points) {
+            val homeWorkEstimates = when (it?.size) {
+                2 -> HomeWorkEstimates(
+                    home = it[0]!!.duration,
+                    work = it[1]!!.duration
+                )
+
+                1 -> if (home != null) HomeWorkEstimates(home = it[0]!!.duration) else
+                    HomeWorkEstimates(work = it[0]!!.duration)
+
+                else -> null
+            }
+            screenManager.push(
+                FavouritesPreviewScreen(
+                    carContext,
+                    mapController,
+                    favourites,
+                    homeWorkEstimates
+                )
+            )
+        }
+    }
+
     private fun getNavigationNotification(
         title: String,
         text: String,
@@ -460,20 +523,6 @@ class NavigationScreen(
             )
     }
 
-    private val favouriteAction =
-        Action.Builder()
-            .setIcon(
-                CarIcon.Builder(
-                    IconCompat.createWithResource(
-                        carContext,
-                        R.drawable.bookmark
-                    )
-                )
-                    .build()
-            )
-            .setOnClickListener { openFavorites() }
-            .build()
-
     private val routeOverviewAction =
         Action.Builder()
             .setIcon(
@@ -488,33 +537,6 @@ class NavigationScreen(
             .setOnClickListener { mapController.overviewRoute() }
             .build()
 
-    private val searchAction =
-        Action.Builder()
-            .setIcon(
-                CarIcon.Builder(
-                    IconCompat.createWithResource(
-                        carContext,
-                        R.drawable.search
-                    )
-                )
-                    .build()
-            )
-            .setOnClickListener { openSearch() }
-            .build()
-
-    private val settingsAction =
-        Action.Builder()
-            .setIcon(
-                CarIcon.Builder(
-                    IconCompat.createWithResource(
-                        carContext,
-                        R.drawable.settings
-                    )
-                )
-                    .build()
-            )
-            .setOnClickListener { openSettings() }
-            .build()
 
     private fun buildStopNavigationAction(): Action {
         return Action.Builder()

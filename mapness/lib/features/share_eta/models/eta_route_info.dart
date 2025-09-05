@@ -19,6 +19,8 @@ enum RouteType {
   car,
   @JsonValue('pedestrian')
   pedestrian,
+  @JsonValue('public_transport')
+  publicTransport,
 }
 
 /// Represents the ETA payload.

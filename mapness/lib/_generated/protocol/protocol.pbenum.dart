@@ -2,7 +2,7 @@
 //  Generated code. Do not modify.
 //  source: protocol.proto
 //
-// @dart = 2.12
+// @dart = 3.3
 
 // ignore_for_file: annotate_overrides, camel_case_types, comment_references
 // ignore_for_file: constant_identifier_names, library_prefixes
@@ -29,7 +29,7 @@ class Env extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, Env> _byValue = $pb.ProtobufEnum.initByValue(values);
   static Env? valueOf($core.int value) => _byValue[value];
 
-  const Env._($core.int v, $core.String n) : super(v, n);
+  const Env._(super.v, super.n);
 }
 
 class Error extends $pb.ProtobufEnum {
@@ -50,7 +50,7 @@ class Error extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, Error> _byValue = $pb.ProtobufEnum.initByValue(values);
   static Error? valueOf($core.int value) => _byValue[value];
 
-  const Error._($core.int v, $core.String n) : super(v, n);
+  const Error._(super.v, super.n);
 }
 
 class FavouriteItemType extends $pb.ProtobufEnum {
@@ -69,7 +69,7 @@ class FavouriteItemType extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, FavouriteItemType> _byValue = $pb.ProtobufEnum.initByValue(values);
   static FavouriteItemType? valueOf($core.int value) => _byValue[value];
 
-  const FavouriteItemType._($core.int v, $core.String n) : super(v, n);
+  const FavouriteItemType._(super.v, super.n);
 }
 
 class EntitySourceType extends $pb.ProtobufEnum {
@@ -84,7 +84,7 @@ class EntitySourceType extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, EntitySourceType> _byValue = $pb.ProtobufEnum.initByValue(values);
   static EntitySourceType? valueOf($core.int value) => _byValue[value];
 
-  const EntitySourceType._($core.int v, $core.String n) : super(v, n);
+  const EntitySourceType._(super.v, super.n);
 }
 
 class InterestingPlaceTag extends $pb.ProtobufEnum {
@@ -101,7 +101,7 @@ class InterestingPlaceTag extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, InterestingPlaceTag> _byValue = $pb.ProtobufEnum.initByValue(values);
   static InterestingPlaceTag? valueOf($core.int value) => _byValue[value];
 
-  const InterestingPlaceTag._($core.int v, $core.String n) : super(v, n);
+  const InterestingPlaceTag._(super.v, super.n);
 }
 
 class IWishState extends $pb.ProtobufEnum {
@@ -118,7 +118,7 @@ class IWishState extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, IWishState> _byValue = $pb.ProtobufEnum.initByValue(values);
   static IWishState? valueOf($core.int value) => _byValue[value];
 
-  const IWishState._($core.int v, $core.String n) : super(v, n);
+  const IWishState._(super.v, super.n);
 }
 
 class IWishSize extends $pb.ProtobufEnum {
@@ -139,7 +139,7 @@ class IWishSize extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, IWishSize> _byValue = $pb.ProtobufEnum.initByValue(values);
   static IWishSize? valueOf($core.int value) => _byValue[value];
 
-  const IWishSize._($core.int v, $core.String n) : super(v, n);
+  const IWishSize._(super.v, super.n);
 }
 
 class IWishCategory extends $pb.ProtobufEnum {
@@ -154,7 +154,24 @@ class IWishCategory extends $pb.ProtobufEnum {
   static final $core.Map<$core.int, IWishCategory> _byValue = $pb.ProtobufEnum.initByValue(values);
   static IWishCategory? valueOf($core.int value) => _byValue[value];
 
-  const IWishCategory._($core.int v, $core.String n) : super(v, n);
+  const IWishCategory._(super.v, super.n);
+}
+
+class IWishFeedbackRating extends $pb.ProtobufEnum {
+  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_HAPPY = IWishFeedbackRating._(0, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_HAPPY');
+  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_NEUTRAL = IWishFeedbackRating._(1, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_NEUTRAL');
+  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_UPSET = IWishFeedbackRating._(2, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_UPSET');
+
+  static const $core.List<IWishFeedbackRating> values = <IWishFeedbackRating> [
+    IWISH_FEEDBACK_RATING_HAPPY,
+    IWISH_FEEDBACK_RATING_NEUTRAL,
+    IWISH_FEEDBACK_RATING_UPSET,
+  ];
+
+  static final $core.Map<$core.int, IWishFeedbackRating> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static IWishFeedbackRating? valueOf($core.int value) => _byValue[value];
+
+  const IWishFeedbackRating._(super.v, super.n);
 }
 
 

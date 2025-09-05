@@ -109,6 +109,10 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
                 ?.map((e) => PublicTransportDirectoryRouteInfoMessageExt.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             [],
+        orgInfo: json['orgInfo'] != null ? OrgInfoMessageExt.fromJson(json['orgInfo'] as Map<String, dynamic>) : null,
+        platformIds: (json['platformIds'] as List<dynamic>?)!
+            .map((e) => DgisObjectIdMessageExt.fromJson(e as Map<String, dynamic>))
+            .toList(),
         group: (json['group'] as List<dynamic>?)
                 ?.map((e) => GroupItemMessageExt.fromJson(e as Map<String, dynamic>))
                 .toList() ??
@@ -135,6 +139,20 @@ extension TradeLicenseMessageExt on TradeLicenseMessage {
       endDate: json['endDate'] ?? '',
     );
   }
+}
+
+extension OrgInfoMessageExt on OrgInfoMessage {
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'branchCount': branchCount,
+        'name': name,
+      };
+
+  static OrgInfoMessage fromJson(Map<String, dynamic> json) => OrgInfoMessage(
+        id: json['id'],
+        branchCount: json['branchCount'],
+        name: json['name'],
+      );
 }
 
 extension EntranceInfoMessageExt on EntranceInfoMessage {

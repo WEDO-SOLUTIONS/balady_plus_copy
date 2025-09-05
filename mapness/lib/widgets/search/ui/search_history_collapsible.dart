@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/ui/dismissible/app_dismissible.dart';
 
 class SearchHistoryCollapsible extends ConsumerStatefulWidget {
@@ -14,7 +17,7 @@ class SearchHistoryCollapsible extends ConsumerStatefulWidget {
   final Color? contentColor;
   final Color? iconColor;
   final EdgeInsetsGeometry? contentPadding;
-  final Function(models.SearchHistoryItem) onTap;
+  final Function(models.SearchHistoryItem, int, BssHistoryList?) onTap;
   final Function(models.SearchHistoryItem) onDelete;
 
   const SearchHistoryCollapsible({
@@ -39,6 +42,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
     final contentColor = widget.contentColor ?? context.colors.backgroundSurface1;
+    final bssHistoryList = BssHistoryList(size: widget.history.length);
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$3x),
@@ -70,7 +74,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                             backgroundColor: contentColor,
                             onTap: () async {
                               await Future.delayed(const Duration(milliseconds: 300));
-                              widget.onTap(widget.history[index]);
+                              widget.onTap(widget.history[index], index, bssHistoryList);
                             },
                             leading: AppIcons(
                               iconData: GeneralIcons.timeQuarter,
@@ -89,7 +93,26 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 ),
                 if (hasManyResults)
                   ContentRow(
-                    onTap: () => setState(() => _collapsed = !_collapsed),
+                    onTap: () {
+                      ref.read(bssServiceProvider.notifier).sendEvent(
+                            BssRequest(
+                              eventType: BSSEventType.action,
+                              actionType: BSSActionType.tap,
+                              uiElement: BssUIElement(
+                                name: _collapsed
+                                    ? BssUIElementNames.expandHistoryList
+                                    : BssUIElementNames.rollupHistoryList,
+                                ownerName: BssUIElementNames.directorySearchScreen,
+                                position:
+                                    _collapsed ? 11 : widget.history.length + 1, // Because we have 10 items in the list
+                              ),
+                              payload: BssPayload(
+                                historyList: BssHistoryList(size: widget.history.length),
+                              ),
+                            ),
+                          );
+                      setState(() => _collapsed = !_collapsed);
+                    },
                     leading: AppIcons(
                       iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
                       color: widget.iconColor ?? context.colors.foregroundDefault,

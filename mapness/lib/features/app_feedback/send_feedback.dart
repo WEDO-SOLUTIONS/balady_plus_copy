@@ -16,7 +16,7 @@ enum AppFeedbackState { initial, loading, success, error }
 @riverpod
 class SendFeedback extends _$SendFeedback {
   @override
-  Future<AppFeedbackState> build() async {
+  AppFeedbackState build() {
     final collectFeedbackRef = ref.read(collectFeedbackProvider.notifier);
 
     ref
@@ -38,14 +38,14 @@ class SendFeedback extends _$SendFeedback {
     if (payload != null) {
       await sendFeedback(payload);
     } else {
-      await update((_) async => AppFeedbackState.error);
+      state = AppFeedbackState.error;
     }
   }
 
   Future<void> sendFeedback(AppFeedbackPayload payload) async {
     final source = payload.context?.feedbackSource;
     try {
-      await update((_) async => AppFeedbackState.loading);
+      state = AppFeedbackState.loading;
 
       if (source is FeedbackSourceOffer) {
         await _sendOfferFeedback(source.id, payload.review.stars, payload.review.text);
@@ -53,9 +53,9 @@ class SendFeedback extends _$SendFeedback {
         await _sendAppFeedback(payload);
       }
 
-      await update((_) async => AppFeedbackState.success);
+      state = AppFeedbackState.success;
     } catch (e, st) {
-      await update((_) async => AppFeedbackState.error);
+      state = AppFeedbackState.error;
       logger.log('Failed to send feedback ${e.toString()}');
       Metrics.logException(e, st);
     }

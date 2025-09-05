@@ -32,7 +32,7 @@ class _IwishEntity extends _$IwishEntity {
     mixpanel?.timeEvent('IwishFeedbackEntity: submitFeedback');
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = pb.IWishFeedbackRequest(
-      rating: feedback.mood?.index ?? -1 + 1,
+      rating: feedback.mood != null ? pb.IWishFeedbackRating.values[feedback.mood!.index] : null,
       tags: feedback.tags.map((e) => pb.IWishFeedbackRequest_Tag(name: e)),
       text: feedback.comment,
     );

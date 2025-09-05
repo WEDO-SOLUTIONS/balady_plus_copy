@@ -283,14 +283,16 @@ class NavigationHandler(
                         )
                 }
 
-                navigationManager.start(
-                        routeBuildOptions =
-                                RouteBuildOptions(
-                                        finishPoint = finishPoint,
-                                        routeSearchOptions = options,
-                                ),
-                        trafficRoute = route
-                )
+                if (!options.isPublicTransport) {
+                        navigationManager.start(
+                                routeBuildOptions =
+                                        RouteBuildOptions(
+                                                finishPoint = finishPoint,
+                                                routeSearchOptions = options,
+                                        ),
+                                trafficRoute = route
+                        )
+                }
 
                 callback(Result.success(Unit))
         }
@@ -319,14 +321,17 @@ class NavigationHandler(
                 }
 
                 setupCamera(speedRangeZoom = speedRangeZoom)
-                navigationManager.startSimulation(
-                        routeBuildOptions =
-                                RouteBuildOptions(
-                                        finishPoint = finishPoint,
-                                        routeSearchOptions = options,
-                                ),
-                        trafficRoute = route
-                )
+
+                if (!options.isPublicTransport) {
+                        navigationManager.startSimulation(
+                                routeBuildOptions =
+                                        RouteBuildOptions(
+                                                finishPoint = finishPoint,
+                                                routeSearchOptions = options,
+                                        ),
+                                trafficRoute = route
+                        )
+                }
 
                 callback(Result.success(Unit))
         }
@@ -453,11 +458,11 @@ class NavigationHandler(
                         Result.success(
                                 BetterRouteSettingsMessage(
                                         betterRouteTimeCostThreshold =
-                                                settings.routeSearchDelay.inSeconds,
-                                        betterRouteLengthThreshold =
                                                 settings.betterRouteTimeCostThreshold.inSeconds,
-                                        routeSearchDelay =
+                                        betterRouteLengthThreshold =
                                                 settings.betterRouteLengthThreshold.millimeters,
+                                        routeSearchDelay =
+                                                settings.routeSearchDelay.inSeconds,
                                 )
                         )
                 )

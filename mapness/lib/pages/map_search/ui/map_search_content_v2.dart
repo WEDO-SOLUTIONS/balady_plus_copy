@@ -7,11 +7,16 @@ import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +35,83 @@ class MapSearchContent extends ConsumerStatefulWidget {
 class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   bool _hasConnection = true;
   Timer? _debounceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.bottomSheetContentScrollController.position.isScrollingNotifier.addListener(() {
+      final value = widget.bottomSheetContentScrollController.position.isScrollingNotifier.value;
+      if (value) {
+        final scope = context.read<SearchScope>();
+        final searchState = ref.watch(searchProvider(scope.value));
+        final BssRequest? request = switch (searchState) {
+          SearchStateHistory() => BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.scroll,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.historyList,
+                ownerName: BssUIElementNames.directorySearchScreen,
+              ),
+              payload: BssPayload(
+                searchRequest: BssSearchRequest(text: searchState.searchText),
+                historyList: BssHistoryList(
+                  size: ref.read(searchHistoryProvider(scope.value)).length,
+                ),
+              ),
+            ),
+          SearchStateError() => null,
+          SearchStateEmpty() => null,
+          SearchStateLoading() => null,
+          SearchStateSuggest() => BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.scroll,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.suggestList,
+                ownerName: BssUIElementNames.directorySearchScreen,
+              ),
+              payload: BssPayload(
+                searchRequest: BssSearchRequest(text: searchState.searchText),
+                suggestList: BssSuggestList(
+                  size: searchState.suggest.suggests.length,
+                ),
+              ),
+            ),
+          SearchStateResults() => BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.scroll,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.searchResultList,
+                ownerName: BssUIElementNames.directorySearchScreen,
+              ),
+              payload: BssPayload(
+                searchRequest: BssSearchRequest(text: searchState.searchText),
+                searchResultList: BssSearchResultList(
+                  size: searchState.results.itemMarkerInfos?.length ?? 0,
+                  searchType: searchState.results.searchResultType.toBss(),
+                  firstResultClass: searchState.results.searchResultType.toBss(),
+                ),
+              ),
+            ),
+        };
+        if (request != null) {
+          ref.read(bssServiceProvider.notifier).sendEvent(request);
+        }
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        ref.read(bssServiceProvider.notifier).sendEvent(
+              const BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: BssUIElement(
+                  name: BssUIElementNames.directorySearchScreen,
+                ),
+              ),
+            );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -65,13 +147,73 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
     final searchState = ref.watch(searchProvider(scope.value));
     ref
       ..listen(searchProvider(scope.value), (_oldState, newState) {
-        if (newState is SearchStateEmpty) {
-          ref.read(urbiAnalyticsProvider).track(
-            'searchFailed',
-            properties: {
-              'text': newState.searchText,
-            },
-          );
+        if (newState.runtimeType != _oldState.runtimeType) {
+          if (newState is SearchStateResults) {
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.searchResultList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      searchRequest: BssSearchRequest(text: newState.searchText),
+                      searchResultList: BssSearchResultList(
+                        size: newState.results.itemMarkerInfos?.length ?? newState.results.firstPage?.items.length ?? 0,
+                        searchType: newState.results.searchResultType.toBss(),
+                        firstResultClass: newState.results.searchResultType.toBss(),
+                      ),
+                    ),
+                  ),
+                );
+          } else if (newState is SearchStateEmpty) {
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  const BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: BssUIElement(
+                      name: BssUIElementNames.searchResultList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      searchResultList: BssSearchResultList(size: 0),
+                    ),
+                  ),
+                );
+            ref.read(urbiAnalyticsProvider).track(
+              'searchFailed',
+              properties: {
+                'text': newState.searchText,
+              },
+            );
+          } else if (newState is SearchStateHistory) {
+            final history = ref.read(searchHistoryProvider(scope.value));
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.historyList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      historyList: BssHistoryList(size: history.length),
+                    ),
+                  ),
+                );
+          } else if (newState is SearchStateSuggest) {
+            ref.read(bssServiceProvider.notifier).sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.view,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.suggestList,
+                      ownerName: BssUIElementNames.directorySearchScreen,
+                    ),
+                    payload: BssPayload(
+                      searchRequest: BssSearchRequest(text: newState.searchText),
+                      suggestList: BssSuggestList(size: newState.suggest.suggests.length),
+                    ),
+                  ),
+                );
+          }
         }
       })
       ..listen(

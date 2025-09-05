@@ -24,6 +24,11 @@ import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -160,7 +165,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
               scrollController: _multiStateSheetController,
-              animateOpening: false,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: containerColor,
@@ -204,6 +208,26 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
         isDark: dark.isDark,
+        onTapAnalytic: (markerInfo, index) async {
+          await ref.read(bssServiceProvider.notifier).sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: const BssUIElement(
+                    name: BssUIElementNames.mapMarker,
+                    ownerName: BssUIElementNames.searchResultList,
+                  ),
+                  payload: BssPayload(
+                    mapMarker: const BssMapMarker(
+                      scale: BssMarkerSize.small,
+                      adsHighlight: false,
+                    ),
+                    searchResultList: searchState.results.toBss(),
+                    placeItem: markerInfo?.toBss(index),
+                  ),
+                ),
+              );
+        },
       );
       if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
         ref.read(searchInRectProvider(_scope).notifier).searchInThisAreaSwitch(value: false);

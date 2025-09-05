@@ -11,6 +11,11 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -46,6 +51,37 @@ class NaviSearchResults extends ConsumerWidget {
       }
     }
 
+    Future<void> _bssAnalyticRequest({
+      required SearchResultMessage results,
+      required DirectoryObjectMessage item,
+    }) async {
+      final index = results.firstPage?.items.indexWhere(
+            (e) => e.id?.objectId == item.id?.objectId,
+          ) ??
+          0;
+      final scope = context.read<SearchScope>();
+      final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
+
+      if (item.markerPosition == null) {
+        debugPrint('GeoPosition for this object is null');
+      }
+      await ref.read(bssServiceProvider.notifier).sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.placeCardMini,
+                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                placeItem: item.toBss(index),
+                searchResultList: results.toBss(),
+              ),
+            ),
+          );
+    }
+
     return SearchResults(
       isShowAddPlace: false,
       results: results,
@@ -58,14 +94,17 @@ class NaviSearchResults extends ConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, item, offers) => SearchItem(
+      itemBuilder: (context, item, index, offers) => SearchItem(
         contentColor: context.colors.backgroundSurface1,
         result: item,
         offers: offers,
         language: language,
         myLocation:
             myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-        onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
+        onTap: () {
+          _bssAnalyticRequest(results: results, item: item);
+          _onResultTap(context, item, _sendSuggestionPressed);
+        },
       ),
     );
   }

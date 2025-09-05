@@ -164,7 +164,7 @@ class PlaceListScreen(
                                 RoutePreviewScreen(
                                     carContext,
                                     mapController,
-                                    item,
+                                    item.toRoutePreviewParams(),
                                 )
                             )
                         }.build()

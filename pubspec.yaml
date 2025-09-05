@@ -252,6 +252,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   pdf: ^3.11.3
   flutter_launcher_icons: ^0.14.3
+  visibility_detector: ^0.4.0+2
 
 dependency_overrides:
   # for dio_http_cache
@@ -270,6 +271,7 @@ dependency_overrides:
   sentry_flutter: 8.14.2
   sentry_dio: 8.14.2
   flutter_pdfview: 1.4.0
+  mocktail: ^1.0.4
 
 dev_dependencies:
   build_runner: ^2.4.12

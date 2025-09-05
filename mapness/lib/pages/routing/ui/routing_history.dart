@@ -10,6 +10,10 @@ import 'package:mapness/pages/routing/ui/routing_history_empty.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 
@@ -52,7 +56,7 @@ class RoutingHistory extends ConsumerWidget {
 
               ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
             },
-            onTap: (item) async {
+            onTap: (item, index, historyList) async {
               Metrics.logEventAdvanced(
                 MetricsConstants.routesKeys.routeSelectionChangeNavType,
                 group: MetricsConstants.routesTag,
@@ -86,6 +90,25 @@ class RoutingHistory extends ConsumerWidget {
                   searchByQuery(item.title);
                 }
               }
+              final bssHistoryHandlingType = item.objectId != null
+                  ? BssHistoryHandlingType.openRecord
+                  : BssHistoryHandlingType.searchSuggestedText;
+              await ref.read(bssServiceProvider.notifier).sendEvent(
+                    BssRequest(
+                      eventType: BSSEventType.action,
+                      actionType: BSSActionType.tap,
+                      uiElement: BssUIElement(
+                        name: BssUIElementNames.historyItem,
+                        ownerName: BssUIElementNames.historyList,
+                        position: index + 1,
+                      ),
+                      payload: BssPayload(
+                        searchRequest: BssSearchRequest(text: item.title),
+                        historyItem: item.toBss(bssHistoryHandlingType),
+                        historyList: historyList,
+                      ),
+                    ),
+                  );
             },
           );
   }

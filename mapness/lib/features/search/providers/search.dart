@@ -45,13 +45,19 @@ class Search extends _$Search {
     GeoPointMessage(latitude: 15.506104, longitude: 56.694472),
   ];
 
+  /// Google search rubric id
+  static const googleSearchRubricId = 900913;
+
   SearchType? _previousType;
   SearchResultMessage? _result;
   String? _previousQuery;
+  bool _isGoogleSearch = false;
   SearchQueryMessage? _previousSearchQueryMessage;
   QuickFilter? _previousQuickSearch;
   CancelableOperation? _searchOperation;
   SearchRequestLang? _currentQueryLocale;
+
+  bool get isGoogleSearch => _isGoogleSearch;
 
   // Timer to start full search if we don't get any results
   // Should be canceled
@@ -76,6 +82,7 @@ class Search extends _$Search {
     state = const SearchStateHistory();
     _previousType = null;
     _previousQuery = null;
+    _isGoogleSearch = false;
     _result = null;
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
@@ -109,6 +116,7 @@ class Search extends _$Search {
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
+      _isGoogleSearch = false;
       _previousQuery = query;
 
       state = SearchStateLoading(searchText: query);
@@ -152,6 +160,7 @@ class Search extends _$Search {
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
+      _isGoogleSearch = false;
       // -- Analytics
       AdvancedMetrics.instance.startSearchResponse(
         queryType: _previousType!.name,
@@ -211,7 +220,8 @@ class Search extends _$Search {
     _searchInThisAreaMetric();
   }
 
-  Future<void> quickSearch(QuickFilter quickSearch, {List<GeoPointMessage>? spatialRestriction}) async {
+  Future<void> quickSearch(QuickFilter quickSearch,
+      {List<GeoPointMessage>? spatialRestriction, bool isGoogle = false}) async {
     await _searchOperation?.cancel();
     final language = ref.read(appLanguageProvider);
     final searchQuery = quickSearch.query[language] ?? '';
@@ -225,6 +235,7 @@ class Search extends _$Search {
 
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
+      _isGoogleSearch = isGoogle;
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
@@ -248,6 +259,7 @@ class Search extends _$Search {
           searchQuery,
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
+          rubricIds: isGoogle ? [googleSearchRubricId] : null,
           searchRect: searchRect,
           locale: _currentQueryLocale?.localeForMapness,
         ),
@@ -273,7 +285,7 @@ class Search extends _$Search {
     _searchInThisAreaMetric();
   }
 
-  Future<void> searchByText(String query) async {
+  Future<void> searchByText(String query, {bool isGoogle = false}) async {
     try {
       await _searchOperation?.cancel();
       if (state is! SearchStateSuggest) {
@@ -283,6 +295,7 @@ class Search extends _$Search {
 
       _previousType = SearchType.searchByText;
       _previousQuery = query;
+      _isGoogleSearch = isGoogle;
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
       // -- Analytics
@@ -306,6 +319,7 @@ class Search extends _$Search {
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           // TODO(Dmitrii): Search improved but we have to test it more so we could return `_getRestrictionFromRect()` here
           spatialRestriction: _saRestrictions,
+          rubricIds: isGoogle ? [googleSearchRubricId] : null,
           searchRect: searchRect,
           locale: _currentQueryLocale?.localeForMapness,
         ),
@@ -355,6 +369,8 @@ class Search extends _$Search {
       _previousType = SearchType.searchByQuery;
       _previousQuery = text;
       _previousSearchQueryMessage = query;
+      _isGoogleSearch = false;
+
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
       // -- Analytics
@@ -443,6 +459,21 @@ class Search extends _$Search {
   Future<void> searchMore(String query) async {
     state = SearchStateLoading(searchText: query);
     await searchByText(query);
+  }
+
+  /// Search with Google. We put not existing rubric id to search to execute search by Google on the backend side
+  /// BSA-2685
+  Future<void> alternativeSearch() async {
+    final previousQuery = _previousQuery;
+    _isGoogleSearch = true;
+    if (_previousType == SearchType.searchByText && previousQuery != null) {
+      state = SearchStateLoading(searchText: previousQuery);
+      await searchByText(previousQuery, isGoogle: true);
+    } else if (_previousType == SearchType.quickSearch && _previousQuickSearch != null) {
+      state =
+          SearchStateLoading(searchText: _previousQuickSearch!.query[ref.read(appLanguageProvider).languageCode] ?? '');
+      await quickSearch(_previousQuickSearch!, isGoogle: true);
+    }
   }
 
   /// Here we send additional metrics because we want to know

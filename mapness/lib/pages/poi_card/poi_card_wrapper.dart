@@ -3,6 +3,7 @@ part of 'poi_card_widget_page.dart';
 class _PoiCardWrapper extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
+  final PoiCardDataFromGoogle? poiCardDataFromGoogle;
 
   final LatLng? closestPoint;
 
@@ -10,6 +11,7 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
     required this.objectId,
     required this.closestPoint,
     this.cameraConfig,
+    this.poiCardDataFromGoogle,
     super.key,
   });
 
@@ -154,35 +156,24 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       poiCardState: poiCardState,
       closestPoint: widget.closestPoint,
       cameraConfig: widget.cameraConfig,
+      poiCardDataFromGoogle: widget.poiCardDataFromGoogle,
     );
   }
 }
 
-void _openRoutingRoutes(
+void _onDirectionsTap(
   BuildContext context,
   int objectId,
   String title,
   RouteParamsPoint finishPoint,
+  WidgetRef ref,
 ) {
   Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
       group: MetricsConstants.poiTag,
       action: MetricAction.tap.toString(),
       props: {'object_id': objectId, 'finish_point': '${finishPoint.latitude},${finishPoint.longitude}'});
 
-  context.router.push(
-    RoutingRoutesRoute(
-      points: [
-        RouteParamsPointWithLabel(
-          value: null,
-          label: context.l10n.myLocation,
-        ),
-        RouteParamsPointWithLabel(
-          value: finishPoint,
-          label: title,
-        ),
-      ],
-    ),
-  );
+  openRoutingRoutes(context, objectId, title, finishPoint, ref);
 }
 
 Future<void> _onFavoriteTap({
@@ -203,43 +194,7 @@ Future<void> _onFavoriteTap({
         },
       );
 
-      final favState = ref.read(favouriteCacheProvider).valueOrNull;
-      final favRepo = ref.read(favouriteCacheProvider.notifier);
-
-      /// if already in favourites - remove
-      if (favouriteItem != null) {
-        favRepo.deleteItem(favouriteItem);
-        return;
-      }
-
-      FavouriteItem? favItem = favouriteItem;
-      if (favItem == null && data.markerPosition != null && data.id != null) {
-        favItem = FavouriteItem(
-          coordinates: Coordinates(
-            latitude: data.markerPosition!.latitude,
-            longitude: data.markerPosition!.longitude,
-          ),
-          id: 'overriden',
-          subtitle: data.subtitle,
-          title: data.title,
-          entity: FavouriteItemEntity(
-            sourceType: EntitySourceType.urbi,
-            id: data.id!.objectId.toString(),
-          ),
-        );
-      }
-
-      if (favItem == null) {
-        return;
-      }
-
-      /// do not show dialog if home and work are set
-      if (favState?.home != null && favState?.work != null) {
-        favRepo.addItem(data.mapToFavourite());
-      } else {
-        /// show dialog to choose home, work or regular
-        context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
-      }
+      toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
     },
   );
 }

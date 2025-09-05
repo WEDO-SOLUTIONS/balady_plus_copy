@@ -67,7 +67,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     void onCloseBottomSheet(ToggleSheetController controller) {
       final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
-      final isInitial = ref.read(sendFeedbackProvider).valueOrNull == AppFeedbackState.initial;
+      final isInitial = ref.read(sendFeedbackProvider) == AppFeedbackState.initial;
 
       if (feedbackCanpop || !isInitial) {
         context.router.popForced();
@@ -93,32 +93,23 @@ class AppFeedbackSheet extends HookConsumerWidget {
         shouldPop: (_) => source is FeedbackSourceOffer,
         barrierColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,
         content: [
-          sendFeedbackState.when(
-            data: (data) => switch (data) {
-              AppFeedbackState.initial => AppFeedbackMain(
-                  initialRating: initialRating,
-                  onNeedPopConfirm: () => source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
-                ),
-              AppFeedbackState.loading => const AppFeedbackLoading(),
-              AppFeedbackState.success => const Padding(
-                  padding: _sheetPadding,
-                  child: AppFeedbackSuccess(),
-                ),
-              AppFeedbackState.error => Padding(
-                  padding: _sheetPadding,
-                  child: AppFeedbackError(
-                    onRetry: ref.read(sendFeedbackProvider.notifier).retry,
-                  ),
-                ),
-            },
-            loading: () => const AppFeedbackLoading(),
-            error: (_, __) => Padding(
-              padding: _sheetPadding,
-              child: AppFeedbackError(
-                onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+          switch (sendFeedbackState) {
+            AppFeedbackState.initial => AppFeedbackMain(
+                initialRating: initialRating,
+                onNeedPopConfirm: () => source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
               ),
-            ),
-          ),
+            AppFeedbackState.loading => const AppFeedbackLoading(),
+            AppFeedbackState.success => const Padding(
+                padding: _sheetPadding,
+                child: AppFeedbackSuccess(),
+              ),
+            AppFeedbackState.error => Padding(
+                padding: _sheetPadding,
+                child: AppFeedbackError(
+                  onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+                ),
+              ),
+          },
         ],
       ),
     );
