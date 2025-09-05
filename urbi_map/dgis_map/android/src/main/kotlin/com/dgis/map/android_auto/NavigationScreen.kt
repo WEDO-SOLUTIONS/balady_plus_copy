@@ -70,6 +70,10 @@ class NavigationScreen(
                     mapController.setNavigationListener(this@NavigationScreen)
                 }
 
+                override fun onResume(owner: LifecycleOwner) {
+                    showFavourites()
+                }
+
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                 }
@@ -322,9 +326,7 @@ class NavigationScreen(
     }
 
     fun onMapReady() {
-        if (favourites != null && screenManager.top is NavigationScreen) {
-            showFavourites(favourites!!)
-        }
+        showFavourites()
     }
 
     private fun renderSpeedInfo() {
@@ -344,8 +346,8 @@ class NavigationScreen(
         val notification = NavigationCarAppService.getDefaultNotification(carContext)
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
-        if (!bySystem && favourites != null && screenManager.top is NavigationScreen) {
-            showFavourites(favourites!!)
+        if (!bySystem) {
+            showFavourites()
         }
     }
 
@@ -438,17 +440,18 @@ class NavigationScreen(
 
     private fun getFavourites() {
         FlutterProvider.getHostFlutterApi(carContext).getFavourites {
-            val favourites = it.getOrNull()
-            if (favourites != null) {
-                this.favourites = favourites
-                if (mapController.isMapReady && screenManager.top is NavigationScreen) {
-                    showFavourites(favourites)
-                }
+            favourites = it.getOrNull()
+            if (mapController.isMapReady) {
+                showFavourites()
             }
         }
     }
 
-    private fun showFavourites(favourites: FavouritesStateMessage) {
+    private fun showFavourites() {
+        val favourites = this.favourites
+        if (favourites == null || screenManager.top !is NavigationScreen) return
+
+
         val myLocation = mapController.getMyLocation() ?: return
         val home = favourites.home
         val work = favourites.work

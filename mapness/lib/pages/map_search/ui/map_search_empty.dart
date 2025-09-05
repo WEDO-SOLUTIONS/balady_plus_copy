@@ -7,16 +7,28 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart';
 
 class MapSearchEmpty extends ConsumerWidget {
   final bool isShowAddPlaceButton;
 
-  const MapSearchEmpty({super.key, this.isShowAddPlaceButton = true});
+  const MapSearchEmpty({
+    super.key,
+    this.isShowAddPlaceButton = true,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final desctiption = context.l10n.tryToSearchForADifferentLocation.split('\n');
+    final description = context.l10n.tryToSearchForADifferentLocation.split('\n');
+
+    void _onAlternativeSearchPressed() {
+      final scope = context.read<SearchScope>();
+      ref.read(searchProvider(scope.value).notifier).alternativeSearch();
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: Column(
@@ -33,21 +45,31 @@ class MapSearchEmpty extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: Spacing.$2x),
-          Text(
-            desctiption.first,
-            textAlign: TextAlign.center,
-            style: context.textStyles.bodySmallRegular.copyWith(
-              color: context.colors.foregroundSoft,
+          if (description.isNotEmpty)
+            Text(
+              description.first,
+              textAlign: TextAlign.center,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.foregroundSoft,
+              ),
             ),
-          ),
-          Text(
-            desctiption.last.trim(),
-            textAlign: TextAlign.center,
-            style: context.textStyles.bodySmallRegular.copyWith(
-              color: context.colors.foregroundSoft,
+          if (description.length > 1)
+            Text(
+              description.last.trim(),
+              textAlign: TextAlign.center,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: context.colors.foregroundSoft,
+              ),
             ),
-          ),
           const SizedBox(height: Spacing.$4x),
+          AppButton(
+            onTap: _onAlternativeSearchPressed,
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonType: ButtonType.secondary,
+            primaryLabel: context.l10n.showMore,
+            primaryIcon: SystemIcons.search,
+          ),
+          const SizedBox(height: Spacing.$2x),
           if (isShowAddPlaceButton)
             AppButton(
               buttonColorScheme: ButtonColorScheme.accent,

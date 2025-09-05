@@ -1141,4 +1141,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Set better route enabled.
   Future<void> setBetterRouteEnabled({required bool enabled}) => _api.setBetterRouteEnabled(enabled);
+
+  /// Set map max fps
+  Future<void> setMaxFps(int? fps) => _api.setMaxFps(fps);
 }

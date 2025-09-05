@@ -1220,4 +1220,9 @@ class DgisMapView(
     override fun setNavigatorVoice(id: String, callback: (Result<Unit>) -> Unit) {
         navigationHandler.setNavigatorVoice(id, callback)
     }
+
+    override fun setMaxFps(maxFps: Long?, callback: (Result<Unit>) -> Unit) {
+        mapView.maxFps = maxFps?.toInt()?.let { Fps(it) }
+        callback(Result.success(Unit))
+    }
 }

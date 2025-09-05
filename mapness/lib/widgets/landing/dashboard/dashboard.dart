@@ -160,7 +160,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             path: Assets.images.feedbackDashboard.keyName,
             onTap: () {
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
-              context.router.push(QuickFeedbackRoute());
+              context.router.push(const ContributeRoute());
             },
             gradientColors: const [
               /// It's normal that some components are not from the design and color system too
@@ -240,8 +240,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           DashboardTitle(context.l10n.exploreNearby),
           const SizedBox(height: Spacing.$4x),
           const PlacePreview(),
-          const SizedBox(height: Spacing.$6x),
-          const DashboardFeedbackCard(),
           const SizedBox(height: Spacing.$6x),
         ],
       ),

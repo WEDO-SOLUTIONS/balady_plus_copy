@@ -47,6 +47,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
     private var moveCameraCancellable: DGis.Cancellable?
 
+    private var mapFactory: IMapFactory?
+
     init(
         dgisSdk sdk: Container,
         frame: CGRect,
@@ -876,6 +878,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         ))
         
         self.map = map
+        self.mapFactory = mapFactory
         let mapView = mapFactory.mapView
         
         // This gesture is temporarily disabled as it conflicts with MapObjectTappedCallback
@@ -1232,5 +1235,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         carPlayHandler?.getConnectionState(completion: completion)
     }
     
-
+    func setMaxFps(maxFps: Int64?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        if let fps = maxFps {
+            mapFactory?.energyConsumption.maxFps = Int(fps)
+        } else {
+            mapFactory?.energyConsumption.maxFps = nil
+        }
+        
+        completion(Result.success(()))
+    }
 }

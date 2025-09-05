@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/poi_card/data/poi_data_google.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -37,6 +38,8 @@ class MapSearchResults extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final language = ref.watch(appLanguageProvider);
     final myLocation = ref.watch(locationProvider);
+
+    final isGoogleSearch = ref.watch(searchProvider(context.read<SearchScope>().value).notifier).isGoogleSearch;
 
     void _sendSuggestionPressed() {
       final scope = context.read<SearchScope>();
@@ -101,7 +104,7 @@ class MapSearchResults extends ConsumerWidget {
               : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
           onTap: () {
             _bssAnalyticRequest(results: results, item: item);
-            _onResultTap(context, item, _sendSuggestionPressed);
+            _onResultTap(context, item, _sendSuggestionPressed, isGoogleSearch);
           },
           searchResultList: results.toBss(),
           index: index,
@@ -110,7 +113,12 @@ class MapSearchResults extends ConsumerWidget {
     );
   }
 
-  void _onResultTap(BuildContext context, DirectoryObjectMessage item, void Function() sendSuggestionPressed) {
+  void _onResultTap(
+    BuildContext context,
+    DirectoryObjectMessage item,
+    void Function() sendSuggestionPressed,
+    bool isGoogleSearch,
+  ) {
     if (item.id == null) {
       return;
     }
@@ -135,6 +143,18 @@ class MapSearchResults extends ConsumerWidget {
             entranceId: 0,
           ),
           cameraConfig: const PoiCameraConfig(zoom: 18),
+          poiCardDataFromGoogle: isGoogleSearch
+              ? PoiCardDataFromGoogle(
+                  id: item.id!.objectId.toString(),
+                  displayName: item.title,
+                  location: item.markerPosition != null
+                      ? LatLng(
+                          latitude: item.markerPosition!.latitude,
+                          longitude: item.markerPosition!.longitude,
+                        )
+                      : null,
+                )
+              : null,
         ),
         toCompareRoutes: [PoiCardWidgetRoute.page],
       );

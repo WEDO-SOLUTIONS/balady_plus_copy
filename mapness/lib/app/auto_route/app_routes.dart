@@ -59,12 +59,9 @@ class AppRouter extends RootStackRouter {
               page: PathNavRoute.page,
               fullscreenDialog: true,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'search',
               page: SearchRoute.page,
-              durationInMilliseconds: 100,
-              reverseDurationInMilliseconds: 100,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
             AppRoute(
               path: 'navi_search',
@@ -169,10 +166,6 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'add_phtoto_feedback',
               page: QuickFeedbackPhotoRoute.page,
-            ),
-            CustomRoute(
-              path: 'quickFeedback',
-              page: QuickFeedbackRoute.page,
             ),
             CustomRoute(
               path: 'feedback/:objectId',

@@ -17,6 +17,7 @@ import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
+import 'package:mapness/features/poi_card/data/poi_data_google.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
@@ -68,6 +69,7 @@ import 'package:urbi_utils/urbi_utils.dart';
 part 'poi_card_content.dart';
 part 'poi_card_no_info.dart';
 part 'poi_card_wrapper.dart';
+part 'poi_functions.dart';
 
 @RoutePage()
 class PoiCardWidgetPage extends StatelessWidget {
@@ -75,12 +77,14 @@ class PoiCardWidgetPage extends StatelessWidget {
   final int? dGisObjectId;
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
+  final PoiCardDataFromGoogle? poiCardDataFromGoogle;
 
   const PoiCardWidgetPage({
     this.objectId,
     @QueryParam('dgis-object-id') this.dGisObjectId,
     this.closestPoint,
     this.cameraConfig,
+    this.poiCardDataFromGoogle,
     super.key,
   });
 
@@ -92,6 +96,7 @@ class PoiCardWidgetPage extends StatelessWidget {
               entranceId: 0,
             ),
         cameraConfig: cameraConfig,
+        poiCardDataFromGoogle: poiCardDataFromGoogle,
         closestPoint: closestPoint,
         key: key,
       );

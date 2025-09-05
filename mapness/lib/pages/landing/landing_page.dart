@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -96,6 +97,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
+      ..watch(thermalMonitorProvider)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier);

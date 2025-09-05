@@ -1,24 +1,25 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
+import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
+import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
+import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
+import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 const prefixMapping = {
@@ -80,6 +81,8 @@ class SearchItem extends ConsumerWidget {
       };
     }
 
+    final closedStatus = result.openingHours?.toWorkingHours().closedStatus(DateTime.now(), context.l10n) ?? '';
+
     return VisibilityDetector(
       key: Key('searchResult: ${result.id?.objectId}'),
       onVisibilityChanged: (visibilityInfo) {
@@ -114,66 +117,60 @@ class SearchItem extends ConsumerWidget {
                   padding: const EdgeInsets.only(top: Spacing.$3x),
                   child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
                 ),
-              ContentRow(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                text: ContentRowTextOptions(
-                  title: result.title,
-                  titleOptions: const ContentRowTextOption(isBold: true),
-                  subtitle: subtitle,
-                  subtitleOptions: ContentRowTextOption(
-                    baseColor: context.colors.foregroundDefault,
-                  ),
-                  subtitleExtra: result.makeAddress(),
-                  subtitleExtraOptions: ContentRowTextOption(
-                    maxLines: 3,
-                    baseColor: context.colors.foregroundSoft,
-                  ),
-                ),
-                trailing: ContentRowCustomTrailingOptions(
-                  builder: (context) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
-                    child: FutureBuilder<double?>(
-                      future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const SizedBox.shrink();
-                        }
-                        final distanceKm = snapshot.data;
-                        if (distanceKm == null || !context.mounted) {
-                          return const SizedBox.shrink();
-                        }
-                        return ContentRowTrailingText(
-                          options: ContentRowTextTrailingOptions(
-                            text: (distanceKm * 1000).formatDistance(context.l10n),
-                            textStyle:
-                                context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundSoft),
+              Padding(
+                padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+                child: DefaultTextStyle(
+                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        result.title,
+                        style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+                      ),
+                      Spacing.$1x.heightBox,
+                      Text.rich(
+                        TextSpan(
+                          text: subtitle,
+                          children: [
+                            if (closedStatus.isNotEmpty)
+                              TextSpan(
+                                text: ' • ',
+                                style:
+                                    context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                              ),
+                            if (closedStatus.isNotEmpty)
+                              TextSpan(
+                                text: closedStatus,
+                                style: context.textStyles.bodySmallRegular
+                                    .copyWith(color: context.colors.errorOnContainer),
+                              ),
+                          ],
+                        ),
+                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+                      ),
+                      Spacing.$1x.heightBox,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              result.makeAddress(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
-                        );
-                      },
-                    ),
+                          DirectoryObjectCarEstimate(result),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
               ),
+              SearchItemQuickActions(directoryObject: result),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Future<double?> _calculateDistance({GeoPointWithElevationMessage? markerPoint, GeoPointMessage? myLocationPoint}) {
-    if (markerPoint == null || myLocationPoint == null) {
-      // Return null by default
-      return Future.value();
-    }
-
-    return Future.delayed(
-      Duration.zero,
-      () => CommonFunctions.distance(
-        result.markerPosition!.latitude,
-        result.markerPosition!.longitude,
-        myLocation!.latitude,
-        myLocation!.longitude,
       ),
     );
   }
