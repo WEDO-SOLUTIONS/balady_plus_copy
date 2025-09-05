@@ -33,6 +33,7 @@ import com.dgis.FlutterProvider
 import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
 import com.dgis.map.FavouritesUpdateNotifier
+import com.dgis.map.UserAuthorizedNotifier
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
@@ -40,6 +41,8 @@ import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -64,6 +67,7 @@ class NavigationScreen(
     private val hostFlutterApi: HostFlutterApi
     private var favouritesUpdateJob: Job? = null
     private var isAuthorized: Boolean = false
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     init {
         navigationManager =
@@ -92,9 +96,17 @@ class NavigationScreen(
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                     favouritesUpdateJob?.cancel()
+                    coroutineScope.cancel()
                 }
             }
         )
+
+        coroutineScope.launch {
+            UserAuthorizedNotifier.events.collect { event ->
+                isAuthorized = event
+                getFavourites()
+            }
+        }
 
         getFavourites()
         favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {

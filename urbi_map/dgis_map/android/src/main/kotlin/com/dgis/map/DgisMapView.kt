@@ -1059,7 +1059,7 @@ class DgisMapView(
             isAuthorized: Boolean,
             callback: (Result<Unit>) -> Unit
     ) {
-        androidAutoHandler.onAuthorizationChanged(isAuthorized)
+        UserAuthorizedNotifier.sendEvent(isAuthorized)
         callback(Result.success(Unit))
     }
 
