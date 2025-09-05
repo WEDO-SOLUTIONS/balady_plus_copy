@@ -8,14 +8,14 @@ extension WorkingHoursFromOpeningHoursMessage on OpeningHoursMessage {
         Map.fromEntries(
           [
             for (int day = DateTime.monday; day <= DateTime.sunday; day++)
-              MapEntry(Duration(days: day, hours: 0), const Duration(hours: 24)),
+              MapEntry(Duration(days: day), const Duration(hours: 24)),
           ],
         ),
       );
     }
 
     final flatWeekTimeIntervals =
-    values.fold(<WeekTimeIntervalMessage>[], (combined, value) => [...combined, ...value.values]);
+        values.fold(<WeekTimeIntervalMessage>[], (combined, value) => [...combined, ...value.values]);
     final map = Map.fromEntries(flatWeekTimeIntervals.map((weekTimeInterval) => weekTimeInterval.mapEntry));
     return WorkingHours(map);
   }
@@ -32,8 +32,7 @@ extension on WeekTimeIntervalMessage {
 }
 
 extension on WeekDayMessage {
-  int toDateTimeWeekday() =>
-      switch (this) {
+  int toDateTimeWeekday() => switch (this) {
         WeekDayMessage.monday => DateTime.monday,
         WeekDayMessage.tuesday => DateTime.tuesday,
         WeekDayMessage.wednesday => DateTime.wednesday,
@@ -45,8 +44,7 @@ extension on WeekDayMessage {
 }
 
 extension on WeekTimeMessage {
-  Duration get duration =>
-      Duration(
+  Duration get duration => Duration(
         days: weekDay.toDateTimeWeekday(),
         hours: time.hours,
         minutes: time.minutes,
