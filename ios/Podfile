@@ -45,8 +45,18 @@ post_install do |installer|
         'PERMISSION_NOTIFICATIONS=1',
         'PERMISSION_MEDIA_LIBRARY=1',]
     end
+
+    case target.name
+    when 'wakelock_plus-thermal'
+      target.build_configurations.each do |config|
+        config.build_settings['PRODUCT_NAME'] = 'wakelock_plus_thermal'
+      end
+    when 'thermal-thermal'
+      target.build_configurations.each do |config|
+        config.build_settings['PRODUCT_NAME'] = 'thermal_thermal'
+      end
+    end
   end
-end
 
 target 'InsiderNotificationContent' do
   use_frameworks!
