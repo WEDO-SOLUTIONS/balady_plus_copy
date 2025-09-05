@@ -43,9 +43,11 @@ post_install do |installer|
         'PERMISSION_PHOTOS=1',
         'PERMISSION_LOCATION=1',
         'PERMISSION_NOTIFICATIONS=1',
-        'PERMISSION_MEDIA_LIBRARY=1',]
+        'PERMISSION_MEDIA_LIBRARY=1',
+      ]
     end
 
+    # rename conflicting thermal bundles
     case target.name
     when 'wakelock_plus-thermal'
       target.build_configurations.each do |config|
@@ -57,6 +59,7 @@ post_install do |installer|
       end
     end
   end
+end
 
 target 'InsiderNotificationContent' do
   use_frameworks!
