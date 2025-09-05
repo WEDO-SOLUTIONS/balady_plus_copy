@@ -8,7 +8,7 @@ extension WorkingHoursFromOpeningHoursMessage on OpeningHoursMessage {
         Map.fromEntries(
           [
             for (int day = DateTime.monday; day <= DateTime.sunday; day++)
-              const MapEntry(Duration.zero, Duration(hours: 24)),
+              MapEntry(Duration(days: day, hours: 0), const Duration(hours: 24)),
           ],
         ),
       );
