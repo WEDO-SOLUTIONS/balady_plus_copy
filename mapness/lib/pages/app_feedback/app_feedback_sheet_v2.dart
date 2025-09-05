@@ -4,8 +4,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper_v2.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
@@ -33,7 +33,7 @@ class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
       context.router.pushNativeRoute(
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) => FeedbackSourceProvider(
-            source: FeedbackSource.main,
+            source: const FeedbackSource.main(),
             child: AppFeedbackSheetV2(rating: rating),
           ),
           opaque: false,

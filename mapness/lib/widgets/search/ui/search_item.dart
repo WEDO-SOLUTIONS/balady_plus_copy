@@ -158,10 +158,20 @@ class SearchItem extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: Text(
-                              result.makeAddress(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  result.makeAddress(),
+                                  maxLines: 1,
+                                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                                ),
+                                if (offers.isNotEmpty)
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: Spacing.$2x),
+                                    child: OffersBadge(),
+                                  ),
+                              ],
                             ),
                           ),
                           DirectoryObjectCarEstimate(result),
