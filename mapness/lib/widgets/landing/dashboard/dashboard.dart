@@ -241,8 +241,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           const SizedBox(height: Spacing.$4x),
           const PlacePreview(),
           const SizedBox(height: Spacing.$6x),
-          const DashboardFeedbackCard(),
-          const SizedBox(height: Spacing.$6x),
         ],
       ),
     );
