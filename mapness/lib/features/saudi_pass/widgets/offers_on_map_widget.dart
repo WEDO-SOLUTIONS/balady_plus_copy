@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -260,10 +262,13 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     final categoryStringBar = widget.categories.isNotEmpty
         ? ', ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}'
         : '';
+
+    final heightAppBar = Platform.isIOS ? 130.0 : 90.0;
+    final paddingAppBar = Platform.isIOS ? 90.0 : 50.0;
     return Column(
       children: [
         Container(
-          height: 130,
+          height: heightAppBar,
           color: context.colors.backgroundSurface4,
           child: Stack(
             children: [
@@ -282,7 +287,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                 ),
               ),
               Positioned.fill(
-                top: 90,
+                top: paddingAppBar,
                 child: Material(
                   color: Colors.transparent,
                   child: SizedBox(
