@@ -14,10 +14,22 @@ extension WorkingHoursStrings on WorkingHours {
         return '${appLocalizations.breakUntil} ${nextOpen.hoursAndMinutes.formatHHmm}';
       }
 
-      if (isToday(now, nextOpen) || isTomorrow(now, nextOpen)) {
+      if (isToday(now, nextOpen)) {
         return '${appLocalizations.closedUntill} ${nextOpen.hoursAndMinutes.formatHHmm}';
+      } else if (isTomorrow(now, nextOpen)) {
+        return '${appLocalizations.closedUntill} ${appLocalizations.tomorrow} ${nextOpen.hoursAndMinutes.formatHHmm}';
       } else {
-        return appLocalizations.closed;
+        final weekDay = switch (nextOpen.inDays) {
+          1 => appLocalizations.weekdayNameMonday,
+          2 => appLocalizations.weekdayNameTuesday,
+          3 => appLocalizations.weekdayNameWednesday,
+          4 => appLocalizations.weekdayNameThursday,
+          5 => appLocalizations.weekdayNameFriday,
+          6 => appLocalizations.weekdayNameSaturday,
+          7 => appLocalizations.weekdayNameSunday,
+          _ => '',
+        };
+        return '${appLocalizations.closedUntill} $weekDay ${nextOpen.hoursAndMinutes.formatHHmm}';
       }
     }
 
