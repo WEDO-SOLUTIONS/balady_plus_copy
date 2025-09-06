@@ -17,8 +17,9 @@ void main() {
     when(() => appLocalizations.breakUntil).thenReturn('Break until');
     when(() => appLocalizations.closedUntill).thenReturn('Closed until');
     when(() => appLocalizations.closesIn).thenReturn('Closes in ');
-    when(() => appLocalizations.closed).thenReturn('Closed');
     when(() => appLocalizations.minutes).thenReturn('minutes');
+    when(() => appLocalizations.weekdayNameMonday).thenReturn('Monday');
+    when(() => appLocalizations.tomorrow).thenReturn('tomorrow');
   });
 
   void createStatusFor(DateTime now) {
@@ -66,7 +67,22 @@ void main() {
 
     group(' WHEN tuesday already closed', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 2, 21, 00)));
-      test('THEN Closed', () => expect(closedStatus, 'Closed'));
+      test('THEN Closed until monday 10:00', () => expect(closedStatus, 'Closed until Monday 10:00'));
+    });
+
+    group('WHEN monday already closed', () {
+      setUp(() => createStatusFor(DateTime(2025, 9, 1, 18, 01)));
+      test('THEN Closed until tomorrow 11:00', () => expect(closedStatus, 'Closed until tomorrow 11:00'));
+    });
+
+    group('WHEN sunday not working', () {
+      setUp(() => createStatusFor(DateTime(2025, 9, 7, 09, 00)));
+      test('THEN Closed until tomorrow 10:00', () => expect(closedStatus, 'Closed until tomorrow 10:00'));
+    });
+
+    group('WHEN friday now working', () {
+      setUp(() => createStatusFor(DateTime(2025, 9, 5, 09, 00)));
+      test('THEN Closed until monday 10:00', () => expect(closedStatus, 'Closed until Monday 10:00'));
     });
   });
 }

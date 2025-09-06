@@ -168,10 +168,6 @@ class AppRouter extends RootStackRouter {
               page: QuickFeedbackPhotoRoute.page,
             ),
             CustomRoute(
-              path: 'quickFeedback',
-              page: QuickFeedbackRoute.page,
-            ),
-            CustomRoute(
               path: 'feedback/:objectId',
               page: FeedbackSelectTypeRoute.page,
             ),
