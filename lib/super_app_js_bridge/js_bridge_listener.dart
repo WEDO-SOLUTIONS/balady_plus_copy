@@ -495,13 +495,21 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         );
         handler.complete(response.jsonEncodeModel());
       } else {
-        BaseResponse response = BaseResponse(
-          code: 401,
-          eventName: "getLocation",
-          message: "Can't get location",
-          data: null,
+        // BaseResponse response = BaseResponse(
+        //   code: 401,
+        //   eventName: "getLocation",
+        //   message: "Can't get location",
+        //   data: null,
+        // );
+       // handler.complete(response.jsonEncodeModel());
+       var res=  await CommonFunctions.checkLocationSettings(
+          NavigationService.navigatorKey.currentContext!,
         );
-        handler.complete(response.jsonEncodeModel());
+       if(res)
+         {
+           getLocation(msg, handler);
+         }
+
       }
     } else {
       BaseResponse response = BaseResponse(
