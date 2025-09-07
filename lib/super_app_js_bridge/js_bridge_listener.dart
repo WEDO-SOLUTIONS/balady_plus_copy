@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'Requirement_enum.dart';
 import 'package:archive/archive.dart';
 import 'package:dgis_map/library.dart';
@@ -76,6 +77,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openCameraWithUI);
     registerFunction(openMiniApps);
     registerFunction(openPdfFile);
+    registerFunction(openAppSetting);
+  }
+
+
+  @pragma('vm:entry-point')
+  void openAppSetting(dynamic msg, CompletionHandler handler) async {
+    openAppSettings();
   }
 
   @pragma('vm:entry-point')
