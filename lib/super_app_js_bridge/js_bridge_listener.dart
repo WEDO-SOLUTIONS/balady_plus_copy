@@ -421,8 +421,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.checkPermission.name) ==
         true) {
-      if (msg != null && msg is String) {
-        Map data = jsonDecode(msg);
+      if (msg != null && (msg is String || msg is Map)) {
+        Map data;
+        msg is String ? data= jsonDecode(msg):data=msg;
         String permissionName = data["permission_name"];
         bool state = false;
         BaseResponse response;
