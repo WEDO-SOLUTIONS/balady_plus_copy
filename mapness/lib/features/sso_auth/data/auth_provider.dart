@@ -9,6 +9,7 @@ import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';
@@ -106,10 +107,10 @@ class Auth extends _$Auth {
       // Get the map controller and call authorizationNotification
       final dgisController = await ref.read(dgisControllerProvider.future);
       await dgisController.authorizationNotification(isAuthorized: isAuthorized);
-      print('Authorization notification sent to map: $isAuthorized');
+      logger.log('Authorization notification sent to map: $isAuthorized');
     } catch (e) {
       // If the map controller is not available, just log the change
-      print('Authorization state changed: $isAuthorized (map notification failed: $e)');
+      logger.log('Authorization state changed: $isAuthorized (map notification failed: $e)');
     }
   }
 }
