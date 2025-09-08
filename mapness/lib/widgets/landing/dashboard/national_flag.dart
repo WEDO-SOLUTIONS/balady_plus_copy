@@ -4,15 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:shimmer/shimmer.dart';
 
-class NationalFlag extends StatelessWidget {
+class NationalFlag extends StatefulWidget {
   final VoidCallback? onTap;
-
-  static const _flagImageAssetPath = 'assets/images/saudi_national_flag.png';
 
   const NationalFlag({
     super.key,
     this.onTap,
   });
+
+  @override
+  State<NationalFlag> createState() => _NationalFlagState();
+}
+
+class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderStateMixin {
+  static const _flagImageAssetPath = 'assets/images/saudi_national_flag.png';
+
+  late final AnimationController scaleController = AnimationController(
+    vsync: this,
+    duration: Durations.medium1,
+  );
 
   @override
   Widget build(BuildContext context) => MultiStateSheetBuilder<ThreeStateSheet>(
@@ -29,38 +39,53 @@ class NationalFlag extends StatelessWidget {
           );
         },
         child: GestureDetector(
-          onTap: onTap,
+          onTap: () {
+            widget.onTap?.call();
+            scaleController
+              ..value = 0
+              ..animateTo(1, curve: Curves.easeOut);
+          },
+          onTapDown: (_) => scaleController
+            ..value = 0
+            ..animateTo(.4, curve: Curves.easeOut),
+          onLongPressEnd: (details) {
+            scaleController.animateTo(1, curve: Curves.easeOut);
+            widget.onTap?.call();
+          },
           child: Align(
             alignment: AlignmentDirectional.bottomStart,
             child: Padding(
               padding: const EdgeInsetsDirectional.only(start: Spacing.$6x, bottom: Spacing.$4x),
-              child: Stack(
-                children: [
-                  Image.asset(
-                    _flagImageAssetPath,
-                    width: 97.8,
-                  ),
-                  Opacity(
-                    opacity: 0.6,
-                    child: Shimmer(
-                      period: Durations.extralong4,
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0x00C5FFD6),
-                          Color(0x00C5FFD6),
-                          Color(0xffC5FFD6),
-                          Color(0x00C5FFD6),
-                          Color(0x00C5FFD6),
-                        ],
-                        stops: [0.0, 0.4, 0.5, 0.6, 1.0],
-                      ),
-                      child: Image.asset(
-                        _flagImageAssetPath,
-                        width: 97.8,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: .9, end: 1.0).animate(scaleController),
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      _flagImageAssetPath,
+                      width: 97.8,
+                    ),
+                    Opacity(
+                      opacity: 0.6,
+                      child: Shimmer(
+                        period: Durations.extralong4,
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0x00C5FFD6),
+                            Color(0x00C5FFD6),
+                            Color(0xffC5FFD6),
+                            Color(0x00C5FFD6),
+                            Color(0x00C5FFD6),
+                          ],
+                          stops: [0.0, 0.4, 0.5, 0.6, 1.0],
+                        ),
+                        child: Image.asset(
+                          _flagImageAssetPath,
+                          width: 97.8,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
