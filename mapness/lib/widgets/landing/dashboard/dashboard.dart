@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -19,6 +19,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -38,10 +39,13 @@ import 'package:sheetify/sheetify.dart';
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     required this.bottomSheetController,
+    required this.fireworksController,
     super.key,
   });
 
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
+
+  final AnimationController fireworksController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -83,6 +87,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     return null;
   });
 
+  final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
+
   @override
   void initState() {
     super.initState();
@@ -115,6 +121,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     });
 
     freeRoamState = ref.watch(freeRoamStarterProvider);
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
 
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
@@ -123,7 +130,9 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         keepContentBehindFooter: true,
         useSafeArea: false,
         scrollController: widget.bottomSheetController,
-        topHeader: MapHiddenStateControls(widget.bottomSheetController),
+        topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
+        topHeaderOffset: isNationalDay ? topHeaderOffset : null,
+        offsetOutsideWidgetByTopheader: !isNationalDay,
         backgroundColor: context.colors.backgroundSurface2,
         dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
         header: const DashboardHeader(),
