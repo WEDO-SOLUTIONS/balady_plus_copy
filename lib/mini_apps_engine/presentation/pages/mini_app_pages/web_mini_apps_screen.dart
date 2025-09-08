@@ -14,7 +14,8 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class WebMiniAppsScreen extends ConsumerStatefulWidget {
-  const WebMiniAppsScreen({super.key});
+  const WebMiniAppsScreen({Key? key}) : super(key: key);
+
 
   @override
   ConsumerState<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
@@ -23,6 +24,7 @@ class WebMiniAppsScreen extends ConsumerStatefulWidget {
 class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
   late final DWebViewController _controller;
   final ValueNotifier<bool> _isLoading = ValueNotifier(true);
+  bool _initialized = false; // prevent multiple re-inits
 
   String _currentLanguage = '';
   String? _cachedMiniAppsLanguage = '';
@@ -33,11 +35,14 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     bool clearCache = false;
 
     _currentLanguage = translator.activeLanguageCode;
-    _cachedMiniAppsLanguage = ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
+    _cachedMiniAppsLanguage =
+        ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
 
     if (_currentLanguage != _cachedMiniAppsLanguage) {
       clearCache = true;
-      ref.read(appLanguageProvider.notifier).updateCachedMiniAppsLanguage(_currentLanguage);
+      ref
+          .read(appLanguageProvider.notifier)
+          .updateCachedMiniAppsLanguage(_currentLanguage);
     }
 
     late final PlatformWebViewControllerCreationParams params;
@@ -50,34 +55,49 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     DWebViewController.fromPlatformCreationParams(params);
     _controller = controller;
 
-    controller
-      ..setBackgroundColor(Colors.transparent) // avoid flashing white screen
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate(
-        onPageStarted: (url) async {
-          _isLoading.value = true;
-        },
-        onPageFinished: (url) {
-          _isLoading.value = false;
-        },
-        onWebResourceError: (WebResourceError error) {
-          _isLoading.value = false; // stop loader even if error
-        },
-      ));
+    controller.setBackgroundColor(Colors.transparent);
+
+    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller.setNavigationDelegate(NavigationDelegate(
+      onPageStarted: (url) {
+        _isLoading.value = true;
+      },
+      onPageFinished: (url) async {
+        try {
+          await controller.runJavaScriptReturningResult("""
+            new Promise(resolve => {
+              if (document.readyState === 'complete') {
+                resolve(true);
+              } else {
+                window.addEventListener('load', () => resolve(true));
+              }
+            });
+          """);
+        } catch (_) {}
+        _isLoading.value = false;
+      },
+      onWebResourceError: (_) {
+        _isLoading.value = false;
+      },
+    ));
 
     if (clearCache) {
       controller.clearCache();
     }
 
     if (Platform.isAndroid) {
-      final androidController = _controller.platform as AndroidWebViewController;
+      final androidController =
+      _controller.platform as AndroidWebViewController;
       androidController.setGeolocationPermissionsPromptCallbacks(
         onShowPrompt: (request) async {
-          return const GeolocationPermissionsResponse(allow: true, retain: true);
+          return const GeolocationPermissionsResponse(
+              allow: true, retain: true);
         },
       );
       androidController.setAllowContentAccess(true);
       androidController.setAllowFileAccess(true);
+
+      androidController.setBackgroundColor(const Color(0x00000000));
     }
   }
 
@@ -85,6 +105,18 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
   Widget build(BuildContext context) {
     final miniAppsEngineBloc = context.watch<MiniAppsEngineBloc>();
     final state = miniAppsEngineBloc.state as MiniAppsEngineLoadedState;
+
+    if (!_initialized) {
+      _controller
+        ..loadRequest(Uri.parse(state.servicePath + (state.path ?? "")))
+        ..addJavaScriptObject(
+          JsBridgeListener(
+            miniAppsEngineBloc: miniAppsEngineBloc,
+            isLoading: _isLoading,
+          ),
+        );
+      _initialized = true;
+    }
 
     return WillPopScope(
       onWillPop: () async {
@@ -97,37 +129,25 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
       },
       child: Stack(
         children: [
-          // Loading overlay
+
+          DWebViewWidget(controller: _controller),
+
           ValueListenableBuilder<bool>(
             valueListenable: _isLoading,
             builder: (context, isLoading, _) {
               if (!isLoading) return const SizedBox.shrink();
-              return Container(
-                color: Colors.white,
-                child: Center(
-                  child: Image.asset(
-                    "assets/images/loader.gif",
-                    width: 120, // adjust size
-                    height: 120,
-                    fit: BoxFit.contain,
-                  ),
+              return Center(
+                child: Image.asset(
+                  "assets/images/loader.gif",
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.contain,
                 ),
               );
             },
           ),
-          DWebViewWidget(
-            controller: _controller
-              ..loadRequest(Uri.parse(state.servicePath + (state.path ?? "")))
-              ..addJavaScriptObject(
-                JsBridgeListener(
-                  miniAppsEngineBloc: miniAppsEngineBloc,
-                  isLoading: _isLoading,
-                ),
-              ),
-          ),
         ],
-      )
-
+      ),
     );
   }
 

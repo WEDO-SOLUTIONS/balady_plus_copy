@@ -69,7 +69,6 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
             .firstWhere((service) => service.serviceKey == serviceKey)
             .copyWith();
 
-
         miniApp.path = path;
         NavigationService.pushNamed(
           routeName: RouteName.miniAppsMainScreen,

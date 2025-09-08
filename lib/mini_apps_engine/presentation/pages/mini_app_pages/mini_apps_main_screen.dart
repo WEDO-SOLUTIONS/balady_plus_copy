@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,6 +107,15 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      Center(
+                        child: Image.asset(
+                          "assets/images/loader.gif",
+                          width: 120,
+                          height: 120,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       SizedBox(
                         height: 10,
                         child: LinearProgressIndicator(
@@ -113,8 +123,8 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                               ? null
                               : (double.parse(state.progress) / 100),
                           backgroundColor: Colors.grey[200],
-                          valueColor:
-                              const AlwaysStoppedAnimation<Color>(Colors.blue),
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                              AppColor.primary900Light),
                         ),
                       ),
                       const SizedBox(height: 16),
