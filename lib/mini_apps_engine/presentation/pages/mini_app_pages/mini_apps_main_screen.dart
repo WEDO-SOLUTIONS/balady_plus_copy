@@ -106,16 +106,19 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                             fit: BoxFit.contain,
                           ),
                           const SizedBox(height: 16),
-                          // SizedBox(
-                          //   width: 200,
-                          //   child: LinearProgressIndicator(
-                          //     value: null,
-                          //     backgroundColor: Colors.grey[200],
-                          //     valueColor: const AlwaysStoppedAnimation<Color>(
-                          //       AppColor.primary900Light,
-                          //     ),
-                          //   ),
-                          // ),
+                          if (state is MiniAppsEngineLoadingState)
+                            state.progress.isEmpty?SizedBox(): Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: SizedBox(
+                                height: 10,
+                                child: LinearProgressIndicator(
+                                  value: (double.parse(state.progress) / 100),
+                                  backgroundColor: Colors.grey[200],
+                                  valueColor: const AlwaysStoppedAnimation<Color>(
+                                      AppColor.primary900Light),
+                                ),
+                              ),
+                            ),
                           const SizedBox(height: 16),
                           Text(
                             "loading".tr(),
