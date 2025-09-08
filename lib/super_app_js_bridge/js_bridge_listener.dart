@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'Requirement_enum.dart';
 import 'package:archive/archive.dart';
 import 'package:dgis_map/library.dart';
@@ -76,6 +77,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openCameraWithUI);
     registerFunction(openMiniApps);
     registerFunction(openPdfFile);
+    registerFunction(openAppSetting);
+  }
+
+
+  @pragma('vm:entry-point')
+  void openAppSetting(dynamic msg, CompletionHandler handler) async {
+    openAppSettings();
   }
 
   @pragma('vm:entry-point')
@@ -413,8 +421,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.checkPermission.name) ==
         true) {
-      if (msg != null && msg is String) {
-        Map data = jsonDecode(msg);
+      if (msg != null && (msg is String || msg is Map)) {
+        Map data;
+        msg is String ? data= jsonDecode(msg):data=msg;
         String permissionName = data["permission_name"];
         bool state = false;
         BaseResponse response;
@@ -492,7 +501,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           message: "Can't get location",
           data: null,
         );
-        handler.complete(response.jsonEncodeModel());
+       handler.complete(response.jsonEncodeModel());
+       // var res=  await CommonFunctions.checkLocationSettings(
+       //    NavigationService.navigatorKey.currentContext!,
+       //  );
+       // if(res)
+       //   {
+       //     getLocation(msg, handler);
+       //   }
+
       }
     } else {
       BaseResponse response = BaseResponse(
