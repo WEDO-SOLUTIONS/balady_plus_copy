@@ -22,7 +22,7 @@ class OfferViewWidget extends ConsumerWidget {
     final colors = context.colorsV2;
     final textStyles = context.textStyleV3;
     final locale = Localizations.localeOf(context);
-    final byDate = DateFormat('MMMMd', locale.languageCode).format(offerView.byDate);
+    final byDate = DateFormat('d MMMM', locale.languageCode).format(offerView.byDate);
     final byDateStyle = textStyles.captionMediumRegular.copyWith(
       color: offerView.isByDateRed ? colors.errorDefault : null,
     );
