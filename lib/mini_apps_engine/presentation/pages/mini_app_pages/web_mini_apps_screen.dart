@@ -37,33 +37,32 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     if (_currentLanguage != _cachedMiniAppsLanguage) {
       clearCache = true;
-
-      ref.read(appLanguageProvider.notifier).updateCachedMiniAppsLanguage(
-        _currentLanguage,
-      );
+      ref.read(appLanguageProvider.notifier).updateCachedMiniAppsLanguage(_currentLanguage);
     }
+
     late final PlatformWebViewControllerCreationParams params;
     params = WebKitWebViewControllerCreationParams(
       allowsInlineMediaPlayback: true,
       mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
     );
-    final DWebViewController controller = DWebViewController.fromPlatformCreationParams(params);
+
+    final DWebViewController controller =
+    DWebViewController.fromPlatformCreationParams(params);
     _controller = controller;
 
     controller
-      ..setBackgroundColor(Colors.white)
+      ..setBackgroundColor(Colors.transparent) // avoid flashing white screen
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
-        onProgress: (progress) {
-          print("onProgress : $progress");
-        },
         onPageStarted: (url) async {
-          print("onPageStarted");
+          _isLoading.value = true;
         },
         onPageFinished: (url) {
-          print("onPageFinished");
+          _isLoading.value = false;
         },
-        onWebResourceError: (WebResourceError error) {},
+        onWebResourceError: (WebResourceError error) {
+          _isLoading.value = false; // stop loader even if error
+        },
       ));
 
     if (clearCache) {
@@ -71,38 +70,64 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     }
 
     if (Platform.isAndroid) {
-      (_controller.platform as AndroidWebViewController).setGeolocationPermissionsPromptCallbacks(
+      final androidController = _controller.platform as AndroidWebViewController;
+      androidController.setGeolocationPermissionsPromptCallbacks(
         onShowPrompt: (request) async {
           return const GeolocationPermissionsResponse(allow: true, retain: true);
         },
       );
-
-      (_controller.platform as AndroidWebViewController).setAllowContentAccess(true);
-      (_controller.platform as AndroidWebViewController).setAllowFileAccess(true);
+      androidController.setAllowContentAccess(true);
+      androidController.setAllowFileAccess(true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    MiniAppsEngineBloc miniAppsEngineBloc = context.watch<MiniAppsEngineBloc>();
-    MiniAppsEngineLoadedState state = miniAppsEngineBloc.state as MiniAppsEngineLoadedState;
+    final miniAppsEngineBloc = context.watch<MiniAppsEngineBloc>();
+    final state = miniAppsEngineBloc.state as MiniAppsEngineLoadedState;
+
     return WillPopScope(
       onWillPop: () async {
-        bool canPop = await _controller.canGoBack();
-        return !canPop;
+        final canPop = await _controller.canGoBack();
+        if (canPop) {
+          _controller.goBack();
+          return false;
+        }
+        return true;
       },
-      child: DWebViewWidget(
-        controller: _controller
-        //https://baladyapps.momra.gov.sa/tawakkalna/baladyplus
-        //https://services-dev.balady.gov.sa/miniapps/municipal
-          ..loadRequest(Uri.parse(state.servicePath+state.path??""))
-          ..addJavaScriptObject(
-            JsBridgeListener(
-              miniAppsEngineBloc: miniAppsEngineBloc,
-              isLoading: _isLoading,
-            ),
+      child: Stack(
+        children: [
+          // Loading overlay
+          ValueListenableBuilder<bool>(
+            valueListenable: _isLoading,
+            builder: (context, isLoading, _) {
+              if (!isLoading) return const SizedBox.shrink();
+              return Container(
+                color: Colors.white,
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/loader.gif",
+                    width: 120, // adjust size
+                    height: 120,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              );
+            },
           ),
-      ),
+          DWebViewWidget(
+            controller: _controller
+              ..loadRequest(Uri.parse(state.servicePath + (state.path ?? "")))
+              ..addJavaScriptObject(
+                JsBridgeListener(
+                  miniAppsEngineBloc: miniAppsEngineBloc,
+                  isLoading: _isLoading,
+                ),
+              ),
+          ),
+        ],
+      )
+
     );
   }
 
