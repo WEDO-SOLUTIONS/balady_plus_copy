@@ -36,6 +36,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -103,6 +104,8 @@ class MapnessProviderScope extends StatelessWidget {
             builder: (context, ref, child) {
               final language = ref.watch(appLanguageProvider);
               final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
+              // Initialize Saudi National Day provider to start the timer
+              ref.watch(saudiNationalDayProvider);
 
               return provider.MultiProvider(
                 providers: [
