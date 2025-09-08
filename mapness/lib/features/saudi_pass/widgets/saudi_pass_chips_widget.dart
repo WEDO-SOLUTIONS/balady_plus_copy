@@ -44,16 +44,22 @@ class SaudiPassChipsWidget extends StatelessWidget {
     );
     final overriddenTextStyle = textStyle.copyWith(callout: textStyle.callout.copyWith(color: textColor));
 
+    final bool hasText = (title?.trim().isNotEmpty ?? false) || (label?.trim().isNotEmpty ?? false);
     return Theme(
       data: theme.overrideExtension(overriddenTextStyle).overrideExtension(overriddenColor),
       child: Chips(
-        onTap: onTap,
-        style: ChipsStyle.whiteBackground,
-        leadingIcon: leadingIcon,
-        trailingIcon: trailingIcon,
-        title: title,
-        label: label,
-        size: ChipsSize.medium,
+        onPressed: onTap,
+        type: ChipsType.neutral,
+        options: hasText
+            ? ChipsLabelOptions(
+                labelFirst: title ?? '',
+                labelSecond: label,
+                leadingIcon: leadingIcon,
+                trailingIcon: trailingIcon,
+              )
+            : (leadingIcon != null || trailingIcon != null)
+            ? ChipsIconOptions(icon: leadingIcon ?? trailingIcon!)
+            : null,
       ),
     );
   }
