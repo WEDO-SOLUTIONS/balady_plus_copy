@@ -224,6 +224,14 @@ class AppRouter extends RootStackRouter {
               opaque: false,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
+            CustomRoute(
+              path: 'contribute',
+              page: ContributeRoute.page,
+            ),
+            CustomRoute(
+              path: 'quickFeedback',
+              page: QuickFeedbackRoute.page,
+            ),
           ],
         ),
         ...Routes.upperRoutesMap,
