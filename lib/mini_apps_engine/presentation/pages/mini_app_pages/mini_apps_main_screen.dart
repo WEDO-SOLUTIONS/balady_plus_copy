@@ -116,15 +116,18 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        height: 10,
-                        child: LinearProgressIndicator(
-                          value: state.progress.isEmpty
-                              ? null
-                              : (double.parse(state.progress) / 100),
-                          backgroundColor: Colors.grey[200],
-                          valueColor: const AlwaysStoppedAnimation<Color>(
-                              AppColor.primary900Light),
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: SizedBox(
+                          height: 10,
+                          child: LinearProgressIndicator(
+                            value: state.progress.isEmpty
+                                ? null
+                                : (double.parse(state.progress) / 100),
+                            backgroundColor: Colors.grey[200],
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                AppColor.primary900Light),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
