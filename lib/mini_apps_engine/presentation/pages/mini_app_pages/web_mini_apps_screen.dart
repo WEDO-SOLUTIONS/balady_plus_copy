@@ -114,7 +114,8 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
             miniAppsEngineBloc: miniAppsEngineBloc,
             isLoading: _isLoading,
           ),
-        );
+        )
+      ;
       _initialized = true;
     }
 
@@ -127,27 +128,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
         }
         return true;
       },
-      child: Stack(
-        children: [
-
-          DWebViewWidget(controller: _controller),
-
-          ValueListenableBuilder<bool>(
-            valueListenable: _isLoading,
-            builder: (context, isLoading, _) {
-              if (!isLoading) return const SizedBox.shrink();
-              return Center(
-                child: Image.asset(
-                  "assets/images/loader.gif",
-                  width: 120,
-                  height: 120,
-                  fit: BoxFit.contain,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+      child: DWebViewWidget(controller: _controller),
     );
   }
 
