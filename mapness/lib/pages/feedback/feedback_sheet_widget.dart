@@ -98,6 +98,7 @@ class FeedbackSheetWidget extends HookWidget {
                   child: AppButton(
                       buttonColorScheme: ButtonColorScheme.neutral,
                       primaryIcon: SystemIcons.close,
+                      buttonType: ButtonType.secondary,
                       onTap: () {
                         sheetController.close();
                       }),
