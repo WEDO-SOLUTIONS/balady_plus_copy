@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -17,8 +18,6 @@ class NationalFlag extends StatefulWidget {
 }
 
 class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderStateMixin {
-  static const _flagImageAssetPath = 'assets/images/saudi_national_flag.png';
-
   late final AnimationController scaleController = AnimationController(
     vsync: this,
     duration: Durations.medium1,
@@ -61,7 +60,7 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
                 child: Stack(
                   children: [
                     Image.asset(
-                      _flagImageAssetPath,
+                      Assets.images.saudiNationalFlag.path,
                       width: 97.8,
                     ),
                     Opacity(
@@ -79,7 +78,7 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
                           stops: [0.0, 0.4, 0.5, 0.6, 1.0],
                         ),
                         child: Image.asset(
-                          _flagImageAssetPath,
+                          Assets.images.saudiNationalFlag.path,
                           width: 97.8,
                         ),
                       ),
