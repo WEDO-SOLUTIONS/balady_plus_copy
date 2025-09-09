@@ -19,17 +19,20 @@ class _PoiCardContent extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProviderStateMixin {
+class _ContentState extends ConsumerState<_PoiCardContent>
+    with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
   late final PoiCardState? poiCardState = widget.poiCardState;
 
-  late final StatefulBottomSheetController<PoiCardBottomSheetState> _bottomSheetController =
-      StatefulBottomSheetController(
+  late final StatefulBottomSheetController<PoiCardBottomSheetState>
+      _bottomSheetController = StatefulBottomSheetController(
     behavior: MultiSnappingBehavior(
       models: [
         AspectRatioSnappingModel({0.0, .931}),
-        OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
+        OffsetSnappingModel({
+          HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius
+        }),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
             a: const SnapComponent.size(component: Components.header),
@@ -62,11 +65,13 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     );
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
-    _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
+    _tabType = ValueNotifier(
+        _parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
     _tabController.addListener(
       () {
         if (_tabController.indexIsChanging) {
-          _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
+          _bottomSheetController.position.animateTo(0,
+              duration: Durations.medium1, curve: Curves.easeInExpo);
           switch (_tabController.index) {
             case 0:
               _tabType.value = PoiTabsType.info;
@@ -117,7 +122,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final photos = ref.watch(poiPhotoProvider(widget.objectId));
-    final isPhotosNotEmpty = (!photos.hasValue || photos.requireValue.items.isEmpty) && !photos.isLoading;
+    final isPhotosNotEmpty =
+        (!photos.hasValue || photos.requireValue.items.isEmpty) &&
+            !photos.isLoading;
 
     final finishPoint = RouteSearchPoint(
       coordinates: widget.data.markerPosition!.toGeoPointMessage(),
@@ -141,7 +148,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         brief?.getBriefRouteDistanceDescription(context.l10n),
       ].where((e) => e != null && e.trim().isNotEmpty).join(' ');
 
-      return parkingPoi ? carParkingLabel : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n);
+      return parkingPoi
+          ? carParkingLabel
+          : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n);
     }
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
@@ -164,7 +173,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           outside: PoiCardMapControlsWrapper(
               bottomSheetController: _bottomSheetController,
               // we should not use objectIdForIndoorLevels if POI has levelId
-              objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId),
+              objectIdForIndoorLevels:
+                  poiCardState?.gisObjectIdMessage?.levelId != null
+                      ? null
+                      : widget.objectId),
           topHeader: PoiPhotosHeader(objectId: widget.objectId),
           topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
           footer: PoiCardFooter(
@@ -177,7 +189,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   action: MetricAction.tap.toString(),
                   props: {
                     'object_id': widget.data.id?.objectId,
-                    'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                    'closest_point':
+                        '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                   });
 
               return poiActions.share(
@@ -193,7 +206,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     'objectId': widget.objectId,
                   });
 
-              final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
+              final phoneNumber =
+                  widget.data.getContactsInfoModels.firstWhereOrNull(
                 (element) => element.type == ContactsInfoType.phone,
               );
               if (phoneNumber?.value != null) {
@@ -202,7 +216,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             },
             onEntranceTap: () => poiActions.toggleEntrances(
               widget.data,
-              () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+              () => _bottomSheetController
+                  .setState(PoiCardBottomSheetState.halfOpen),
               widget.closestPoint,
             ),
             onTapCar: () {
@@ -229,16 +244,23 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 ),
               );
             },
-            onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item),
+            onTapFavorite: (item) => _onFavoriteTap(
+                context: context,
+                ref: ref,
+                data: widget.data,
+                favouriteItem: item),
           ),
           header: PoiHeader(
             title: widget.data.address?.buildingName ?? widget.data.title,
-            subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
+            subTitle:
+                _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
+                    widget.data.subtitle,
             subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
                 ? [
                     const TextSpan(text: ' • '),
                     WidgetSpan(
-                      child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
+                      child: Icon(General16Icons.car,
+                          size: 16, color: context.colors.foregroundSoft),
                       baseline: TextBaseline.ideographic,
                       alignment: PlaceholderAlignment.middle,
                     ),
@@ -258,7 +280,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
               ref.read(parkingManageProvider.notifier).restoreMarker();
-              ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
+              ref
+                  .read(highlightProvider.notifier)
+                  .removeHighlight(widget.data.id!);
               context.router.popForced();
             },
           ),
@@ -267,7 +291,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             builder: (context, tabType, _) => DecoratedSliver(
               decoration: BoxDecoration(
                 color: context.colors.backgroundSurface4,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(PoiHeader.poiHeaderBorderRadius)),
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(PoiHeader.poiHeaderBorderRadius)),
               ),
               sliver: SliverFillAfter(
                 sliver: SliverAnimatedSwitcher(
@@ -278,16 +303,19 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                         onEntrancesTap: () {
                           poiActions.toggleEntrances(
                             widget.data,
-                            () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                            () => _bottomSheetController
+                                .setState(PoiCardBottomSheetState.halfOpen),
                             widget.closestPoint,
                           );
                         },
                       ),
-                    PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
+                    PoiTabsType.photos => PoiPhotoCardSliver(
+                        objectId: widget.data.id?.objectId ?? 0),
                     PoiTabsType.organizations => PoiOrganizationsSliver(
                         state: poiCardState,
                         objectId: widget.data.id!,
-                        bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                        bottomTabsHeight:
+                            PoiCardFooter.height + 2 * PoiCardFooter.padding,
                       ),
                     PoiTabsType.parking => const SliverPadding(
                         padding: EdgeInsets.all(Spacing.$4x),
@@ -306,7 +334,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   /// This is temporary solution. We need to show text for parking info
   /// If parking is not presented for this POI we return null
   /// Should work for all poi because only parking lots have parking info
-  String? _getParkingSubtitle(ParkingInfoMessage? parkingInfo, AppLocalizations l10n) {
+  String? _getParkingSubtitle(
+      ParkingInfoMessage? parkingInfo, AppLocalizations l10n) {
     if (parkingInfo == null) {
       return null;
     }
