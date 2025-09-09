@@ -62,7 +62,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ContentWrapper(
-                        color: context.color.surfaceBaseSecondary,
+                        color: context.colors.backgroundSurface4,
                         children: [
                           // ContentRow(
                           //   options: ContentRowOptions(

@@ -60,7 +60,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
             appBar: BaladyTopBar.iconAndText(
               systemUiOverlayStyle: SystemUiOverlayStyle.dark,
               title: context.l10n.aboutApp,
-              colorEnabled: context.color.textAndIconsStatusAccent,
+              colorEnabled: context.colors.accentDefault,
               leading: ActionModel(
                 onPressed: () => context.router.popForced(),
                 icon: SystemIcons.arrowCornerLeftLarge,
@@ -90,7 +90,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                           context.l10n.weAreHappyToConnectYouWithBaladyTeam,
                           textDirection: direction,
                           style: context.textStyle.text.copyWith(
-                            color: context.color.textAndIconsBasePrimary,
+                            color: context.colors.foregroundDefault,
                           ),
                         ),
                       ),

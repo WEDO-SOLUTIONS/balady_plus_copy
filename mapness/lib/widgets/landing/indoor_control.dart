@@ -51,8 +51,8 @@ class _IndoorControl extends StatelessWidget {
                   e.name,
                   style: context.textStyle.callout.copyWith(
                     color: e.levelIndex == state.active
-                        ? context.color.strokeAccent
-                        : context.color.textAndIconsBasePrimary,
+                        ? context.colors.accentOnContainer
+                        : context.colors.foregroundDefault,
                   ),
                 ),
               ),

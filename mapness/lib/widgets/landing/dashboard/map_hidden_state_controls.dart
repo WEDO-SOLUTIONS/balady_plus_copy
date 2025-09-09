@@ -221,18 +221,17 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
   Widget build(BuildContext context) {
     super.build(context);
     listerForStart();
-    final color = context.color;
     final colors = context.colors;
 
     final delta = launchingController.value;
     final borderRadius = lerpDouble(RadiusBorder.m, RadiusBorder.l, delta) ?? RadiusBorder.m;
 
     final iconAndTextColor = Color.lerp(
-          color.textAndIconsBasePrimary,
+          colors.foregroundDefault,
           context.colors.backgroundSurface1,
           delta,
         ) ??
-        color.textAndIconsBasePrimary;
+        colors.foregroundDefault;
 
     const startingPoint = 0;
     const progressOpacity = 0.2;

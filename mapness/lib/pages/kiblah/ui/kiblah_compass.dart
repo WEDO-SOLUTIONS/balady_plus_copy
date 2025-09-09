@@ -56,7 +56,7 @@ class KiblahCompass extends ConsumerWidget {
                         backgroundColor: Colors.transparent,
                         radarColor: correct
                             ? NonThemeColor.color3.withOpacity(radarOpacity)
-                            : context.color.textAndIconsBasePrimary.withOpacity(0.9),
+                            : context.colors.foregroundDefault.withOpacity(0.9),
                       ),
                       CenterCompassWidget(
                         backgroundColor: correct

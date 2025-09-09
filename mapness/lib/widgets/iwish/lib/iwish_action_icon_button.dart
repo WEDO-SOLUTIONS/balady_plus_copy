@@ -13,7 +13,7 @@ class IwishActionIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: context.color.surfaceBasePrimary,
+        color: context.colors.backgroundSurface1,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onPressed,

@@ -122,7 +122,7 @@ class Data extends ConsumerWidget {
 
     final textStyle = context.textStyle.caption.copyWith(
       height: 1.4,
-      color: context.color.textAndIconsBasePrimary,
+      color: context.colors.foregroundDefault,
     );
 
     return Container(
@@ -162,7 +162,7 @@ class Data extends ConsumerWidget {
             onTap: onTap,
             child: Container(
               decoration: BoxDecoration(
-                color: context.color.surfaceBaseSecondary,
+                color: context.colors.backgroundSurface4,
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
               ),
               child: Column(
@@ -188,7 +188,7 @@ class Data extends ConsumerWidget {
                                 dateTime,
                                 textAlign: TextAlign.end,
                                 style: context.textStyle.caption.copyWith(
-                                  color: context.color.textAndIconsBasePrimary.withOpacity(0.5),
+                                  color: context.colors.foregroundDefault.withOpacity(0.5),
                                 ),
                               ),
                               const SizedBox(height: 16),
@@ -212,7 +212,7 @@ class Data extends ConsumerWidget {
                                         height: 1,
                                         fontSize: 64,
                                         fontWeight: FontWeight.w400,
-                                        color: context.color.textAndIconsBasePrimary,
+                                        color: context.colors.foregroundDefault,
                                       ),
                                     ),
                                   ),
@@ -222,7 +222,7 @@ class Data extends ConsumerWidget {
                                       fontSize: 27,
                                       height: 1,
                                       fontWeight: FontWeight.w600,
-                                      color: context.color.textAndIconsBasePrimary,
+                                      color: context.colors.foregroundDefault,
                                     ),
                                   ),
                                 ],
@@ -234,7 +234,7 @@ class Data extends ConsumerWidget {
                                 maxLines: 1,
                                 style: context.textStyle.callout.copyWith(
                                   fontWeight: FontWeight.w700,
-                                  color: context.color.textAndIconsBasePrimary,
+                                  color: context.colors.foregroundDefault,
                                 ),
                               ),
                             ],
@@ -338,7 +338,7 @@ class Data extends ConsumerWidget {
                     height: 24,
                     width: 24,
                     colorFilter: ColorFilter.mode(
-                      colorIcon ?? context.color.textAndIconsBasePrimary.withOpacity(0.7),
+                      colorIcon ?? context.colors.foregroundDefault.withOpacity(0.7),
                       BlendMode.srcIn,
                     ),
                     matchTextDirection: true,

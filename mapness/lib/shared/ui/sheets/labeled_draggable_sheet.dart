@@ -41,7 +41,7 @@ class LabeledDraggableSheet extends StatelessWidget {
                       title,
                       softWrap: true,
                       style: context.textStyle.heading1.copyWith(
-                        color: context.color.textAndIconsBasePrimary,
+                        color: context.colors.foregroundDefault,
                       ),
                     ),
                   ),

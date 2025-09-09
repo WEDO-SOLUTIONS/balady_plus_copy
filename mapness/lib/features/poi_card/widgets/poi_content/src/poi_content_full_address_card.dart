@@ -20,7 +20,7 @@ class PoiContentFullAddressCard extends StatelessWidget {
         type == ObjectTypeMessage.stationEntrance;
 
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       children: [
         ContentRow(
           text: ContentRowTextOptions(

@@ -25,6 +25,7 @@ class MapnessConstants {
 
   ///styles region
   //uncomment for tests
-  // static const mapStylesPath = 'assets/maps/configs/styles.2gis';
-  static const mapStylesPath = 'packages/map_styles/src/styles.2gis';
+  static const mapStylesPath = 'assets/maps/configs/styles.2gis';
+  static const mapStylesLightPath = 'assets/maps/configs/styles_light.2gis';
+  // static const mapStylesPath = 'packages/map_styles/src/styles.2gis';
 }

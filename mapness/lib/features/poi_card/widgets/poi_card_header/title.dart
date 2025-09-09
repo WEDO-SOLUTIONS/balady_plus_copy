@@ -17,7 +17,7 @@ class TitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) => Text(
         title,
         style: context.textStyles.h2SemiBold.copyWith(
-          color: context.color.textAndIconsBasePrimary,
+          color: context.colors.foregroundDefault,
         ),
         overflow: TextOverflow.ellipsis,
         maxLines: state != PoiCardBottomSheetState.hidden ? 2 : 1,

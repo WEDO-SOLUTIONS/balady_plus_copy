@@ -28,7 +28,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
 
     if (workTimeDays == null && data.additionalInfo == null) {
       return ContentWrapper(
-        color: context.color.surfaceBasePrimary,
+        color: context.colors.backgroundSurface1,
         children: [
           ContentRow(
             leading: GeneralIcons.timeQuarter.icon(
@@ -46,7 +46,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       );
     }
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
           padding: EdgeInsets.zero,
