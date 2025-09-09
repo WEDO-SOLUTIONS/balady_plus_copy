@@ -73,6 +73,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
+import 'mbc.dart';
 
 Mixpanel? mixpanel;
 
@@ -265,7 +266,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   ? LoadingOverlay(
                       child: ToastOverlay(
                         child: GlobalScopes(
-                          child: child,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: MapWithPanel(child: child),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )
