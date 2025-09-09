@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/providers/saudi_day_splash.dart';
 
 final class SaudiDaySplashGuard extends AutoRouteGuard {
@@ -10,6 +11,9 @@ final class SaudiDaySplashGuard extends AutoRouteGuard {
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
+    if (!SaudiNationalDay.isNow()) {
+      resolver.next();
+    }
     // Check if Saudi Day splash has been shown
     if (!ref.read(saudiDaySplashProvider)) {
       // Show Saudi Day splash

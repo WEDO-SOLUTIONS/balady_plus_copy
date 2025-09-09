@@ -100,11 +100,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/route_story_3.png
   AssetGenImage get routeStory3 => const AssetGenImage('assets/images/route_story_3.png');
 
-  /// File path: assets/images/saudi_national_flag.png
-  AssetGenImage get saudiNationalFlag => const AssetGenImage('assets/images/saudi_national_flag.png');
-
   /// File path: assets/images/saudi_day_splash.png
   AssetGenImage get saudiDaySplash => const AssetGenImage('assets/images/saudi_day_splash.png');
+
+  /// File path: assets/images/saudi_national_flag.png
+  AssetGenImage get saudiNationalFlag => const AssetGenImage('assets/images/saudi_national_flag.png');
 
   /// File path: assets/images/success_app_feedback.png
   AssetGenImage get successAppFeedback => const AssetGenImage('assets/images/success_app_feedback.png');
@@ -146,8 +146,8 @@ class $AssetsImagesGen {
         routeStory1,
         routeStory2,
         routeStory3,
-        saudiNationalFlag,
         saudiDaySplash,
+        saudiNationalFlag,
         successAppFeedback,
         sunrisePray,
         treeAndParkBenchWhiteBackground,
