@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/stream_audio_prov.dart';
 
-class MapWithPanel extends StatefulWidget {
+class StreamAudio extends ConsumerStatefulWidget {
   final Widget child;
 
-  const MapWithPanel({required this.child, super.key});
+  const StreamAudio({required this.child, super.key});
 
   @override
-  State<MapWithPanel> createState() => _MapWithPanelState();
+  ConsumerState<StreamAudio> createState() => _StreamAudioState();
 }
 
-class _MapWithPanelState extends State<MapWithPanel> {
+class _StreamAudioState extends ConsumerState<StreamAudio> {
+  late final ProviderBase<StreamAudioProvider> _streamAudioProvider;
+
+  @override
+  void initState() {
+    _streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
+        (ref) => StreamAudioProvider());
+    super.initState();
+  }
+
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
@@ -43,6 +54,15 @@ class _MapWithPanelState extends State<MapWithPanel> {
                       ),
                     ),
                     child: widget.child,
+                  ),
+                ),
+
+                Positioned(
+                  top: 40,
+                  right: 49,
+                  child: ElevatedButton(
+                    onPressed: togglePanel,
+                    child: const Text('open'),
                   ),
                 ),
 

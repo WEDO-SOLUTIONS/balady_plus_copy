@@ -73,7 +73,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
-import 'mbc.dart';
+import 'features/stream_audio/ui/pages/stream_audio_screen.dart';
 
 Mixpanel? mixpanel;
 
@@ -269,7 +269,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                           child: Column(
                             children: [
                               Expanded(
-                                child: MapWithPanel(child: child),
+                                child: StreamAudio(child: child),
                               ),
                             ],
                           ),
