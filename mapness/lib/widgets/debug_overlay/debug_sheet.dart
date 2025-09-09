@@ -219,6 +219,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const SizedBox(height: 12),
                   const DebugNavigationControll(),
                   const ShowOnboardingButton(),
+                  const ShowSaudiDayButton(),
                   const SizedBox(height: 12),
                   const LinkChecker(),
                   SizedBox(
