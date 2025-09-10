@@ -60,7 +60,7 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
                 child: Stack(
                   children: [
                     Image.asset(
-                      Assets.images.saudiNationalFlag.path,
+                      Assets.images.saudiNationalFlag.keyName,
                       width: 97.8,
                     ),
                     Opacity(
@@ -78,7 +78,7 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
                           stops: [0.0, 0.4, 0.5, 0.6, 1.0],
                         ),
                         child: Image.asset(
-                          Assets.images.saudiNationalFlag.path,
+                          Assets.images.saudiNationalFlag.keyName,
                           width: 97.8,
                         ),
                       ),

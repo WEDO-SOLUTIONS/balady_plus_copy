@@ -54,7 +54,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
                 boxShadow: Shadows.s,
                 image: DecorationImage(
-                  image: Assets.images.driveHomeBackground.provider(),
+                  image: Assets.images.driveHomeBackgroundSaudiday.provider(),
                   matchTextDirection: true,
                   fit: BoxFit.cover,
                   alignment: AlignmentDirectional.centerEnd,
@@ -62,19 +62,19 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
               ),
               child: Stack(
                 children: [
-                  const Positioned(
-                    top: 40,
-                    left: -60,
-                    child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
-                  ),
-                  const Positioned(
-                    top: -110,
-                    right: -140,
-                    child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
-                  ),
+                  // const Positioned(
+                  //   top: 40,
+                  //   left: -60,
+                  //   child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
+                  // ),
+                  // const Positioned(
+                  //   top: -110,
+                  //   right: -140,
+                  //   child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
+                  // ),
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
-                    child: Assets.images.driveHomeArrow.image(matchTextDirection: true),
+                    child: Assets.images.driveHomeArrowSaudiday.image(matchTextDirection: true),
                   ),
                   Align(
                     alignment: AlignmentDirectional.topStart,
@@ -84,13 +84,13 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                         text: TextSpan(
                           text: context.l10n.driveBack,
                           style: context.textStyles.h3Medium.copyWith(
-                            color: Colors.white,
+                            color: context.colors.foregroundDefault,
                           ),
                           children: [
                             TextSpan(
                               text: '\n${context.l10n.homeQuestionMark}',
                               style: context.textStyles.h3Medium.copyWith(
-                                color: const Color(0xFF00FFFA),
+                                color: context.colors.accentDefault,
                               ),
                             ),
                           ],
