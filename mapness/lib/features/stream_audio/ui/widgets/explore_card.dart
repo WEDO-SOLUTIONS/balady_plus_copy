@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
 
 class ExploreCard extends ConsumerStatefulWidget {
   const ExploreCard({super.key});
@@ -27,16 +28,14 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  boxShadow: Shadows.s,
-                  image: DecorationImage(
-                    image: Assets.images.exploreMbc.provider(),
-                    matchTextDirection: true,
-                    fit: BoxFit.cover,
-                    alignment: AlignmentDirectional.centerEnd,
-                  ),
+                  color: const Color(0xFF002945),
                 ),
                 child: Stack(
                   children: [
+                    Align(
+                      alignment: AlignmentDirectional.centerEnd,
+                      child: Assets.images.exploreMbc.image(),
+                    ),
                     Align(
                       alignment: AlignmentDirectional.topStart,
                       child: Padding(
@@ -60,28 +59,14 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
                         ),
                       ),
                     ),
-                    Align(
+                    const Align(
                       alignment: AlignmentDirectional.bottomStart,
                       child: Padding(
-                        padding: const EdgeInsetsDirectional.only(
+                        padding: EdgeInsetsDirectional.only(
                           bottom: 12.0,
                           start: 16.0,
                         ),
-                        child: Row(
-                          children: [
-                            Assets.icons.svg.icMbcMood.svg(),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              'MBC MOOD',
-                              style:
-                                  context.textStyles.bodyLargeSemiBold.copyWith(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
+                        child: MBCMood(),
                       ),
                     ),
                     Align(
