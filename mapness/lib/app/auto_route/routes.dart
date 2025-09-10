@@ -32,6 +32,10 @@ class Routes {
           page: DarkMapRoute.page,
         ),
         CustomRoute(
+          path: '/media_catalog',
+          page: MediaCatalogScreen.page,
+        ),
+        CustomRoute(
           path: '/about_balady',
           page: AboutBaladyRoute.page,
         ),

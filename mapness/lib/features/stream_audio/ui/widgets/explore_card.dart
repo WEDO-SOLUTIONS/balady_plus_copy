@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 
 class ExploreCard extends ConsumerStatefulWidget {
   const ExploreCard({super.key});
@@ -16,7 +18,7 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: GestureDetector(
-          onTap: () {},
+          onTap: () => context.router.push(const MediaCatalogScreen()),
           child: SizedBox(
             width: double.infinity,
             height: 123,
@@ -84,15 +86,17 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
                     ),
                     Align(
                       alignment: AlignmentDirectional.topEnd,
-                      child:Padding(
-                        padding: const EdgeInsetsDirectional.all( Spacing.$4x),
+                      child: Padding(
+                        padding: const EdgeInsetsDirectional.all(Spacing.$4x),
                         child: SizedBox(
                           width: Spacing.$6x,
                           height: Spacing.$6x,
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                              color: context.colors.staticWhite.withOpacity(0.2),
+                              borderRadius:
+                                  BorderRadius.circular(Spacing.$1_5x),
+                              color:
+                                  context.colors.staticWhite.withOpacity(0.2),
                             ),
                             child: Center(
                               child: Icon(
@@ -102,7 +106,8 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
                               ),
                             ),
                           ),
-                        ),),
+                        ),
+                      ),
                     ),
                   ],
                 ),

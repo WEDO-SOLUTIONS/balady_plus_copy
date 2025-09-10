@@ -106,6 +106,10 @@ class AppRouter extends RootStackRouter {
               page: WeatherRoute.page,
             ),
             CustomRoute(
+              path: 'media_catalog',
+              page: MediaCatalogScreen.page,
+            ),
+            CustomRoute(
               path: 'road_panel_sheet',
               page: RoadPanelSheetRoute.page,
               fullscreenDialog: true,
