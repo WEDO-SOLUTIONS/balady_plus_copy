@@ -6,7 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class HomeMiniAppsListPages extends StatefulWidget {
-  const HomeMiniAppsListPages({super.key});
+  final bool isCustomAppBar;
+
+  const HomeMiniAppsListPages({
+    super.key,
+    this.isCustomAppBar = true,
+  });
 
   @override
   State<HomeMiniAppsListPages> createState() => _HomeMiniAppsListPagesState();
@@ -14,50 +19,146 @@ class HomeMiniAppsListPages extends StatefulWidget {
 
 class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
   @override
+  void initState() {
+    super.initState();
+    // Load mini apps when the widget is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<HomeMiniAppsListCubit>().loadMiniApps();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
-      appBar: AppBar(
-        title: Text(
-          "AppsTitle".tr(),
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w600,
-            color: Colors.white,
-            fontFamily: 'packages/balady_uikit/Frutiger',
+      backgroundColor: Colors.white,
+      appBar: widget.isCustomAppBar ? null : _buildDefaultAppBar(context),
+      body: widget.isCustomAppBar
+          ? Column(children: [Expanded(child: _buildCustomAppBarLayout())])
+          : _buildDefaultLayout(),
+    );
+  }
+
+  Widget _buildDefaultLayout() {
+    return Column(
+      children: [
+        Expanded(
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(24),
+              topRight: Radius.circular(24),
+            ),
+            child: Container(
+              color: Colors.grey.shade100,
+              child: BlocBuilder<HomeMiniAppsListCubit, HomeMiniAppsListState>(
+                builder: (context, state) {
+                  return _buildContent(state);
+                },
+              ),
+            ),
           ),
         ),
-        centerTitle: true,
-        backgroundColor: context.colors.accentDefault,
-        elevation: 0,
-      ),
-      body: BlocBuilder<HomeMiniAppsListCubit, HomeMiniAppsListState>(
-        builder: (context, state) {
-          if (state is HomeMiniAppsListFiledState) {
-            return _buildErrorState(context, state.errors);
-          }
+      ],
+    );
+  }
 
-          if (state is HomeMiniAppsListSuccessState) {
-            return SafeArea(
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  context.read<HomeMiniAppsListCubit>().loadMiniApps();
-                },
-                child: ListView.separated(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: state.miniAppsList.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    return MiniAppsItemWidget(
-                      miniApp: state.miniAppsList[index],
-                    );
-                  },
-                ),
-              ),
-            );
-          }
+  Widget _buildCustomAppBarLayout() {
+    return Stack(
+      children: [
+        // Custom AppBar
+        _buildCustomAppBar(context),
 
-          return const Center(child: CircularProgressIndicator());
+        Positioned(top: 130,bottom: 0,left: 0,right: 0,child: _buildDefaultLayout())
+      ],
+    );
+  }
+
+  Widget _buildContent(HomeMiniAppsListState state) {
+    if (state is HomeMiniAppsListFiledState) {
+      return _buildErrorState(context, state.errors);
+    }
+
+    if (state is HomeMiniAppsListSuccessState) {
+      return _buildSuccessState(state);
+    }
+
+    if (state is HomeMiniAppsListLoadingState) {
+      return _buildLoadingState();
+    }
+
+    return _buildLoadingState();
+  }
+
+  Widget _buildSuccessState(HomeMiniAppsListSuccessState state) {
+    return SafeArea(
+      child: RefreshIndicator(
+        onRefresh: () async {
+          context.read<HomeMiniAppsListCubit>().loadMiniApps();
         },
+        child: ListView.separated(
+          padding: const EdgeInsets.only(
+            top: 16,
+            left: 12,
+            right: 12,
+            bottom: 12,
+          ),
+          itemCount: state.miniAppsList.length,
+          separatorBuilder: (_, __) => const SizedBox(height: 12),
+          itemBuilder: (context, index) {
+            return MiniAppsItemWidget(
+              miniApp: state.miniAppsList[index],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingState() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  PreferredSizeWidget _buildDefaultAppBar(BuildContext context) {
+    return AppBar(
+      title: Text(
+        "AppsTitle".tr(),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF003449),
+              fontFamily: 'packages/balady_uikit/Frutiger',
+            ),
+      ),
+      centerTitle: true,
+      backgroundColor: Colors.white,
+      elevation: 0,
+    );
+  }
+
+  Widget _buildCustomAppBar(BuildContext context) {
+    return Container(
+      height: 210,
+      width: double.infinity,
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/images/national.png"),
+          fit: BoxFit
+              .fill,
+        ),
+      ),
+      child: Container(
+
+        child: Center(
+          child: Text(
+            "AppsTitle".tr(),
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              fontFamily: 'packages/balady_uikit/Frutiger',
+
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -69,7 +170,16 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(error, textAlign: TextAlign.center),
+            Icon(Icons.error_outline, size: 64, color: Colors.red.shade700),
+            const SizedBox(height: 16),
+            Text(
+              error,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade700,
+              ),
+            ),
             const SizedBox(height: 20),
             SizedBox(
               width: 200,
@@ -77,7 +187,18 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                 onPressed: () {
                   context.read<HomeMiniAppsListCubit>().loadMiniApps();
                 },
-                child: Text("refresh".tr()),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.colors.accentDefault,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  "refresh".tr(),
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
             ),
           ],

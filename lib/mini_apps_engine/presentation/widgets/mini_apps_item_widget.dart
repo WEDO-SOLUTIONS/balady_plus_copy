@@ -12,6 +12,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MiniAppsItemWidget extends StatelessWidget {
+
   final MiniAppModel miniApp;
 
   const MiniAppsItemWidget({
@@ -21,74 +22,60 @@ class MiniAppsItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return miniApp.serviceKey == "smartadvisor"
-        ? const SizedBox()
-        : InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () => _handleTap(context),
-            child: Card(
-              elevation: 0.5,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: ImageIconBasedTypeWidget(
-                          icon: miniApp.logoKey!,
-                          type: miniApp.cdnLogoRef?.split(".").last,
-                          iconSize: 55,
-                        ),
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () => _handleTap(context),
+      child: Card(
+        elevation: 0.5,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: ImageIconBasedTypeWidget(
+                    icon: miniApp.logoKey!,
+                    type: miniApp.cdnLogoRef?.split(".").last,
+                    iconSize: 40,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  miniApp.serviceName ?? '',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'packages/balady_uikit/Frutiger',
+                    color: Color(0xFF003449)
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              miniApp.serviceName ?? '',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily:
-                                        'packages/balady_uikit/Frutiger',
-                                  ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              miniApp.description?.isNotEmpty == true
-                                  ? miniApp.description!
-                                  : '',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(
-                                    color: Colors.grey[600],
-                                    fontFamily:
-                                        'packages/balady_uikit/Frutiger',
-                                  ),
-                            ),
-                          ],
-                        ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  miniApp.description?.isNotEmpty == true
+                      ? miniApp.description!
+                      : '',
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Colors.grey[600],
+                        fontFamily: 'packages/balady_uikit/Frutiger',
+
                       ),
-                    ],
-                  )),
-            ),
-          );
+                  textAlign:
+                  TextAlign.center,
+                ),
+              ],
+            )),
+      ),
+    );
   }
 
   void _handleTap(BuildContext context) async {
     if (miniApp.latestVersion?.nafathLogin == true &&
-        !CommonProperties.isLoggedInMunicipality && miniApp.latestVersion?.deepLinkModel==null) {
+        !CommonProperties.isLoggedInMunicipality &&
+        miniApp.latestVersion?.deepLinkModel == null) {
       showDialog(
         context: context,
         builder: (ctx) => NeedLoginDialog(
@@ -102,7 +89,8 @@ class MiniAppsItemWidget extends StatelessWidget {
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel==null) {
+    } else if (miniApp.latestVersion?.otpLogin == true &&
+        miniApp.latestVersion?.deepLinkModel == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
@@ -111,7 +99,6 @@ class MiniAppsItemWidget extends StatelessWidget {
               path: "#Volunteer_Home_Screen",
             );
       } else {
-
         if (miniApp.latestVersion?.deepLinkModel != null) {
           try {
             await AppLaunchService.launchApp(
@@ -119,7 +106,7 @@ class MiniAppsItemWidget extends StatelessWidget {
               //deepLink: deeplink,
             );
           } catch (e) {
-           CommonFunctions.showError('launch_failed'.tr());
+            CommonFunctions.showError('launch_failed'.tr());
           }
         } else {
           NavigationService.pushNamed(
@@ -127,9 +114,7 @@ class MiniAppsItemWidget extends StatelessWidget {
             args: miniApp,
           );
         }
-
       }
-
     }
   }
 }
