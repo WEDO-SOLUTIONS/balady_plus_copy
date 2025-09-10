@@ -18,7 +18,7 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: GestureDetector(
-          onTap: () => context.router.push(const MediaCatalogScreen()),
+          onTap: () => context.router.push(const MediaCatalogRoute()),
           child: SizedBox(
             width: double.infinity,
             height: 123,

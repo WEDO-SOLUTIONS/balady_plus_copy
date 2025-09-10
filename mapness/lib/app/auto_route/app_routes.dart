@@ -107,7 +107,7 @@ class AppRouter extends RootStackRouter {
             ),
             CustomRoute(
               path: 'media_catalog',
-              page: MediaCatalogScreen.page,
+              page: MediaCatalogRoute.page,
             ),
             CustomRoute(
               path: 'road_panel_sheet',

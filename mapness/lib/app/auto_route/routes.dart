@@ -33,7 +33,7 @@ class Routes {
         ),
         CustomRoute(
           path: '/media_catalog',
-          page: MediaCatalogScreen.page,
+          page: MediaCatalogRoute.page,
         ),
         CustomRoute(
           path: '/about_balady',
