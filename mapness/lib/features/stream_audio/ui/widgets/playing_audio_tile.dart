@@ -1,6 +1,7 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../_generated/assets/assets.gen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 
 class PlayingAudioTile extends StatelessWidget {
   const PlayingAudioTile({super.key});
@@ -14,9 +15,9 @@ class PlayingAudioTile extends StatelessWidget {
                 Container(
                   width: 40,
                   height: 40,
-                  margin: const EdgeInsets.symmetric(horizontal: 12),
+                  margin: const EdgeInsets.symmetric(horizontal: RadiusBorder.l),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
                     image: DecorationImage(
                       image:
                           Assets.images.audioPlaceholders.panorama.provider(),
@@ -48,25 +49,13 @@ class PlayingAudioTile extends StatelessWidget {
               ],
             ),
           ),
-          const Expanded(
+            Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Icon(
-                  Icons.fast_rewind,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                Icon(
-                  Icons.play_arrow,
-                  color: Colors.white,
-                  size: 36,
-                ),
-                Icon(
-                  Icons.fast_forward,
-                  color: Colors.white,
-                  size: 30,
-                ),
+                SvgPicture.asset(Assets.icons.svg.audio.seekBackward.keyName),
+                SvgPicture.asset(Assets.icons.svg.audio.resume.keyName),
+                SvgPicture.asset(Assets.icons.svg.audio.seekForward.keyName),
               ],
             ),
           ),
