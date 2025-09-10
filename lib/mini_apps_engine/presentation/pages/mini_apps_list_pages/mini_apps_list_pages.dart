@@ -127,6 +127,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         "AppsTitle".tr(),
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
+              fontSize: 20,
               color: const Color(0xFF003449),
               fontFamily: 'packages/balady_uikit/Golos',
             ),
@@ -153,6 +154,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
+                fontSize: 20,
                 fontFamily: 'packages/balady_uikit/Golos',
               ),
         ),

@@ -46,6 +46,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                   miniApp.serviceName ?? '',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
+                      fontSize: 17,
                       fontFamily: 'packages/balady_uikit/Golos',
                       color: Color(0xFF003449)),
                   maxLines: 1,
@@ -58,6 +59,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       : '',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
+                    fontSize: 13,
                         fontFamily: 'packages/balady_uikit/Golos',
                       ),
                   textAlign: TextAlign.center,
