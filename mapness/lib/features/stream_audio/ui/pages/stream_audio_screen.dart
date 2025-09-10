@@ -101,9 +101,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   offset: Offset(0, mapOffset),
                   child: Container(
                     clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(50),
+                        bottom: Radius.circular(currentSize == _minChildSize ? 0 : 32),
                       ),
                     ),
                     child: widget.child,
