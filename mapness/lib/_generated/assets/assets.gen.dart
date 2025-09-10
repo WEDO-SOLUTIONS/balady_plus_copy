@@ -187,9 +187,6 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/eta_unknown_user_marker.svg
   SvgGenImage get etaUnknownUserMarker => const SvgGenImage('assets/images_svg/eta_unknown_user_marker.svg');
 
-  /// File path: assets/images_svg/explore_mbc.svg
-  SvgGenImage get exploreMbc => const SvgGenImage('assets/images_svg/explore_mbc.svg');
-
   /// File path: assets/images_svg/happy_face.svg
   SvgGenImage get happyFace => const SvgGenImage('assets/images_svg/happy_face.svg');
 
@@ -224,7 +221,6 @@ class $AssetsImagesSvgGen {
         etaPhotoUser,
         etaUnknownUser,
         etaUnknownUserMarker,
-        exploreMbc,
         happyFace,
         illustrationError,
         illustrationNotifications,
