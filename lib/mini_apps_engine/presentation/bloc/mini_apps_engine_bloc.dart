@@ -153,7 +153,7 @@ class MiniAppsEngineBloc
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: generateRandomPort(portNumber, event.miniApp.serviceName ?? ""),
+          port: generateRandomPort(portNumber, event.miniApp.serviceName ?? "",event.miniApp.serviceKey??""),
           shared: true,
         ),
       );
@@ -283,8 +283,8 @@ class MiniAppsEngineBloc
   //   return indexFilePath;
   // }
 
-  int generateRandomPort(int oldPort, String serviceName) {
-    if (serviceName == "Faith Corner" || serviceName == "خدمات اسلامية") {
+  int generateRandomPort(int oldPort, String serviceName,  String serviceKey ) {
+    if (serviceKey=="islamicservice") {
       return 1245;
     }
     final random = Random();
@@ -293,7 +293,7 @@ class MiniAppsEngineBloc
     if (newPort != oldPort && newPort != 1245) {
       return newPort;
     } else {
-      return generateRandomPort(oldPort, serviceName);
+      return generateRandomPort(oldPort, serviceName,serviceKey);
     }
   }
 
