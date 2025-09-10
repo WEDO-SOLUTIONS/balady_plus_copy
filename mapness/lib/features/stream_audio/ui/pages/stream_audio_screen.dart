@@ -16,20 +16,17 @@ class StreamAudio extends ConsumerStatefulWidget {
 }
 
 class _StreamAudioState extends ConsumerState<StreamAudio> {
-  late final ProviderBase<StreamAudioProvider> _streamAudioProvider;
-
   @override
   void initState() {
-    _streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>((ref) => StreamAudioProvider());
     super.initState();
   }
 
-  final DraggableScrollableController _sheetController = DraggableScrollableController();
+  final DraggableScrollableController _sheetController =
+      DraggableScrollableController();
 
   final double _minChildSize = 0.0;
   final double _maxChildSize = 0.34;
   bool _showRemovalZone = false;
-  bool _exitPlayer = false;
 
   /// Timer for 8-second auto-close
   Timer? _autoCloseTimer;
@@ -113,16 +110,19 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   ),
                 ),
 
-                if (currentSize == _minChildSize && !_exitPlayer)
+                if (currentSize == _minChildSize &&
+                    ref.watch(streamAudioProvider).isPlaying &&
+                    !ref.watch(streamAudioProvider).isExited)
                   Center(
                     child: DraggableFloatingPlayerControls(
                       onTap: togglePanel,
                       onChange: (isHolding, mustRemove) {
+                        print(
+                            'DraggableFloatingPlayerControls onChange: isHolding=$isHolding, mustRemove=$mustRemove');
                         if (mustRemove && !isHolding) {
-                          setState(() {
-                            _exitPlayer = true;
-                            _showRemovalZone = false;
-                          });
+                          print('Exiting player - calling exitPlayer()');
+                          ref.read(streamAudioProvider.notifier).exitPlayer();
+                          setState(() => _showRemovalZone = false);
                         } else {
                           setState(() => _showRemovalZone = isHolding);
                         }
@@ -162,61 +162,72 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   ),
                 ),
 
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  child: !_showRemovalZone
-                      ? null
-                      : Positioned(
-                    top: 0,
-                    right: 0,
-                    left: 0,
-                    child: Container(
-                      height: 160,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: const Alignment(0.50, -0.00),
-                          end: const Alignment(0.50, 1.00),
-                          colors: [Colors.black.withOpacity(0.20), Colors.black.withOpacity(0)],
-                        ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 226,
-                          height: 40,
-                          padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
-                          decoration: ShapeDecoration(
-                            color: Colors.black.withOpacity(0.65),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white.withOpacity(0.20)),
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            shadows: const [
-                              BoxShadow(color: Color(0x19000000), blurRadius: 24, offset: Offset(0, 8))
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  left: 0,
+                  child: AnimatedOpacity(
+                    opacity: _showRemovalZone ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 200),
+                    child: IgnorePointer(
+                      ignoring: !_showRemovalZone,
+                      child: Container(
+                        height: 160,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: const Alignment(0.50, -0.00),
+                            end: const Alignment(0.50, 1.00),
+                            colors: [
+                              Colors.black.withOpacity(0.20),
+                              Colors.black.withOpacity(0)
                             ],
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(Icons.close, color: Colors.white.withOpacity(0.80), size: 22),
-                              const Text(
-                                'Drag here to exit audio player',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: 'Golos Text',
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.33,
-                                ),
-                              )
-                            ],
+                        ),
+                        child: Center(
+                          child: Container(
+                            width: 226,
+                            height: 40,
+                            padding: const EdgeInsets.only(
+                                top: 8, left: 8, right: 16, bottom: 8),
+                            decoration: ShapeDecoration(
+                              color: Colors.black.withOpacity(0.65),
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Colors.white.withOpacity(0.20)),
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              shadows: const [
+                                BoxShadow(
+                                    color: Color(0x19000000),
+                                    blurRadius: 24,
+                                    offset: Offset(0, 8))
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.close,
+                                    color: Colors.white.withOpacity(0.80),
+                                    size: 22),
+                                const Text(
+                                  'Drag here to exit audio player',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontFamily: 'Golos Text',
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.33,
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
                 )
-
               ],
             );
           },

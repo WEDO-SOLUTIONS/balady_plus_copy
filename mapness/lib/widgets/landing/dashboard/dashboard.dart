@@ -17,6 +17,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -39,13 +40,15 @@ class Dashboard extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final StatefulBottomSheetController<ThreeStateBottomSheet>
+      bottomSheetController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
+class _DashboardState extends ConsumerState<Dashboard>
+    with SingleTickerProviderStateMixin {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   @override
@@ -89,36 +92,45 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                    colors: [
+                      Colors.white.withOpacity(0),
+                      Colors.white.withOpacity(0.8)
+                    ],
                   ),
                 ),
               ),
             ),
           ),
         ),
-        backgroundColorDelegate: StatefulSheetDelegateFunction(function: (controller) {
+        backgroundColorDelegate:
+            StatefulSheetDelegateFunction(function: (controller) {
           final state = controller.state;
           if (state == ThreeStateBottomSheet.expanded) {
             return Colors.black.withOpacity(.4);
           }
           return null;
         }),
-        outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
-        outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
+        outside: MapDashboardControls(widget.bottomSheetController,
+            key: const ValueKey('MapDashboardControls')),
+        outsideOpacityDelegate:
+            StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
           function: (controller) {
             final aspectRatio = controller.aspectRatio;
             final interpolation = controller.interpolation;
             final state = controller.state;
 
             final freeRoamState = ref.watch(freeRoamStarterProvider);
-            final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+            final isGoToNavigatorShown =
+                freeRoamState.canStart && !freeRoamState.isAutorun;
 
             final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
             final isSheetStateOpen = state == ThreeStateBottomSheet.open;
             final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
             final isFull = isGoToNavigatorShown ||
-                (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+                (!widget.bottomSheetController.isEnabled &&
+                    isSheetStateOpen &&
+                    isSheetScrolledForHalfOfTheState) ||
                 isSheetCoversHalfOfTheScreen;
 
             return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
@@ -134,7 +146,9 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           FeedbackBannerCardV2(
             path: Assets.images.feedbackDashboard.keyName,
             onTap: () {
-              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
+              ref
+                  .read(advertMetricsProvider.notifier)
+                  .sendEvent(AdvertMetricsKeys.addPoiBanner);
               context.router.push(QuickFeedbackRoute());
             },
             gradientColors: const [
@@ -158,7 +172,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           ScrollConfiguration(
             behavior: NoGlowingScrollBehavior(),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$0_5x),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.$4x, vertical: Spacing.$0_5x),
               scrollDirection: Axis.horizontal,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,6 +195,14 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     text: context.l10n.parkingAction,
                     icon: General32Icons.parkingAction,
                     onTap: _openParking,
+                  ),
+                  const SizedBox(width: Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.streamAudio,
+                    icon: Icons.wifi,
+                    onTap: () {
+                      ref.read(streamAudioProvider.notifier).playStream();
+                    },
                   ),
                   const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
@@ -227,7 +250,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   void _openParking() {
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
-    widget.bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
+    widget.bottomSheetController.position
+        .animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
     widget.bottomSheetController.setState(ThreeStateBottomSheet.hidden);
     ref.read(layersControlsProvider.notifier).enableParking();
   }
@@ -251,8 +275,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     sl<HomeMiniAppsListCubit>().openMiniApp(
-        serviceKey: "islamicservice",
-        path:  "#Quran_Show_All_Surahs_Page",
+      serviceKey: "islamicservice",
+      path: "#Quran_Show_All_Surahs_Page",
     );
   }
 
@@ -260,7 +284,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path:  "#Athkar_Page",
+      path: "#Athkar_Page",
     );
   }
 
@@ -277,14 +301,18 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
       action: MetricAction.tap.toString(),
     );
 
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+    ref
+        .read(advertMetricsProvider.notifier)
+        .sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
     if (userLocation != null) {
       context.router.push(
         ShareMyLocationRoute(
           cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-          closestPoint: LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude),
+          closestPoint: LatLng(
+              latitude: userLocation.latitude,
+              longitude: userLocation.longitude),
         ),
       );
     }
@@ -292,15 +320,18 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   void _openSnapAndSend() {
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
-    Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
-        action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
+    Metrics.logEventAdvanced(
+        MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
+        action: MetricAction.tap.name,
+        group: MetricsConstants.exploreTag);
     sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "snapandsend",
     );
   }
 
   void _scrollListenHandler() {
-    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.aspectRatio) * 2);
+    footerOpacity.value =
+        min(1.0, (1 - widget.bottomSheetController.aspectRatio) * 2);
 
     Future.delayed(Duration.zero, () {
       if (widget.bottomSheetController.state != ThreeStateBottomSheet.hidden) {

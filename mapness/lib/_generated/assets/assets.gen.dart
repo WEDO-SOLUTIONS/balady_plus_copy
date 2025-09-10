@@ -558,8 +558,11 @@ class $AssetsIconsSvgAudioGen {
   /// File path: assets/icons/svg/audio/seek_forward.svg
   SvgGenImage get seekForward => const SvgGenImage('assets/icons/svg/audio/seek_forward.svg');
 
+  /// File path: assets/icons/svg/audio/waves.svg
+  SvgGenImage get waves => const SvgGenImage('assets/icons/svg/audio/waves.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [pause, resume, seekBackward, seekForward];
+  List<SvgGenImage> get values => [pause, resume, seekBackward, seekForward, waves];
 }
 
 class $AssetsIconsSvgLayersGen {
