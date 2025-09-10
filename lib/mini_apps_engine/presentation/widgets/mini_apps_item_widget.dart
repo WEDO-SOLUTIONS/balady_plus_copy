@@ -12,7 +12,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MiniAppsItemWidget extends StatelessWidget {
-
   final MiniAppModel miniApp;
 
   const MiniAppsItemWidget({
@@ -31,8 +30,8 @@ class MiniAppsItemWidget extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              //  crossAxisAlignment: CrossAxisAlignment.center,
+              //  mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
@@ -42,14 +41,13 @@ class MiniAppsItemWidget extends StatelessWidget {
                     iconSize: 40,
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 24),
                 Text(
                   miniApp.serviceName ?? '',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'packages/balady_uikit/Frutiger',
-                    color: Color(0xFF003449)
-                      ),
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'packages/balady_uikit/Golos',
+                      color: Color(0xFF003449)),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -60,11 +58,9 @@ class MiniAppsItemWidget extends StatelessWidget {
                       : '',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
-                        fontFamily: 'packages/balady_uikit/Frutiger',
-
+                        fontFamily: 'packages/balady_uikit/Golos',
                       ),
-                  textAlign:
-                  TextAlign.center,
+                  textAlign: TextAlign.center,
                 ),
               ],
             )),

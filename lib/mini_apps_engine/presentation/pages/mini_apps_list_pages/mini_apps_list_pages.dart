@@ -67,7 +67,12 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         // Custom AppBar
         _buildCustomAppBar(context),
 
-        Positioned(top: 130,bottom: 0,left: 0,right: 0,child: _buildDefaultLayout())
+        Positioned(
+            top: 130,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: _buildDefaultLayout())
       ],
     );
   }
@@ -89,26 +94,23 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
   }
 
   Widget _buildSuccessState(HomeMiniAppsListSuccessState state) {
-    return SafeArea(
-      child: RefreshIndicator(
-        onRefresh: () async {
-          context.read<HomeMiniAppsListCubit>().loadMiniApps();
-        },
-        child: ListView.separated(
-          padding: const EdgeInsets.only(
-            top: 16,
-            left: 12,
-            right: 12,
-            bottom: 12,
-          ),
-          itemCount: state.miniAppsList.length,
-          separatorBuilder: (_, __) => const SizedBox(height: 12),
-          itemBuilder: (context, index) {
-            return MiniAppsItemWidget(
-              miniApp: state.miniAppsList[index],
-            );
-          },
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<HomeMiniAppsListCubit>().loadMiniApps();
+      },
+      child: ListView.separated(
+        padding: const EdgeInsets.only(
+          top: 20,
+          left: 12,
+          right: 12,
         ),
+        itemCount: state.miniAppsList.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemBuilder: (context, index) {
+          return MiniAppsItemWidget(
+            miniApp: state.miniAppsList[index],
+          );
+        },
       ),
     );
   }
@@ -126,7 +128,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w700,
               color: const Color(0xFF003449),
-              fontFamily: 'packages/balady_uikit/Frutiger',
+              fontFamily: 'packages/balady_uikit/Golos',
             ),
       ),
       centerTitle: true,
@@ -142,22 +144,17 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage("assets/images/national.png"),
-          fit: BoxFit
-              .fill,
+          fit: BoxFit.fill,
         ),
       ),
-      child: Container(
-
-        child: Center(
-          child: Text(
-            "AppsTitle".tr(),
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontFamily: 'packages/balady_uikit/Frutiger',
-
-            ),
-          ),
+      child: Center(
+        child: Text(
+          "AppsTitle".tr(),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+                fontFamily: 'packages/balady_uikit/Golos',
+              ),
         ),
       ),
     );
