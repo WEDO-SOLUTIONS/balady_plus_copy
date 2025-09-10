@@ -24,6 +24,7 @@ class StoryFrameContent extends StatelessWidget {
           child: Text(
             texts.title,
             style: storyTheme.titleStyle,
+            textAlign: texts.titleAlign,
           ),
         ),
         if (texts.subTitle != null)

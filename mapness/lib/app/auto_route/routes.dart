@@ -15,6 +15,14 @@ class Routes {
           ),
         ),
         CustomRoute(
+          page: SaudiDaySplashRoute.page,
+          opaque: false,
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.saudiDay,
+            child: child,
+          ),
+        ),
+        CustomRoute(
           path: '/stories',
           page: StoriesRoute.page,
           opaque: false,

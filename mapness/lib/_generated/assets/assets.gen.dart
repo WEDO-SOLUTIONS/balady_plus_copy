@@ -100,6 +100,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/route_story_3.png
   AssetGenImage get routeStory3 => const AssetGenImage('assets/images/route_story_3.png');
 
+  /// File path: assets/images/saudi_day_splash.png
+  AssetGenImage get saudiDaySplash => const AssetGenImage('assets/images/saudi_day_splash.png');
+
   /// File path: assets/images/saudi_national_flag.png
   AssetGenImage get saudiNationalFlag => const AssetGenImage('assets/images/saudi_national_flag.png');
 
@@ -143,6 +146,7 @@ class $AssetsImagesGen {
         routeStory1,
         routeStory2,
         routeStory3,
+        saudiDaySplash,
         saudiNationalFlag,
         successAppFeedback,
         sunrisePray,
