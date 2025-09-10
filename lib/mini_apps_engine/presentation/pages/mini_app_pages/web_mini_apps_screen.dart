@@ -14,7 +14,8 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class WebMiniAppsScreen extends ConsumerStatefulWidget {
-  const WebMiniAppsScreen({super.key});
+  const WebMiniAppsScreen({Key? key}) : super(key: key);
+
 
   @override
   ConsumerState<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
@@ -23,6 +24,7 @@ class WebMiniAppsScreen extends ConsumerStatefulWidget {
 class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
   late final DWebViewController _controller;
   final ValueNotifier<bool> _isLoading = ValueNotifier(true);
+  bool _initialized = false; // prevent multiple re-inits
 
   String _currentLanguage = '';
   String? _cachedMiniAppsLanguage = '';
@@ -33,76 +35,100 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     bool clearCache = false;
 
     _currentLanguage = translator.activeLanguageCode;
-    _cachedMiniAppsLanguage = ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
+    _cachedMiniAppsLanguage =
+        ref.read(appLanguageProvider.notifier).getCachedMiniAppsLanguage();
 
     if (_currentLanguage != _cachedMiniAppsLanguage) {
       clearCache = true;
-
-      ref.read(appLanguageProvider.notifier).updateCachedMiniAppsLanguage(
-        _currentLanguage,
-      );
+      ref
+          .read(appLanguageProvider.notifier)
+          .updateCachedMiniAppsLanguage(_currentLanguage);
     }
+
     late final PlatformWebViewControllerCreationParams params;
     params = WebKitWebViewControllerCreationParams(
       allowsInlineMediaPlayback: true,
       mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
     );
-    final DWebViewController controller = DWebViewController.fromPlatformCreationParams(params);
+
+    final DWebViewController controller =
+    DWebViewController.fromPlatformCreationParams(params);
     _controller = controller;
 
-    controller
-      ..setBackgroundColor(Colors.white)
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setNavigationDelegate(NavigationDelegate(
-        onProgress: (progress) {
-          print("onProgress : $progress");
-        },
-        onPageStarted: (url) async {
-          print("onPageStarted");
-        },
-        onPageFinished: (url) {
-          print("onPageFinished");
-        },
-        onWebResourceError: (WebResourceError error) {},
-      ));
+    controller.setBackgroundColor(Colors.transparent);
+
+    controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+    controller.setNavigationDelegate(NavigationDelegate(
+      onPageStarted: (url) {
+        _isLoading.value = true;
+      },
+      onPageFinished: (url) async {
+        try {
+          await controller.runJavaScriptReturningResult("""
+            new Promise(resolve => {
+              if (document.readyState === 'complete') {
+                resolve(true);
+              } else {
+                window.addEventListener('load', () => resolve(true));
+              }
+            });
+          """);
+        } catch (_) {}
+        _isLoading.value = false;
+      },
+      onWebResourceError: (_) {
+        _isLoading.value = false;
+      },
+    ));
 
     if (clearCache) {
       controller.clearCache();
     }
 
     if (Platform.isAndroid) {
-      (_controller.platform as AndroidWebViewController).setGeolocationPermissionsPromptCallbacks(
+      final androidController =
+      _controller.platform as AndroidWebViewController;
+      androidController.setGeolocationPermissionsPromptCallbacks(
         onShowPrompt: (request) async {
-          return const GeolocationPermissionsResponse(allow: true, retain: true);
+          return const GeolocationPermissionsResponse(
+              allow: true, retain: true);
         },
       );
+      androidController.setAllowContentAccess(true);
+      androidController.setAllowFileAccess(true);
 
-      (_controller.platform as AndroidWebViewController).setAllowContentAccess(true);
-      (_controller.platform as AndroidWebViewController).setAllowFileAccess(true);
+      androidController.setBackgroundColor(const Color(0x00000000));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    MiniAppsEngineBloc miniAppsEngineBloc = context.watch<MiniAppsEngineBloc>();
-    MiniAppsEngineLoadedState state = miniAppsEngineBloc.state as MiniAppsEngineLoadedState;
+    final miniAppsEngineBloc = context.watch<MiniAppsEngineBloc>();
+    final state = miniAppsEngineBloc.state as MiniAppsEngineLoadedState;
+
+    if (!_initialized) {
+      _controller
+        ..loadRequest(Uri.parse(state.servicePath + (state.path ?? "")))
+        ..addJavaScriptObject(
+          JsBridgeListener(
+            miniAppsEngineBloc: miniAppsEngineBloc,
+            isLoading: _isLoading,
+          ),
+        )
+      ;
+      _initialized = true;
+    }
+
     return WillPopScope(
       onWillPop: () async {
-        bool canPop = await _controller.canGoBack();
-        return !canPop;
+        final canPop = await _controller.canGoBack();
+        if (canPop) {
+          _controller.goBack();
+          return false;
+        }
+        return true;
       },
-      child: DWebViewWidget(
-        controller: _controller
-        //https://baladyapps.momra.gov.sa/tawakkalna/baladyplus
-        //https://services-dev.balady.gov.sa/miniapps/municipal
-          ..loadRequest(Uri.parse(state.servicePath+state.path??""))
-          ..addJavaScriptObject(
-            JsBridgeListener(
-              miniAppsEngineBloc: miniAppsEngineBloc,
-              isLoading: _isLoading,
-            ),
-          ),
-      ),
+      child: DWebViewWidget(controller: _controller),
     );
   }
 

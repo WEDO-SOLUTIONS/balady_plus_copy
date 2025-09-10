@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,7 +72,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.red,
           appBar: AppBar(
             title: Text(data.serviceName ?? " "),
             leading: IconButton(
@@ -84,52 +85,67 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
           ),
           body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
             builder: (contextBloc, state) {
-              if (state is MiniAppsEngineInitialState) {
-                return const SizedBox.shrink();
-              } else if (state is MiniAppsEngineLoadedState) {
-                return const WebMiniAppsScreen();
-              } else if (state is FailedDownloadState ||
-                  state is MiniAppsEngineErrorState) {
-                return ReloadWidget(
-                  errorMessage: "errors_server_error_1".tr(),
-                  onTab: () {
-                    BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
-                      DownloadMiniAppsEngineEvent(miniApp: data),
-                    );
-                  },
-                );
-              } else if (state is MiniAppsEngineLoadingState) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        height: 10,
-                        child: LinearProgressIndicator(
-                          value: state.progress.isEmpty
-                              ? null
-                              : (double.parse(state.progress) / 100),
-                          backgroundColor: Colors.grey[200],
-                          valueColor:
-                              const AlwaysStoppedAnimation<Color>(Colors.blue),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        "loading".tr(),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+              Widget content = const SizedBox.shrink();
+
+              if (state is MiniAppsEngineLoadedState) {
+                content = const WebMiniAppsScreen();
               }
-              return const SizedBox.shrink();
+
+              return Stack(
+                children: [
+                  Container(
+                    color: Colors.white, // optional background overlay
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(
+                            "assets/images/loader.gif",
+                            width: 120,
+                            height: 120,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 16),
+                          if (state is MiniAppsEngineLoadingState)
+                            state.progress.isEmpty?SizedBox(): Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: SizedBox(
+                                height: 10,
+                                child: LinearProgressIndicator(
+                                  value: (double.parse(state.progress) / 100),
+                                  backgroundColor: Colors.grey[200],
+                                  valueColor: const AlwaysStoppedAnimation<Color>(
+                                      AppColor.primary900Light),
+                                ),
+                              ),
+                            ),
+                          const SizedBox(height: 16),
+                          Text(
+                            "loading".tr(),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  content,
+                  if (state is FailedDownloadState ||
+                      state is MiniAppsEngineErrorState)
+                    Center(
+                      child: ReloadWidget(
+                        errorMessage: "errors_server_error_1".tr(),
+                        onTab: () {
+                          BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
+                            DownloadMiniAppsEngineEvent(miniApp: data),
+                          );
+                        },
+                      ),
+                    ),
+                ],
+              );
             },
           ),
         ),
