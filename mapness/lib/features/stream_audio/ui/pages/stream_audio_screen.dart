@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/media_catalog_list.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/playing_audio_tile.dart';
 
 class StreamAudio extends ConsumerStatefulWidget {
   final Widget child;
@@ -17,14 +20,29 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
   @override
   void initState() {
-    _streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>((ref) => StreamAudioProvider());
+    _streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
+        (ref) => StreamAudioProvider());
     super.initState();
   }
 
-  final DraggableScrollableController _sheetController = DraggableScrollableController();
+  final DraggableScrollableController _sheetController =
+      DraggableScrollableController();
 
   final double _minChildSize = 0.0;
-  final double _maxChildSize = 0.45;
+  final double _maxChildSize = 0.34;
+
+  /// Timer for 8-second auto-close
+  Timer? _autoCloseTimer;
+
+  /// Track if we've already triggered the 150px threshold
+  bool _hasTriggeredHeightThreshold = false;
+  bool _isPanelFullyOpened = false;
+
+  @override
+  void dispose() {
+    _autoCloseTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -32,11 +50,53 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
         body: AnimatedBuilder(
           animation: _sheetController,
           builder: (context, _) {
-            final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+            final double currentSize = _sheetController.isAttached
+                ? _sheetController.size
+                : _minChildSize;
 
-            final double progress = (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
+            final double progress =
+                (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
 
-            final double mapOffset = -420 * progress;
+            final double mapOffset = -320 * progress;
+
+            // Calculate current sheet height in pixels
+            final screenHeight = MediaQuery.of(context).size.height;
+            final currentHeightPx = currentSize * screenHeight;
+
+            if (currentSize >= _maxChildSize - 0.01) {
+              // Small tolerance for floating point
+              _isPanelFullyOpened = true;
+            }
+
+            // Check for 150px threshold (only trigger once during opening)
+            if (_isPanelFullyOpened &&
+                currentHeightPx <= 150 &&
+                !_hasTriggeredHeightThreshold &&
+                currentSize > _minChildSize &&
+                currentSize < _maxChildSize) {
+              _hasTriggeredHeightThreshold = true;
+              // Use post-frame callback to avoid calling setState during build
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                print(
+                    'Auto-closing panel at 150px threshold (current: ${currentHeightPx.toInt()}px)');
+                // Cancel any existing timer since we're closing early
+                _autoCloseTimer?.cancel();
+                // Directly close the panel instead of toggling
+                if (_sheetController.isAttached) {
+                  _sheetController.animateTo(
+                    _minChildSize,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                }
+              });
+            }
+
+            // Reset threshold flag when panel is fully closed
+            if (currentSize == _minChildSize) {
+              _hasTriggeredHeightThreshold = false;
+              _isPanelFullyOpened = false;
+            }
 
             return Stack(
               children: [
@@ -53,7 +113,12 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   ),
                 ),
 
-                if (currentSize == _minChildSize) Center(child: DraggableFloatingPlayerControls(onTap: togglePanel)),
+                if (currentSize == _minChildSize)
+                  Center(
+                    child: DraggableFloatingPlayerControls(
+                      onTap: togglePanel,
+                    ),
+                  ),
 
                 /// Panel
                 DraggableScrollableSheet(
@@ -62,33 +127,27 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   minChildSize: _minChildSize,
                   maxChildSize: _maxChildSize,
                   builder: (context, scrollController) => Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(36),
+                    decoration: const BoxDecoration(color: Colors.black),
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      physics: const ClampingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 3,
+                            margin: const EdgeInsets.symmetric(vertical: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(36),
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: ListView(
-                            controller: scrollController,
-                            children: const [
-                              Center(
-                                child: Text(
-                                  '🎵 Music Player / Panel',
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                                ),
-                              ), // filler
-                            ],
-                          ),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          const PlayingAudioTile(),
+                          const SizedBox(height: 32),
+                          const MediaCatalogList(),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -102,7 +161,30 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   void togglePanel() {
     if (_sheetController.isAttached) {
       final currentSize = _sheetController.size;
-      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
+      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2
+          ? _minChildSize
+          : _maxChildSize;
+
+      /// Cancel any existing timer
+      _autoCloseTimer?.cancel();
+
+      /// If opening the panel, start the 8-second timer
+      if (targetSize == _maxChildSize) {
+        print('Panel opening - starting 8-second auto-close timer');
+        _autoCloseTimer = Timer(const Duration(seconds: 8), () {
+          print('Auto-closing panel after 8 seconds');
+          if (_sheetController.isAttached &&
+              _sheetController.size > _minChildSize) {
+            _sheetController.animateTo(
+              _minChildSize,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
+          }
+        });
+      } else {
+        print('Panel closing - canceling auto-close timer');
+      }
 
       _sheetController.animateTo(
         targetSize,

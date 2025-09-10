@@ -1,3 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class StreamAudioProvider extends ChangeNotifier {}
+class StreamAudioProvider extends ChangeNotifier {
+  final streamAudioProvider =
+      Provider<StreamAudioProvider>((ref) => StreamAudioProvider());
+}
