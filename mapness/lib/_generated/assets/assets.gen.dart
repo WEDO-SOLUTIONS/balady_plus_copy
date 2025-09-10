@@ -31,6 +31,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
+  /// Directory path: assets/images/audio_placeholders
+  $AssetsImagesAudioPlaceholdersGen get audioPlaceholders => const $AssetsImagesAudioPlaceholdersGen();
+
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
@@ -250,6 +253,9 @@ class $AssetsIconsLottieGen {
 
 class $AssetsIconsSvgGen {
   const $AssetsIconsSvgGen();
+
+  /// Directory path: assets/icons/svg/audio
+  $AssetsIconsSvgAudioGen get audio => const $AssetsIconsSvgAudioGen();
 
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
@@ -490,6 +496,37 @@ class $AssetsIconsSvgGen {
       ];
 }
 
+class $AssetsImagesAudioPlaceholdersGen {
+  const $AssetsImagesAudioPlaceholdersGen();
+
+  /// File path: assets/images/audio_placeholders/arabiya.png
+  AssetGenImage get arabiya => const AssetGenImage('assets/images/audio_placeholders/arabiya.png');
+
+  /// File path: assets/images/audio_placeholders/arabiya_fm.png
+  AssetGenImage get arabiyaFm => const AssetGenImage('assets/images/audio_placeholders/arabiya_fm.png');
+
+  /// File path: assets/images/audio_placeholders/hoda.png
+  AssetGenImage get hoda => const AssetGenImage('assets/images/audio_placeholders/hoda.png');
+
+  /// File path: assets/images/audio_placeholders/mbc_fm.png
+  AssetGenImage get mbcFm => const AssetGenImage('assets/images/audio_placeholders/mbc_fm.png');
+
+  /// File path: assets/images/audio_placeholders/mbc_loud.png
+  AssetGenImage get mbcLoud => const AssetGenImage('assets/images/audio_placeholders/mbc_loud.png');
+
+  /// File path: assets/images/audio_placeholders/non.png
+  AssetGenImage get non => const AssetGenImage('assets/images/audio_placeholders/non.png');
+
+  /// File path: assets/images/audio_placeholders/panorama.png
+  AssetGenImage get panorama => const AssetGenImage('assets/images/audio_placeholders/panorama.png');
+
+  /// File path: assets/images/audio_placeholders/sweet.png
+  AssetGenImage get sweet => const AssetGenImage('assets/images/audio_placeholders/sweet.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [arabiya, arabiyaFm, hoda, mbcFm, mbcLoud, non, panorama, sweet];
+}
+
 class $AssetsMapsConfigsGen {
   const $AssetsMapsConfigsGen();
 
@@ -504,6 +541,25 @@ class $AssetsMapsConfigsGen {
 
   /// List of all assets
   List<String> get values => [momrahProdVendorConfig, momrahStagingVendorConfig, urbiPreProdVendorConfig];
+}
+
+class $AssetsIconsSvgAudioGen {
+  const $AssetsIconsSvgAudioGen();
+
+  /// File path: assets/icons/svg/audio/pause.svg
+  SvgGenImage get pause => const SvgGenImage('assets/icons/svg/audio/pause.svg');
+
+  /// File path: assets/icons/svg/audio/resume.svg
+  SvgGenImage get resume => const SvgGenImage('assets/icons/svg/audio/resume.svg');
+
+  /// File path: assets/icons/svg/audio/seek_backward.svg
+  SvgGenImage get seekBackward => const SvgGenImage('assets/icons/svg/audio/seek_backward.svg');
+
+  /// File path: assets/icons/svg/audio/seek_forward.svg
+  SvgGenImage get seekForward => const SvgGenImage('assets/icons/svg/audio/seek_forward.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [pause, resume, seekBackward, seekForward];
 }
 
 class $AssetsIconsSvgLayersGen {
