@@ -17,6 +17,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -214,6 +215,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           DashboardTitle(context.l10n.exploreNearby),
           const SizedBox(height: Spacing.$4x),
           const PlacePreview(),
+          const SizedBox(height: Spacing.$6x),
+          const ExploreCard(),
           const SizedBox(height: Spacing.$6x),
           const DashboardFeedbackCard(),
           const SizedBox(height: Spacing.$6x),

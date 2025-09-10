@@ -49,6 +49,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/eta_sheet_background.png
   AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
 
+  /// File path: assets/images/explore_mbc.png
+  AssetGenImage get exploreMbc => const AssetGenImage('assets/images/explore_mbc.png');
+
   /// File path: assets/images/favorites_example_arabic.png
   AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
 
@@ -123,6 +126,7 @@ class $AssetsImagesGen {
         driveHomeArrow,
         driveHomeBackground,
         etaSheetBackground,
+        exploreMbc,
         favoritesExampleArabic,
         favoritesExampleEnglish,
         feedbackDashboard,
@@ -183,6 +187,9 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/eta_unknown_user_marker.svg
   SvgGenImage get etaUnknownUserMarker => const SvgGenImage('assets/images_svg/eta_unknown_user_marker.svg');
 
+  /// File path: assets/images_svg/explore_mbc.svg
+  SvgGenImage get exploreMbc => const SvgGenImage('assets/images_svg/explore_mbc.svg');
+
   /// File path: assets/images_svg/happy_face.svg
   SvgGenImage get happyFace => const SvgGenImage('assets/images_svg/happy_face.svg');
 
@@ -217,6 +224,7 @@ class $AssetsImagesSvgGen {
         etaPhotoUser,
         etaUnknownUser,
         etaUnknownUserMarker,
+        exploreMbc,
         happyFace,
         illustrationError,
         illustrationNotifications,
@@ -327,6 +335,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/ic_marker_m_new.svg
   SvgGenImage get icMarkerMNew => const SvgGenImage('assets/icons/svg/ic_marker_m_new.svg');
+
+  /// File path: assets/icons/svg/ic_mbc_mood.svg
+  SvgGenImage get icMbcMood => const SvgGenImage('assets/icons/svg/ic_mbc_mood.svg');
 
   /// File path: assets/icons/svg/ic_metro_marker.svg
   SvgGenImage get icMetroMarker => const SvgGenImage('assets/icons/svg/ic_metro_marker.svg');
@@ -453,6 +464,7 @@ class $AssetsIconsSvgGen {
         icLangEn,
         icLanguageChange,
         icMarkerMNew,
+        icMbcMood,
         icMetroMarker,
         icNotification,
         icParkingSpot,
