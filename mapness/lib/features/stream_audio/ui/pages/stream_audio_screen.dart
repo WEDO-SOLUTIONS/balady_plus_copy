@@ -19,6 +19,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() => ref.read(streamAudioProvider).getLiveNow());
   }
 
   final DraggableScrollableController _sheetController =

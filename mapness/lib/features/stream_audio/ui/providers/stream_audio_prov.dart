@@ -43,14 +43,17 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   Future<void> getLiveNow() async {
-    liveNow = await ChannelsDataSource().getLiveNow();
+    liveNow ??= await ChannelsDataSource().getLiveNow();
   }
+
   void reorderPrograms(int oldIndex, int newIndex) {
     final ln = liveNow;
     if (ln == null) return;
 
     final list = [...ln.programs];
-    if (newIndex > oldIndex) newIndex -= 1;
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
     final item = list.removeAt(oldIndex);
     list.insert(newIndex, item);
 
@@ -59,6 +62,5 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 }
 
-final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>((ref) {
-  return StreamAudioProvider();
-});
+final streamAudioProvider =
+    ChangeNotifierProvider<StreamAudioProvider>((ref) => StreamAudioProvider());
