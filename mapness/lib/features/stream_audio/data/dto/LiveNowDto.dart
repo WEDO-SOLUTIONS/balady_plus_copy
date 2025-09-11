@@ -23,8 +23,8 @@ class LiveNowDto {
       Assets.images.audioPlaceholders.arabiyaFm,
     ];
     final docs = (json['docs'] as List<dynamic>?)
-            ?.whereType<Map<String, dynamic>>()
-            .toList() ??
+        ?.whereType<Map<String, dynamic>>()
+        .toList() ??
         [];
 
     final programs = List<ProgramDto>.generate(docs.length, (i) {
@@ -38,6 +38,9 @@ class LiveNowDto {
 
   /// [LiveNowDto.empty] Empty constructor
   factory LiveNowDto.empty() => const LiveNowDto(programs: []);
+
+  LiveNowDto copyWith({required List<ProgramDto> programs}) =>
+      LiveNowDto(programs: programs);
 }
 
 class ProgramDto {
@@ -73,7 +76,8 @@ class ProgramDto {
   }
 
   /// [Program.empty] Empty constructor
-  factory ProgramDto.empty() => const ProgramDto(
+  factory ProgramDto.empty() =>
+      const ProgramDto(
         title: '',
         sub: '',
         channelImage: AssetGenImage(''),

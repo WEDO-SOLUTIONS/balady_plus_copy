@@ -40,56 +40,69 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               icon: SystemIcons.arrowCornerLeftLarge,
             ),
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Live now',
-                        style: context.textStyles.h3Medium,
-                      ),
-                      const MBCMood(
-                        color: Color.fromRGBO(242, 74, 56, 1),
-                      )
-                    ],
-                  ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Live now',
+                      style: context.textStyles.h3Medium,
+                    ),
+                    const MBCMood(
+                      color: Color.fromRGBO(242, 74, 56, 1),
+                    )
+                  ],
                 ),
-                Builder(builder: (_) {
-                  final liveNow = ref.watch(streamAudioProvider).liveNow;
-                  if (liveNow == null) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
+              ),
+              Builder(builder: (_) {
+                final liveNow = ref.watch(streamAudioProvider).liveNow;
+                if (liveNow == null) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
 
-                  final programs = liveNow.programs;
-                  if (programs.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text('No live programs right now'),
-                    );
-                  }
+                final programs = liveNow.programs;
+                if (programs.isEmpty) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('No live programs right now'),
+                  );
+                }
 
-                  return ListView.builder(
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.37,
+                  child: ReorderableListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
+                    onReorder: ref.watch(streamAudioProvider).reorderPrograms,
                     itemCount: programs.length,
+                    proxyDecorator: (child, index, animation) => Material(
+                      type: MaterialType.transparency,
+                      surfaceTintColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      child: child,
+                    ),
                     itemBuilder: (_, index) {
                       final p = programs[index];
-                      final imagesWidth = MediaQuery.of(context).size.width * 0.25;
+                      final imagesWidth =
+                          MediaQuery.of(context).size.width * 0.25;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 2.0, horizontal: 16),
+                        key: ValueKey('${p.title}-$index'),
                         child: ListTile(
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                            borderRadius:
+                                BorderRadius.circular(RadiusBorder.xl),
                           ),
-                          contentPadding: const EdgeInsets.only(left: 8, right: 16),
+                          contentPadding:
+                              const EdgeInsets.only(left: 8, right: 16),
                           tileColor: Colors.white,
                           minLeadingWidth: imagesWidth,
                           leading: SizedBox(
@@ -136,11 +149,14 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                                     width: 32,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: AssetImage(p.programImage.keyName),
+                                        image:
+                                            AssetImage(p.programImage.keyName),
                                         fit: BoxFit.cover,
                                       ),
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.black.withOpacity(0.10), width: 2),
+                                      border: Border.all(
+                                          color: Colors.black.withOpacity(0.10),
+                                          width: 2),
                                     ),
                                   ),
                                 ),
@@ -153,14 +169,14 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                         ),
                       );
                     },
-                  );
-                }),
-                StoriesRow(
-                    onThumbnailPressed: (id) {},
-                    stories: mockStories,
-                    titleWidget: const DashboardTitle('Arriving soon')),
-              ],
-            ),
+                  ),
+                );
+              }),
+              StoriesRow(
+                  onThumbnailPressed: (id) {},
+                  stories: mockStories,
+                  titleWidget: const DashboardTitle('Arriving soon')),
+            ],
           ),
         ),
       );
