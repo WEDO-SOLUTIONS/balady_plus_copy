@@ -35,62 +35,65 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
         if (state.status == AuthStatus.authenticated && widget.onSuccessLogin != null) widget.onSuccessLogin!(true);
       },
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            /// Content
-            const CustomSvgIconWidget(
-              IconPath.lock,
-              iconSize: 82,
-              iconColor: AppColor.primary900Light,
-            ),
-            const SizedBox(height: 16),
-            CustomTextWidget(
-              widget.title ?? ("not_registered").tr(),
-              fontColor: AppColor.blackModern600Light,
-              fontWeight: AppFontWeight.bold,
-              fontSize: 20,
-            ),
-            const SizedBox(height: 8),
-            CustomTextWidget(
-              widget.desc ?? ('not_register_desc').tr(),
-              fontColor: AppColor.blackModern500Light,
-              fontWeight: AppFontWeight.bold,
-              fontSize: 13,
-              maxLines: null,
-              textAlign: TextAlign.center,
-              height: 1.5,
-            ),
-            const SizedBox(height: 16),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// Content
+              const CustomSvgIconWidget(
+                IconPath.lock,
+                iconSize: 82,
+                iconColor: AppColor.primary900Light,
+              ),
+              const SizedBox(height: 16),
+              CustomTextWidget(
+                widget.title ?? ("not_registered").tr(),
+                fontColor: AppColor.blackModern600Light,
+                fontWeight: AppFontWeight.bold,
+                fontSize: 20,
+              ),
+              const SizedBox(height: 8),
+              CustomTextWidget(
+                widget.desc ?? ('not_register_desc').tr(),
+                fontColor: AppColor.blackModern500Light,
+                fontWeight: AppFontWeight.bold,
+                fontSize: 13,
+                maxLines: null,
+                textAlign: TextAlign.center,
+                height: 1.5,
+              ),
+              const SizedBox(height: 16),
 
-            /// Actions Buttons
-            if (!widget.withoutActions) ...[
-              EnhancedCustomElevatedButtonWidget(
-                btnPressed: () => CommonFunctions.onLogin(isMunicipality: true, mainPage: widget.mainPage),
-                btnText: ("signInButton").tr(),
-                btnTextSize: 18,
-                btnTextWeight: AppFontWeight.bold,
-                btnTextColor: AppColor.white,
-                btnHeight: 56,
-                btnRadius: 8,
-              ),
-              const SizedBox(height: 12),
-              EnhancedCustomElevatedButtonWidget(
-                btnPressed: () => Navigator.of(context).pop(),
-                btnText: ("notNow").tr(),
-                btnTextSize: 16,
-                btnTextWeight: AppFontWeight.bold,
-                btnTextColor: AppColor.primary900Light,
-                btnBorderWidth: 1,
-                btnColor: Colors.transparent,
-                btnBorderColor: AppColor.primary900Light,
-                btnHeight: 56,
-                btnRadius: 8,
-              ),
-            ]
-          ],
+              /// Actions Buttons
+              if (!widget.withoutActions) ...[
+                EnhancedCustomElevatedButtonWidget(
+                  btnPressed: () => CommonFunctions.onLogin(isMunicipality: true, mainPage: widget.mainPage),
+                  btnText: ("signInButton").tr(),
+                  btnTextSize: 18,
+                  btnTextWeight: AppFontWeight.bold,
+                  btnTextColor: AppColor.white,
+                  btnHeight: 56,
+                  btnRadius: 8,
+                ),
+                const SizedBox(height: 12),
+                EnhancedCustomElevatedButtonWidget(
+                  btnPressed: () => Navigator.of(context).pop(),
+                  btnText: ("notNow").tr(),
+                  btnTextSize: 16,
+                  btnTextWeight: AppFontWeight.bold,
+                  btnTextColor: AppColor.primary900Light,
+                  btnBorderWidth: 1,
+                  btnColor: Colors.transparent,
+                  btnBorderColor: AppColor.primary900Light,
+                  btnHeight: 56,
+                  btnRadius: 8,
+                ),
+              ]
+            ],
+          ),
         ),
       ),
     );
