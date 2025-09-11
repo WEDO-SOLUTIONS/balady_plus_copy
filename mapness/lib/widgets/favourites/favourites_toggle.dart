@@ -18,7 +18,7 @@ class FavouritesToggle extends ConsumerWidget {
     final state = ref.watch(favouriteToggleProvider);
 
     return ContentWrapper(
-      color: context.color.surfaceBaseSecondary,
+      color: context.colors.backgroundSurface4,
       children: [
         ContentRow(
           onToggle: isEditing

@@ -14,7 +14,7 @@ class IwishActionDriveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: context.color.strokeAccent,
+        color: context.colors.accentOnContainer,
         borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onPressed,

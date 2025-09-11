@@ -28,7 +28,7 @@ class PoiContentContactsCard extends StatelessWidget {
     final bool hasSocialMedia = data.socialMediaList?.isNotEmpty == true;
 
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasPhones)

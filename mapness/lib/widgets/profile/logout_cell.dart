@@ -37,7 +37,7 @@ class LogoutCell extends ConsumerWidget {
                     padding: const EdgeInsets.only(bottom: 2),
                     child: Text(
                       context.l10n.logOut,
-                      style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                      style: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                     ),
                   ),
                   const SizedBox(

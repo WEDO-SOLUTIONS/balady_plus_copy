@@ -14,7 +14,7 @@ class PoiContentParkingCard extends StatelessWidget {
     }
     final icon = data!.isPaid ? PlacesIcons.parkingPaid : TransportIcons.parkingEnable;
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       children: [
         ContentRow(
           leading: icon.icon(color: context.colors.accentDefault),

@@ -38,7 +38,7 @@ class PinnedPlaceCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.l),
-          color: context.color.surfaceBaseSecondary,
+          color: context.colors.backgroundSurface4,
         ),
         child: Stack(
           fit: StackFit.passthrough,
@@ -53,7 +53,8 @@ class PinnedPlaceCard extends StatelessWidget {
                     width: 56,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
-                      color: isAdded ? context.color.surfaceBasePrimary : context.color.surfaceStatusContrastAccent,
+                      color: isAdded ? context.colors.backgroundSurface1 :
+                      context.color.surfaceStatusContrastAccent,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8),
@@ -61,9 +62,9 @@ class PinnedPlaceCard extends StatelessWidget {
                         height: 32,
                         width: 32,
                         child: isAdded
-                            ? iconData.icon(color: context.color.textAndIconsStatusAccent)
+                            ? iconData.icon(color: context.colors.accentDefault)
                             : SystemIcons.zoomPlus.icon(
-                                color: context.color.strokeAccent,
+                                color: context.colors.accentOnContainer,
                               ),
                       ),
                     ),
@@ -73,7 +74,7 @@ class PinnedPlaceCard extends StatelessWidget {
                 Text(
                   title,
                   textAlign: TextAlign.right,
-                  style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+                  style: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
                 ),
                 const SizedBox(height: Spacing.$0_5x),
                 Text(
@@ -81,7 +82,7 @@ class PinnedPlaceCard extends StatelessWidget {
                   textAlign: TextAlign.right,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBaseSecondary),
+                  style: context.textStyle.caption.copyWith(color: context.colors.foregroundSoft),
                 ),
               ],
             ),
@@ -96,32 +97,32 @@ class PinnedPlaceCard extends StatelessWidget {
                       title: context.l10n.route,
                       icon: GeneralIcons.routeStroke,
                       onTap: onTapRoute,
-                      color: context.color.textAndIconsBasePrimary,
+                      color: context.colors.foregroundDefault,
                     ),
                     PopupModel(
                       title: context.l10n.share,
                       icon: SystemIcons.share,
                       onTap: onTapShare,
-                      color: context.color.textAndIconsBasePrimary,
+                      color: context.colors.foregroundDefault,
                     ),
                     PopupModel(
                       title: context.l10n.change,
                       icon: SystemIcons.bookmarkAdd,
                       onTap: onTapChange,
-                      color: context.color.textAndIconsBasePrimary,
+                      color: context.colors.foregroundDefault,
                     ),
                     PopupModel(
                       titleStyle: context.textStyle.text.copyWith(
-                        color: context.color.textAndIconsStatusNegative,
+                        color: context.colors.errorDefault,
                       ),
-                      color: context.color.textAndIconsStatusNegative,
+                      color: context.colors.errorDefault,
                       title: context.l10n.delete,
                       icon: GeneralIcons.trash,
                       onTap: onDelete,
                     ),
                   ],
                   child: SystemIcons.ellipsis.icon(
-                    color: context.color.textAndIconsStatusAccent,
+                    color: context.colors.accentDefault,
                   ),
                 ),
               ),

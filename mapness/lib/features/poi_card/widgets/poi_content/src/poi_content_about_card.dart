@@ -162,7 +162,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
     final span = TextSpan(
       text: text,
       style: context.textStyles.bodySmallRegular.copyWith(
-        color: context.color.textAndIconsBasePrimary,
+        color: context.colors.foregroundDefault,
       ),
     );
     final painter = TextPainter(text: span, textDirection: textDirection)..layout(maxWidth: maxWidth);

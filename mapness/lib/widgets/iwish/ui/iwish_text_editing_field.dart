@@ -43,7 +43,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
 
   @override
   Widget build(BuildContext context) {
-    final style = context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary);
+    final style = context.textStyle.text.copyWith(color: context.colors.foregroundDefault);
     final errorColor = context.colors.errorOnContainer;
     final errorBorder = _getBorder(errorColor);
 
@@ -69,7 +69,7 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
               maxLines: 1000,
               onChanged: widget.onChanged,
               style: style,
-              cursorColor: context.color.strokeAccent,
+              cursorColor: context.colors.accentOnContainer,
               validator: (value) => (value?.length ?? 0) > widget.maxLength ? '' : null,
               autofocus: true,
               decoration: InputDecoration(
@@ -77,9 +77,9 @@ class _IwishTextEditingFieldState extends State<IwishTextEditingField> {
                 filled: true,
                 errorStyle: const TextStyle(height: 0),
                 hintText: context.l10n.shareYourFeedback,
-                fillColor: context.color.surfaceBaseSecondary,
+                fillColor: context.colors.backgroundSurface4,
                 enabledBorder: _getBorder(Colors.transparent),
-                focusedBorder: _getBorder(context.color.strokeAccent),
+                focusedBorder: _getBorder(context.colors.accentOnContainer),
                 focusedErrorBorder: errorBorder,
                 errorBorder: errorBorder,
                 contentPadding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$2x),

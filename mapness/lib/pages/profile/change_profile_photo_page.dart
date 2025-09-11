@@ -39,9 +39,9 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
           ContentRow(
             options: ContentRowOptions(
               title: context.l10n.profilePhoto,
-              titleStyle: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+              titleStyle: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
               customActionWidget: AppButton.close(
-                color: context.color.surfaceContrastLow,
+                color: context.colors.neutralOnContainer,
                 onTap: context.router.popForced,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
                 padding: EdgeInsets.zero,
@@ -50,7 +50,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: ContentWrapper(color: context.color.surfaceBasePrimary, children: [
+            child: ContentWrapper(color: context.colors.backgroundSurface1, children: [
               ContentRow(
                 onTap: () async {
                   if (isPermanentlyDenied) {
@@ -65,10 +65,10 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
                 options: ContentRowOptions(
                   leadingIcon: SvgPicture.asset(
                     Assets.icons.svg.photoGallery.keyName,
-                    colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
                   ),
                   title: context.l10n.change_avatar,
-                  titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                  titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                 ),
               ),
             ]),

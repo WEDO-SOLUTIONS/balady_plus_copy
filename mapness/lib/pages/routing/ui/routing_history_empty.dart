@@ -21,7 +21,7 @@ class RoutingHistoryEmpty extends StatelessWidget {
             child: Text(
               context.l10n.selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes,
               textAlign: TextAlign.center,
-              style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBasePrimary),
+              style: context.textStyle.footNote.copyWith(color: context.colors.foregroundDefault),
             ),
           ),
         ),
