@@ -59,7 +59,7 @@ class PoiContentContactsCard extends StatelessWidget {
               runSpacing: Spacing.$2x,
               children: data.socialMediaList!
                   .map((e) => _SocialMediaItemWidget(
-                        icon: _getIconData(e.type),
+                        icon: getIconData(e.type),
                         onTap: () => data.onSocialMediaTap.call(e.link),
                       ))
                   .toList(),
@@ -69,15 +69,15 @@ class PoiContentContactsCard extends StatelessWidget {
     );
   }
 
-  IconData _getIconData(PoiContentSocialMediaTypes type) => switch (type) {
-        PoiContentSocialMediaTypes.website => GeneralIcons.web,
-        PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
-        PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
-        PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
-        PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
-        PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
-        PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
-      };
+  static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
+    PoiContentSocialMediaTypes.website => GeneralIcons.web,
+    PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
+    PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
+    PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
+    PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
+    PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
+    PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+  };
 }
 
 class _PhoneItemWidget extends StatelessWidget {
