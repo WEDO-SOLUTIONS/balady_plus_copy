@@ -30,8 +30,6 @@ class MiniAppsItemWidget extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
             child: Column(
-              //  crossAxisAlignment: CrossAxisAlignment.center,
-              //  mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
@@ -59,7 +57,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       : '',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
-                    fontSize: 13,
+                        fontSize: 13,
                         fontFamily: 'packages/balady_uikit/Golos',
                       ),
                   textAlign: TextAlign.center,
