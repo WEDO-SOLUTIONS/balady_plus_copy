@@ -219,6 +219,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
 
     ref
       // listen for changes in car connection state. But do not rebuild widget
@@ -261,7 +262,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
-                  AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
+
+                  ///TODO saudiday provider
+                  AppColorsThemeV3.palette(
+                    themes: isNationalDay ? BaladyAppThemes.saudiDay : BaladyAppThemes.light,
+                  ),
                   AppStaticColorsThemeExt.palette(),
                 ],
               ),
