@@ -13,6 +13,7 @@ final class SaudiDaySplashGuard extends AutoRouteGuard {
   void onNavigation(NavigationResolver resolver, StackRouter router) {
     if (!SaudiNationalDay.isNow()) {
       resolver.next();
+      return;
     }
     // Check if Saudi Day splash has been shown
     if (!ref.read(saudiDaySplashProvider)) {
