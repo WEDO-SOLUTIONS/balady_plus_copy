@@ -314,6 +314,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_fav.svg
   SvgGenImage get icFav => const SvgGenImage('assets/icons/svg/ic_fav.svg');
 
+  /// File path: assets/icons/svg/ic_filter.svg
+  SvgGenImage get icFilter => const SvgGenImage('assets/icons/svg/ic_filter.svg');
+
   /// File path: assets/icons/svg/ic_iwish_marker_completed.svg
   SvgGenImage get icIwishMarkerCompleted => const SvgGenImage('assets/icons/svg/ic_iwish_marker_completed.svg');
 
@@ -458,6 +461,7 @@ class $AssetsIconsSvgGen {
         icDragIndicator,
         icEntrance,
         icFav,
+        icFilter,
         icIwishMarkerCompleted,
         icIwishMarkerPlanned,
         icIwishMarkerSelected,
@@ -505,6 +509,9 @@ class $AssetsImagesAudioPlaceholdersGen {
   /// File path: assets/images/audio_placeholders/arabiya_fm.png
   AssetGenImage get arabiyaFm => const AssetGenImage('assets/images/audio_placeholders/arabiya_fm.png');
 
+  /// File path: assets/images/audio_placeholders/arriving.png
+  AssetGenImage get arriving => const AssetGenImage('assets/images/audio_placeholders/arriving.png');
+
   /// File path: assets/images/audio_placeholders/hoda.png
   AssetGenImage get hoda => const AssetGenImage('assets/images/audio_placeholders/hoda.png');
 
@@ -524,7 +531,7 @@ class $AssetsImagesAudioPlaceholdersGen {
   AssetGenImage get sweet => const AssetGenImage('assets/images/audio_placeholders/sweet.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [arabiya, arabiyaFm, hoda, mbcFm, mbcLoud, non, panorama, sweet];
+  List<AssetGenImage> get values => [arabiya, arabiyaFm, arriving, hoda, mbcFm, mbcLoud, non, panorama, sweet];
 }
 
 class $AssetsMapsConfigsGen {
