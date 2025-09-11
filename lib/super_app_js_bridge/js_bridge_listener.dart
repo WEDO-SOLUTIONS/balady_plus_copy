@@ -88,7 +88,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessSSOToken(dynamic msg, CompletionHandler handler) async {
-    late BaseResponse response;
+    late BaseResponse? response;
     if (CommonProperties.isLoggedInMunicipality) {
       response = BaseResponse(
         code: 200,
@@ -124,7 +124,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
       );
     }
-    handler.complete(response.jsonEncodeModel());
+    handler.complete(response?.jsonEncodeModel());
   }
 
   @pragma('vm:entry-point')
