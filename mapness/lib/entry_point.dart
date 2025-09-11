@@ -77,6 +77,7 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
 
+import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
 

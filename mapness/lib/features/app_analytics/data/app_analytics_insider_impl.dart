@@ -160,25 +160,19 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   Future<void> deviceTypeDetected() async {
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      final model = androidInfo.data['model'];
-      await FlutterInsider.Instance.tagEvent('device_type_detected')
-          .addParameterWithString('event_name', 'device_type_detected')
-          .addParameterWithString('device_type', model)
-          .addParameterWithString('platform', Platform.operatingSystem)
-          .addParameterWithString('timestamp', now)
-          .build();
-    } else {
-      final iOSInfo = await DeviceInfoPlugin().iosInfo;
-      final model = iOSInfo.data['machine'];
-      await FlutterInsider.Instance.tagEvent('device_type_detected')
-          .addParameterWithString('event_name', 'device_type_detected')
-          .addParameterWithString('device_type', model)
-          .addParameterWithString('platform', Platform.operatingSystem)
-          .addParameterWithString('timestamp', now)
-          .build();
-    }
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final iOSInfo = await DeviceInfoPlugin().iosInfo;
+
+    final androidModel = androidInfo.data['model'];
+    final iosModel = iOSInfo.data['machine'];
+
+    await FlutterInsider.Instance.tagEvent('device_type_detected')
+        .addParameterWithString('event_name', 'device_type_detected')
+        .addParameterWithString(
+            'device_type', Platform.isAndroid ? androidModel : iosModel)
+        .addParameterWithString('platform', Platform.operatingSystem)
+        .addParameterWithString('timestamp', now)
+        .build();
   }
 
   @override

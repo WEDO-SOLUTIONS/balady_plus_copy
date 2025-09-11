@@ -293,13 +293,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           estimateDistance: route.distance,
         );
 
-    await ref.read(urbiAnalyticsProvider).track(
+    unawaited(ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
       properties: {
         'duration': route.duration,
         'distance': route.distance,
       },
-    );
+    ));
 
     await context.router.pushAndPopUntil(
         PathNavRoute(
