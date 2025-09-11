@@ -56,29 +56,29 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
             final double mapOffset = -320 * progress;
 
-            // Calculate current sheet height in pixels
+            /// Calculate current sheet height in pixels
             final screenHeight = MediaQuery.of(context).size.height;
             final currentHeightPx = currentSize * screenHeight;
 
             if (currentSize >= _maxChildSize - 0.01) {
-              // Small tolerance for floating point
+              /// Small tolerance for floating point
               _isPanelFullyOpened = true;
             }
 
-            // Check for 150px threshold (only trigger once during opening)
+            /// Check for 150px threshold (only trigger once during opening)
             if (_isPanelFullyOpened &&
                 currentHeightPx <= 150 &&
                 !_hasTriggeredHeightThreshold &&
                 currentSize > _minChildSize &&
-                currentSize < _maxChildSize) {
+                currentSize < _maxChildSize &&
+                _autoCloseTimer != null &&
+                _autoCloseTimer!.isActive) {
               _hasTriggeredHeightThreshold = true;
-              // Use post-frame callback to avoid calling setState during build
+
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                print(
-                    'Auto-closing panel at 150px threshold (current: ${currentHeightPx.toInt()}px)');
-                // Cancel any existing timer since we're closing early
+                /// Cancel any existing timer since we're closing early
                 _autoCloseTimer?.cancel();
-                // Directly close the panel instead of toggling
+                /// Directly close the panel instead of toggling
                 if (_sheetController.isAttached) {
                   _sheetController.animateTo(
                     _minChildSize,
@@ -89,7 +89,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
               });
             }
 
-            // Reset threshold flag when panel is fully closed
+            /// Reset threshold flag when panel is fully closed
             if (currentSize == _minChildSize) {
               _hasTriggeredHeightThreshold = false;
               _isPanelFullyOpened = false;
@@ -247,9 +247,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
       /// If opening the panel, start the 8-second timer
       if (targetSize == _maxChildSize) {
-        print('Panel opening - starting 8-second auto-close timer');
         _autoCloseTimer = Timer(const Duration(seconds: 8), () {
-          print('Auto-closing panel after 8 seconds');
           if (_sheetController.isAttached &&
               _sheetController.size > _minChildSize) {
             _sheetController.animateTo(
@@ -259,10 +257,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             );
           }
         });
-      } else {
-        print('Panel closing - canceling auto-close timer');
       }
-
       _sheetController.animateTo(
         targetSize,
         duration: const Duration(milliseconds: 300),
