@@ -24,6 +24,7 @@ class OfferTermsSheet extends HookWidget {
       onClose: (_) => Navigator.of(context).pop(),
     );
     return ToggleSheet(
+      backgroundColor: context.colors.backgroundSurface1,
       header: Padding(
         padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
         child: Row(
@@ -31,16 +32,12 @@ class OfferTermsSheet extends HookWidget {
             Expanded(
               child: Text(
                 title,
-                style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+                style: context.textStyles.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
               ),
             ),
             Spacing.$3x.widthBox,
-            AppButton(
-              buttonColorScheme: ButtonColorScheme.secondary,
-              size: ButtonSize.small,
+            AppButton.close(
               onTap: () => bottomSheetController.close(duration: Duration.zero),
-              primaryIcon: SystemIcons.close,
-              iconColor: context.colorsV3.neutralOnContainer,
             ),
           ],
         ),
@@ -50,17 +47,19 @@ class OfferTermsSheet extends HookWidget {
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Text(
             terms,
-            style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundDefault),
+            style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
           ),
         ),
       ],
       footer: Container(
         padding: const EdgeInsets.all(Spacing.$4x),
         margin: const EdgeInsetsDirectional.only(bottom: Spacing.$4x),
-        color: context.colorsV3.backgroundSurface1,
+        color: context.colors.backgroundSurface1,
         child: AppButton(
-          buttonColorScheme: ButtonColorScheme.secondary,
           primaryLabel: close,
+          color: context.colors.accentSecondaryContainerDefault,
+          textColor: context.colors.accentSecondaryOnContainer,
+          buttonColorScheme: ButtonColorScheme.accent,
           onTap: () => bottomSheetController.close(duration: Duration.zero),
         ),
       ),
