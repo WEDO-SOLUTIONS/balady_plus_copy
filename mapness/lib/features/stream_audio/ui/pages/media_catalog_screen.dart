@@ -82,33 +82,67 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                     itemCount: programs.length,
                     itemBuilder: (_, index) {
                       final p = programs[index];
+                      final imagesWidth = MediaQuery.of(context).size.width * 0.25;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 2.0, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 16),
                         child: ListTile(
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(RadiusBorder.xl),
+                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
                           ),
-                          contentPadding:
-                              const EdgeInsets.only(left: 8, right: 16),
+                          contentPadding: const EdgeInsets.only(left: 8, right: 16),
                           tileColor: Colors.white,
-                          minLeadingWidth:
-                              MediaQuery.of(context).size.width * 0.25,
+                          minLeadingWidth: imagesWidth,
                           leading: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.25,
-                            child: Row(
+                            width: imagesWidth,
+                            child: Stack(
                               children: [
-                                ClipRRect(
-                                    borderRadius: BorderRadius.circular(30),
-                                    child: p.channelImage.image(width: 56)),
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.05,
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                          RadiusBorder.xl),
-                                      child: p.programImage.image(width: 40)),
+                                Positioned(
+                                  left: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  width: imagesWidth / 2,
+                                  child: Container(
+                                    width: 56,
+                                    height: 56,
+                                    decoration: ShapeDecoration(
+                                      color: Colors.white,
+                                      image: DecorationImage(
+                                        image: p.channelImage.provider(),
+                                        fit: BoxFit.fill,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        side: BorderSide(
+                                          color: Colors.black.withOpacity(0.10),
+                                        ),
+                                        borderRadius: BorderRadius.circular(48),
+                                      ),
+                                      shadows: const [
+                                        BoxShadow(
+                                          color: Color(0x19000000),
+                                          blurRadius: 12,
+                                          offset: Offset(0, 8),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 6,
+                                  right: 12,
+                                  top: 6,
+                                  width: imagesWidth / 2.3,
+                                  child: Container(
+                                    height: 32,
+                                    width: 32,
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: AssetImage(p.programImage.keyName),
+                                        fit: BoxFit.cover,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(color: Colors.black.withOpacity(0.10), width: 2),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
