@@ -262,8 +262,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
-
-                  ///TODO saudiday provider
                   AppColorsThemeV3.palette(
                     themes: isNationalDay ? BaladyAppThemes.saudiDay : BaladyAppThemes.light,
                   ),

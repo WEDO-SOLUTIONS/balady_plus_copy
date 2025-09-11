@@ -28,8 +28,10 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
   }
 
   Future<void> onMapCreated(DgisMapController controller) async {
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
+
     await controller.initialize();
-    await controller.loadStyles(MapnessConstants.mapStylesPath);
+    await controller.loadStyles(isNationalDay ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);
