@@ -8,7 +8,7 @@ part 'saudi_national_day.g.dart';
 /// Configuration for the Saudi National Day date range
 class SaudiNationalDayConfig {
   /// Start date for Saudi National Day (September 23rd)
-  static DateTime get startDate => DateTime(2025, 9, 23);
+  static DateTime get startDate => DateTime(2025, 9, 18);
 
   /// End date for Saudi National Day (September 23rd)
   static DateTime get endDate => DateTime(2025, 9, 27, 23, 59, 59);
