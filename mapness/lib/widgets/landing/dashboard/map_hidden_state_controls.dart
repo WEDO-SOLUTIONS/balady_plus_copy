@@ -117,9 +117,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                       color: Color(0xFF00343A),
                     ),
                     child: Align(
-                        alignment: AlignmentDirectional.centerEnd,
+                      alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x, bottom: Spacing.$4x),
+                          padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
                           child: Text(
                             context.l10n.happy95thYears,
                             style: context.textStyles.bodySmallSemiBold.copyWith(
