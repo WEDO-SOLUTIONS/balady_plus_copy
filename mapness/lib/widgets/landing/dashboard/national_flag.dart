@@ -83,9 +83,9 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
           widget.onTap?.call();
         },
         child: Align(
-          alignment: AlignmentDirectional.bottomStart,
+          alignment: Alignment.bottomLeft,
           child: Padding(
-            padding: const EdgeInsetsDirectional.only(start: Spacing.$6x, bottom: Spacing.$4x),
+            padding: const EdgeInsets.only(left: Spacing.$6x, bottom: Spacing.$4x),
             child: ScaleTransition(
               scale: Tween<double>(begin: .9, end: 1.0).animate(scaleController),
               child: Stack(
