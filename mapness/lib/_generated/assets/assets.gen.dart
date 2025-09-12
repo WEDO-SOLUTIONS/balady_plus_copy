@@ -40,6 +40,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/city_expert.png
   AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
 
+  /// File path: assets/images/city_expert_saudi_day.png
+  AssetGenImage get cityExpertSaudiDay => const AssetGenImage('assets/images/city_expert_saudi_day.png');
+
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
 
@@ -139,6 +142,7 @@ class $AssetsImagesGen {
         backgroundOrnamentSaudiday,
         calendarCard,
         cityExpert,
+        cityExpertSaudiDay,
         darkMapPreview,
         driveHomeArrow,
         driveHomeArrowSaudiday,
