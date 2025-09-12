@@ -85,7 +85,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             child: Text(
               ctx.l10n.deleteAlertFavourites,
               style: ctx.textStyle.footNote.copyWith(
-                color: ctx.color.textAndIconsBaseSecondary,
+                color: ctx.colors.foregroundSoft,
                 letterSpacing: 0,
               ),
             ),
@@ -100,7 +100,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               child: Text(
                 ctx.l10n.delete,
                 style: ctx.textStyle.callout.copyWith(
-                  color: ctx.color.textAndIconsStatusNegative,
+                  color: ctx.colors.errorDefault,
                 ),
               ),
             ),
@@ -112,7 +112,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             child: Text(
               ctx.l10n.cancel,
               style: ctx.textStyle.callout.copyWith(
-                color: ctx.color.textAndIconsBasePrimary,
+                color: ctx.colors.foregroundDefault,
               ),
             ),
           ),
@@ -131,10 +131,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
         onClose: (_) => context.router.popForced(),
       ),
       loading: (_) => Material(
-        color: ctx.color.surfaceBasePrimary,
+        color: ctx.colors.backgroundSurface1,
         child: Center(
           child: CircularProgressIndicator(
-            color: ctx.color.textAndIconsStatusAccent,
+            color: ctx.colors.accentDefault,
           ),
         ),
       ),
@@ -158,19 +158,19 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     Text(
                       ctx.l10n.cancel,
                       style: ctx.textStyle.footNote.copyWith(
-                        color: ctx.color.textAndIconsStatusAccent,
+                        color: ctx.colors.accentDefault,
                       ),
                     ),
                   if (!isEditing)
                     Icon(
                       SystemIcons.arrowCornerLeftLarge,
-                      color: ctx.color.textAndIconsStatusAccent,
+                      color: ctx.colors.accentDefault,
                     ),
                   if (!isEditing)
                     Text(
                       ctx.l10n.back,
                       style: ctx.textStyle.footNote.copyWith(
-                        color: ctx.color.textAndIconsStatusAccent,
+                        color: ctx.colors.accentDefault,
                       ),
                     ),
                 ],
@@ -191,8 +191,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     child: Icon(
                       GeneralIcons.trash,
                       color: selectedItems.isEmpty
-                          ? ctx.color.textAndIconsBaseTertiary
-                          : ctx.color.textAndIconsStatusNegative,
+                          ? ctx.colors.foregroundMuted
+                          : ctx.colors.errorDefault,
                     ),
                   )
                 else
@@ -201,7 +201,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     child: Text(
                       ctx.l10n.select,
                       style: ctx.textStyle.footNoteBold.copyWith(
-                        color: ctx.color.textAndIconsStatusAccent,
+                        color: ctx.colors.accentDefault,
                       ),
                     ),
                   ),
@@ -209,7 +209,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               ],
             ),
             textStyle: ctx.textStyle.footNoteBold.copyWith(
-              color: ctx.color.textAndIconsBasePrimary,
+              color: ctx.colors.foregroundDefault,
             ),
             title: ctx.l10n.favourites,
           ),
@@ -409,7 +409,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     return Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                        color: context.color.surfaceBaseSecondary,
+                        color: context.colors.backgroundSurface4,
                         borderRadius: BorderRadius.vertical(
                           top: index == 0 ? radius : Radius.zero,
                           bottom: index == state.items.length - 1 ? radius : Radius.zero,

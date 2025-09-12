@@ -47,7 +47,7 @@ class LanguageRow extends ConsumerWidget {
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
       child: Material(
-        color: context.color.surfaceBaseSecondary,
+        color: context.colors.backgroundSurface4,
         borderRadius: BorderRadius.only(
           bottomLeft: border ? radius12 : radiusZero,
           bottomRight: (border ? radius12 : radiusZero),
@@ -69,8 +69,9 @@ class LanguageRow extends ConsumerWidget {
                   iconData: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
                   size: 24,
                   color: currentLanguage == language
-                      ? context.color.textAndIconsStatusAccent
+                      ? context.colors.accentDefault
                       : context.color.surfaceContrastHigh,
+                      // : context.colors.backgroundSurface4,
                 ),
               ),
             ),

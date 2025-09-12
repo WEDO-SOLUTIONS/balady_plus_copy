@@ -42,7 +42,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 appBar: BaladyTopBar.iconAndText(
                   systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                   title: context.l10n.settings,
-                  colorEnabled: context.color.textAndIconsStatusAccent,
+                  colorEnabled: context.colors.accentDefault,
                   leading: ActionModel(
                     onPressed: () => context.router.popForced(),
                     icon: SystemIcons.arrowCornerLeftLarge,
@@ -58,14 +58,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ContentWrapper(
-                        color: context.color.surfaceBaseSecondary,
+                        color: context.colors.backgroundSurface4,
                         children: const [
                           NotificationsSettingCell(),
                         ],
                       ),
                       const SizedBox(height: Spacing.$4x),
                       ContentWrapper(
-                        color: context.color.surfaceBaseSecondary,
+                        color: context.colors.backgroundSurface4,
                         children: const [
                           AuthQuickAccessBiometricWidget(),
                         ],
@@ -75,7 +75,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         builder: (context, ref, child) {
                           final language = ref.watch(appLanguageProvider);
                           return ContentWrapper(
-                            color: context.color.surfaceBaseSecondary,
+                            color: context.colors.backgroundSurface4,
                             children: [
                               ContentRowExpandable(
                                 options: ContentRowOptions(
@@ -84,7 +84,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                   leadingIcon: leadingIcon(language),
                                 ),
                                 content: const LanguagePicker(),
-                                expandIconColor: context.color.textAndIconsBaseSecondary,
+                                expandIconColor: context.colors.foregroundSoft,
                               ),
                             ],
                           );
@@ -92,14 +92,14 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ),
                       Spacing.$2x.heightBox,
                       ContentWrapper(
-                        color: context.color.surfaceBaseSecondary,
+                        color: context.colors.backgroundSurface4,
                         children: [
                           ContentRow(
                             onTap: () => context.router.push(const DarkMapRoute()),
                             options: ContentRowOptions(
                               leadingIcon: AppIcons(
                                 iconData: GeneralIcons.darkMode,
-                                color: context.color.textAndIconsStatusAccent,
+                                color: context.colors.accentDefault,
                                 size: 24,
                               ),
                               title: context.l10n.darkMap,

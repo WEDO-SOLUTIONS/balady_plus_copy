@@ -49,7 +49,7 @@ class PoiEntrancesMetro extends StatelessWidget {
     ];
 
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandableTmp(
           expandIconColor: context.colors.foregroundMuted,

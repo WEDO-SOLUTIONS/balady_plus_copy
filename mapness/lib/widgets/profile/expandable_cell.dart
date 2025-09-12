@@ -28,7 +28,7 @@ class ExpandableCell extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12),
         child: ExpansionWidget(
           titleBuilder: (animationValue, easeInValue, isExpanded, toggleFunction) => Material(
-            color: context.color.surfaceBaseSecondary,
+            color: context.colors.backgroundSurface4,
             borderRadius: BorderRadius.only(
               topLeft: const Radius.circular(8),
               topRight: const Radius.circular(8),
@@ -54,7 +54,7 @@ class ExpandableCell extends StatelessWidget {
                       icon,
                       height: 24,
                       width: 24,
-                      colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
+                      colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
                     ),
                     const SizedBox(
                       width: 12,
@@ -69,7 +69,7 @@ class ExpandableCell extends StatelessWidget {
                             style: DefaultTextStyle.of(context).style.copyWith(
                                   fontSize: 16,
                                   height: 1.4,
-                                  color: context.color.textAndIconsBasePrimary,
+                                  color: context.colors.foregroundDefault,
                                 ),
                           ),
                           if (subtitle != null) ...[
@@ -78,7 +78,7 @@ class ExpandableCell extends StatelessWidget {
                             ),
                             Text(
                               subtitle!,
-                              style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBasePrimary),
+                              style: context.textStyle.caption.copyWith(color: context.colors.foregroundDefault),
                             ),
                           ],
                         ],
@@ -93,7 +93,7 @@ class ExpandableCell extends StatelessWidget {
                           style: Theme.of(context)
                               .extension<ThemeTextStyles>()!
                               .text
-                              .copyWith(color: context.color.textAndIconsBasePrimary),
+                              .copyWith(color: context.colors.foregroundDefault),
                         ),
                       ),
                     const SizedBox(

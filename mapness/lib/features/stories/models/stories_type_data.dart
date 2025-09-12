@@ -30,6 +30,7 @@ sealed class StoryTypedData {
         StoryTypes.onboarding => OnboardingStoryData(),
         StoryTypes.route => RouteStoryData(),
         StoryTypes.network => const NetworkStoryData(),
+        StoryTypes.saudiDay => SaudiDayStoryData(),
       };
 }
 
@@ -106,6 +107,26 @@ class OnboardingStoryData extends StoryTypedData {
             ],
           ),
         ]);
+}
+
+class SaudiDayStoryData extends StoryTypedData {
+  SaudiDayStoryData()
+      : super(
+          type: StoryTypes.saudiDay,
+          stories: [
+            StoryData(
+              storyId: 'saudiDayId',
+              frames: [
+                StoryFrameData(
+                  storyId: 'saudiDay',
+                  imageUrl: Assets.images.saudiDaySplash.keyName,
+                  isAssetImage: true,
+                  action: const NextStoryAction(localeKey: 'saudiDayAction'),
+                ),
+              ],
+            ),
+          ],
+        );
 }
 
 /// Represents the story data for the [StoryTypes.network] type.

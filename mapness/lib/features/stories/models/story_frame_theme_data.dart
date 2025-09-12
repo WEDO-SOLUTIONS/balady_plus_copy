@@ -65,10 +65,24 @@ class StoryFrameThemeData {
       ),
     );
 
+    final saudiDayTheme = baseTheme.copyWith(
+      titleStyle: textTheme.h2SemiBold.copyWith(
+        color: AppColor.white,
+      ),
+      actionTheme: actionTheme.copyWith(
+        textColor: AppColor.black,
+        backgroundColor: AppColor.white,
+      ),
+      titlePadding: const EdgeInsets.symmetric(
+        horizontal: Spacing.$12x,
+      ),
+    );
+
     return switch (id) {
       'onboarding1' => onboardingTheme,
       'onboarding2' => onboardingTheme,
       'onboarding3' => onboardingTheme,
+      'saudiDay' => saudiDayTheme,
       _ => baseTheme,
     };
   }

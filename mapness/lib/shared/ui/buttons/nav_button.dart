@@ -28,7 +28,7 @@ class NavButton extends StatelessWidget {
           child: SvgPicture.asset(
             icon,
             colorFilter: ColorFilter.mode(
-              context.color.textAndIconsBasePrimary,
+              context.colors.foregroundDefault,
               BlendMode.srcIn,
             ),
           ),

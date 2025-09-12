@@ -67,7 +67,7 @@ class ExpandableWidget extends StatelessWidget {
                               Text(
                                 subtitle!,
                                 style: context.textStyle.caption.copyWith(
-                                  color: context.color.textAndIconsBasePrimary,
+                                  color: context.colors.foregroundDefault,
                                 ),
                               ),
                             ],

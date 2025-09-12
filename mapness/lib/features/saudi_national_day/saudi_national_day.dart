@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mapness/features/saudi_national_day/saudi_national_day_debug.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'saudi_national_day.g.dart';
@@ -27,6 +28,12 @@ class SaudiNationalDay extends _$SaudiNationalDay {
 
   @override
   bool build() {
+    // Check if debug override is enabled
+    final debugOverride = ref.watch(saudiNationalDayDebugProvider);
+    if (debugOverride) {
+      return true;
+    }
+
     // Start the periodic timer to update the state every 15 minutes
     _startPeriodicUpdate();
 
@@ -86,8 +93,12 @@ class SaudiNationalDay extends _$SaudiNationalDay {
   /// Simple provider that returns the current status without periodic updates
   /// Use this if you only need a one-time check
   static bool isNow() {
-    final now = DateTime.now();
+    // Check if debug override is enabled
+    if (saudiNationalDayDebugOverride) {
+      return true;
+    }
 
+    final now = DateTime.now();
     return now.isAfter(SaudiNationalDayConfig.startDate) && now.isBefore(SaudiNationalDayConfig.endDate);
   }
 
@@ -99,6 +110,11 @@ class SaudiNationalDay extends _$SaudiNationalDay {
   }
 
   static Duration? countdownFromDate(DateTime now) {
+    // If debug override is enabled, return null (no countdown needed)
+    if (saudiNationalDayDebugOverride) {
+      return null;
+    }
+
     // If we're past the current year's date, return null
     if (now.isAfter(SaudiNationalDayConfig.startDate)) {
       return null;

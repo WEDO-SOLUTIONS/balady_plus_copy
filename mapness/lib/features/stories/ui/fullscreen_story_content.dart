@@ -49,7 +49,7 @@ class _FullscreenErrorContent extends StatelessWidget {
               errorTitle ?? context.l10n.somethingWentWrong,
               textAlign: TextAlign.center,
               style: context.textStyleV3.h3SemiBold.copyWith(
-                color: context.colorsV2.foregroundDefault,
+                color: context.colors.foregroundDefault,
               ),
             ),
           ),
@@ -59,7 +59,7 @@ class _FullscreenErrorContent extends StatelessWidget {
               errorLabel ?? context.l10n.somethingWentWrongPleaseTryAgainLater,
               textAlign: TextAlign.center,
               style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundSoft,
+                color: context.colors.foregroundSoft,
               ),
             ),
           ),

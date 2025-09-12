@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
-import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/shared/providers/onboarding.dart';
 
 final class OnboardRouteGuard extends AutoRouteGuard {
@@ -18,7 +17,6 @@ final class OnboardRouteGuard extends AutoRouteGuard {
       ref.read(appAnalyticsProvider).onboardingFlowStarted();
       resolver.redirect(
         OnboardRoute(
-          type: StoryTypes.onboarding,
           onClose: () {
             ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
             resolver.resolveNext(true, reevaluateNext: false);

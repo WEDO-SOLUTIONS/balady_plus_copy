@@ -113,7 +113,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = context.colors;
-    final color = context.color;
+    // final color = context.color;
     final textStyles = context.textStyles;
 
     final eta = ref.watch(pathNavEtaProvider);
@@ -181,7 +181,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             child: ContentRow(
               onTap: () => widget.onTapRoute.call(),
               options: ContentRowOptions(
-                wrapperColor: color.surfaceBaseTertiary,
+                wrapperColor: colors.backgroundSurface4,
                 wrapperEnabled: true,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 title: l10n.route,
@@ -199,12 +199,12 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             onTap: () => context.router.push(const SoundSettingsRoute()),
             options: ContentRowOptions(
               subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                color: color.textAndIconsBaseSecondary,
+                color: colors.foregroundSoft,
               ),
               titleStyle: textStyles.bodyLargeMedium.copyWith(
                 color: colors.foregroundDefault,
               ),
-              wrapperColor: color.surfaceBaseTertiary,
+              wrapperColor: colors.backgroundSurface4,
               wrapperEnabled: true,
               title: l10n.voiceInstruction,
               subtitle: _subtitleVoiceInstruction,
@@ -236,12 +236,12 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               titleStyle: textStyles.bodyLargeRegular.copyWith(
                 color: colors.foregroundDefault,
               ),
-              wrapperColor: color.surfaceBaseTertiary,
+              wrapperColor: colors.backgroundSurface4,
               wrapperEnabled: true,
               title: l10n.navigatorSettings,
               leadingIcon: Icon(
                 SystemIcons.settings,
-                color: color.textAndIconsBaseSecondary,
+                color: colors.foregroundSoft,
               ),
               actionWidget: ContentRowActionOptions(
                 actionIcon: AppIcons(

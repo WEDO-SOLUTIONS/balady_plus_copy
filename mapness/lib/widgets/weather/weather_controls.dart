@@ -87,7 +87,7 @@ class Legend extends ConsumerWidget {
 
     final measures = weatherMapState.type.measures();
     final measureUnit = weatherMapState.type.measureUnit();
-    final style = context.textStyle.caption.copyWith(color: context.color.textAndIconsBasePrimary);
+    final style = context.textStyle.caption.copyWith(color: context.colors.foregroundDefault);
     return Column(
       children: [
         Container(

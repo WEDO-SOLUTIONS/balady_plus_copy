@@ -92,7 +92,7 @@ class PoiLinesMetro extends StatelessWidget {
     final _colorLine = Color(transportDirectoryRouteInfo.color ?? context.colorsV3.foregroundDefault.value);
 
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
           expandIconColor: context.colorsV3.foregroundMuted,
