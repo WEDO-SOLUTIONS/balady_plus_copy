@@ -670,6 +670,21 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         routeEditor.setActiveRouteIndex(index: RouteIndex(value: UInt64(index)))
     }
 
+    private func setupCamera() {
+        let style = SpeedRangeToStyleZoom(
+            range: SpeedRange(minSpeed: 0.0, maxSpeed: 5.0),
+            minDistanceToManeuver: RouteDistance(millimeters: 0),
+            maxDistanceToManeuver: RouteDistance(millimeters: 0),
+            styleZoom: StyleZoom(value: 16.5)
+        )
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = [
+            style
+        ]
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = [
+            style
+        ]
+    }
+
     func mapTemplate(
         _ mapTemplate: CPMapTemplate,
         startedTrip trip: CPTrip,
@@ -685,6 +700,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             routeSearchOptions: routeEditorRouteParams.routeSearchOptions
         )
 
+        setupCamera()
         try! navigationManager.start(
             routeBuildOptions: routeBuildOptions,
             trafficRoute: routeEditor.activeTrafficRoute

@@ -954,7 +954,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
 
 
-    func startNavigation(speedRangeZoom: SpeedRangeZoom, completion: @escaping (Result<Void, any Error>) -> Void) {
+    func startNavigation(speedRangeZoom: [SpeedRangeZoom], completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let routeHandler = self.routeHandler else {
             completion(
                 Result.failure(FlutterError(
@@ -984,7 +984,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.simulationSpeed(speed: speed)
     }
     
-    func startNavigationSimulation( speedRangeZoom: SpeedRangeZoom, completion: @escaping (Result<Void, any Error>) -> Void) {
+    func startNavigationSimulation( speedRangeZoom: [SpeedRangeZoom], completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let routeHandler = self.routeHandler else {
             completion(
                 Result.failure(FlutterError(
@@ -1018,7 +1018,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.saveNavigationState(completion: completion)
     }
     
-    func restoreNavigationState( state: FlutterStandardTypedData, speedRangeZoom: SpeedRangeZoom, completion: @escaping (Result<Void, any Error>) -> Void) {
+    func restoreNavigationState(state: FlutterStandardTypedData, speedRangeZoom: [SpeedRangeZoom], completion: @escaping (Result<Void, any Error>) -> Void) {
         self.navigationHandler?.restoreNavigationState(state: state, speedRangeZoom: speedRangeZoom, completion: completion)
     }
 
@@ -1031,7 +1031,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
     
-    func startFreeRoam(speedRangeZoom: SpeedRangeZoom, completion: @escaping (Result<Void, any Error>) -> Void) {
+    func startFreeRoam(speedRangeZoom: [SpeedRangeZoom], completion: @escaping (Result<Void, any Error>) -> Void) {
         self.navigationHandler?.startFreeRoam(speedRangeZoom: speedRangeZoom, completion: completion)
     }
     

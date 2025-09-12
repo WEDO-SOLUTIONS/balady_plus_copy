@@ -1955,10 +1955,10 @@ abstract class MapApi {
   void showRoutes();
 
   @async
-  void startNavigation(SpeedRangeZoom speedRangeZoom);
+  void startNavigation(List<SpeedRangeZoom> speedRangeZoom);
 
   @async
-  void startNavigationSimulation(SpeedRangeZoom speedRangeZoom);
+  void startNavigationSimulation(List<SpeedRangeZoom> speedRangeZoom);
 
   void simulationSpeed(double speed);
 
@@ -1972,7 +1972,7 @@ abstract class MapApi {
   NavigationStateMessage getCurrentNavigationState();
 
   @async
-  void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
+  void restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom);
 
   @async
   void setPanoramaMarkerAzimuth(MapDirectionMessage message);
@@ -2017,7 +2017,7 @@ abstract class MapApi {
   void setZoomRestrictions(double? min, double? max);
 
   @async
-  void startFreeRoam(SpeedRangeZoom speedRangeZoom);
+  void startFreeRoam(List<SpeedRangeZoom> speedRangeZoom);
 
   @async
   void stopFreeRoam();

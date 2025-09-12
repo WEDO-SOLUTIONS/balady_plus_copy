@@ -539,10 +539,10 @@ class DgisMapController {
   }
 
   /// Starts navigation
-  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
+  Future<void> startNavigation(List<SpeedRangeZoom> speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 
   /// Starts navigation simulation.
-  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
+  Future<void> startNavigationSimulation(List<SpeedRangeZoom> speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
 
   /// Starts navigation simulation settings.
@@ -552,7 +552,7 @@ class DgisMapController {
   Future<Uint8List> saveNavigationState() => _instance.saveNavigationState();
 
   /// Restores navigation state.
-  Future<void> restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom) =>
+  Future<void> restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom) =>
       _instance.restoreNavigationState(state, speedRangeZoom);
 
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].

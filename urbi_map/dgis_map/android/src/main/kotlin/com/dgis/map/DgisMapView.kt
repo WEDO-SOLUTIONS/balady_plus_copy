@@ -784,7 +784,7 @@ class DgisMapView(
         callback(Result.success(Unit))
     }
 
-    override fun startNavigation(speedRangeZoom: SpeedRangeZoom, callback: (Result<Unit>) -> Unit) {
+    override fun startNavigation(speedRangeZoom: List<SpeedRangeZoom>, callback: (Result<Unit>) -> Unit) {
         val routeHandler =
                 routeHandler
                         ?: kotlin.run {
@@ -807,7 +807,7 @@ class DgisMapView(
     }
 
     override fun startNavigationSimulation(
-            speedRangeZoom: SpeedRangeZoom,
+            speedRangeZoom: List<SpeedRangeZoom>,
             callback: (Result<Unit>) -> Unit
     ) {
         val routeHandler =
@@ -840,7 +840,7 @@ class DgisMapView(
 
     override fun restoreNavigationState(
             state: ByteArray,
-            speedRangeZoom: SpeedRangeZoom,
+            speedRangeZoom: List<SpeedRangeZoom>,
             callback: (Result<Unit>) -> Unit
     ) {
         navigationHandler.restoreNavigationState(
@@ -1029,7 +1029,7 @@ class DgisMapView(
         callback(Result.success(Unit))
     }
 
-    override fun startFreeRoam(speedRangeZoom: SpeedRangeZoom, callback: (Result<Unit>) -> Unit) {
+    override fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>, callback: (Result<Unit>) -> Unit) {
         navigationHandler.startFreeRoam(speedRangeZoom = speedRangeZoom)
         callback(Result.success(Unit))
     }
