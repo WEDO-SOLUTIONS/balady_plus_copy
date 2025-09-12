@@ -671,18 +671,34 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func setupCamera() {
-        let style = SpeedRangeToStyleZoom(
-            range: SpeedRange(minSpeed: 0.0, maxSpeed: 5.0),
-            minDistanceToManeuver: RouteDistance(millimeters: 0),
-            maxDistanceToManeuver: RouteDistance(millimeters: 0),
-            styleZoom: StyleZoom(value: 16.5)
-        )
-        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = [
-            style
+        let styles = [
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 0.0, maxSpeed: 5.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 0),
+                maxDistanceToManeuver: RouteDistance(millimeters: 10_000),
+                styleZoom: StyleZoom(value: 16.5)
+            ),
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 5.0, maxSpeed: 20.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 10_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 50_000),
+                styleZoom: StyleZoom(value: 18.0)
+            ),
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 20.0, maxSpeed: 60.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 50_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 100_000),
+                styleZoom: StyleZoom(value: 20.0)
+            ),
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 60.0, maxSpeed: 200.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 100_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 300_000),
+                styleZoom: StyleZoom(value: 22.0)
+            ),
         ]
-        navigationManager.zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = [
-            style
-        ]
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = styles
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = styles
     }
 
     func mapTemplate(
