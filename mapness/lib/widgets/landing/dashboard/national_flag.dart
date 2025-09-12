@@ -90,15 +90,12 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
               scale: Tween<double>(begin: .9, end: 1.0).animate(scaleController),
               child: Stack(
                 children: [
-                  Image.asset(
-                    Assets.images.saudiNationalFlag.keyName,
-                    width: 97.8,
-                  ),
-                  Opacity(
-                    opacity: 0.6,
-                    child: _showShimmer
-                        ? Shimmer(
-                            period: Durations.extralong4,
+                  widgetFlag,
+                  if (_showShimmer)
+                    Opacity(
+                      opacity: 0.6,
+                      child: Shimmer(
+                        period: Durations.extralong4,
                             gradient: const LinearGradient(
                               colors: [
                                 Color(0x00C5FFD6),
@@ -110,9 +107,8 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
                               stops: [0.0, 0.4, 0.5, 0.6, 1.0],
                             ),
                             child: widgetFlag,
-                          )
-                        : widgetFlag,
-                  ),
+                      ),
+                    ),
                 ],
               ),
             ),
