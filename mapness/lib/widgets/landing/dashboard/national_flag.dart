@@ -85,7 +85,7 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
         child: Align(
           alignment: Alignment.bottomLeft,
           child: Padding(
-            padding: const EdgeInsets.only(left: Spacing.$6x, bottom: Spacing.$4x),
+            padding: const EdgeInsets.only(left: Spacing.$6x, bottom: Spacing.$1_5x),
             child: ScaleTransition(
               scale: Tween<double>(begin: .9, end: 1.0).animate(scaleController),
               child: Stack(
@@ -96,17 +96,17 @@ class _NationalFlagState extends State<NationalFlag> with SingleTickerProviderSt
                       opacity: 0.6,
                       child: Shimmer(
                         period: Durations.extralong4,
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0x00C5FFD6),
-                                Color(0x00C5FFD6),
-                                Color(0xffC5FFD6),
-                                Color(0x00C5FFD6),
-                                Color(0x00C5FFD6),
-                              ],
-                              stops: [0.0, 0.4, 0.5, 0.6, 1.0],
-                            ),
-                            child: widgetFlag,
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0x00C5FFD6),
+                            Color(0x00C5FFD6),
+                            Color(0xffC5FFD6),
+                            Color(0x00C5FFD6),
+                            Color(0x00C5FFD6),
+                          ],
+                          stops: [0.0, 0.4, 0.5, 0.6, 1.0],
+                        ),
+                        child: widgetFlag,
                       ),
                     ),
                 ],
