@@ -147,7 +147,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                    colors: [
+                      Colors.white.withOpacity(0),
+                      Colors.white.withOpacity(0.8),
+                    ],
                   ),
                 ),
               ),
@@ -165,16 +168,22 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         content: [
           const SizedBox(height: Spacing.$3x),
           FeedbackBannerCardV2(
-            path: Assets.images.feedbackDashboard.keyName,
+            path: isNationalDay
+                ? Assets.images.feedbackDashboardSaudiday.keyName
+                : Assets.images.feedbackDashboard.keyName,
             onTap: () {
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
               context.router.push(const ContributeRoute());
             },
-            gradientColors: const [
-              /// It's normal that some components are not from the design and color system too
-              Color(0xFF4EC9C0),
-              Color(0xFF2AB3A9),
-            ],
+            gradientColors: isNationalDay
+                ? [
+                    const Color(0xFF014850),
+                    const Color(0xFF00343A),
+                  ]
+                : [
+                    const Color(0xFF4EC9C0),
+                    const Color(0xFF2AB3A9),
+                  ],
             title: context.l10n.contribute,
             subtitle: context.l10n.buildBaladyTogether,
           ),
@@ -245,10 +254,39 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           const SizedBox(height: Spacing.$4x),
           const DriveBackHomeCard(),
           const SizedBox(height: Spacing.$6x),
-          DashboardTitle(context.l10n.exploreNearby),
-          const SizedBox(height: Spacing.$4x),
-          const PlacePreview(),
-          const SizedBox(height: Spacing.$6x),
+          if (!isNationalDay) ...[
+            DashboardTitle(context.l10n.exploreNearby),
+            const SizedBox(height: Spacing.$4x),
+            const PlacePreview(),
+            const SizedBox(height: Spacing.$6x),
+          ],
+          if (isNationalDay)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Color(0xff00343A),
+                  ],
+                ),
+                image: DecorationImage(
+                  image: Assets.images.backgroundOrnamentSaudiday.provider(),
+                  matchTextDirection: true,
+                  fit: BoxFit.cover,
+                  alignment: AlignmentDirectional.centerEnd,
+                ),
+              ),
+              child: Column(
+                children: [
+                  DashboardTitle(context.l10n.exploreNearby),
+                  const SizedBox(height: Spacing.$4x),
+                  const PlacePreview(),
+                  const SizedBox(height: Spacing.$6x),
+                ],
+              ),
+            ),
         ],
       ),
     );

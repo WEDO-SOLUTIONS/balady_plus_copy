@@ -31,6 +31,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
+  /// File path: assets/images/background_ornament_saudiday.png
+  AssetGenImage get backgroundOrnamentSaudiday => const AssetGenImage('assets/images/background_ornament_saudiday.png');
+
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
@@ -43,8 +46,15 @@ class $AssetsImagesGen {
   /// File path: assets/images/drive_home_arrow.png
   AssetGenImage get driveHomeArrow => const AssetGenImage('assets/images/drive_home_arrow.png');
 
+  /// File path: assets/images/drive_home_arrow_saudiday.png
+  AssetGenImage get driveHomeArrowSaudiday => const AssetGenImage('assets/images/drive_home_arrow_saudiday.png');
+
   /// File path: assets/images/drive_home_background.png
   AssetGenImage get driveHomeBackground => const AssetGenImage('assets/images/drive_home_background.png');
+
+  /// File path: assets/images/drive_home_background_saudiday.png
+  AssetGenImage get driveHomeBackgroundSaudiday =>
+      const AssetGenImage('assets/images/drive_home_background_saudiday.png');
 
   /// File path: assets/images/eta_sheet_background.png
   AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
@@ -57,6 +67,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/feedback_dashboard.png
   AssetGenImage get feedbackDashboard => const AssetGenImage('assets/images/feedback_dashboard.png');
+
+  /// File path: assets/images/feedback_dashboard_saudiday.png
+  AssetGenImage get feedbackDashboardSaudiday => const AssetGenImage('assets/images/feedback_dashboard_saudiday.png');
 
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
@@ -123,15 +136,19 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
+        backgroundOrnamentSaudiday,
         calendarCard,
         cityExpert,
         darkMapPreview,
         driveHomeArrow,
+        driveHomeArrowSaudiday,
         driveHomeBackground,
+        driveHomeBackgroundSaudiday,
         etaSheetBackground,
         favoritesExampleArabic,
         favoritesExampleEnglish,
         feedbackDashboard,
+        feedbackDashboardSaudiday,
         feedbackEyes,
         icArrowFeedback,
         icFlipsContinue,
