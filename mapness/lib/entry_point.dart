@@ -121,7 +121,6 @@ class MapnessProviderScope extends StatelessWidget {
       ),
     );
   }
-}
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
   const MapnessEntryPoint({
