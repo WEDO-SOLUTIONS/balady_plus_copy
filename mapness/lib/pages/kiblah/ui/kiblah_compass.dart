@@ -4,6 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_bearing.dart';
 import 'package:mapness/pages/kiblah/providers/kaaba_haptics.dart';
 import 'package:mapness/pages/kiblah/ui/radar_widget.dart';
@@ -44,7 +45,8 @@ class KiblahCompass extends ConsumerWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: correct ? context.color.surfaceStatusPositive : context.color.surfaceStatusAccent,
+                    color: correct ? context.color.surfaceStatusPositive :
+                    context.colors.accentDefault,
                     width: strokeWidth,
                   ),
                 ),
@@ -56,12 +58,14 @@ class KiblahCompass extends ConsumerWidget {
                         backgroundColor: Colors.transparent,
                         radarColor: correct
                             ? NonThemeColor.color3.withOpacity(radarOpacity)
-                            : context.colors.foregroundDefault.withOpacity(0.9),
+                            : SaudiNationalDay.isNow()
+                                ? context.colors.accentContainerDefault.withOpacity(0.9)
+                                : context.colors.foregroundDefault.withOpacity(0.9),
                       ),
                       CenterCompassWidget(
                         backgroundColor: correct
                             ? context.staticColor.surfaceStatusPositive.withOpacity(compassBackgroundOpacity)
-                            : context.staticColor.surfaceStatusAccent.withOpacity(compassBackgroundOpacity),
+                            : context.colors.accentDefault.withOpacity(compassBackgroundOpacity),
                       ),
                     ],
                   ),

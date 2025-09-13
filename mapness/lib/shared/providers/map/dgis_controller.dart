@@ -50,10 +50,8 @@ class DgisController extends _$DgisController {
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    final isNationalDay = ref.watch(saudiNationalDayProvider);
-
     // Styles
-    await controller.loadStyles(isNationalDay ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
+    await controller.loadStyles(SaudiNationalDay.isNow() ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
 
 
     // Appearance

@@ -33,7 +33,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+            padding: EdgeInsets.all(Spacing.$1_5x),
             child: SheetDragger(),
           ),
           ContentRow(
@@ -41,16 +41,16 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
               title: context.l10n.profilePhoto,
               titleStyle: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
               customActionWidget: AppButton.close(
-                color: context.colors.neutralOnContainer,
+                color: context.colors.neutralContainerDefault,
                 onTap: context.router.popForced,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
-                padding: EdgeInsets.zero,
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: ContentWrapper(color: context.colors.backgroundSurface1, children: [
+            child: ContentWrapper(color: context.colors.backgroundSurface1,
+                children: [
               ContentRow(
                 onTap: () async {
                   if (isPermanentlyDenied) {
