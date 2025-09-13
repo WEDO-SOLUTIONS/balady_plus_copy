@@ -65,8 +65,16 @@ class $AssetsImagesGen {
   /// File path: assets/images/favorites_example_arabic.png
   AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
 
+  /// File path: assets/images/favorites_example_arabic_saudiday.png
+  AssetGenImage get favoritesExampleArabicSaudiday =>
+      const AssetGenImage('assets/images/favorites_example_arabic_saudiday.png');
+
   /// File path: assets/images/favorites_example_english.png
   AssetGenImage get favoritesExampleEnglish => const AssetGenImage('assets/images/favorites_example_english.png');
+
+  /// File path: assets/images/favorites_example_english_saudiday.png
+  AssetGenImage get favoritesExampleEnglishSaudiday =>
+      const AssetGenImage('assets/images/favorites_example_english_saudiday.png');
 
   /// File path: assets/images/feedback_dashboard.png
   AssetGenImage get feedbackDashboard => const AssetGenImage('assets/images/feedback_dashboard.png');
@@ -150,7 +158,9 @@ class $AssetsImagesGen {
         driveHomeBackgroundSaudiday,
         etaSheetBackground,
         favoritesExampleArabic,
+        favoritesExampleArabicSaudiday,
         favoritesExampleEnglish,
+        favoritesExampleEnglishSaudiday,
         feedbackDashboard,
         feedbackDashboardSaudiday,
         feedbackEyes,

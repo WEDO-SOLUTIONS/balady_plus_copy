@@ -16,7 +16,7 @@ class _FavButton extends StatelessWidget {
         child: SizedBox(
           height: 48,
           child: AppButton(
-            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonColorScheme: ButtonColorScheme.accent,
             buttonType: ButtonType.secondary,
             primaryIcon: icon,
             onTap: onTap,

@@ -103,10 +103,7 @@ class EtaHeader extends HookConsumerWidget {
                 ),
                 child: Column(
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.only(top: Spacing.$1x, bottom: Spacing.$1x),
-                      child: Dragger(),
-                    ),
+                    const SizedBox(height: Spacing.$2x,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment:

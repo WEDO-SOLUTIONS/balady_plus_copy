@@ -92,7 +92,7 @@ class _ActionButton extends StatelessWidget {
           count: count,
           color: context.colors.accentDefault,
         ),
-        buttonColorScheme: ButtonColorScheme.accentSecondary,
+        buttonColorScheme: ButtonColorScheme.accent,
         buttonType: ButtonType.secondary,
         onTap: onTap,
       );

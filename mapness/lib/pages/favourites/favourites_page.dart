@@ -13,6 +13,7 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -366,7 +367,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: context.staticColor.surfaceStatusAccent,
+                          color: context.colors.accentDefault,
                         ),
                         alignment: Alignment.center,
                         child: Column(
@@ -392,8 +393,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 child: Image.asset(
                                   fit: BoxFit.fitWidth,
                                   ref.read(appLanguageProvider) == Language.arabic
-                                      ? Assets.images.favoritesExampleArabic.keyName
-                                      : Assets.images.favoritesExampleEnglish.keyName,
+                                      ? SaudiNationalDay.isNow() ? Assets.images.favoritesExampleArabicSaudiday.keyName : Assets.images.favoritesExampleArabic.keyName
+                                      : SaudiNationalDay.isNow() ? Assets.images.favoritesExampleEnglishSaudiday.keyName : Assets.images.favoritesExampleEnglish.keyName,
                                 ),
                               ),
                             ),

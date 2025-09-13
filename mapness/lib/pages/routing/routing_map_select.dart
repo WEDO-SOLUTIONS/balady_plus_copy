@@ -120,10 +120,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
           nearestObject: nearestObject,
         ),
         Padding(
-          padding: const EdgeInsets.only(
-            left: Spacing.$4x,
-            right: Spacing.$4x,
-            top: Spacing.$3x,
+          padding: const EdgeInsets.all(
+            Spacing.$4x,
           ),
           child: AnimatedSwitcher(
             duration: Durations.medium1,
@@ -223,20 +221,27 @@ class _NearestObject extends StatelessWidget {
       loading: () => null,
     );
     return SizedBox(
-      height: 70,
+      // height: 70,
       child: Center(
         child: AnimatedSwitcher(
           duration: Durations.medium1,
           child: SizedBox(
             key: ValueKey(title),
             width: double.infinity,
-            child: ContentRow(
-              options: ContentRowOptions(
-                // wrapperEnabled: true,
-                wrapperColor: context.colors.backgroundSurface1,
-                leadingIcon: leadingIcon,
-                title: title,
-                subtitle: subtitle,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: Spacing.$4x,
+                right: Spacing.$4x,
+                top: Spacing.$3x,
+              ),
+              child: ContentRow(
+                options: ContentRowOptions(
+                  wrapperEnabled: true,
+                  wrapperColor: context.colors.backgroundSurface1,
+                  leadingIcon: leadingIcon,
+                  title: title,
+                  subtitle: subtitle,
+                ),
               ),
             ),
           ),
@@ -250,6 +255,7 @@ class _NearestObject extends StatelessWidget {
         CooridnatesNearestObject() =>
           '${object.geoPoint.latitude.toStringAsFixed(5)}, ${object.geoPoint.longitude.toStringAsFixed(5)}'
       };
+
   String? _buildSubtitle(NearestObject object) =>
       switch (object) { DGisNearestObject() => object.object.subtitle, CooridnatesNearestObject() => null };
 }

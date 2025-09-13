@@ -63,6 +63,7 @@ class MyLocationPoiActions extends StatelessWidget {
                 ItemActionBar(
                   icon: SystemIcons.parkingAdd,
                   buttonType: ButtonType.secondary,
+                  colorScheme: ButtonColorScheme.accent,
                   onPressed: () {
                     onParkingAdd?.call();
                   },
