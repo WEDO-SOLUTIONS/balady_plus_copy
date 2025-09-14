@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
+import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
 
 class AuthTokenInterceptor {
   static QueuedInterceptorsWrapper tokenInterceptor(
@@ -24,6 +26,15 @@ class AuthTokenInterceptor {
               await ref.read(tokenProvider.notifier).refreshToken();
               // Create dummy dio to rehandle data
               final dummyDio = Dio(baseOptions);
+              dummyDio.interceptors.add(
+                TalkerDioLogger(
+                  settings: const TalkerDioLoggerSettings(
+                    printRequestHeaders: true,
+                    printResponseHeaders: true,
+                    printResponseData: false,
+                  ),
+                ),
+              );
               final options = error.response!.requestOptions;
 
               // Add new refresh token to headers

@@ -17,6 +17,7 @@ import 'app/events_logs/balady_logs.dart';
 void main() async {
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
+
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.stg);
       await setupMapness(EnvType.stg);
@@ -42,34 +43,6 @@ void main() async {
           options.enableFramesTracking = true;
           // options.captureFailedRequests = true;
           options.environment = EnvType.stg.name;
-
-          // Performance Monitoring
-          options.tracesSampleRate = 1.0; // 100% sampling for development
-          // options.tracesSampleRate = 0.1; // 10% sampling for production
-
-          // Profiling
-          options.profilesSampleRate = 1.0; // 100% profiling sampling
-
-          // Auto Performance Instrumentation
-          options.enableAutoPerformanceTracing = true;
-          options.enableUserInteractionTracing = true;
-          options.enableAppHangTracking = true;
-
-          // Session Tracking
-          options.enableAutoSessionTracking = true;
-          // Breadcrumbs
-          options.maxBreadcrumbs = 100;
-
-          // Screenshots and Attachments
-          options.attachScreenshot = true;
-          options.screenshotQuality = SentryScreenshotQuality.high;
-          options.attachViewHierarchy = true;
-
-          // Debug Options
-          options.diagnosticLevel = SentryLevel.debug;
-
-          // Additional Performance Settings
-          options.enableTimeToFullDisplayTracing = true;
         },
         appRunner: () => runApp(
           const MapnessProviderScope(

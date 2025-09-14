@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -87,7 +86,7 @@ class DgisController extends _$DgisController {
       // Voice
       await controller.installVoice('voice-saud');
     } on PlatformException catch (e) {
-      debugPrint('Voice installation error: $e');
+      logger.log('Voice installation error: $e');
     }
   }
 

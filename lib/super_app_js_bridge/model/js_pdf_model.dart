@@ -6,7 +6,6 @@ class JsPdfModel implements BaseData {
   Uint8List? bytes;
   String? url;
 
-
   JsPdfModel({
     required this.type,
     required this.bytes,
@@ -16,7 +15,9 @@ class JsPdfModel implements BaseData {
   factory JsPdfModel.fromJson(Map json) {
     return JsPdfModel(
       type: json['type'],
-      bytes: json['bytes'],
+      bytes: Uint8List.fromList(
+        (json['bytes'] as List).map((byt) => (byt as int)).toList(),
+      ),
       url: json['url'],
     );
   }

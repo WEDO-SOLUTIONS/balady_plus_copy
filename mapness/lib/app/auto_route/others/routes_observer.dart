@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 
 class RoutesObserver extends AutoRouterObserver {
   final WidgetRef ref;
@@ -20,18 +21,18 @@ class RoutesObserver extends AutoRouterObserver {
       final currentPath = path.startsWith('/') ? path : '/$path';
       FlutterUxcam.tagScreenName(currentPath);
       analytics.screen(currentPath);
-      debugPrint('New route pushed: $currentPath');
+      logger.log('New route pushed: $currentPath');
     } else {
       final name = route.settings.name;
       analytics.screen(name ?? 'Unknown');
-      debugPrint('New route pushed: $name');
+      logger.log('New route pushed: $name');
     }
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
-    debugPrint('Current Screen pop: ${route.settings.name}');
+    logger.log('Current Screen pop: ${route.settings.name}');
   }
 
   @override
@@ -41,6 +42,6 @@ class RoutesObserver extends AutoRouterObserver {
     final path = route.path.startsWith('/') ? route.path : '/${route.path}';
     FlutterUxcam.tagScreenName(path);
     ref.read(urbiAnalyticsProvider).screen(path);
-    debugPrint('Tab changed: ${route.name}');
+    logger.log('Tab changed: ${route.name}');
   }
 }

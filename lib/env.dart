@@ -38,6 +38,8 @@ abstract class AppEnv {
     ///  await _deleteAppDir();
     // await _deleteCacheDir();
 
+    sl.registerLazySingleton<EnvType>(() => type);
+
     WidgetsFlutterBinding.ensureInitialized();
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
     AdjustConfig config = AdjustConfig(
@@ -72,7 +74,6 @@ abstract class AppEnv {
 
    //MapUtils.loadMarkers();
 
-    sl.registerLazySingleton<EnvType>(() => type);
     sharedPrefs.init();
     // di: dependency injection
     di.initialize();

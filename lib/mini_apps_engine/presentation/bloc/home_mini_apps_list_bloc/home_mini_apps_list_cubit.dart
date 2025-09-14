@@ -19,6 +19,7 @@ part 'home_mini_apps_list_state.dart';
 
 class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
   MiniAppsRepository homeServicesUseCases;
+  MiniAppsEngineBloc? bloc;
 
   // InAppLocalhostServer? localhostServer;
   // CustomInAppLocalhostServer? localhostServer;
@@ -38,52 +39,19 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
             emit(HomeMiniAppsListFiledState(errors: l.toString()));
           },
           (listMiniApps) async {
-            // String basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
-            String pathService =
-                "${(await getApplicationDocumentsDirectory()).path}/www/";
-            CommonProperties.currentLocalServerDirectory = pathService;
-            // localhostServer ??= CustomInAppLocalhostServer(
-            //   PlatformInAppLocalhostServerCreationParams(
-            //   documentRoot: pathService,
-            //   port: 7734,
-            //     shared: true,
-            //   ),
-            // );
-            // localhostServer ??= InAppLocalhostServer(
-            //   // PlatformInAppLocalhostServerCreationParams(
-            //   documentRoot: pathService,
-            //   port: 7734,
-            //     shared: true,
-            //   // ),
-            // );
-
             ////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////
-
-            // bool isRunning = localhostServer!.isRunning();
-            // if (!isRunning) {
-            //   await localhostServer!.start();
-            // }
-            // String serverPath = "http://localhost:${localhostServer!.port}/";
-
             HomeMiniAppsListState state = HomeMiniAppsListSuccessState(
               miniAppsList: listMiniApps,
-              // serverPath: serverPath,
             );
-
             for (var element in listMiniApps) {
-              if (element.serviceKey == "municipalservice") {
-                state = HomeMiniAppsListSuccessState(
-                  miniAppsList: listMiniApps,
-                  // municipalAppBloc: MiniAppsEngineBloc(
-                  //   miniApp: element,
-                  //   serverPath: serverPath,
-                  // ),
-                  // serverPath: serverPath,
-                );
+              if (element.serviceKey == "municipalservice" && bloc == null) {
+                bloc = MiniAppsEngineBloc(miniApp: element);
               }
             }
+            state = HomeMiniAppsListSuccessState(
+              miniAppsList: listMiniApps,
+              municipalAppBloc: bloc,
+            );
             emit(state);
           },
         );
@@ -93,16 +61,24 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
 
   Future<void> openMiniApp({required String serviceKey, String? path}) async {
     try {
-      MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
-          .miniAppsList
-          .firstWhere((service) => service.serviceKey == serviceKey)
-          .copyWith();
-      miniApp.path = path;
-      NavigationService.pushNamed(
-        routeName: RouteName.miniAppsMainScreen,
-        args: miniApp,
-      );
-    } catch (_) {}
+      if(state is HomeMiniAppsListLoadingState) {
+        await Future.delayed(const Duration(seconds: 5));
+      }
+        MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
+            .miniAppsList
+            .firstWhere((service) => service.serviceKey == serviceKey)
+            .copyWith();
+
+        miniApp.path = path;
+        NavigationService.pushNamed(
+          routeName: RouteName.miniAppsMainScreen,
+          args: miniApp,
+        );
+
+    } catch (e) {
+
+     // CommonFunctions.showSuccess(e.toString());
+    }
   }
 
   Future<BaseResponse?> getMiniAppAcessToken(String serviceKey) async {

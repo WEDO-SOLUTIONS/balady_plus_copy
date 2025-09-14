@@ -153,7 +153,7 @@ class MiniAppsEngineBloc
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: generateRandomPort(portNumber),
+          port: generateRandomPort(portNumber, event.miniApp.serviceName ?? "",event.miniApp.serviceKey??""),
           shared: true,
         ),
       );
@@ -171,8 +171,7 @@ class MiniAppsEngineBloc
       );
 
       emit(MiniAppsEngineLoadedState(
-          servicePath: servicePath, path: event.miniApp.path??""));
-
+          servicePath: servicePath, path: event.miniApp.path ?? ""));
     } catch (e) {
       print(e.toString());
     }
@@ -189,6 +188,7 @@ class MiniAppsEngineBloc
     try {
       Response response = await webService.dio.get(
         urlDownload,
+        // "https://drive.usercontent.google.com/download?id=13lp5O8xlONEtQrjJalAVZTznwu79aLZ0&export=download&authuser=0&confirm=t&uuid=23b4051a-bf9f-4d85-8fa1-ff1abd9cfe39&at=AN8xHooeDKyZTNfEmA5vBIiIRNJq:1757237288738",
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
@@ -283,14 +283,17 @@ class MiniAppsEngineBloc
   //   return indexFilePath;
   // }
 
-  int generateRandomPort(int oldPort) {
+  int generateRandomPort(int oldPort, String serviceName,  String serviceKey ) {
+    if (serviceKey=="islamicservice") {
+      return 1245;
+    }
     final random = Random();
     int newPort = 1000 + random.nextInt(9999); // 8080 to 8090 inclusive
 
-    if (newPort != oldPort) {
+    if (newPort != oldPort && newPort != 1245) {
       return newPort;
     } else {
-      return generateRandomPort(oldPort);
+      return generateRandomPort(oldPort, serviceName,serviceKey);
     }
   }
 

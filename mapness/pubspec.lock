@@ -204,7 +204,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.12.15+408"
+    version: "3.30.3+416"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -788,6 +788,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
+  external_app_launcher:
+    dependency: transitive
+    description:
+      name: external_app_launcher
+      sha256: "5657341c5aa7bf7383efdf3e68db80cb3019e80afa9f1df3250c14818e844857"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -1106,7 +1114,7 @@ packages:
     source: hosted
     version: "5.10.0"
   flutter_hms_gms_availability:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_hms_gms_availability
       sha256: e10cf8692d6265524ede42f2f0f22af66254dd34860b59491b22b34c0327f892
@@ -1648,6 +1656,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+  group_button:
+    dependency: transitive
+    description:
+      name: group_button
+      sha256: "0610fcf28ed122bfb4b410fce161a390f7f2531d55d1d65c5375982001415940"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.3.4"
   gtk:
     dependency: transitive
     description:
@@ -2960,6 +2976,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.2+1"
+  store_redirect:
+    dependency: transitive
+    description:
+      name: store_redirect
+      sha256: ec635bc2f89c1f19b2f384784ddbfc8eb46b27d28224db32cadfe3820eeea6ca
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.4"
   stream_channel:
     dependency: transitive
     description:
@@ -3073,21 +3097,29 @@ packages:
     source: hosted
     version: "3.3.0+3"
   talker:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: talker
-      sha256: acd8f23656ea77b4170652a00268ae62a9fcf62e22f8aefff29bf5eb468207bf
+      sha256: "30bbc526bb2e7d465c630f087479616b6b84570728539fde536a3b652acad2f6"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.2"
+    version: "4.4.1"
   talker_dio_logger:
     dependency: "direct main"
     description:
       name: talker_dio_logger
-      sha256: a20e1945a1e41c91594956a067bf740b9dc12007e0d4b7191ce13e5044c8c0d2
+      sha256: "310f7d1eec2c890183b726f8b4c4e5dcb9104034aefd10e8c5f13686acac305b"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.2"
+    version: "4.4.1"
+  talker_flutter:
+    dependency: "direct main"
+    description:
+      name: talker_flutter
+      sha256: "51e1f26a726dced6952c2070ae2bc7e23393c319e2f98def2009fdbcdfbda7aa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.1"
   talker_logger:
     dependency: transitive
     description:

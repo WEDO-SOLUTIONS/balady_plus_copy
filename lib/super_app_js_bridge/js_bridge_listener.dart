@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'Requirement_enum.dart';
 import 'package:archive/archive.dart';
 import 'package:dgis_map/library.dart';
@@ -74,6 +75,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(getPrayerTime);
     registerFunction(downloadAndExtractInAssets);
     registerFunction(openCameraWithUI);
+    registerFunction(openMiniApps);
+    registerFunction(openPdfFile);
+    registerFunction(openAppSetting);
+  }
+
+
+  @pragma('vm:entry-point')
+  void openAppSetting(dynamic msg, CompletionHandler handler) async {
+    openAppSettings();
   }
 
   @pragma('vm:entry-point')
@@ -370,13 +380,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void openMiniApps(dynamic msg, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
+
     if (checkAppRequirement(
             serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
         true) {
       late BaseResponse response;
-      if (msg != null && msg is Map && msg["miniAppKey"] != null) {
+      if (msg != null && msg is String) {
+        Map data = jsonDecode(msg);
         sl<HomeMiniAppsListCubit>()
-            .openMiniApp(serviceKey: msg["miniAppKey"], path: msg['path']);
+            .openMiniApp(serviceKey: data["miniAppKey"], path: data['path']);
         response = BaseResponse(
           code: 200,
           message: "success",
@@ -404,12 +416,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void checkPermission(dynamic data, CompletionHandler handler) async {
+  void checkPermission(dynamic msg, CompletionHandler handler) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.checkPermission.name) ==
         true) {
-      if (data != null && data is Map) {
+      if (msg != null && (msg is String || msg is Map)) {
+        Map data;
+        msg is String ? data= jsonDecode(msg):data=msg;
         String permissionName = data["permission_name"];
         bool state = false;
         BaseResponse response;
@@ -487,7 +501,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           message: "Can't get location",
           data: null,
         );
-        handler.complete(response.jsonEncodeModel());
+       handler.complete(response.jsonEncodeModel());
+       // var res=  await CommonFunctions.checkLocationSettings(
+       //    NavigationService.navigatorKey.currentContext!,
+       //  );
+       // if(res)
+       //   {
+       //     getLocation(msg, handler);
+       //   }
+
       }
     } else {
       BaseResponse response = BaseResponse(
@@ -597,20 +619,40 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
-    String serviceKey = "municipalservice"; //for testing only
-    //String serviceKey =  msg["serviceKey"];
-    final attachmentSource = msg["attachmentSource"];
-    final List<String>? attachmentExtension =msg["attachmentExtension"]!= null?
-        (msg["attachmentExtension"] as List<dynamic>?)?.cast<String>():[];
-    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
-        true) {
+    print('raw msg : $msg');
+
+    // Ensure msg is always a Map<String, dynamic>
+    late final Map<String, dynamic> data;
+    if (msg is String) {
+      try {
+        data = jsonDecode(msg) as Map<String, dynamic>;
+      } catch (e) {
+        print("❌ Failed to decode msg as JSON: $e");
+        data = {};
+      }
+    } else if (msg is Map) {
+      data = Map<String, dynamic>.from(msg);
+    } else {
+      print("❌ Unsupported msg type: ${msg.runtimeType}");
+      data = {};
+    }
+
+    // Extract values safely
+    final String serviceKey = data["serviceKey"]?.toString() ?? "municipalservice";
+    final String? attachmentSource = data["attachmentSource"]?.toString();
+    final List<String> attachmentExtension = data["attachmentExtension"] != null
+        ? (data["attachmentExtension"] as List<dynamic>)
+        .map((e) => e.toString())
+        .toList()
+        : [];
+
+    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) == true) {
       var file = await FilePicker.platform.pickFiles(
-        type:
-            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
+        type: (attachmentSource == "gallery" ? FileType.image : FileType.custom),
         allowMultiple: false,
-        allowedExtensions:
-            attachmentSource == "gallery" ? [] : attachmentExtension,
+        allowedExtensions: attachmentSource == "gallery" ? [] : attachmentExtension,
       );
+
       late BaseResponse response;
       try {
         if (file != null && file.files.isNotEmpty) {
@@ -620,29 +662,32 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName = path.isNotEmpty
-                  ? path.split('/').last
-                  : ('attachment_name').tr();
+              String fileName =
+              path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
-              JsFilesModel file = JsFilesModel(
-                  fileBase64: base64File,
-                  fileName: fileName,
-                  // fileBytes: fileBytes,
-                  filePath: path);
+
+              JsFilesModel pickedFile = JsFilesModel(
+                fileBase64: base64File,
+                fileName: fileName,
+                filePath: path,
+              );
+
               response = BaseResponse(
-                  code: 200,
-                  message: "success",
-                  data: file,
-                  eventName: "openFilePicker");
+                code: 200,
+                message: "success",
+                data: pickedFile,
+                eventName: "openFilePicker",
+              );
             }
           }
         } else {
           response = BaseResponse(
-              code: 300,
-              message: "Can't get file",
-              data: null,
-              eventName: "openFilePicker");
+            code: 300,
+            message: "Can't get file",
+            data: null,
+            eventName: "openFilePicker",
+          );
         }
       } on PlatformException catch (_) {
         response = BaseResponse(
@@ -652,6 +697,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
+
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -663,6 +709,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
+
 
   /// TODO: Need To Test
   @pragma('vm:entry-point')
@@ -706,10 +753,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.launchUri.name) ==
         true) {
-      if (msg != null && msg is Map) {
-        bool canLaunch = await canLaunchUrl(Uri.parse(msg['uri']));
+      if (msg != null && msg is String) {
+        Map data = jsonDecode(msg);
+        bool canLaunch = await canLaunchUrl(Uri.parse(data['uri']));
         if (canLaunch) {
-          await launchUrl(Uri.parse(msg['uri']));
+          await launchUrl(Uri.parse(data['uri']));
         } else {
           BaseResponse response = BaseResponse(
             code: 400,
@@ -737,9 +785,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.openWebView.name) ==
         true) {
-      if (dataUri != null && dataUri is Map) {
-        if (dataUri["url"] != null) {
-          if (dataUri["type"] == "pdf") {
+      if (dataUri != null && dataUri is String) {
+        Map data = jsonDecode(dataUri);
+        if (data["url"] != null) {
+          if (data["type"] == "pdf") {
             NavigationService.navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (_) {
@@ -748,15 +797,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                       title: const Text(""),
                     ),
                     body: SfPdfViewer.network(
-                      dataUri["url"],
+                      data["url"],
                     ),
                   );
                 },
               ),
             );
           } else {
-            CommonFunctions.openBaladyWebView(dataUri["url"],
-                needLogin: dataUri["needLogin"] ?? true);
+            CommonFunctions.openBaladyWebView(data["url"],
+                needLogin: data["needLogin"] ?? true);
           }
         } else {
           BaseResponse response = BaseResponse(
@@ -785,14 +834,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.openWebView.name) ==
         true) {
-      if (dataUri != null && dataUri is Map) {
+      if (dataUri != null && dataUri is String) {
+        Map data = jsonDecode(dataUri);
         NavigationService.navigatorKey.currentState!.push(
           MaterialPageRoute(
             builder: (_) {
               return PdfViewerScreen(
-                pdfData: JsPdfModel.fromJson(
-                  dataUri,
-                ),
+                pdfData: JsPdfModel.fromJson(data),
               );
             },
           ),
@@ -918,13 +966,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
+
   @pragma('vm:entry-point')
-  void sendToCalender(dynamic data, CompletionHandler handler) {
+  void sendToCalender(dynamic mas, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.sendToCalender.name) ==
         true) {
-      if (data != null && data is Map) {
+      Map? data ;
+      if(mas is String) {
+        data =  jsonDecode(mas);
+      } else {
+        data = mas;
+      }
+      if (data != null ) {
         BaseResponse response = BaseResponse(
           code: 200,
           eventName: "sendToCalender",
@@ -960,7 +1015,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           message: "failed to add",
           data: null,
         );
-        if (kDebugMode) print('data: $data');
+        if (kDebugMode) print('data: $mas');
         handler.complete(response.jsonEncodeModel());
       }
     } else {
@@ -979,12 +1034,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     if (data != null && data is Map) {
       try {
         final notifications = data['notifications'];
-
         if (notifications != null &&
             notifications is List &&
             notifications.isNotEmpty) {
           final Map<String, List<Map>> notificationsByType = {};
-
           // Process and group notifications
           for (var notification in notifications) {
             if (notification is Map) {
@@ -995,11 +1048,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               notificationsByType[title]!.add(notification);
             }
           }
-
           // For each prayer type, only schedule the next occurrence
           for (var entry in notificationsByType.entries) {
             final notificationsForType = entry.value;
-
             // Sort notifications by date (ascending)
             notificationsForType.sort((a, b) {
               final dateA = DateTime.tryParse(a['scheduled_date'] ?? '') ??
@@ -1008,11 +1059,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                   DateTime(2000);
               return dateA.compareTo(dateB);
             });
-
             // Find the next notification that's in the future
             final now = DateTime.now();
             Map? nextNotification;
-
             for (var notification in notificationsForType) {
               final scheduledDateStr = notification['scheduled_date'] ?? '';
               if (scheduledDateStr.isNotEmpty) {
@@ -1027,12 +1076,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                 }
               }
             }
-
             // If no future notification found, use the first one (for tomorrow)
             nextNotification ??= notificationsForType.isNotEmpty
                 ? notificationsForType.first
                 : null;
-
             // Schedule or cancel the notification
             if (nextNotification != null) {
               final int id = nextNotification['id'] ?? 0;
@@ -1040,11 +1087,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               final String scheduledDateStr =
                   nextNotification['scheduled_date'] ?? '';
               final bool isEnabled = nextNotification['is_enabled'] ?? false;
-
               if (isEnabled && scheduledDateStr.isNotEmpty) {
                 try {
                   final scheduledDate = DateTime.parse(scheduledDateStr);
-
                   // Schedule notification using NotificationService
                   NotificationService.showScheduledNotification(
                       id: id, title: title, scheduledDate: scheduledDate);
@@ -1058,7 +1103,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             }
           }
         }
-
         // Return success response
         BaseResponse response = BaseResponse(
           code: 200,

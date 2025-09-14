@@ -1,10 +1,10 @@
 import 'package:dgis_map/library.dart';
-import 'package:flutter/material.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/jobs/data/models/job_distance_info.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'job_distance_provider.g.dart';
@@ -51,7 +51,7 @@ class JobDistance extends _$JobDistance {
         );
       }
     } on Exception catch (e) {
-      debugPrint(e.toString());
+      logger.log('Error calculating distance to job: ${e.toString()}', logLevel: MapnessLogLevel.critical);
     } finally {
       await mixpanel?.track(_metricEventName);
     }

@@ -42,6 +42,7 @@ import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import '../../../mini_apps_engine/data/models/mini_app_model.dart';
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
@@ -290,6 +291,20 @@ class CommonFunctions {
       return handelLocationCatch(true, error, stackTrace);
     }
     return null;
+  }
+
+
+  static void openMiniApp(MiniAppModel? miniApp) {
+
+    if(miniApp != null) {
+
+
+      sl<HomeMiniAppsListCubit>()
+          .openMiniApp(serviceKey: miniApp.serviceKey!, path:miniApp.path);
+
+
+    }
+
   }
 
   static Future<LatLng?> handelLocationCatch(
