@@ -80,7 +80,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openAppSetting);
   }
 
-
   @pragma('vm:entry-point')
   void openAppSetting(dynamic msg, CompletionHandler handler) async {
     openAppSettings();
@@ -88,7 +87,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessSSOToken(dynamic msg, CompletionHandler handler) async {
-    late BaseResponse? response;
+    BaseResponse response = BaseResponse(
+      code: 401,
+      message: "Unauthorized",
+      eventName: "getAccessToken",
+      data: AccessTokenModel(accessToken: CommonProperties.token),
+    );
     if (CommonProperties.isLoggedInMunicipality) {
       response = BaseResponse(
         code: 200,
@@ -124,13 +128,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
       );
     }
-    handler.complete(response?.jsonEncodeModel());
+    handler.complete(response.jsonEncodeModel());
   }
 
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
-    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' || miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp' ) &&
+    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' ||
+            miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp') &&
         !CommonProperties.isLoggedInMunicipality) {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
@@ -423,7 +428,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         true) {
       if (msg != null && (msg is String || msg is Map)) {
         Map data;
-        msg is String ? data= jsonDecode(msg):data=msg;
+        msg is String ? data = jsonDecode(msg) : data = msg;
         String permissionName = data["permission_name"];
         bool state = false;
         BaseResponse response;
@@ -501,15 +506,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           message: "Can't get location",
           data: null,
         );
-       handler.complete(response.jsonEncodeModel());
-       // var res=  await CommonFunctions.checkLocationSettings(
-       //    NavigationService.navigatorKey.currentContext!,
-       //  );
-       // if(res)
-       //   {
-       //     getLocation(msg, handler);
-       //   }
-
+        handler.complete(response.jsonEncodeModel());
+        // var res=  await CommonFunctions.checkLocationSettings(
+        //    NavigationService.navigatorKey.currentContext!,
+        //  );
+        // if(res)
+        //   {
+        //     getLocation(msg, handler);
+        //   }
       }
     } else {
       BaseResponse response = BaseResponse(
@@ -638,19 +642,23 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
 
     // Extract values safely
-    final String serviceKey = data["serviceKey"]?.toString() ?? "municipalservice";
+    final String serviceKey =
+        data["serviceKey"]?.toString() ?? "municipalservice";
     final String? attachmentSource = data["attachmentSource"]?.toString();
     final List<String> attachmentExtension = data["attachmentExtension"] != null
         ? (data["attachmentExtension"] as List<dynamic>)
-        .map((e) => e.toString())
-        .toList()
+            .map((e) => e.toString())
+            .toList()
         : [];
 
-    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
+        true) {
       var file = await FilePicker.platform.pickFiles(
-        type: (attachmentSource == "gallery" ? FileType.image : FileType.custom),
+        type:
+            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
         allowMultiple: false,
-        allowedExtensions: attachmentSource == "gallery" ? [] : attachmentExtension,
+        allowedExtensions:
+            attachmentSource == "gallery" ? [] : attachmentExtension,
       );
 
       late BaseResponse response;
@@ -662,8 +670,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName =
-              path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
+              String fileName = path.isNotEmpty
+                  ? path.split('/').last
+                  : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
 
@@ -709,7 +718,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
-
 
   /// TODO: Need To Test
   @pragma('vm:entry-point')
@@ -860,7 +868,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void trackLogs(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
-
       BaseResponse response = BaseResponse(
         code: 200,
         eventName: "trackLogs",
@@ -966,20 +973,19 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-
   @pragma('vm:entry-point')
   void sendToCalender(dynamic mas, CompletionHandler handler) {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.sendToCalender.name) ==
         true) {
-      Map? data ;
-      if(mas is String) {
-        data =  jsonDecode(mas);
+      Map? data;
+      if (mas is String) {
+        data = jsonDecode(mas);
       } else {
         data = mas;
       }
-      if (data != null ) {
+      if (data != null) {
         BaseResponse response = BaseResponse(
           code: 200,
           eventName: "sendToCalender",
