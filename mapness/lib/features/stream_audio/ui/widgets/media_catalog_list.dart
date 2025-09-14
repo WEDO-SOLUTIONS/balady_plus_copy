@@ -6,7 +6,8 @@ import 'package:mapness/features/stream_audio/ui/widgets/media_catalog_item.dart
 import '../providers/stream_audio_prov.dart';
 
 class MediaCatalogList extends ConsumerStatefulWidget {
-  const MediaCatalogList({super.key});
+  const MediaCatalogList({required this.needReset, super.key});
+  final Function() needReset;
 
   @override
   ConsumerState<MediaCatalogList> createState() => _MediaCatalogListState();
@@ -40,11 +41,17 @@ class _MediaCatalogListState extends ConsumerState<MediaCatalogList> {
             padding: const EdgeInsets.symmetric(horizontal: RadiusBorder.l),
             itemBuilder: (_, index) {
               final program = programs[index];
-              return MediaCatalogItem(
-                subTitle: program.title,
-                title: program.sub,
-                image: program.programImage.provider(),
-                radioImage: program.channelImage.provider(),
+              return GestureDetector(
+                onTap: () {
+                  widget.needReset.call();
+                  ref.read(streamAudioProvider).selectProgram(program);
+                },
+                child: MediaCatalogItem(
+                  subTitle: program.title,
+                  title: program.sub,
+                  image: program.programImage.provider(),
+                  radioImage: program.channelImage.provider(),
+                ),
               );
             },
           ),

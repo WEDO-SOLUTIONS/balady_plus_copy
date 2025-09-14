@@ -1,13 +1,22 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 
-class PlayingAudioTile extends StatelessWidget {
+class PlayingAudioTile extends ConsumerStatefulWidget {
   const PlayingAudioTile({super.key});
 
   @override
-  Widget build(BuildContext context) => Row(
+  ConsumerState<PlayingAudioTile> createState() => _PlayingAudioTileState();
+}
+
+class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> {
+  @override
+  Widget build(BuildContext context) {
+    final provider = ref.watch(streamAudioProvider);
+    return Row(
         children: [
           Expanded(
             child: Row(
@@ -24,21 +33,21 @@ class PlayingAudioTile extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Panorama FM',
-                        style: TextStyle(
+                        provider.selectedProgram?.title ?? '-',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        'Paused',
-                        style: TextStyle(
+                        provider.selectedProgram?.sub ?? '-',
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white60,
                         ),
@@ -61,4 +70,5 @@ class PlayingAudioTile extends StatelessWidget {
           ),
         ],
       );
+  }
 }

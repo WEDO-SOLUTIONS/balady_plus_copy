@@ -512,6 +512,10 @@ class $AssetsImagesAudioPlaceholdersGen {
   /// File path: assets/images/audio_placeholders/arriving.png
   AssetGenImage get arriving => const AssetGenImage('assets/images/audio_placeholders/arriving.png');
 
+  /// Directory path: assets/images/audio_placeholders/arriving_soon
+  $AssetsImagesAudioPlaceholdersArrivingSoonGen get arrivingSoon =>
+      const $AssetsImagesAudioPlaceholdersArrivingSoonGen();
+
   /// File path: assets/images/audio_placeholders/hoda.png
   AssetGenImage get hoda => const AssetGenImage('assets/images/audio_placeholders/hoda.png');
 
@@ -945,6 +949,32 @@ class $AssetsIconsSvgWeatherGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [moon, sunNew, floodPoint, humidity, pressure, thermometerEmpty, umbrellaEmpty, wind];
+}
+
+class $AssetsImagesAudioPlaceholdersArrivingSoonGen {
+  const $AssetsImagesAudioPlaceholdersArrivingSoonGen();
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/apple_car_play.png
+  AssetGenImage get appleCarPlay =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/apple_car_play.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/balady_content.png
+  AssetGenImage get baladyContent =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/balady_content.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/mbc_video_news.png
+  AssetGenImage get mbcVideoNews =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/mbc_video_news.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/on_demand.png
+  AssetGenImage get onDemand => const AssetGenImage('assets/images/audio_placeholders/arriving_soon/on_demand.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/speed_alerts.png
+  AssetGenImage get speedAlerts =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/speed_alerts.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [appleCarPlay, baladyContent, mbcVideoNews, onDemand, speedAlerts];
 }
 
 class Assets {

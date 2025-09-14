@@ -194,6 +194,7 @@ flutter:
     - assets/icons/svg/places_new/
     - assets/images/
     - assets/images/audio_placeholders/
+    - assets/images/audio_placeholders/arriving_soon/
     - assets/images_svg/
     - assets/maps/configs/
     - packages/map_styles/src/styles.2gis

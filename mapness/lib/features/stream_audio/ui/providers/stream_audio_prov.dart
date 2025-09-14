@@ -7,6 +7,18 @@ class StreamAudioProvider extends ChangeNotifier {
   bool _isPlaying = false;
   bool _isExited = false;
 
+  ProgramDto? _selectedProgram;
+
+  ProgramDto? get selectedProgram => _selectedProgram;
+
+  void selectProgram(ProgramDto? program) {
+    if(!_isPlaying) {
+      _isPlaying = true;
+    }
+    _selectedProgram = program;
+    notifyListeners();
+  }
+
   bool get isPlaying => _isPlaying;
 
   bool get isExited => _isExited;
@@ -22,6 +34,7 @@ class StreamAudioProvider extends ChangeNotifier {
         'StreamAudioProvider: exitPlayer() called - setting isPlaying=false, isExited=true');
     _isPlaying = false;
     _isExited = true;
+    _selectedProgram = null;
     notifyListeners();
     print(
         'StreamAudioProvider: State after exit - isPlaying=$isPlaying, isExited=$isExited');
