@@ -26,7 +26,6 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
-import 'package:mapness/widgets/landing/dashboard_feedback_card.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:mapness/widgets/landing/dashboard_offers_row.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';

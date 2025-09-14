@@ -954,6 +954,11 @@ class Assets {
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
+  static const String resp = 'packages/mapness/assets/resp.json';
+  static const String resp2 = 'packages/mapness/assets/resp2.json';
+
+  /// List of all assets
+  static List<String> get values => [resp, resp2];
 }
 
 class AssetGenImage {
