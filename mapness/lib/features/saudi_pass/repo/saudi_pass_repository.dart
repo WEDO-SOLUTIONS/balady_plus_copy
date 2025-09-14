@@ -14,7 +14,6 @@ class SaudiPassRepository {
   SaudiPassRepository(this._dio);
 
   Future<Lookups> getAllLookups() async {
-    _dio.interceptors.add(CurlLoggerInterceptor());
     final response = await _dio.get('/lookups');
 
     return LookupsBody.fromJson(response.data).dataOrThrow();
@@ -56,11 +55,7 @@ class SaudiPassRepository {
     }..removeWhere((_, value) => value == null);
 
     final response = await _dio.get('/promotions', queryParameters: queryParameters);
-    final z = PromotionsBody.fromJson(response.data).dataOrThrow();
-    print('amr ${z.records.length}');
-    print('amr ${z.records.map((e) => e.name,)}');
-
-    return z;
+    return PromotionsBody.fromJson(response.data).dataOrThrow();
   }
 
   Future<OfferDetails> getOfferDetails({required String offerId}) async {
@@ -132,40 +127,5 @@ class _RequestInterceptorHandler extends RequestInterceptorHandler {
     }
 
     return effectiveRequestOptions;
-  }
-}
-
-class CurlLoggerInterceptor extends Interceptor {
-  @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final method = options.method.toUpperCase();
-    final url = options.uri.toString();
-
-    final curl = StringBuffer();
-
-    curl.write('curl -X $method');
-
-    // Add headers
-    options.headers.forEach((k, v) {
-      curl.write(' -H "${k}: ${v.toString().replaceAll('"', '\\"')}"');
-    });
-
-    // Add data
-    if (options.data != null) {
-      if (options.data is Map || options.data is List) {
-        final data = json.encode(options.data);
-        curl.write(' -d \'$data\'');
-      } else {
-        curl.write(' -d "${options.data.toString()}"');
-      }
-    }
-
-    curl.write(' "$url"');
-
-    print('===== 🌐 cURL Request =====');
-    print(curl.toString());
-    print('===========================');
-
-    super.onRequest(options, handler);
   }
 }

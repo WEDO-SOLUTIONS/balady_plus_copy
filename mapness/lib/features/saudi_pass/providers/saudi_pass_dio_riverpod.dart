@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:dio_smart_retry/dio_smart_retry.dart';
-import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
 import 'package:mapness/features/saudi_pass/repo/verifying_key_interceptor.dart';
 import 'package:mapness/shared/lib/auth/auth_token_interceptors.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -76,7 +75,6 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
           ],
         ),
         VerifyingKeyInterceptor(),
-        CurlLoggerInterceptor()
       ],
     );
     return dio;
