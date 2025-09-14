@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/saudi_pass/offer_feedback.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
@@ -55,6 +53,7 @@ class SaudiPassRepository {
     }..removeWhere((_, value) => value == null);
 
     final response = await _dio.get('/promotions', queryParameters: queryParameters);
+
     return PromotionsBody.fromJson(response.data).dataOrThrow();
   }
 
