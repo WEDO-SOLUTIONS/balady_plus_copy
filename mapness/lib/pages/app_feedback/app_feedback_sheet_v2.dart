@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -10,6 +11,7 @@ import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart'
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/tag_group_type_icons_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_loading.dart';
@@ -249,9 +251,15 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      AppFeedbackTagMapperV2.getLocalizedTitle(context.l10n, tagGroup.type),
-                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    Row(
+                      children: [
+                        if (tagGroup.type.icon != null) Icon(tagGroup.type.icon, color: context.colors.foregroundSoft),
+                        if (tagGroup.type.icon != null) Spacing.$1x.widthBox,
+                        Text(
+                          AppFeedbackTagMapperV2.getLocalizedTitle(context.l10n, tagGroup.type),
+                          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: Spacing.$3x),
                     Wrap(
