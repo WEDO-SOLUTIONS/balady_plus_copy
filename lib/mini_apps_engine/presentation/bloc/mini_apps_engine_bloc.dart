@@ -153,7 +153,7 @@ class MiniAppsEngineBloc
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: generateRandomPort(portNumber, event.miniApp.serviceName ?? "",event.miniApp.serviceKey??""),
+          port: event.miniApp.portNumber ??  generateRandomPort(portNumber, event.miniApp.serviceName ?? "",event.miniApp.serviceKey??""),
           shared: true,
         ),
       );
