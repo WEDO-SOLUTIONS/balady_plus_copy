@@ -56,8 +56,12 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                           onTap: () => context.router.push(const MomraWebsiteRoute()),
                           options: ContentRowOptions(
                             title: context.l10n.baladyWebsite,
-                            leadingIcon:
-                                SvgPicture.asset('assets/icons/svg/profile/website.svg', height: 24, width: 24),
+                            leadingIcon: SvgPicture.asset(
+                              'assets/icons/svg/profile/website.svg',
+                              height: 24,
+                              width: 24,
+                              color: context.colors.accentDefault,
+                            ),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: SystemIcons.arrowCornerRightLarge.icon(
                                 color: context.colors.foregroundSoft,

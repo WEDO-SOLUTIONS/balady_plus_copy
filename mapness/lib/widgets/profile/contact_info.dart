@@ -32,7 +32,10 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
 
   @override
   void initState() {
-    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
 
     _animation = TweenSequence<Color?>(
       <TweenSequenceItem<Color?>>[
@@ -80,8 +83,9 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                 title: context.isLTR ? '@$momrahTwitter' : '$momrahTwitter@',
                 subtitle: context.l10n.twitterAccount,
               ),
-              trailing: const ContentRowTextTrailingOptions(
+              trailing: ContentRowTextTrailingOptions(
                 icon: SystemIcons.arrowCornerRightLarge,
+                iconColor: context.colors.foregroundSoft,
               ),
             ),
             ContentRow(
