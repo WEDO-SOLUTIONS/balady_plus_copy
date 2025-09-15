@@ -123,6 +123,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
             left: Spacing.$4x,
             right: Spacing.$4x,
             top: Spacing.$3x,
+            bottom: Spacing.$3x,
           ),
           child: AnimatedSwitcher(
             duration: Durations.medium1,
