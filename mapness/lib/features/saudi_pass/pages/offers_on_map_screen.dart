@@ -9,17 +9,21 @@ class OffersOnMapPage extends StatelessWidget {
   final Set<lookups_body.Category> categories;
   final Set<lookups_body.RecommendedType> recommendedTypes;
   final City city;
+  final bool isAll;
 
   const OffersOnMapPage({
     required this.city,
+    required this.isAll,
     super.key,
     this.categories = const {},
     this.recommendedTypes = const {},
   });
 
   @override
-  Widget build(BuildContext context) => OffersOnMapWidget(
+  Widget build(BuildContext context) =>
+      OffersOnMapWidget(
         city: city,
+        isAll: isAll,
         categories: categories,
         recommendedTypes: recommendedTypes,
       );

@@ -97,6 +97,7 @@ class ShowMapOffers extends _$ShowMapOffers {
   Future<void> switchOffersVisibility({
     required bool enabled,
     required String cityId,
+    required bool isAll,
     Set<Category>? category,
     Set<RecommendedType>? promotionsType,
   }) async {
@@ -121,11 +122,14 @@ class ShowMapOffers extends _$ShowMapOffers {
     try {
       final recommendedTypes = preferences?.recommendedTypes.toSet() ?? promotionsType ?? {};
       final categories = preferences?.categories.toSet() ?? category ?? {};
-      final cities = <String>{
-        if (preferences?.cities.isEmpty ?? true) cityId,
+
+      final cities = isAll
+          ? {
+        cityId,
+      }
+          : {
         if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
       };
-
       final updatedState = List<Offer>.from([]);
 
       final promotions = await saudiPassRepository.getPromotions(
@@ -145,9 +149,11 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> toggleOffersOnMap(String cityId) async {
+  Future<void> toggleOffersOnMap(String cityId, {
+    required bool isAll
+  }) async {
     toggleShowMap = !toggleShowMap;
 
-    await switchOffersVisibility(enabled: toggleShowMap, cityId: cityId);
+    await switchOffersVisibility(enabled: toggleShowMap, isAll: isAll, cityId: cityId);
   }
 }

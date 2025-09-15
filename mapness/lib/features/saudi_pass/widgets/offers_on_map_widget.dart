@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -35,11 +33,13 @@ class OffersOnMapWidget extends StatefulHookConsumerWidget {
   final Set<lookups_body.Category> categories;
   final Set<lookups_body.RecommendedType> recommendedTypes;
   final lookups_body.City city;
+  final bool isAll;
 
   const OffersOnMapWidget({
     required this.categories,
     required this.recommendedTypes,
     required this.city,
+    required this.isAll,
     super.key,
   });
 
@@ -195,6 +195,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       showMapOffers.switchOffersVisibility(
         enabled: true,
         cityId: widget.city.id,
+        isAll: widget.isAll,
         category: widget.categories.isEmpty ? null : widget.categories,
         promotionsType:
             widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
@@ -202,6 +203,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
       return () => showMapOffers.switchOffersVisibility(
             enabled: false,
+            isAll: widget.isAll,
             cityId: widget.city.id,
           );
     });
@@ -262,15 +264,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     final categoryStringBar = widget.categories.isNotEmpty
         ? ', ${widget.categories.length} ${context.l10n.saudiPassOffersPreferencesCategoriesPluralZero}'
         : '';
-
-    final heightAppBar = Platform.isIOS ? 130.0 : 90.0;
-    final paddingAppBar = Platform.isIOS ? 90.0 : 50.0;
     return Column(
       children: [
         Container(
-          height: heightAppBar,
           color: context.colors.backgroundSurface4,
-          child: Stack(
+          child: Column(
             children: [
               BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
@@ -286,18 +284,13 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
-              Positioned.fill(
-                top: paddingAppBar,
+              Padding(
+                padding:  const EdgeInsets.only(bottom: 8),
                 child: Material(
                   color: Colors.transparent,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: Center(
-                      child: Text(
-                        '${widget.city.name}$typesStringBar$categoryStringBar',
-                        style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
-                      ),
-                    ),
+                  child: Text(
+                    '${widget.city.name}$typesStringBar$categoryStringBar',
+                    style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ),
               )
