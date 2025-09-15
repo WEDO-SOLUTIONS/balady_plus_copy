@@ -133,7 +133,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           width: 22,
         )
       : SvgPicture.asset(
-    color: context.colors.accentDefault,
+          color: context.colors.accentDefault,
           Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,

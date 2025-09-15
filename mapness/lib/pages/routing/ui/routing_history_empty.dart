@@ -7,19 +7,19 @@ class RoutingHistoryEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 4,
-        horizontal: 20,
-      ),
-      child: Text(
-        context.l10n.selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes,
-        textAlign: TextAlign.center,
-        style: context.textStyle.footNote.copyWith(color: context.colors.foregroundDefault),
-      ),
-    ),
-  );
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: 20,
+          ),
+          child: Text(
+            context.l10n.selectYourStartingAndDestinationPointsAndWeWillShowYouConvenientRoutes,
+            textAlign: TextAlign.center,
+            style: context.textStyle.footNote.copyWith(color: context.colors.foregroundDefault),
+          ),
+        ),
+      );
 }

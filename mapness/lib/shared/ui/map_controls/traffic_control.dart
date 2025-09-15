@@ -21,29 +21,29 @@ class TrafficControlWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => AnimatedOpacity(
-      opacity: opacity,
-      duration: const Duration(milliseconds: 250),
-      child: MapButton(
-        borderRadius: borderRadius,
-        onTap: onTap,
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: SvgPicture.asset(
-            isEnabled
-                ? SaudiNationalDay.isNow()
-                    ? Assets.icons.svg.carActiveSaudi.keyName
-                    : Assets.icons.svg.carActive.keyName
-                : Assets.icons.svg.car.keyName,
-            // package: packageName,
-            colorFilter: onTap == null
-                ? ColorFilter.mode(
-                    context.colors.foregroundMuted.withOpacity(0.36),
-                    BlendMode.srcIn,
-                  )
-                : null,
+        opacity: opacity,
+        duration: const Duration(milliseconds: 250),
+        child: MapButton(
+          borderRadius: borderRadius,
+          onTap: onTap,
+          child: SizedBox(
+            width: 24,
+            height: 24,
+            child: SvgPicture.asset(
+              isEnabled
+                  ? SaudiNationalDay.isNow()
+                      ? Assets.icons.svg.carActiveSaudi.keyName
+                      : Assets.icons.svg.carActive.keyName
+                  : Assets.icons.svg.car.keyName,
+              // package: packageName,
+              colorFilter: onTap == null
+                  ? ColorFilter.mode(
+                      context.colors.foregroundMuted.withOpacity(0.36),
+                      BlendMode.srcIn,
+                    )
+                  : null,
+            ),
           ),
         ),
-      ),
-    );
+      );
 }

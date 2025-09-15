@@ -191,9 +191,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           },
                     child: Icon(
                       GeneralIcons.trash,
-                      color: selectedItems.isEmpty
-                          ? ctx.colors.foregroundMuted
-                          : ctx.colors.errorDefault,
+                      color: selectedItems.isEmpty ? ctx.colors.foregroundMuted : ctx.colors.errorDefault,
                     ),
                   )
                 else
@@ -393,8 +391,12 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 child: Image.asset(
                                   fit: BoxFit.fitWidth,
                                   ref.read(appLanguageProvider) == Language.arabic
-                                      ? SaudiNationalDay.isNow() ? Assets.images.favoritesExampleArabicSaudiday.keyName : Assets.images.favoritesExampleArabic.keyName
-                                      : SaudiNationalDay.isNow() ? Assets.images.favoritesExampleEnglishSaudiday.keyName : Assets.images.favoritesExampleEnglish.keyName,
+                                      ? SaudiNationalDay.isNow()
+                                          ? Assets.images.favoritesExampleArabicSaudiday.keyName
+                                          : Assets.images.favoritesExampleArabic.keyName
+                                      : SaudiNationalDay.isNow()
+                                          ? Assets.images.favoritesExampleEnglishSaudiday.keyName
+                                          : Assets.images.favoritesExampleEnglish.keyName,
                                 ),
                               ),
                             ),

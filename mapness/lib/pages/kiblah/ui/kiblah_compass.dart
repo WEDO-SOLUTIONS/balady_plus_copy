@@ -45,8 +45,7 @@ class KiblahCompass extends ConsumerWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: correct ? context.color.surfaceStatusPositive :
-                    context.colors.accentDefault,
+                    color: correct ? context.color.surfaceStatusPositive : context.colors.accentDefault,
                     width: strokeWidth,
                   ),
                 ),

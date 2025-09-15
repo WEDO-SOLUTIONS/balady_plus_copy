@@ -29,6 +29,7 @@ class LanguageRow extends ConsumerWidget {
   // According to task BALADY-416 to hide flags we temporary hide it with boolean flag
   // We don't delete it because this goes against the design of this feature
   static const showFlags = false;
+
   const LanguageRow({
     required this.language,
     required this.border,
@@ -68,10 +69,8 @@ class LanguageRow extends ConsumerWidget {
                 actionIcon: AppIcons(
                   iconData: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
                   size: 24,
-                  color: currentLanguage == language
-                      ? context.colors.accentDefault
-                      : context.color.surfaceContrastHigh,
-                      // : context.colors.backgroundSurface4,
+                  color: currentLanguage == language ? context.colors.accentDefault : context.color.surfaceContrastHigh,
+                  // : context.colors.backgroundSurface4,
                 ),
               ),
             ),

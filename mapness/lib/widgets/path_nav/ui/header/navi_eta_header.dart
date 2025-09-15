@@ -1,7 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -20,7 +19,9 @@ import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 part 'finished_state_title.dart';
+
 part 'paused_state_title.dart';
+
 part 'running_state_title.dart';
 
 class EtaHeader extends HookConsumerWidget {
@@ -103,7 +104,9 @@ class EtaHeader extends HookConsumerWidget {
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(height: Spacing.$2x,),
+                    const SizedBox(
+                      height: Spacing.$2x,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment:
@@ -187,6 +190,7 @@ class EtaHeader extends HookConsumerWidget {
 class _Button extends StatelessWidget {
   final IconData? icon;
   final VoidCallback onTap;
+
   const _Button({
     required this.onTap,
     this.icon,

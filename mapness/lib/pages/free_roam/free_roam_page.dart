@@ -129,7 +129,6 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
     final systemDirectionality = Directionality.of(context);
     final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
-
     return SafeArea(
       bottom: false,
       child: Directionality(

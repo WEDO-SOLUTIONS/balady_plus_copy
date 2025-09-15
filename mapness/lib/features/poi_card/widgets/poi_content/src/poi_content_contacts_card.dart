@@ -245,8 +245,7 @@ class _SocialMediaItemWidget extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            color: SaudiNationalDay.isNow() ? context.colors.accentDefault :
-            context.colors.accentSecondaryDefault,
+            color: SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.accentSecondaryDefault,
             size: Spacing.$6x,
           ),
         ),

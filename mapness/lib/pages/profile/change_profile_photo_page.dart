@@ -39,7 +39,9 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
           ContentRow(
             options: ContentRowOptions(
               title: context.l10n.profilePhoto,
-              titleStyle: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
+              titleStyle: context.textStyle.heading2.copyWith(
+                color: context.colors.foregroundDefault,
+              ),
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
                 onTap: context.router.popForced,
@@ -49,8 +51,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: ContentWrapper(color: context.colors.backgroundSurface1,
-                children: [
+            child: ContentWrapper(color: context.colors.backgroundSurface1, children: [
               ContentRow(
                 onTap: () async {
                   if (isPermanentlyDenied) {
@@ -68,7 +69,9 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
                     colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
                   ),
                   title: context.l10n.change_avatar,
-                  titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                  titleStyle: context.textStyle.text.copyWith(
+                    color: context.colors.foregroundDefault,
+                  ),
                 ),
               ),
             ]),
@@ -100,7 +103,9 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
       ImageEditorRoute(image: bytes),
     );
     if (croppedBytes != null) {
-      unawaited(ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes));
+      unawaited(
+        ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes),
+      );
     }
   }
 }

@@ -117,7 +117,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                       color: Color(0xFF00343A),
                     ),
                     child: Align(
-                      alignment: Alignment.centerRight,
+                        alignment: Alignment.centerRight,
                         child: Padding(
                           padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
                           child: Text(

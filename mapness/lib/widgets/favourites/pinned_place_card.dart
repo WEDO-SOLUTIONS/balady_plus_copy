@@ -53,8 +53,7 @@ class PinnedPlaceCard extends StatelessWidget {
                     width: 56,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(40),
-                      color: isAdded ? context.colors.backgroundSurface1 :
-                      context.color.surfaceStatusContrastAccent,
+                      color: isAdded ? context.colors.backgroundSurface1 : context.color.surfaceStatusContrastAccent,
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8),

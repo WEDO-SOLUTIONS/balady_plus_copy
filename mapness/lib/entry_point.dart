@@ -107,20 +107,20 @@ class MapnessProviderScope extends StatelessWidget {
               // Initialize Saudi National Day provider to start the timer
               ref.watch(saudiNationalDayProvider);
 
-            return provider.MultiProvider(
-              providers: [
-                provider.Provider<AppLocalizations>.value(
-                  value: localizations,
-                ),
-              ],
-              child: child,
-            );
-          },
-          child: child,
+              return provider.MultiProvider(
+                providers: [
+                  provider.Provider<AppLocalizations>.value(
+                    value: localizations,
+                  ),
+                ],
+                child: child,
+              );
+            },
+            child: child,
+          ),
         ),
-      ),
-    );
-  }
+      );
+}
 
 class MapnessEntryPoint extends ConsumerStatefulWidget {
   const MapnessEntryPoint({
