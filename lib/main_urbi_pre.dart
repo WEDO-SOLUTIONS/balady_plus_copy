@@ -20,7 +20,7 @@ void main() async {
 
     await SentryFlutter.init(
           (options) {
-        options.dsn = 'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
+        options.dsn = 'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
         // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
         // We recommend adjusting this value in production.
         options.tracesSampleRate = 1.0;

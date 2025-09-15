@@ -7,6 +7,7 @@ class MiniAppModel {
       this.requirements,
       this.serviceKey,
       this.cdnLogoRef,
+      this.portNumber,
       this.logoKey,
       this.latestVersion,
       this.path});
@@ -17,6 +18,8 @@ class MiniAppModel {
     serviceKey = json['serviceKey'];
     description = json['description'];
     cdnLogoRef = json['cdnLogoRef'];
+    portNumber =
+        json['portNumber'] != null ? int.tryParse(json['portNumber']) : null;
     entity = json['entity'];
     logoKey = json['logoKey'];
     latestVersion = json['latestVersion'] != null
@@ -30,21 +33,25 @@ class MiniAppModel {
       });
     }
   }
+
   String? id;
   String? serviceName;
   List<Requirements>? requirements;
   String? serviceKey;
   String? cdnLogoRef;
+  int? portNumber;
   String? description;
   String? entity;
   String? logoKey;
   LatestVersion? latestVersion;
   String? path;
+
   MiniAppModel copyWith(
           {String? id,
           String? serviceName,
           String? description,
           String? cdnLogoRef,
+          int? portNumber,
           String? serviceKey,
           String? entity,
           String? logoKey,
@@ -58,6 +65,7 @@ class MiniAppModel {
           description: description ?? this.description,
           entity: entity ?? this.entity,
           cdnLogoRef: cdnLogoRef ?? this.cdnLogoRef,
+          portNumber: portNumber ?? this.portNumber,
           requirements: requirements ?? this.requirements,
           logoKey: logoKey ?? this.logoKey,
           latestVersion: latestVersion ?? this.latestVersion,
@@ -95,6 +103,7 @@ class LatestVersion {
         ? DeepLinkModel.fromJson(json['deepLinkDto'])
         : null;
   }
+
   String? id;
   String? versionDescription;
   String? versionNumber;
@@ -106,6 +115,7 @@ class LatestVersion {
   int? status;
   int? type;
   DeepLinkModel? deepLinkModel;
+
   LatestVersion copyWith({
     String? id,
     String? versionDescription,
@@ -151,6 +161,7 @@ class PackageMetaDataDto {
   String? extension;
   String? size;
   String? name;
+
   PackageMetaDataDto copyWith({
     String? id,
     String? extension,
@@ -175,8 +186,10 @@ class Requirements {
     requirementKey = json['requirementKey'];
     name = json['name'];
   }
+
   String? requirementKey;
   String? name;
+
   Requirements copyWith({
     String? requirementKey,
     String? name,
@@ -185,6 +198,7 @@ class Requirements {
         requirementKey: requirementKey ?? this.requirementKey,
         name: name ?? this.name,
       );
+
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['requirementKey'] = requirementKey;
