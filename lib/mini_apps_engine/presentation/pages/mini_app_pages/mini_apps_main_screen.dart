@@ -53,16 +53,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
-
-    HomeMiniAppsListState state = context.read<HomeMiniAppsListCubit>().state;
-
+    // HomeMiniAppsListState state = context.read<HomeMiniAppsListCubit>().state;
     return BlocProvider<MiniAppsEngineBloc>(
-      create: (context) => state is HomeMiniAppsListSuccessState &&
-              data.serviceKey == "municipalservice" &&
-              !(state.municipalAppBloc?.isClosed ?? true) &&
-              state.municipalAppBloc?.state is MiniAppsEngineLoadedState
-          ? state.municipalAppBloc!
-          : MiniAppsEngineBloc(miniApp: data),
+      create: (context) => MiniAppsEngineBloc(miniApp: data),
       child: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
@@ -107,18 +100,22 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                           ),
                           const SizedBox(height: 16),
                           if (state is MiniAppsEngineLoadingState)
-                            state.progress.isEmpty?SizedBox(): Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: SizedBox(
-                                height: 10,
-                                child: LinearProgressIndicator(
-                                  value: (double.parse(state.progress) / 100),
-                                  backgroundColor: Colors.grey[200],
-                                  valueColor: const AlwaysStoppedAnimation<Color>(
-                                      AppColor.primary900Light),
-                                ),
-                              ),
-                            ),
+                            state.progress.isEmpty
+                                ? const SizedBox()
+                                : Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: SizedBox(
+                                      height: 10,
+                                      child: LinearProgressIndicator(
+                                        value: (double.parse(state.progress) /
+                                            100),
+                                        backgroundColor: Colors.grey[200],
+                                        valueColor:
+                                            const AlwaysStoppedAnimation<Color>(
+                                                AppColor.primary900Light),
+                                      ),
+                                    ),
+                                  ),
                           const SizedBox(height: 16),
                           Text(
                             "loading".tr(),
