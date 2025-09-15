@@ -42,6 +42,7 @@ import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
   MiniAppsEngineBloc miniAppsEngineBloc;
@@ -130,7 +131,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
-    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' || miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp' ) &&
+    if ((miniAppsEngineBloc.miniApp.serviceKey == 'municipalservice' ||
+            miniAppsEngineBloc.miniApp.serviceKey == 'volunteerapp') &&
         !CommonProperties.isLoggedInMunicipality) {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
@@ -859,25 +861,50 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void trackLogs(dynamic msg, CompletionHandler handler) {
+    BaseResponse response = BaseResponse(
+      code: 400,
+      eventName: "trackLogs",
+      message: "Invalid event data",
+      data: null,
+    );
     if (msg != null && msg is String && msg.isNotEmpty) {
+      try {
+        Map<String, dynamic>? data = jsonDecode(msg);
+        response = BaseResponse(
+          code: 200,
+          eventName: "trackLogs",
+          message: "Event tracked successfully",
+          data: null,
+        );
+        CommonFunctions.sendUXCamEvent(data!['event_name']);
+        data['MiniAppKey'] = miniAppsEngineBloc.miniApp.serviceKey;
+        data['MiniAppVersion'] =
+            miniAppsEngineBloc.miniApp.latestVersion?.versionNumber;
+        if (data['type'] == "exception") {
 
-      BaseResponse response = BaseResponse(
-        code: 200,
-        eventName: "trackLogs",
-        message: "Event tracked successfully",
-        data: null,
-      );
-      CommonFunctions.sendUXCamEvent(msg);
-      handler.complete(response.jsonEncodeModel());
-    } else {
-      BaseResponse response = BaseResponse(
-        code: 400,
-        eventName: "trackLogs",
-        message: "Invalid event data",
-        data: null,
-      );
-      handler.complete(response.jsonEncodeModel());
+          Sentry.captureException(
+            SentryException(
+              type: data['event_name'],
+              value: data['errors_model'],
+              module: miniAppsEngineBloc.miniApp.serviceKey,
+              unknown: data,
+            ),
+          );
+        } else {
+          Sentry.captureEvent(
+            SentryEvent(
+              message: SentryMessage(data['event_name']),
+              contexts: Contexts()..['event_data'] = data,
+              tags: {
+                "MiniAppKey": miniAppsEngineBloc.miniApp.serviceKey ?? "",
+              },
+              // serverName: miniAppsEngineBloc.miniApp.serviceKey,
+            ),
+          );
+        }
+      } catch (_) {}
     }
+    handler.complete(response.jsonEncodeModel());
   }
 
   @pragma('vm:entry-point')
@@ -965,7 +992,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
-
 
   @pragma('vm:entry-point')
   void sendToCalender(dynamic mas, CompletionHandler handler) {
