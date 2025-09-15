@@ -53,7 +53,7 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
     final colors = context.colors;
     final textStyles = context.textStyles;
     final locale = Localizations.localeOf(context);
-    final byDate = DateFormat('MMMMd', locale.languageCode).format(offerDetails.publishEndDate);
+    final byDate = DateFormat('d MMMM', locale.languageCode).format(offerDetails.publishEndDate);
     final byDateStyle = textStyles.captionMediumRegular.copyWith(
       color: offerDetails.willExpiredSoon ? colors.errorDefault : null,
     );

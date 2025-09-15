@@ -119,7 +119,7 @@ class Offer {
 
   bool get willExpiredSoon => publishEndDate.difference(DateTime.now()).inDays < 7;
 
-  String byDate(String languageCode) => DateFormat('MMMMd', languageCode).format(publishEndDate);
+  String byDate(String languageCode) => DateFormat('d MMMM', languageCode).format(publishEndDate);
 
   OffersGroup get offerGroup {
     final categoryIds = categories.map((e) => e.id).toList();
