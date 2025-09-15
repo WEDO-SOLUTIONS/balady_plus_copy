@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -253,8 +252,11 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                   children: [
                     Row(
                       children: [
-                        if (tagGroup.type.icon != null) Icon(tagGroup.type.icon, color: context.colors.foregroundSoft),
-                        if (tagGroup.type.icon != null) Spacing.$1x.widthBox,
+                        if (tagGroup.type.icon != null)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                            child: Icon(tagGroup.type.icon, color: context.colors.foregroundSoft),
+                          ),
                         Text(
                           AppFeedbackTagMapperV2.getLocalizedTitle(context.l10n, tagGroup.type),
                           style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),

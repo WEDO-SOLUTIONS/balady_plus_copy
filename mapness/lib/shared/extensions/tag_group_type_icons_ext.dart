@@ -15,5 +15,3 @@ extension TagGroupIcons on TagGroupType {
     return null;
   }
 }
-
-

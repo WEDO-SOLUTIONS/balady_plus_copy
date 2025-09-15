@@ -3,7 +3,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/pages/app_feedback/app_feedback_sheet_v2.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 
@@ -63,7 +62,7 @@ class _ContributePageState extends State<ContributePage> {
                                     child: _FeatureItem(
                                       text: context.l10n.name,
                                       icon: Icon(
-                                        General32Icons.buildingMaterials,
+                                        GeneralIcons.buildings,
                                         color: context.colors.foregroundMuted,
                                         size: 24,
                                       ),
@@ -74,7 +73,7 @@ class _ContributePageState extends State<ContributePage> {
                                     child: _FeatureItem(
                                       text: context.l10n.address,
                                       icon: Icon(
-                                        General32Icons.locationAction,
+                                        GeneralIcons.location,
                                         color: context.colors.foregroundMuted,
                                         size: 24,
                                       ),
@@ -85,7 +84,7 @@ class _ContributePageState extends State<ContributePage> {
                                     child: _FeatureItem(
                                       text: context.l10n.photo,
                                       icon: Icon(
-                                        General16Icons.photoSolid,
+                                        GeneralIcons.photo,
                                         color: context.colors.foregroundMuted,
                                         size: 24,
                                       ),
@@ -135,12 +134,7 @@ class _ContributePageState extends State<ContributePage> {
                         ),
                         const SizedBox(height: Spacing.$4x),
                         RatingBar(
-                          onRatingChanged: (value) {
-                            AppFeedbackSheetV2.show(
-                              context: context,
-                              rating: value,
-                            );
-                          },
+                          onRatingChanged: (value) => context.router.push(AppFeedbackSheetV2Route(rating: value)),
                         ),
                       ],
                     ),
