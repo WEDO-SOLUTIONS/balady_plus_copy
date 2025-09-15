@@ -181,7 +181,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             child: ContentRow(
               onTap: () => widget.onTapRoute.call(),
               options: ContentRowOptions(
-                wrapperColor: colors.backgroundSurface4,
+                wrapperColor: colors.staticWhite,
                 wrapperEnabled: true,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 title: l10n.route,
@@ -201,10 +201,10 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               subtitleStyle: textStyles.bodySmallRegular.copyWith(
                 color: colors.foregroundSoft,
               ),
-              titleStyle: textStyles.bodyLargeMedium.copyWith(
+              titleStyle: textStyles.bodyLargeRegular.copyWith(
                 color: colors.foregroundDefault,
               ),
-              wrapperColor: colors.backgroundSurface4,
+              wrapperColor: context.colors.staticWhite,
               wrapperEnabled: true,
               title: l10n.voiceInstruction,
               subtitle: _subtitleVoiceInstruction,
@@ -236,7 +236,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               titleStyle: textStyles.bodyLargeRegular.copyWith(
                 color: colors.foregroundDefault,
               ),
-              wrapperColor: colors.backgroundSurface4,
+              wrapperColor: context.colors.staticWhite,
               wrapperEnabled: true,
               title: l10n.navigatorSettings,
               leadingIcon: Icon(

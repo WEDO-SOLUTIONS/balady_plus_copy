@@ -93,7 +93,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                         text: TextSpan(
                           text: context.l10n.driveBack,
                           style: context.textStyles.h3Medium.copyWith(
-                            color: context.colors.foregroundDefault,
+                            color: isNationalDay ? context.colors.foregroundDefault : context.colors.staticWhite,
                           ),
                           children: [
                             TextSpan(

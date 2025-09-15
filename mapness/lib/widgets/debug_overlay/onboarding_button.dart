@@ -25,6 +25,6 @@ class ShowSaudiDayButton extends ConsumerWidget {
         onPressed: () {
           rootNavigatorKey.currentContext!.pushRoute(SaudiDaySplashRoute());
         },
-        label: 'Show saudi day',
+        label: 'Show saudi day splash screen',
       );
 }
