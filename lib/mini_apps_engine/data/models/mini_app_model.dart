@@ -18,7 +18,8 @@ class MiniAppModel {
     serviceKey = json['serviceKey'];
     description = json['description'];
     cdnLogoRef = json['cdnLogoRef'];
-    portNumber = json['portNumber'];
+    portNumber =
+        json['portNumber'] != null ? int.tryParse(json['portNumber']) : null;
     entity = json['entity'];
     logoKey = json['logoKey'];
     latestVersion = json['latestVersion'] != null
@@ -72,19 +73,18 @@ class MiniAppModel {
 }
 
 class LatestVersion {
-  LatestVersion({
-    this.id,
-    this.versionDescription,
-    this.versionNumber,
-    this.serviceUrl,
-    this.nafathLogin,
-    this.otpLogin,
-    this.forceUpdate,
-    this.packageMetaDataDto,
-    this.status,
-    this.type,
-    this.deepLinkModel,
-  });
+  LatestVersion(
+      {this.id,
+      this.versionDescription,
+      this.versionNumber,
+      this.serviceUrl,
+      this.nafathLogin,
+      this.otpLogin,
+      this.forceUpdate,
+      this.packageMetaDataDto,
+      this.status,
+      this.type,
+      this.deepLinkModel});
 
   LatestVersion.fromJson(dynamic json) {
     id = json['id'];
