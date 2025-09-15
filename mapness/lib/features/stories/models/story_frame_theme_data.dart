@@ -75,6 +75,7 @@ class StoryFrameThemeData {
       ),
       titlePadding: const EdgeInsets.symmetric(
         horizontal: Spacing.$12x,
+        vertical: Spacing.$8x,
       ),
     );
 
