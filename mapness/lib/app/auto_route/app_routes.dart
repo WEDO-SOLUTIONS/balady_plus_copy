@@ -265,10 +265,6 @@ class AppRouter extends RootStackRouter {
               page: AboutBaladyRoute.page,
             ),
             CustomRoute(
-              path: 'help_center',
-              page: HelpCenterRoute.page,
-            ),
-            CustomRoute(
               path: 'profile_info',
               page: ProfileInfoRoute.page,
             ),
