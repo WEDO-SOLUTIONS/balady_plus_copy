@@ -263,12 +263,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
-                  // AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
-                  AppColorsThemeV3.palette(themes: BaladyAppThemes.light).copyWith(
-                      accentDefault: CommonFunctions.isTodayInRanges
-                          ? AppColor.primary900LightEvent
-                          : null
-                  ),
+                  AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
                   AppStaticColorsThemeExt.palette(),
                 ],
               ),
