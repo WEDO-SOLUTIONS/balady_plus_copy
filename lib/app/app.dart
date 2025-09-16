@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:balady_authorization/auth_package.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/force_update/presentation/core/force_update_cubit.dart';
 // import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
@@ -112,7 +113,9 @@ class AppWidgetState extends State<AppWidget> {
             debugShowCheckedModeBanner: false,
             navigatorKey: NavigationService.navigatorKey,
             theme: ThemeData(
-              primaryColor: AppColor.primary900Light,
+              primaryColor: CommonFunctions.isTodayInRanges
+                  ? AppColor.primary900LightEvent
+                  : AppColor.primary900Light,
               scaffoldBackgroundColor: AppColor.scaffoldBackground,
               fontFamily: AppConfig.appFontType,
               useMaterial3: false,
