@@ -116,7 +116,11 @@ class _ParkingWidget extends StatelessWidget {
           height: 24,
           child: Icon(
             TransportIcons.parkingEnable,
-            color: isEnabled ? SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.foregroundDefault : context.colors.foregroundMuted,
+            color: isEnabled
+                ? SaudiNationalDay.isNow()
+                    ? context.colors.accentDefault
+                    : context.colors.foregroundDefault
+                : context.colors.foregroundMuted,
           ),
         ),
       );
