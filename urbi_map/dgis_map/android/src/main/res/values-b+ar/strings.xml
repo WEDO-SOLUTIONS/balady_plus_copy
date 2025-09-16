@@ -32,7 +32,7 @@
 
   <!-- Route overview -->
   <string name="route_overview_title">نظرة عامة على الطريق</string>
-  <string name="go_button">في الطريق</string>
+  <string name="go_button">انطلق</string>
   <string name="phone_button">الهاتف</string>
 
   <!-- Common -->

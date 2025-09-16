@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,12 +27,22 @@ class LandingPage extends ConsumerStatefulWidget {
   ConsumerState<LandingPage> createState() => _LandingPageState();
 }
 
-class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
+class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver, TickerProviderStateMixin {
   late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController = MultiStateSheetController(
     initialState: ThreeStateSheet.open,
-    behavior: FractionSnappingBehavior(fractions: {0.0, if (Platform.isIOS) .3 else .38, .931}),
+    behavior: FractionSnappingBehavior(fractions: {0.0, if (Platform.isIOS) .3 else .38, 1.0}),
     stateMapper: const LandingStateMapper(),
   );
+
+  final confettiConfig = ConfettiGeneratorConfig.confetti(
+    dissappearStartsAt: 0.33,
+    dissappearCurve: Curves.easeInOutQuint,
+    commonShapeAppearance: 1,
+    animationDuration: const Duration(seconds: 4),
+    mostCommonConfettiShape: (startPosition, velocity, scale, gradient, x, y, z) =>
+        ShiningShape(startPosition, velocity, scale, gradient, x, y, z),
+  );
+  late final confettiController = AnimationController(vsync: this, duration: confettiConfig.animationDuration);
 
   MediaQueryData? _mediaQuery;
 
@@ -125,7 +136,19 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                     );
                   },
                 ),
-                Dashboard(bottomSheetController: _bottomSheetController),
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$3x),
+                  child: Dashboard(
+                    bottomSheetController: _bottomSheetController,
+                    fireworksController: confettiController,
+                  ),
+                ),
+                RepaintBoundary(
+                  child: ConfettiAnimation(
+                    animationController: confettiController,
+                    config: confettiConfig,
+                  ),
+                ),
               ],
             ),
           ),

@@ -7,14 +7,18 @@ import 'package:mapness/features/stories/ui/stories_transition.dart';
 class Routes {
   static List<AutoRoute> get upperRoutesMap => [
         CustomRoute(
-          path: '/quickFeedback',
-          page: QuickFeedbackRoute.page,
-        ),
-        CustomRoute(
           page: OnboardRoute.page,
           opaque: false,
           transitionsBuilder: (_, __, ___, child) => StoriesTransition(
             type: StoryTypes.onboarding,
+            child: child,
+          ),
+        ),
+        CustomRoute(
+          page: SaudiDaySplashRoute.page,
+          opaque: false,
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.saudiDay,
             child: child,
           ),
         ),
@@ -79,10 +83,6 @@ class Routes {
         CustomRoute(
           path: '/flips_continue',
           page: FlipsContinueRoute.page,
-        ),
-        CustomRoute(
-          path: '/contribute',
-          page: ContributeRoute.page,
         ),
         CustomRoute(
           path: '/addPhoto',

@@ -78,7 +78,7 @@ class EndTripModal extends HookWidget {
                 child: AppButton(
                   primaryLabel: context.l10n.cancel,
                   size: ButtonSize.large,
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonColorScheme: ButtonColorScheme.accent,
                   buttonType: ButtonType.secondary,
                   onTap: Navigator.of(context).pop,
                 ),

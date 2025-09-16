@@ -158,6 +158,7 @@ class NavigationScreen(
         navigationState = state
         when (state) {
             NavigationState.NAVIGATION -> {
+                tryPopFavouritesPreview()
                 navigationManager.navigationStarted()
             }
 
@@ -174,6 +175,7 @@ class NavigationScreen(
             }
 
             NavigationState.REROUTING -> {
+                tryPopFavouritesPreview()
                 val tripBuilder = Trip.Builder()
                 if (destination != null && destinationTravelEstimate != null) {
                     tripBuilder.addDestination(destination!!, destinationTravelEstimate!!)
@@ -191,6 +193,13 @@ class NavigationScreen(
             }
         }
         invalidate()
+    }
+
+    private fun tryPopFavouritesPreview() {
+        val topScreen = screenManager.top
+        if (topScreen is FavouritesPreviewScreen) {
+            topScreen.finish()
+        }
     }
 
     override fun onEtaUpdated(eta: EtaModel?) {
@@ -449,8 +458,7 @@ class NavigationScreen(
 
     private fun showFavourites() {
         val favourites = this.favourites
-        if (favourites == null || screenManager.top !is NavigationScreen) return
-
+        if (favourites == null) return
 
         val myLocation = mapController.getMyLocation() ?: return
         val home = favourites.home
@@ -487,6 +495,9 @@ class NavigationScreen(
 
                 else -> null
             }
+
+            if (screenManager.top !is NavigationScreen || isNavigation) return@getBriefRouteInfos
+
             screenManager.push(
                 FavouritesPreviewScreen(
                     carContext,

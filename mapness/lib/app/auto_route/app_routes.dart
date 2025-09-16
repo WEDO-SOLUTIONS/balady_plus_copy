@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
+import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 
@@ -31,6 +32,7 @@ class AppRouter extends RootStackRouter {
           transitionsBuilder: TransitionsBuilders.zoomIn,
           guards: [
             OnboardRouteGuard(ref),
+            SaudiDaySplashGuard(ref),
           ],
           children: [
             Routes.bottomMenuRoute,
@@ -223,6 +225,14 @@ class AppRouter extends RootStackRouter {
               page: ParkingDialogRoute.page,
               opaque: false,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'contribute',
+              page: ContributeRoute.page,
+            ),
+            CustomRoute(
+              path: 'quickFeedback',
+              page: QuickFeedbackRoute.page,
             ),
           ],
         ),

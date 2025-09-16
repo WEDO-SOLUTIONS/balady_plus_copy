@@ -51,7 +51,7 @@ class RoutingFavouritesPage extends ConsumerWidget {
                         child: Icon(
                           SystemIcons.arrowCornerLeftLarge,
                           size: 24,
-                          color: context.color.textAndIconsBasePrimary,
+                          color: context.colors.foregroundDefault,
                         ),
                       ),
                     ),

@@ -59,7 +59,7 @@ class LanguagePickSheetPage extends StatelessWidget {
                 ),
                 Spacing.$3x.heightBox,
                 ContentWrapper(
-                  color: context.color.surfaceBaseTertiary,
+                  color: context.colors.backgroundSurface4,
                   children: Language.values
                       .map<Widget>(
                         (e) => LanguageRowWidget(

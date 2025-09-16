@@ -10,6 +10,7 @@ import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart'
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/tag_group_type_icons_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_loading.dart';
@@ -249,9 +250,18 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      AppFeedbackTagMapperV2.getLocalizedTitle(context.l10n, tagGroup.type),
-                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    Row(
+                      children: [
+                        if (tagGroup.type.icon != null)
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                            child: Icon(tagGroup.type.icon, color: context.colors.foregroundSoft),
+                          ),
+                        Text(
+                          AppFeedbackTagMapperV2.getLocalizedTitle(context.l10n, tagGroup.type),
+                          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: Spacing.$3x),
                     Wrap(

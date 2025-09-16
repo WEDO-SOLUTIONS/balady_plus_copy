@@ -17,7 +17,7 @@ class IwishInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final black = context.color.textAndIconsBasePrimary;
+    final black = context.colors.foregroundDefault;
     const grey = NonThemeColor.color38;
 
     return Column(

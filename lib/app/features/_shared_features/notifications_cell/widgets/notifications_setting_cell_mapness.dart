@@ -60,7 +60,7 @@ class NotificationsSettingsRow extends StatelessWidget {
               ),
               leadingIcon: Icon(
                 SystemIcons.notification,
-                color: context.color.textAndIconsStatusAccent,
+                color: context.colors.accentDefault,
               ),
               title: context.l10n.municipalNotifications,
             ),

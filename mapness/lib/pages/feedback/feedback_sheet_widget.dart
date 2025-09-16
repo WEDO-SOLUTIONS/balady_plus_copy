@@ -95,9 +95,7 @@ class FeedbackSheetWidget extends HookWidget {
                 alignment: AlignmentDirectional.centerEnd,
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                  child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.neutral,
-                      primaryIcon: SystemIcons.close,
+                  child: AppButton.close(
                       onTap: () {
                         sheetController.close();
                       }),
