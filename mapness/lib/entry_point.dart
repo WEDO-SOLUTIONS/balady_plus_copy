@@ -382,13 +382,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             (int type, dynamic data) {
           switch (type) {
             case InsiderCallbackAction.NOTIFICATION_OPEN:
-              if(Platform.isIOS) {
+             // if(Platform.isIOS) {
                 if (data != null && data.containsKey('url')) {
                   final url = Uri.parse(data['url']);
                   openAppLink(url);
                   return;
                 }
-              }
+
+            //  }
               break;
             case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
               print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');

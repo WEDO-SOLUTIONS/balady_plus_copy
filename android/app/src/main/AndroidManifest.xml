@@ -206,6 +206,7 @@
 
             <intent-filter>
                  <data android:scheme="insiderbaladyapp" /> <data android:scheme="insiderbaladyapp" />
+                <data android:scheme="insiderbaladyappuat" /> <data android:scheme="insiderbaladyappuat" />
             </intent-filter>
 
         </activity>
