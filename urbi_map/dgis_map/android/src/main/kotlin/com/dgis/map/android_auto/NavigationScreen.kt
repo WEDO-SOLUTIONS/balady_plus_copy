@@ -458,8 +458,7 @@ class NavigationScreen(
 
     private fun showFavourites() {
         val favourites = this.favourites
-        if (favourites == null || screenManager.top !is NavigationScreen || isNavigation) return
-
+        if (favourites == null) return
 
         val myLocation = mapController.getMyLocation() ?: return
         val home = favourites.home
@@ -496,6 +495,9 @@ class NavigationScreen(
 
                 else -> null
             }
+
+            if (screenManager.top !is NavigationScreen || isNavigation) return@getBriefRouteInfos
+
             screenManager.push(
                 FavouritesPreviewScreen(
                     carContext,

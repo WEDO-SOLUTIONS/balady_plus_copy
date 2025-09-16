@@ -120,8 +120,11 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
           nearestObject: nearestObject,
         ),
         Padding(
-          padding: const EdgeInsets.all(
-            Spacing.$4x,
+          padding: const EdgeInsets.only(
+            left: Spacing.$4x,
+            right: Spacing.$4x,
+            top: Spacing.$3x,
+            bottom: Spacing.$3x,
           ),
           child: AnimatedSwitcher(
             duration: Durations.medium1,

@@ -106,7 +106,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       return point;
     }
 
-    final location = ref.read(locationProvider);
+    final location = ref.watch(locationProvider);
     if (location == null) {
       debugPrint('User location is null. Check [locationProvider] and permissions');
       throw const PublicTransportVisibilityException(
