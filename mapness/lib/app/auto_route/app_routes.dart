@@ -244,14 +244,6 @@ class AppRouter extends RootStackRouter {
               page: QuickFeedbackRoute.page,
             ),
             CustomRoute(
-              page: OnboardRoute.page,
-              opaque: false,
-              transitionsBuilder: (_, __, ___, child) => StoriesTransition(
-                type: StoryTypes.onboarding,
-                child: child,
-              ),
-            ),
-            CustomRoute(
               path: 'stories',
               page: StoriesRoute.page,
               opaque: false,
@@ -318,14 +310,6 @@ class AppRouter extends RootStackRouter {
               page: ContributeRoute.page,
             ),
             CustomRoute(
-              page: SaudiDaySplashRoute.page,
-              opaque: false,
-              transitionsBuilder: (_, __, ___, child) => StoriesTransition(
-                type: StoryTypes.saudiDay,
-                child: child,
-              ),
-            ),
-            CustomRoute(
               path: 'addPhoto',
               page: AddPhotoRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
@@ -338,6 +322,22 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
           ],
+        ),
+        CustomRoute(
+          page: OnboardRoute.page,
+          opaque: false,
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.onboarding,
+            child: child,
+          ),
+        ),
+        CustomRoute(
+          page: SaudiDaySplashRoute.page,
+          opaque: false,
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.saudiDay,
+            child: child,
+          ),
         ),
       ];
 }
