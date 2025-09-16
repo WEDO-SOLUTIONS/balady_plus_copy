@@ -80,8 +80,7 @@ import 'features/search/ui/search_scope.dart';
 Mixpanel? mixpanel;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
-  static final MapnessRouteObserver _instance =
-      MapnessRouteObserver._internal();
+  static final MapnessRouteObserver _instance = MapnessRouteObserver._internal();
 
   factory MapnessRouteObserver() => _instance;
 
@@ -102,9 +101,7 @@ class MapnessProviderScope extends StatelessWidget {
           child: Consumer(
             builder: (context, ref, child) {
               final language = ref.watch(appLanguageProvider);
-              final localizations = language == Language.arabic
-                  ? AppLocalizationsAr()
-                  : AppLocalizationsEn();
+              final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
 
               return provider.MultiProvider(
                 providers: [
@@ -168,11 +165,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then(
-      (RemoteMessage? message) {
+          (RemoteMessage? message) {
         if (message != null && message.data.containsKey('url')) {
-          final url = message.data['url'];
-          openAppLink(url);
-          return;
+            final url = message.data['url'];
+            openAppLink(url);
+            return;
         }
       },
     );
@@ -190,12 +187,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> restoreState() async {
-    final state = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateKey);
-    final type = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateTypeKey);
+    final state = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
     if (state != null) {
       final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -208,8 +201,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 ),
               );
         } else {
-          _locationListener =
-              ref.listenManual<Position?>(locationProvider, (_, next) {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
               ref.read(appRouterProvider).push(
@@ -251,8 +243,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       });
 
     return DefaultTextHeightBehavior(
-      textHeightBehavior: const TextHeightBehavior(
-          leadingDistribution: TextLeadingDistribution.even),
+      textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even),
       child: Directionality(
         textDirection: direction,
         child: Consumer(
@@ -268,21 +259,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 dividerColor: Colors.grey[400],
                 useMaterial3: false,
                 extensions: <ThemeExtension<dynamic>>[
-                  if (language == Language.arabic)
-                    ThemeTextStyles.arabic()
-                  else
-                    ThemeTextStyles.english(),
-                  if (language == Language.arabic)
-                    ThemeTextStylesV3.frutiger()
-                  else
-                    ThemeTextStylesV3.golos(),
+                  if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                  if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
-                  AppColorsThemeV3.palette(themes: BaladyAppThemes.light)
-                      .copyWith(
-                          accentDefault: CommonFunctions.isTodayInRanges
-                              ? AppColor.primary900LightEvent
-                              : AppColor.primary900Light),
+                  // AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
+                  AppColorsThemeV3.palette(themes: BaladyAppThemes.light).copyWith(
+                      accentDefault: CommonFunctions.isTodayInRanges
+                          ? AppColor.primary900LightEvent
+                          : null
+                  ),
                   AppStaticColorsThemeExt.palette(),
                 ],
               ),
@@ -310,11 +296,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final controller = await ref.read(dgisControllerProvider.future);
 
     try {
-      await controller
-          .setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+      await controller.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
     } catch (ex) {
-      logger.log('Error setting camera position point: $ex',
-          logLevel: MapnessLogLevel.error);
+      logger.log('Error setting camera position point: $ex', logLevel: MapnessLogLevel.error);
     }
   }
 
@@ -323,8 +307,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await controller.stopNavigation();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
-    final poiBox =
-        await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
+    final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     await poiBox.clear();
   }
 
@@ -364,17 +347,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _navigationEventsListener =
-        dgisController.navigationEvents.listen((event) async {
+    _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
       final segments = ref.read(appRouterProvider).currentSegments;
 
       final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
       final isNavPage = currentRouteName == PathNavRoute.name;
-      final navigation = event == NavigationEvent.navigation ||
-          event == NavigationEvent.routeSearch;
-      final routeSearchOptions =
-          (await dgisController.getCurrentNavigationState()).routeSearchOptions;
+      final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
+      final routeSearchOptions = (await dgisController.getCurrentNavigationState()).routeSearchOptions;
       final isFreeroam = navigation && routeSearchOptions == null;
       if (navigation && !isFreeroam && !isNavPage) {
         await ref.read(appRouterProvider).pushAndPopUntil(
@@ -389,44 +369,49 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _delayIfFirstRun(
-      {required bool isFirstRun,
-      Duration duration = const Duration(milliseconds: 300)}) async {
+      {required bool isFirstRun, Duration duration = const Duration(milliseconds: 300)}) async {
     // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
     if (isFirstRun) {
       await Future.delayed(duration);
     }
   }
 
+
   // implement insider deep link for ios
 
   Future initInsider() async {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
-    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations",
-        (int type, dynamic data) {
-      switch (type) {
-        case InsiderCallbackAction.NOTIFICATION_OPEN:
-          if (Platform.isIOS) {
-            if (data != null && data.containsKey('url')) {
-              final url = Uri.parse(data['url']);
-              openAppLink(url);
-              return;
-            }
+    await FlutterInsider.Instance.init(
+        "baladyapp", "group.movingViolations",
+            (int type, dynamic data) {
+          switch (type) {
+            case InsiderCallbackAction.NOTIFICATION_OPEN:
+              if(Platform.isIOS) {
+                if (data != null && data.containsKey('url')) {
+                  final url = Uri.parse(data['url']);
+                  openAppLink(url);
+                  return;
+                }
+              }
+              break;
+            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+              break;
+            default:
+              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+              break;
           }
-          break;
-        case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
-          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
-          break;
-        default:
-          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
-          break;
-      }
-    });
+        });
 
     // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
     await FlutterInsider.Instance.setActiveForegroundPushView();
     await FlutterInsider.Instance.registerWithQuietPermission(false);
+
   }
+
+
+
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
@@ -442,7 +427,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
     final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
-    final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
+    final serviceKey = url.path;//queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
 
@@ -478,9 +463,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (objectId != null) {
       final id = int.tryParse(objectId);
       if (id != null) {
-        final location = (latitude == null || longitude == null)
-            ? null
-            : LatLng(latitude: latitude, longitude: longitude);
+        final location =
+            (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
         await _delayIfFirstRun(isFirstRun: isFirstRun);
 
         await _poiDeeplinkById(id, location);
@@ -495,26 +479,26 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
-      await _delayIfFirstRun(
-          isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
+      await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty &&
-        serviceKey != '/poi-map' &&
-        serviceKey.startsWith('/app')) {
-      MiniAppModel app = MiniAppModel();
+    } else if (serviceKey.isNotEmpty&& serviceKey !='/poi-map' && serviceKey.startsWith('/app')) {
+      MiniAppModel app= MiniAppModel();
       var subPath;
-      if (dtId != null && path != null) {
+      if(dtId!= null && path!= null)
+      {
         subPath = '#/$path/$dtId';
-      } else if (path != null) {
+      }
+      else if(path!= null)
+      {
         subPath = '/#$path';
       }
 
-      app = app.copyWith(
-          serviceKey: serviceKey.replaceAll('/app/', ''), path: subPath);
+      app=app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''),path: subPath);
 
       CommonFunctions.openMiniApp(app);
-    } else if (url.toString().isNotEmpty &&
-        !url.toString().contains('insiderbaladyapp')) {
+    }
+
+    else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -549,9 +533,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
-      await ref
-          .read(layersControlsProvider.notifier)
-          .enableParking(isFromDeepLink: true);
+      await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
     });
   }
 
@@ -585,27 +567,26 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path: "#Quran_Show_All_Surahs_Page",
+      path:  "#Quran_Show_All_Surahs_Page",
     );
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path: "#Athkar_Page",
+      path:  "#Athkar_Page",
     );
   }
 
   Future<void> _openSnapSend() async {
-    CommonFunctions.sendUXCamEvent(
-        UXCamEvents.SnapAndSend_Open_From_Home_Event);
+    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "snapandsend",
     );
@@ -627,9 +608,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       },
     ));
     ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
-    ref
-        .read(advertMetricsProvider.notifier)
-        .sendEvent(AdvertMetricsKeys.exploreSearch);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
     final language = ref.read(appLanguageProvider);
 
@@ -639,9 +618,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
-          .read(searchProvider(SearchScopeEnum.map.value).notifier)
-          .quickSearch(quickFilter);
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
     });
   }
 
@@ -771,8 +748,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final twinsResponse = await dio.get(twinsUrl, queryParameters: {
       BaldayDeeplink.keyKey: BaldayDeeplink.momrahTwinsKey,
-      BaldayDeeplink.momrahPartnerCodeKey:
-          BaldayDeeplink.momrahPartnerCodeValue,
+      BaldayDeeplink.momrahPartnerCodeKey: BaldayDeeplink.momrahPartnerCodeValue,
       BaldayDeeplink.momrahPartnerCodeId: momrahId,
     });
     final data = twinsResponse.data as Map<String, dynamic>;
@@ -824,8 +800,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
 Future<void> setupMapness(EnvType envType) async {
   final vendorConfigLocal = await AppConfigLoader.getAppConfig();
-  final vendorConfigContentMessage =
-      VendorConfigContentMessage(content: vendorConfigLocal);
+  final vendorConfigContentMessage = VendorConfigContentMessage(content: vendorConfigLocal);
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
@@ -836,8 +811,7 @@ Future<void> setupMapness(EnvType envType) async {
   );
 }
 
-Future<void> runMapnessApp(
-    EnvType envType, FutureOr<void> Function() main) async {
+Future<void> runMapnessApp(EnvType envType, FutureOr<void> Function() main) async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHive();
 
