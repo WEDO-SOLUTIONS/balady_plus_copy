@@ -63,7 +63,7 @@ class _ContributePageState extends State<ContributePage> {
                                     child: _FeatureItem(
                                       text: context.l10n.name,
                                       icon: Icon(
-                                        General32Icons.buildingMaterials,
+                                        GeneralIcons.buildings,
                                         color: context.colors.foregroundMuted,
                                         size: 24,
                                       ),
@@ -74,7 +74,7 @@ class _ContributePageState extends State<ContributePage> {
                                     child: _FeatureItem(
                                       text: context.l10n.address,
                                       icon: Icon(
-                                        General32Icons.locationAction,
+                                        GeneralIcons.location,
                                         color: context.colors.foregroundMuted,
                                         size: 24,
                                       ),
@@ -85,7 +85,7 @@ class _ContributePageState extends State<ContributePage> {
                                     child: _FeatureItem(
                                       text: context.l10n.photo,
                                       icon: Icon(
-                                        General16Icons.photoSolid,
+                                        GeneralIcons.photo,
                                         color: context.colors.foregroundMuted,
                                         size: 24,
                                       ),
