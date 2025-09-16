@@ -36,8 +36,6 @@ class MiniAppsItemWidget extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
             child: Column(
-              //  crossAxisAlignment: CrossAxisAlignment.center,
-              //  mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),

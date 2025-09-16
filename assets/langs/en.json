@@ -4795,5 +4795,7 @@
   "failed_to_submit_profile": "Failed to submit profile",
   "failed_to_update_profile": "Failed to update profile",
   "profile_id_not_found": "Profile ID not found. Please reload your profile",
-  "AppsTitle": "Applications"
+  "AppsTitle": "Applications",
+  "passcode_sequence_error": "Passcode should not be a sequence.",
+  "passcode_id_error": "Passcode should not contain part of your ID."
 }

@@ -1,7 +1,13 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
@@ -21,6 +27,7 @@ class MiniAppsMainScreen extends StatefulWidget {
 
 class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   late MiniAppModel data;
+  bool showTooltip = true;
 
   @override
   void initState() {
@@ -50,6 +57,24 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         false;
   }
 
+  void openChatGPT() {
+    if (CommonProperties.isLoggedIn) {
+      NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => NeedLoginDialog(
+          onSuccessLogin: (bool? isSuccess) async {
+            if (isSuccess ?? false) {
+              NavigationService.navigatorKey.currentState
+                  ?.pushNamed(RouteName.chatbot);
+            }
+          },
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
@@ -65,7 +90,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.white,
           appBar: AppBar(
             title: Text(data.serviceName ?? " "),
             leading: IconButton(
@@ -86,8 +111,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
 
               return Stack(
                 children: [
+                  // Loader background
                   Container(
-                    color: Colors.white, // optional background overlay
+                    color: Colors.white,
                     child: Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -128,7 +154,11 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                       ),
                     ),
                   ),
+
+                  // WebMiniAppsScreen
                   content,
+
+                  // Error / reload overlay
                   if (state is FailedDownloadState ||
                       state is MiniAppsEngineErrorState)
                     Center(
@@ -152,7 +182,6 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
 
   @override
   void dispose() {
-    // Ensure overlay is hidden when screen is disposed
     NativeOverlayController.hideOverlay();
     super.dispose();
   }
