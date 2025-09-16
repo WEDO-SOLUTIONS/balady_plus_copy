@@ -3,6 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/pages/app_feedback/app_feedback_sheet_v2.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 
@@ -134,7 +135,12 @@ class _ContributePageState extends State<ContributePage> {
                         ),
                         const SizedBox(height: Spacing.$4x),
                         RatingBar(
-                          onRatingChanged: (value) => context.router.push(AppFeedbackSheetV2Route(rating: value)),
+                          onRatingChanged: (value) {
+                            AppFeedbackSheetV2.show(
+                              context: context,
+                              rating: value,
+                            );
+                          },
                         ),
                       ],
                     ),
