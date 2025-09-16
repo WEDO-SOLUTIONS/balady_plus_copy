@@ -16,7 +16,7 @@ class DeleteAllContentPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = context.textStyle.heading2.copyWith(color: Colors.white);
-    final color = context.color.strokeAccent;
+    final color = context.colors.accentOnContainer;
 
     return Material(
       color: Colors.black.withOpacity(0.8),

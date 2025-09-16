@@ -105,7 +105,7 @@ class SaudiContainer extends StatelessWidget {
     final remainingStyle = context.textStyle.footNote.copyWith(color: Colors.white);
     final timerStyle = context.textStyle.callout.copyWith(color: Colors.white);
     final buttonTextStyle = context.textStyle.callout.copyWith(
-      color: context.color.textAndIconsStatusAccent,
+      color: context.colors.accentDefault,
     );
     final borderRadius = BorderRadius.circular(8);
 

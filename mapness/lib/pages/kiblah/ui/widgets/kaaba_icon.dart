@@ -12,7 +12,7 @@ class KaabaIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: isCorrect ? NonThemeColor.color3 : context.color.strokeAccent,
+          color: isCorrect ? NonThemeColor.color3 : context.colors.accentOnContainer,
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
         ),
         width: 32,

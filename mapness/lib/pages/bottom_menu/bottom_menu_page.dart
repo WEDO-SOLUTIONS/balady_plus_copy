@@ -56,12 +56,12 @@ class BottomMenuPage extends ConsumerWidget {
                 elevation: 0,
                 type: BottomNavigationBarType.fixed,
                 selectedLabelStyle: TextStyle(
-                  color: context.color.strokeAccent,
+                  color: context.colors.accentOnContainer,
                   fontSize: 0,
                   height: 0,
                 ),
                 unselectedLabelStyle: TextStyle(
-                  color: context.color.textAndIconsBasePrimary,
+                  color: context.colors.foregroundDefault,
                   fontSize: 0,
                   height: 0,
                 ),

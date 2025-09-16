@@ -75,7 +75,7 @@ class VoiceRow extends ConsumerWidget {
               if (packageInfo.updateStatus == PackageUpdateStatusMessage.inProgress)
                 Text(
                   '$progress%',
-                  style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBasePrimary),
+                  style: context.textStyle.caption.copyWith(color: context.colors.foregroundDefault),
                 ),
               const Spacer(),
               Column(
@@ -83,13 +83,13 @@ class VoiceRow extends ConsumerWidget {
                 children: [
                   Text(
                     packageInfo.name,
-                    style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                    style: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                   ),
                   Text(
                     '${packageInfo.installed ? installed : notInstalled}'
                     '${packageInfo.hasUpdate ? updateAvailable : ''}',
                     style: context.textStyle.caption.copyWith(
-                      color: packageInfo.installed ? context.color.strokeAccent : NonThemeColor.color1,
+                      color: packageInfo.installed ? context.colors.accentOnContainer : NonThemeColor.color1,
                     ),
                   ),
                 ],

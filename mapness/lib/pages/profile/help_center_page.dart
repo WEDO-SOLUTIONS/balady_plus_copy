@@ -34,7 +34,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
               appBar: BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.helpCenter,
-                colorEnabled: context.color.textAndIconsStatusAccent,
+                colorEnabled: context.colors.accentDefault,
                 leading: ActionModel(
                   onPressed: () => context.router.popForced(),
                   icon: SystemIcons.arrowCornerLeftLarge,
@@ -50,17 +50,21 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ContentWrapper(
-                      color: context.color.surfaceBaseSecondary,
+                      color: context.colors.backgroundSurface4,
                       children: [
                         ContentRow(
                           onTap: () => context.router.push(const MomraWebsiteRoute()),
                           options: ContentRowOptions(
                             title: context.l10n.baladyWebsite,
-                            leadingIcon:
-                                SvgPicture.asset('assets/icons/svg/profile/website.svg', height: 24, width: 24),
+                            leadingIcon: SvgPicture.asset(
+                              'assets/icons/svg/profile/website.svg',
+                              height: 24,
+                              width: 24,
+                              color: context.colors.accentDefault,
+                            ),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: SystemIcons.arrowCornerRightLarge.icon(
-                                color: context.color.textAndIconsBaseSecondary,
+                                color: context.colors.foregroundSoft,
                               ),
                             ),
                           ),
@@ -69,8 +73,8 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                     ),
                     Spacing.$4x.heightBox,
                     ContactInfo(
-                      colorBegin: context.color.textAndIconsBaseSecondary,
-                      colorEnd: context.color.textAndIconsStatusAccent,
+                      colorBegin: context.colors.foregroundSoft,
+                      colorEnd: context.colors.accentDefault,
                     ),
                     Spacing.$2x.heightBox,
                     GestureDetector(
@@ -87,7 +91,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                       },
                       child: Text(context.l10n.foInquiriesAndTheLatestNews,
                           style: context.textStyle.caption.copyWith(
-                            color: context.color.textAndIconsBaseTertiary,
+                            color: context.colors.foregroundMuted,
                           )),
                     ),
                   ],

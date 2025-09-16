@@ -10,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -82,7 +83,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
               padding: EdgeInsets.only(
                 bottom: additionPadding,
               ),
-              child: SvgPicture.asset(Markers.defaultPinNew),
+              child: SvgPicture.asset(SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew),
             ),
           ),
         ],
@@ -223,20 +224,27 @@ class _NearestObject extends StatelessWidget {
       loading: () => null,
     );
     return SizedBox(
-      height: 70,
+      // height: 70,
       child: Center(
         child: AnimatedSwitcher(
           duration: Durations.medium1,
           child: SizedBox(
             key: ValueKey(title),
             width: double.infinity,
-            child: ContentRow(
-              options: ContentRowOptions(
-                // wrapperEnabled: true,
-                wrapperColor: context.colors.backgroundSurface1,
-                leadingIcon: leadingIcon,
-                title: title,
-                subtitle: subtitle,
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: Spacing.$4x,
+                right: Spacing.$4x,
+                top: Spacing.$3x,
+              ),
+              child: ContentRow(
+                options: ContentRowOptions(
+                  wrapperEnabled: true,
+                  wrapperColor: context.colors.backgroundSurface1,
+                  leadingIcon: leadingIcon,
+                  title: title,
+                  subtitle: subtitle,
+                ),
               ),
             ),
           ),
@@ -250,6 +258,7 @@ class _NearestObject extends StatelessWidget {
         CooridnatesNearestObject() =>
           '${object.geoPoint.latitude.toStringAsFixed(5)}, ${object.geoPoint.longitude.toStringAsFixed(5)}'
       };
+
   String? _buildSubtitle(NearestObject object) =>
       switch (object) { DGisNearestObject() => object.object.subtitle, CooridnatesNearestObject() => null };
 }

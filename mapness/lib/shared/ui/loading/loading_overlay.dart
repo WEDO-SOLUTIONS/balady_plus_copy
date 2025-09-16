@@ -98,7 +98,7 @@ class LoadingOverlayState extends State<LoadingOverlay> {
                   color: Colors.white,
                 ),
                 child: Loading.small(
-                  color: context.color.strokeAccent,
+                  color: context.colors.accentOnContainer,
                   isDisplayTitle: false,
                 ),
               ),
