@@ -97,10 +97,9 @@ class FeedbackSheetWidget extends HookWidget {
                 alignment: AlignmentDirectional.centerEnd,
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                  child: AppButton.close(
-                      onTap: () {
-                        sheetController.close();
-                      }),
+                  child: AppButton.close(onTap: () {
+                    sheetController.close();
+                  }),
                 ),
               ),
               content: [
