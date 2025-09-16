@@ -74,7 +74,9 @@ class FeedbackSheetWidget extends HookWidget {
           curve: config.animationCurve,
         )
             .whenCompleteOrCancel(() {
-          confettiController.reset();
+          if (context.mounted) {
+            confettiController.reset();
+          }
         });
       }
       return null;
