@@ -18,6 +18,34 @@ class HomeMiniAppsListPages extends StatefulWidget {
 }
 
 class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
+  // List of special dates or date ranges
+  final List<DateTimeRange> _specialDateRanges = [
+    // Single day - Example: National Day (September 23rd)
+    DateTimeRange(
+      start: DateTime(DateTime.now().year, 9, 23),
+      end: DateTime(DateTime.now().year, 9, 23).add(const Duration(days: 1)),
+    ),
+    /// Date range - Example: Festival (September 20th to September 30th)
+    // DateTimeRange(
+    //   start: DateTime(DateTime.now().year, 9, 20),
+    //   end: DateTime(DateTime.now().year, 9, 30),
+    // ),
+
+  ];
+
+  bool get _isSpecialDate {
+    final now = DateTime.now();
+
+    for (final range in _specialDateRanges) {
+      if (now.isAfter(range.start.subtract(const Duration(seconds: 1))) &&
+          now.isBefore(range.end)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -29,10 +57,12 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
   @override
   Widget build(BuildContext context) {
+    final shouldShowCustomAppBar = widget.isCustomAppBar && _isSpecialDate;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: widget.isCustomAppBar ? null : _buildDefaultAppBar(context),
-      body: widget.isCustomAppBar
+      appBar: shouldShowCustomAppBar ? null : _buildDefaultAppBar(context),
+      body: shouldShowCustomAppBar
           ? Column(children: [Expanded(child: _buildCustomAppBarLayout())])
           : _buildDefaultLayout(),
     );
@@ -109,6 +139,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         itemBuilder: (context, index) {
           return MiniAppsItemWidget(
             miniApp: state.miniAppsList[index],
+             isEvent: _isSpecialDate,
           );
         },
       ),
@@ -126,11 +157,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       title: Text(
         "AppsTitle".tr(),
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
-              color: const Color(0xFF003449),
-              fontFamily: 'packages/balady_uikit/Golos',
-            ),
+          fontWeight: FontWeight.w700,
+          fontSize: 20,
+          color: const Color(0xFF003449),
+          fontFamily: 'packages/balady_uikit/Golos',
+        ),
       ),
       centerTitle: true,
       backgroundColor: Colors.white,
@@ -152,11 +183,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         child: Text(
           "AppsTitle".tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                fontSize: 20,
-                fontFamily: 'packages/balady_uikit/Golos',
-              ),
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+            fontSize: 20,
+            fontFamily: 'packages/balady_uikit/Golos',
+          ),
         ),
       ),
     );
