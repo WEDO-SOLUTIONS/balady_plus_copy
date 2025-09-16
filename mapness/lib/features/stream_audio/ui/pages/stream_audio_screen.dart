@@ -110,7 +110,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                 ),
               ),
 
-              if (currentSize == _minChildSize && provider.isPlaying)
+              if (currentSize == _minChildSize && provider.selectedProgram != null)
                 Center(
                   child: DraggableFloatingPlayerControls(
                     onTap: togglePanel,
@@ -133,7 +133,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                 builder: (context, scrollController) => Container(
                   decoration: const BoxDecoration(color: Colors.black),
                   child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       print("shady ammar tap");
                     },
                     child: SingleChildScrollView(
@@ -152,6 +152,33 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                           ),
                           const SizedBox(height: 16),
                           const PlayingAudioTile(),
+                          if (provider.hasError) ...[
+                            const SizedBox(height: 16),
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.1),
+                                border: Border.all(color: Colors.red.withOpacity(0.3)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                           const SizedBox(height: 32),
                           MediaCatalogList(needReset: () {
                             //reset the timer

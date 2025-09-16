@@ -47,10 +47,13 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               padding: EdgeInsets.symmetric(vertical: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [DashboardTitle('Live now'), Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: MBCMood(color: Color.fromRGBO(242, 74, 56, 1)),
-                )],
+                children: [
+                  DashboardTitle('Live now'),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: MBCMood(color: Color.fromRGBO(242, 74, 56, 1)),
+                  )
+                ],
               ),
             ),
             Builder(builder: (_) {
@@ -85,9 +88,11 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                   ),
                   itemBuilder: (_, index) {
                     final p = programs[index];
-                    final imagesWidth = MediaQuery.of(context).size.width * 0.25;
+                    final imagesWidth =
+                        MediaQuery.of(context).size.width * 0.25;
                     return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4.0, horizontal: 16),
                       key: ValueKey('${p.title}-$index'),
                       child: Material(
                         elevation: 4,
@@ -97,14 +102,19 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                         shadowColor: const Color(0x19000000),
                         child: ListTile(
                           minTileHeight: 80,
-                          onTap: () => ref.read(streamAudioProvider).selectProgram(p),
+                          onTap: () =>
+                              ref.read(streamAudioProvider).selectProgram(p),
                           shape: RoundedRectangleBorder(
                             side: provider.selectedProgram?.title == p.title
-                                ? BorderSide(color: const Color(0xff9547E9).withOpacity(0.4))
+                                ? BorderSide(
+                                    color: const Color(0xff9547E9)
+                                        .withOpacity(0.4))
                                 : BorderSide.none,
-                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                            borderRadius:
+                                BorderRadius.circular(RadiusBorder.xl),
                           ),
-                          contentPadding: const EdgeInsets.only(left: 8, right: 16),
+                          contentPadding:
+                              const EdgeInsets.only(left: 8, right: 16),
                           tileColor: Colors.white,
                           minLeadingWidth: imagesWidth,
                           leading: SizedBox(
@@ -151,11 +161,14 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                                     width: 32,
                                     decoration: BoxDecoration(
                                       image: DecorationImage(
-                                        image: AssetImage(p.programImage.keyName),
+                                        image:
+                                            AssetImage(p.programImage.keyName),
                                         fit: BoxFit.cover,
                                       ),
                                       borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(color: Colors.black.withOpacity(0.10), width: 2),
+                                      border: Border.all(
+                                          color: Colors.black.withOpacity(0.10),
+                                          width: 2),
                                     ),
                                   ),
                                 ),
@@ -164,10 +177,14 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                           ),
                           title: Text(p.title,
                               style: TextStyle(
-                                  color: provider.selectedProgram?.title == p.title ? const Color(0xff9547E9) : null)),
+                                  color:
+                                      provider.selectedProgram?.title == p.title
+                                          ? const Color(0xff9547E9)
+                                          : null)),
                           subtitle: Text(p.sub,
                               style: TextStyle(
-                                  color: provider.selectedProgram?.title == p.title
+                                  color: provider.selectedProgram?.title ==
+                                          p.title
                                       ? const Color(0xff9547E9).withOpacity(0.7)
                                       : null)),
                           trailing: SizedBox(
@@ -175,9 +192,11 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                if (provider.selectedProgram?.title == p.title) ...[
+                                if (provider.selectedProgram?.title ==
+                                    p.title) ...[
                                   Assets.icons.svg.audio.waves.svg(
-                                    colorFilter: const ColorFilter.mode(Color(0xff9547E9), BlendMode.srcIn),
+                                    colorFilter: const ColorFilter.mode(
+                                        Color(0xff9547E9), BlendMode.srcIn),
                                   ),
                                   const SizedBox(width: 12),
                                 ],
@@ -213,15 +232,18 @@ class ArrivingSoon extends StatelessWidget {
       ),
       ArrivingSoonModel(
         title: 'MBC Video & News',
-        image: Assets.images.audioPlaceholders.arrivingSoon.mbcVideoNews.keyName,
+        image:
+            Assets.images.audioPlaceholders.arrivingSoon.mbcVideoNews.keyName,
       ),
       ArrivingSoonModel(
         title: 'Original Balady Content',
-        image: Assets.images.audioPlaceholders.arrivingSoon.baladyContent.keyName,
+        image:
+            Assets.images.audioPlaceholders.arrivingSoon.baladyContent.keyName,
       ),
       ArrivingSoonModel(
         title: 'Balady in Apple CarPlay',
-        image: Assets.images.audioPlaceholders.arrivingSoon.appleCarPlay.keyName,
+        image:
+            Assets.images.audioPlaceholders.arrivingSoon.appleCarPlay.keyName,
       ),
       ArrivingSoonModel(
         title: 'Speed alerts',

@@ -23,8 +23,8 @@ class LiveNowDto {
       Assets.images.audioPlaceholders.arabiyaFm,
     ];
     final docs = (json['docs'] as List<dynamic>?)
-        ?.whereType<Map<String, dynamic>>()
-        .toList() ??
+            ?.whereType<Map<String, dynamic>>()
+            .toList() ??
         [];
 
     final programs = List<ProgramDto>.generate(docs.length, (i) {
@@ -49,12 +49,14 @@ class ProgramDto {
     required this.sub,
     required this.channelImage,
     required this.programImage,
+    required this.streamUrl,
   });
 
   final String title;
   final String sub;
   final AssetGenImage channelImage;
   final AssetGenImage programImage;
+  final String streamUrl;
 
   /// [Program.fromJson] a factory constructor to convert json
   /// into object
@@ -62,25 +64,24 @@ class ProgramDto {
       AssetGenImage programImage, AssetGenImage channelImage) {
     final title = json['title'] is String ? json['title'] as String : '';
     final sub = json['sub'] is String ? json['sub'] as String : '';
-    // final channelImage =
-    // json['channelImage'] is String ? json['channelImage'] as String : '';
-    // final programImage =
-    // json['programImage'] is String ? json['programImage'] as String : '';
+    final streamUrl =
+        json['streamUrl'] is String ? json['streamUrl'] as String : '';
 
     return ProgramDto(
       title: title,
       sub: sub,
       channelImage: channelImage,
       programImage: programImage,
+      streamUrl: streamUrl,
     );
   }
 
   /// [Program.empty] Empty constructor
-  factory ProgramDto.empty() =>
-      const ProgramDto(
+  factory ProgramDto.empty() => const ProgramDto(
         title: '',
         sub: '',
         channelImage: AssetGenImage(''),
         programImage: AssetGenImage(''),
+        streamUrl: '',
       );
 }

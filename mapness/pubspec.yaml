@@ -5,7 +5,7 @@ version: 2.1.0+7.4
 publish_to: "none"
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.6.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
@@ -31,6 +31,10 @@ dependencies:
   # Lightweight fast key-value database
   hive_flutter: 1.1.0
   flutter_svg: 2.0.16
+
+  ## Audio
+  just_audio: ^0.10.5
+  just_audio_background: ^0.0.1-beta.17
 
   # Map urbi SDK
   dgis_map:
@@ -151,7 +155,7 @@ dependency_overrides:
   # for dio_http_cache
   json_serializable: 6.9.0
   dio: 5.7.0
-  google_api_headers: 4.2.4
+#  google_api_headers: 4.2.4
   rxdart: 0.28.0
   device_info_plus: 11.1.1
   collection: 1.19.0
@@ -160,6 +164,7 @@ dependency_overrides:
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
   sentry_dio: 8.14.2
+  smooth_corner: ^1.1.1
 
 dev_dependencies:
   flutter_test:

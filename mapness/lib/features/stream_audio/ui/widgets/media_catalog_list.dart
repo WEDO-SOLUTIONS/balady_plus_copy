@@ -28,9 +28,12 @@ class _MediaCatalogListState extends ConsumerState<MediaCatalogList> {
         if (programs.isEmpty) {
           return const Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text('No live programs right now', style: TextStyle(
-              color: Colors.white,
-            ),),
+            child: Text(
+              'No live programs right now',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           );
         }
         return SizedBox(
