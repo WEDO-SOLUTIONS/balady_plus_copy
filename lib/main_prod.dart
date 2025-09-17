@@ -25,10 +25,10 @@ void main() async {
               'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
               // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
               // We recommend adjusting this value in production.
-              options.tracesSampleRate = 1.0;
+              options.tracesSampleRate = 0.3;
               // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
               // We recommend adjusting this value in production.
-              options.profilesSampleRate = 1.0;
+              options.profilesSampleRate = 0.3;
               // options.attachScreenshot = true;
               options.enableUserInteractionTracing = true;
               options.reportSilentFlutterErrors = true;
