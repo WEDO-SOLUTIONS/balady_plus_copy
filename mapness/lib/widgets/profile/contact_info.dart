@@ -71,9 +71,12 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) => Column(
         children: [
-          ContentWrapper(color: context.colors.backgroundSurface4, children: [
-            ContentRow(
-              onTap: () => CommonFunctions.launch('https://twitter.com/Balady_saudi'),
+          ContentWrapper(
+            color: context.colors.backgroundSurface1,
+            children: [
+              ContentRow(
+                isDividerEnabled: true,
+                onTap: () => CommonFunctions.launch('https://twitter.com/Balady_saudi'),
               leading: AppIcons(
                 iconData: SocialIcons.twitter,
                 color: context.colors.accentDefault,
@@ -84,11 +87,13 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                 subtitle: context.l10n.twitterAccount,
               ),
               trailing: ContentRowTextTrailingOptions(
-                icon: SystemIcons.arrowCornerRightLarge,
+                icon: SystemIcons.arrowCornerRightSmall,
                 iconColor: context.colors.foregroundSoft,
               ),
             ),
             ContentRow(
+              isDividerEnabled: true,
+              onTap: () => CommonFunctions.call(momrahPoneNumber),
               leading: AppIcons(
                 iconData: switch (Directionality.of(context)) {
                   TextDirection.ltr => GeneralIcons.phoneLTR,
@@ -100,7 +105,10 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                 title: momrahPoneNumber,
                 subtitle: context.l10n.profileContactInformation,
               ),
-              onTap: () => CommonFunctions.call(momrahPoneNumber),
+              trailing: ContentRowTextTrailingOptions(
+                icon: SystemIcons.arrowCornerRightSmall,
+                iconColor: context.colors.foregroundSoft,
+              ),
             ),
             AnimatedBuilder(
               animation: _animationController,
@@ -115,13 +123,13 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                   subtitle: context.l10n.email,
                 ),
                 trailing: ContentRowTextTrailingOptions(
-                  onPressed: _onCopyEmailTap,
-                  icon: SystemIcons.copy,
-                  iconColor: _animation.value,
+                  icon: SystemIcons.arrowCornerRightSmall,
+                  iconColor: context.colors.foregroundSoft,
                 ),
               ),
             ),
-          ]),
+            ],
+          ),
         ],
       );
 
