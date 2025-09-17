@@ -213,7 +213,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                       children: [
                         if (tagGroup.type.icon != null)
                           Padding(
-                            padding: const EdgeInsetsDirectional.only(end: Spacing.$2x),
+                            padding: const EdgeInsetsDirectional.only(end: Spacing.$2x, start: Spacing.$1x),
                             child: Icon(tagGroup.type.icon, color: context.colors.foregroundSoft),
                           ),
                         Text(
