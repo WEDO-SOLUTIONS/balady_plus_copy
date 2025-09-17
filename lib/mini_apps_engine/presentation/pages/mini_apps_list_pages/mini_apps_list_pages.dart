@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class HomeMiniAppsListPages extends StatefulWidget {
-
   const HomeMiniAppsListPages({
     super.key,
   });
@@ -28,10 +27,10 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CommonFunctions.isTodayInRanges ? null : _buildDefaultAppBar(context),
+      appBar:
+          CommonFunctions.isTodayInRanges ? null : _buildDefaultAppBar(context),
       body: CommonFunctions.isTodayInRanges
           ? Column(children: [Expanded(child: _buildCustomAppBarLayout())])
           : _buildDefaultLayout(),
@@ -68,11 +67,12 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         _buildCustomAppBar(context),
 
         Positioned(
-            top: 130,
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: _buildDefaultLayout())
+          top: 130,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          child: _buildDefaultLayout(),
+        )
       ],
     );
   }
@@ -130,7 +130,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
               fontWeight: FontWeight.w700,
               fontSize: 20,
               color: const Color(0xFF003449),
-              fontFamily: 'packages/balady_uikit/Golos',
+              fontFamily: 'packages/balady_uikit/Frutiger',
             ),
       ),
       centerTitle: true,
@@ -156,7 +156,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
                 fontSize: 20,
-                fontFamily: 'packages/balady_uikit/Golos',
+                fontFamily: 'packages/balady_uikit/Frutiger',
               ),
         ),
       ),
