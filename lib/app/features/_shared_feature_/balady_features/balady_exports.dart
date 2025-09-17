@@ -11,7 +11,6 @@ export 'widgets/home/pary_card/prayer_home_card.dart';
 //? PrayerHomeCard()
 
 // Calendar Home Card
-export 'widgets/home/calendar_card/calendar_home_item_card.dart';
 
 export 'widgets/home/calendar_card/calendar_home_card.dart';
 
