@@ -30,13 +30,20 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.FlutterProvider
+import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
+import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
+import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.directory.RubricId
+import ru.dgis.sdk.platform.Locale as SdkLocale
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchPoint
+import java.util.concurrent.CompletableFuture
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
@@ -45,11 +52,13 @@ class NavigationScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
     private val customRenderer: CustomRenderer,
-) : CarMapScreen(carContext, mapController), CarNavigationHandler.NavigationListener {
+) : CarMapScreen(carContext, mapController), CarNavigationHandler.NavigationListener,
+    LocaleChangeListener {
 
     private val navigationManager: NavigationManager
     private val carNotificationManager: CarNotificationManager
     private val appManager: AppManager
+    private val hostFlutterApi: HostFlutterApi
 
     init {
         navigationManager =
@@ -64,6 +73,7 @@ class NavigationScreen(
             }
         carNotificationManager = CarNotificationManager.from(carContext)
         appManager = carContext.getCarService(AppManager::class.java)
+        hostFlutterApi = FlutterProvider.getHostFlutterApi(carContext)
         lifecycle.addObserver(
             object : DefaultLifecycleObserver {
                 override fun onCreate(owner: LifecycleOwner) {
@@ -71,7 +81,7 @@ class NavigationScreen(
                 }
 
                 override fun onResume(owner: LifecycleOwner) {
-                    showFavourites()
+                    tryToShowFavourites()
                 }
 
                 override fun onDestroy(owner: LifecycleOwner) {
@@ -96,7 +106,7 @@ class NavigationScreen(
     private var destinationTravelEstimate: TravelEstimate? = null
     private var speedInfo = SpeedInfoModel()
 
-    private var favourites: FavouritesStateMessage? = null
+    private var favourites: FavouritesParams? = null
 
     private val isNavigation: Boolean
         get() = navigationState == NavigationState.NAVIGATION
@@ -335,7 +345,7 @@ class NavigationScreen(
     }
 
     fun onMapReady() {
-        showFavourites()
+        tryToShowFavourites()
     }
 
     private fun renderSpeedInfo() {
@@ -356,7 +366,7 @@ class NavigationScreen(
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
         if (!bySystem) {
-            showFavourites()
+            tryToShowFavourites()
         }
     }
 
@@ -448,15 +458,88 @@ class NavigationScreen(
     }
 
     private fun getFavourites() {
-        FlutterProvider.getHostFlutterApi(carContext).getFavourites {
-            favourites = it.getOrNull()
-            if (mapController.isMapReady) {
-                showFavourites()
+        FlutterProvider.getHostFlutterApi(carContext).getFavourites { result ->
+            handleFavouritesMessage(result.getOrNull()) {
+                favourites = it
+                if (mapController.isMapReady) {
+                    tryToShowFavourites()
+                }
             }
         }
     }
 
-    private fun showFavourites() {
+    private fun handleFavouritesMessage(
+        favourites: FavouritesStateMessage?,
+        onResult: (FavouritesParams?) -> Unit,
+    ) {
+        if (favourites == null) {
+            onResult(null)
+            return
+        }
+
+        val items = favourites.items
+        val home = favourites.home
+        val work = favourites.work
+        if (items.isEmpty() && home == null && work == null) {
+            onResult(null)
+            return
+        }
+
+        val futures = items.mapIndexed { index, item ->
+            CompletableFuture<Pair<Int, FavouriteItem>>().also { future ->
+                handleFavouriteItem(item) { result ->
+                    future.complete(index to result)
+                }
+            }
+        }
+
+        CompletableFuture.allOf(*futures.toTypedArray())
+            .thenApply {
+                futures.map { it.get() }
+                    .sortedBy { it.first }
+                    .map { it.second }
+            }
+            .thenAccept { results ->
+                onResult(
+                    FavouritesParams(
+                        home = home?.toFavouriteItem(),
+                        work = work?.toFavouriteItem(),
+                        items = results
+                    )
+                )
+            }
+    }
+
+
+    fun handleFavouriteItem(item: FavouriteItemMessage, onResult: (FavouriteItem) -> Unit) {
+        val locale = mapController.getLocale()
+        mapController.searchByDirectoryObjectIdWithLocale(
+            DgisObjectId(objectId = item.id.toLong()),
+            SdkLocale(locale.language, "SA"),
+            resultCallback = { directoryObject ->
+                if (directoryObject == null) {
+                    onResult(item.toFavouriteItem())
+                    return@searchByDirectoryObjectIdWithLocale
+                }
+
+                hostFlutterApi.getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+                    onResult(
+                        FavouriteItem(
+                            id = item.id,
+                            title = directoryObject.title,
+                            subtitle = directoryObject.makeAddressString(),
+                            coordinates = GeoPoint(
+                                latitude = item.coordinates.latitude,
+                                longitude = item.coordinates.longitude
+                            ),
+                            iconResId = AndroidAutoUtils.getPoiIcon(markerTypeResult.getOrNull())
+                        )
+                    )
+                }
+            })
+    }
+
+    private fun tryToShowFavourites() {
         val favourites = this.favourites
         if (favourites == null) return
 
@@ -478,8 +561,26 @@ class NavigationScreen(
             points.add(BriefRouteInfoSearchPoints(startPoint, finishPoint))
         }
 
+        fun showScreen(screen: FavouritesPreviewScreen) {
+            if ((screenManager.top !is NavigationScreen &&
+                        screenManager.top !is FavouritesPreviewScreen) || isNavigation
+            ) return
+            if (screenManager.top is FavouritesPreviewScreen) {
+                screenManager.pop()
+            } else {
+                screenManager.push(screen)
+            }
+        }
+
+
         if (points.isEmpty()) {
-            screenManager.push(FavouritesPreviewScreen(carContext, mapController, favourites))
+            showScreen(
+                FavouritesPreviewScreen(
+                    carContext,
+                    mapController,
+                    favourites
+                )
+            )
             return
         }
 
@@ -495,10 +596,7 @@ class NavigationScreen(
 
                 else -> null
             }
-
-            if (screenManager.top !is NavigationScreen || isNavigation) return@getBriefRouteInfos
-
-            screenManager.push(
+            showScreen(
                 FavouritesPreviewScreen(
                     carContext,
                     mapController,
@@ -597,5 +695,9 @@ class NavigationScreen(
             val distanceM = floor(tensOfMeters * 10)
             return Pair(distanceM, Distance.UNIT_METERS)
         }
+    }
+
+    override fun onLocaleChanged() {
+        getFavourites()
     }
 }

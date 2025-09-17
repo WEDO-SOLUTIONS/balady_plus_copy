@@ -17,8 +17,6 @@ import androidx.car.app.navigation.model.MapWithContentTemplate
 import com.dgis.map.R
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
-import com.dgis.map.map_api.FavouriteItemMessage
-import com.dgis.map.map_api.FavouritesStateMessage
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.distance
@@ -28,14 +26,12 @@ import kotlin.math.min
 class FavouritesPreviewScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
-    favourites: FavouritesStateMessage,
-    homeWorkEstimates: HomeWorkEstimates? = null,
+    private val favourites: FavouritesParams,
+    private val homeWorkEstimates: HomeWorkEstimates? = null,
 ) : CarMapScreen(carContext, mapController) {
 
     private val itemsLimit = carContext.getCarService(ConstraintManager::class.java)
         .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST)
-
-    private val itemList: ItemList
 
     private val actionStrip by lazy {
         val favouritesAction =
@@ -51,31 +47,51 @@ class FavouritesPreviewScreen(
             .addAction(settingsAction).build()
     }
 
-    private val itemSearch by lazy {
-        Row.Builder().setImage(buildCarIcon(R.drawable.search))
-            .setTitle(getString(R.string.search_title))
-            .setOnClickListener {
-                screenManager.push(SearchScreen(carContext, mapController))
-            }.build()
+    private val itemSearch: Row
+        get() {
+            return Row.Builder().setImage(buildCarIcon(R.drawable.search))
+                .setTitle(getString(R.string.search_title))
+                .setOnClickListener {
+                    screenManager.push(SearchScreen(carContext, mapController))
+                }.build()
+        }
+
+    private val itemFavourites: Row
+        get() {
+            return Row.Builder().setImage(buildCarIcon(R.drawable.bookmark))
+                .setTitle(getString(R.string.favourites_title))
+                .setOnClickListener {
+                    screenManager.push(
+                        FavouritesScreen(
+                            carContext,
+                            mapController,
+                            favourites.items
+                        )
+                    )
+                }.build()
+        }
+
+    private val itemSettings: Row
+        get() {
+            return Row.Builder().setImage(buildCarIcon(R.drawable.settings))
+                .setTitle(getString(R.string.settings_title))
+                .setOnClickListener {
+                    screenManager.push(SettingsScreen(carContext, mapController))
+                }.build()
+        }
+
+    @ExperimentalCarApi
+    override fun onGetTemplate(): Template {
+        val template = MapWithContentTemplate.Builder()
+        val contentTemplate = ListTemplate.Builder()
+            .setSingleList(buildItemList()).setHeaderAction(Action.APP_ICON)
+            .setTitle(getString(R.string.app)).build()
+        template.setActionStrip(actionStrip).setContentTemplate(contentTemplate)
+        template.setMapController(buildMapController())
+        return template.build()
     }
 
-    private val itemFavourites by lazy {
-        Row.Builder().setImage(buildCarIcon(R.drawable.bookmark))
-            .setTitle(getString(R.string.favourites_title))
-            .setOnClickListener {
-                screenManager.push(FavouritesScreen(carContext, mapController, favourites.items))
-            }.build()
-    }
-
-    private val itemSettings by lazy {
-        Row.Builder().setImage(buildCarIcon(R.drawable.settings))
-            .setTitle(getString(R.string.settings_title))
-            .setOnClickListener {
-                screenManager.push(SettingsScreen(carContext, mapController))
-            }.build()
-    }
-
-    init {
+    private fun buildItemList(): ItemList {
         val itemList = ItemList.Builder()
 
         val home = favourites.home
@@ -126,30 +142,23 @@ class FavouritesPreviewScreen(
                 val text = SpannableString("  \n${item.subtitle}")
                 text.setSpan(distanceSpan, 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
-                itemList.addItem(
-                    Row.Builder().setTitle(item.title).addText(text)
-                        .setOnClickListener { onFavouriteTap(item) }.build()
-                )
+                val row = Row.Builder()
+                if (item.iconResId != null) {
+                    row.setImage(buildCarIcon(item.iconResId))
+                }
+                row.setTitle(item.title).addText(text)
+                    .setOnClickListener { onFavouriteTap(item) }
+
+                itemList.addItem(row.build())
             }
         } else {
             itemList.addItem(itemSearch).addItem(itemFavourites).addItem(itemSettings)
         }
 
-        this.itemList = itemList.build()
+        return itemList.build()
     }
 
-    @ExperimentalCarApi
-    override fun onGetTemplate(): Template {
-        val template = MapWithContentTemplate.Builder()
-        template.setActionStrip(actionStrip).setContentTemplate(
-            ListTemplate.Builder().setSingleList(itemList).setHeaderAction(Action.APP_ICON)
-                .setTitle(getString(R.string.app)).build()
-        )
-        template.setMapController(buildMapController())
-        return template.build()
-    }
-
-    private fun onFavouriteTap(item: FavouriteItemMessage) {
+    private fun onFavouriteTap(item: FavouriteItem) {
         screenManager.push(
             RoutePreviewScreen(carContext, mapController, item.toRoutePreviewParams())
         )

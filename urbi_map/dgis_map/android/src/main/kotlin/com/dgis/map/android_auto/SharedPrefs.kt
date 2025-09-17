@@ -32,6 +32,13 @@ class SharedPrefs(val context: Context) : AutoCloseable {
         }
     }
 
+    fun getLocale(): Locale {
+        return when (getLanguage()) {
+            Language.ENGLISH -> Locale("en")
+            Language.ARABIC -> Locale("ar")
+        }
+    }
+
     fun getString(key: String): String? {
         return sharedPreferences.getString("$keyPrefix$key", null)
     }
