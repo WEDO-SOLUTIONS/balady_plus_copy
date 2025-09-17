@@ -22,7 +22,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
     Future.microtask(() => ref.read(streamAudioProvider).getLiveNow());
   }
 
-  final DraggableScrollableController _sheetController = DraggableScrollableController();
+  final DraggableScrollableController _sheetController =
+      DraggableScrollableController();
 
   final double _minChildSize = 0.0;
   final double _maxChildSize = 0.34;
@@ -49,9 +50,12 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
       body: AnimatedBuilder(
         animation: _sheetController,
         builder: (context, _) {
-          final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+          final double currentSize = _sheetController.isAttached
+              ? _sheetController.size
+              : _minChildSize;
 
-          final double progress = (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
+          final double progress =
+              (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
 
           final double mapOffset = -320 * progress;
 
@@ -103,14 +107,16 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(currentSize == _minChildSize ? 0 : 32),
+                      bottom: Radius.circular(
+                          currentSize == _minChildSize ? 0 : 32),
                     ),
                   ),
                   child: widget.child,
                 ),
               ),
 
-              if (currentSize == _minChildSize && provider.selectedProgram != null)
+              if (currentSize == _minChildSize &&
+                  provider.selectedProgram != null)
                 Center(
                   child: DraggableFloatingPlayerControls(
                     onTap: togglePanel,
@@ -132,69 +138,68 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                 maxChildSize: _maxChildSize,
                 builder: (context, scrollController) => Container(
                   decoration: const BoxDecoration(color: Colors.black),
-                  child: GestureDetector(
-                    onTap: () {
-                      print("shady ammar tap");
-                    },
-                    child: SingleChildScrollView(
-                      controller: scrollController,
-                      physics: const ClampingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 3,
-                            margin: const EdgeInsets.symmetric(vertical: 16),
-                            decoration: BoxDecoration(
-                              color: Colors.grey,
-                              borderRadius: BorderRadius.circular(36),
-                            ),
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 3,
+                          margin: const EdgeInsets.symmetric(vertical: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(36),
                           ),
+                        ),
+                        const SizedBox(height: 16),
+                        const PlayingAudioTile(),
+                        if (provider.hasError) ...[
                           const SizedBox(height: 16),
-                          const PlayingAudioTile(),
-                          if (provider.hasError) ...[
-                            const SizedBox(height: 16),
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 16),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.red.withOpacity(0.1),
-                                border: Border.all(color: Colors.red.withOpacity(0.3)),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
-                                      style: const TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 12,
-                                      ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.red.withOpacity(0.1),
+                              border: Border.all(
+                                  color: Colors.red.withOpacity(0.3)),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.error_outline,
+                                    color: Colors.red, size: 20),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                          const SizedBox(height: 32),
-                          MediaCatalogList(needReset: () {
-                            //reset the timer
-                            _autoCloseTimer?.cancel();
-                            _autoCloseTimer = Timer(const Duration(seconds: 8), () {
-                              if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
-                                _sheetController.animateTo(
-                                  _minChildSize,
-                                  duration: const Duration(milliseconds: 800),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            });
-                          }),
+                          ),
                         ],
-                      ),
+                        const SizedBox(height: 32),
+                        MediaCatalogList(needReset: () {
+                          //reset the timer
+                          _autoCloseTimer?.cancel();
+                          _autoCloseTimer =
+                              Timer(const Duration(seconds: 80), () {
+                            if (_sheetController.isAttached &&
+                                _sheetController.size > _minChildSize) {
+                              _sheetController.animateTo(
+                                _minChildSize,
+                                duration: const Duration(milliseconds: 800),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          });
+                        }),
+                      ],
                     ),
                   ),
                 ),
@@ -216,26 +221,38 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                         gradient: LinearGradient(
                           begin: const Alignment(0.50, -0.00),
                           end: const Alignment(0.50, 1.00),
-                          colors: [Colors.black.withOpacity(0.20), Colors.black.withOpacity(0)],
+                          colors: [
+                            Colors.black.withOpacity(0.20),
+                            Colors.black.withOpacity(0)
+                          ],
                         ),
                       ),
                       child: Center(
                         child: Container(
                           width: 226,
                           height: 40,
-                          padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
+                          padding: const EdgeInsets.only(
+                              top: 8, left: 8, right: 16, bottom: 8),
                           decoration: ShapeDecoration(
                             color: Colors.black.withOpacity(0.65),
                             shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white.withOpacity(0.20)),
+                              side: BorderSide(
+                                  color: Colors.white.withOpacity(0.20)),
                               borderRadius: BorderRadius.circular(40),
                             ),
-                            shadows: const [BoxShadow(color: Color(0x19000000), blurRadius: 24, offset: Offset(0, 8))],
+                            shadows: const [
+                              BoxShadow(
+                                  color: Color(0x19000000),
+                                  blurRadius: 24,
+                                  offset: Offset(0, 8))
+                            ],
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(Icons.close, color: Colors.white.withOpacity(0.80), size: 22),
+                              Icon(Icons.close,
+                                  color: Colors.white.withOpacity(0.80),
+                                  size: 22),
                               const Text(
                                 'Drag here to exit audio player',
                                 style: TextStyle(
@@ -265,7 +282,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   void togglePanel() {
     if (_sheetController.isAttached) {
       final currentSize = _sheetController.size;
-      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
+      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2
+          ? _minChildSize
+          : _maxChildSize;
 
       /// Cancel any existing timer
       _autoCloseTimer?.cancel();
@@ -273,8 +292,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
       /// If opening the panel, start the 8-second timer
       if (targetSize == _maxChildSize) {
         setState(() => _showRemovalZone = false);
-        _autoCloseTimer = Timer(const Duration(seconds: 8), () {
-          if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+        _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+          if (_sheetController.isAttached &&
+              _sheetController.size > _minChildSize) {
             _sheetController.animateTo(
               _minChildSize,
               duration: const Duration(milliseconds: 800),
