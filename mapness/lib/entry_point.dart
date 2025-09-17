@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
