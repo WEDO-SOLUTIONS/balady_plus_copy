@@ -21,47 +21,48 @@ void main() async {
       await setupMapness(EnvType.prod);
       await SentryFlutter.init(
             (options) {
-          options.dsn =
-          'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
-          // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-          // We recommend adjusting this value in production.
-          options.tracesSampleRate = 1.0;
-          // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-          // We recommend adjusting this value in production.
-          options.profilesSampleRate = 1.0;
-          // options.attachScreenshot = true;
-          options.enableUserInteractionTracing = true;
-          options.reportSilentFlutterErrors = true;
-          options.enableAppHangTracking = true;
-          options.enableAutoPerformanceTracing = true;
-          options.enableAutoNativeBreadcrumbs = true;
-          options.enableNativeCrashHandling = true;
-          options.enableTimeToFullDisplayTracing = true;
-          options.enableAppHangTracking = true;
-          options.enableAppLifecycleBreadcrumbs = true;
-          options.enableFramesTracking = true;
-          // options.captureFailedRequests = true;
-          options.environment = EnvType.prod.name;
-          // Auto Performance Instrumentation
-          options.enableAutoPerformanceTracing = true;
-          options.enableUserInteractionTracing = true;
-          options.enableAppHangTracking = true;
+              options.dsn =
+              'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
+              // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+              // We recommend adjusting this value in production.
+              options.tracesSampleRate = 1.0;
+              // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+              // We recommend adjusting this value in production.
+              options.profilesSampleRate = 1.0;
+              // options.attachScreenshot = true;
+              options.enableUserInteractionTracing = true;
+              options.reportSilentFlutterErrors = true;
+              options.enableAppHangTracking = true;
+              options.enableAutoPerformanceTracing = true;
+              options.enableAutoNativeBreadcrumbs = true;
+              options.enableNativeCrashHandling = true;
+              options.enableTimeToFullDisplayTracing = true;
+              options.enableAppHangTracking = true;
+              options.enableAppLifecycleBreadcrumbs = true;
+              options.enableFramesTracking = true;
+              // options.captureFailedRequests = true;
+              options.environment = EnvType.prod.name;
 
-          // Session Tracking
-          options.enableAutoSessionTracking = true;
-          // Breadcrumbs
-          options.maxBreadcrumbs = 100;
+              // Auto Performance Instrumentation
+              options.enableAutoPerformanceTracing = true;
+              options.enableUserInteractionTracing = true;
+              options.enableAppHangTracking = true;
 
-          // Screenshots and Attachments
-          options.attachScreenshot = true;
-          options.screenshotQuality = SentryScreenshotQuality.high;
-          options.attachViewHierarchy = true;
+              // Session Tracking
+              options.enableAutoSessionTracking = true;
+              // Breadcrumbs
+              options.maxBreadcrumbs = 100;
 
-          // Debug Options
-          options.diagnosticLevel = SentryLevel.debug;
+              // Screenshots and Attachments
+              options.attachScreenshot = true;
+              options.screenshotQuality = SentryScreenshotQuality.high;
+              options.attachViewHierarchy = true;
 
-          // Additional Performance Settings
-          options.enableTimeToFullDisplayTracing = true;
+              // Debug Options
+              options.diagnosticLevel = SentryLevel.debug;
+
+              // Additional Performance Settings
+              options.enableTimeToFullDisplayTracing = true;
         },
         appRunner: () => runApp(MapnessProviderScope(child: LocalizedApp(child: App()))),
       );
