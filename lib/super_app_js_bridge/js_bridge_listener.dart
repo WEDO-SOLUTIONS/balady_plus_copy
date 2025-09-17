@@ -867,6 +867,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
+
+
+
   @pragma('vm:entry-point')
   void trackLogs(dynamic msg, CompletionHandler handler) {
     BaseResponse response = BaseResponse(
@@ -875,6 +878,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       message: "Invalid event data",
       data: null,
     );
+    if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
     if (msg != null && msg is String && msg.isNotEmpty) {
       try {
         Map<String, dynamic>? data = jsonDecode(msg);
