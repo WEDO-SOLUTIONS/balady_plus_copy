@@ -101,6 +101,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         eventName: "getAccessToken",
         data: AccessTokenModel(accessToken: CommonProperties.token),
       );
+      handler.complete(response.jsonEncodeModel());
     } else {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
@@ -119,17 +120,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               data: null,
             );
           }
+          handler.complete(response.jsonEncodeModel());
         },
         mainPage: RouteName.miniAppsMainScreen,
       );
-
-      await ShowDialogOnWebView.showAlertDialog(
-        context: NavigationService.navigatorKey.currentContext!,
-        content: needDialog.content(withoutActions: Platform.isIOS),
-        actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
-      );
+      try {
+        await ShowDialogOnWebView.showAlertDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          content: needDialog.content(withoutActions: Platform.isIOS),
+          actions: Platform.isIOS ? (ctx) => needDialog.textActions(ctx) : null,
+        );
+      } catch (_) {
+        handler.complete(response.jsonEncodeModel());
+      }
     }
-    handler.complete(response.jsonEncodeModel());
   }
 
   @pragma('vm:entry-point')
@@ -888,7 +892,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data['MiniAppVersion'] =
             miniAppsEngineBloc.miniApp.latestVersion?.versionNumber;
         if (data['type'] == "exception") {
-
           Sentry.captureException(
             SentryException(
               type: data['event_name'],
