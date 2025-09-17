@@ -2,15 +2,16 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
+import 'package:sheetify/sheetify.dart';
 
-/// This widget have to be a wrapper of header of the StatefulBottomSheet
-/// The main thing is that we use [BottomSheetStateComponent] so it should be a child of
-/// the BottomSheet
-/// Also if you want it to work you have to set [displayDragger] in [StatefulBottomSheet] to false and add
+/// This widget have to be a wrapper of header of the MultiStateSheet
+/// The main thing is that we use [SheetAnimatedWidget] so it should be a child of
+/// the MultiStateSheet
+/// Also if you want it to work you have to set [dragger] in [MultiStateSheet] to null and add
 /// Dragger by yourself inside header
 ///
 /// We can expand this widget to support more than one line of text or different widgets inside the header
-class HeaderInfoWrapper extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class HeaderInfoWrapper extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final Widget child;
   final String text;
   final Color? textColor;

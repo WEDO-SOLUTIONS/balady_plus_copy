@@ -6,17 +6,15 @@ import 'package:mapness/pages/stories/stories_page.dart';
 @RoutePage()
 class OnboardPage extends StatelessWidget {
   const OnboardPage({
-    required this.type,
     this.onClose,
     super.key,
   });
 
-  final StoryTypes type;
   final Function()? onClose;
 
   @override
   Widget build(BuildContext context) => StoriesPage(
-        type: type,
+        type: StoryTypes.onboarding,
         onClose: onClose,
       );
 }

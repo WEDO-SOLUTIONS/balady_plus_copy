@@ -15,13 +15,13 @@ class PoiDeeplinkPersonActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textStyle = context.textStyle.footNoteBold;
-    final accent = context.color.textAndIconsStatusAccent;
+    final accent = context.colors.accentDefault;
     final primary = context.color.textAndIconsBaseInversePrimary;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: context.color.surfaceBasePrimary,
+        color: context.colors.backgroundSurface1,
         boxShadow: Shadows.s,
       ),
       padding: const EdgeInsets.all(8),

@@ -21,7 +21,7 @@ class EmptyResultWidget extends StatelessWidget {
             textDirection: TextDirection.ltr,
             textAlign: TextAlign.center,
             style: context.textStyle.heading2.copyWith(
-              color: context.color.textAndIconsBasePrimary,
+              color: context.colors.foregroundDefault,
             ),
           ),
         ],

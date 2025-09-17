@@ -27,7 +27,7 @@ class EtaInfoWidget extends StatelessWidget {
                   // applyHeightToFirstAscent: false,
                   applyHeightToLastDescent: false,
                 ),
-                style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
+                style: context.textStyle.heading1.copyWith(color: context.colors.foregroundDefault),
               ),
               Text(
                 subtitle ?? '-',

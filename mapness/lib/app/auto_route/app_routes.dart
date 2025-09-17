@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
+import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 
@@ -31,6 +32,7 @@ class AppRouter extends RootStackRouter {
           transitionsBuilder: TransitionsBuilders.zoomIn,
           guards: [
             OnboardRouteGuard(ref),
+            SaudiDaySplashGuard(ref),
           ],
           children: [
             Routes.bottomMenuRoute,
@@ -59,12 +61,9 @@ class AppRouter extends RootStackRouter {
               page: PathNavRoute.page,
               fullscreenDialog: true,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'search',
               page: SearchRoute.page,
-              durationInMilliseconds: 100,
-              reverseDurationInMilliseconds: 100,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
             AppRoute(
               path: 'navi_search',
@@ -93,6 +92,10 @@ class AppRouter extends RootStackRouter {
             AppRoute(
               path: 'routingRoutes',
               page: RoutingRoutesRoute.page,
+            ),
+            AppRoute(
+              path: 'public_routing_details',
+              page: RouteDetailsRoute.page,
             ),
             AppRoute(
               transitionsBuilder: TransitionsBuilders.slideBottom,
@@ -167,10 +170,6 @@ class AppRouter extends RootStackRouter {
               page: QuickFeedbackPhotoRoute.page,
             ),
             CustomRoute(
-              path: 'quickFeedback',
-              page: QuickFeedbackRoute.page,
-            ),
-            CustomRoute(
               path: 'feedback/:objectId',
               page: FeedbackSelectTypeRoute.page,
             ),
@@ -226,6 +225,14 @@ class AppRouter extends RootStackRouter {
               page: ParkingDialogRoute.page,
               opaque: false,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'contribute',
+              page: ContributeRoute.page,
+            ),
+            CustomRoute(
+              path: 'quickFeedback',
+              page: QuickFeedbackRoute.page,
             ),
           ],
         ),

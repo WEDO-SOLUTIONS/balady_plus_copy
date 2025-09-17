@@ -7,3 +7,4 @@ typedef NetworkStoryPageAction = Story_Frame_ActionButton;
 typedef NetworkStoryTextStyle = TextStyle;
 typedef NetowrkColor = Color;
 typedef NetworkStoryPreview = Story_Preview;
+typedef NetworkStoryVideo = Story_Video;

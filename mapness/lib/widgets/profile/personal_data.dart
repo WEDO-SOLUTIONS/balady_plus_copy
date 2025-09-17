@@ -21,13 +21,13 @@ class PersonalData extends ConsumerWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: context.color.surfaceBaseSecondary,
+        color: context.colors.backgroundSurface4,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ContentWrapper(color: context.color.surfaceBaseSecondary, children: [
+          ContentWrapper(color: context.colors.backgroundSurface4, children: [
             ContentRow(
               options: ContentRowOptions(
                 dividerEnabled: true,

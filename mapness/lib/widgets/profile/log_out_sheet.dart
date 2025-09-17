@@ -3,8 +3,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/widgets/profile/slide_to_log_out.dart';
+import 'package:sheetify/sheetify.dart';
 
 class LogoutSheet extends HookWidget {
   final String title;
@@ -22,10 +24,13 @@ class LogoutSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statelessBottomSheetController = useStatelessBottomsheetController(
+    final toggleSheetController = useToggleSheetController(
       onClose: (_) => Navigator.of(context).pop(),
     );
-    return StatelessBottomSheet(
+    return ToggleSheet(
+      backgroundColor: context.colors.backgroundSurface1,
+      safeAreaColor: context.colors.backgroundSurface1,
+      dragger: const SheetDragger(),
       header: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: ContentRow(
@@ -67,7 +72,7 @@ class LogoutSheet extends HookWidget {
           ),
         ),
       ],
-      scrollController: statelessBottomSheetController,
+      scrollController: toggleSheetController,
     );
   }
 }

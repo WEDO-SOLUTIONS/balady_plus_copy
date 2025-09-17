@@ -54,7 +54,7 @@ class UserStateRow extends ConsumerWidget {
               Text(
                 userState.name,
                 style: context.textStyle.text.copyWith(
-                  color: context.color.textAndIconsBasePrimary,
+                  color: context.colors.foregroundDefault,
                 ),
               ),
             ],

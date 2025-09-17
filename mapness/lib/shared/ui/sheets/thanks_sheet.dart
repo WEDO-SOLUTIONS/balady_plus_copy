@@ -38,7 +38,7 @@ class ThanksSheet extends StatelessWidget {
               Text(
                 context.l10n.thanksForYourFeedback,
                 textAlign: TextAlign.center,
-                style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+                style: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
               ),
             ],
           ),

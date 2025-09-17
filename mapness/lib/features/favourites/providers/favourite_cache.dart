@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
@@ -383,16 +384,20 @@ class _FavouriteCache extends _$FavouriteCache {
       logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     }
 
-    final cache = favoritesBox.get(_keyCache, defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
-
-    final homeItem = cache?.home;
-    final workItem = cache?.work;
-    final placesList = cache?.places;
-
-    return FavouritesState(
-      home: homeItem?.toDomain(),
-      work: workItem?.toDomain(),
-      items: placesList?.map((e) => e.toDomain()).toList() ?? [],
-    );
+    return getFavouritesStateFromHive();
   }
+}
+
+Future<FavouritesState> getFavouritesStateFromHive() async {
+  final favoritesBox = await Hive.openBox(_FavouriteCache._boxName);
+  final cache = favoritesBox.get(_FavouriteCache._keyCache, defaultValue: FavoriteCacheState()) as FavoriteCacheState?;
+  final homeItem = cache?.home;
+  final workItem = cache?.work;
+  final placesList = cache?.places;
+
+  return FavouritesState(
+    home: homeItem?.toDomain(),
+    work: workItem?.toDomain(),
+    items: placesList?.map((e) => e.toDomain()).toList() ?? [],
+  );
 }

@@ -6,12 +6,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/poi_card/data/poi_data_google.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/extensions/search_type_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -33,6 +39,8 @@ class MapSearchResults extends ConsumerWidget {
     final language = ref.watch(appLanguageProvider);
     final myLocation = ref.watch(locationProvider);
 
+    final isGoogleSearch = ref.watch(searchProvider(context.read<SearchScope>().value).notifier).isGoogleSearch;
+
     void _sendSuggestionPressed() {
       final scope = context.read<SearchScope>();
       final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
@@ -47,6 +55,37 @@ class MapSearchResults extends ConsumerWidget {
       }
     }
 
+    Future<void> _bssAnalyticRequest({
+      required SearchResultMessage results,
+      required DirectoryObjectMessage item,
+    }) async {
+      final index = results.firstPage?.items.indexWhere(
+            (e) => e.id?.objectId == item.id?.objectId,
+          ) ??
+          0;
+      final scope = context.read<SearchScope>();
+      final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
+
+      if (item.markerPosition == null) {
+        debugPrint('GeoPosition for this object is null');
+      }
+      await ref.read(bssServiceProvider.notifier).sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.placeCardMini,
+                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                placeItem: item.toBss(index),
+                searchResultList: results.toBss(),
+              ),
+            ),
+          );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
       child: SearchResults(
@@ -57,19 +96,29 @@ class MapSearchResults extends ConsumerWidget {
             color: context.colors.accentDefault,
           ),
         ),
-        itemBuilder: (context, item) => SearchItem(
+        itemBuilder: (context, item, index) => SearchItem(
           result: item,
           language: language,
           myLocation: myLocation == null
               ? null
               : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-          onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
+          onTap: () {
+            _bssAnalyticRequest(results: results, item: item);
+            _onResultTap(context, item, _sendSuggestionPressed, isGoogleSearch);
+          },
+          searchResultList: results.toBss(),
+          index: index,
         ),
       ),
     );
   }
 
-  void _onResultTap(BuildContext context, DirectoryObjectMessage item, void Function() sendSuggestionPressed) {
+  void _onResultTap(
+    BuildContext context,
+    DirectoryObjectMessage item,
+    void Function() sendSuggestionPressed,
+    bool isGoogleSearch,
+  ) {
     if (item.id == null) {
       return;
     }
@@ -94,6 +143,18 @@ class MapSearchResults extends ConsumerWidget {
             entranceId: 0,
           ),
           cameraConfig: const PoiCameraConfig(zoom: 18),
+          poiCardDataFromGoogle: isGoogleSearch
+              ? PoiCardDataFromGoogle(
+                  id: item.id!.objectId.toString(),
+                  displayName: item.title,
+                  location: item.markerPosition != null
+                      ? LatLng(
+                          latitude: item.markerPosition!.latitude,
+                          longitude: item.markerPosition!.longitude,
+                        )
+                      : null,
+                )
+              : null,
         ),
         toCompareRoutes: [PoiCardWidgetRoute.page],
       );

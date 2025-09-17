@@ -35,8 +35,7 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
           ),
           child: Text(
             context.l10n.suggestedSearches,
-            style: context.textStyles.captionLargeRegular
-                .copyWith(color: context.colors.foregroundSoft),
+            style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
           ),
         ),
       ),
@@ -50,13 +49,13 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
         sliver: DecoratedSliver(
           decoration: BoxDecoration(
             color: contentColor,
-            borderRadius:
-                const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
           ),
           sliver: SliverPadding(
             padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
             sliver: SliverList.builder(
               itemBuilder: (context, index) => SuggestItem(
+                index: index,
                 suggest: suggests[index],
                 myLocation: myLocation == null
                     ? null
@@ -76,11 +75,7 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
                   }
                   final address = object.makeFullAddress();
                   context.router.popForced(
-                    RoutePointCoordinates(
-                        GeoPointMessage(
-                            latitude: latitude, longitude: longitude),
-                        address,
-                        null),
+                    RoutePointCoordinates(GeoPointMessage(latitude: latitude, longitude: longitude), address, null),
                   );
                 },
               ),

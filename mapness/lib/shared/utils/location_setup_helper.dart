@@ -22,16 +22,14 @@ class LocationSetupHelper with WidgetsBindingObserver {
       await _tryActivate();
       // wait until activate() says "done"
       await _completer.future;
-    } finally {
-      WidgetsBinding.instance.removeObserver(this);
+    } catch (e) {
+      _log('$e');
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && !_completer.isCompleted) {
-      _log('app RESUMED → checking status again');
-      // dialog closed → can recheck
+    if (state == AppLifecycleState.resumed) {
       _tryActivate();
     }
   }

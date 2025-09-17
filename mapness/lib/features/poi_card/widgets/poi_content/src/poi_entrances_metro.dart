@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/map_page/extensions/directory_object_ext.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide PoiContentWorkTime, PoiContentWorkTimeDay;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -49,10 +49,10 @@ class PoiEntrancesMetro extends StatelessWidget {
     ];
 
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandableTmp(
-          expandIconColor: context.colorsV3.foregroundMuted,
+          expandIconColor: context.colors.foregroundMuted,
           count: entrancesDirectoryObject.length,
           onTitleTap: () {
             context.router.replaceOrPush(
@@ -64,13 +64,13 @@ class PoiEntrancesMetro extends StatelessWidget {
             title: '${context.l10n.exit} 1',
             subtitle: entrancesDirectoryObject.firstOrNull?.makeAddress(),
           ),
-          leading: GeneralIcons.doorEntrance.icon(color: context.colorsV3.accentDefault),
+          leading: GeneralIcons.doorEntrance.icon(color: context.colors.accentDefault),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: entrancesDirectoryObject
                 .skip(1)
                 .mapIndexed(
-                  (index, data) => ContentRowV2(
+                  (index, data) => ContentRow(
                     onTap: () {
                       context.router.replaceOrPush(
                         route: PoiCardWidgetRoute(objectId: data.id),
@@ -81,7 +81,7 @@ class PoiEntrancesMetro extends StatelessWidget {
                       title: '${context.l10n.exit} ${index + 2}',
                       subtitle: data.makeAddress(),
                     ),
-                    leading: GeneralIcons.doorEntrance.icon(color: context.colorsV3.accentDefault),
+                    leading: GeneralIcons.doorEntrance.icon(color: context.colors.accentDefault),
                   ),
                 )
                 .toList(),

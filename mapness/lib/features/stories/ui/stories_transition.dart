@@ -94,18 +94,13 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
                           color: Colors.black.withOpacity(
                         _hideAnimation.value,
                       )),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: MediaQuery.paddingOf(context).top,
+                      SlideTransition(
+                        position: AlwaysStoppedAnimation(
+                          Offset(0, 1 - _hideAnimation.value),
                         ),
-                        child: SlideTransition(
-                          position: AlwaysStoppedAnimation(
-                            Offset(0, 1 - _hideAnimation.value),
-                          ),
-                          child: Transform.scale(
-                            scale: _hideAnimation.value,
-                            child: widget.child,
-                          ),
+                        child: Transform.scale(
+                          scale: _hideAnimation.value,
+                          child: widget.child,
                         ),
                       ),
                     ],
@@ -115,12 +110,7 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
                   fit: StackFit.expand,
                   children: [
                     const ColoredBox(color: Colors.black),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: MediaQuery.paddingOf(context).top,
-                      ),
-                      child: widget.child,
-                    ),
+                    widget.child,
                   ],
                 ),
         ),

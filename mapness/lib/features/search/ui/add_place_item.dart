@@ -8,8 +8,11 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AddPlaceItem extends StatelessWidget {
   final VoidCallback onTapMetrics;
+  final VoidCallback? googleSearchOnTap;
+
   const AddPlaceItem({
     required this.onTapMetrics,
+    this.googleSearchOnTap,
     super.key,
   });
 
@@ -45,6 +48,15 @@ class AddPlaceItem extends StatelessWidget {
             },
           ),
         ),
+        if (googleSearchOnTap != null)
+          AppButton(
+            padding: const EdgeInsets.only(left: Spacing.$2x, right: Spacing.$2x, top: Spacing.$2x),
+            onTap: googleSearchOnTap,
+            buttonColorScheme: ButtonColorScheme.accentSecondary,
+            buttonType: ButtonType.secondary,
+            primaryLabel: context.l10n.showMore,
+            primaryIcon: SystemIcons.search,
+          ),
         const SizedBox(height: Spacing.$1_5x),
       ],
     );

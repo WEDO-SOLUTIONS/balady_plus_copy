@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -19,7 +20,7 @@ final GeoPointMessage _kingdomTower = GeoPointMessage(latitude: 24.712301, longi
 @Riverpod(keepAlive: true)
 class DgisController extends _$DgisController {
   late Completer<DgisMapController> _completer;
-
+  late LocationSetupHelper _locationHelper;
   final _visibleRectSubject = BehaviorSubject<VisibleRectEvent?>();
 
   ValueStream<VisibleRectEvent?> get visibleRectSubject => _visibleRectSubject;
@@ -50,7 +51,8 @@ class DgisController extends _$DgisController {
     await controller.initialize();
 
     // Styles
-    await controller.loadStyles(MapnessConstants.mapStylesPath);
+    await controller
+        .loadStyles(SaudiNationalDay.isNow() ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(
@@ -93,8 +95,8 @@ class DgisController extends _$DgisController {
   Future<void> _setupLocation(DgisMapController controller) async {
     await _setDefaultLocation(controller);
 
-    final helper = LocationSetupHelper(controller);
-    await helper.run();
+    _locationHelper = LocationSetupHelper(controller);
+    await _locationHelper.run();
 
     // at this point, geolocation is either activated,
     // or the user has definitively denied it (the helper will timeout

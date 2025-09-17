@@ -11,7 +11,6 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/log_out_sheet.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
@@ -158,7 +157,6 @@ class ProfilePage extends HookConsumerWidget {
                                       ),
                                     ),
                                     ContentRow(
-                                      isDividerEnabled: true,
                                       onTap: () {
                                         context.router
                                             .push(const AboutBaladyRoute());
@@ -168,20 +166,6 @@ class ProfilePage extends HookConsumerWidget {
                                           GeneralIcons.infoSquare),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.aboutApp,
-                                      ),
-                                    ),
-                                    ContentRow(
-                                      onTap: () {
-                                        inAppReview.openStoreListing(
-                                          appStoreId:
-                                              MapnessConstants.appStoreId,
-                                        );
-                                      },
-                                      trailing: trailing,
-                                      leading:
-                                          leadingIconBuilder(GeneralIcons.star),
-                                      text: ContentRowTextOptions(
-                                        title: context.l10n.rateBaladyApp,
                                       ),
                                     ),
                                   ],

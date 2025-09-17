@@ -19,7 +19,7 @@ class IwishFeedbackMood extends StatelessWidget {
               (e) => Expanded(
                 child: Material(
                   borderRadius: BorderRadius.circular(10),
-                  color: e == selectedMood ? NonThemeColor.color3 : context.color.surfaceBasePrimary,
+                  color: e == selectedMood ? NonThemeColor.color3 : context.colors.backgroundSurface1,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(10),
                     onTap: () => onMoodSelected(e),

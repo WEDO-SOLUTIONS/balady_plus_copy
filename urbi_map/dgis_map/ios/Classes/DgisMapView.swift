@@ -47,6 +47,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
     private var moveCameraCancellable: DGis.Cancellable?
 
+    private var mapFactory: IMapFactory?
+
     init(
         dgisSdk sdk: Container,
         frame: CGRect,
@@ -876,6 +878,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         ))
         
         self.map = map
+        self.mapFactory = mapFactory
         let mapView = mapFactory.mapView
         
         // This gesture is temporarily disabled as it conflicts with MapObjectTappedCallback
@@ -961,8 +964,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             )))
             return
         }
+        let isPublicTransport = routeHandler.options == .publicTransport(PublicTransportRouteSearchOptions())
+        self.routeHandler?.setRoutesVisible(isPublicTransport)
+        if (isPublicTransport) {
+            self.routeHandler?.setShowOnlyActiveRoute(true)
+        }
         
-        self.routeHandler?.setRoutesVisible(false)
+        
         self.navigationHandler?.startNavigation(
             finishPoint: routeHandler.finishPoint,
             options: routeHandler.options,
@@ -986,8 +994,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             )))
             return
         }
+        let isPublicTransport = routeHandler.options == .publicTransport(PublicTransportRouteSearchOptions())
+        self.routeHandler?.setRoutesVisible(isPublicTransport)
+        if (isPublicTransport) {
+            self.routeHandler?.setShowOnlyActiveRoute(true)
+        }
         
-        self.routeHandler?.setRoutesVisible(false)
         self.navigationHandler?.startSimulation(
             finishPoint: routeHandler.finishPoint,
             options: routeHandler.options,
@@ -1117,6 +1129,20 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
 
+    func findRoute(startPoint: RouteSearchPointMessage, finishPoint: RouteSearchPointMessage, navType: RouteSearchOptionsMessage, completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void) {
+        let routeSearchOptions = navType.toRouteSearchOptions()
+        
+        let startSearchPoint = startPoint.toRouteSearchPoint()
+        let finishSearchPoint = finishPoint.toRouteSearchPoint()
+        
+        routeHandler?.findRoute(
+            startPoint: startSearchPoint,
+            finishPoint: finishSearchPoint,
+            routeSearchOptions: routeSearchOptions,
+            completion: completion
+        )
+    }
+
     func listPackages(completion: @escaping (Result<[PackageMessage], any Error>) -> Void) {
         packagesHandler?.listPackages(completion: completion)
     }
@@ -1209,5 +1235,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         carPlayHandler?.getConnectionState(completion: completion)
     }
     
-
+    func setMaxFps(maxFps: Int64?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        if let fps = maxFps {
+            mapFactory?.energyConsumption.maxFps = Int(fps)
+        } else {
+            mapFactory?.energyConsumption.maxFps = nil
+        }
+        
+        completion(Result.success(()))
+    }
 }

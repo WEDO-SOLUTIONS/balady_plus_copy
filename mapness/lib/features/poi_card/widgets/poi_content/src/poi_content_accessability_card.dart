@@ -15,7 +15,7 @@ class PoiContentAccessabilityCard extends StatelessWidget {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final deliveryAvailableIcon = isRtl ? TransportIcons.truckRTL : TransportIcons.truckLTR;
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       children: [
         if (data.deliveryAvailableTitle != null)
           _AccessibilityInfoItem(

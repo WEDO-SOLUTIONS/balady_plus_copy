@@ -1,11 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/widgets/lifestyle_layers/layers_sheet_content.dart';
 import 'package:mapness/widgets/lifestyle_layers/parking_details_content.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class LayersSheetPage extends StatefulHookConsumerWidget {
@@ -16,21 +17,28 @@ class LayersSheetPage extends StatefulHookConsumerWidget {
 }
 
 class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTickerProviderStateMixin {
-  late final StatelessBottomSheetController _layersController;
-  late final StatelessBottomSheetController _parkingLotsController;
+  late final ToggleSheetController _layersController;
+  late final ToggleSheetController _parkingLotsController;
+
+  late final barrierColorDelegate = ToggleSheetDelegateFunction(
+    function: (controller) => screenOverlayDimming40.withAlpha(
+      (controller.fraction * 255).toInt(),
+    ),
+  );
+  late Color screenOverlayDimming40;
 
   @override
   void initState() {
     super.initState();
 
-    _layersController = StatelessBottomSheetController(
+    _layersController = ToggleSheetController(
         durationMultiplier: 2,
         onClose: (_) {
           if (_parkingLotsController.isClosed) {
             context.router.popForced();
           }
         });
-    _parkingLotsController = StatelessBottomSheetController(
+    _parkingLotsController = ToggleSheetController(
         durationMultiplier: 2,
         onClose: (_) {
           _layersController.open();
@@ -45,50 +53,51 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            StatelessBottomSheet(
-              scrollController: _layersController,
-              outside: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  if (!_parkingLotsController.isClosed) {
-                    _showLayersPanel();
-                  } else {
-                    _hideLayersPanel();
-                  }
-                },
-                child: const SizedBox.expand(),
-              ),
-              backgroundColorDelegate: StatelessSheetDelegateFunction(
-                function: (controller) => context.colors.screenOverlayDimming40.withAlpha(
-                  (controller.aspectRatio * 255).toInt(),
-                ),
-              ),
-              sliverBeforeContent: LayersSheetContent(
-                tapOnParkingLotsMenu: () => _showParkingLotsPanel(),
-                onClose: () => context.router.popForced(),
-              ),
-            ),
-            StatelessBottomSheet(
-              scrollController: _parkingLotsController,
-              startConfig: BottomSheetStart.closed,
-              backgroundColorDelegate: StatelessSheetDelegateFunction(
-                function: (controller) => context.colors.screenOverlayDimming40.withAlpha(
-                  (controller.aspectRatio * 255).toInt(),
-                ),
-              ),
-              sliverBeforeContent: ParkingDetailsContent(
-                onPanelClose: () {
+  Widget build(BuildContext context) {
+    screenOverlayDimming40 = context.colors.screenOverlayDimming40;
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          ToggleSheet(
+            scrollController: _layersController,
+            backgroundColor: context.colors.backgroundSurface1,
+            safeAreaColor: context.colors.backgroundSurface1,
+            dragger: const SheetDragger(),
+            outside: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                if (!_parkingLotsController.isClosed) {
                   _showLayersPanel();
-                },
-              ),
+                } else {
+                  _hideLayersPanel();
+                }
+              },
+              child: const SizedBox.expand(),
             ),
-          ],
-        ),
-      );
+            barrierColorDelegate: barrierColorDelegate,
+            sliver: LayersSheetContent(
+              tapOnParkingLotsMenu: () => _showParkingLotsPanel(),
+              onClose: () => context.router.popForced(),
+            ),
+          ),
+          ToggleSheet(
+            scrollController: _parkingLotsController,
+            backgroundColor: context.colors.backgroundSurface1,
+            safeAreaColor: context.colors.backgroundSurface1,
+            dragger: const SheetDragger(),
+            startConfig: ToggleSheetStart.closed,
+            barrierColorDelegate: barrierColorDelegate,
+            sliver: ParkingDetailsContent(
+              onPanelClose: () {
+                _showLayersPanel();
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   void _hideLayersPanel() {
     _layersController.close();

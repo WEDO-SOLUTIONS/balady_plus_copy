@@ -12,6 +12,7 @@ import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
 import 'package:mapness/widgets/debug_overlay/link_checker.dart';
 import 'package:mapness/widgets/debug_overlay/onboarding_button.dart';
+import 'package:mapness/widgets/debug_overlay/saudi_national_day_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
 import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
 import 'package:mapness/widgets/debug_overlay/voice_picker.dart';
@@ -212,6 +213,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const DebugServerUrl(),
                   const SizedBox(height: 12),
                   const SsoCredentialView(),
+                  const SaudiNationalDayDebugSwitcher(),
                   const VoicePicker(),
                   const BetterRouteSettingsWidget(),
                   const SizedBox(height: 12),
@@ -219,6 +221,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const SizedBox(height: 12),
                   const DebugNavigationControll(),
                   const ShowOnboardingButton(),
+                  const ShowSaudiDayButton(),
                   const SizedBox(height: 12),
                   const LinkChecker(),
                   SizedBox(

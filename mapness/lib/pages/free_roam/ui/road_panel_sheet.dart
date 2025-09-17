@@ -5,13 +5,15 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class RoadPanelSheetPage extends HookConsumerWidget {
@@ -23,7 +25,7 @@ class RoadPanelSheetPage extends HookConsumerWidget {
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
 
-    final sheetController = useStatelessBottomsheetController(onClose: (c) {
+    final sheetController = useToggleSheetController(onClose: (c) {
       context.router.popForced();
     });
 
@@ -34,9 +36,10 @@ class RoadPanelSheetPage extends HookConsumerWidget {
 
     return Directionality(
       textDirection: direction,
-      child: StatelessBottomSheet(
-        draggerColor: colors.backgroundSurface1,
+      child: ToggleSheet(
+        dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
         backgroundColor: colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
         scrollController: sheetController,
         header: ColoredBox(
           color: colors.backgroundSurface1,

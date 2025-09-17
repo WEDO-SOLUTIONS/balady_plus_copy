@@ -35,4 +35,6 @@ class TrafficState extends _$TrafficState {
   void onTrafficTap() {
     _dgisController?.naviTrafficParkingController.onTrafficClicked();
   }
+
+  bool get isTrafficEnabled => state.status == TrafficControlStatus.enabled;
 }

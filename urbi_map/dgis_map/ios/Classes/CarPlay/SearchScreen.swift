@@ -133,4 +133,9 @@ extension QuickFilter {
 
 protocol SearchNavigation {
     func navigate(to directoryObject: DirectoryObject)
+    func navigate(
+        to geoPoint: GeoPoint,
+        destinationName: String,
+        additionalInformation: String
+    )
 }

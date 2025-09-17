@@ -23,8 +23,8 @@ class LabeledElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) => ElevatedButton(
         onPressed: enabled ? onPressed : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? context.color.strokeAccent,
-          disabledBackgroundColor: context.color.surfaceBasePrimary,
+          backgroundColor: backgroundColor ?? context.colors.accentOnContainer,
+          disabledBackgroundColor: context.colors.backgroundSurface1,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),

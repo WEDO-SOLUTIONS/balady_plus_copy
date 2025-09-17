@@ -31,3 +31,4 @@ build/
 
 # Build runner
 *.g.dart
+*.gen.dart

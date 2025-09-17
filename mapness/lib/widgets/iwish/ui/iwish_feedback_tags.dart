@@ -13,6 +13,7 @@ class IwishFeedbackTags extends StatelessWidget {
     required this.onTagToggled,
     super.key,
   });
+
   final List<IwishFeedbackTag> tags;
   final Set<String> selectedTags;
   final void Function(String id) onTagToggled;
@@ -33,11 +34,12 @@ class IwishFeedbackTags extends StatelessWidget {
                 color: Colors.transparent,
                 child: Ink(
                   decoration: BoxDecoration(
-                    color: context.color.surfaceBasePrimary,
+                    color: context.colors.backgroundSurface1,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color:
-                          selectedTags.contains(e.id) ? context.color.strokeAccent : context.color.surfaceBasePrimary,
+                      color: selectedTags.contains(e.id)
+                          ? context.colors.accentOnContainer
+                          : context.colors.backgroundSurface1,
                       width: 2,
                     ),
                   ),
@@ -72,7 +74,7 @@ class IwishFeedbackTags extends StatelessWidget {
                                 minFontSize: 8,
                                 textAlign: context.isRTL ? TextAlign.right : TextAlign.left,
                                 style: context.textStyle.text.copyWith(
-                                  color: context.color.textAndIconsBasePrimary,
+                                  color: context.colors.foregroundDefault,
                                 ),
                               ),
                             ),

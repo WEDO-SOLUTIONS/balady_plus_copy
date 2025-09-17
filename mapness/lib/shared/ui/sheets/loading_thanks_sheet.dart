@@ -37,7 +37,7 @@ class LoadingThanksSheet extends StatelessWidget {
                     height: 104,
                     child: FeedbackConfirmationIndicator(
                         isLoading: isLoading,
-                        color: context.color.textAndIconsStatusAccent,
+                        color: context.colors.accentDefault,
                         onComplete: () {
                           if (triggerOnComplete) {
                             onComplete();
@@ -50,14 +50,14 @@ class LoadingThanksSheet extends StatelessWidget {
                   Text(
                     context.l10n.thanksForYourFeedback,
                     textAlign: TextAlign.center,
-                    style: context.textStyle.heading1.copyWith(color: context.color.textAndIconsBasePrimary),
+                    style: context.textStyle.heading1.copyWith(color: context.colors.foregroundDefault),
                   ),
                   if (showValuableOpinionMessage) ...[
                     const SizedBox(height: 8),
                     Text(
                       context.l10n.yourOpinionIsVeryValuable,
                       textAlign: TextAlign.center,
-                      style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                      style: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                     ),
                     const SizedBox(height: 20),
                     AppButton(

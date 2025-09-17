@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/complience_building_legend.dart';
 import 'package:mapness/widgets/landing/eta_sharing_control.dart';
@@ -14,9 +15,10 @@ import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
+import 'package:sheetify/sheetify.dart';
 
 class MapDashboardControls extends ConsumerWidget {
-  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> scrollController;
+  final MultiStateSheetController<ThreeStateSheet> scrollController;
 
   const MapDashboardControls(
     this.scrollController, {
@@ -25,6 +27,8 @@ class MapDashboardControls extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
+
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
     final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
@@ -33,7 +37,6 @@ class MapDashboardControls extends ConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.only(
           left: uikit.Spacing.$3x,
-          top: uikit.Spacing.$3x,
           right: uikit.Spacing.$3x,
         ),
         child: Column(
@@ -56,7 +59,7 @@ class MapDashboardControls extends ConsumerWidget {
                       const IndoorControl(),
                       const Spacer(),
                       SizedBox(
-                        height: scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                        height: scrollController.state == ThreeStateSheet.hidden
                             ? controlsHeight * (1 - scrollController.interpolation)
                             : 0,
                       )
@@ -91,7 +94,15 @@ class MapDashboardControls extends ConsumerWidget {
                 FollowControl(),
               ],
             ),
-            uikit.Spacing.$4x.heightBox,
+            if (!isNationalDay) uikit.Spacing.$4x.heightBox,
+            if (isNationalDay)
+              MultiStateSheetBuilder<ThreeStateSheet>(
+                  builder: (context, state, interpolation, child) => SizedBox(
+                      height: state == ThreeStateSheet.hidden
+                          ? scrollController.componentSizes.topHeader * (1 - interpolation) +
+                              uikit.Spacing.$12x * interpolation
+                          : uikit.Spacing.$12x),
+                  defaultState: ThreeStateSheet.hidden),
           ],
         ),
       ),

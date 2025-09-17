@@ -54,7 +54,7 @@ class RoutingSearchHistory extends ConsumerWidget {
               ContentRow(
                 leading: Icon(
                   GeneralIcons.location,
-                  color: context.colors.accentActive,
+                  color: context.colors.accentDefault,
                 ),
                 text: ContentRowTextOptions(
                   title: context.l10n.specifyOnTheMap,
@@ -64,7 +64,7 @@ class RoutingSearchHistory extends ConsumerWidget {
               ContentRow(
                 leading: Icon(
                   SystemIcons.bookmark,
-                  color: context.colors.accentActive,
+                  color: context.colors.accentDefault,
                 ),
                 text: ContentRowTextOptions(
                   title: context.l10n.findInFavorites,

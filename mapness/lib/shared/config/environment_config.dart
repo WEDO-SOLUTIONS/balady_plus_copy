@@ -83,7 +83,7 @@ class EnvironmentConfig {
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
-        url: 'https://momrah-balady-dev.public-poc.urbi.ae/api/1.0/',
+        url: 'https://momrah-balady-dev.iaas.urbi-sa.com/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://sa1.ops.2gis.dev/',
         jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
@@ -95,7 +95,7 @@ class EnvironmentConfig {
         feedbackApi: 'https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/api/2.0/',
         appFeedbackApi: 'https://momrah-balady-dev.public-poc.urbi.ae/api',
         appFeedbackEnable: true,
-        bssApi: 'https://s1.bss.2gis.com',
+        bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
       );
 
@@ -111,7 +111,7 @@ class EnvironmentConfig {
         appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
         appFeedbackEnable: true,
         proxy: null,
-        bssApi: 'https://s1.bss.2gis.com',
+        bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
       );
 
@@ -145,7 +145,7 @@ class EnvironmentConfig {
         feedbackApi: 'https://momrah-balady-discrepancy.iaas.urbi-sa.com/api/2.0/',
         appFeedbackApi: 'https://momrah-balady-dev.iaas.urbi-sa.com/api',
         appFeedbackEnable: true,
-        bssApi: 'https://s1.bss.2gis.com',
+        bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
       );
 }

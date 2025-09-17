@@ -213,7 +213,6 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-
   Future<void> showActiveLayerOnMap() async {
     final layerType = ref.read(activeLayerProvider);
 
@@ -467,9 +466,9 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
     await ref
         .read(mapObjectManagerProvider(
-      named: esriMapObjectSettings.name,
-      layerId: esriMapObjectSettings.layerId,
-    ).notifier)
+          named: esriMapObjectSettings.name,
+          layerId: esriMapObjectSettings.layerId,
+        ).notifier)
         .addMarkers(markers)
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
@@ -481,6 +480,29 @@ class LayersControls extends _$LayersControls {
       ref.read(locationProvider),
       ref.read(cameraPositionProvider.notifier).animateTo,
     );
+  }
+
+  // We need to store the previous layer to restore it when we go back
+  LayerType? _previousLayer;
+  void hideLayer(LayerType layer, {bool restorable = true}) {
+    // Do not hide the same layer twice, it is already hidden
+    if (layer == _previousLayer) {
+      return;
+    }
+    if (state.selectedType == layer) {
+      if (restorable) {
+        _previousLayer = state.selectedType;
+      }
+      handleTap(layer);
+    }
+  }
+
+  // We need to restore the previous layer when we go back
+  void restorePreviousLayer() {
+    if (_previousLayer != null) {
+      handleTap(_previousLayer!);
+      _previousLayer = null;
+    }
   }
 
   MapRequestParams _createParams(
@@ -577,9 +599,9 @@ class LayersControls extends _$LayersControls {
         {
           await ref
               .read(mapObjectManagerProvider(
-            named: esriMapObjectSettings.name,
-            layerId: esriMapObjectSettings.layerId,
-          ).notifier)
+                named: esriMapObjectSettings.name,
+                layerId: esriMapObjectSettings.layerId,
+              ).notifier)
               .removeAllMarkers();
           await ref.read(parkingStateProvider.notifier).hideParking();
           break;
@@ -590,7 +612,6 @@ class LayersControls extends _$LayersControls {
         break;
     }
   }
-
 
   LayerType? _getLayerState() => ref.read(activeLayerProvider);
 
@@ -781,7 +802,6 @@ class LayersControls extends _$LayersControls {
           )
           .toList() ??
       [];
-
 
   void _showEsriCard(PointLayersData e) {
     ref.read(appRouterProvider).push(LayersDetailsWidgetRoute(data: e));

@@ -4,11 +4,13 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:sheetify/sheetify.dart';
 
 class ParkingBottomSheetPage extends HookConsumerWidget {
   const ParkingBottomSheetPage({super.key});
@@ -16,7 +18,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final parkingSheetProvider = ref.read(parkingAutoenabledSheetProvider.notifier);
-    final bottomSheetController = useStatelessBottomsheetController(
+    final bottomSheetController = useToggleSheetController(
         onClose: (controller) => parkingSheetProvider.showParkingAutoEnableSheet(value: false));
 
     ref.listen(
@@ -28,8 +30,11 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
-      child: StatelessBottomSheet(
-        startConfig: BottomSheetStart.closed,
+      child: ToggleSheet(
+        dragger: const SheetDragger(),
+        backgroundColor: context.colors.backgroundSurface1,
+        safeAreaColor: context.colors.backgroundSurface1,
+        startConfig: ToggleSheetStart.closed,
         scrollController: bottomSheetController,
         header: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -80,7 +85,8 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                   width: double.infinity,
                   child: AppButton(
                     primaryLabel: context.l10n.no,
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonType: ButtonType.secondary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                     onTap: () {
                       ToastOverlay.of(context).show(
                         title: context.l10n.youCanChangeAutomaticParking,
