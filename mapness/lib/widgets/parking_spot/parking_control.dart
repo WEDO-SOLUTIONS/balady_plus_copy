@@ -57,7 +57,12 @@ class ParkingControl extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(Spacing.$1x),
             child: Assets.icons.svg.parkingControl.svg(
-              color: SaudiNationalDay.isNow() ? context.colors.accentDefault : null,
+              colorFilter: SaudiNationalDay.isNow()
+                  ? ColorFilter.mode(
+                      context.colors.accentDefault,
+                      BlendMode.srcIn,
+                    )
+                  : null,
             ),
           ),
         ),
