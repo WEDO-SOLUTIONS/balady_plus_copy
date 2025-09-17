@@ -178,13 +178,12 @@ class ParkingSpotPage extends HookConsumerWidget {
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  color: context.colors.accentDefault.withOpacity(.1),
+                  buttonColorScheme: ButtonColorScheme.accent,
                   buttonType: ButtonType.secondary,
                   size: ButtonSize.large,
                   primaryIcon: GeneralIcons.location,
                   primaryLabel: context.l10n.changeLocation,
-                  iconColor: context.colors.accentSecondaryOnContainer,
-                  textColor: context.colors.accentSecondaryOnContainer,
                   onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
                 ),
               ),

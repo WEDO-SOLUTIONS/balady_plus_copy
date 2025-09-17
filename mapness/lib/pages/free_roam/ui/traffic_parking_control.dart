@@ -120,7 +120,7 @@ class _ParkingWidget extends StatelessWidget {
                 ? SaudiNationalDay.isNow()
                     ? context.colors.accentDefault
                     : context.colors.foregroundDefault
-                : context.colors.foregroundMuted,
+                : context.colors.foregroundDefault,
           ),
         ),
       );
