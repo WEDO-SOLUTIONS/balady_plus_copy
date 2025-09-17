@@ -11,12 +11,16 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../app/core/utils/constants/app_colors.dart';
+
 class MiniAppsItemWidget extends StatelessWidget {
   final MiniAppModel miniApp;
+  final bool isEvent;
 
   const MiniAppsItemWidget({
     super.key,
     required this.miniApp,
+    required this.isEvent,
   });
 
   @override
@@ -32,8 +36,6 @@ class MiniAppsItemWidget extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
             child: Column(
-              //  crossAxisAlignment: CrossAxisAlignment.center,
-              //  mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
@@ -41,6 +43,9 @@ class MiniAppsItemWidget extends StatelessWidget {
                     icon: miniApp.logoKey!,
                     type: miniApp.cdnLogoRef?.split(".").last,
                     iconSize: 40,
+                    iconColor: isEvent
+                        ? AppColor.primary900LightEvent
+                        : AppColor.primary900Light,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -61,7 +66,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       : '',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
-                    fontSize: 13,
+                        fontSize: 13,
                         fontFamily: 'packages/balady_uikit/Golos',
                       ),
                   textAlign: TextAlign.center,

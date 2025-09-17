@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/widgets/mini_apps_item_widget.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -6,11 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class HomeMiniAppsListPages extends StatefulWidget {
-  final bool isCustomAppBar;
 
   const HomeMiniAppsListPages({
     super.key,
-    this.isCustomAppBar = true,
   });
 
   @override
@@ -29,10 +28,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: widget.isCustomAppBar ? null : _buildDefaultAppBar(context),
-      body: widget.isCustomAppBar
+      appBar: CommonFunctions.isTodayInRanges ? null : _buildDefaultAppBar(context),
+      body: CommonFunctions.isTodayInRanges
           ? Column(children: [Expanded(child: _buildCustomAppBarLayout())])
           : _buildDefaultLayout(),
     );
@@ -109,6 +109,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         itemBuilder: (context, index) {
           return MiniAppsItemWidget(
             miniApp: state.miniAppsList[index],
+            isEvent: CommonFunctions.isTodayInRanges,
           );
         },
       ),
