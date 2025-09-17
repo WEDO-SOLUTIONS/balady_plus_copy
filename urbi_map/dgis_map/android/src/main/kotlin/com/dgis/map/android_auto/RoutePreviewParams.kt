@@ -34,6 +34,6 @@ fun FavouriteItem.toRoutePreviewParams(): RoutePreviewParams {
     return RoutePreviewParams(
         name = title,
         additionalInfo = subtitle,
-        coordinates = coordinates ,
+        coordinates = coordinates,
     )
 }
