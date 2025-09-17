@@ -55,11 +55,11 @@ void main() async {
 
               // Screenshots and Attachments
               options.attachScreenshot = true;
-              options.screenshotQuality = SentryScreenshotQuality.high;
+              options.screenshotQuality = SentryScreenshotQuality.medium;
               options.attachViewHierarchy = true;
 
               // Debug Options
-              options.diagnosticLevel = SentryLevel.debug;
+              options.diagnosticLevel = SentryLevel.warning;
 
               // Additional Performance Settings
               options.enableTimeToFullDisplayTracing = true;
