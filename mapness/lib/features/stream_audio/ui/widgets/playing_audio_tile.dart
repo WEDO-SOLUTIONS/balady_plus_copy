@@ -115,48 +115,57 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
 
                 // Play/Pause button with animation
                 const SizedBox(width: 12),
-                GestureDetector(
-                  onTap: () async {
-                    await ref.read(streamAudioProvider).togglePlayPause();
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: AnimatedSwitcher(
+                Row(
+                  spacing: 14,
+                  children: [
+                    GestureDetector(
+                      onTap: () async => await ref.read(streamAudioProvider).togglePlayPause(),
+                      child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
-                        child: provider.isLoading
-                            ? SizedBox(
-                          key: const ValueKey('loading'),
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white.withOpacity(0.8),
+                        width: 44,
+                        height: 44,
+                        child: Center(
+                          child: AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            child: provider.isLoading
+                                ? SizedBox(
+                              key: const ValueKey('loading'),
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white.withOpacity(0.8),
+                                ),
+                              ),
+                            )
+                                : SvgPicture.asset(
+                              key: ValueKey(provider.isPlaying),
+                              provider.isPlaying
+                                  ? Assets.icons.svg.audio.pause.keyName
+                                  : Assets.icons.svg.audio.resume.keyName,
+                              width: 20,
+                              height: 20,
+                              colorFilter: const ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
-                          ),
-                        )
-                            : SvgPicture.asset(
-                          key: ValueKey(provider.isPlaying),
-                          provider.isPlaying
-                              ? Assets.icons.svg.audio.pause.keyName
-                              : Assets.icons.svg.audio.resume.keyName,
-                          width: 20,
-                          height: 20,
-                          colorFilter: const ColorFilter.mode(
-                            Colors.white,
-                            BlendMode.srcIn,
                           ),
                         ),
                       ),
                     ),
-                  ),
+                    SvgPicture.asset(
+                      Assets.icons.svg.audio.seekForward.keyName,
+                      key: ValueKey(provider.isPlaying),
+                      width: 18,
+                      height: 18,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),

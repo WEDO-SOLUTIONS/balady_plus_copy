@@ -140,6 +140,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   decoration: const BoxDecoration(color: Colors.black),
                   child: SingleChildScrollView(
                     controller: scrollController,
+                    padding: const EdgeInsets.all(0),
                     physics: const ClampingScrollPhysics(),
                     child: Column(
                       children: [
@@ -152,7 +153,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                             borderRadius: BorderRadius.circular(36),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 8),
                         const PlayingAudioTile(),
                         if (provider.hasError) ...[
                           const SizedBox(height: 16),
@@ -183,7 +184,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                             ),
                           ),
                         ],
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 8),
                         MediaCatalogList(needReset: () {
                           //reset the timer
                           _autoCloseTimer?.cancel();
@@ -199,6 +200,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                             }
                           });
                         }),
+                        const SizedBox(height: 32),
                       ],
                     ),
                   ),
