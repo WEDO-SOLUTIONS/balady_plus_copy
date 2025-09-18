@@ -1,5 +1,6 @@
 import 'package:just_audio_background/just_audio_background.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -12,11 +13,6 @@ import 'package:flutter/material.dart';
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-  );
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
@@ -24,7 +20,8 @@ void main() async {
       await setupMapness(EnvType.stg);
       await SentryFlutter.init(
         (options) {
-          options.dsn = 'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
+          options.dsn =
+              'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
           options.tracesSampleRate = 1.0;

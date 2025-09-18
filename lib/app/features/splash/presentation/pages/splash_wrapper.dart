@@ -29,7 +29,7 @@ class SplashWrapper extends StatelessWidget {
     return BlocListener<ForceUpdateCubit, ForceUpdateState>(
       listener: (context, state) {
         if (state is HaveForceUpdateState) {
-          _navigateToForceUpdate();
+          // _navigateToForceUpdate();
         } else if (state is NotHaveForceUpdateState) {
           _checkAuthentication();
         }

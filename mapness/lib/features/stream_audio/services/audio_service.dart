@@ -21,6 +21,7 @@ class AudioService extends ChangeNotifier {
   String? _errorMessage;
   Duration _duration = Duration.zero;
   Duration _position = Duration.zero;
+  bool _backgroundServiceInitialized = false;
 
   // Getters
   AudioPlayerState get state => _state;
@@ -39,7 +40,27 @@ class AudioService extends ChangeNotifier {
     }
   }
 
+  Future<void> _initBackgroundService() async {
+    if (_backgroundServiceInitialized) return;
+
+    try {
+      await JustAudioBackground.init(
+        androidNotificationChannelId: 'momra.balady.android.channel.audio',
+        androidNotificationChannelName: 'Audio playback',
+        androidNotificationOngoing: true,
+      );
+      _backgroundServiceInitialized = true;
+      debugPrint('Background audio service initialized successfully');
+    } catch (e) {
+      debugPrint('Background audio service initialization failed: $e');
+      // Continue without background service
+    }
+  }
+
   Future<void> init() async {
+    // Initialize background service
+    await _initBackgroundService();
+
     // Listen to player state changes
     _audioPlayer.playerStateStream.listen((playerState) {
       switch (playerState.processingState) {
@@ -93,6 +114,9 @@ class AudioService extends ChangeNotifier {
     String? artUri,
   }) async {
     try {
+      // Ensure background service is initialized
+      await _initBackgroundService();
+
       _errorMessage = null;
 
       // If same URL is already playing, just resume

@@ -31,13 +31,8 @@ class MediaCatalogItem extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(RadiusBorder.m),
-                      border: Border.all(
-                        color: Colors.white10,
-                      ),
-                      image: DecorationImage(
-                        image: image,
-                        fit: BoxFit.cover,
-                      ),
+                      border: Border.all(color: Colors.white10),
+                      image: DecorationImage(image: image, fit: BoxFit.cover),
                     ),
                   ),
                   const SizedBox(height: Spacing.$2x),
@@ -46,19 +41,12 @@ class MediaCatalogItem extends StatelessWidget {
                     children: [
                       Text(
                         title,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         subTitle,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.white60,
-                        ),
+                        style: const TextStyle(fontSize: 12, color: Colors.white60),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
@@ -74,27 +62,15 @@ class MediaCatalogItem extends StatelessWidget {
                 height: 45,
                 clipBehavior: Clip.antiAlias,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(RadiusBorder.full),
-                    border: Border.all(
-                      color: Colors.white10,
-                    ),
-                    image: DecorationImage(
-                      image: radioImage,
-                      fit: BoxFit.contain,
-                    ),
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 12,
-                        offset: Offset(0, 10),
-                      ),
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 36,
-                        offset: Offset(0, 12),
-                      )
-                    ]),
+                  borderRadius: BorderRadius.circular(RadiusBorder.full),
+                  border: Border.all(color: Colors.white10),
+                  image: DecorationImage(image: radioImage, fit: BoxFit.contain),
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(color: Colors.black26, blurRadius: 12, offset: Offset(0, 10)),
+                    BoxShadow(color: Colors.black26, blurRadius: 36, offset: Offset(0, 12))
+                  ],
+                ),
               ),
             ),
           ],

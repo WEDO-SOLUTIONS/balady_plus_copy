@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/features/force_update/presentation/core/force_update_cubit.dart';
+// import 'package:balady_plus/app/features/force_update/presentation/core/force_update_cubit.dart';
 // import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
@@ -28,7 +28,6 @@ import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 
 import 'package:sentry_flutter/sentry_flutter.dart';
-
 
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
@@ -89,6 +88,8 @@ class AppWidgetState extends State<AppWidget> {
   void initState() {
     super.initState();
     initInsider();
+    // Audio service initialization moved to when first needed
+    // initAudioService();
   }
 
   Future initInsider() async {
@@ -96,23 +97,20 @@ class AppWidgetState extends State<AppWidget> {
 
     // Call in async method.
 
-
-            await FlutterInsider.Instance.init(
-        "baladyapp", "group.movingViolations",
+    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations",
         (int type, dynamic data) {
       switch (type) {
-            case InsiderCallbackAction.NOTIFICATION_OPEN:
-              print('[INSIDER][NOTIFICATION_OPEN]: $data');
-              break;
-            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
-              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
-              break;
-            default:
-              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
-              break;
-          }
-        });
-
+        case InsiderCallbackAction.NOTIFICATION_OPEN:
+          print('[INSIDER][NOTIFICATION_OPEN]: $data');
+          break;
+        case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          break;
+        default:
+          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          break;
+      }
+    });
 
     // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
     FlutterInsider.Instance.registerWithQuietPermission(false);

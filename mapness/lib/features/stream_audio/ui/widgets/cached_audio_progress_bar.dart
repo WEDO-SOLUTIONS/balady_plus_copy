@@ -248,25 +248,6 @@ class _CachedAudioProgressBarState extends ConsumerState<CachedAudioProgressBar>
               ],
             ),
           ),
-
-          // Visual feedback for dragging
-          // if (_isDragging)
-          //   Container(
-          //     margin: const EdgeInsets.only(top: 4),
-          //     child: Text(
-          //       isNearLive
-          //           ? 'Release to go LIVE'
-          //           : isAtStart
-          //           ? 'At start of cache (${_formatDuration(Duration(milliseconds: (provider.bufferedDuration.inMilliseconds * _dragProgress).round()))})'
-          //           : 'Scrubbing: ${_formatDuration(Duration(milliseconds: (provider.bufferedDuration.inMilliseconds * _dragProgress).round()))}',
-          //       textAlign: TextAlign.center,
-          //       style: TextStyle(
-          //         color: isNearLive ? Colors.red : Colors.white.withOpacity(0.7),
-          //         fontSize: 10,
-          //         fontWeight: FontWeight.w500,
-          //       ),
-          //     ),
-          //   ),
         ],
       ),
     );

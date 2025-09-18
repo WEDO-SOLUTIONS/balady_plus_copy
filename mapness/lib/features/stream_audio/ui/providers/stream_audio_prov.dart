@@ -1,4 +1,7 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/data/datasource/channels_data_source.dart';
 import 'package:mapness/features/stream_audio/data/dto/LiveNowDto.dart';
@@ -7,12 +10,32 @@ import 'package:mapness/features/stream_audio/services/fijk_audio_service.dart';
 class StreamAudioProvider extends ChangeNotifier {
   bool _isExited = false;
   final FijkAudioService _audioService = FijkAudioService();
+  static const MethodChannel _mediaChannel =
+      MethodChannel('balady_media_session');
 
   ProgramDto? _selectedProgram;
 
   StreamAudioProvider() {
     _audioService.init();
     _audioService.addListener(_onAudioServiceChanged);
+    _setupAndroidMediaCallbacks();
+  }
+
+  void _setupAndroidMediaCallbacks() {
+    if (!Platform.isAndroid) return;
+    _mediaChannel.setMethodCallHandler((call) async {
+      switch (call.method) {
+        case 'onPlay':
+          await resumeStream();
+          break;
+        case 'onPause':
+          await pauseStream();
+          break;
+        case 'onStop':
+          await exitPlayer();
+          break;
+      }
+    });
   }
 
   void _onAudioServiceChanged() {
@@ -94,23 +117,27 @@ class StreamAudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> seekForward([Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekForward(
+      [Duration duration = const Duration(seconds: 30)]) async {
     await _audioService.seekForward(duration);
     notifyListeners();
   }
 
-  Future<void> seekBackward([Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekBackward(
+      [Duration duration = const Duration(seconds: 30)]) async {
     await _audioService.seekBackward(duration);
     notifyListeners();
   }
 
   Future<void> exitPlayer() async {
-    print('StreamAudioProvider: exitPlayer() called - stopping audio and setting isExited=true');
+    print(
+        'StreamAudioProvider: exitPlayer() called - stopping audio and setting isExited=true');
     await _audioService.stop();
     _isExited = true;
     _selectedProgram = null;
     notifyListeners();
-    print('StreamAudioProvider: State after exit - isPlaying=$isPlaying, isExited=$isExited');
+    print(
+        'StreamAudioProvider: State after exit - isPlaying=$isPlaying, isExited=$isExited');
   }
 
   void reset() {
@@ -184,5 +211,5 @@ class StreamAudioProvider extends ChangeNotifier {
 }
 
 final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
-      (ref) => StreamAudioProvider(),
+  (ref) => StreamAudioProvider(),
 );

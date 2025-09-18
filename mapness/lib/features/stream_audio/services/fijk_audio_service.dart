@@ -1,11 +1,23 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 class FijkAudioService extends ChangeNotifier {
   FijkPlayer? _player;
   Timer? _progressTimer;
   Timer? _bufferCleanupTimer;
+
+  // Native MediaSession channel
+  static const MethodChannel _mediaSessionChannel =
+      MethodChannel('balady_media_session');
+
+  // iOS: helper just_audio player to publish Now Playing info
+  AudioPlayer? _iosNowPlayingPlayer;
+  StreamSubscription? _iosPlayerStateSubscription;
 
   // Cache management
   DateTime? _channelStartTime;
@@ -18,7 +30,7 @@ class FijkAudioService extends ChangeNotifier {
   bool _hasError = false;
   String? _errorMessage;
   Duration _currentPosition = Duration.zero; // Where user is listening
-  Duration _livePosition = Duration.zero;    // Current live position
+  Duration _livePosition = Duration.zero; // Current live position
   bool _isLive = true;
   String? _currentChannelId;
 
@@ -29,7 +41,8 @@ class FijkAudioService extends ChangeNotifier {
   bool get hasError => _hasError;
   String? get errorMessage => _errorMessage;
   Duration get currentPosition => _currentPosition;
-  Duration get bufferedDuration => _livePosition; // Live position is our buffer end
+  Duration get bufferedDuration =>
+      _livePosition; // Live position is our buffer end
   Duration get maxCacheDuration => _maxCacheHours;
   bool get isLive => _isLive;
   DateTime? get channelStartTime => _channelStartTime;
@@ -39,21 +52,110 @@ class FijkAudioService extends ChangeNotifier {
     if (_livePosition.inMilliseconds <= 0) {
       return 1.0;
     }
-    final progress = (_currentPosition.inMilliseconds / _livePosition.inMilliseconds).clamp(0.0, 1.0);
-    debugPrint('FijkAudioService: Progress - current: ${_currentPosition.inSeconds}s, live: ${_livePosition.inSeconds}s, progress: ${(progress * 100).toInt()}%');
+    final progress =
+        (_currentPosition.inMilliseconds / _livePosition.inMilliseconds)
+            .clamp(0.0, 1.0);
+    debugPrint(
+        'FijkAudioService: Progress - current: ${_currentPosition.inSeconds}s, live: ${_livePosition.inSeconds}s, progress: ${(progress * 100).toInt()}%');
     return progress;
+  }
+
+  Future<void> _androidInvoke(String method, [dynamic arguments]) async {
+    if (!Platform.isAndroid) return;
+    try {
+      await _mediaSessionChannel.invokeMethod(method, arguments);
+    } catch (e) {
+      debugPrint('FijkAudioService: Android invoke failed for "$method": $e');
+    }
+  }
+
+  void _setupIOSPlayerListeners() {
+    if (!Platform.isIOS || _iosNowPlayingPlayer == null) return;
+
+    // Listen to iOS player state changes from lock screen controls
+    _iosPlayerStateSubscription?.cancel();
+    _iosPlayerStateSubscription =
+        _iosNowPlayingPlayer!.playerStateStream.listen((playerState) {
+      // When iOS player is controlled from lock screen, sync with FijkPlayer
+      if (playerState.playing && !_isPlaying) {
+        // iOS player was resumed from lock screen - resume FijkPlayer
+        debugPrint(
+            'FijkAudioService: iOS lock screen play detected - resuming FijkPlayer');
+        _resumeFijkPlayerFromLockScreen();
+      } else if (!playerState.playing && _isPlaying) {
+        // iOS player was paused from lock screen - pause FijkPlayer
+        debugPrint(
+            'FijkAudioService: iOS lock screen pause detected - pausing FijkPlayer');
+        _pauseFijkPlayerFromLockScreen();
+      }
+    });
+  }
+
+  Future<void> _resumeFijkPlayerFromLockScreen() async {
+    if (_player != null && !_isPlaying) {
+      try {
+        await _player!.start();
+        debugPrint('FijkAudioService: FijkPlayer resumed from iOS lock screen');
+      } catch (e) {
+        debugPrint(
+            'FijkAudioService: Error resuming FijkPlayer from lock screen: $e');
+      }
+    }
+  }
+
+  Future<void> _pauseFijkPlayerFromLockScreen() async {
+    if (_player != null && _isPlaying) {
+      try {
+        await _player!.pause();
+        debugPrint('FijkAudioService: FijkPlayer paused from iOS lock screen');
+      } catch (e) {
+        debugPrint(
+            'FijkAudioService: Error pausing FijkPlayer from lock screen: $e');
+      }
+    }
+  }
+
+  Future<void> _initMediaSession() async {
+    if (Platform.isAndroid) {
+      try {
+        await _androidInvoke('initMediaSession');
+        debugPrint('FijkAudioService: MediaSession initialized successfully');
+      } catch (e) {
+        // already logged in _androidInvoke
+      }
+    } else if (Platform.isIOS) {
+      // Initialize just_audio_background for iOS lock screen support
+      try {
+        await JustAudioBackground.init(
+          androidNotificationChannelId: 'momra.balady.android.channel.audio',
+          androidNotificationChannelName: 'Audio playback',
+          androidNotificationOngoing: true,
+        );
+        debugPrint(
+            'FijkAudioService: iOS JustAudioBackground initialized successfully');
+      } catch (e) {
+        debugPrint(
+            'FijkAudioService: iOS JustAudioBackground initialization failed: $e');
+      }
+    }
   }
 
   Future<void> init() async {
     try {
+      // Initialize MediaSession (Android) / JustAudioBackground (iOS)
+      await _initMediaSession();
+
       _player = FijkPlayer();
       _setupPlayerListeners();
-      await _player!.setOption(FijkOption.hostCategory, 'cache-file-path', '/cache/audio/');
+      await _player!.setOption(
+          FijkOption.hostCategory, 'cache-file-path', '/cache/audio/');
       await _player!.setOption(FijkOption.hostCategory, 'cache-max-entries', 1);
 
       // Enable live streaming optimizations
-      await _player!.setOption(FijkOption.playerCategory, 'enable-accurate-seek', 1);
-      await _player!.setOption(FijkOption.playerCategory, 'max-buffer-size', 1024 * 1024 * 60); // 60MB buffer
+      await _player!
+          .setOption(FijkOption.playerCategory, 'enable-accurate-seek', 1);
+      await _player!.setOption(FijkOption.playerCategory, 'max-buffer-size',
+          1024 * 1024 * 60); // 60MB buffer
       await _player!.setOption(FijkOption.codecCategory, 'skip_frame', 0);
 
       debugPrint('FijkAudioService: Initialized successfully');
@@ -113,7 +215,8 @@ class FijkAudioService extends ChangeNotifier {
     _startBufferCleanup();
   }
 
-  Future<void> playStream(String url, {
+  Future<void> playStream(
+    String url, {
     required String channelId,
     String? title,
     String? artist,
@@ -138,12 +241,43 @@ class FijkAudioService extends ChangeNotifier {
       _errorMessage = null;
       notifyListeners();
 
+      // Update lock screen metadata (Android/iOS)
+      if (Platform.isIOS) {
+        // Publish Now Playing via just_audio (iOS doesn't need explicit init)
+        _iosNowPlayingPlayer ??= AudioPlayer();
+        try {
+          final mediaItem = MediaItem(
+            id: channelId,
+            title: title ?? 'Radio Stream',
+            artist: artist ?? 'Unknown Artist',
+            artUri: artUri != null ? Uri.parse(artUri) : null,
+          );
+          final audioSource = AudioSource.uri(Uri.parse(url), tag: mediaItem);
+          await _iosNowPlayingPlayer!.setAudioSource(audioSource);
+          await _iosNowPlayingPlayer!.setVolume(0.0);
+          await _iosNowPlayingPlayer!.play();
+
+          // Set up listeners for iOS lock screen controls
+          _setupIOSPlayerListeners();
+        } catch (_) {}
+      }
+
+      // Update MediaSession metadata (Android only)
+      await _androidInvoke('updateMediaMetadata', {
+        'title': title ?? 'Radio Stream',
+        'artist': artist ?? 'Unknown Artist',
+        'artworkUrl': artUri,
+      });
+
       if (_player != null) {
         await _player!.reset();
         await _player!.setDataSource(url, autoPlay: true);
 
         // Set media metadata for notification
         await _player!.setLoop(0); // No loop for live streams
+
+        // Update playback state (Android: MediaSession, iOS: keep just_audio playing silently)
+        await _androidInvoke('setPlaybackState', {'isPlaying': true});
 
         debugPrint('FijkAudioService: Stream started successfully');
       }
@@ -158,8 +292,22 @@ class FijkAudioService extends ChangeNotifier {
       if (_player != null && _isPlaying) {
         _lastPauseTime = DateTime.now();
         await _player!.pause();
+
+        // Update playback state (Android/iOS)
+        await _androidInvoke('setPlaybackState', {'isPlaying': false});
+        if (Platform.isIOS && _iosNowPlayingPlayer != null) {
+          try {
+            // Temporarily remove listener to avoid infinite loop
+            await _iosPlayerStateSubscription?.cancel();
+            await _iosNowPlayingPlayer!.pause();
+            // Restore listener
+            _setupIOSPlayerListeners();
+          } catch (_) {}
+        }
+
         _isLive = false; // No longer live when paused
-        debugPrint('FijkAudioService: Stream paused at position: ${_currentPosition.inSeconds}s, live at: ${_livePosition.inSeconds}s');
+        debugPrint(
+            'FijkAudioService: Stream paused at position: ${_currentPosition.inSeconds}s, live at: ${_livePosition.inSeconds}s');
       }
     } catch (e) {
       debugPrint('FijkAudioService: Pause error: $e');
@@ -174,10 +322,24 @@ class FijkAudioService extends ChangeNotifier {
           _lastPauseTime = null;
         }
         await _player!.start();
+
+        // Update playback state (Android/iOS)
+        await _androidInvoke('setPlaybackState', {'isPlaying': true});
+        if (Platform.isIOS && _iosNowPlayingPlayer != null) {
+          try {
+            // Temporarily remove listener to avoid infinite loop
+            await _iosPlayerStateSubscription?.cancel();
+            await _iosNowPlayingPlayer!.play();
+            // Restore listener
+            _setupIOSPlayerListeners();
+          } catch (_) {}
+        }
+
         // Check if we're still close to live after resuming
         final timeBehind = _livePosition - _currentPosition;
         _isLive = timeBehind.inSeconds < 5; // Consider live if within 5 seconds
-        debugPrint('FijkAudioService: Stream resumed from position: ${_currentPosition.inSeconds}s, behind by: ${timeBehind.inSeconds}s');
+        debugPrint(
+            'FijkAudioService: Stream resumed from position: ${_currentPosition.inSeconds}s, behind by: ${timeBehind.inSeconds}s');
       }
     } catch (e) {
       debugPrint('FijkAudioService: Resume error: $e');
@@ -195,7 +357,8 @@ class FijkAudioService extends ChangeNotifier {
         milliseconds: (_livePosition.inMilliseconds * progress).round(),
       );
 
-      debugPrint('FijkAudioService: Seeking to ${targetPosition.inSeconds}s (${(progress * 100).toInt()}%) of live position ${_livePosition.inSeconds}s');
+      debugPrint(
+          'FijkAudioService: Seeking to ${targetPosition.inSeconds}s (${(progress * 100).toInt()}%) of live position ${_livePosition.inSeconds}s');
 
       // For live streams, seeking is limited - we simulate by updating our position
       _currentPosition = targetPosition;
@@ -230,7 +393,8 @@ class FijkAudioService extends ChangeNotifier {
         await _player!.setDataSource(currentUrl, autoPlay: true);
       }
 
-      debugPrint('FijkAudioService: Jumped to live position: ${_livePosition.inSeconds}s');
+      debugPrint(
+          'FijkAudioService: Jumped to live position: ${_livePosition.inSeconds}s');
       notifyListeners();
     } catch (e) {
       debugPrint('FijkAudioService: Go live error: $e');
@@ -238,30 +402,35 @@ class FijkAudioService extends ChangeNotifier {
     }
   }
 
-  Future<void> seekForward([Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekForward(
+      [Duration duration = const Duration(seconds: 30)]) async {
     final newPosition = _currentPosition + duration;
 
     if (newPosition >= _livePosition) {
       await goLive();
     } else {
-      final progress = newPosition.inMilliseconds / _livePosition.inMilliseconds;
+      final progress =
+          newPosition.inMilliseconds / _livePosition.inMilliseconds;
       await seekToProgress(progress.clamp(0.0, 1.0));
     }
   }
 
-  Future<void> seekBackward([Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekBackward(
+      [Duration duration = const Duration(seconds: 30)]) async {
     final newPosition = _currentPosition - duration;
     if (newPosition.inMilliseconds <= 0) {
       await seekToProgress(0.0);
     } else {
-      final progress = newPosition.inMilliseconds / _livePosition.inMilliseconds;
+      final progress =
+          newPosition.inMilliseconds / _livePosition.inMilliseconds;
       await seekToProgress(progress.clamp(0.0, 1.0));
     }
   }
 
   void _startProgressTracking() {
     _progressTimer?.cancel();
-    _progressTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) async {
+    _progressTimer =
+        Timer.periodic(const Duration(milliseconds: 500), (timer) async {
       if (_player != null && _channelStartTime != null) {
         try {
           final now = DateTime.now();
@@ -321,6 +490,9 @@ class FijkAudioService extends ChangeNotifier {
         await _player!.stop();
       }
 
+      // Release MediaSession (Android only)
+      await _androidInvoke('releaseMediaSession');
+
       _resetState();
       debugPrint('FijkAudioService: Stream stopped');
     } catch (e) {
@@ -354,8 +526,12 @@ class FijkAudioService extends ChangeNotifier {
   void dispose() {
     _progressTimer?.cancel();
     _bufferCleanupTimer?.cancel();
+    _iosPlayerStateSubscription?.cancel();
     _player?.removeListener(() {});
     _player?.release();
+    _iosNowPlayingPlayer?.dispose();
+    // Clean up MediaSession (Android only)
+    _androidInvoke('releaseMediaSession');
     super.dispose();
   }
 }

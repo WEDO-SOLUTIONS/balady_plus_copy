@@ -7,6 +7,7 @@ import '../providers/stream_audio_prov.dart';
 
 class MediaCatalogList extends ConsumerStatefulWidget {
   const MediaCatalogList({required this.needReset, super.key});
+
   final Function() needReset;
 
   @override
@@ -18,10 +19,7 @@ class _MediaCatalogListState extends ConsumerState<MediaCatalogList> {
   Widget build(BuildContext context) => Builder(builder: (context) {
         final liveNow = ref.watch(streamAudioProvider).liveNow;
         if (liveNow == null) {
-          return const Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Center(child: CircularProgressIndicator()),
-          );
+          return const Padding(padding: EdgeInsets.all(16.0), child: Center(child: CircularProgressIndicator()));
         }
 
         final programs = liveNow.programs;
