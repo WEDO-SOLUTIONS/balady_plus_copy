@@ -10,6 +10,7 @@ class StoryFrameActionButton extends StatefulWidget {
     required this.action,
     required this.onNext,
     this.onActionPressed,
+    this.actionColor,
     super.key,
   });
 
@@ -25,21 +26,24 @@ class StoryFrameActionButton extends StatefulWidget {
   /// Additional event called when the button is pressed.
   final VoidCallback? onActionPressed;
 
+  final Color? actionColor;
+
   @override
   State<StoryFrameActionButton> createState() => _StoryFrameActionButtonState();
 }
 
 class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   /// Maps a localization key to its corresponding localized value.
-  String _keyToLocale(AppLocalizations l10n, String key) => switch (key) {
+  String _keyToLocale(AppLocalizations l10n, String key) =>
+      switch (key) {
         'next' => l10n.next,
         'try_now' => l10n.tryNow,
         'build_route' => l10n.buildRoute,
         'open_services' => l10n.openServices,
         'about_routes' => l10n.onboardingMoreRoutesButton,
         'balady_features' => l10n.onboardingMoreBaladyFeaturesButton,
-        // TODO: After release delete from localizy [onboardingGetStartedButton] key
-        // It was previously used instead of "onboarding3Action"
+      // TODO: After release delete from localizy [onboardingGetStartedButton] key
+      // It was previously used instead of "onboarding3Action"
         'onboarding3Action' => l10n.onboarding3Action,
         'saudiDayAction' => l10n.saudiDayAction,
         _ => ''
@@ -56,11 +60,13 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   }
 
   /// Handles the action button press based on the current action type.
-  void _onActionPressed(BuildContext context) => switch (widget.action) {
+  void _onActionPressed(BuildContext context) =>
+      switch (widget.action) {
         NextStoryAction() => widget.onNext(),
         NavigationFrameAction(location: final location) => handleNavigationAction(context, location),
         NetworkLinkFrameAction(url: final url) => handleNetworkLinkAction(url),
       };
+
 
   /// Handles the navigation action by pushing the specified location to the router.
   void handleNavigationAction(BuildContext context, String location) {
@@ -88,15 +94,20 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   }
 
   @override
-  Widget build(BuildContext context) => AppButton(
-        color: widget.actionTheme.backgroundColor,
-        textColor: widget.actionTheme.textColor,
-        buttonColorScheme: ButtonColorScheme.accentSecondary,
-        size: ButtonSize.large,
-        primaryLabel: _getActionTitle(),
-        onTap: () {
-          widget.onActionPressed?.call();
-          _onActionPressed(context);
-        },
+  Widget build(BuildContext context) =>
+      Padding(
+        padding:  const EdgeInsets.only(bottom: Spacing.$4x),
+        child: FractionallySizedBox(
+          widthFactor: .82,
+          child: AppButton(
+            color: widget.actionColor,
+            buttonColorScheme: ButtonColorScheme.accent,
+            primaryLabel: _getActionTitle(),
+            onTap: () {
+              widget.onActionPressed?.call();
+              _onActionPressed(context);
+            },
+          ),
+        ),
       );
 }
