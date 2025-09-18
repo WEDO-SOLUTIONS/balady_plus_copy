@@ -12,182 +12,165 @@ class PlayingAudioTile extends ConsumerStatefulWidget {
   ConsumerState<PlayingAudioTile> createState() => _PlayingAudioTileState();
 }
 
-class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> {
+class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
 
-    return Column(
-      children: [
-        // Your existing row with enhanced live indicators
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    margin: const EdgeInsets.symmetric(horizontal: 16), // RadiusBorder.l replacement
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8), // RadiusBorder.baseSharp replacement
-                      image: provider.selectedProgram?.programImage != null
-                          ? DecorationImage(
-                              image: AssetImage(provider.selectedProgram!.programImage.keyName),
-                              fit: BoxFit.cover,
-                            )
-                          : const DecorationImage(
-                              image: AssetImage(
-                                  'assets/images/audio_placeholders/panorama.png'), // Replace with Assets.images.audioPlaceholders.panorama.provider()
-                            ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          provider.selectedProgram?.title ?? '-',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Text(
-                          provider.selectedProgram?.sub ?? '-',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white60,
-                          ),
-                        ),
-
-                        // Enhanced status indicator with cache info
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 4,
-                                height: 4,
-                                decoration: BoxDecoration(
-                                  color: provider.isLive ? Colors.red : Colors.orange,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  provider.isLive
-                                      ? (provider.isPlaying ? 'Live' : 'Live • Paused')
-                                      : 'Behind ${_formatTimeBehind(provider)}',
-                                  style: TextStyle(
-                                    color: provider.isLive ? Colors.red : Colors.orange,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                spacing: 10,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      await ref.read(streamAudioProvider).togglePlayPause();
-                    },
-                    child: provider.isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
-                        : SvgPicture.asset(
-                            provider.isPlaying
-                                ? Assets.icons.svg.audio.pause.keyName
-                                : Assets.icons.svg.audio.resume.keyName,
-                          ),
-                  ),
-                  GestureDetector(
-                    onTap: () async {},
-                    child: SvgPicture.asset(Assets.icons.svg.audio.seekForward.keyName),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-
-        // Cached Audio Progress Bar
-        if (provider.selectedProgram != null) ...[
-          const SizedBox(height: 16),
-          CachedAudioProgressBar(
-            onGoLive: () async {
-              await ref.read(streamAudioProvider).goLive();
-            },
-          ),
-        ],
-
-        // Error display if any
-        if (provider.hasError) ...[
-          const SizedBox(height: 12),
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Column(
+        children: [
+          // Simplified audio player row
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.1),
-              border: Border.all(color: Colors.red.withOpacity(0.3)),
-              borderRadius: BorderRadius.circular(8),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
             child: Row(
               children: [
-                const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Stream Error: ${provider.errorMessage ?? "Connection issue"}',
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontSize: 12,
+                // Album art with subtle animation
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: provider.selectedProgram?.programImage != null
+                        ? DecorationImage(
+                      image: AssetImage(provider.selectedProgram!.programImage.keyName),
+                      fit: BoxFit.cover,
+                    )
+                        : const DecorationImage(
+                      image: AssetImage('assets/images/audio_placeholders/panorama.png'),
+                      fit: BoxFit.cover,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    ref.read(streamAudioProvider).goLive();
+
+                const SizedBox(width: 16),
+
+                // Title and subtitle
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        provider.selectedProgram?.title ?? 'No Title',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          letterSpacing: -0.3,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        provider.selectedProgram?.sub ?? '',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: Colors.white.withOpacity(0.5),
+                          letterSpacing: -0.2,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Play/Pause button with animation
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () async {
+                    await ref.read(streamAudioProvider).togglePlayPause();
                   },
-                  child: const Text(
-                    'Retry',
-                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 200),
+                        child: provider.isLoading
+                            ? SizedBox(
+                          key: const ValueKey('loading'),
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white.withOpacity(0.8),
+                            ),
+                          ),
+                        )
+                            : SvgPicture.asset(
+                          key: ValueKey(provider.isPlaying),
+                          provider.isPlaying
+                              ? Assets.icons.svg.audio.pause.keyName
+                              : Assets.icons.svg.audio.resume.keyName,
+                          width: 20,
+                          height: 20,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.white,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-        ],
-      ],
-    );
-  }
 
-  String _formatTimeBehind(StreamAudioProvider provider) {
-    final behind = provider.bufferedDuration - provider.currentPosition;
-    if (behind.inMinutes > 0) {
-      return '${behind.inMinutes}m ${behind.inSeconds.remainder(60)}s';
-    }
-    return '${behind.inSeconds}s';
+          // Modern progress bar
+          if (provider.selectedProgram != null)
+            ModernAudioProgressBar(
+              onGoLive: () async {
+                await ref.read(streamAudioProvider).goLive();
+              },
+            ),
+        ],
+      ),
+    );
   }
 }
