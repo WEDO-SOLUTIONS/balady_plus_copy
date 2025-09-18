@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
@@ -215,6 +216,7 @@ class _FeedbackInput extends ConsumerStatefulWidget {
 class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
   final feedbackTextController = TextEditingController();
   final Set<TagV2> selectedTags = Set.identity();
+  static const _maxCharsAllowed = 500;
 
   @override
   void didUpdateWidget(covariant _FeedbackInput oldWidget) {
@@ -303,11 +305,17 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                 constraints: const BoxConstraints(minHeight: 85),
                 child: BaladyTextInput(
                   inputStyle: BaladyInputStyle.multiline,
+                  supportingText: const BaladySupportingText(
+                    maxLength: _maxCharsAllowed
+                  ),
                   config: BaladyInputConfig(
                     onChanged: widget.onTextChanged,
                     maxLines: 4,
                     textInputAction: TextInputAction.newline,
                     hintText: context.l10n.appFeedbackHintText,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(_maxCharsAllowed),
+                    ]
                   ),
                 ),
               ),

@@ -380,24 +380,21 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: Spacing.$4x,
-                                right: Spacing.$4x,
-                                bottom: Spacing.$4x,
-                              ),
-                              child: ClipRRect(
+                            Container(
+                              margin: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  fit: BoxFit.fitWidth,
-                                  ref.read(appLanguageProvider) == Language.arabic
-                                      ? SaudiNationalDay.isNow()
-                                          ? Assets.images.favoritesExampleArabicSaudiday.keyName
-                                          : Assets.images.favoritesExampleArabic.keyName
-                                      : SaudiNationalDay.isNow()
-                                          ? Assets.images.favoritesExampleEnglishSaudiday.keyName
-                                          : Assets.images.favoritesExampleEnglish.keyName,
-                                ),
+                              ),
+                              child: Image.asset(
+                                fit: BoxFit.fitWidth,
+                                ref.read(appLanguageProvider) == Language.arabic
+                                    ? SaudiNationalDay.isNow()
+                                        ? Assets.images.favoritesExampleArabicSaudiday.keyName
+                                        : Assets.images.favoritesExampleArabic.keyName
+                                    : SaudiNationalDay.isNow()
+                                        ? Assets.images.favoritesExampleEnglishSaudiday.keyName
+                                        : Assets.images.favoritesExampleEnglish.keyName,
                               ),
                             ),
                           ],
