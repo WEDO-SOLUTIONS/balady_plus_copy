@@ -1,3 +1,4 @@
+import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
 
@@ -19,16 +20,7 @@ extension WorkingHoursStrings on WorkingHours {
       } else if (isTomorrow(now, nextOpen)) {
         return '${appLocalizations.closedUntill} ${appLocalizations.tomorrow} ${nextOpen.hoursAndMinutes.formatHHmm}';
       } else {
-        final weekDay = switch (nextOpen.inDays) {
-          1 => appLocalizations.weekdayNameMonday,
-          2 => appLocalizations.weekdayNameTuesday,
-          3 => appLocalizations.weekdayNameWednesday,
-          4 => appLocalizations.weekdayNameThursday,
-          5 => appLocalizations.weekdayNameFriday,
-          6 => appLocalizations.weekdayNameSaturday,
-          7 => appLocalizations.weekdayNameSunday,
-          _ => '',
-        };
+        final weekDay = nextOpen.inDays.weekDayName(appLocalizations);
         return '${appLocalizations.closedUntill} $weekDay ${nextOpen.hoursAndMinutes.formatHHmm}';
       }
     }
@@ -44,7 +36,7 @@ extension WorkingHoursStrings on WorkingHours {
   }
 }
 
-extension on Duration {
+extension DurationFormatExt on Duration {
   String get formatHHmm {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     return '${twoDigits(inHours)}:${twoDigits(inMinutes.remainder(60))}';
