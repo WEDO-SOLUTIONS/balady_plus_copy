@@ -108,11 +108,11 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         case PoiCardBottomSheetState.hidden:
           uiElementName = BssUIElementNames.placeCardHidden;
         case PoiCardBottomSheetState.open:
-          uiElementName = BssUIElementNames.placeCardOneThird;
+          uiElementName = BssUIElementNames.placeCardTwoThird;
         case PoiCardBottomSheetState.expanded:
           uiElementName = BssUIElementNames.placeCardFull;
         case PoiCardBottomSheetState.halfOpen:
-          uiElementName = BssUIElementNames.placeCardTwoThird;
+          uiElementName = BssUIElementNames.placeCardOneThird;
       }
 
       ref.read(bssServiceProvider.notifier).sendEvent(
@@ -284,7 +284,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             ],
             WidgetSpan(
               child: Padding(
-                padding:  const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
                 child: Icon(
                   (widget.data.parkingInfo?.isPaid ?? false) ? GeneralIcons.money : GeneralIcons.checkmarkCircle,
                   size: 16,
