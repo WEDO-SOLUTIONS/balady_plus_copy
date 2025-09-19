@@ -21,7 +21,7 @@ class BssCommon {
   /// Unique identifier of the application installation (Application Instance Id).
   final String appInstanceId;
 
-  /// Product ID (86 -Balady App iOS 87 -Balady App Android)
+  /// Product ID (88 -Balady App iOS 89 -Balady App Android)
   final int product;
 
   /// Unique identifier of the user session. Session — user session.
