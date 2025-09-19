@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -19,6 +19,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -26,7 +27,6 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
-import 'package:mapness/widgets/landing/dashboard_feedback_card.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:mapness/widgets/landing/drive_back_home_card.dart';
@@ -38,10 +38,13 @@ import 'package:sheetify/sheetify.dart';
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     required this.bottomSheetController,
+    required this.fireworksController,
     super.key,
   });
 
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
+
+  final AnimationController fireworksController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -83,6 +86,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     return null;
   });
 
+  final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
+
   @override
   void initState() {
     super.initState();
@@ -115,6 +120,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     });
 
     freeRoamState = ref.watch(freeRoamStarterProvider);
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
 
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
@@ -123,7 +129,9 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         keepContentBehindFooter: true,
         useSafeArea: false,
         scrollController: widget.bottomSheetController,
-        topHeader: MapHiddenStateControls(widget.bottomSheetController),
+        topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
+        topHeaderOffset: isNationalDay ? topHeaderOffset : null,
+        offsetOutsideWidgetByTopheader: !isNationalDay,
         backgroundColor: context.colors.backgroundSurface2,
         dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
         header: const DashboardHeader(),
@@ -139,7 +147,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                    colors: [
+                      Colors.white.withOpacity(0),
+                      Colors.white.withOpacity(0.8),
+                    ],
                   ),
                 ),
               ),
@@ -157,16 +168,22 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         content: [
           const SizedBox(height: Spacing.$3x),
           FeedbackBannerCardV2(
-            path: Assets.images.feedbackDashboard.keyName,
+            path: isNationalDay
+                ? Assets.images.feedbackDashboardSaudiday.keyName
+                : Assets.images.feedbackDashboard.keyName,
             onTap: () {
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
               context.router.push(const ContributeRoute());
             },
-            gradientColors: const [
-              /// It's normal that some components are not from the design and color system too
-              Color(0xFF4EC9C0),
-              Color(0xFF2AB3A9),
-            ],
+            gradientColors: isNationalDay
+                ? [
+                    const Color(0xFF014850),
+                    const Color(0xFF00343A),
+                  ]
+                : [
+                    const Color(0xFF4EC9C0),
+                    const Color(0xFF2AB3A9),
+                  ],
             title: context.l10n.contribute,
             subtitle: context.l10n.buildBaladyTogether,
           ),
@@ -237,10 +254,39 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           const SizedBox(height: Spacing.$4x),
           const DriveBackHomeCard(),
           const SizedBox(height: Spacing.$6x),
-          DashboardTitle(context.l10n.exploreNearby),
-          const SizedBox(height: Spacing.$4x),
-          const PlacePreview(),
-          const SizedBox(height: Spacing.$6x),
+          if (!isNationalDay) ...[
+            DashboardTitle(context.l10n.exploreNearby),
+            const SizedBox(height: Spacing.$4x),
+            const PlacePreview(),
+            const SizedBox(height: Spacing.$6x),
+          ],
+          if (isNationalDay)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Color(0xff00343A),
+                  ],
+                ),
+                image: DecorationImage(
+                  image: Assets.images.backgroundOrnamentSaudiday.provider(),
+                  matchTextDirection: true,
+                  fit: BoxFit.cover,
+                  alignment: AlignmentDirectional.centerEnd,
+                ),
+              ),
+              child: Column(
+                children: [
+                  DashboardTitle(context.l10n.exploreNearby),
+                  const SizedBox(height: Spacing.$4x),
+                  const PlacePreview(),
+                  const SizedBox(height: Spacing.$6x),
+                ],
+              ),
+            ),
         ],
       ),
     );

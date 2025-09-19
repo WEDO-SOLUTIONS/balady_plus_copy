@@ -30,7 +30,7 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     final subTitleTextStyle = context.textStyle.footNote.copyWith(
-      color: context.color.textAndIconsBaseSecondary,
+      color: context.colors.foregroundSoft,
     );
 
     var scale = interpolation;
@@ -68,7 +68,7 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
               child: Icon(
                 subtitleIcon,
-                color: context.color.textAndIconsBaseSecondary,
+                color: context.colors.foregroundSoft,
                 size: 24,
               ),
             )

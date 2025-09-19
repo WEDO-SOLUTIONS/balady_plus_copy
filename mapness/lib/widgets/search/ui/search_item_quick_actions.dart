@@ -51,6 +51,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
+        colorScheme: ButtonColorScheme.accent,
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
@@ -72,6 +73,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: iconData,
         buttonType: ButtonType.secondary,
+        colorScheme: ButtonColorScheme.accent,
         onPressed: () {
           _onFavoriteTap(
             context: context,
@@ -96,6 +98,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
           icon: SystemIcons.share,
+          colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
         ),
@@ -103,12 +106,14 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (phoneNumber != null)
         ItemActionBar(
           icon: GeneralIcons.phoneLTR,
+          colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: () => poiActions.callPhone(phoneNumber),
         ),
       if (website != null)
         ItemActionBar(
           icon: GeneralIcons.web,
+          colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: () => poiActions.launch(website),
         ),

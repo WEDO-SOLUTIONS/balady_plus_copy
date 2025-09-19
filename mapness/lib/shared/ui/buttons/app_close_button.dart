@@ -10,7 +10,7 @@ class AppCloseButton extends StatelessWidget {
   Widget build(BuildContext context) => Material(
         child: Ink(
           decoration: BoxDecoration(
-            color: context.color.surfaceBasePrimary,
+            color: context.colors.backgroundSurface1,
             borderRadius: BorderRadius.circular(8),
           ),
           child: InkWell(

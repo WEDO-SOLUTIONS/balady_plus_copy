@@ -13,6 +13,7 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -85,7 +86,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             child: Text(
               ctx.l10n.deleteAlertFavourites,
               style: ctx.textStyle.footNote.copyWith(
-                color: ctx.color.textAndIconsBaseSecondary,
+                color: ctx.colors.foregroundSoft,
                 letterSpacing: 0,
               ),
             ),
@@ -100,7 +101,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               child: Text(
                 ctx.l10n.delete,
                 style: ctx.textStyle.callout.copyWith(
-                  color: ctx.color.textAndIconsStatusNegative,
+                  color: ctx.colors.errorDefault,
                 ),
               ),
             ),
@@ -112,7 +113,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             child: Text(
               ctx.l10n.cancel,
               style: ctx.textStyle.callout.copyWith(
-                color: ctx.color.textAndIconsBasePrimary,
+                color: ctx.colors.foregroundDefault,
               ),
             ),
           ),
@@ -131,10 +132,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
         onClose: (_) => context.router.popForced(),
       ),
       loading: (_) => Material(
-        color: ctx.color.surfaceBasePrimary,
+        color: ctx.colors.backgroundSurface1,
         child: Center(
           child: CircularProgressIndicator(
-            color: ctx.color.textAndIconsStatusAccent,
+            color: ctx.colors.accentDefault,
           ),
         ),
       ),
@@ -158,19 +159,19 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     Text(
                       ctx.l10n.cancel,
                       style: ctx.textStyle.footNote.copyWith(
-                        color: ctx.color.textAndIconsStatusAccent,
+                        color: ctx.colors.accentDefault,
                       ),
                     ),
                   if (!isEditing)
                     Icon(
                       SystemIcons.arrowCornerLeftLarge,
-                      color: ctx.color.textAndIconsStatusAccent,
+                      color: ctx.colors.accentDefault,
                     ),
                   if (!isEditing)
                     Text(
                       ctx.l10n.back,
                       style: ctx.textStyle.footNote.copyWith(
-                        color: ctx.color.textAndIconsStatusAccent,
+                        color: ctx.colors.accentDefault,
                       ),
                     ),
                 ],
@@ -190,9 +191,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           },
                     child: Icon(
                       GeneralIcons.trash,
-                      color: selectedItems.isEmpty
-                          ? ctx.color.textAndIconsBaseTertiary
-                          : ctx.color.textAndIconsStatusNegative,
+                      color: selectedItems.isEmpty ? ctx.colors.foregroundMuted : ctx.colors.errorDefault,
                     ),
                   )
                 else
@@ -201,7 +200,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     child: Text(
                       ctx.l10n.select,
                       style: ctx.textStyle.footNoteBold.copyWith(
-                        color: ctx.color.textAndIconsStatusAccent,
+                        color: ctx.colors.accentDefault,
                       ),
                     ),
                   ),
@@ -209,7 +208,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               ],
             ),
             textStyle: ctx.textStyle.footNoteBold.copyWith(
-              color: ctx.color.textAndIconsBasePrimary,
+              color: ctx.colors.foregroundDefault,
             ),
             title: ctx.l10n.favourites,
           ),
@@ -366,7 +365,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          color: context.staticColor.surfaceStatusAccent,
+                          color: context.colors.accentDefault,
                         ),
                         alignment: Alignment.center,
                         child: Column(
@@ -392,8 +391,12 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 child: Image.asset(
                                   fit: BoxFit.fitWidth,
                                   ref.read(appLanguageProvider) == Language.arabic
-                                      ? Assets.images.favoritesExampleArabic.keyName
-                                      : Assets.images.favoritesExampleEnglish.keyName,
+                                      ? SaudiNationalDay.isNow()
+                                          ? Assets.images.favoritesExampleArabicSaudiday.keyName
+                                          : Assets.images.favoritesExampleArabic.keyName
+                                      : SaudiNationalDay.isNow()
+                                          ? Assets.images.favoritesExampleEnglishSaudiday.keyName
+                                          : Assets.images.favoritesExampleEnglish.keyName,
                                 ),
                               ),
                             ),
@@ -409,7 +412,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     return Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                        color: context.color.surfaceBaseSecondary,
+                        color: context.colors.backgroundSurface4,
                         borderRadius: BorderRadius.vertical(
                           top: index == 0 ? radius : Radius.zero,
                           bottom: index == state.items.length - 1 ? radius : Radius.zero,

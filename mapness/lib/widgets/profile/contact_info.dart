@@ -32,7 +32,10 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
 
   @override
   void initState() {
-    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
 
     _animation = TweenSequence<Color?>(
       <TweenSequenceItem<Color?>>[
@@ -68,20 +71,21 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) => Column(
         children: [
-          ContentWrapper(color: context.color.surfaceBaseSecondary, children: [
+          ContentWrapper(color: context.colors.backgroundSurface4, children: [
             ContentRow(
               onTap: () => CommonFunctions.launch('https://twitter.com/Balady_saudi'),
               leading: AppIcons(
                 iconData: SocialIcons.twitter,
-                color: context.color.textAndIconsStatusAccent,
+                color: context.colors.accentDefault,
               ),
               text: ContentRowTextOptions(
                 // text hack for rtl @ symbol, it's not supported in flutter
                 title: context.isLTR ? '@$momrahTwitter' : '$momrahTwitter@',
                 subtitle: context.l10n.twitterAccount,
               ),
-              trailing: const ContentRowTextTrailingOptions(
+              trailing: ContentRowTextTrailingOptions(
                 icon: SystemIcons.arrowCornerRightLarge,
+                iconColor: context.colors.foregroundSoft,
               ),
             ),
             ContentRow(
@@ -90,7 +94,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                   TextDirection.ltr => GeneralIcons.phoneLTR,
                   TextDirection.rtl => GeneralIcons.phoneRTL,
                 },
-                color: context.color.textAndIconsStatusAccent,
+                color: context.colors.accentDefault,
               ),
               text: ContentRowTextOptions(
                 title: momrahPoneNumber,
@@ -104,7 +108,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                 onTap: () => CommonFunctions.email(momrahEmail),
                 leading: AppIcons(
                   iconData: GeneralIcons.mail,
-                  color: context.color.textAndIconsStatusAccent,
+                  color: context.colors.accentDefault,
                 ),
                 text: ContentRowTextOptions(
                   title: momrahEmail,

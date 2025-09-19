@@ -48,7 +48,7 @@ class Picture extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: context.color.strokePrimary, width: 0.5),
+        border: Border.all(color: context.colors.borderSoft.withOpacity(.8), width: 0.5),
       ),
       child: ClipOval(
         child: imgBytes != null

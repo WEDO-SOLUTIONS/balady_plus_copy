@@ -48,7 +48,7 @@ class FeedbackFormContainer extends ConsumerWidget {
                 colorDisabled: context.colors.foregroundMuted,
                 colorEnabled: context.colors.foregroundDefault,
                 textStyle: context.textStyle.footNoteBold.copyWith(
-                  color: context.color.textAndIconsBasePrimary,
+                  color: context.colors.foregroundDefault,
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
                 ),

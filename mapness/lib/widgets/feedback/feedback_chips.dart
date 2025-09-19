@@ -50,7 +50,7 @@ class FeedbackChips extends StatelessWidget {
                             ({color}) => SvgPicture.network(
                               variant.iconUrl!,
                               colorFilter: ColorFilter.mode(
-                                isSelected ? context.color.surfaceBasePrimary : context.color.textAndIconsBasePrimary,
+                                isSelected ? context.colors.backgroundSurface1 : context.colors.foregroundDefault,
                                 BlendMode.srcIn,
                               ),
                             ),

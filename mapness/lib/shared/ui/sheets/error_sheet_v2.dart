@@ -40,7 +40,7 @@ class ErrorSheetV2 extends StatelessWidget {
           text,
           textAlign: TextAlign.center,
           style: (isTitle ? context.textStyles.h3SemiBold : context.textStyles.bodyLargeRegular).copyWith(
-            color: isTitle ? context.color.textAndIconsBasePrimary : NonThemeColor.color6,
+            color: isTitle ? context.colors.foregroundDefault : NonThemeColor.color6,
           ),
         );
 

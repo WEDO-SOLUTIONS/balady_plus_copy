@@ -82,7 +82,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                   options: ContentRowOptions(
                     leadingIcon: widget.icon ??
                         SystemIcons.bookmarkFill.icon(
-                          color: context.color.textAndIconsStatusAccent,
+                          color: context.colors.accentDefault,
                         ),
                     // TODO: I think this title change from the backend side they append the title and category and add , between them
                     title: widget.item.title.split(', ').firstOrNull ?? '',
@@ -126,7 +126,8 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
 
   void _onLongPress() {
     if (!widget.isEditing && widget.isLongPressEnabled) {
-      final color = context.color;
+      final colors = context.colors;
+      // final color = context.color;
       showMenu(
         constraints: const BoxConstraints(
           minWidth: 140,
@@ -143,7 +144,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
             child: PopupMenuWidget(
               title: context.l10n.route,
               icon: GeneralIcons.routeStroke.icon(
-                color: color.textAndIconsBasePrimary,
+                color: colors.foregroundDefault,
               ),
               showDivider: false,
             ),
@@ -154,7 +155,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
             child: PopupMenuWidget(
               title: context.l10n.share,
               icon: SystemIcons.share.icon(
-                color: color.textAndIconsBasePrimary,
+                color: colors.foregroundDefault,
               ),
               showDivider: false,
             ),
@@ -164,11 +165,11 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
             onTap: () => widget.onDelete?.call(),
             child: PopupMenuWidget(
               titleStyle: context.textStyle.text.copyWith(
-                color: color.textAndIconsStatusNegative,
+                color: colors.errorDefault,
               ),
               title: context.l10n.delete,
               icon: GeneralIcons.trash.icon(
-                color: color.textAndIconsStatusNegative,
+                color: colors.errorDefault,
               ),
               showDivider: false,
             ),

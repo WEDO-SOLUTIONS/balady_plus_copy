@@ -18,7 +18,7 @@ class ErrorMessage extends StatelessWidget {
           style: Theme.of(context)
               .extension<ThemeTextStyles>()!
               .heading2
-              .copyWith(color: context.color.textAndIconsBasePrimary),
+              .copyWith(color: context.colors.foregroundDefault),
         );
     return Column(
       children: [

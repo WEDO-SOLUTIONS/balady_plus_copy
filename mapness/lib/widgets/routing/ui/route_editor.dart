@@ -91,9 +91,9 @@ class DestinationRow extends StatelessWidget {
               height: 24,
               child: SvgPicture.asset(
                 icon,
-                color: context.color.textAndIconsStatusAccent,
+                color: context.colors.accentDefault,
                 // colorFilter: ColorFilter.mode(
-                // index == 0 ? NonThemeColor.color3 : context.color.strokeAccent,
+                // index == 0 ? NonThemeColor.color3 : context.colors.accentOnContainer,
                 // BlendMode.srcATop,
                 // ),
               ),

@@ -85,7 +85,8 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                   width: double.infinity,
                   child: AppButton(
                     primaryLabel: context.l10n.no,
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonType: ButtonType.secondary,
+                    buttonColorScheme: ButtonColorScheme.accent,
                     onTap: () {
                       ToastOverlay.of(context).show(
                         title: context.l10n.youCanChangeAutomaticParking,

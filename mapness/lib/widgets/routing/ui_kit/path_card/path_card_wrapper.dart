@@ -30,7 +30,7 @@ class PathCardWrapper extends StatelessWidget {
         padding: const EdgeInsets.all(Spacing.$3x),
         decoration: ShapeDecoration(
           shape: smoothBorder(RadiusBorder.l),
-          color: context.color.surfaceBaseSecondary,
+          color: context.colors.backgroundSurface1,
         ),
         child: child,
       );
