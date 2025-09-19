@@ -58,10 +58,13 @@ class BssCommon {
   final String deviceLocale;
 
   Map<String, dynamic> toJson() => {
-        'formatVersion': formatVersion,
         'appVersion': appVersion,
         'appInstanceId': appInstanceId,
         'product': product,
+        'sessionId': sessionId,
+        'user': user,
+        'deviceLocale': deviceLocale,
+        'formatVersion': formatVersion,
       };
 
   BssCommon copyWith({

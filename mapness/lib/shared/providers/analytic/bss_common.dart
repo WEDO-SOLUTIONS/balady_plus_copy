@@ -16,14 +16,14 @@ Future<BssCommon> bssCommon(Ref ref) async {
   final packageInfo = await PackageInfo.fromPlatform();
 
   final isIOS = deviceInfo.mobileOS == AppFeedbackMobileOs.ios;
-  final product = isIOS ? 87 : 86;
+  final product = isIOS ? 88 : 89;
 
   return BssCommon(
     appVersion: packageInfo.version,
     appInstanceId: deviceInfo.deviceId ?? 'unknown',
     product: product,
     sessionId: const Uuid().v4(),
-    user: deviceInfo.authId ?? deviceInfo.deviceId ?? 'unknown',
+    user: deviceInfo.authId ?? deviceInfo.deviceId ?? '',
     deviceLocale: languageCode,
   );
 }
