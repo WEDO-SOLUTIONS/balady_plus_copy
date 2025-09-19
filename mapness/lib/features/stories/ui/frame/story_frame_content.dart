@@ -21,10 +21,17 @@ class StoryFrameContent extends StatelessWidget {
       children: [
         Padding(
           padding: storyTheme.titlePadding,
-          child: Text(
-            texts.title,
-            style: storyTheme.titleStyle,
-            textAlign: texts.titleAlign,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  texts.title,
+                  style: storyTheme.titleStyle,
+                  textAlign: texts.titleAlign,
+                ),
+              ),
+            ],
           ),
         ),
         if (texts.subTitle != null)
