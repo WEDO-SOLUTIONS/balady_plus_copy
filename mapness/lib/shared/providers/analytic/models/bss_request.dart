@@ -76,7 +76,7 @@ class BssRequest {
   /// Block of additional attributes
   final BssPayload? payload;
 
-  List<Map<String, dynamic>> toJson({
+  Map<String, dynamic> toJson({
     required int eventOrdinal,
     required BssCommon common,
     required BssMap map,
@@ -99,7 +99,7 @@ class BssRequest {
     if (payload != null) {
       data['payload'] = payload?.toJson();
     }
-    return [data];
+    return data;
   }
 
   BssRequest copyWith({
