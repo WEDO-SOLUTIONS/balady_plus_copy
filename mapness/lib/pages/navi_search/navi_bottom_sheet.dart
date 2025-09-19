@@ -11,7 +11,9 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_header.dart';
@@ -19,6 +21,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -208,6 +211,11 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       // when the user is typing a long text and the TextField is scrolling to show it
       if (notification.dragDetails != null) {
         _unfocusSearchField();
+        MapSearchContent.scrollSendEvent(
+          searchState: ref.read(searchProvider(_scope)),
+          historyListSize: ref.read(searchHistoryProvider(_scope)).length,
+          sendEvent: ref.read(bssServiceProvider.notifier).sendEvent,
+        );
       }
     }
     return true;

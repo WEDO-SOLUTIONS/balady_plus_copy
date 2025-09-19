@@ -17,6 +17,7 @@ import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
@@ -262,6 +263,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       // when the user is typing a long text and the TextField is scrolling to show it
       if (notification.dragDetails != null) {
         _unfocusSearchField();
+        MapSearchContent.scrollSendEvent(
+          searchState: ref.read(searchProvider(_scope)),
+          historyListSize: ref.read(searchHistoryProvider(_scope)).length,
+          sendEvent: ref.read(bssServiceProvider.notifier).sendEvent,
+        );
       }
     }
     return true;
