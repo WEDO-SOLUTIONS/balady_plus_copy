@@ -37,13 +37,21 @@ import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
-import ru.dgis.sdk.directory.RubricId
 import ru.dgis.sdk.platform.Locale as SdkLocale
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.RouteSearchPoint
 import java.util.concurrent.CompletableFuture
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
@@ -447,7 +455,8 @@ class NavigationScreen(
                 Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW,
                 Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW,
                 Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW_WITH_ANGLE,
-                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE -> true
+                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE,
+                    -> true
 
                 else -> false
             }
@@ -457,12 +466,12 @@ class NavigationScreen(
         return maneuver.build()
     }
 
-    private fun getFavourites() {
+    private fun getFavourites(forceUpdate: Boolean = false) {
         FlutterProvider.getHostFlutterApi(carContext).getFavourites { result ->
             handleFavouritesMessage(result.getOrNull()) {
                 favourites = it
                 if (mapController.isMapReady) {
-                    tryToShowFavourites()
+                    tryToShowFavourites(forceUpdate)
                 }
             }
         }
@@ -539,71 +548,16 @@ class NavigationScreen(
             })
     }
 
-    private fun tryToShowFavourites() {
+    private fun tryToShowFavourites(forceUpdate: Boolean = false) {
         val favourites = this.favourites
         if (favourites == null) return
 
-        val myLocation = mapController.getMyLocation() ?: return
-        val home = favourites.home
-        val work = favourites.work
-        val startPoint = RouteSearchPoint(GeoPoint(myLocation.latitude, myLocation.longitude))
-        val points = mutableListOf<BriefRouteInfoSearchPoints>()
-        if (home != null) {
-            val coordinates = home.coordinates
-            val finishPoint =
-                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
-            points.add(BriefRouteInfoSearchPoints(startPoint, finishPoint))
-        }
-        if (work != null) {
-            val coordinates = work.coordinates
-            val finishPoint =
-                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
-            points.add(BriefRouteInfoSearchPoints(startPoint, finishPoint))
-        }
-
-        fun showScreen(screen: FavouritesPreviewScreen) {
-            if ((screenManager.top !is NavigationScreen &&
-                        screenManager.top !is FavouritesPreviewScreen) || isNavigation
-            ) return
-            if (screenManager.top is FavouritesPreviewScreen) {
-                screenManager.pop()
-            } else {
-                screenManager.push(screen)
-            }
-        }
-
-
-        if (points.isEmpty()) {
-            showScreen(
-                FavouritesPreviewScreen(
-                    carContext,
-                    mapController,
-                    favourites
-                )
+        if (screenManager.top is NavigationScreen && !isNavigation) {
+            screenManager.push(
+                FavouritesPreviewScreen(carContext, mapController, favourites)
             )
-            return
-        }
-
-        mapController.getBriefRouteInfos(points) {
-            val homeWorkEstimates = when (it?.size) {
-                2 -> HomeWorkEstimates(
-                    home = it[0]!!.duration,
-                    work = it[1]!!.duration
-                )
-
-                1 -> if (home != null) HomeWorkEstimates(home = it[0]!!.duration) else
-                    HomeWorkEstimates(work = it[0]!!.duration)
-
-                else -> null
-            }
-            showScreen(
-                FavouritesPreviewScreen(
-                    carContext,
-                    mapController,
-                    favourites,
-                    homeWorkEstimates
-                )
-            )
+        } else if (screenManager.top is FavouritesPreviewScreen && forceUpdate) {
+            screenManager.pop()
         }
     }
 
@@ -698,6 +652,6 @@ class NavigationScreen(
     }
 
     override fun onLocaleChanged() {
-        getFavourites()
+        getFavourites(forceUpdate = true)
     }
 }

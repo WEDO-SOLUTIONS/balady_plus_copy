@@ -14,24 +14,54 @@ import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.model.MapWithContentTemplate
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
+import com.dgis.map.android_auto.NavigationScreen
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.distance
+import ru.dgis.sdk.routing.RouteSearchPoint
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlin.math.min
 
 class FavouritesPreviewScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
     private val favourites: FavouritesParams,
-    private val homeWorkEstimates: HomeWorkEstimates? = null,
 ) : CarMapScreen(carContext, mapController) {
 
     private val itemsLimit = carContext.getCarService(ConstraintManager::class.java)
         .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST)
+
+    private var homeWorkEstimates: HomeWorkEstimates? = null
+    private var estimatesJob: Job? = null
+    private var getEstimatesTimestamp: Long? = null
+
+    init {
+        lifecycle.addObserver(
+            object : DefaultLifecycleObserver {
+                override fun onStart(owner: LifecycleOwner) {
+                    getEstimates()
+                }
+
+                override fun onDestroy(owner: LifecycleOwner) {
+                    estimatesJob?.cancel()
+                }
+            }
+        )
+    }
 
     private val actionStrip by lazy {
         val favouritesAction =
@@ -176,6 +206,67 @@ class FavouritesPreviewScreen(
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return result
+    }
+
+    private fun getEstimates() {
+        val home = favourites.home
+        val work = favourites.work
+        if (home == null && work == null) return
+
+        val myLocation = mapController.getMyLocation() ?: return
+        val currentTime = System.currentTimeMillis()
+        if (getEstimatesTimestamp != null
+            && currentTime - getEstimatesTimestamp!! < TimeUnit.MINUTES.toMillis(5)
+        ) {
+            return
+        }
+        getEstimatesTimestamp = currentTime
+
+        val startPoint = RouteSearchPoint(GeoPoint(myLocation.latitude, myLocation.longitude))
+        val points = mutableListOf<RouteSearchPoint>()
+        if (home != null) {
+            val coordinates = home.coordinates
+            val finishPoint =
+                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
+            points.add(finishPoint)
+        }
+        if (work != null) {
+            val coordinates = work.coordinates
+            val finishPoint =
+                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
+            points.add(finishPoint)
+        }
+
+        estimatesJob?.cancel()
+        estimatesJob = CoroutineScope(Dispatchers.IO).launch {
+            val durations = points.map {
+                async {
+                    suspendCoroutine { continuation ->
+                        mapController.getRouteDuration(startPoint, it) { duration ->
+                            continuation.resume(duration)
+                        }
+                    }
+                }
+            }.awaitAll()
+
+            val homeWorkEstimates = when (durations.size) {
+                2 -> HomeWorkEstimates(
+                    home = durations[0],
+                    work = durations[1]
+                )
+
+                1 -> if (home != null) HomeWorkEstimates(home = durations[0]) else
+                    HomeWorkEstimates(work = durations[0])
+
+                else -> null
+            }
+            if (homeWorkEstimates == null) return@launch
+
+            withContext(Dispatchers.Main) {
+                this@FavouritesPreviewScreen.homeWorkEstimates = homeWorkEstimates
+                invalidate()
+            }
+        }
     }
 }
 

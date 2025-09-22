@@ -54,7 +54,6 @@ import java.lang.Exception
 import java.util.Locale
 import ru.dgis.sdk.map.Map as DgisMap
 import com.dgis.map.map_api.SoundToggleType
-import ru.dgis.sdk.routing.BriefRouteInfo
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.TrafficRouter
 import kotlinx.coroutines.CoroutineScope
@@ -520,21 +519,28 @@ class CarMapController(
         map.camera.padding = padding
     }
 
-    fun getBriefRouteInfos(
-        routeInfoSearchPoints: List<BriefRouteInfoSearchPoints>,
-        onResult: (List<BriefRouteInfo?>?) -> Unit,
+    fun getRouteDuration(
+        startPoint: RouteSearchPoint,
+        finishPoint: RouteSearchPoint,
+        onResult: (Duration?) -> Unit,
     ) {
-        trafficRouter.findBriefRouteInfos(
-            searchPoints = routeInfoSearchPoints,
+        trafficRouter.findRoute(
+            startPoint = startPoint,
+            finishPoint = finishPoint,
             routeSearchOptions = RouteSearchOptions(
-                CarRouteSearchOptions(
-                    avoidTollRoads = sharedPrefs.avoidTollRoads,
-                    avoidUnpavedRoads = sharedPrefs.avoidUnpavedRoads
-                )
+                CarRouteSearchOptions()
             ),
         ).apply {
-            onResult { onResult(it) }
-            onError { onResult(null) }
+            onResult {
+                val route =  it.firstOrNull()
+                val duration = route?.route?.geometry?.first?.let {
+                    route.traffic.durations.calculateDuration(it.point)
+                }
+                onResult(duration)
+            }
+            onError {
+                onResult(null)
+            }
         }
     }
 
