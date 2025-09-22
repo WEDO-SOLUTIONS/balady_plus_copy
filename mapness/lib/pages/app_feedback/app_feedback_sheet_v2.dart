@@ -92,7 +92,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                   ),
                   const SizedBox(height: Spacing.$3x),
                   Text(
-                    context.l10n.shareFeedback,
+                    context.l10n.shareYourFeedback,
                     style: context.textStyles.h3SemiBold,
                   ),
                   const SizedBox(height: Spacing.$2x),
@@ -201,7 +201,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.rating > 3 ? context.l10n.appFeedbackRating5 : context.l10n.appFeedbackRating1,
+                widget.rating > 3 ? context.l10n.appFeedbackGoodRatingV2 : context.l10n.appFeedbackBadRatingV2,
                 style: context.textStyles.bodyLargeSemiBold,
               ),
               const SizedBox(height: Spacing.$5x),
