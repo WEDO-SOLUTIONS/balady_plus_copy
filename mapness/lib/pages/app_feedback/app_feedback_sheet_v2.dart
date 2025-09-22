@@ -35,6 +35,7 @@ class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
 class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   late final ToggleSheetController scrollController = ToggleSheetController(
     onClose: (_) => context.router.popForced(),
+    heightModel: ToggleSheetHeightModel.fraction(.98),
   );
   final ValueNotifier<int> rating = ValueNotifier(0);
   Set<TagV2> selectedTags = Set.identity();
@@ -250,11 +251,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                           ),
                       ],
                     ),
-                    if (index != tags.length - 1)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: Spacing.$4x),
-                        child: Divider(),
-                      ),
+                    if (index != tags.length - 1) const Divider(height: Spacing.$8x),
                   ],
                 ),
               const SizedBox(height: Spacing.$5x),
