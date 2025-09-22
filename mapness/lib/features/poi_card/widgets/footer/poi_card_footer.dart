@@ -101,6 +101,7 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: GeneralIcons.phoneLTR,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
               onPressed: callPhone,
             ),
@@ -108,35 +109,41 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.turnRight,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: onEntranceTap,
             ),
           if (!parkingPoi)
             ItemActionBar(
               icon: iconData,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: ButtonType.secondary,
+            colorScheme: ButtonColorScheme.accent,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => _onParkingTab(ref, context),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],

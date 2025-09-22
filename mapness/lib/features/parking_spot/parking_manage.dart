@@ -8,6 +8,7 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -79,7 +80,9 @@ class _ParkingManage extends _$ParkingManage {
             longitude: model.lon,
             elevation: 1,
           ),
-          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+          icon: SaudiNationalDay.isNow()
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
         onTap: () {
           ref.read(appRouterProvider).replaceOrPush(
@@ -133,7 +136,7 @@ class _ParkingManage extends _$ParkingManage {
       GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
       text: title,
       textStyle: style,
-      icon: Markers.defaultPinNew,
+      icon: SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew,
       id: poiPinId,
     ));
   }
@@ -173,7 +176,9 @@ class _ParkingManage extends _$ParkingManage {
             longitude: lon,
             elevation: 1,
           ),
-          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+          icon: SaudiNationalDay.isNow()
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
         onTap: () {
           ref.read(poiCardClosingProvider.notifier).close();

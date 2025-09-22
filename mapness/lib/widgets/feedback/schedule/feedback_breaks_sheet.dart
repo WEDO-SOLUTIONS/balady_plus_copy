@@ -189,7 +189,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
       child: Text(
         time.format(context),
         style: context.textStyles.h2Medium.copyWith(
-          color: _isNoBreaksSelected ? context.colors.foregroundMuted : context.color.textAndIconsBaseSecondary,
+          color: _isNoBreaksSelected ? context.colors.foregroundMuted : context.colors.foregroundSoft,
         ),
       ),
     );

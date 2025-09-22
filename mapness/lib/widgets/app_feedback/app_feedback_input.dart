@@ -12,12 +12,13 @@ class AppFeedbackInput extends HookWidget {
     required this.textController,
     this.isValid,
     this.textInputAction,
+    this.maxCharsAllowed = 1000,
     super.key,
   });
 
+  final int maxCharsAllowed;
   static const _initMaxLines = 9;
   static const _maxLinesAllowed = 15;
-  static const _maxCharsAllowed = 1000;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class AppFeedbackInput extends HookWidget {
       maxLines.value = lines.clamp(_initMaxLines, _maxLinesAllowed);
 
       final _isNotEmpty = textController.text.isNotEmpty;
-      final _isValidLength = textController.text.length <= _maxCharsAllowed;
+      final _isValidLength = textController.text.length <= maxCharsAllowed;
       final _isValid = _isNotEmpty && _isValidLength;
       isValid?.call(_isValid);
 
@@ -78,9 +79,8 @@ class AppFeedbackInput extends HookWidget {
             isDisposed: false,
           ),
           supportingText: BaladySupportingText(
-            // Show error message if the text length is 1000 only
             text: supportingText.value,
-            maxLength: _maxCharsAllowed,
+            maxLength: maxCharsAllowed,
           ),
         ),
       ),

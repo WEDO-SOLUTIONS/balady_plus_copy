@@ -21,7 +21,6 @@ class SoundSettingsPageContent extends ConsumerWidget {
     final colors = context.colors;
     final l10n = context.l10n;
     final textStyles = context.textStyles;
-    final color = context.color;
     final voiceInstructionSubtitle = soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(context);
 
     return SingleChildScrollView(
@@ -31,12 +30,12 @@ class SoundSettingsPageContent extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ContentWrapper(
-              color: color.surfaceBaseTertiary,
+              color: colors.backgroundSurface4,
               children: [
                 ContentRow(
                   options: ContentRowOptions(
                     subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                      color: color.textAndIconsBaseSecondary,
+                      color: colors.foregroundSoft,
                     ),
                     titleStyle: textStyles.bodyLargeMedium.copyWith(
                       color: colors.foregroundDefault,
@@ -83,14 +82,14 @@ class SoundSettingsPageContent extends ConsumerWidget {
                 ContentRow(
                   onTap: () => context.router.push(const VoiceSettingsRoute()),
                   options: ContentRowOptions(
-                    wrapperColor: color.surfaceBaseTertiary,
+                    wrapperColor: colors.backgroundSurface4,
                     wrapperEnabled: true,
                     padding: const EdgeInsets.symmetric(
                       vertical: Spacing.$3x,
                       horizontal: Spacing.$4x,
                     ),
                     title: l10n.voice,
-                    titleStyle: context.textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                    titleStyle: context.textStyle.text.copyWith(color: colors.foregroundDefault),
                     actionWidget: ContentRowActionOptions(
                         actionIcon: AppIcons(
                           iconData: SystemIcons.arrowCornerRightLarge,
@@ -109,7 +108,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                 titleStyle: textStyles.bodyLargeRegular.copyWith(
                   color: colors.foregroundDefault,
                 ),
-                wrapperColor: color.surfaceBaseTertiary,
+                wrapperColor: colors.backgroundSurface4,
                 wrapperEnabled: true,
                 title: l10n.promptsVolume,
                 padding: const EdgeInsets.symmetric(
@@ -135,7 +134,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
               headerTitle: l10n.eventAlert,
               content: [
                 ContentWrapper(
-                  color: color.surfaceBaseTertiary,
+                  color: colors.backgroundSurface4,
                   children: [
                     ContentRow(
                       onToggle: (value) {

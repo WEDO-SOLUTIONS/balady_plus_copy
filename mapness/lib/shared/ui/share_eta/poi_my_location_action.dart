@@ -23,12 +23,12 @@ class MyLocationPoiActions extends StatelessWidget {
     final accent = context.colors.accentDefault;
     final secondary = context.staticColor.surfaceStatusContrastAccent;
     final primary = context.color.textAndIconsBaseInversePrimary;
-    final secondaryText = context.color.textAndIconsStatusAccent;
+    final secondaryText = context.colors.accentDefault;
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: context.color.surfaceBasePrimary,
+        color: context.colors.backgroundSurface1,
         boxShadow: Shadows.s,
       ),
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
@@ -63,6 +63,7 @@ class MyLocationPoiActions extends StatelessWidget {
                 ItemActionBar(
                   icon: SystemIcons.parkingAdd,
                   buttonType: ButtonType.secondary,
+                  colorScheme: ButtonColorScheme.accent,
                   onPressed: () {
                     onParkingAdd?.call();
                   },

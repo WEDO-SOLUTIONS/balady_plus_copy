@@ -34,10 +34,10 @@ class NaviFavoritesPage extends HookConsumerWidget {
         onClose: (_) => context.router.popForced(),
       ),
       loading: (_) => Material(
-        color: context.color.surfaceBasePrimary,
+        color: context.colors.backgroundSurface1,
         child: Center(
           child: CircularProgressIndicator(
-            color: context.color.textAndIconsStatusAccent,
+            color: context.colors.accentDefault,
           ),
         ),
       ),

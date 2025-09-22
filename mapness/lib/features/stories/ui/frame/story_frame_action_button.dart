@@ -41,6 +41,7 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         // TODO: After release delete from localizy [onboardingGetStartedButton] key
         // It was previously used instead of "onboarding3Action"
         'onboarding3Action' => l10n.onboarding3Action,
+        'saudiDayAction' => l10n.saudiDayAction,
         _ => ''
       };
 

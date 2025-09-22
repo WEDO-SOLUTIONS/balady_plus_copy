@@ -89,7 +89,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 Assets.icons.svg.icDashboardSearch.keyName,
                 semanticsLabel: 'MinApps Screen',
                 colorFilter: ColorFilter.mode(
-                  context.color.strokeAccent,
+                  context.colors.accentOnContainer,
                   BlendMode.srcIn,
                 ),
               ),

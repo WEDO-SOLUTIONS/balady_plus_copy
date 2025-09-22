@@ -174,7 +174,7 @@ class OrganizationWidget extends StatelessWidget {
   Widget build(BuildContext context) => Material(
         clipBehavior: Clip.antiAlias,
         shape: smoothBorder(RadiusBorder.xl),
-        color: context.color.surfaceBasePrimary,
+        color: context.colors.backgroundSurface1,
         child: Stack(
           children: [
             ContentRow(

@@ -76,7 +76,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
         fit: widget.fit,
         width: double.infinity,
         errorBuilder: (context, __, ___) => ColoredBox(
-          color: context.color.surfaceBasePrimary,
+          color: context.colors.backgroundSurface1,
           child: const SizedBox.shrink(),
         ),
         filterQuality: widget.filterQuality ?? FilterQuality.low,
@@ -88,7 +88,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
             imageUrl,
             fit: widget.fit,
             errorBuilder: (context, __, ___) => ColoredBox(
-              color: context.color.surfaceBasePrimary,
+              color: context.colors.backgroundSurface1,
               child: const SizedBox.shrink(),
             ),
             filterQuality: widget.filterQuality ?? FilterQuality.low,
@@ -97,7 +97,7 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
             imageUrl: imageUrl,
             fit: widget.fit,
             errorWidget: (context, _, __) => Container(
-              color: context.color.surfaceBasePrimary,
+              color: context.colors.backgroundSurface1,
               child: Center(
                 child: RefreshButton(
                   onPressed: () {

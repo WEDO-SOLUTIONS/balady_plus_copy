@@ -20,7 +20,7 @@ class RouteTypeSwitch extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final titleColor = isChoosed ? context.color.textAndIconsBasePrimary : NonThemeColor.color16;
+    final titleColor = isChoosed ? context.colors.foregroundDefault : NonThemeColor.color16;
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),

@@ -271,44 +271,56 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
           },
-          ),
-          header: PoiHeader(
-            title: widget.data.address?.buildingName ?? widget.poiCardDataFromGoogle?.displayName ??widget.data.title,
-            subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
-            subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
-                ? [
-                    const TextSpan(text: ' • '),
-                    WidgetSpan(
-                      child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
-                      baseline: TextBaseline.ideographic,
-                      alignment: PlaceholderAlignment.middle,
-                    ),
-                    TextSpan(text: ' $poiHeaderSubTitle'),
-                    if (hasOffers) ...[
-                      const TextSpan(text: ' • '),
-                      WidgetSpan(
-                        child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
-                        baseline: TextBaseline.ideographic,
-                        alignment: PlaceholderAlignment.middle,
-                      ),
-                      TextSpan(
-                        text: ' ${context.l10n.offer}',
-                        style:
-                            context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
-                      ),
-                    ]
-                  ]
-                : [],
-            parkingInfo: widget.data.parkingInfo,
-            poiCardState: poiCardState,
-            tabController: _tabController,
-            data: widget.data,
-            onTapClose: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.poiKeys.exitButton,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-              );
+        ),
+        header: PoiHeader(
+          title: widget.data.address?.buildingName ?? widget.poiCardDataFromGoogle?.displayName ?? widget.data.title,
+          subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
+          subTitleExtraInlineSpans: [
+            if (poiHeaderSubTitle != null) ...[
+              const TextSpan(text: ' • '),
+              WidgetSpan(
+                child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+              ),
+              TextSpan(text: ' $poiHeaderSubTitle'),
+            ],
+            WidgetSpan(
+              child: Padding(
+                padding:  const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                child: Icon(
+                  (widget.data.parkingInfo?.isPaid ?? false) ? GeneralIcons.money : GeneralIcons.checkmarkCircle,
+                  size: 16,
+                  color: context.colors.foregroundSoft,
+                ),
+              ),
+              baseline: TextBaseline.ideographic,
+              alignment: PlaceholderAlignment.middle,
+            ),
+            if (hasOffers) ...[
+              const TextSpan(text: ' • '),
+              WidgetSpan(
+                child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+              ),
+              TextSpan(
+                text: ' ${context.l10n.offer}',
+                style:
+                context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
+              ),
+            ]
+          ],
+          parkingInfo: widget.data.parkingInfo,
+          poiCardState: poiCardState,
+          tabController: _tabController,
+          data: widget.data,
+          onTapClose: () {
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.exitButton,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+            );
 
             ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
             ref.read(parkingManageProvider.notifier).restoreMarker();

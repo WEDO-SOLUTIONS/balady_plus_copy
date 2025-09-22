@@ -26,7 +26,7 @@ class FooterIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final description = desc;
-    final defaultBgColor = context.color.textAndIconsBasePrimary.withOpacity(0.05);
+    final defaultBgColor = context.colors.foregroundDefault.withOpacity(0.05);
     return Flexible(
       flex: flex,
       child: Padding(
@@ -56,7 +56,7 @@ class FooterIconButton extends StatelessWidget {
                         height: 24,
                         width: 24,
                         colorFilter: ColorFilter.mode(
-                          colorIcon ?? context.color.textAndIconsBasePrimary,
+                          colorIcon ?? context.colors.foregroundDefault,
                           BlendMode.srcATop,
                         ),
                         matchTextDirection: true,

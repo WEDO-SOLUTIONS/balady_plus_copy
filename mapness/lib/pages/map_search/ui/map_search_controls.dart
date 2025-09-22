@@ -49,6 +49,8 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
 
   @override
   Widget build(BuildContext context) {
+    final scope = _scope;
+    final isButtonVisible = ref.watch(searchInRectProvider(scope).select((s) => s.isButtonVisible));
     final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
@@ -67,72 +69,65 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
     } else {
       bottomPadding = 16;
     }
-    final ValueNotifier<bool> visibleSearchArea = ValueNotifier(false);
-    ref.watch(searchInRectProvider(SearchScopeEnum.map.value).select((value) {
-      if (visibleSearchArea.value != value.isButtonVisible) {
-        visibleSearchArea.value = value.isButtonVisible;
-      }
-    }));
 
-    return IgnorePointer(
-      ignoring: hideControls,
-      child: SafeArea(
-        bottom: false,
-        child: AnimatedOpacity(
-          opacity: hideControls ? 0 : 1,
-          duration: const Duration(milliseconds: 250),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: Expanded(
-                  child: AnimatedPadding(
-                    duration: const Duration(milliseconds: 400),
-                    padding: EdgeInsets.only(
-                      left: 12,
-                      top: 12,
-                      right: 12,
-                      bottom: bottomPadding,
-                    ),
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const LayersControl(),
-                          const SizedBox(height: 8),
-                          const TrafficControl(),
-                          const SizedBox(height: uikit.Spacing.$2x),
-                          const DimensionControl(),
-                          const Spacer(),
-                          const ZoomControl(),
-                          const Spacer(),
-                          const CompassControl(),
-                          const SizedBox(height: 8),
-                          ComplianceBuildingLegend(),
-                          const SizedBox(height: 8),
-                          Row(
-                            children: [
-                              ValueListenableBuilder(
-                                valueListenable: visibleSearchArea,
-                                builder: (context, value, child) => uikit.SearchInArea(
-                                  visible: !value,
+    return SizedBox.expand(
+      child: IgnorePointer(
+        ignoring: hideControls,
+        child: SafeArea(
+          bottom: false,
+          child: AnimatedOpacity(
+            opacity: hideControls ? 0 : 1,
+            duration: const Duration(milliseconds: 250),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Expanded(
+                    child: AnimatedPadding(
+                      duration: const Duration(milliseconds: 400),
+                      padding: EdgeInsets.only(
+                        left: 12,
+                        top: 12,
+                        right: 12,
+                        bottom: bottomPadding,
+                      ),
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const LayersControl(),
+                            const SizedBox(height: 8),
+                            const TrafficControl(),
+                            const SizedBox(height: uikit.Spacing.$2x),
+                            const DimensionControl(),
+                            const Spacer(),
+                            const ZoomControl(),
+                            const Spacer(),
+                            const CompassControl(),
+                            const SizedBox(height: 8),
+                            ComplianceBuildingLegend(),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                uikit.SearchInArea(
+                                  visible: !isButtonVisible,
                                   title: context.l10n.searchInThisArea,
                                   onTap: _searchInArea,
                                 ),
-                              ),
-                              const Spacer(),
-                              const FollowControl(),
-                            ],
-                          ),
-                        ],
+                                const Spacer(),
+                                const FollowControl(),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
