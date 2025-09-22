@@ -31,11 +31,17 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
+  /// File path: assets/images/background_ornament_saudiday.png
+  AssetGenImage get backgroundOrnamentSaudiday => const AssetGenImage('assets/images/background_ornament_saudiday.png');
+
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
   /// File path: assets/images/city_expert.png
   AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
+
+  /// File path: assets/images/city_expert_saudi_day.png
+  AssetGenImage get cityExpertSaudiDay => const AssetGenImage('assets/images/city_expert_saudi_day.png');
 
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
@@ -43,8 +49,15 @@ class $AssetsImagesGen {
   /// File path: assets/images/drive_home_arrow.png
   AssetGenImage get driveHomeArrow => const AssetGenImage('assets/images/drive_home_arrow.png');
 
+  /// File path: assets/images/drive_home_arrow_saudiday.png
+  AssetGenImage get driveHomeArrowSaudiday => const AssetGenImage('assets/images/drive_home_arrow_saudiday.png');
+
   /// File path: assets/images/drive_home_background.png
   AssetGenImage get driveHomeBackground => const AssetGenImage('assets/images/drive_home_background.png');
+
+  /// File path: assets/images/drive_home_background_saudiday.png
+  AssetGenImage get driveHomeBackgroundSaudiday =>
+      const AssetGenImage('assets/images/drive_home_background_saudiday.png');
 
   /// File path: assets/images/eta_sheet_background.png
   AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
@@ -52,11 +65,22 @@ class $AssetsImagesGen {
   /// File path: assets/images/favorites_example_arabic.png
   AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
 
+  /// File path: assets/images/favorites_example_arabic_saudiday.png
+  AssetGenImage get favoritesExampleArabicSaudiday =>
+      const AssetGenImage('assets/images/favorites_example_arabic_saudiday.png');
+
   /// File path: assets/images/favorites_example_english.png
   AssetGenImage get favoritesExampleEnglish => const AssetGenImage('assets/images/favorites_example_english.png');
 
+  /// File path: assets/images/favorites_example_english_saudiday.png
+  AssetGenImage get favoritesExampleEnglishSaudiday =>
+      const AssetGenImage('assets/images/favorites_example_english_saudiday.png');
+
   /// File path: assets/images/feedback_dashboard.png
   AssetGenImage get feedbackDashboard => const AssetGenImage('assets/images/feedback_dashboard.png');
+
+  /// File path: assets/images/feedback_dashboard_saudiday.png
+  AssetGenImage get feedbackDashboardSaudiday => const AssetGenImage('assets/images/feedback_dashboard_saudiday.png');
 
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
@@ -100,6 +124,12 @@ class $AssetsImagesGen {
   /// File path: assets/images/route_story_3.png
   AssetGenImage get routeStory3 => const AssetGenImage('assets/images/route_story_3.png');
 
+  /// File path: assets/images/saudi_day_splash.png
+  AssetGenImage get saudiDaySplash => const AssetGenImage('assets/images/saudi_day_splash.png');
+
+  /// File path: assets/images/saudi_national_flag.png
+  AssetGenImage get saudiNationalFlag => const AssetGenImage('assets/images/saudi_national_flag.png');
+
   /// Directory path: assets/images/saudi_pass
   $AssetsImagesSaudiPassGen get saudiPass => const $AssetsImagesSaudiPassGen();
 
@@ -120,15 +150,22 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
+        backgroundOrnamentSaudiday,
         calendarCard,
         cityExpert,
+        cityExpertSaudiDay,
         darkMapPreview,
         driveHomeArrow,
+        driveHomeArrowSaudiday,
         driveHomeBackground,
+        driveHomeBackgroundSaudiday,
         etaSheetBackground,
         favoritesExampleArabic,
+        favoritesExampleArabicSaudiday,
         favoritesExampleEnglish,
+        favoritesExampleEnglishSaudiday,
         feedbackDashboard,
+        feedbackDashboardSaudiday,
         feedbackEyes,
         icArrowFeedback,
         icFlipsContinue,
@@ -143,6 +180,8 @@ class $AssetsImagesGen {
         routeStory1,
         routeStory2,
         routeStory3,
+        saudiDaySplash,
+        saudiNationalFlag,
         successAppFeedback,
         sunrisePray,
         treeAndParkBenchWhiteBackground,
@@ -258,6 +297,15 @@ class $AssetsIconsLottieGen {
 class $AssetsIconsSvgGen {
   const $AssetsIconsSvgGen();
 
+  /// File path: assets/icons/svg/car.svg
+  SvgGenImage get car => const SvgGenImage('assets/icons/svg/car.svg');
+
+  /// File path: assets/icons/svg/car_active.svg
+  SvgGenImage get carActive => const SvgGenImage('assets/icons/svg/car_active.svg');
+
+  /// File path: assets/icons/svg/car_active_saudi.svg
+  SvgGenImage get carActiveSaudi => const SvgGenImage('assets/icons/svg/car_active_saudi.svg');
+
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
 
@@ -339,6 +387,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_marker_m_new.svg
   SvgGenImage get icMarkerMNew => const SvgGenImage('assets/icons/svg/ic_marker_m_new.svg');
 
+  /// File path: assets/icons/svg/ic_marker_m_new_saudi_day.svg
+  SvgGenImage get icMarkerMNewSaudiDay => const SvgGenImage('assets/icons/svg/ic_marker_m_new_saudi_day.svg');
+
   /// File path: assets/icons/svg/ic_metro_marker.svg
   SvgGenImage get icMetroMarker => const SvgGenImage('assets/icons/svg/ic_metro_marker.svg');
 
@@ -369,6 +420,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/ic_pin_new.svg
   SvgGenImage get icPinNew => const SvgGenImage('assets/icons/svg/ic_pin_new.svg');
+
+  /// File path: assets/icons/svg/ic_pin_new_saudi_day.svg
+  SvgGenImage get icPinNewSaudiDay => const SvgGenImage('assets/icons/svg/ic_pin_new_saudi_day.svg');
 
   /// File path: assets/icons/svg/ic_profile.svg
   SvgGenImage get icProfile => const SvgGenImage('assets/icons/svg/ic_profile.svg');
@@ -412,8 +466,14 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/places_big_new
   $AssetsIconsSvgPlacesBigNewGen get placesBigNew => const $AssetsIconsSvgPlacesBigNewGen();
 
+  /// Directory path: assets/icons/svg/places_big_new_saudi_day
+  $AssetsIconsSvgPlacesBigNewSaudiDayGen get placesBigNewSaudiDay => const $AssetsIconsSvgPlacesBigNewSaudiDayGen();
+
   /// Directory path: assets/icons/svg/places_new
   $AssetsIconsSvgPlacesNewGen get placesNew => const $AssetsIconsSvgPlacesNewGen();
+
+  /// Directory path: assets/icons/svg/places_new_saudi_day
+  $AssetsIconsSvgPlacesNewSaudiDayGen get placesNewSaudiDay => const $AssetsIconsSvgPlacesNewSaudiDayGen();
 
   /// Directory path: assets/icons/svg/profile
   $AssetsIconsSvgProfileGen get profile => const $AssetsIconsSvgProfileGen();
@@ -462,6 +522,9 @@ class $AssetsIconsSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        car,
+        carActive,
+        carActiveSaudi,
         currentLocationIcon,
         ic2d,
         ic3d,
@@ -489,6 +552,7 @@ class $AssetsIconsSvgGen {
         icLangEn,
         icLanguageChange,
         icMarkerMNew,
+        icMarkerMNewSaudiDay,
         icMetroMarker,
         icNotification,
         icOfferMarker,
@@ -499,6 +563,7 @@ class $AssetsIconsSvgGen {
         icParkingSpot,
         icPhone,
         icPinNew,
+        icPinNewSaudiDay,
         icProfile,
         icProfileLang,
         icProfileLogout,
@@ -734,6 +799,142 @@ class $AssetsIconsSvgPlacesBigNewGen {
       ];
 }
 
+class $AssetsIconsSvgPlacesBigNewSaudiDayGen {
+  const $AssetsIconsSvgPlacesBigNewSaudiDayGen();
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_additional.svg
+  SvgGenImage get icAdditional => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_additional.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_barbershop.svg
+  SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_car_services.svg
+  SvgGenImage get icCarServices => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_events.svg
+  SvgGenImage get icEvents => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_events.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_fire_station.svg
+  SvgGenImage get icFireStation => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_fire_station.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr =>
+      const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_hajj_support.svg
+  SvgGenImage get icHajjSupport => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_hajj_support.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_health_center.svg
+  SvgGenImage get icHealthCenter => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_health_center.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_hospital.svg
+  SvgGenImage get icHospital => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_hospital.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_hospital_place.svg
+  SvgGenImage get icHospitalPlace =>
+      const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_hospital_place.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_kiosks_retail.svg
+  SvgGenImage get icKiosksRetail => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_kiosks_retail.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_lost_and_found.svg
+  SvgGenImage get icLostAndFound =>
+      const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_lost_and_found.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_medical_help.svg
+  SvgGenImage get icMedicalHelp => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_medical_help.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_park.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_police_station.svg
+  SvgGenImage get icPoliceStation =>
+      const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_police_station.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_recreation.svg
+  SvgGenImage get icRecreation => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_restaurant.svg
+  SvgGenImage get icRestaurant => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_stairs.svg
+  SvgGenImage get icStairs => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_stairs.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_water_places.svg
+  SvgGenImage get icWaterPlaces => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_water_places.svg');
+
+  /// File path: assets/icons/svg/places_big_new_saudi_day/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_big_new_saudi_day/ic_wc.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+        icAdditional,
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icCarServices,
+        icEvents,
+        icFireStation,
+        icGasstationLtr,
+        icGym,
+        icHajjSupport,
+        icHealthCenter,
+        icHospital,
+        icHospitalPlace,
+        icHotels,
+        icKiosksRetail,
+        icLostAndFound,
+        icMarkets,
+        icMedicalHelp,
+        icMedicineLtr,
+        icMosques,
+        icPark,
+        icPoliceStation,
+        icQibla,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icStairs,
+        icTooth,
+        icWaterPlaces,
+        icWc
+      ];
+}
+
 class $AssetsIconsSvgPlacesNewGen {
   const $AssetsIconsSvgPlacesNewGen();
 
@@ -832,6 +1033,142 @@ class $AssetsIconsSvgPlacesNewGen {
 
   /// File path: assets/icons/svg/places_new/ic_wc.svg
   SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new/ic_wc.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+        icAdditional,
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icCarServices,
+        icEventsLtr,
+        icFireStation,
+        icGasstationLtr,
+        icGym,
+        icHajjSupport,
+        icHealthCenter,
+        icHospital,
+        icHospitalPlace,
+        icHotels,
+        icKiosksRetail,
+        icLostAndFound,
+        icMarkets,
+        icMedicalHelp,
+        icMedicineLtr,
+        icMosques,
+        icPark,
+        icParking,
+        icPoliceStation,
+        icQibla,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icStairs,
+        icTooth,
+        icWaterPlaces,
+        icWc
+      ];
+}
+
+class $AssetsIconsSvgPlacesNewSaudiDayGen {
+  const $AssetsIconsSvgPlacesNewSaudiDayGen();
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_additional.svg
+  SvgGenImage get icAdditional => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_additional.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_barbershop.svg
+  SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_car_services.svg
+  SvgGenImage get icCarServices => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_events_ltr.svg
+  SvgGenImage get icEventsLtr => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_events_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_fire_station.svg
+  SvgGenImage get icFireStation => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_fire_station.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_hajj_support.svg
+  SvgGenImage get icHajjSupport => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_hajj_support.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_health_center.svg
+  SvgGenImage get icHealthCenter => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_health_center.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_hospital.svg
+  SvgGenImage get icHospital => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_hospital.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_hospital_place.svg
+  SvgGenImage get icHospitalPlace => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_hospital_place.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_kiosks_retail.svg
+  SvgGenImage get icKiosksRetail => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_kiosks_retail.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_lost_and_found.svg
+  SvgGenImage get icLostAndFound => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_lost_and_found.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_medical_help.svg
+  SvgGenImage get icMedicalHelp => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_medical_help.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_park.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_parking.svg
+  SvgGenImage get icParking => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_parking.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_police_station.svg
+  SvgGenImage get icPoliceStation => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_police_station.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_recreation.svg
+  SvgGenImage get icRecreation => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_restaurant.svg
+  SvgGenImage get icRestaurant => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_stairs.svg
+  SvgGenImage get icStairs => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_stairs.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_water_places.svg
+  SvgGenImage get icWaterPlaces => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_water_places.svg');
+
+  /// File path: assets/icons/svg/places_new_saudi_day/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new_saudi_day/ic_wc.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
