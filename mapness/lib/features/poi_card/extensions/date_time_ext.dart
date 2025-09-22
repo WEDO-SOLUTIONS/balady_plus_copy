@@ -25,4 +25,15 @@ extension IntExt on int {
         7 => locale.sunday,
         _ => '',
       };
+
+  String weekDayNameShort(AppLocalizations locale) => switch (this) {
+    1 => locale.weekdayNameShortMonday,
+    2 => locale.weekdayNameShortTuesday,
+    3 => locale.weekdayNameShortWednesday,
+    4 => locale.weekdayNameShortThursday,
+    5 => locale.weekdayNameShortFriday,
+    6 => locale.weekdayNameShortSaturday,
+    7 => locale.weekdayNameShortSunday,
+    _ => '',
+  };
 }

@@ -20,7 +20,7 @@ extension WorkingHoursStrings on WorkingHours {
       } else if (isTomorrow(now, nextOpen)) {
         return '${appLocalizations.closedUntill} ${appLocalizations.tomorrow} ${nextOpen.hoursAndMinutes.formatHHmm}';
       } else {
-        final weekDay = nextOpen.inDays.weekDayName(appLocalizations);
+        final weekDay = nextOpen.inDays.weekDayNameShort(appLocalizations);
         return '${appLocalizations.closedUntill} $weekDay ${nextOpen.hoursAndMinutes.formatHHmm}';
       }
     }
