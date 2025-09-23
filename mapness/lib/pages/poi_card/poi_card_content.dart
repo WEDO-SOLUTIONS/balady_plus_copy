@@ -98,35 +98,38 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     });
 
     _bottomSheetController.addListener(() {
+      final isInitial = _bottomSheetPreviousState == null;
       final state = _bottomSheetController.state;
       if (state == _bottomSheetPreviousState) {
         return;
       }
       _bottomSheetPreviousState = state;
-      BssUIElementNames? uiElementName;
-      switch (state) {
-        case PoiCardBottomSheetState.hidden:
-          uiElementName = BssUIElementNames.placeCardHidden;
-        case PoiCardBottomSheetState.open:
-          uiElementName = BssUIElementNames.placeCardTwoThird;
-        case PoiCardBottomSheetState.expanded:
-          uiElementName = BssUIElementNames.placeCardFull;
-        case PoiCardBottomSheetState.halfOpen:
-          uiElementName = BssUIElementNames.placeCardOneThird;
-      }
+      if (!isInitial) {
+        BssUIElementNames? uiElementName;
+        switch (state) {
+          case PoiCardBottomSheetState.hidden:
+            uiElementName = BssUIElementNames.placeCardHidden;
+          case PoiCardBottomSheetState.open:
+            uiElementName = BssUIElementNames.placeCardTwoThird;
+          case PoiCardBottomSheetState.expanded:
+            uiElementName = BssUIElementNames.placeCardFull;
+          case PoiCardBottomSheetState.halfOpen:
+            uiElementName = BssUIElementNames.placeCardOneThird;
+        }
 
-      BssService.instance.sendEvent(
-        BssRequest(
-          eventType: BSSEventType.view,
-          uiElement: BssUIElement(
-            name: uiElementName,
-            ownerName: BssUIElementNames.directoryObjectCardScreen,
+        BssService.instance.sendEvent(
+          BssRequest(
+            eventType: BSSEventType.view,
+            uiElement: BssUIElement(
+              name: uiElementName,
+              ownerName: BssUIElementNames.directoryObjectCardScreen,
+            ),
+            payload: BssPayload(
+              placeItem: widget.data.toBss(),
+            ),
           ),
-          payload: BssPayload(
-            placeItem: widget.data.toBss(),
-          ),
-        ),
-      );
+        );
+      }
     });
 
     Future.delayed(const Duration(milliseconds: 250), () {
