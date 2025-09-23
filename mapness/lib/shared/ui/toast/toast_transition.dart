@@ -3,14 +3,9 @@ part of 'toast_overlay.dart';
 class _ToastTransition extends StatefulWidget {
   final String title;
   final TextStyle? titleStyle;
-  final String? firstText;
-  final String? secondText;
+  final List<ToastAction>? actions;
   final VoidCallback hide;
-  final VoidCallback? onFirstTap;
-  final VoidCallback? onSecondTap;
-  final String? iconAsset;
-  final IconData? iconData;
-  final Color? iconColor;
+  final ToastIcon? icon;
   final Duration displayDuration;
   final Duration transitionDuration;
   final bool? isDismissible;
@@ -20,19 +15,14 @@ class _ToastTransition extends StatefulWidget {
   const _ToastTransition({
     required this.hide,
     required this.title,
-    required this.iconAsset,
-    required this.iconData,
+    required this.icon,
     required this.transitionDuration,
     required this.displayDuration,
     this.titleStyle,
     this.isDismissible,
+    this.actions,
     this.isClosable = false,
     this.isFlipped = false,
-    this.firstText,
-    this.onFirstTap,
-    this.iconColor,
-    this.onSecondTap,
-    this.secondText,
   });
 
   @override
@@ -42,6 +32,7 @@ class _ToastTransition extends StatefulWidget {
 class __ToastTransitionState extends State<_ToastTransition> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<Offset> _animation;
+  late final List<ToastAction> _actions;
 
   @override
   void initState() {
@@ -55,7 +46,7 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
       end: Offset.zero,
     ).animate(_controller);
     _controller.forward();
-
+    _actions = widget.actions?.map((e) => e.copyWith(onTap: () => _onActionTap(e))).nonNulls.toList() ?? [];
     Future.delayed(widget.displayDuration, _hide);
   }
 
@@ -68,14 +59,9 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
     }
   }
 
-  void _onFirstTap() {
+  void _onActionTap(ToastAction action) {
     _hide();
-    widget.onFirstTap?.call();
-  }
-
-  void _onSecondTap() {
-    _hide();
-    widget.onSecondTap?.call();
+    action.onTap?.call();
   }
 
   @override
@@ -95,13 +81,8 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
             child: _ToastWidget(
               title: widget.title,
               titleStyle: widget.titleStyle,
-              firstText: widget.firstText,
-              secondText: widget.secondText,
-              onFirstTap: _onFirstTap,
-              onSecondTap: _onSecondTap,
-              iconAsset: widget.iconAsset,
-              iconData: widget.iconData,
-              iconColor: widget.iconColor,
+              actions: _actions,
+              icon: widget.icon,
               isFlipped: widget.isFlipped,
             ),
           ),
@@ -109,13 +90,8 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
       : _ToastWidget(
           title: widget.title,
           titleStyle: widget.titleStyle,
-          firstText: widget.firstText,
-          secondText: widget.secondText,
-          onFirstTap: _onFirstTap,
-          onSecondTap: _onSecondTap,
-          iconAsset: widget.iconAsset,
-          iconData: widget.iconData,
-          iconColor: widget.iconColor,
+          actions: _actions,
+          icon: widget.icon,
           isFlipped: widget.isFlipped,
         );
 }

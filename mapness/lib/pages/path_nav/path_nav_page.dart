@@ -549,21 +549,25 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     ToastOverlay.of(context).show(
       title: ctx.l10n.youWantSaveParking,
-      firstText: ctx.l10n.feedbackBreaksSheetClose,
-      secondText: ctx.l10n.save,
-      iconAsset: Assets.icons.svg.icParkingSpot.keyName,
-      onSecondTap: () {
-        rootNavigatorKey.currentContext?.router.push(
-          ParkingSpotRoute(
-            isEdit: !parkingManage,
-            markerPosition: GeoPointWithElevationMessage(
-              latitude: position?.latitude ?? 0,
-              longitude: position?.longitude ?? 0,
-              elevation: 1,
-            ),
-          ),
-        );
-      },
+      actions: [
+        ToastAction(title: ctx.l10n.feedbackBreaksSheetClose),
+        ToastAction(
+          title: ctx.l10n.save,
+          onTap: () {
+            rootNavigatorKey.currentContext?.router.push(
+              ParkingSpotRoute(
+                isEdit: !parkingManage,
+                markerPosition: GeoPointWithElevationMessage(
+                  latitude: position?.latitude ?? 0,
+                  longitude: position?.longitude ?? 0,
+                  elevation: 1,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+      icon: ToastIconAsset(Assets.icons.svg.icParkingSpot.keyName),
     );
 
     if (!mounted) {
