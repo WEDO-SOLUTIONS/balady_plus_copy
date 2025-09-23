@@ -84,22 +84,22 @@ class PoiContentSliver extends ConsumerWidget {
 
           Future<void> bssOnContactTap(BssContactType type, String value) async {
             await BssService.instance.sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.action,
-                    actionType: BSSActionType.tap,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.contactTap,
-                      ownerName: BssUIElementNames.cardInformation,
-                    ),
-                    payload: BssPayload(
-                      placeItem: data.toBss(),
-                      contact: BssContact(
-                        type: type,
-                        value: value,
-                      ),
-                    ),
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.contactTap,
+                  ownerName: BssUIElementNames.cardInformation,
+                ),
+                payload: BssPayload(
+                  placeItem: data.toBss(),
+                  contact: BssContact(
+                    type: type,
+                    value: value,
                   ),
-                );
+                ),
+              ),
+            );
           }
 
           // Contacts

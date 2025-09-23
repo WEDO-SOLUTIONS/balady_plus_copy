@@ -53,20 +53,20 @@ class RoutingSearchResults extends ConsumerWidget {
         debugPrint('GeoPosition for this object is null');
       }
       await BssService.instance.sendEvent(
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.placeCardMini,
-                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                placeItem: item.toBss(index),
-                searchResultList: results.toBss(),
-              ),
-            ),
-          );
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.placeCardMini,
+            ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+            position: index + 1,
+          ),
+          payload: BssPayload(
+            placeItem: item.toBss(index),
+            searchResultList: results.toBss(),
+          ),
+        ),
+      );
     }
 
     return SearchResults(

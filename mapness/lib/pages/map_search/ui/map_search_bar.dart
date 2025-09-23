@@ -93,18 +93,18 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
             BssService.instance.sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.action,
-                    actionType: BSSActionType.textInput,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.searchBar,
-                      ownerName: BssUIElementNames.directorySearchScreen,
-                    ),
-                    payload: BssPayload(
-                      searchRequest: BssSearchRequest(text: query),
-                    ),
-                  ),
-                );
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.textInput,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.searchBar,
+                  ownerName: BssUIElementNames.directorySearchScreen,
+                ),
+                payload: BssPayload(
+                  searchRequest: BssSearchRequest(text: query),
+                ),
+              ),
+            );
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
               group: metric_const.MetricsConstants.searchTag,
@@ -117,15 +117,15 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           onTap: () {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             BssService.instance.sendEvent(
-                  const BssRequest(
-                    eventType: BSSEventType.action,
-                    actionType: BSSActionType.tap,
-                    uiElement: BssUIElement(
-                      name: BssUIElementNames.searchBar,
-                      ownerName: BssUIElementNames.directorySearchScreen,
-                    ),
-                  ),
-                );
+              const BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: BssUIElement(
+                  name: BssUIElementNames.searchBar,
+                  ownerName: BssUIElementNames.directorySearchScreen,
+                ),
+              ),
+            );
             _controller.selection = TextSelection.fromPosition(
               TextPosition(
                 offset: _controller.text.length,
@@ -142,18 +142,18 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
               },
             );
             await BssService.instance.sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.action,
-                    actionType: BSSActionType.tap,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.searchStart,
-                      ownerName: BssUIElementNames.searchBar,
-                    ),
-                    payload: BssPayload(
-                      searchRequest: BssSearchRequest(text: query),
-                    ),
-                  ),
-                );
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.searchStart,
+                  ownerName: BssUIElementNames.searchBar,
+                ),
+                payload: BssPayload(
+                  searchRequest: BssSearchRequest(text: query),
+                ),
+              ),
+            );
             if (query.trim().isNotEmpty) {
               await searcher.searchByText(query);
               await ref.read(urbiAnalyticsProvider).track(

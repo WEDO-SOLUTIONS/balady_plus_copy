@@ -78,21 +78,21 @@ class MapSearchHistory extends ConsumerWidget {
         final bssHistoryHandlingType =
             item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(
-              BssRequest(
-                eventType: BSSEventType.action,
-                actionType: BSSActionType.tap,
-                uiElement: BssUIElement(
-                  name: BssUIElementNames.historyItem,
-                  ownerName: BssUIElementNames.historyList,
-                  position: index + 1,
-                ),
-                payload: BssPayload(
-                  searchRequest: BssSearchRequest(text: item.title),
-                  historyItem: item.toBss(bssHistoryHandlingType),
-                  historyList: historyList,
-                ),
-              ),
-            );
+          BssRequest(
+            eventType: BSSEventType.action,
+            actionType: BSSActionType.tap,
+            uiElement: BssUIElement(
+              name: BssUIElementNames.historyItem,
+              ownerName: BssUIElementNames.historyList,
+              position: index + 1,
+            ),
+            payload: BssPayload(
+              searchRequest: BssSearchRequest(text: item.title),
+              historyItem: item.toBss(bssHistoryHandlingType),
+              historyList: historyList,
+            ),
+          ),
+        );
       },
     );
   }

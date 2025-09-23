@@ -95,22 +95,21 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                   ContentRow(
                     onTap: () {
                       BssService.instance.sendEvent(
-                            BssRequest(
-                              eventType: BSSEventType.action,
-                              actionType: BSSActionType.tap,
-                              uiElement: BssUIElement(
-                                name: _collapsed
-                                    ? BssUIElementNames.expandHistoryList
-                                    : BssUIElementNames.rollupHistoryList,
-                                ownerName: BssUIElementNames.directorySearchScreen,
-                                position:
-                                    _collapsed ? 11 : widget.history.length + 1, // Because we have 10 items in the list
-                              ),
-                              payload: BssPayload(
-                                historyList: BssHistoryList(size: widget.history.length),
-                              ),
-                            ),
-                          );
+                        BssRequest(
+                          eventType: BSSEventType.action,
+                          actionType: BSSActionType.tap,
+                          uiElement: BssUIElement(
+                            name:
+                                _collapsed ? BssUIElementNames.expandHistoryList : BssUIElementNames.rollupHistoryList,
+                            ownerName: BssUIElementNames.directorySearchScreen,
+                            position:
+                                _collapsed ? 11 : widget.history.length + 1, // Because we have 10 items in the list
+                          ),
+                          payload: BssPayload(
+                            historyList: BssHistoryList(size: widget.history.length),
+                          ),
+                        ),
+                      );
                       setState(() => _collapsed = !_collapsed);
                     },
                     leading: AppIcons(

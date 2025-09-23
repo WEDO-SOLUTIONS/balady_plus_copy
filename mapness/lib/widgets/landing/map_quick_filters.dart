@@ -93,18 +93,18 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         final query = quickFilter.query[language];
         if (query != null) {
           BssService.instance.sendEvent(
-                BssRequest(
-                  eventType: BSSEventType.action,
-                  actionType: BSSActionType.tap,
-                  uiElement: const BssUIElement(
-                    name: BssUIElementNames.searchStart,
-                    ownerName: BssUIElementNames.searchBar,
-                  ),
-                  payload: BssPayload(
-                    searchRequest: BssSearchRequest(text: query),
-                  ),
-                ),
-              );
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.searchStart,
+                ownerName: BssUIElementNames.searchBar,
+              ),
+              payload: BssPayload(
+                searchRequest: BssSearchRequest(text: query),
+              ),
+            ),
+          );
         }
         context.router.push(SearchRoute(requestFocus: false));
         WidgetsBinding.instance.addPostFrameCallback((_) {

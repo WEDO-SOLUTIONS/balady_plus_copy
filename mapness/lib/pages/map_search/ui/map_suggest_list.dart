@@ -120,18 +120,18 @@ class MapSuggestList extends ConsumerWidget {
                       '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
                     );
                 BssService.instance.sendEvent(
-                      BssRequest(
-                        eventType: BSSEventType.action,
-                        actionType: BSSActionType.tap,
-                        uiElement: const BssUIElement(
-                          name: BssUIElementNames.searchMoreButton,
-                          ownerName: BssUIElementNames.suggestList,
-                        ),
-                        payload: BssPayload(
-                          searchRequest: BssSearchRequest(text: searchText),
-                        ),
-                      ),
-                    );
+                  BssRequest(
+                    eventType: BSSEventType.action,
+                    actionType: BSSActionType.tap,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.searchMoreButton,
+                      ownerName: BssUIElementNames.suggestList,
+                    ),
+                    payload: BssPayload(
+                      searchRequest: BssSearchRequest(text: searchText),
+                    ),
+                  ),
+                );
               },
             ),
           )

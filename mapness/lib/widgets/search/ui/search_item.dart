@@ -89,19 +89,19 @@ class SearchItem extends ConsumerWidget {
         final visiblePercentage = visibilityInfo.visibleFraction * 100;
         if (visiblePercentage > 50) {
           BssService.instance.sendEvent(
-                BssRequest(
-                  eventType: BSSEventType.view,
-                  uiElement: BssUIElement(
-                    name: BssUIElementNames.placeCardMini,
-                    ownerName: BssUIElementNames.searchResultList,
-                    position: index + 1,
-                  ),
-                  payload: BssPayload(
-                    placeItem: result.toBss(index),
-                    searchResultList: searchResultList,
-                  ),
-                ),
-              );
+            BssRequest(
+              eventType: BSSEventType.view,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.placeCardMini,
+                ownerName: BssUIElementNames.searchResultList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                placeItem: result.toBss(index),
+                searchResultList: searchResultList,
+              ),
+            ),
+          );
         }
       },
       child: Material(
