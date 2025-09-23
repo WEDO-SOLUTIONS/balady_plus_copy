@@ -11,12 +11,16 @@ part 'bss_common.g.dart';
 
 @riverpod
 Future<BssCommon> bssCommon(Ref ref) async {
+  // According to data we have to use this IDs for Balady product (instead of 86 and 87 for iOS and Android for 2GIS)
+  const iOSProductId = 88;
+  const androidProductId = 89;
+
   final languageCode = ref.watch(appLanguageProvider).languageCode;
   final deviceInfo = await ref.read(deviceInfoProvider.future);
   final packageInfo = await PackageInfo.fromPlatform();
 
   final isIOS = deviceInfo.mobileOS == AppFeedbackMobileOs.ios;
-  final product = isIOS ? 88 : 89;
+  final product = isIOS ? iOSProductId : androidProductId;
 
   return BssCommon(
     appVersion: packageInfo.version,
