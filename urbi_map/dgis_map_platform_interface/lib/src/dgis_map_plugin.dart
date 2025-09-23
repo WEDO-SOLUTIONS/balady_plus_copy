@@ -963,6 +963,14 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.toggleVoiceInstruction(toggleType);
   }
 
+  /// The [favouritesUpdateNotification] method notifies CarPlay and Android Auto about favourites state changes.
+  ///
+  /// Parameters:
+  /// - [favouritesState]: A current favourites satet
+  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState) {
+    return _api.favouritesUpdateNotification(favouritesState);
+  }
+
   /// The [toggleRoadCameras] method is responsible for enabling or disabling
   /// notifications related to road cameras.
   ///

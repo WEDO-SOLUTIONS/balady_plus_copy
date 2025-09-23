@@ -22,7 +22,7 @@ extension FavouriteItemMapper on proto.FavouriteItem {
 
 extension FavouriteItemMessageMapper on FavouriteItem {
   FavouriteItemMessage get message => FavouriteItemMessage(
-        id: id,
+        id: entity?.id ?? id,
         subtitle: subtitle,
         title: title,
         coordinates: GeoPointMessage(latitude: coordinates.latitude, longitude: coordinates.longitude),

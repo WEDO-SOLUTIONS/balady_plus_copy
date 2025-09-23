@@ -32,6 +32,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.dgis.FlutterProvider
 import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
+import com.dgis.map.FavouritesUpdateNotifier
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
@@ -39,19 +40,13 @@ import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.platform.Locale as SdkLocale
-import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
-import ru.dgis.sdk.routing.RouteSearchPoint
 import java.util.concurrent.CompletableFuture
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
@@ -67,6 +62,7 @@ class NavigationScreen(
     private val carNotificationManager: CarNotificationManager
     private val appManager: AppManager
     private val hostFlutterApi: HostFlutterApi
+    private var favouritesUpdateJob: Job? = null
 
     init {
         navigationManager =
@@ -94,11 +90,22 @@ class NavigationScreen(
 
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
+                    favouritesUpdateJob?.cancel()
                 }
             }
         )
 
         getFavourites()
+        favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
+            FavouritesUpdateNotifier.events.collect { favouritesMessage ->
+                withContext(Dispatchers.Main) {
+                    handleFavouritesMessage(favouritesMessage) {
+                        favourites = it
+                        tryToShowFavourites(forceUpdate = true)
+                    }
+                }
+            }
+        }
     }
 
     private var isEndTripShown: Boolean = false
@@ -490,7 +497,7 @@ class NavigationScreen(
         val home = favourites.home
         val work = favourites.work
         if (items.isEmpty() && home == null && work == null) {
-            onResult(null)
+            onResult(FavouritesParams())
             return
         }
 

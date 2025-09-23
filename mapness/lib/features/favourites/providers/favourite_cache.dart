@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
@@ -8,6 +9,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
+import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/add_request_item.dart';
 import 'package:mapness/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/favorite_cache_item_mapper.dart';
@@ -18,6 +20,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -228,6 +231,14 @@ class _FavouriteCache extends _$FavouriteCache {
   Future<void> _updateState(FavouritesState data) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     state = AsyncValue.data(data);
+    final controller = await ref.read(dgisControllerProvider.future);
+    await controller.favouritesUpdateNotification(
+        FavouritesStateMessage(
+          home: data.home?.message,
+          work: data.work?.message,
+          items: data.items.map((item) => item.message).toList(),
+        )
+    );
     return favoritesBox.put(_keyCache, data.toHive());
   }
 

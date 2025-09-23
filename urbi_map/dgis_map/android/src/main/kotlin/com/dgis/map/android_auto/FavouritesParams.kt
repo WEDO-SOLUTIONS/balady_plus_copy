@@ -5,7 +5,7 @@ import ru.dgis.sdk.coordinates.GeoPoint
 
 
 data class FavouritesParams (
-    val items: List<FavouriteItem>,
+    val items: List<FavouriteItem> = emptyList(),
     val home: FavouriteItem? = null,
     val work: FavouriteItem? = null
 )

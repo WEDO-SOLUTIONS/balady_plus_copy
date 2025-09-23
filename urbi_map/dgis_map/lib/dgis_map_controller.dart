@@ -565,6 +565,10 @@ class DgisMapController {
   Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
       _instance.toggleVoiceInstruction(toggleType: toggleType);
 
+  /// Notifies CarPlay and Android Auto about favourites state changes.
+  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState )  =>
+      _instance.favouritesUpdateNotification(favouritesState);
+
   /// Used to setup platform. Should be called when permission was granted.
   /// Does not request permission by itself.
   Future<void> onLocationPermissionGranted({
