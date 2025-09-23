@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -28,14 +30,18 @@ Future<Dio> bssDio(Ref ref) async {
   //   return client;
   // };
 
-  dio.interceptors.add(
-    TalkerDioLogger(
-      settings: const TalkerDioLoggerSettings(
-        printRequestHeaders: true,
-        printResponseHeaders: true,
+  if (logger is TalkerMapnessLogger) {
+    dio.interceptors.add(
+      TalkerDioLogger(
+        talker: (logger as TalkerMapnessLogger).talker,
+        settings: const TalkerDioLoggerSettings(
+          printRequestHeaders: true,
+          printResponseHeaders: true,
+          printResponseData: false,
+        ),
       ),
-    ),
-  );
+    );
+  }
 
   return dio;
 }
