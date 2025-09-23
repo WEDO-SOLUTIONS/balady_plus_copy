@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/others/transparent_barrier.dart';
 
@@ -109,4 +110,7 @@ class RouteBuilders {
         pageBuilder: (context, animation, secondaryAnimation) => child,
         barrierColor: context.colors.screenOverlayDimming40,
       );
+
+  static Route<T> cupertinoRouteBuilder<T>(BuildContext context, Widget child, AutoRoutePage<T> page) =>
+      CupertinoPageRoute<T>(builder: (_) => child, settings: page);
 }
