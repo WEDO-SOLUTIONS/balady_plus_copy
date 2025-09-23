@@ -94,7 +94,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                 if (hasManyResults)
                   ContentRow(
                     onTap: () {
-                      ref.read(bssServiceProvider.notifier).sendEvent(
+                      BssService.instance.sendEvent(
                             BssRequest(
                               eventType: BSSEventType.action,
                               actionType: BSSActionType.tap,

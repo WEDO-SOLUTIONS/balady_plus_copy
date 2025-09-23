@@ -92,7 +92,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         final language = ref.read(appLanguageProvider);
         final query = quickFilter.query[language];
         if (query != null) {
-          ref.read(bssServiceProvider.notifier).sendEvent(
+          BssService.instance.sendEvent(
                 BssRequest(
                   eventType: BSSEventType.action,
                   actionType: BSSActionType.tap,

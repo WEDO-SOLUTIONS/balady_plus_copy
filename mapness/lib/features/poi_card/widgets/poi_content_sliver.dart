@@ -83,7 +83,7 @@ class PoiContentSliver extends ConsumerWidget {
           final workTime = data.getOpeningHours(context.l10n);
 
           Future<void> bssOnContactTap(BssContactType type, String value) async {
-            await ref.read(bssServiceProvider.notifier).sendEvent(
+            await BssService.instance.sendEvent(
                   BssRequest(
                     eventType: BSSEventType.action,
                     actionType: BSSActionType.tap,

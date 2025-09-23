@@ -81,7 +81,7 @@ class NaviSearchHistory extends ConsumerWidget {
         }
         final bssHistoryHandlingType =
             item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
-        await ref.read(bssServiceProvider.notifier).sendEvent(
+        await BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
                 actionType: BSSActionType.tap,

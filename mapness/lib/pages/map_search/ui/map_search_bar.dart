@@ -92,7 +92,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
-            ref.read(bssServiceProvider.notifier).sendEvent(
+            BssService.instance.sendEvent(
                   BssRequest(
                     eventType: BSSEventType.action,
                     actionType: BSSActionType.textInput,
@@ -116,7 +116,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           },
           onTap: () {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
-            ref.read(bssServiceProvider.notifier).sendEvent(
+            BssService.instance.sendEvent(
                   const BssRequest(
                     eventType: BSSEventType.action,
                     actionType: BSSActionType.tap,
@@ -141,7 +141,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                 'query': query,
               },
             );
-            await ref.read(bssServiceProvider.notifier).sendEvent(
+            await BssService.instance.sendEvent(
                   BssRequest(
                     eventType: BSSEventType.action,
                     actionType: BSSActionType.tap,

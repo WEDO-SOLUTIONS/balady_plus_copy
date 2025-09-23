@@ -1,26 +1,44 @@
 import 'dart:async';
 import 'dart:collection';
+
+import 'package:dgis_map/library.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/search/providers/search_region.dart';
-import 'package:mapness/shared/providers/analytic/bss_common.dart';
-import 'package:mapness/shared/providers/analytic/bss_dio.dart';
+import 'package:mapness/shared/providers/analytic/models/bss_common.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/map_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_entity.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:rxdart/rxdart.dart';
 
-part 'bss_service.g.dart';
+class BssService {
+  static BssService? _instance;
+  static BssService get instance {
+    _instance ??= BssService._internal();
+    return _instance!;
+  }
 
-@Riverpod(keepAlive: true)
-class BssService extends _$BssService {
+  BssService._internal();
+
   int ordinalId = 0;
   final Duration _sendInterval = const Duration(seconds: 5);
   final Queue<BssRequest> _eventStack = Queue<BssRequest>();
   Timer? _sendTimer;
 
-  @override
-  void build() {
+  // Dependencies that will be injected via init method
+  Dio? _dio;
+  BssCommon? _common;
+  ValueStream<VisibleRectEvent?>? _visibleRectStream;
+
+  /// Initialize the service with all required dependencies
+  void init({
+    required Dio dio,
+    required BssCommon common,
+    required ValueStream<VisibleRectEvent?> visibleRectStream,
+  }) {
+    _dio = dio;
+    _common = common;
+    _visibleRectStream = visibleRectStream;
     _startEventSendingTimer();
   }
 
@@ -45,15 +63,18 @@ class BssService extends _$BssService {
   }
 
   Future<void> _sendEventImmediately(List<BssRequest> requests) async {
-    final visibleRect = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
+    if (_dio == null || _common == null || _visibleRectStream == null) {
+      debugPrint('BssService not initialized. Call init() first.');
+      return;
+    }
+
+    final visibleRect = _visibleRectStream!.valueOrNull?.visibleRect;
 
     try {
       if (visibleRect == null) {
         throw Exception('Visible rect is null');
       }
 
-      final dio = await ref.read(bssDioProvider.future);
-      final common = await ref.read(bssCommonProvider.future);
       final List<Map<String, dynamic>> requestJsons = [];
       final searchRegion = await SearchRegionService.instance.getRegion(
         latitude: (visibleRect.northEastLat + visibleRect.southWestLat) / 2,
@@ -74,15 +95,15 @@ class BssService extends _$BssService {
 
         final requestJson = requestWithRegion.toJson(
           eventOrdinal: ordinalId,
-          common: common,
+          common: _common!,
           map: visibleRect.toBssMap(),
         );
         requestJsons.add(requestJson);
       }
       debugPrint('BSS REQUEST: $requestJsons');
-      final validateResponse = await dio.post('/bss/validate/3', data: requestJsons);
+      final validateResponse = await _dio!.post('/bss/validate/3', data: requestJsons);
       debugPrint('BSS VALIDATE RESPONSE: $validateResponse');
-      await dio.post('/bss/3', data: requestJsons);
+      await _dio!.post('/bss/3', data: requestJsons);
       ordinalId++;
     } catch (e) {
       debugPrint('Error sending event: $e');
@@ -96,5 +117,11 @@ class BssService extends _$BssService {
 
   void dispose() {
     _sendTimer?.cancel();
+  }
+
+  /// Reset the singleton instance (useful for testing)
+  static void reset() {
+    _instance?.dispose();
+    _instance = null;
   }
 }

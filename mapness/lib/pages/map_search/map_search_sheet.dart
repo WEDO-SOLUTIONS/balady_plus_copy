@@ -211,24 +211,24 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
-          await ref.read(bssServiceProvider.notifier).sendEvent(
-                BssRequest(
-                  eventType: BSSEventType.action,
-                  actionType: BSSActionType.tap,
-                  uiElement: const BssUIElement(
-                    name: BssUIElementNames.mapMarker,
-                    ownerName: BssUIElementNames.searchResultList,
-                  ),
-                  payload: BssPayload(
-                    mapMarker: const BssMapMarker(
-                      scale: BssMarkerSize.small,
-                      adsHighlight: false,
-                    ),
-                    searchResultList: searchState.results.toBss(),
-                    placeItem: markerInfo?.toBss(index),
-                  ),
+          await BssService.instance.sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.mapMarker,
+                ownerName: BssUIElementNames.searchResultList,
+              ),
+              payload: BssPayload(
+                mapMarker: const BssMapMarker(
+                  scale: BssMarkerSize.small,
+                  adsHighlight: false,
                 ),
-              );
+                searchResultList: searchState.results.toBss(),
+                placeItem: markerInfo?.toBss(index),
+              ),
+            ),
+          );
         },
       );
       if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
@@ -266,7 +266,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         MapSearchContent.scrollSendEvent(
           searchState: ref.read(searchProvider(_scope)),
           historyListSize: ref.read(searchHistoryProvider(_scope)).length,
-          sendEvent: ref.read(bssServiceProvider.notifier).sendEvent,
+          sendEvent: BssService.instance.sendEvent,
         );
       }
     }

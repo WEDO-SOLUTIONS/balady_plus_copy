@@ -87,14 +87,14 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     // Initialize BssService event
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(bssServiceProvider.notifier).sendEvent(
-            const BssRequest(
-              eventType: BSSEventType.view,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.directoryObjectCardScreen,
-              ),
-            ),
-          );
+      await BssService.instance.sendEvent(
+        const BssRequest(
+          eventType: BSSEventType.view,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.directoryObjectCardScreen,
+          ),
+        ),
+      );
     });
 
     _bottomSheetController.addListener(() {
@@ -115,18 +115,18 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           uiElementName = BssUIElementNames.placeCardOneThird;
       }
 
-      ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.view,
-              uiElement: BssUIElement(
-                name: uiElementName,
-                ownerName: BssUIElementNames.directoryObjectCardScreen,
-              ),
-              payload: BssPayload(
-                placeItem: widget.data.toBss(),
-              ),
-            ),
-          );
+      BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.view,
+          uiElement: BssUIElement(
+            name: uiElementName,
+            ownerName: BssUIElementNames.directoryObjectCardScreen,
+          ),
+          payload: BssPayload(
+            placeItem: widget.data.toBss(),
+          ),
+        ),
+      );
     });
 
     Future.delayed(const Duration(milliseconds: 250), () {
@@ -369,50 +369,50 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
   // BSS
   void _bssOnRouteTap() {
-    ref.read(bssServiceProvider.notifier).sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.buildRoute,
-              ownerName: BssUIElementNames.actionBar,
-            ),
-            payload: BssPayload(
-              placeItem: widget.data.toBss(),
-            ),
-          ),
-        );
+    BssService.instance.sendEvent(
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.buildRoute,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
   }
 
   void _bssOnCallTap() {
-    ref.read(bssServiceProvider.notifier).sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.contactTap,
-              ownerName: BssUIElementNames.actionBar,
-            ),
-            payload: BssPayload(
-              placeItem: widget.data.toBss(),
-            ),
-          ),
-        );
+    BssService.instance.sendEvent(
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.contactTap,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
   }
 
   void _bssOnFavouritesTap() {
-    ref.read(bssServiceProvider.notifier).sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.bookmark,
-              ownerName: BssUIElementNames.actionBar,
-            ),
-            payload: BssPayload(
-              placeItem: widget.data.toBss(),
-            ),
-          ),
-        );
+    BssService.instance.sendEvent(
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.bookmark,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
   }
 }

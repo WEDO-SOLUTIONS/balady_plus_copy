@@ -214,7 +214,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         MapSearchContent.scrollSendEvent(
           searchState: ref.read(searchProvider(_scope)),
           historyListSize: ref.read(searchHistoryProvider(_scope)).length,
-          sendEvent: ref.read(bssServiceProvider.notifier).sendEvent,
+          sendEvent: BssService.instance.sendEvent,
         );
       }
     }

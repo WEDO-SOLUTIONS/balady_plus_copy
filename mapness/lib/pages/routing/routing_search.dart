@@ -171,7 +171,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
         MapSearchContent.scrollSendEvent(
           searchState: ref.read(searchProvider(SearchScopeEnum.routes.value)),
           historyListSize: ref.read(searchHistoryProvider(SearchScopeEnum.routes.value)).length,
-          sendEvent: ref.read(bssServiceProvider.notifier).sendEvent,
+          sendEvent: BssService.instance.sendEvent,
         );
       }
     }

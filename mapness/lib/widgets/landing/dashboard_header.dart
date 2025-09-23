@@ -123,7 +123,7 @@ class DashboardHeader extends ConsumerWidget {
                 action: MetricAction.tap.name,
                 group: MetricsConstants.exploreTag,
               );
-              ref.read(bssServiceProvider.notifier).sendEvent(
+              BssService.instance.sendEvent(
                     const BssRequest(
                       eventType: BSSEventType.action,
                       actionType: BSSActionType.tap,

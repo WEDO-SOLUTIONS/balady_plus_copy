@@ -100,7 +100,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        ref.read(bssServiceProvider.notifier).sendEvent(
+        BssService.instance.sendEvent(
               const BssRequest(
                 eventType: BSSEventType.view,
                 uiElement: BssUIElement(
@@ -148,7 +148,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       ..listen(searchProvider(scope.value), (_oldState, newState) {
         if (newState.runtimeType != _oldState.runtimeType) {
           if (newState is SearchStateResults) {
-            ref.read(bssServiceProvider.notifier).sendEvent(
+            BssService.instance.sendEvent(
                   BssRequest(
                     eventType: BSSEventType.view,
                     uiElement: const BssUIElement(
@@ -166,7 +166,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                   ),
                 );
           } else if (newState is SearchStateEmpty) {
-            ref.read(bssServiceProvider.notifier).sendEvent(
+            BssService.instance.sendEvent(
                   const BssRequest(
                     eventType: BSSEventType.view,
                     uiElement: BssUIElement(
@@ -186,7 +186,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
             );
           } else if (newState is SearchStateHistory) {
             final history = ref.read(searchHistoryProvider(scope.value));
-            ref.read(bssServiceProvider.notifier).sendEvent(
+            BssService.instance.sendEvent(
                   BssRequest(
                     eventType: BSSEventType.view,
                     uiElement: const BssUIElement(
@@ -199,7 +199,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
                   ),
                 );
           } else if (newState is SearchStateSuggest) {
-            ref.read(bssServiceProvider.notifier).sendEvent(
+            BssService.instance.sendEvent(
                   BssRequest(
                     eventType: BSSEventType.view,
                     uiElement: const BssUIElement(

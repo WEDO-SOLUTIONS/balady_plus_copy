@@ -88,7 +88,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
               action: MetricAction.type.toString(),
               props: {'query': query},
             );
-            ref.read(bssServiceProvider.notifier).sendEvent(
+            BssService.instance.sendEvent(
                   BssRequest(
                     eventType: BSSEventType.action,
                     actionType: BSSActionType.tap,

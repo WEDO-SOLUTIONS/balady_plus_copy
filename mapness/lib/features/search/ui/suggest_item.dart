@@ -88,7 +88,7 @@ class SuggestItem extends ConsumerWidget {
         handlingType = BssHistoryHandlingType.openRecord;
         onObjectTap(objectItem);
       }
-      ref.read(bssServiceProvider.notifier).sendEvent(
+      BssService.instance.sendEvent(
             BssRequest(
               eventType: BSSEventType.action,
               actionType: BSSActionType.tap,

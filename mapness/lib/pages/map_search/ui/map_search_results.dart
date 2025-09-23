@@ -69,7 +69,7 @@ class MapSearchResults extends ConsumerWidget {
       if (item.markerPosition == null) {
         debugPrint('GeoPosition for this object is null');
       }
-      await ref.read(bssServiceProvider.notifier).sendEvent(
+      await BssService.instance.sendEvent(
             BssRequest(
               eventType: BSSEventType.action,
               actionType: BSSActionType.tap,

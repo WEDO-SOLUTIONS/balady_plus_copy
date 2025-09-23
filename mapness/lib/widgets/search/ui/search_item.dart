@@ -88,7 +88,7 @@ class SearchItem extends ConsumerWidget {
       onVisibilityChanged: (visibilityInfo) {
         final visiblePercentage = visibilityInfo.visibleFraction * 100;
         if (visiblePercentage > 50) {
-          ref.read(bssServiceProvider.notifier).sendEvent(
+          BssService.instance.sendEvent(
                 BssRequest(
                   eventType: BSSEventType.view,
                   uiElement: BssUIElement(

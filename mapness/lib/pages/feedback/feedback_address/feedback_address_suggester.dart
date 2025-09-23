@@ -107,7 +107,7 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
         MapSearchContent.scrollSendEvent(
           searchState: ref.read(searchProvider(SearchScopeEnum.feedback.value)),
           historyListSize: ref.read(searchHistoryProvider(SearchScopeEnum.feedback.value)).length,
-          sendEvent: ref.read(bssServiceProvider.notifier).sendEvent,
+          sendEvent: BssService.instance.sendEvent,
         );
       }
     }
