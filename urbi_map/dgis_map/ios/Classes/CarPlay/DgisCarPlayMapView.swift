@@ -14,6 +14,8 @@ class DgisCarPlayMapView: UIViewController {
     
     private let map: Map
     private let mapView: (UIView & IMapView)
+    private let cpWindow: CPWindow
+    private lazy var speedControl = createSpeedControlView()
     
     private var myLocationControlModel: MyLocationControlModel?
     private var myLocationSource: MyLocationMapObjectSource?
@@ -22,10 +24,12 @@ class DgisCarPlayMapView: UIViewController {
     
     init(
         map: Map,
-        mapView: (UIView & IMapView)
+        mapView: (UIView & IMapView),
+        cpWindow: CPWindow
     ) {
         self.map = map
         self.mapView = mapView
+        self.cpWindow = cpWindow
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,6 +57,8 @@ class DgisCarPlayMapView: UIViewController {
         try? map.camera.setPositionPoint(
             positionPoint: safeCameraPositionPoint
         )
+        
+        speedControl.updateConstraints()
     }
     
     override func viewDidLoad() {
@@ -103,7 +109,7 @@ class DgisCarPlayMapView: UIViewController {
             mapView.topAnchor.constraint(equalTo: view.topAnchor),
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-        addSpeedControl()
+        view.addSubview(speedControl.view)
         DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
         
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
@@ -122,19 +128,47 @@ class DgisCarPlayMapView: UIViewController {
         cancellables.forEach { $0.cancel() }
     }
     
-    func addSpeedControl() {
+    private func createSpeedControlView() -> (
+        view: UIView, updateConstraints: () -> Void
+    ) {
         let model = DgisMapInitializer.shared.getNavigationManager().uiModel
-        let navigationViewFactory = (try? DgisMapInitializer.shared.getSdkContainer().makeNavigationViewFactory())?.makeNavigationViewControlsFactory()
-        if let speedControl = navigationViewFactory?.makeSpeedControl(uiModel: model) {
-            speedControl.translatesAutoresizingMaskIntoConstraints = false
-            self.view.addSubview(speedControl)
-            
-            speedControl.applyTransform(withScale: 0.6, anchorPoint: CGPoint(x: 0, y: 1))
-            NSLayoutConstraint.activate([
-                speedControl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
-                speedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
-            ])
+        let navigationViewFactory =
+            (try! DgisMapInitializer.shared.getSdkContainer()
+            .makeNavigationViewFactory()).makeNavigationViewControlsFactory()
+        let speedControl = navigationViewFactory.makeSpeedControl(
+            uiModel: model
+        )
+        speedControl.translatesAutoresizingMaskIntoConstraints = false
+
+        let orig = 94.0
+        let scale = 0.6
+        let size = orig * scale
+        let shift = (orig - size) / 2
+        speedControl.transform = CGAffineTransform(scaleX: scale, y: scale)
+
+        let topConstraint = speedControl.topAnchor.constraint(
+            greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor,
+            constant: -shift + 8
+        )
+        let rightConstraint = speedControl.rightAnchor.constraint(
+            equalTo: cpWindow.mapButtonSafeAreaLayoutGuide.rightAnchor,
+            constant: shift
+        )
+        let leftConstraint = speedControl.leftAnchor.constraint(
+            equalTo: cpWindow.mapButtonSafeAreaLayoutGuide.leftAnchor,
+            constant: -shift
+        )
+
+        func updateConstraints() {
+            let isLeftWheelCar =
+                cpWindow.mapButtonSafeAreaLayoutGuide.layoutFrame.midX
+                >= cpWindow.frame.midX
+            rightConstraint.isActive = isLeftWheelCar
+            leftConstraint.isActive = !isLeftWheelCar
+            topConstraint.isActive = true
         }
+
+        return (speedControl, updateConstraints)
     }
 
     func myLocation() {
