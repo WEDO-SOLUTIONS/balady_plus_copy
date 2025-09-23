@@ -106,7 +106,6 @@ class MapSuggestList extends ConsumerWidget {
             child: uikit.AppButton(
               buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
               buttonType: uikit.ButtonType.secondary,
-              primaryIcon: uikit.SystemIcons.search,
               primaryLabel: context.l10n.showResults,
               onTap: () {
                 final scope = context.read<SearchScope>();
