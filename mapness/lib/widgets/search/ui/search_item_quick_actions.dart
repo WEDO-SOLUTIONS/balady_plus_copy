@@ -7,9 +7,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_contacts_card.dart';
 import 'package:mapness/pages/poi_card/poi_card_widget_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
@@ -46,6 +48,19 @@ class SearchItemQuickActions extends HookConsumerWidget {
           (element) => element.type == ContactsInfoType.website,
         )
         ?.value;
+
+    final socialMedia = directoryObject.contactInfos
+        .map((e) {
+          final type = ContactsInfoTypeExt.fromString(e.type);
+          final v = type.poiContentSocialMediaType;
+          if (v != null) {
+            return PoiContentSocialMediaModel(type: v, link: e.value);
+          }
+          return null;
+        })
+        .nonNulls
+        .toList()
+        .firstOrNull;
 
     final actions = [
       ItemActionBar(
@@ -116,6 +131,12 @@ class SearchItemQuickActions extends HookConsumerWidget {
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: () => poiActions.launch(website),
+        ),
+      if (website == null && socialMedia != null)
+        ItemActionBar(
+          icon: PoiContentContactsCard.getIconData(socialMedia.type),
+          buttonType: ButtonType.secondary,
+          onPressed: () => poiActions.launch(socialMedia.link),
         ),
     ];
 
