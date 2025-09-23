@@ -111,6 +111,30 @@ class RouteBuilders {
         barrierColor: context.colors.screenOverlayDimming40,
       );
 
+  /// Builds a Cupertino-style [Route] compatible with auto_route's page-based API.
+  ///
+  /// This builder is intended to be used as `customRouteBuilder` inside an
+  /// `@AutoRoute`/`CustomRoute` definition. Since auto_route is page-based,
+  /// the returned [Route.settings] **must** be the provided [page] (an
+  /// [AutoRoutePage]); otherwise Flutter will assert with:
+  /// `!pageBased || route.settings is Page`.
+  ///
+  /// It also preserves native iOS behaviors like the interactive "swipe back"
+  /// gesture when the route can pop.
+  ///
+  /// - [context] — Build context from auto_route.
+  /// - [child]   — The screen widget to display.
+  /// - [page]    — The generated page descriptor; forwarded to `settings`
+  ///               (and can be used for `fullscreenDialog`, etc.).
+  ///
+  /// Usage:
+  /// ```dart
+  /// CustomRoute(
+  ///   path: 'profile_info',
+  ///   page: ProfileInfoRoute.page,
+  ///   customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+  /// )
+  /// ```
   static Route<T> cupertinoRouteBuilder<T>(BuildContext context, Widget child, AutoRoutePage<T> page) =>
       CupertinoPageRoute<T>(builder: (_) => child, settings: page);
 }
