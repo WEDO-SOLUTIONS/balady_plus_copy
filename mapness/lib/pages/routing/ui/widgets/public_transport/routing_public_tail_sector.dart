@@ -76,17 +76,27 @@ class RoutingPublicTailSector extends ConsumerWidget {
 
     return Stack(
       children: [
-        if (showLine)
+        if (showLine && type == PedestrianSectorType.first)
           PositionedDirectional(
             start: lineStartPosition,
             top: topPadding,
-            bottom: bottomPadding,
+            bottom: 0,
             child: CustomPaint(
               painter: DashedLinePainter(),
               size: const Size(
                 _connectedLineWidth,
+                // This value doesn't matter because we are using [bottom] and [top] paddings.
+                // We need to provide some value to create Size
                 100,
               ),
+            ),
+          ),
+        if (showLine && type == PedestrianSectorType.last)
+          PositionedDirectional(
+            start: lineStartPosition,
+            child: CustomPaint(
+              painter: DashedLinePainter(),
+              size: const Size(_connectedLineWidth, 80),
             ),
           ),
         Column(
@@ -142,7 +152,10 @@ class RoutingPublicTailSector extends ConsumerWidget {
             ),
             if (showLine)
               RoutingPublicPedestrian(
-                data: data!.first as RouteDetailsPublicTransportPedestrian,
+                data: switch (type) {
+                  PedestrianSectorType.first => data!.first as RouteDetailsPublicTransportPedestrian,
+                  PedestrianSectorType.last => data!.last as RouteDetailsPublicTransportPedestrian,
+                },
                 topPadding: topPaddingValue,
                 bottomPadding: bottomPaddingValue,
               ),
