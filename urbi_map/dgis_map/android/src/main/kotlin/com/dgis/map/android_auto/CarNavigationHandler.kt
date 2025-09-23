@@ -334,18 +334,47 @@ class CarNavigationHandler(
     }
 
     fun setupCamera() {
-        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence =
-            listOf(
-                SpeedRangeToStyleZoom(
-                    range = SpeedRange(
-                        minSpeed = 0.0,
-                        maxSpeed = 200.0
-                    ),
-                    minDistanceToManeuver = RouteDistance(millimeters = 0),
-                    maxDistanceToManeuver = RouteDistance(millimeters = 0),
-                    styleZoom = StyleZoom(value = 18.0f)
-                )
+        val styles = listOf(
+            SpeedRangeToStyleZoom(
+                range = SpeedRange(
+                    minSpeed = 0.0,
+                    maxSpeed = 5.0
+                ),
+                minDistanceToManeuver = RouteDistance(millimeters = 0),
+                maxDistanceToManeuver = RouteDistance(millimeters = 10_000),
+                styleZoom = StyleZoom(value = 16.5f)
+            ),
+            SpeedRangeToStyleZoom(
+                range = SpeedRange(
+                    minSpeed = 5.0,
+                    maxSpeed = 20.0
+                ),
+                minDistanceToManeuver = RouteDistance(millimeters = 10_000),
+                maxDistanceToManeuver = RouteDistance(millimeters = 50_000),
+                styleZoom = StyleZoom(value = 18.0f)
+            ),
+            SpeedRangeToStyleZoom(
+                range = SpeedRange(
+                    minSpeed = 20.0,
+                    maxSpeed = 60.0
+                ),
+                minDistanceToManeuver = RouteDistance(millimeters = 50_000),
+                maxDistanceToManeuver = RouteDistance(millimeters = 100_000),
+                styleZoom = StyleZoom(value = 20.0f)
+            ),
+            SpeedRangeToStyleZoom(
+                range = SpeedRange(
+                    minSpeed = 60.0,
+                    maxSpeed = 200.0
+                ),
+                minDistanceToManeuver = RouteDistance(millimeters = 100_000),
+                maxDistanceToManeuver = RouteDistance(millimeters = 300_000),
+                styleZoom = StyleZoom(value = 22.0f)
             )
+        )
+
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = styles
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = styles
     }
 
     fun followNavigation() {

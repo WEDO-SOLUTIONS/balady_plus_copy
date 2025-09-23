@@ -34,6 +34,7 @@ import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -194,12 +195,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       await dgisController.restoreNavigationState(
         state,
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
+        NavigationConstants.navigationSpeedRangeZooms,
       );
     } catch (e) {
       await clearNavigationState();
@@ -220,12 +216,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await restoreNavigationState();
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
       await dgisController.startNavigation(
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
+        NavigationConstants.navigationSpeedRangeZooms,
       );
       await _moveCameraToUser();
       await saveNavigationState();
