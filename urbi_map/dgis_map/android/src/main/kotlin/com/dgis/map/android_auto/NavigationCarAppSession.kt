@@ -28,12 +28,15 @@ import java.util.Locale
 internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Context) :
     AndroidAutoMapSession(MapOptions()) {
 
-    private var customRenderer = CustomRenderer()
+    private var stableAreaPaddingProvider = StableAreaPaddingProvider(carContext)
+    private var customRenderer = CustomRenderer(stableAreaPaddingProvider)
     private val sharedPrefs = SharedPrefs(context)
-    val flutterLoader = FlutterInjector.instance().flutterLoader().apply {
+    private val flutterLoader = FlutterInjector.instance().flutterLoader().apply {
         startInitialization(context)
     }
-    private val carMapController = CarMapController(sharedPrefs, flutterLoader)
+    private val carMapController = CarMapController(
+        sharedPrefs, flutterLoader, stableAreaPaddingProvider
+    )
     private var navigationScreen: NavigationScreen? = null
 
     init {
@@ -44,6 +47,8 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
 
             override fun onDestroy(owner: LifecycleOwner) {
                 sharedPrefs.resetSharedPrefsChangeListener()
+                carMapController.close()
+                customRenderer.close()
             }
         })
     }
@@ -152,12 +157,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     }
 
     override fun onSurfaceStableAreaChanged(stableArea: Rect) {
-        val displayMetrics = carContext.resources.displayMetrics
-        val left = stableArea.left
-        val top = stableArea.top
-        val right = displayMetrics.widthPixels - stableArea.right
-        val bottom = displayMetrics.heightPixels - stableArea.bottom
-        carMapController.setCameraPadding(Padding(left, top, right, bottom))
+        stableAreaPaddingProvider.onStableAreaChanged(stableArea)
     }
 
     private fun setMapTheme() {

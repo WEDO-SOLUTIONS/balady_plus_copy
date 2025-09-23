@@ -1,6 +1,8 @@
 package com.dgis.map.android_auto
 
+import android.graphics.Rect
 import android.location.Location
+import android.util.DisplayMetrics
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.android_auto.settings.NotificationVolume
 import io.flutter.embedding.engine.loader.FlutterLoader
@@ -55,12 +57,18 @@ import com.dgis.map.map_api.SoundToggleType
 import ru.dgis.sdk.routing.BriefRouteInfo
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.TrafficRouter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class CarMapController(
     private val sharedPrefs: SharedPrefs,
     private val flutterLoader: FlutterLoader,
+    private val paddingProvider: StableAreaPaddingProvider,
 ) : AutoCloseable {
     private val closeables = mutableListOf<AutoCloseable>()
+    private var paddingFlowJob: Job? = null
     private val sdkContext = DgisMapInitializer.getSdkContext()
     private val locationSource = DgisMapInitializer.getLocationSource()
     private var navigationHandler =
@@ -114,6 +122,12 @@ class CarMapController(
         navigationHandler.addMap(map)
         map.addSource(routeEditorSource)
 
+        paddingFlowJob = CoroutineScope(Dispatchers.Default).launch {
+            paddingProvider.paddingFlow.collect {
+                setCameraPadding(it)
+            }
+        }
+
         mapObjectManager = MapObjectManager.withGeneralization(
             map = map,
             logicalPixel = LogicalPixel(value = 8f),
@@ -133,11 +147,12 @@ class CarMapController(
     private fun setStyle() {
         val builder = StyleBuilder(sdkContext)
         val stylePath = flutterLoader.getLookupKeyForAsset("packages/map_styles/src/styles.2gis")
-        closeables.add(builder.loadStyle(
-            File.fromAsset(sdkContext, stylePath)
-        ).apply {
-            onResult { map?.style = it }
-        })
+        closeables.add(
+            builder.loadStyle(
+                File.fromAsset(sdkContext, stylePath)
+            ).apply {
+                onResult { map?.style = it }
+            })
     }
 
     private fun setZoomRestrictions() {
@@ -505,7 +520,7 @@ class CarMapController(
 
     override fun close() {
         closeables.forEach(AutoCloseable::close)
-        map?.close()
+        paddingFlowJob?.cancel()
     }
 }
 
