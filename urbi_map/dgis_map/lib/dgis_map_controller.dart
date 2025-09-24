@@ -566,7 +566,7 @@ class DgisMapController {
       _instance.toggleVoiceInstruction(toggleType: toggleType);
 
   /// Notifies CarPlay and Android Auto about favourites state changes.
-  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState )  =>
+  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState) =>
       _instance.favouritesUpdateNotification(favouritesState);
 
   /// Used to setup platform. Should be called when permission was granted.

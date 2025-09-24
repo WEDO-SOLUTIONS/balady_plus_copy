@@ -9,10 +9,10 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
-import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/add_request_item.dart';
 import 'package:mapness/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/favorite_cache_item_mapper.dart';
+import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/favourites_response_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -233,11 +233,11 @@ class _FavouriteCache extends _$FavouriteCache {
     state = AsyncValue.data(data);
     final controller = await ref.read(dgisControllerProvider.future);
     await controller.favouritesUpdateNotification(
-        FavouritesStateMessage(
-          home: data.home?.message,
-          work: data.work?.message,
-          items: data.items.map((item) => item.message).toList(),
-        )
+      FavouritesStateMessage(
+        home: data.home?.message,
+        work: data.work?.message,
+        items: data.items.map((item) => item.message).toList(),
+      ),
     );
     return favoritesBox.put(_keyCache, data.toHive());
   }
