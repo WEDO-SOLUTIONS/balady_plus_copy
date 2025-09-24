@@ -60,8 +60,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
   Widget _getRouteSearchOptionsWidgets(BuildContext context, AsyncValue<PublicTransportVisibilityResult> pubState) {
     final chips = [
       RouteSearchOptionsMessage.car,
-      // todo:amr hide for now until national day finish
-      // RouteSearchOptionsMessage.publicTransport,
+      RouteSearchOptionsMessage.publicTransport,
       RouteSearchOptionsMessage.pedestrian,
     ];
 
