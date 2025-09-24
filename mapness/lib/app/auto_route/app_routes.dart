@@ -42,6 +42,7 @@ class AppRouter extends RootStackRouter {
               path: 'kiblah',
               page: KiblahRoute.page,
               fullscreenDialog: true,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'service_available',
@@ -170,6 +171,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'add_phtoto_feedback',
               page: QuickFeedbackPhotoRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'feedback/:objectId',
@@ -178,6 +180,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: ':categoryId',
               page: FeedbackRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'success',
@@ -186,6 +189,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'favourites',
               page: FavouritesRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'navi_search_favorites',
@@ -242,6 +246,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'quickFeedback',
               page: QuickFeedbackRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'stories',
@@ -255,22 +260,32 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'settings',
               page: SettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'dark_map',
               page: DarkMapRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'about_balady',
               page: AboutBaladyRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'help_center',
+              page: HelpCenterRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'profile_info',
               page: ProfileInfoRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'momra_website',
               page: MomraWebsiteRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'image_editor',
@@ -279,18 +294,22 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'navigator_settings',
               page: NavigatorSettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'sound_settings',
               page: SoundSettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'voice_settings',
               page: VoiceSettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'photo_viewer',
               page: PhotoViewerRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'language_pick_sheet',
@@ -304,6 +323,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'contribute',
               page: ContributeRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'addPhoto',
