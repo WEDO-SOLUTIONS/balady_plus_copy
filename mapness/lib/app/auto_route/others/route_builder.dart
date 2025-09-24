@@ -98,4 +98,15 @@ class RouteBuilders {
     AutoRoutePage<T> page,
   ) =>
       CustomModalRoute(page: page);
+
+  static Route<T> customBarrierDismissibleBuilder<T>(
+    BuildContext context,
+    Widget child,
+    AutoRoutePage<T> page,
+  ) =>
+      RawDialogRoute(
+        settings: page,
+        pageBuilder: (context, animation, secondaryAnimation) => child,
+        barrierColor: context.colors.screenOverlayDimming40,
+      );
 }

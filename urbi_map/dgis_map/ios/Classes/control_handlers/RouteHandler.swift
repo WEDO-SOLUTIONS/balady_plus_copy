@@ -437,7 +437,7 @@ class RouteHandler {
             stairwayCount: Int64(stairwayCount),
             gateCount: Int64(gateCount),
             altitudes:  altitudes.map { Int64($0)},
-            publicTransportTransfers: publicTransportTransfers,
+            publicTransportTransfers: publicTransportTransfers
         )
     }
 }

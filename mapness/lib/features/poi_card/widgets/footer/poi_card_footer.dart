@@ -136,12 +136,14 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],

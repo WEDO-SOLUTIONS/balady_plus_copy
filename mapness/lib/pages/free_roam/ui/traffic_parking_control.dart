@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -13,6 +14,7 @@ import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart'
 import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
+import 'package:mapness/shared/ui/map_controls/traffic_control.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
   final bool trafficVisible;
@@ -114,7 +116,11 @@ class _ParkingWidget extends StatelessWidget {
           height: 24,
           child: Icon(
             TransportIcons.parkingEnable,
-            color: isEnabled ? context.colors.foregroundDefault : context.colors.foregroundMuted,
+            color: isEnabled
+                ? SaudiNationalDay.isNow()
+                    ? context.colors.accentDefault
+                    : context.colors.foregroundDefault
+                : context.colors.foregroundDefault,
           ),
         ),
       );
@@ -139,7 +145,7 @@ class _TrafficControl extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) =>
-      TrafficControl(
+      TrafficControlWidget(
         opacity: isVisable ? 1 : 0,
         isEnabled: isEnabled,
         borderRadius: BorderRadius.only(
