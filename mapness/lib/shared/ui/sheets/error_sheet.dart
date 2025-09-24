@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:sheetify/sheetify.dart';
 
 class ErrorSheetWidget extends HookConsumerWidget {
   /// action how to recover state
@@ -22,7 +24,7 @@ class ErrorSheetWidget extends HookConsumerWidget {
   /// Called on background barrier tap (cause not always context.pop is not enough)
   final VoidCallback? onBarrierTap;
 
-  final BottomSheetOnCloseCallback? onClose;
+  final ToggleSheetOnCloseCallback? onClose;
 
   const ErrorSheetWidget({
     required this.onRetry,
@@ -36,40 +38,43 @@ class ErrorSheetWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useStatelessBottomsheetController(
+    final scrollController = useToggleSheetController(
       onClose: (controller) {
         onClose?.call(controller);
       },
-      heightModel: BottomSheetHeightModel.aspect(0.35),
     );
-    return Stack(
-      children: [
-        if (hasBarrier)
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: () {
-                if (onBarrierTap != null) {
-                  onBarrierTap!.call();
-                } else {
-                  context.router.popForced();
-                }
-              },
-              child: ColoredBox(
-                color: context.color.surfaceOverlayModal,
-              ),
-            ),
-          ),
-        StatelessBottomSheet(
-          content: [
-            BaseErrorWidget(
-              onRetry: onRetry,
-              buttonLabel: buttonLabel,
-              errorLabel: errorLabel,
-            ),
-          ],
-          scrollController: scrollController,
+
+    final barrierColorDelegate = useMemoized(
+      () => ToggleSheetDelegate.value(context.colors.screenOverlayDimming40),
+    );
+
+    return ToggleSheet(
+      backgroundColor: context.colors.backgroundSurface1,
+      safeAreaColor: context.colors.backgroundSurface1,
+      barrierColorDelegate: barrierColorDelegate,
+      dragger: const SheetDragger(),
+      outside: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          if (onBarrierTap != null) {
+            onBarrierTap!.call();
+          } else {
+            context.router.popForced();
+          }
+        },
+        child: const SizedBox(
+          width: double.infinity,
+          height: double.infinity,
+        ),
+      ),
+      content: [
+        BaseErrorWidget(
+          onRetry: onRetry,
+          buttonLabel: buttonLabel,
+          errorLabel: errorLabel,
         ),
       ],
+      scrollController: scrollController,
     );
   }
 }

@@ -4,10 +4,12 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_input.dart';
 import 'package:mapness/widgets/app_feedback/v2/app_feedback_sheet_header.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class AppFeedbackInputSheet extends HookConsumerWidget {
@@ -17,11 +19,11 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useStatelessBottomsheetController(
+    final scrollController = useToggleSheetController(
       onClose: (controller) {
         context.router.popForced();
       },
-      heightModel: BottomSheetHeightModel.aspect(0.9),
+      heightModel: ToggleSheetHeightModel.fraction(0.9),
     );
 
     final textEditingController = useTextEditingController(text: initialText);
@@ -29,12 +31,12 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       behavior: HitTestBehavior.opaque,
-      child: StatelessBottomSheet(
+      child: ToggleSheet(
         scrollController: scrollController,
         backgroundColor: context.colors.backgroundSurface4,
-        draggerColor: context.colors.backgroundSurface4,
         safeAreaColor: context.colors.backgroundSurface4,
-        onWillPop: Future.value(false),
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+        shouldPop: (_) => false,
         header: AppFeedbackSheetHeader(
           onBackTap: context.router.popForced,
           title: context.l10n.appFeedbackInputTitle,

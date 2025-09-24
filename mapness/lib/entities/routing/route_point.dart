@@ -55,7 +55,7 @@ class RoutePointMyLocation extends RoutePoint {
   String? title(AppLocalizations locale) => locale.myLocation;
 
   @override
-  Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;
+  Color titleColor(BuildContext context) => context.colors.foregroundDefault;
 
   @override
   String? get label => null;
@@ -93,7 +93,7 @@ class RoutePointCoordinates extends RoutePoint {
   String? title(AppLocalizations locale) => label;
 
   @override
-  Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;
+  Color titleColor(BuildContext context) => context.colors.foregroundDefault;
 
   @override
   String? get label => address;
@@ -129,7 +129,7 @@ class RoutePointDirectoryObject extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) =>
-      object == null ? context.color.textAndIconsBaseTertiary : context.color.textAndIconsBasePrimary;
+      object == null ? context.colors.foregroundMuted : context.colors.foregroundDefault;
 
   @override
   String? get label => null;
@@ -165,7 +165,7 @@ class RoutePointFavouriteItem extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) =>
-      item == null ? context.color.textAndIconsBaseTertiary : context.color.textAndIconsBasePrimary;
+      item == null ? context.colors.foregroundMuted : context.colors.foregroundDefault;
 
   @override
   String? get label => null;

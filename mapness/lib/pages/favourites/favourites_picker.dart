@@ -20,10 +20,10 @@ class FavouritesPickerPage extends ConsumerWidget {
     final asyncState = ref.watch(favouriteCacheProvider);
     if (asyncState.isLoading) {
       return Material(
-        color: context.color.surfaceBasePrimary,
+        color: context.colors.backgroundSurface1,
         child: Center(
           child: CircularProgressIndicator(
-            color: context.color.textAndIconsStatusAccent,
+            color: context.colors.accentDefault,
           ),
         ),
       );
@@ -58,7 +58,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                         child: Text(
                           context.l10n.favourites,
                           style: Theme.of(context).extension<ThemeTextStyles>()!.footNoteBold.copyWith(
-                                color: context.color.textAndIconsBasePrimary,
+                                color: context.colors.foregroundDefault,
                               ),
                         ),
                       ),
@@ -75,7 +75,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                           padding: const EdgeInsets.all(8),
                           child: Icon(
                             SystemIcons.arrowCornerLeftLarge,
-                            color: context.color.textAndIconsBasePrimary,
+                            color: context.colors.foregroundDefault,
                           ),
                         ),
                       ),
@@ -88,7 +88,7 @@ class FavouritesPickerPage extends ConsumerWidget {
           Expanded(
             child: Material(
               child: Container(
-                color: context.color.surfaceBasePrimary,
+                color: context.colors.backgroundSurface1,
                 child: state.items.isEmpty
                     ? Padding(
                         padding: const EdgeInsets.only(

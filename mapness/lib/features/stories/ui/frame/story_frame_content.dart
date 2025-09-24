@@ -19,19 +19,29 @@ class StoryFrameContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: storyTheme.titlePadding,
-          child: Text(
-            texts.title,
-            style: storyTheme.titleStyle,
-          ),
-        ),
         if (texts.subTitle != null)
           Padding(
             padding: storyTheme.titlePadding,
+            child: Center(
+              child: Text.rich(
+                TextSpan(
+                  style: storyTheme.titleStyle.copyWith(fontSize: 16),
+                  children: [
+                    TextSpan(text: texts.title),
+                    TextSpan(text: texts.subTitle, style: const TextStyle(fontSize: 15)),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
+        else
+          Padding(
+            padding: storyTheme.titlePadding,
             child: Text(
-              texts.subTitle!,
+              texts.title,
               style: storyTheme.titleStyle,
+              textAlign: texts.titleAlign,
             ),
           ),
         if (texts.description != null) ...[

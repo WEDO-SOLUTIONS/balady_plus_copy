@@ -15,7 +15,7 @@ class PathCardLoading extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SizedBox(
-          height: PathCardSize.getCardHeight(isPedestrian: currentType == RouteSearchOptionsMessage.pedestrian),
+          height: currentType.cardHeight,
           child: PathCardWrapper(
             alignment: Alignment.center,
             child: Loading(title: text),

@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
@@ -11,6 +12,7 @@ import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class AutostartSettingsSheetPage extends ConsumerStatefulWidget {
@@ -27,7 +29,7 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
 
   static const curve = Curves.easeIn;
 
-  late final StatelessBottomSheetController sheetController = StatelessBottomSheetController(onClose: (_) {
+  late final ToggleSheetController sheetController = ToggleSheetController(onClose: (_) {
     ref.read(freeRoamStarterProvider.notifier).setShown();
     context.router.popForced();
   });
@@ -44,7 +46,10 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
     final colors = context.colors;
 
     final textStyles = context.textStyles;
-    return StatelessBottomSheet(
+    return ToggleSheet(
+      dragger: const SheetDragger(),
+      backgroundColor: context.colors.backgroundSurface1,
+      safeAreaColor: context.colors.backgroundSurface1,
       scrollController: sheetController,
       header: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),

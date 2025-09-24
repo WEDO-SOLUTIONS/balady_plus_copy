@@ -14,6 +14,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -39,6 +40,8 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
 
   @override
   Widget build(BuildContext context) {
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
+
     super.build(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -54,7 +57,9 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
                 boxShadow: Shadows.s,
                 image: DecorationImage(
-                  image: Assets.images.driveHomeBackground.provider(),
+                  image: isNationalDay
+                      ? Assets.images.driveHomeBackgroundSaudiday.provider()
+                      : Assets.images.driveHomeBackground.provider(),
                   matchTextDirection: true,
                   fit: BoxFit.cover,
                   alignment: AlignmentDirectional.centerEnd,
@@ -62,19 +67,23 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
               ),
               child: Stack(
                 children: [
-                  const Positioned(
-                    top: 40,
-                    left: -60,
-                    child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
-                  ),
-                  const Positioned(
-                    top: -110,
-                    right: -140,
-                    child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
-                  ),
+                  if (!isNationalDay) ...[
+                    const Positioned(
+                      top: 40,
+                      left: -60,
+                      child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
+                    ),
+                    const Positioned(
+                      top: -110,
+                      right: -140,
+                      child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
+                    ),
+                  ],
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
-                    child: Assets.images.driveHomeArrow.image(matchTextDirection: true),
+                    child: isNationalDay
+                        ? Assets.images.driveHomeArrowSaudiday.image(matchTextDirection: true)
+                        : Assets.images.driveHomeArrow.image(matchTextDirection: true),
                   ),
                   Align(
                     alignment: AlignmentDirectional.topStart,
@@ -84,13 +93,13 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                         text: TextSpan(
                           text: context.l10n.driveBack,
                           style: context.textStyles.h3Medium.copyWith(
-                            color: Colors.white,
+                            color: isNationalDay ? context.colors.foregroundDefault : context.colors.staticWhite,
                           ),
                           children: [
                             TextSpan(
                               text: '\n${context.l10n.homeQuestionMark}',
                               style: context.textStyles.h3Medium.copyWith(
-                                color: const Color(0xFF00FFFA),
+                                color: context.colors.accentDefault,
                               ),
                             ),
                           ],

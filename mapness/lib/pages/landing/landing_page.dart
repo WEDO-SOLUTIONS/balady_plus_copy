@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/thermal_monitor/thermal_monitor.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -16,6 +17,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
@@ -25,13 +27,22 @@ class LandingPage extends ConsumerStatefulWidget {
   ConsumerState<LandingPage> createState() => _LandingPageState();
 }
 
-class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
-      StatefulBottomSheetController(
-    initialState: ThreeStateBottomSheet.open,
-    behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, .931}),
+class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver, TickerProviderStateMixin {
+  late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController = MultiStateSheetController(
+    initialState: ThreeStateSheet.open,
+    behavior: FractionSnappingBehavior(fractions: {0.0, if (Platform.isIOS) .3 else .38, 1.0}),
     stateMapper: const LandingStateMapper(),
   );
+
+  final confettiConfig = ConfettiGeneratorConfig.confetti(
+    dissappearStartsAt: 0.33,
+    dissappearCurve: Curves.easeInOutQuint,
+    commonShapeAppearance: 1,
+    animationDuration: const Duration(seconds: 4),
+    mostCommonConfettiShape: (startPosition, velocity, scale, gradient, x, y, z) =>
+        ShiningShape(startPosition, velocity, scale, gradient, x, y, z),
+  );
+  late final confettiController = AnimationController(vsync: this, duration: confettiConfig.animationDuration);
 
   MediaQueryData? _mediaQuery;
 
@@ -97,6 +108,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
+      ..watch(thermalMonitorProvider)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier);
@@ -113,7 +125,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                 ListenableBuilder(
                   listenable: _bottomSheetController,
                   builder: (_, __) {
-                    if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
+                    if (_bottomSheetController.state == ThreeStateSheet.hidden) {
                       return const SizedBox.shrink();
                     }
 
@@ -124,7 +136,19 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                     );
                   },
                 ),
-                Dashboard(bottomSheetController: _bottomSheetController),
+                Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$3x),
+                  child: Dashboard(
+                    bottomSheetController: _bottomSheetController,
+                    fireworksController: confettiController,
+                  ),
+                ),
+                RepaintBoundary(
+                  child: ConfettiAnimation(
+                    animationController: confettiController,
+                    config: confettiConfig,
+                  ),
+                ),
               ],
             ),
           ),
@@ -134,8 +158,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _hideBottomSheet() {
-    if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-      _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    if (_bottomSheetController.state != ThreeStateSheet.hidden) {
+      _bottomSheetController.setState(ThreeStateSheet.hidden);
     }
   }
 }

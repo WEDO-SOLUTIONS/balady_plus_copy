@@ -256,7 +256,11 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                             ],
                           ),
                         ),
-                      if (widget.frame.action != null) _buildAction(contraints),
+                      if (widget.frame.action != null)
+                        _buildAction(
+                          contraints,
+                          widget.frame.imageUrl?.contains('saudi') == true ? const Color(0xff003449) : null,
+                        ),
                     ],
                   ),
                 ),
@@ -264,7 +268,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
             ),
           ));
 
-  Align _buildAction(BoxConstraints contraints) => Align(
+  Align _buildAction(BoxConstraints contraints, [Color? actionColor]) => Align(
         alignment: Alignment.bottomCenter,
         child: Container(
           width: contraints.maxWidth,
@@ -286,6 +290,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
               ? StoryFrameActionButton(
                   actionTheme: storyTheme.actionTheme,
                   action: widget.frame.action!,
+                  actionColor: actionColor,
                   onNext: _onNext,
                   onActionPressed: () => widget.onActionPressed?.call(widget.frame),
                 )
@@ -302,17 +307,20 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                child: FrameProgressIndicator(
-                  frameIndex: widget.frameIndex,
-                  framesLength: widget.frameLength,
-                  animation: _progress,
-                  trackTheme: storyTheme.trackTheme,
+            if (StoryTypes.saudiDay != widget.type)
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+                  child: FrameProgressIndicator(
+                    frameIndex: widget.frameIndex,
+                    framesLength: widget.frameLength,
+                    animation: _progress,
+                    trackTheme: storyTheme.trackTheme,
+                  ),
                 ),
-              ),
-            ),
+              )
+            else
+              const Spacer(),
             Consumer(
               builder: (context, ref, _) => AppButton.close(
                 onTap: () {

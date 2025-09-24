@@ -11,7 +11,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
       TextSpan(
         text: suggest.title.text,
         style: context.textStyle.text.copyWith(
-          color: context.color.textAndIconsBaseTertiary,
+          color: context.colors.foregroundMuted,
         ),
       ),
     ];
@@ -30,7 +30,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
       TextSpan(
         text: suggest.title.text,
         style: context.textStyle.text.copyWith(
-          color: context.color.textAndIconsBaseTertiary,
+          color: context.colors.foregroundMuted,
         ),
       ),
     ];
@@ -43,7 +43,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
         matchedParts[0].offset,
       ),
       style: context.textStyle.text.copyWith(
-        color: context.color.textAndIconsBaseTertiary,
+        color: context.colors.foregroundMuted,
       ),
     ),
   );
@@ -56,7 +56,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
           matchedParts[i].offset + matchedParts[i].length,
         ),
         style: context.textStyle.text.copyWith(
-          color: context.color.textAndIconsBasePrimary,
+          color: context.colors.foregroundDefault,
         ),
       ),
     );
@@ -68,7 +68,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
             matchedParts[i + 1].offset,
           ),
           style: context.textStyle.text.copyWith(
-            color: context.color.textAndIconsBaseTertiary,
+            color: context.colors.foregroundMuted,
           ),
         ),
       );
@@ -80,7 +80,7 @@ List<TextSpan> buildSuggestTitle(BuildContext context, SuggestMessage suggest) {
         matchedParts[matchedParts.length - 1].offset + matchedParts[matchedParts.length - 1].length,
       ),
       style: context.textStyle.text.copyWith(
-        color: context.color.textAndIconsBaseTertiary,
+        color: context.colors.foregroundMuted,
       ),
     ),
   );

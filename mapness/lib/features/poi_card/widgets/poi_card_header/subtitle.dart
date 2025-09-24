@@ -7,8 +7,9 @@ import 'package:flutter/widgets.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
+import 'package:sheetify/sheetify.dart';
 
-class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final String subtitle;
   final List<InlineSpan> inlineSpans;
   final IconData? subtitleIcon;
@@ -29,7 +30,7 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     final subTitleTextStyle = context.textStyle.footNote.copyWith(
-      color: context.color.textAndIconsBaseSecondary,
+      color: context.colors.foregroundSoft,
     );
 
     var scale = interpolation;
@@ -67,7 +68,7 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
               padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
               child: Icon(
                 subtitleIcon,
-                color: context.color.textAndIconsBaseSecondary,
+                color: context.colors.foregroundSoft,
                 size: 24,
               ),
             )

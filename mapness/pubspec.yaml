@@ -40,7 +40,11 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 4.1.2
+    version: 4.1.4
+
+  sheetify: 1.0.1
+
+  smooth_corner: ^1.0.0
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -66,7 +70,7 @@ dependencies:
   cube_transition_plus: #  2.0.1 # version from pub has bug, use it when PR will be merged
     git:
       url: https://github.com/Demezy/cube_transition_plus
-  protobuf: 3.1.0
+  protobuf: 4.0.0
   permission_handler: 12.0.0+1
   package_info_plus: 8.1.0
   hive_generator: 2.0.1
@@ -123,6 +127,9 @@ dependencies:
   flutter_animate: ^4.3.0
   flutter_gen: 5.10.0
 
+  video_player: ^2.8.2
+  flutter_cache_manager: ^3.3.1
+
   # TODO: upgrade after pdfx will be updated
   device_info_plus: 11.1.1
   flutter_form_builder: 9.5.0
@@ -146,10 +153,12 @@ dependencies:
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.1.7
+    version: 1.2.1
   equatable: 2.0.7
   flutter_insider: ^3.15.2
   flutter_hms_gms_availability: ^3.10.0
+  visibility_detector: ^0.4.0+2
+  thermal: 1.1.11
 
   flutter_spinkit: 5.2.1
 
@@ -167,6 +176,9 @@ dependency_overrides:
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
   sentry_dio: 8.14.2
+  analyzer: ^6.5.0
+  custom_lint_builder: ^0.7.0
+  analyzer_plugin: ^0.11.2
 
 dev_dependencies:
   flutter_test:
@@ -186,6 +198,7 @@ dev_dependencies:
   auto_route_generator: 9.0.0
   custom_lint: ^0.7.0
   geolocator_android: 4.6.1
+  sheetify_lint: ^1.0.1
 
 flutter:
   assets:
@@ -198,10 +211,13 @@ flutter:
     - assets/icons/svg/layers/
     - assets/icons/svg/places_big_new/
     - assets/icons/svg/places_new/
+    - assets/icons/svg/places_big_new_saudi_day/
+    - assets/icons/svg/places_new_saudi_day/
     - assets/images/
     - assets/images_svg/
     - assets/maps/configs/
     - packages/map_styles/src/styles.2gis
+    - packages/map_styles/src/styles_saudi_day.2gis
 
 flutter_gen:
   assets:

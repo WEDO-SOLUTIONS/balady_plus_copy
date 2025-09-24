@@ -39,20 +39,18 @@ class LogsViewModel {
 
   void sendEventFromModel({required EventModel event}) async {
 // UX Cam Events
-    if (RemoteConfig.uxCamKey.isNotEmpty) {
-      FlutterUxcam.logEventWithProperties(
-        event.nameEvent,
-        event.toJson(),
-      );
-      Sentry.captureException(
-        SentryEvent(
-          message: SentryMessage(event.nameEvent),
-          extra: event.toJson(),
-        ),
-      );
-    }
+    FlutterUxcam.logEventWithProperties(
+      event.nameEvent,
+      event.toJson(),
+    );
+    Sentry.captureException(
+      SentryException(
+        type: event.nameEvent,
+        value: event.message,
+        unknown: event.toJson(),
+      ),
+    );
   }
-
 
   void timeEventFromModel({required EventModel event}) async {
     mixpanel.timeEvent(event.nameEvent);

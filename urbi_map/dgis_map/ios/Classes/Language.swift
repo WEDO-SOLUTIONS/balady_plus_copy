@@ -26,3 +26,9 @@ extension Locale {
         return dgis_map.Language(rawValue: languageCode ?? "ar") ?? dgis_map.Language.ar
     }
 }
+
+extension String {
+    var localized: String {
+        NSLocalizedString(self, comment: "")
+    }
+}

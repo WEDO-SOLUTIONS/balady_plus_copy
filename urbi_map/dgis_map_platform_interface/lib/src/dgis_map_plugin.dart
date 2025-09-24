@@ -1056,6 +1056,15 @@ class DgisMapPlugin extends FlutterMapApi {
     );
   }
 
+  /// Find Route.
+  Future<FindRouteResultMessage> findRoute(
+    RouteSearchPointMessage startPoint,
+    RouteSearchPointMessage finishPoint,
+    RouteSearchOptionsMessage routeSearchOptions,
+  ) {
+    return _api.findRoute(startPoint, finishPoint, routeSearchOptions);
+  }
+
   /// Retrieves a list of available packages.
   ///
   /// Returns:
@@ -1132,4 +1141,7 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Set better route enabled.
   Future<void> setBetterRouteEnabled({required bool enabled}) => _api.setBetterRouteEnabled(enabled);
+
+  /// Set map max fps
+  Future<void> setMaxFps(int? fps) => _api.setMaxFps(fps);
 }

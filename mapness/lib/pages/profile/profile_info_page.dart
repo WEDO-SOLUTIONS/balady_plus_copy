@@ -30,7 +30,7 @@ class ProfileInfoPage extends ConsumerWidget {
               appBar: BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.profileInfo,
-                colorEnabled: context.color.textAndIconsStatusAccent,
+                colorEnabled: context.colors.accentDefault,
                 leading: ActionModel(
                   text: context.l10n.back,
                   onPressed: () => context.router.popForced(),

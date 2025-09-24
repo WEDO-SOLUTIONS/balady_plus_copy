@@ -55,7 +55,7 @@ class SearchActionRow extends StatelessWidget {
                 height: 24,
                 child: SvgPicture.asset(
                   icon,
-                  color: context.color.textAndIconsStatusAccent,
+                  color: context.colors.accentDefault,
                 ),
               ),
             ),
@@ -70,7 +70,7 @@ class SearchActionRow extends StatelessWidget {
                 ),
                 child: Text(
                   title,
-                  style: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                  style: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                 ),
               ),
             ),

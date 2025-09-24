@@ -42,9 +42,8 @@ class EtaShareSheet extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: Spacing.$1_5x),
-                  child: SheetDragger(),
+                child: SheetDragger(
+                  backgroundColor: Colors.transparent,
                 ),
               ),
               ContentRow(

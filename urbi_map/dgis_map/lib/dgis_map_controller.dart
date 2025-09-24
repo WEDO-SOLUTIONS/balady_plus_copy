@@ -632,6 +632,15 @@ class DgisMapController {
     );
   }
 
+  /// Find route
+  Future<FindRouteResultMessage> findRoute({
+    required RouteSearchOptionsMessage options,
+    required RouteSearchPointMessage startPoint,
+    required RouteSearchPointMessage finishPoint,
+  }) {
+    return _instance.findRoute(startPoint, finishPoint, options);
+  }
+
   ///toggle heatmap
   Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
 
@@ -671,6 +680,9 @@ class DgisMapController {
 
   /// Getting Android Auto/CarPlay connection state
   Future<bool> getCarConnectionState() => _instance.getCarConnectionState();
+
+  /// Set map max fps
+  Future<void> setMaxFps(int? maxFps) => _instance.setMaxFps(maxFps);
 }
 
 /// Extension methods for `WeekTimeSearchMessage`.

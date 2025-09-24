@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/tmp/content_row_expandable.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/copy_to_clipboard.dart';
 
@@ -28,7 +29,7 @@ class PoiContentContactsCard extends StatelessWidget {
     final bool hasSocialMedia = data.socialMediaList?.isNotEmpty == true;
 
     return ContentWrapper(
-      color: context.color.surfaceBasePrimary,
+      color: context.colors.backgroundSurface1,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasPhones)
@@ -136,6 +137,7 @@ class _PhoneItemWidget extends StatelessWidget {
               },
               child: ContentRow(
                 onTap: () => onTap.call(phone),
+                crossAxisAlignment: CrossAxisAlignment.center,
                 leading: phoneIcon.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: phone,
@@ -236,12 +238,14 @@ class _SocialMediaItemWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(Spacing.$2x),
           decoration: BoxDecoration(
-            color: context.colors.accentSecondaryContainerDefault,
+            color: SaudiNationalDay.isNow()
+                ? context.colors.accentContainerDefault
+                : context.colors.accentSecondaryContainerDefault,
             borderRadius: BorderRadius.circular(Spacing.$2x),
           ),
           child: Icon(
             icon,
-            color: context.colors.accentSecondaryOnContainer,
+            color: SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.accentSecondaryDefault,
             size: Spacing.$6x,
           ),
         ),

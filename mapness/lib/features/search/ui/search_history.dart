@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 import 'package:mapness/widgets/search/ui/search_history_empty.dart';
 import 'package:provider/provider.dart';
@@ -11,7 +12,7 @@ class SearchHistory extends ConsumerWidget {
   final Color? contentColor;
   final Color? iconColor;
   final EdgeInsetsGeometry? contentPadding;
-  final void Function(SearchHistoryItem item) onTap;
+  final void Function(SearchHistoryItem item, int index, BssHistoryList? historyList) onTap;
 
   const SearchHistory({
     required this.onTap,

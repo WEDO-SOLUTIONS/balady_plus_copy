@@ -61,9 +61,24 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
 
   Future<void> openMiniApp({required String serviceKey, String? path}) async {
     try {
-      if(state is HomeMiniAppsListLoadingState) {
-        await Future.delayed(const Duration(seconds: 5));
-      }
+
+      // if(state is HomeMiniAppsListLoadingState) {
+      //   await Future.delayed(const Duration(seconds: 8));
+      // }
+
+      final currentState = state;
+
+      // If not loaded yet, wait until success
+      final HomeMiniAppsListSuccessState successState =
+      currentState is HomeMiniAppsListSuccessState
+          ? currentState
+          : await stream.firstWhere(
+            (s) => s is HomeMiniAppsListSuccessState,
+      ) as HomeMiniAppsListSuccessState;
+
+
+
+      if(state is HomeMiniAppsListSuccessState) {
         MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
             .miniAppsList
             .firstWhere((service) => service.serviceKey == serviceKey)
@@ -74,6 +89,8 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
           routeName: RouteName.miniAppsMainScreen,
           args: miniApp,
         );
+      }
+
 
     } catch (e) {
 

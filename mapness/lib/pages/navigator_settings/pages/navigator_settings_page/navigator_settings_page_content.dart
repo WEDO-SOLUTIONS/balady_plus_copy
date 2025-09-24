@@ -36,7 +36,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                 DecoratedBox(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(RadiusBorder.l),
-                    color: context.color.surfaceBaseTertiary,
+                    color: context.colors.backgroundSurface4,
                   ),
                   child: Column(
                     children: [
@@ -49,7 +49,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                             options: ContentRowOptions(
                               title: context.l10n.avoidTollRoads,
                               dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                               actionWidget: ContentRowActionOptions(
                                 enabledToggle: true,
                                 toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
@@ -66,7 +66,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                             options: ContentRowOptions(
                               title: context.l10n.avoidUnpavedRoads,
                               dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                               actionWidget: ContentRowActionOptions(
                                 enabledToggle: true,
                                 toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
@@ -83,7 +83,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                             options: ContentRowOptions(
                               title: context.l10n.suggestRouteBetter,
                               dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                               actionWidget: ContentRowActionOptions(
                                 enabledToggle: true,
                                 toggleInitialValue: betterRouteSettings,
@@ -102,7 +102,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                             options: ContentRowOptions(
                               title: context.l10n.automaticParkingLayer,
                               dividerEnabled: true,
-                              titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                               actionWidget: ContentRowActionOptions(
                                 enabledToggle: true,
                                 toggleInitialValue: autoEnableParking,
@@ -119,7 +119,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                             onToggle: (_) => ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
                             options: ContentRowOptions(
                               title: context.l10n.autorunNavigator,
-                              titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                              titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                               subtitle: context.l10n.automaticallyLaunchNavigator,
                               subtitleMaxlines: 2,
                               actionWidget: ContentRowActionOptions(
@@ -141,10 +141,10 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                 ContentRow(
                   onTap: () => context.router.push(const DarkMapRoute()),
                   options: ContentRowOptions(
-                    wrapperColor: context.color.surfaceBaseTertiary,
+                    wrapperColor: context.colors.backgroundSurface4,
                     wrapperEnabled: true,
                     title: context.l10n.darkMap,
-                    titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                    titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                     actionWidget: ContentRowActionOptions(
                       actionIcon: AppIcons(
                         iconData: SystemIcons.arrowCornerRightLarge,
@@ -164,7 +164,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                     titleStyle: context.textStyles.bodyLargeRegular.copyWith(
                       color: context.colors.foregroundDefault,
                     ),
-                    wrapperColor: context.color.surfaceBaseTertiary,
+                    wrapperColor: context.colors.backgroundSurface4,
                     wrapperEnabled: true,
                     title: context.l10n.soundSettings,
                     actionWidget: ContentRowActionOptions(
@@ -185,14 +185,14 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
 
                   return ContentRow(
                     options: ContentRowOptions(
-                      wrapperColor: context.color.surfaceBaseTertiary,
+                      wrapperColor: context.colors.backgroundSurface4,
                       wrapperEnabled: true,
                       leadingIcon: Assets.icons.maneuver.roadEventCam.svg(
                         package: packageName,
                         fit: BoxFit.fill,
                       ),
                       title: context.l10n.speedCameras,
-                      titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+                      titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                       actionWidget: ContentRowActionOptions(
                         enabledToggle: true,
                         toggleInitialValue: navigatorCamerasSettings,

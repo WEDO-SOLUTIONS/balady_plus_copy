@@ -23,6 +23,7 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
+import 'package:sheetify/sheetify.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 @RoutePage()
@@ -49,7 +50,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
 
   StreamSubscription? _naviEventsListener;
 
-  late final uikit.StatelessBottomSheetController _bottomSheetController = uikit.StatelessBottomSheetController(
+  late final ToggleSheetController _bottomSheetController = ToggleSheetController(
     onClose: (_) => _bottomSheetController.close,
   );
 

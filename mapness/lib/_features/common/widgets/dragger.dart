@@ -1,18 +1,24 @@
-import 'package:balady_uikit/core/widgets/dragger.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sheetify/widgets/dragger_contrainer.dart';
 
 /// Temporary solution for dragger from UIKit
 /// With new Bottom sheet we have to remove it and use Bottom sheet
 class SheetDragger extends StatelessWidget {
-  const SheetDragger({super.key});
+  final Color? draggerColor;
+  final Color? backgroundColor;
+
+  const SheetDragger({
+    this.draggerColor,
+    this.backgroundColor,
+    super.key,
+  });
 
   @override
-  Widget build(BuildContext context) => const SizedBox(
-        width: double.infinity,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Padding(padding: EdgeInsets.only(top: 6.0, bottom: 6.0), child: Dragger()),
-        ),
+  Widget build(BuildContext context) => DraggerContainer(
+        draggerColor: draggerColor ?? context.colors.backgroundSurface5,
+        backgroundColor: backgroundColor ?? context.colors.backgroundSurface1,
       );
 }

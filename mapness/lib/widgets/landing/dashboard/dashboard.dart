@@ -3,20 +3,23 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -24,28 +27,67 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
-import 'package:mapness/widgets/landing/dashboard_feedback_card.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:mapness/widgets/landing/drive_back_home_card.dart';
 import 'package:mapness/widgets/landing/place_preview.dart';
 import 'package:mapness/widgets/landing/quick_action_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
+import 'package:sheetify/sheetify.dart';
+
 
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     required this.bottomSheetController,
+    required this.fireworksController,
     super.key,
   });
 
-  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
+
+  final AnimationController fireworksController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
+class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
+
+  late FreeRoamStartState freeRoamState;
+
+  late final outsideOpacityDelegate = StatefulSheetDelegateFunction<double, ThreeStateSheet>(
+    function: (controller) {
+      final fraction = controller.fraction;
+      final interpolation = controller.interpolation;
+      final state = controller.state;
+
+      final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+
+      final isSheetCoversHalfOfTheScreen = fraction > 0.4;
+      final isSheetStateOpen = state == ThreeStateSheet.open;
+      final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+
+      final isFull = isGoToNavigatorShown ||
+          (!controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+          isSheetCoversHalfOfTheScreen;
+
+      return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+    },
+  );
+  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
+    final state = controller.state;
+
+    if (state == ThreeStateBottomSheet.expanded) {
+      return Colors.black.withOpacity(.4);
+    }
+    if (state == ThreeStateBottomSheet.open) {
+      return Colors.black.withOpacity(.4 * controller.interpolation);
+    }
+    return null;
+  });
+
+  final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
 
   @override
   void initState() {
@@ -60,21 +102,39 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
+
+  ///This method is intended for handling location permission requests
+  /// if it's triggered by someone before Mapness starts.
+  void _checkLocationPermission(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      ref.read(locationProvider.notifier).checkLocationPermission();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.listen(layersControlsProvider, (previous, next) {
       if (next.layersVisible) {
-        widget.bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+        widget.bottomSheetController.setState(ThreeStateSheet.hidden);
       }
     });
 
-    return SafeArea(
-      bottom: false,
-      child: StatefulBottomSheet<ThreeStateBottomSheet>(
+    freeRoamState = ref.watch(freeRoamStarterProvider);
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
+
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
+      child: MultiStateSheet<ThreeStateSheet>(
         animateOpening: false,
         keepContentBehindFooter: true,
+        useSafeArea: false,
         scrollController: widget.bottomSheetController,
-        topHeader: MapHiddenStateControls(widget.bottomSheetController),
+        topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
+        topHeaderOffset: isNationalDay ? topHeaderOffset : null,
+        offsetOutsideWidgetByTopheader: !isNationalDay,
         backgroundColor: context.colors.backgroundSurface2,
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
         header: const DashboardHeader(),
         footer: IgnorePointer(
           child: SizedBox(
@@ -88,46 +148,20 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                    colors: [
+                      Colors.white.withOpacity(0),
+                      Colors.white.withOpacity(0.8),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
         ),
-        backgroundColorDelegate: StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
-          final state = controller.state;
-
-          if (state == ThreeStateBottomSheet.expanded) {
-            return Colors.black.withOpacity(.4);
-          }
-          if (state == ThreeStateBottomSheet.open) {
-            return Colors.black.withOpacity(.4 * controller.interpolation);
-          }
-          return null;
-        }),
+        barrierColorDelegate: barrierColorDelegate,
         outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
-        outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
-          function: (controller) {
-            final aspectRatio = controller.aspectRatio;
-            final interpolation = controller.interpolation;
-            final state = controller.state;
-
-            final freeRoamState = ref.watch(freeRoamStarterProvider);
-            final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
-
-            final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-            final isSheetStateOpen = state == ThreeStateBottomSheet.open;
-            final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
-
-            final isFull = isGoToNavigatorShown ||
-                (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-                isSheetCoversHalfOfTheScreen;
-
-            return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-          },
-        ),
-        sliverBeforeContent: SliverPersistentHeader(
+        outsideOpacityDelegate: outsideOpacityDelegate,
+        sliver: SliverPersistentHeader(
           delegate: DashboardHeaderDelegate(vsync: this),
           pinned: true,
           floating: true,
@@ -135,16 +169,22 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         content: [
           const SizedBox(height: Spacing.$3x),
           FeedbackBannerCardV2(
-            path: Assets.images.feedbackDashboard.keyName,
+            path: isNationalDay
+                ? Assets.images.feedbackDashboardSaudiday.keyName
+                : Assets.images.feedbackDashboard.keyName,
             onTap: () {
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
-              context.router.push(QuickFeedbackRoute());
+              context.router.push(const ContributeRoute());
             },
-            gradientColors: const [
-              /// It's normal that some components are not from the design and color system too
-              Color(0xFF4EC9C0),
-              Color(0xFF2AB3A9),
-            ],
+            gradientColors: isNationalDay
+                ? [
+                    const Color(0xFF014850),
+                    const Color(0xFF00343A),
+                  ]
+                : [
+                    const Color(0xFF4EC9C0),
+                    const Color(0xFF2AB3A9),
+                  ],
             title: context.l10n.contribute,
             subtitle: context.l10n.buildBaladyTogether,
           ),
@@ -215,12 +255,39 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           const SizedBox(height: Spacing.$4x),
           const DriveBackHomeCard(),
           const SizedBox(height: Spacing.$6x),
-          DashboardTitle(context.l10n.exploreNearby),
-          const SizedBox(height: Spacing.$4x),
-          const PlacePreview(),
-          const SizedBox(height: Spacing.$6x),
-          const DashboardFeedbackCard(),
-          const SizedBox(height: Spacing.$6x),
+          if (!isNationalDay) ...[
+            DashboardTitle(context.l10n.exploreNearby),
+            const SizedBox(height: Spacing.$4x),
+            const PlacePreview(),
+            const SizedBox(height: Spacing.$6x),
+          ],
+          if (isNationalDay)
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Color(0xff00343A),
+                  ],
+                ),
+                image: DecorationImage(
+                  image: Assets.images.backgroundOrnamentSaudiday.provider(),
+                  matchTextDirection: true,
+                  fit: BoxFit.cover,
+                  alignment: AlignmentDirectional.centerEnd,
+                ),
+              ),
+              child: Column(
+                children: [
+                  DashboardTitle(context.l10n.exploreNearby),
+                  const SizedBox(height: Spacing.$4x),
+                  const PlacePreview(),
+                  const SizedBox(height: Spacing.$6x),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -229,7 +296,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   void _openParking() {
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
     widget.bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
-    widget.bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    widget.bottomSheetController.setState(ThreeStateSheet.hidden);
     ref.read(layersControlsProvider.notifier).enableParking();
   }
 
@@ -301,10 +368,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   void _scrollListenHandler() {
-    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.aspectRatio) * 2);
+    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
 
     Future.delayed(Duration.zero, () {
-      if (widget.bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+      if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(
               MapControlsStateDashboard(),
             );

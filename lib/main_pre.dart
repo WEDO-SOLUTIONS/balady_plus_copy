@@ -20,8 +20,9 @@ void main() async {
       await AppEnv.setupEnv(EnvType.pre);
       await setupMapness(EnvType.pre);
       await SentryFlutter.init(
-        (options) {
-          options.dsn = 'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
+            (options) {
+          options.dsn =
+          'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
           options.tracesSampleRate = 1.0;
@@ -40,24 +41,11 @@ void main() async {
           options.enableAppLifecycleBreadcrumbs = true;
           options.enableFramesTracking = true;
           // options.captureFailedRequests = true;
-          options.environment = EnvType.stg.name;
-
-
-
-
-
-          // Performance Monitoring
-          options.tracesSampleRate = 1.0; // 100% sampling for development
-          // options.tracesSampleRate = 0.1; // 10% sampling for production
-
-          // Profiling
-          options.profilesSampleRate = 1.0; // 100% profiling sampling
-
+          options.environment = EnvType.pre.name;
           // Auto Performance Instrumentation
           options.enableAutoPerformanceTracing = true;
           options.enableUserInteractionTracing = true;
           options.enableAppHangTracking = true;
-
 
           // Session Tracking
           options.enableAutoSessionTracking = true;
@@ -74,7 +62,6 @@ void main() async {
 
           // Additional Performance Settings
           options.enableTimeToFullDisplayTracing = true;
-
         },
         appRunner: () => runApp(MapnessProviderScope(child: LocalizedApp(child: App()))),
       );

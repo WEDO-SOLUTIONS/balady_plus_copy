@@ -35,6 +35,7 @@ class BottomNavigationPage extends StatelessWidget {
                 sl<EntryPointCubit>().mainPage ?? RouteName.bottomNavigation,
               ),
             );
+            sl<EntryPointCubit>().mainPage = null;
           },
           unAuthenticatedState: (data) =>
               sl<EntryPointCubit>().clearAuth(loginData: data),

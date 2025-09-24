@@ -3,17 +3,18 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
-import 'package:mapness/shared/ui/safe_area_padding.dart';
+import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_loading.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_success.dart';
 import 'package:mapness/widgets/app_feedback/v2/app_feedback_main.dart';
+import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
 class AppFeedbackSheet extends HookConsumerWidget {
@@ -63,9 +64,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     ref.watch(appFeedbackCanPopProvider.select((_) => null));
 
-    void onCloseBottomSheet(StatelessBottomSheetController controller) {
+    void onCloseBottomSheet(ToggleSheetController controller) {
       final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
-      final isInitial = ref.read(sendFeedbackProvider).valueOrNull == AppFeedbackState.initial;
+      final isInitial = ref.read(sendFeedbackProvider) == AppFeedbackState.initial;
 
       if (feedbackCanpop || !isInitial) {
         context.router.popForced();
@@ -75,48 +76,36 @@ class AppFeedbackSheet extends HookConsumerWidget {
       }
     }
 
-    final scrollController = useStatelessBottomsheetController(onClose: onCloseBottomSheet);
+    final scrollController = useToggleSheetController(onClose: onCloseBottomSheet);
 
     return FeedbackSourceProvider(
       source: source,
-      child: SafeAreaPadding(
-        bottom: false,
-        child: StatelessBottomSheet(
-          startConfig: BottomSheetStart.instant,
-          scrollController: scrollController,
-          backgroundColor: context.colors.backgroundSurface4,
-          safeAreaColor: context.colors.backgroundSurface4,
-          draggerColor: context.colors.backgroundSurface4,
-          onWillPop: Future.value(false),
-          content: [
-            sendFeedbackState.when(
-              data: (data) => switch (data) {
-                AppFeedbackState.initial => AppFeedbackMain(
-                    initialRating: initialRating,
-                    onNeedPopConfirm: () => _showConfirmDialog(context),
-                  ),
-                AppFeedbackState.loading => const AppFeedbackLoading(),
-                AppFeedbackState.success => const Padding(
-                    padding: _sheetPadding,
-                    child: AppFeedbackSuccess(),
-                  ),
-                AppFeedbackState.error => Padding(
-                    padding: _sheetPadding,
-                    child: AppFeedbackError(
-                      onRetry: ref.read(sendFeedbackProvider.notifier).retry,
-                    ),
-                  ),
-              },
-              loading: () => const AppFeedbackLoading(),
-              error: (_, __) => Padding(
+      child: ToggleSheet(
+        startConfig: ToggleSheetStart.instant,
+        scrollController: scrollController,
+        backgroundColor: context.colors.backgroundSurface4,
+        safeAreaColor: context.colors.backgroundSurface4,
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+        shouldPop: (_) => false,
+        content: [
+          switch (sendFeedbackState) {
+            AppFeedbackState.initial => AppFeedbackMain(
+                initialRating: initialRating,
+                onNeedPopConfirm: () => _showConfirmDialog(context),
+              ),
+            AppFeedbackState.loading => const AppFeedbackLoading(),
+            AppFeedbackState.success => const Padding(
+                padding: _sheetPadding,
+                child: AppFeedbackSuccess(),
+              ),
+            AppFeedbackState.error => Padding(
                 padding: _sheetPadding,
                 child: AppFeedbackError(
                   onRetry: ref.read(sendFeedbackProvider.notifier).retry,
                 ),
               ),
-            ),
-          ],
-        ),
+          },
+        ],
       ),
     );
   }

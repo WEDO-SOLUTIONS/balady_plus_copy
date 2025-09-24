@@ -11,12 +11,16 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../app/core/utils/constants/app_colors.dart';
+
 class MiniAppsItemWidget extends StatelessWidget {
   final MiniAppModel miniApp;
+  final bool isEvent;
 
   const MiniAppsItemWidget({
     super.key,
     required this.miniApp,
+    required this.isEvent,
   });
 
   @override
@@ -33,52 +37,41 @@ class MiniAppsItemWidget extends StatelessWidget {
               child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  child: Column(
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: ImageIconBasedTypeWidget(
                           icon: miniApp.logoKey!,
                           type: miniApp.cdnLogoRef?.split(".").last,
-                          iconSize: 55,
+                          iconSize: 40,
+                          iconColor: isEvent
+                              ? AppColor.primary900LightEvent
+                              : AppColor.primary900Light,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              miniApp.serviceName ?? '',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    fontFamily:
-                                        'packages/balady_uikit/Frutiger',
-                                  ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                      const SizedBox(height: 24),
+                      Text(
+                        miniApp.serviceName ?? '',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 17,
+                            fontFamily: 'packages/balady_uikit/Frutiger',
+                            color: Color(0xFF003449)),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        miniApp.description?.isNotEmpty == true
+                            ? miniApp.description!
+                            : '',
+                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                              color: Colors.grey[600],
+                              fontSize: 13,
+                              fontFamily: 'packages/balady_uikit/Frutiger',
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              miniApp.description?.isNotEmpty == true
-                                  ? miniApp.description!
-                                  : '',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(
-                                    color: Colors.grey[600],
-                                    fontFamily:
-                                        'packages/balady_uikit/Frutiger',
-                                  ),
-                            ),
-                          ],
-                        ),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   )),
@@ -88,7 +81,8 @@ class MiniAppsItemWidget extends StatelessWidget {
 
   void _handleTap(BuildContext context) async {
     if (miniApp.latestVersion?.nafathLogin == true &&
-        !CommonProperties.isLoggedInMunicipality && miniApp.latestVersion?.deepLinkModel==null) {
+        !CommonProperties.isLoggedInMunicipality &&
+        miniApp.latestVersion?.deepLinkModel == null) {
       showDialog(
         context: context,
         builder: (ctx) => NeedLoginDialog(
@@ -102,7 +96,8 @@ class MiniAppsItemWidget extends StatelessWidget {
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel==null) {
+    } else if (miniApp.latestVersion?.otpLogin == true &&
+        miniApp.latestVersion?.deepLinkModel == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
@@ -111,7 +106,6 @@ class MiniAppsItemWidget extends StatelessWidget {
               path: "#Volunteer_Home_Screen",
             );
       } else {
-
         if (miniApp.latestVersion?.deepLinkModel != null) {
           try {
             await AppLaunchService.launchApp(
@@ -119,7 +113,7 @@ class MiniAppsItemWidget extends StatelessWidget {
               //deepLink: deeplink,
             );
           } catch (e) {
-           CommonFunctions.showError('launch_failed'.tr());
+            CommonFunctions.showError('launch_failed'.tr());
           }
         } else {
           NavigationService.pushNamed(
@@ -127,9 +121,7 @@ class MiniAppsItemWidget extends StatelessWidget {
             args: miniApp,
           );
         }
-
       }
-
     }
   }
 }

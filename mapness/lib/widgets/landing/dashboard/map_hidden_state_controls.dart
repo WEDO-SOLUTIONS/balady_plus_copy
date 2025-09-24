@@ -9,16 +9,21 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:sheetify/sheetify.dart';
 
 class MapHiddenStateControls extends ConsumerStatefulWidget {
-  final StatefulBottomSheetController<ThreeStateBottomSheet> controller;
+  final MultiStateSheetController<ThreeStateSheet> controller;
 
-  const MapHiddenStateControls(this.controller, {super.key});
+  final AnimationController fireworksController;
+
+  const MapHiddenStateControls(this.controller, this.fireworksController, {super.key});
 
   @override
   ConsumerState<MapHiddenStateControls> createState() => _MapHiddenStateControlsState();
@@ -53,11 +58,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     final freeRoamState = ref.read(freeRoamStarterProvider);
 
     final isLaunchingDismiss =
-        freeRoamState.canStart && freeRoamState.isAutorun && widget.controller.state != ThreeStateBottomSheet.hidden;
+        freeRoamState.canStart && freeRoamState.isAutorun && widget.controller.state != ThreeStateSheet.hidden;
 
     final isGoToNavigatorDismiss = freeRoamState.canStart &&
         !freeRoamState.isAutorun &&
-        widget.controller.state == ThreeStateBottomSheet.open &&
+        widget.controller.state == ThreeStateSheet.open &&
         widget.controller.interpolation > 0.5;
 
     if (isLaunchingDismiss || isGoToNavigatorDismiss) {
@@ -68,13 +73,13 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
   @override
   Widget build(BuildContext context) {
     final uiDirection = ref.watch(uiDirectionProvider);
-
+    final isNationalDay = ref.watch(saudiNationalDayProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
-      if (widget.controller.state == ThreeStateBottomSheet.expanded) {
+      if (widget.controller.state == ThreeStateSheet.expanded) {
         ref.read(freeRoamStarterProvider.notifier).setShown();
       } else if (state.canStart && state.isAutorun) {
-        widget.controller.setState(ThreeStateBottomSheet.hidden);
+        widget.controller.setState(ThreeStateSheet.hidden);
         setState(() {
           quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 0.05);
         });
@@ -84,15 +89,60 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
     final isFreeRoamStart = freeRoamState.canStart && !freeRoamState.isAutorun;
 
-    return AnimatedCrossFade(
-      crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-      firstChild: const FreeRoamBar(),
-      secondChild: QuickSearchBar(
-        direction: uiDirection,
-        quickScrollController: quickScrollController,
-        showLaunchingFreeRoam: showLaunchingFreeRoam,
-      ),
-      duration: const Duration(milliseconds: 300),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AnimatedCrossFade(
+          crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          firstChild: const FreeRoamBar(),
+          secondChild: QuickSearchBar(
+            direction: uiDirection,
+            quickScrollController: quickScrollController,
+            showLaunchingFreeRoam: showLaunchingFreeRoam,
+          ),
+          duration: const Duration(milliseconds: 300),
+        ),
+        if (isNationalDay)
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              GestureDetector(
+                onTap: () => widget.controller.setState(ThreeStateSheet.open),
+                child: SizedBox(
+                  height: Spacing.$12x,
+                  width: double.infinity,
+                  child: DecoratedBox(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
+                      color: Color(0xFF00343A),
+                    ),
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
+                          child: Text(
+                            context.l10n.happy95thYears,
+                            style: context.textStyles.bodySmallSemiBold.copyWith(
+                              color: context.colors.successOnSuccess,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        )),
+                  ),
+                ),
+              ),
+              NationalFlag(
+                onTap: () => widget.fireworksController
+                  ..value = 0
+                  ..animateTo(
+                    widget.fireworksController.upperBound,
+                    curve: Curves.easeOutQuint,
+                    duration: widget.fireworksController.duration,
+                  ),
+              ),
+            ],
+          )
+      ],
     );
   }
 }
@@ -126,14 +176,14 @@ class QuickSearchBar extends StatelessWidget {
   final ValueNotifier<double> opacity = ValueNotifier(1.0);
 
   @override
-  Widget build(BuildContext context) => BottomSheetStateBuilder<ThreeStateBottomSheet>(
-        defaultState: ThreeStateBottomSheet.hidden,
+  Widget build(BuildContext context) => MultiStateSheetBuilder<ThreeStateSheet>(
+        defaultState: ThreeStateSheet.hidden,
         builder: (context, state, interpolation, child) {
-          final delta = state == ThreeStateBottomSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
+          final delta = state == ThreeStateSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
 
           opacity.value = delta;
           return IgnorePointer(
-            ignoring: state != ThreeStateBottomSheet.hidden,
+            ignoring: state != ThreeStateSheet.hidden,
             child: Align(
               heightFactor: delta,
               alignment: Alignment.topCenter,
@@ -220,18 +270,17 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
   Widget build(BuildContext context) {
     super.build(context);
     listerForStart();
-    final color = context.color;
     final colors = context.colors;
 
     final delta = launchingController.value;
     final borderRadius = lerpDouble(RadiusBorder.m, RadiusBorder.l, delta) ?? RadiusBorder.m;
 
     final iconAndTextColor = Color.lerp(
-          color.textAndIconsBasePrimary,
+          colors.foregroundDefault,
           context.colors.backgroundSurface1,
           delta,
         ) ??
-        color.textAndIconsBasePrimary;
+        colors.foregroundDefault;
 
     const startingPoint = 0;
     const progressOpacity = 0.2;

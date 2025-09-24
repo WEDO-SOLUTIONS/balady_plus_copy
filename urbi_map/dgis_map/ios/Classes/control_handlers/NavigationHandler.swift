@@ -280,8 +280,9 @@ class NavigationHandler {
         }
         
         do {
+            let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
+            if !isPublicTransport {
             setupCamera(speedRangeZoom: speedRangeZoom)
-            
             // TODO: return back
             try self.navigationManager.start(
                 routeBuildOptions: RouteBuildOptions(
@@ -290,6 +291,7 @@ class NavigationHandler {
                 ),
                 trafficRoute: route
             )
+            }
         } catch {
             completion(
                 Result.failure(
@@ -355,8 +357,11 @@ class NavigationHandler {
         }
         
         do {
-            setupCamera(speedRangeZoom: speedRangeZoom)
+            
 
+            let isPublicTransport = options == .publicTransport(PublicTransportRouteSearchOptions())
+            if !isPublicTransport {
+            setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
@@ -364,6 +369,7 @@ class NavigationHandler {
                 ),
                 trafficRoute: route
             )
+            }
         } catch {
             completion(
                 Result.failure(FlutterError(

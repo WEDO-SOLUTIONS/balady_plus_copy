@@ -83,7 +83,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
                         ),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: context.color.surfaceBasePrimary,
+                            color: context.colors.backgroundSurface1,
                             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                           ),
                           child: ListView(
@@ -148,7 +148,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
                                         ),
                                         BriefRouteButton(
                                           padding: const EdgeInsetsDirectional.only(start: 8),
-                                          foreground: context.color.textAndIconsBasePrimary,
+                                          foreground: context.colors.foregroundDefault,
                                           background: NonThemeColor.color60,
                                           finishPoint: RouteSearchPoint(
                                             coordinates: GeoPointMessage(

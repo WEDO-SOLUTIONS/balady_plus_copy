@@ -2,6 +2,8 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
+import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
@@ -19,6 +21,7 @@ class RoutesCarousel extends StatelessWidget {
     required this.startNavigation,
     required this.points,
     required this.navType,
+    required this.publicTransportVisibility,
     super.key,
   });
 
@@ -26,6 +29,7 @@ class RoutesCarousel extends StatelessWidget {
 
   final List<RouteParamsPointWithLabel?> points;
   final Function(RouteInfo) startNavigation;
+  final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -34,6 +38,7 @@ class RoutesCarousel extends StatelessWidget {
           startNavigation: startNavigation,
           biggestWidth: constraints.biggest.width,
           navType: navType,
+          publicTransportVisibility: publicTransportVisibility,
         ),
       );
 }
@@ -44,13 +49,14 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.points,
     required this.startNavigation,
     required this.biggestWidth,
+    required this.publicTransportVisibility,
   });
 
   final RouteSearchOptionsMessage navType;
   final double biggestWidth;
   final Function(RouteInfo) startNavigation;
   final List<RouteParamsPointWithLabel?> points;
-
+  final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();
 }
@@ -64,76 +70,110 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: PathCardSize.fixedCardWidthWithPadding / widget.biggestWidth,
+      viewportFraction: widget.navType.cardWidthWithPadding / widget.biggestWidth,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final startPoint = widget.points[0]?.value;
+    final finishPoint = widget.points[1]?.value;
+
     final routes = ref.watch(
       routesProvider(
-        startPoint: widget.points[0]?.value,
-        finishPoint: widget.points[1]?.value,
+        startPoint: startPoint,
+        finishPoint: finishPoint,
         navType: widget.navType,
       ),
     );
 
-    return widgets.RoutesCarousel(
+    final publicTransportRoutes = ref.watch(
+      publicTransportRoutesProvider(
+        startPoint: startPoint,
+        finishPoint: finishPoint,
         navType: widget.navType,
-        pageController: _pageController,
-        routes: routes,
-        onActiveChanged: (index) {
-          if (_animating) {
-            return;
-          }
+      ),
+    );
+    ref.watch(activePublicTransportRouteProvider);
 
-          _activeRoute = index;
+    return widgets.RoutesCarousel(
+      navType: widget.navType,
+      pageController: _pageController,
+      routes: routes,
+      publicTransportRoutes: publicTransportRoutes,
+      onActiveChanged: _onActiveChanged,
+      refresh: _refresh,
+      destination: widget.points.lastOrNull,
+      startPoint: widget.points.firstOrNull,
+      startNavigation: _startNavigation,
+      publicTransportVisibility: widget.publicTransportVisibility,
+    );
+  }
 
-          ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
-        },
-        refresh: () {
-          ref.invalidate(routesProvider);
-        },
-        startNavigation: (info) {
-          final _routeType = widget.navType.toRouteType();
+  void _onActiveChanged(int index) {
+    if (_animating) {
+      return;
+    }
 
-          final location = ref.read(locationProvider);
-          if (location == null && widget.points[0]?.etaPoint == null) {
-            return;
-          }
+    _activeRoute = index;
 
-          final finishLocation =
-              widget.points[1]?.value ?? RouteParamsPoint(latitude: location!.latitude, longitude: location.longitude);
+    ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
+  }
 
-          // Set finish point for ETA stream
-          EtaStreamStorage()
-            ..setLatitude(finishLocation.latitude)
-            ..setLongitude(finishLocation.longitude);
+  void _refresh() {
+    ref
+      ..invalidate(routesProvider)
+      ..invalidate(publicTransportRoutesProvider);
+  }
 
-          final startPointEta = (widget.points[0]?.etaPoint.lat != null && widget.points[0]?.etaPoint.lon != null)
-              ? widget.points[0]!.etaPoint
-              : EtaRoutePoint(
-                  lat: location!.latitude,
-                  lon: location.longitude,
-                  label: widget.points[0]?.label,
-                );
+  void _startNavigation(RouteInfo info) {
+    final _routeType = widget.navType.toRouteType();
 
-          final finishPointEta = (widget.points[1]?.etaPoint.lat != null && widget.points[1]?.etaPoint.lon != null)
-              ? widget.points[1]!.etaPoint
-              : EtaRoutePoint(
-                  lat: finishLocation.latitude,
-                  lon: finishLocation.longitude,
-                  label: widget.points[1]?.label,
-                );
+    final startPoint = widget.points[0];
+    final finishPoint = widget.points[1];
 
-          ref.read(etaRouteInfoProvider.notifier).setRoute(eta.EtaRoute(
-                startPoint: startPointEta,
-                endPoint: finishPointEta,
-                type: _routeType,
-                routeIndex: _activeRoute,
-                createdAt: DateTime.now().toUtc().toIso8601String(),
-              ));
-          widget.startNavigation(info);
-        });
+    final location = ref.read(locationProvider);
+    if (location == null && startPoint?.etaPoint == null) {
+      return;
+    }
+
+    final finishLocation = finishPoint?.value ??
+        RouteParamsPoint(
+          latitude: location!.latitude,
+          longitude: location.longitude,
+        );
+
+    // Set finish point for ETA stream
+    EtaStreamStorage()
+      ..setLatitude(finishLocation.latitude)
+      ..setLongitude(finishLocation.longitude);
+
+    final startPointExists = startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
+    final startPointEta = startPointExists
+        ? startPoint!.etaPoint
+        : EtaRoutePoint(
+            lat: location!.latitude,
+            lon: location.longitude,
+            label: startPoint?.label,
+          );
+    final finishPointExists = finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
+    final finishPointEta = finishPointExists
+        ? finishPoint!.etaPoint
+        : EtaRoutePoint(
+            lat: finishLocation.latitude,
+            lon: finishLocation.longitude,
+            label: finishPoint?.label,
+          );
+
+    ref.read(etaRouteInfoProvider.notifier).setRoute(
+          eta.EtaRoute(
+            startPoint: startPointEta,
+            endPoint: finishPointEta,
+            type: _routeType,
+            routeIndex: _activeRoute,
+            createdAt: DateTime.now().toUtc().toIso8601String(),
+          ),
+        );
+    widget.startNavigation(info);
   }
 }

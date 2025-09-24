@@ -92,24 +92,27 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
     final frames = story.frames;
     final currentFrame = frames[currentIndex];
 
-    return StoryFrameWidget(
-      controller: widget.controller,
-      key: Key(story.storyId + currentIndex.toString()),
-      frame: currentFrame,
-      type: StoryArgsProvider.of(context).type,
-      onNext: () => _nextPage(story.storyId, currentIndex, frames.length),
-      onPrevious: () => _previousPage(story.storyId, currentIndex),
-      duration: currentFrame.duration,
-      frameIndex: currentIndex,
-      frameLength: frames.length,
-      onActionPressed: (frame) {
-        final action = frame.action!;
-        if (action is NavigationFrameAction) {
-          if (action.location.contains('/quickFeedback')) {
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiStories);
+    return Padding(
+      padding: EdgeInsets.only(top: MediaQuery.paddingOf(context).top),
+      child: StoryFrameWidget(
+        controller: widget.controller,
+        key: Key(story.storyId + currentIndex.toString()),
+        frame: currentFrame,
+        type: StoryArgsProvider.of(context).type,
+        onNext: () => _nextPage(story.storyId, currentIndex, frames.length),
+        onPrevious: () => _previousPage(story.storyId, currentIndex),
+        duration: currentFrame.duration,
+        frameIndex: currentIndex,
+        frameLength: frames.length,
+        onActionPressed: (frame) {
+          final action = frame.action!;
+          if (action is NavigationFrameAction) {
+            if (action.location.contains('/quickFeedback')) {
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiStories);
+            }
           }
-        }
-      },
+        },
+      ),
     );
   }
 }

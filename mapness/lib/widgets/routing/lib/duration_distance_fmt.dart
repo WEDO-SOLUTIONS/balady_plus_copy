@@ -1,7 +1,7 @@
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 /// @nodoc
-extension FormattedDistance on double {
+extension FormattedDistance on num {
   /// @nodoc
   String formatDistance(AppLocalizations l10n) {
     if (this >= 1000) {

@@ -26,16 +26,18 @@ extension DirectoryObject {
             workStatus: self.workStatus?.toMessage(),
             levelId: self.levelId?.value != nil ? Int64(self.levelId!.value): nil,
             buildingLevels: self.buildingLevels?.toMessage(),
-            buildingInfo: self.buildingInfo.toMessage(),
             entrances: self.entrances.map {
                 $0.toMessage()
             },
             tradeLicense: self.tradeLicense?.toMessage(),
+            buildingInfo: self.buildingInfo.toMessage(),
             rubricIds: self.rubricIds.map {
                 Int64($0.value)
             },
+            orgInfo: self.orgInfo?.toMessage(),
+            group: self.group.map { $0.toMessage() },
             routeInfos: self.routeInfos.map { $0.toMessage() },
-            group: self.group.map { $0.toMessage() }
+            platformIds: self.platformIds.map { $0.toMessage() }
         )
     }
     
@@ -639,11 +641,38 @@ extension PublicTransportRouteType {
     }
 }
 
+extension PublicTransportType {
+    var toMessage: PublicTransportRouteTypeMessage {
+        switch self {
+        case .aeroexpress: return .aeroexpress
+        case .bus: return .bus
+        case .cableCar: return .cableCar
+        case .funicularRailway: return .funicularRailway
+        case .lightMetro: return .lightMetro
+        case .metro: return .metro
+        case .monorail: return .monorail
+        case .premetro: return .premetro
+        case .trolleybus: return .trolleybus
+        case .tram: return .tram
+        case .shuttleBus: return .shuttleBus
+        case .suburbanTrain: return .suburbanTrain
+        @unknown default: return .bus
+        }
+    }
+}
+
 extension GroupItem {
     func toMessage() -> GroupItemMessage {
         return GroupItemMessage(
             id: self.id.toMessage(),
             type: self.type.toMessage()
         )
+    }
+}
+
+
+extension OrgInfo {
+    func toMessage() -> OrgInfoMessage {
+        OrgInfoMessage(branchCount: Int64(self.branchCount), id: Int64(self.id.value), name: self.name)
     }
 }

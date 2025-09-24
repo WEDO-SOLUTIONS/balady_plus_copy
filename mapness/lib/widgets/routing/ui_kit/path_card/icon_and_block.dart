@@ -20,7 +20,7 @@ class _IconAndTextBlock extends StatelessWidget {
           Spacing.$0_5x.widthBox,
           Text(
             label.toString(),
-            style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBaseSecondary),
+            style: context.textStyle.caption.copyWith(color: context.colors.foregroundSoft),
           ),
         ],
       );

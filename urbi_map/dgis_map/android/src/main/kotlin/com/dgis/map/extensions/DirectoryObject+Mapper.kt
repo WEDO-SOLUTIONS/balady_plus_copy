@@ -4,6 +4,11 @@ import com.dgis.map.map_api.*
 import ru.dgis.sdk.*
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.geometry.*
+import ru.dgis.sdk.routing.PublicTransportInfo
+import ru.dgis.sdk.routing.PublicTransportStop
+import ru.dgis.sdk.routing.PublicTransportTransfer
+import ru.dgis.sdk.routing.PublicTransportTransferRouteLongEntry
+import ru.dgis.sdk.routing.PublicTransportType
 
 fun DirectoryObject.toMessage(): DirectoryObjectMessage {
     return DirectoryObjectMessage(
@@ -32,7 +37,9 @@ fun DirectoryObject.toMessage(): DirectoryObjectMessage {
             tradeLicense = this.tradeLicense?.toMessage(),
             rubricIds = this.rubricIds.map { it.value },
             routeInfos = this.routeInfos.map { it.toMessage() },
-            group = this.group.map { it.toMessage() }
+            orgInfo = this.orgInfo?.toMessage(),
+            group = this.group.map { it.toMessage() },
+            platformIds = this.platformIds.map { it.toMessage() }
     )
 }
 
@@ -392,6 +399,86 @@ fun PublicTransportRouteType.toMessage(): PublicTransportRouteTypeMessage =
             PublicTransportRouteType.AEROEXPRESS -> PublicTransportRouteTypeMessage.AEROEXPRESS
         }
 
+fun PublicTransportType.toMessage(): PublicTransportRouteTypeMessage =
+        when (this) {
+            PublicTransportType.AEROEXPRESS -> PublicTransportRouteTypeMessage.AEROEXPRESS
+            PublicTransportType.BUS -> PublicTransportRouteTypeMessage.BUS
+            PublicTransportType.CABLE_CAR -> PublicTransportRouteTypeMessage.CABLE_CAR
+            PublicTransportType.FUNICULAR_RAILWAY -> PublicTransportRouteTypeMessage.FUNICULAR_RAILWAY
+            PublicTransportType.LIGHT_METRO -> PublicTransportRouteTypeMessage.LIGHT_METRO
+            PublicTransportType.METRO -> PublicTransportRouteTypeMessage.METRO
+            PublicTransportType.MONORAIL -> PublicTransportRouteTypeMessage.MONORAIL
+            PublicTransportType.PREMETRO -> PublicTransportRouteTypeMessage.PREMETRO
+            PublicTransportType.TROLLEYBUS -> PublicTransportRouteTypeMessage.TROLLEYBUS
+            PublicTransportType.TRAM -> PublicTransportRouteTypeMessage.TRAM
+            PublicTransportType.SHUTTLE_BUS -> PublicTransportRouteTypeMessage.SHUTTLE_BUS
+            PublicTransportType.SUBURBAN_TRAIN -> PublicTransportRouteTypeMessage.SUBURBAN_TRAIN
+            PublicTransportType.WATERWAY_TRANSPORT -> PublicTransportRouteTypeMessage.RIVER_TRANSPORT
+            PublicTransportType.SPEED_TRAM -> PublicTransportRouteTypeMessage.LIGHT_RAIL
+            PublicTransportType.MOSCOW_CENTRAL_RING -> PublicTransportRouteTypeMessage.METRO
+            PublicTransportType.MOSCOW_CENTRAL_DIAMETERS -> PublicTransportRouteTypeMessage.METRO
+        }
+
 fun GroupItem.toMessage(): GroupItemMessage {
     return GroupItemMessage(id = this.id.toMessage(), type = this.type.toMessage())
+}
+
+fun PublicTransportTransfer.toMessage(): PublicTransportTransferMessage {
+    return PublicTransportTransferMessage(
+        startPointName = this.startPointName,
+        finishPointName = this.finishPointName,
+        routeParts = this.routeParts.map { routePart ->
+            PublicRoutePartMessage(
+                transports = routePart.transports.map { it.toMessage() },
+                intermediateStops = routePart.intermediateStops.map { stop ->
+                    PublicTransportStopMessage(
+                        coordinates = stop.coordinates.toMessage(),
+                        name = stop.name
+                    )
+                }
+            )
+        }
+    )
+}
+
+fun PublicTransportInfo.toMessage(): PublicTransportInfoMessage {
+    return PublicTransportInfoMessage(
+        type = this.type.toMessage(),
+        names = this.names,
+        suggestedCarNumbers = this.suggestedCarNumbers.map { it.toLong() },
+        boardingSuggest = this.boardingSuggest,
+        color = this.color?.toLong(),
+        routeLogo = this.routeLogo
+    )
+}
+
+fun PublicTransportStop.toMessage(): PublicTransportStopMessage {
+    return PublicTransportStopMessage(
+        coordinates = this.coordinates.toMessage(),
+        name = this.name
+    )
+}
+
+fun PublicTransportTransferRouteLongEntry.toMessage(): PublicTransportTransferRouteLongEntryMessage {
+    val length = RouteDistanceMessage(millimeters = this.length.millimeters)
+    val point = RoutePointMessage(distance = RouteDistanceMessage(millimeters = this.point.distance.millimeters))
+    val value = PublicTransportTransferMessage(
+        startPointName = this.value.startPointName,
+        finishPointName=  this.value.finishPointName,
+        routeParts = this.value.routeParts.map { part ->
+        PublicRoutePartMessage(
+            transports = part.transports.map { it.toMessage() },
+            intermediateStops = part.intermediateStops.map {
+                PublicTransportStopMessage(
+                coordinates = it.coordinates.toMessage(),
+                name = it.name
+                )
+            }
+        )
+        }
+    )
+    return PublicTransportTransferRouteLongEntryMessage(point = point, length = length, value=  value)
+}
+fun OrgInfo.toMessage(): OrgInfoMessage {
+    return OrgInfoMessage(id = this.id.value, branchCount = this.branchCount.toLong(), name = this.name)
 }

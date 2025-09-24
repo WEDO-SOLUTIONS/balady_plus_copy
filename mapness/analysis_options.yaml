@@ -1,4 +1,7 @@
 analyzer:
+  plugins:
+    - custom_lint
+
   strong-mode:
     strict-casts: true
     strict-raw-types: true

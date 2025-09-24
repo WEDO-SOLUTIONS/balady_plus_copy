@@ -209,7 +209,7 @@ class CommonFunctions {
     return mime.lookupMimeType(
       '',
       headerBytes:
-      base64.decode(base64String.substring(0, minimumBase64Length)),
+          base64.decode(base64String.substring(0, minimumBase64Length)),
     );
   }
 
@@ -224,13 +224,12 @@ class CommonFunctions {
     entryPointBridge(params);
   }
 
-  static void openVolunteerProfileScreen()
-  {
-    NavigationService.navigatorKey.currentState!
-        .pushNamed(
+  static void openVolunteerProfileScreen() {
+    NavigationService.navigatorKey.currentState!.pushNamed(
       RouteName.VolunteerProfile,
     );
   }
+
   static Future<bool> isHuaweiDevice() async {
     return await FlutterHmsGmsAvailability.isHmsAvailable;
   }
@@ -293,18 +292,11 @@ class CommonFunctions {
     return null;
   }
 
-
   static void openMiniApp(MiniAppModel? miniApp) {
-
-    if(miniApp != null) {
-
-
+    if (miniApp != null) {
       sl<HomeMiniAppsListCubit>()
-          .openMiniApp(serviceKey: miniApp.serviceKey!, path:miniApp.path);
-
-
+          .openMiniApp(serviceKey: miniApp.serviceKey!, path: miniApp.path);
     }
-
   }
 
   static Future<LatLng?> handelLocationCatch(
@@ -793,8 +785,12 @@ class CommonFunctions {
 
   // add isMunicipality to check if the user is access municipality services
   // or life style services, make teh default value is false for life style services
-  static Future<bool> onLogin({bool isMunicipality = false, String? mainPage}) async =>
-      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality,mainPage:mainPage,);
+  static Future<bool> onLogin(
+          {bool isMunicipality = false, String? mainPage}) async =>
+      await sl<EntryPointCubit>().onLogin(
+        isMunicipality: isMunicipality,
+        mainPage: mainPage,
+      );
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -1010,22 +1006,14 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url ,
-      {bool isObjections = false,bool needLogin = true}) async {
-
-    if(needLogin==false) {
-      Navigator.of(NavigationService.navigatorKey.currentContext!)
-          .pushNamed(
+  static void openBaladyWebView(String? url,
+      {bool isObjections = false, bool needLogin = true}) async {
+    if (needLogin == false) {
+      Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
         RouteName.inappWebview,
-        arguments: (
-        requestNum: ''.tr(),
-        url: url,
-        isObjections: isObjections
-        ),
+        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections),
       );
-    }
-    else {
-
+    } else {
       if (CommonProperties.isLoggedIn) {
         EasyLoading.show();
         GetCookie getCookie = GetCookie(repository: sl());
@@ -1761,15 +1749,37 @@ class CommonFunctions {
     return RemoteConfig.apigeeURL + "/v1/dms-mobile/files/$id";
   }
 
-  static bool changeSpalsh() {
-    DateTime today = DateTime.now();
+  // List of special dates or date ranges
+  static List<DateTimeRange> get _specialDateRanges {
+    final today = DateTime.now();
+    return [
+      // Single day - Example: National Day (September 23rd)
+      DateTimeRange(
+          start: DateTime(today.year, 9, 18),
+          end: DateTime(today.year, 9, 27, 23, 59, 59)),
 
-    int todayDay = today.day;
-    int todayMonth = today.month;
-    int todayYear = today.year;
-    var allowedDays = [22, 23, 24, 25];
-    if (allowedDays.contains(todayDay) && todayMonth == 9 && todayYear == 2024)
-      return true;
+      /// Date range - Example: Festival (September 20th to September 30th)
+      // DateTimeRange(
+      //   start: DateTime(DateTime.now().year, 9, 20),
+      //   end: DateTime(DateTime.now().year, 9, 30),
+      // ),
+    ];
+  }
+
+  /// Returns true if [now] (default: today) is inside any of the given ranges.
+  static bool get isTodayInRanges {
+    final today = DateTime.now();
+
+    // Normalize `today` to midnight to ignore time of day
+    final normalized = DateTime(today.year, today.month, today.day);
+
+    for (final range in _specialDateRanges) {
+      if (normalized
+              .isAfter(range.start.subtract(const Duration(seconds: 1))) &&
+          normalized.isBefore(range.end.add(const Duration(seconds: 1)))) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -1849,6 +1859,7 @@ class CommonProperties {
   static String? sessionId;
   static String? fcmToken;
   static String? currentLocalServerDirectory;
+
   // static String? serverRootPath;
 
   static bool showEkramDriver = false;
@@ -1857,7 +1868,6 @@ class CommonProperties {
   static List<String> allowedSHAFingerprints = [
     "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15",
     "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
-
   ];
 
   //static String get token =>

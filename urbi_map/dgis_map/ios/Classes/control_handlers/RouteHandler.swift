@@ -93,6 +93,10 @@ class RouteHandler {
         self.routeEditorSource.setRoutesVisible(visible: visible)
     }
     
+    func setShowOnlyActiveRoute(_ visible: Bool) {
+        self.routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: visible)
+    }
+    
     func setRouteParams(_ params: RouteEditorRouteParamsMessage) {
         let startPoint: RouteSearchPoint? = {
             if let pStartPoint = params.startPoint {
@@ -161,56 +165,31 @@ class RouteHandler {
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
         
-        let showOnlyActiveRoute: Bool
-        
-        if let showOnlyActive = params.showOnlyActiveRoute {
-            showOnlyActiveRoute = showOnlyActive
-        } else {
-            showOnlyActiveRoute = params.options == .publicTransport
-        }
+        let showOnlyActiveRoute = params.showOnlyActiveRoute ?? true
         
         routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: showOnlyActiveRoute)
     }
     
     private func getRouteSearchOptions(opts: RouteSearchOptionsMessage, searchParams: CarRouteSearchOptionParamsMessage?) -> RouteSearchOptions {
+        let avoidTollRoads = searchParams?.avoidTollRoads ?? false
+        let avoidUnpavedRoads = searchParams?.avoidUnpavedRoads ?? false
+        let carOptions = CarRouteSearchOptions(avoidTollRoads: avoidTollRoads, avoidUnpavedRoads: avoidUnpavedRoads)
+
         switch opts {
         case .car:
-            let carOptions:CarRouteSearchOptions;
-            if (searchParams != nil) {
-                carOptions =
-                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
-            } else {
-                carOptions = CarRouteSearchOptions()
-            }
-            return RouteSearchOptions.car(carOptions)
+            return .car(carOptions)
         case .bicycle:
-            return RouteSearchOptions.bicycle(BicycleRouteSearchOptions())
+            return .bicycle(BicycleRouteSearchOptions())
         case .pedestrian:
-            return RouteSearchOptions.pedestrian(PedestrianRouteSearchOptions())
+            return .pedestrian(PedestrianRouteSearchOptions())
         case .truck:
-            let carOptions:CarRouteSearchOptions;
-            if (searchParams != nil) {
-                carOptions =
-                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
-            } else {
-                carOptions = CarRouteSearchOptions()
-            }
-            return RouteSearchOptions.truck(TruckRouteSearchOptions(car: carOptions))
+            return .truck(TruckRouteSearchOptions(car: carOptions))
         case .scooter:
-            return RouteSearchOptions.scooter(ScooterRouteSearchOptions())
+            return .scooter(ScooterRouteSearchOptions())
         case .publicTransport:
-            return RouteSearchOptions.publicTransport(PublicTransportRouteSearchOptions(
-                transportTypes: .init()
-            ))
+            return .publicTransport(PublicTransportRouteSearchOptions())
         case .taxi:
-            let carOptions:CarRouteSearchOptions;
-            if (searchParams != nil) {
-                carOptions =
-                CarRouteSearchOptions(avoidTollRoads: searchParams?.avoidTollRoads as! Bool, avoidUnpavedRoads: searchParams?.avoidUnpavedRoads as! Bool)
-            } else {
-                carOptions = CarRouteSearchOptions()
-            }
-            return RouteSearchOptions.taxi(TaxiRouteSearchOptions(car: carOptions))
+            return .taxi(TaxiRouteSearchOptions(car: carOptions))
         }
     }
     
@@ -406,6 +385,59 @@ class RouteHandler {
                     ))
                 )
             })
+        )
+    }
+    
+    
+    func findRoute(
+        startPoint: RouteSearchPoint,
+        finishPoint: RouteSearchPoint,
+        routeSearchOptions: RouteSearchOptions,
+        completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void
+    ) {
+        let routesFuture = trafficRouter.findRoute(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            routeSearchOptions: routeSearchOptions
+        )
+        
+        self.cancelable.append(routesFuture.sink { (response: [TrafficRoute]) in
+            let routeInfoMessages = response.map(self.routeInfoMessages)
+            let result = FindRouteResultMessage(routes: routeInfoMessages)
+            completion(Result.success(result))
+        } failure: { error in
+            completion(
+                Result.failure(
+                    FlutterError(
+                        code: "FindRoute error",
+                        message: error.description,
+                        details: nil
+                    )))
+            }
+        )
+    }
+    
+    func routeInfoMessages(route: TrafficRoute) -> RouteInfoMessage {
+        let distance = Double(route.route.geometry.last?.point.distance.millimeters ?? 0) / 1000.0
+        
+        var duration = 0.0
+        if let first = route.route.geometry.first {
+            duration = Double(route.traffic.durations.calculateDuration(routePoint: first.point))
+        }
+        
+        let (stairwayCount, gateCount, altitudes) = RouteHandler.getPedestrianRouteData(route.route)
+        
+        let publicTransportTransfers = route.route.publicTransportTransfers.entries.map { transfer in
+            transfer.toMessage.value
+        }
+        
+        return RouteInfoMessage(
+            distance: distance,
+            duration: duration,
+            stairwayCount: Int64(stairwayCount),
+            gateCount: Int64(gateCount),
+            altitudes:  altitudes.map { Int64($0)},
+            publicTransportTransfers: publicTransportTransfers,
         )
     }
 }

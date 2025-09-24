@@ -29,11 +29,15 @@ import com.dgis.FlutterProvider
 import com.dgis.map.R
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import com.dgis.map.map_api.GeoPointMessage
 import com.dgis.map.map_api.MapMarkersType
+import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.Latitude
 import ru.dgis.sdk.coordinates.Longitude
+import ru.dgis.sdk.directory.ContactInfo
 import ru.dgis.sdk.directory.DirectoryObject
+import ru.dgis.sdk.directory.RubricId
 import ru.dgis.sdk.geometry.distance
 import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.routing.RouteEditorRoutesInfo
@@ -45,7 +49,7 @@ import kotlin.math.min
 class RoutePreviewScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
-    private val directoryObject: DirectoryObject,
+    private val params: RoutePreviewParams,
 ) : CarMapScreen(carContext, mapController) {
 
     private var state: RoutePreviewScreenState = RoutePreviewScreenState.Loading
@@ -118,11 +122,11 @@ class RoutePreviewScreen(
             }
 
             override fun onStart(owner: LifecycleOwner) {
-                directoryObject.markerPosition?.let {
+                params.coordinates?.let {
                     mapController.setRouteParams(
-                        it.latitude.value,
-                        it.longitude.value,
-                        directoryObject.id
+                        it.latitude,
+                        it.longitude,
+                        params.id
                     )
                 }
             }
@@ -138,10 +142,7 @@ class RoutePreviewScreen(
             }
 
             is RoutePreviewScreenState.SingleRoute -> {
-                val templateMapController = MapController.Builder()
-                    .setMapActionStrip(buildMapActionStrip())
-                    .build()
-                MapTemplate.Builder().setMapController(templateMapController)
+                MapTemplate.Builder().setMapController(buildMapController())
                     .setActionStrip(actionStrip)
                     .setHeader(headerBack).setPane(state.pane).build()
             }
@@ -178,21 +179,22 @@ class RoutePreviewScreen(
             val distanceSpan = DistanceSpan.create(
                 AndroidAutoUtils.createDistance(distanceInMeters)
             )
+            val rubricIds = params.rubricIds ?: emptyList()
 
-            val text = SpannableString("  \n${directoryObject.makeAddressString()}")
+            val text = SpannableString("  \n${params.additionalInfo}")
             text.setSpan(distanceSpan, 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
             FlutterProvider.getHostFlutterApi(carContext)
-                .getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+                .getMarkerType(rubricIds.map { it.value }) { markerTypeResult ->
                     val pane = Pane.Builder()
-                    val row = Row.Builder().setTitle(directoryObject.title).addText(text)
+                    val row = Row.Builder().setTitle(params.name).addText(text)
                     val icon = getPoiIcon(markerTypeResult.getOrNull())
                     if (icon != null) {
                         row.setImage(icon)
                     }
                     pane.addRow(row.build())
                     val phone =
-                        directoryObject.contactInfos.firstOrNull { it.type == "phone" }?.value
+                        params.contactInfos?.firstOrNull { it.type == "phone" }?.value
                     if (phone != null) {
                         pane.addAction(buildPhoneAction(phone))
                     }
