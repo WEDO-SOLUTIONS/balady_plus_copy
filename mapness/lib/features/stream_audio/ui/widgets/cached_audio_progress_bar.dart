@@ -2,115 +2,102 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 
-class ModernAudioProgressBar extends ConsumerStatefulWidget {
+class LiveRadioProgressBar extends ConsumerStatefulWidget {
   final VoidCallback? onGoLive;
 
-  const ModernAudioProgressBar({
+  const LiveRadioProgressBar({
     Key? key,
     this.onGoLive,
   }) : super(key: key);
 
   @override
-  ConsumerState<ModernAudioProgressBar> createState() => _ModernAudioProgressBarState();
+  ConsumerState<LiveRadioProgressBar> createState() =>
+      _LiveRadioProgressBarState();
 }
 
-class _ModernAudioProgressBarState extends ConsumerState<ModernAudioProgressBar>
+class _LiveRadioProgressBarState extends ConsumerState<LiveRadioProgressBar>
     with SingleTickerProviderStateMixin {
   bool _isDragging = false;
-  bool _showThumb = false;
   double _dragProgress = 0.0;
 
-  late AnimationController _thumbAnimationController;
-  late Animation<double> _thumbScaleAnimation;
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
 
   @override
   void initState() {
     super.initState();
-    _thumbAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+    _pulseController = AnimationController(
+      duration: const Duration(seconds: 2),
       vsync: this,
     );
-    _thumbScaleAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
+
+    _pulseAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.3,
     ).animate(CurvedAnimation(
-      parent: _thumbAnimationController,
-      curve: Curves.easeOutBack,
+      parent: _pulseController,
+      curve: Curves.easeInOut,
     ));
+
+    _pulseController.repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _thumbAnimationController.dispose();
+    _pulseController.dispose();
     super.dispose();
-  }
-
-  void _showThumbIndicator() {
-    setState(() {
-      _showThumb = true;
-    });
-    _thumbAnimationController.forward();
-  }
-
-  void _hideThumbIndicator() {
-    _thumbAnimationController.reverse().then((_) {
-      if (mounted) {
-        setState(() {
-          _showThumb = false;
-        });
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
+    final screenWidth = MediaQuery.of(context).size.width;
+    final progressBarWidth = screenWidth - 40;
+
     final displayProgress = _isDragging ? _dragProgress : provider.progress;
-    final isLive = provider.isLive && !_isDragging;
-    final timeBehind = provider.bufferedDuration - provider.currentPosition;
-    final showBehind = !isLive && timeBehind.inSeconds > 0;
+    final isLive = !_isDragging && provider.isLive;
+    final timeBehind = provider.timeBehindLive;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       child: Column(
         children: [
-          // Time indicators row
+          // Time indicators
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Row(
               children: [
-                // Current time
-                AnimatedDefaultTextStyle(
-                  duration: const Duration(milliseconds: 200),
+                // Current position
+                Text(
+                  _isDragging
+                      ? _formatDuration(Duration(
+                          milliseconds:
+                              (provider.totalCachedTime.inMilliseconds *
+                                      _dragProgress)
+                                  .round()))
+                      : provider.formattedCurrentPosition,
                   style: TextStyle(
-                    color: _isDragging
-                        ? Colors.white
-                        : Colors.white.withOpacity(0.7),
+                    color: Colors.white.withOpacity(0.9),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    letterSpacing: -0.2,
-                  ),
-                  child: Text(
-                    _isDragging
-                        ? _formatDuration(Duration(
-                        milliseconds: (provider.bufferedDuration.inMilliseconds * _dragProgress).round()
-                    ))
-                        : provider.formattedCurrentPosition,
                   ),
                 ),
 
                 const Spacer(),
 
-                // Behind status or Live indicator
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: showBehind
-                      ? Container(
-                    key: const ValueKey('behind'),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                // Status indicator
+                if (!isLive && !_isDragging && timeBehind.inSeconds > 2)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.orange.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(4),
+                      color: Colors.orange.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.orange.withOpacity(0.4),
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -118,177 +105,208 @@ class _ModernAudioProgressBarState extends ConsumerState<ModernAudioProgressBar>
                         Container(
                           width: 4,
                           height: 4,
-                          margin: const EdgeInsets.only(right: 4),
                           decoration: const BoxDecoration(
                             color: Colors.orange,
                             shape: BoxShape.circle,
                           ),
                         ),
+                        const SizedBox(width: 4),
                         Text(
-                          'Behind ${_formatTimeBehind(timeBehind)}',
+                          '-${provider.formattedTimeBehind}',
                           style: const TextStyle(
                             color: Colors.orange,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
-                            letterSpacing: -0.2,
                           ),
                         ),
                       ],
                     ),
-                  )
-                      : const SizedBox(key: ValueKey('empty')),
-                ),
+                  ),
 
                 // Go Live button
-                const SizedBox(width: 8),
-                AnimatedOpacity(
-                  opacity: !isLive ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: GestureDetector(
-                    onTap: !isLive ? () {
-                      ref.read(streamAudioProvider).goLive();
-                      widget.onGoLive?.call();
-                    } : null,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.red.withValues(alpha: 0.5),
-                        border: Border.all(color: Colors.red),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Text(
-                        'Go LIVE',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          letterSpacing: 0.5,
+                if (!isLive || (_isDragging && _dragProgress < 0.98))
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_isDragging) {
+                          setState(() {
+                            _isDragging = false;
+                          });
+                        }
+                        ref.read(streamAudioProvider).goLive();
+                        widget.onGoLive?.call();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.2),
+                          border: Border.all(color: Colors.red),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (isLive)
+                              ScaleTransition(
+                                scale: _pulseAnimation,
+                                child: Container(
+                                  width: 6,
+                                  height: 6,
+                                  margin: const EdgeInsets.only(right: 4),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                            const Text(
+                              'LIVE',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ),
 
                 const Spacer(),
 
-                // Total buffered time
+                // Total cached time
                 Text(
-                  provider.formattedBufferedDuration,
+                  provider.formattedLivePosition,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withOpacity(0.9),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    letterSpacing: -0.2,
                   ),
                 ),
               ],
             ),
           ),
 
-          // Modern progress bar with sharp edges
+          // Progress bar
           GestureDetector(
-            onPanStart: (details) {
-              _showThumbIndicator();
+            onHorizontalDragStart: (details) {
               setState(() {
                 _isDragging = true;
-                _dragProgress = _calculateProgress(details.localPosition.dx);
+                _dragProgress = (details.localPosition.dx / progressBarWidth)
+                    .clamp(0.0, 1.0);
               });
             },
-            onPanUpdate: (details) {
-              if (_isDragging) {
-                setState(() {
-                  _dragProgress = _calculateProgress(details.localPosition.dx);
-                });
-              }
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                _dragProgress = (details.localPosition.dx / progressBarWidth)
+                    .clamp(0.0, 1.0);
+              });
             },
-            onPanEnd: (details) {
-              if (_isDragging) {
-                if (_dragProgress >= 0.98) {
-                  ref.read(streamAudioProvider).goLive();
-                  widget.onGoLive?.call();
-                } else {
-                  ref.read(streamAudioProvider).seekToProgress(_dragProgress);
-                }
-                setState(() {
-                  _isDragging = false;
-                });
-                _hideThumbIndicator();
-              }
+            onHorizontalDragEnd: (details) {
+              final targetPosition = Duration(
+                milliseconds:
+                    (provider.totalCachedTime.inMilliseconds * _dragProgress)
+                        .round(),
+              );
+
+              ref.read(streamAudioProvider).seekToPosition(targetPosition);
+
+              setState(() {
+                _isDragging = false;
+              });
             },
-            onTapDown: (details) {
-              _showThumbIndicator();
-              final progress = _calculateProgress(details.localPosition.dx);
+            onTapUp: (details) {
+              final progress =
+                  (details.localPosition.dx / progressBarWidth).clamp(0.0, 1.0);
 
               if (progress >= 0.98) {
+                // Tap near end goes live
                 ref.read(streamAudioProvider).goLive();
                 widget.onGoLive?.call();
               } else {
                 ref.read(streamAudioProvider).seekToProgress(progress);
               }
-
-              Future.delayed(const Duration(milliseconds: 100), () {
-                _hideThumbIndicator();
-              });
             },
             child: Container(
-              height: 24,
+              height: 40,
               alignment: Alignment.center,
+              color: Colors.transparent,
               child: Stack(
                 clipBehavior: Clip.none,
+                alignment: Alignment.centerLeft,
                 children: [
-                  // Background track - sharp edges
+                  // Track background
                   Container(
-                    height: 2,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                    ),
-                  ),
-
-                  // Buffered portion
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    height: 2,
+                    height: 4,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
 
-                  // Played portion with animation
+                  // Progress fill
                   AnimatedContainer(
                     duration: _isDragging
                         ? Duration.zero
                         : const Duration(milliseconds: 100),
-                    width: MediaQuery.of(context).size.width * displayProgress,
-                    height: 2,
+                    height: 4,
+                    width: progressBarWidth * displayProgress,
                     decoration: BoxDecoration(
                       color: isLive ? Colors.red : Colors.white,
+                      borderRadius: BorderRadius.circular(2),
+                      boxShadow: isLive
+                          ? [
+                              BoxShadow(
+                                color: Colors.red.withOpacity(0.5),
+                                blurRadius: 6,
+                                spreadRadius: 1,
+                              ),
+                            ]
+                          : null,
                     ),
                   ),
 
-                  // Thumb indicator - only shows when interacting
-                  if (_showThumb)
-                    Positioned(
-                      left: (MediaQuery.of(context).size.width - 40) * displayProgress - 6,
-                      top: -5,
-                      child: ScaleTransition(
-                        scale: _thumbScaleAnimation,
-                        child: Container(
-                          width: 12,
-                          height: 12,
+                  // Thumb indicator
+                  AnimatedPositioned(
+                    duration: _isDragging
+                        ? Duration.zero
+                        : const Duration(milliseconds: 100),
+                    left: (progressBarWidth * displayProgress) - 10,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          width: _isDragging ? 12 : 8,
+                          height: _isDragging ? 12 : 8,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: isLive ? Colors.red : Colors.grey[800],
                             shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                         ),
                       ),
                     ),
+                  ),
+                  
                 ],
               ),
             ),
@@ -296,12 +314,6 @@ class _ModernAudioProgressBarState extends ConsumerState<ModernAudioProgressBar>
         ],
       ),
     );
-  }
-
-  double _calculateProgress(double localX) {
-    final screenWidth = MediaQuery.of(context).size.width - 40; // Account for padding
-    final progress = localX / screenWidth;
-    return progress.clamp(0.0, 1.0);
   }
 
   String _formatDuration(Duration duration) {
@@ -314,12 +326,5 @@ class _ModernAudioProgressBarState extends ConsumerState<ModernAudioProgressBar>
       return '$hours:$minutes:$seconds';
     }
     return '$minutes:$seconds';
-  }
-
-  String _formatTimeBehind(Duration behind) {
-    if (behind.inMinutes > 0) {
-      return '${behind.inMinutes}m ${behind.inSeconds.remainder(60)}s';
-    }
-    return '${behind.inSeconds}s';
   }
 }

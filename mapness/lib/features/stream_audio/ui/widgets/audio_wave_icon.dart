@@ -1,8 +1,6 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 
 class AudioWaveIcon extends ConsumerStatefulWidget {
@@ -25,8 +23,7 @@ class AudioWaveIcon extends ConsumerStatefulWidget {
   ConsumerState<AudioWaveIcon> createState() => _AudioWaveIconState();
 }
 
-class _AudioWaveIconState extends ConsumerState<AudioWaveIcon>
-    with TickerProviderStateMixin {
+class _AudioWaveIconState extends ConsumerState<AudioWaveIcon> with TickerProviderStateMixin {
   late AnimationController _animationController;
   late List<AnimationController> _waveControllers;
   bool _isPlaying = false;
@@ -163,30 +160,19 @@ class AudioWavePainter extends CustomPainter {
         waveHeight = size.height * baseHeights[i] * 0.6;
       }
 
-      final left = center.dx -
-          (waveControllers.length * waveWidth / 2) +
-          (i * waveWidth) +
-          (waveWidth * 0.25);
+      final left = center.dx - (waveControllers.length * waveWidth / 2) + (i * waveWidth) + (waveWidth * 0.25);
       final right = left + (waveWidth * 0.5);
 
       final rect = RRect.fromRectAndRadius(
-        Rect.fromLTRB(
-          left,
-          center.dy - waveHeight / 2,
-          right,
-          center.dy + waveHeight / 2,
-        ),
+        Rect.fromLTRB(left, center.dy - waveHeight / 2, right, center.dy + waveHeight / 2),
         Radius.circular(waveWidth * 0.25),
       );
 
       // Create gradient paint (cyan to blue like the SVG)
-      final gradient = const LinearGradient(
+      const gradient = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
-        colors: [
-          Color(0xFF5FECFF), // Cyan
-          Color(0xFF5B8FFF), // Blue
-        ],
+        colors: [Color(0xFF5FECFF), Color(0xFF5B8FFF)],
         stops: [0.298, 1.0], // Matching SVG gradient stops
       );
 

@@ -62,16 +62,17 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
                     borderRadius: BorderRadius.circular(12),
                     image: provider.selectedProgram?.programImage != null
                         ? DecorationImage(
-                      image: AssetImage(provider.selectedProgram!.programImage.keyName),
-                      fit: BoxFit.cover,
-                    )
-                        : const DecorationImage(
-                      image: AssetImage('assets/images/audio_placeholders/panorama.png'),
-                      fit: BoxFit.cover,
-                    ),
+                            image: AssetImage(
+                                provider.selectedProgram!.programImage.keyName),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                    color: provider.selectedProgram?.programImage == null
+                        ? Colors.grey[300]
+                        : null,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -103,7 +104,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
                         provider.selectedProgram?.sub ?? '',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.white.withOpacity(0.5),
+                          color: Colors.white.withValues(alpha: 0.5),
                           letterSpacing: -0.2,
                         ),
                         maxLines: 1,
@@ -119,7 +120,9 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
                   spacing: 14,
                   children: [
                     GestureDetector(
-                      onTap: () async => await ref.read(streamAudioProvider).togglePlayPause(),
+                      onTap: () async {
+                        await ref.read(streamAudioProvider).togglePlayPause();
+                      },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 200),
                         width: 44,
@@ -129,40 +132,45 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
                             duration: const Duration(milliseconds: 200),
                             child: provider.isLoading
                                 ? SizedBox(
-                              key: const ValueKey('loading'),
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white.withOpacity(0.8),
-                                ),
-                              ),
-                            )
+                                    key: const ValueKey('loading'),
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white.withValues(alpha: 0.8),
+                                      ),
+                                    ),
+                                  )
                                 : SvgPicture.asset(
-                              key: ValueKey(provider.isPlaying),
-                              provider.isPlaying
-                                  ? Assets.icons.svg.audio.pause.keyName
-                                  : Assets.icons.svg.audio.resume.keyName,
-                              width: 20,
-                              height: 20,
-                              colorFilter: const ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.srcIn,
-                              ),
-                            ),
+                                    key: ValueKey(provider.isPlaying),
+                                    provider.isPlaying
+                                        ? Assets.icons.svg.audio.pause.keyName
+                                        : Assets.icons.svg.audio.resume.keyName,
+                                    width: 20,
+                                    height: 20,
+                                    colorFilter: const ColorFilter.mode(
+                                      Colors.white,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),
                     ),
-                    SvgPicture.asset(
-                      Assets.icons.svg.audio.seekForward.keyName,
-                      key: ValueKey(provider.isPlaying),
-                      width: 18,
-                      height: 18,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
+                    GestureDetector(
+                      onTap: () async {
+                        await ref.read(streamAudioProvider).seekForward();
+                      },
+                      child: SvgPicture.asset(
+                        Assets.icons.svg.audio.seekForward.keyName,
+                        key: ValueKey(provider.isPlaying),
+                        width: 18,
+                        height: 18,
+                        colorFilter: const ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     )
                   ],
@@ -173,7 +181,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
 
           // Modern progress bar
           if (provider.selectedProgram != null)
-            ModernAudioProgressBar(
+            LiveRadioProgressBar(
               onGoLive: () async {
                 await ref.read(streamAudioProvider).goLive();
               },

@@ -400,7 +400,7 @@ class _DraggableFloatingPlayerControlsState
                   decoration: BoxDecoration(
                     // Debug visuals - remove for production
                     // color: Colors.red.withOpacity(0.2),
-                    border: Border.all(color: Colors.white.withOpacity(0.15)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
                     borderRadius: BorderRadius.circular(currentBorderRadius),
                   ),
                   child: Container(
@@ -425,7 +425,7 @@ class _DraggableFloatingPlayerControlsState
                             Radius.circular(currentBorderRadius)),
                         side: BorderSide(
                           width: 2,
-                          color: Colors.white.withOpacity(0.15),
+                          color: Colors.white.withValues(alpha: 0.15),
                         ),
                       ),
                     ),
@@ -480,7 +480,7 @@ class _ContentState extends ConsumerState<Content> {
               ),
               borderRadius: BorderRadius.circular(8),
               border:
-                  Border.all(color: Colors.white.withOpacity(0.15), width: 1.5),
+                  Border.all(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
             ),
           ),
           const SizedBox(width: 8),
@@ -501,7 +501,7 @@ class _ContentState extends ConsumerState<Content> {
                 Text(
                   selectedProgram?.sub ?? '-',
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                   ),

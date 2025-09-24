@@ -81,7 +81,7 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
                               borderRadius:
                                   BorderRadius.circular(Spacing.$1_5x),
                               color:
-                                  context.colors.staticWhite.withOpacity(0.2),
+                                  context.colors.staticWhite.withValues(alpha: 0.2),
                             ),
                             child: Center(
                               child: Icon(

@@ -22,8 +22,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
     Future.microtask(() => ref.read(streamAudioProvider).getLiveNow());
   }
 
-  final DraggableScrollableController _sheetController =
-      DraggableScrollableController();
+  final DraggableScrollableController _sheetController = DraggableScrollableController();
 
   final double _minChildSize = 0.0;
   final double _maxChildSize = 0.34;
@@ -50,12 +49,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
       body: AnimatedBuilder(
         animation: _sheetController,
         builder: (context, _) {
-          final double currentSize = _sheetController.isAttached
-              ? _sheetController.size
-              : _minChildSize;
+          final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
 
-          final double progress =
-              (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
+          final double progress = (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
 
           final double mapOffset = -320 * progress;
 
@@ -107,22 +103,21 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(
-                          currentSize == _minChildSize ? 0 : 32),
+                      bottom: Radius.circular(currentSize == _minChildSize ? 0 : 32),
                     ),
                   ),
                   child: widget.child,
                 ),
               ),
 
-              if (currentSize == _minChildSize &&
-                  provider.selectedProgram != null)
+              if (currentSize == _minChildSize && provider.selectedProgram != null)
                 Center(
                   child: DraggableFloatingPlayerControls(
                     onTap: togglePanel,
                     onChange: (isHolding, mustRemove) {
                       setState(() => _showRemovalZone = isHolding);
                       if (mustRemove) {
+                        // Only exit the player, don't reset immediately
                         ref.read(streamAudioProvider.notifier).exitPlayer();
                         setState(() => _showRemovalZone = false);
                       }
@@ -161,15 +156,13 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                             margin: const EdgeInsets.symmetric(horizontal: 16),
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.1),
-                              border: Border.all(
-                                  color: Colors.red.withOpacity(0.3)),
+                              color: Colors.red.withValues(alpha: 0.1),
+                              border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.error_outline,
-                                    color: Colors.red, size: 20),
+                                const Icon(Icons.error_outline, color: Colors.red, size: 20),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
@@ -185,21 +178,21 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                           ),
                         ],
                         const SizedBox(height: 8),
-                        MediaCatalogList(needReset: () {
-                          //reset the timer
-                          _autoCloseTimer?.cancel();
-                          _autoCloseTimer =
-                              Timer(const Duration(seconds: 80), () {
-                            if (_sheetController.isAttached &&
-                                _sheetController.size > _minChildSize) {
-                              _sheetController.animateTo(
-                                _minChildSize,
-                                duration: const Duration(milliseconds: 800),
-                                curve: Curves.easeInOut,
-                              );
-                            }
-                          });
-                        }),
+                        MediaCatalogList(
+                          needReset: () {
+                            //reset the timer
+                            _autoCloseTimer?.cancel();
+                            _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+                              if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+                                _sheetController.animateTo(
+                                  _minChildSize,
+                                  duration: const Duration(milliseconds: 800),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            });
+                          },
+                        ),
                         const SizedBox(height: 32),
                       ],
                     ),
@@ -223,38 +216,26 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                         gradient: LinearGradient(
                           begin: const Alignment(0.50, -0.00),
                           end: const Alignment(0.50, 1.00),
-                          colors: [
-                            Colors.black.withOpacity(0.20),
-                            Colors.black.withOpacity(0)
-                          ],
+                          colors: [Colors.black.withValues(alpha: 0.20), Colors.black.withValues(alpha: 0)],
                         ),
                       ),
                       child: Center(
                         child: Container(
                           width: 226,
                           height: 40,
-                          padding: const EdgeInsets.only(
-                              top: 8, left: 8, right: 16, bottom: 8),
+                          padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
                           decoration: ShapeDecoration(
-                            color: Colors.black.withOpacity(0.65),
+                            color: Colors.black.withValues(alpha: 0.65),
                             shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  color: Colors.white.withOpacity(0.20)),
+                              side: BorderSide(color: Colors.white.withValues(alpha: 0.20)),
                               borderRadius: BorderRadius.circular(40),
                             ),
-                            shadows: const [
-                              BoxShadow(
-                                  color: Color(0x19000000),
-                                  blurRadius: 24,
-                                  offset: Offset(0, 8))
-                            ],
+                            shadows: const [BoxShadow(color: Color(0x19000000), blurRadius: 24, offset: Offset(0, 8))],
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Icon(Icons.close,
-                                  color: Colors.white.withOpacity(0.80),
-                                  size: 22),
+                              Icon(Icons.close, color: Colors.white.withValues(alpha: 0.80), size: 22),
                               const Text(
                                 'Drag here to exit audio player',
                                 style: TextStyle(
@@ -284,9 +265,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   void togglePanel() {
     if (_sheetController.isAttached) {
       final currentSize = _sheetController.size;
-      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2
-          ? _minChildSize
-          : _maxChildSize;
+      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
 
       /// Cancel any existing timer
       _autoCloseTimer?.cancel();
@@ -295,8 +274,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
       if (targetSize == _maxChildSize) {
         setState(() => _showRemovalZone = false);
         _autoCloseTimer = Timer(const Duration(seconds: 80), () {
-          if (_sheetController.isAttached &&
-              _sheetController.size > _minChildSize) {
+          if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
             _sheetController.animateTo(
               _minChildSize,
               duration: const Duration(milliseconds: 800),

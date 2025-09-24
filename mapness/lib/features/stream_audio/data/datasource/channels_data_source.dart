@@ -11,7 +11,7 @@ class ChannelsDataSource {
                 'channelImage': 'assets/images/audio_placeholders/panorama.png',
                 'programImage':
                     'https://assets.mbcmood.com/programs_thumbnails/1714173058هدى-وهن-00.jpg',
-                'streamUrl': 'https://securestreams2.autopo.st:1241/live',
+                'streamUrl': 'https://radio.al7eah.net/8034/stream.mp3',
               },
               {
                 'title': 'MBC FM',
@@ -19,7 +19,7 @@ class ChannelsDataSource {
                 'channelImage': 'assets/images/audio_placeholders/mbc_fm.png',
                 'programImage':
                     'https://assets.mbcmood.com/programs_thumbnails/1745311050%D8%AD%D9%84%D9%88%20%D8%A7%D9%84%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D8%AE%D9%8A%D8%B1%20.jpg',
-                'streamUrl': 'https://radiouno.stream24.net/live.mp3',
+                'streamUrl': 'https://stream-179.zeno.fm/4luag56o066uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI0bHVhZzU2bzA2NnV2IiwiaG9zdCI6InN0cmVhbS0xNzkuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6InZEWTdqc29jUkJLbXlBZy1tWFFQV2ciLCJpYXQiOjE3NTg1MzE0NTMsImV4cCI6MTc1ODUzMTUxM30.1QDfbREihk8FpUp11bhFVLFKwNeIofmfRIfdCx1LLuw',
               },
               {
                 'title': 'MBC Loud',
