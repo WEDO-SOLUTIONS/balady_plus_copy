@@ -1984,6 +1984,9 @@ abstract class MapApi {
   void setPublicTransportActiveRoute(int routeIndex);
 
   @async
+  void favouritesUpdateNotification(FavouritesStateMessage favouritesState);
+
+  @async
   void toggleVoiceInstruction(SoundToggleType toggleType);
 
   @async

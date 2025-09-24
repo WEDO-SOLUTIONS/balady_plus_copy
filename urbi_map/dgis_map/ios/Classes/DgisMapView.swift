@@ -1193,6 +1193,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
 
+    func favouritesUpdateNotification(favouritesState: FavouritesStateMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        // It's not necessary to update favorites in CarPlay, as they don't appear permanently on main screen in CarPlay by design
+        completion(Result.success(()))
+    }
+
     func toggleOverSpeeding( toggleType overSpeeding: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.navigationHandler?.toggleOverSpeeding(overSpeeding: overSpeeding)
          completion(Result.success(()))

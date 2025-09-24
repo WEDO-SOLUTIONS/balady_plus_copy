@@ -1047,6 +1047,14 @@ class DgisMapView(
         callback(Result.success(Unit))
     }
 
+    override fun favouritesUpdateNotification(
+        favouritesState: FavouritesStateMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        FavouritesUpdateNotifier.sendEvent(favouritesState)
+        callback(Result.success(Unit))
+    }
+
     override fun setNavigatorVolume(volume: Long, callback: (Result<Unit>) -> Unit) {
         navigationHandler.setNavigatorVolume(volume.toInt())
         callback(Result.success(Unit))

@@ -54,7 +54,6 @@ import java.lang.Exception
 import java.util.Locale
 import ru.dgis.sdk.map.Map as DgisMap
 import com.dgis.map.map_api.SoundToggleType
-import ru.dgis.sdk.routing.BriefRouteInfo
 import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
 import ru.dgis.sdk.routing.TrafficRouter
 import kotlinx.coroutines.CoroutineScope
@@ -82,10 +81,10 @@ class CarMapController(
         setShowOnlyActiveRoute(false)
     }
     private val trafficRouter = TrafficRouter(sdkContext)
+    private var searchHandler = CarSearchHandler(SearchManager.createOnlineManager(sdkContext))
 
     private var map: DgisMap? = null
 
-    private var searchHandler: CarSearchHandler? = null
     private var mapObjectManager: MapObjectManager? = null
     private var myLocationControlModel: MyLocationControlModel? = null
     private var zoomControlModel: ZoomControlModel? = null
@@ -100,8 +99,10 @@ class CarMapController(
         )
     }
 
-    fun onMapReady(map: DgisMap, locale: Locale) {
+    fun onMapReady(map: DgisMap) {
         this.map = map
+
+        val locale = getLocale()
 
         val mapSource = MyLocationMapObjectSource(
             sdkContext, MyLocationControllerSettings(bearingSource = BearingSource.AUTO)
@@ -109,7 +110,6 @@ class CarMapController(
         map.addSource(mapSource)
         map.setAttribute("camerasOn", AttributeValue(true))
 
-        searchHandler = CarSearchHandler(SearchManager.createOnlineManager(sdkContext), map)
         myLocationControlModel = MyLocationControlModel(map)
         zoomControlModel = ZoomControlModel(map)
         trafficControlModel = TrafficControlModel(map)
@@ -120,6 +120,7 @@ class CarMapController(
         setupLocation()
 
         navigationHandler.addMap(map)
+        searchHandler.addMap(map)
         map.addSource(routeEditorSource)
 
         paddingFlowJob = CoroutineScope(Dispatchers.Default).launch {
@@ -258,7 +259,21 @@ class CarMapController(
         resultCallback: (result: DirectoryObject?) -> Unit,
         errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
-        searchHandler?.searchByDirectoryObjectId(objectId, resultCallback, errorCallback)
+        searchHandler.searchByDirectoryObjectId(objectId, resultCallback, errorCallback)
+    }
+
+    fun searchByDirectoryObjectIdWithLocale(
+        objectId: DgisObjectId,
+        locale: SdkLocale,
+        resultCallback: (result: DirectoryObject?) -> Unit,
+        errorCallback: ((exception: Exception) -> Unit)? = null,
+    ) {
+        searchHandler.searchByDirectoryObjectIdWithLocale(
+            objectId,
+            locale,
+            resultCallback,
+            errorCallback
+        )
     }
 
     fun search(
@@ -267,7 +282,7 @@ class CarMapController(
         resultCallback: (result: List<DirectoryObject>) -> Unit,
         errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
-        searchHandler?.search(queryText, pageSize, resultCallback, errorCallback)
+        searchHandler.search(queryText, pageSize, resultCallback, errorCallback)
     }
 
     fun suggest(
@@ -276,7 +291,7 @@ class CarMapController(
         resultCallback: (result: List<Suggest>) -> Unit,
         errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
-        searchHandler?.suggest(queryText, limit, resultCallback, errorCallback)
+        searchHandler.suggest(queryText, limit, resultCallback, errorCallback)
     }
 
 
@@ -385,6 +400,10 @@ class CarMapController(
 
     fun getLanguage(): Language {
         return sharedPrefs.getLanguage()
+    }
+
+    fun getLocale(): Locale {
+        return sharedPrefs.getLocale()
     }
 
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
@@ -500,21 +519,28 @@ class CarMapController(
         map.camera.padding = padding
     }
 
-    fun getBriefRouteInfos(
-        routeInfoSearchPoints: List<BriefRouteInfoSearchPoints>,
-        onResult: (List<BriefRouteInfo?>?) -> Unit,
+    fun getRouteDuration(
+        startPoint: RouteSearchPoint,
+        finishPoint: RouteSearchPoint,
+        onResult: (Duration?) -> Unit,
     ) {
-        trafficRouter.findBriefRouteInfos(
-            searchPoints = routeInfoSearchPoints,
+        trafficRouter.findRoute(
+            startPoint = startPoint,
+            finishPoint = finishPoint,
             routeSearchOptions = RouteSearchOptions(
-                CarRouteSearchOptions(
-                    avoidTollRoads = sharedPrefs.avoidTollRoads,
-                    avoidUnpavedRoads = sharedPrefs.avoidUnpavedRoads
-                )
+                CarRouteSearchOptions()
             ),
         ).apply {
-            onResult { onResult(it) }
-            onError { onResult(null) }
+            onResult {
+                val route =  it.firstOrNull()
+                val duration = route?.route?.geometry?.first?.let {
+                    route.traffic.durations.calculateDuration(it.point)
+                }
+                onResult(duration)
+            }
+            onError {
+                onResult(null)
+            }
         }
     }
 

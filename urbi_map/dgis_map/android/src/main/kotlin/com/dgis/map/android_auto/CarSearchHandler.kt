@@ -10,23 +10,39 @@ import ru.dgis.sdk.directory.Suggest
 import ru.dgis.sdk.directory.SuggestQueryBuilder
 import ru.dgis.sdk.directory.SuggestorType
 import ru.dgis.sdk.map.Map
+import ru.dgis.sdk.platform.Locale
 import java.lang.Exception
 
 class CarSearchHandler(
     private val searchManager: SearchManager,
-    private val map: Map,
-) :
-    AutoCloseable {
+) : AutoCloseable {
 
+    private var map: Map? = null
     private var searchFuture: AutoCloseable? = null
     private var suggestFuture: AutoCloseable? = null
+
+    fun addMap(map: Map) {
+        this.map = map
+    }
 
     fun searchByDirectoryObjectId(
         objectId: DgisObjectId,
         resultCallback: (result: DirectoryObject?) -> Unit,
-        errorCallback: ((exception: Exception) -> Unit)? = null
+        errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
         searchManager.searchByDirectoryObjectId(objectId).apply {
+            onResult { resultCallback(it) }
+            onError { errorCallback?.invoke(it) }
+        }
+    }
+
+    fun searchByDirectoryObjectIdWithLocale(
+        objectId: DgisObjectId,
+        locale: Locale,
+        resultCallback: (result: DirectoryObject?) -> Unit,
+        errorCallback: ((exception: Exception) -> Unit)? = null,
+    ) {
+        searchManager.searchByDirectoryObjectIdWithLocale(objectId, locale).apply {
             onResult { resultCallback(it) }
             onError { errorCallback?.invoke(it) }
         }
@@ -38,6 +54,7 @@ class CarSearchHandler(
         resultCallback: (result: List<DirectoryObject>) -> Unit,
         errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
+        val map = this.map ?: return
         val query =
             SearchQueryBuilder.fromQueryText(queryText).setSortingType(SortingType.BY_DISTANCE)
                 .setPageSize(pageSize).setAreaOfInterest(map.camera.visibleRect)
@@ -59,6 +76,7 @@ class CarSearchHandler(
         resultCallback: (result: List<Suggest>) -> Unit,
         errorCallback: ((exception: Exception) -> Unit)? = null,
     ) {
+        val map = this.map ?: return
         val suggestQuery =
             SuggestQueryBuilder.fromQueryText(queryText)
                 .setAreaOfInterest(map.camera.visibleRect)
