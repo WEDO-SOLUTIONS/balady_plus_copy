@@ -8,6 +8,8 @@ import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/package_info.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/utils/common_function.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -96,13 +98,15 @@ class DgisHmacNetwrok extends _$DgisHmacNetwrok {
             return handler.next(options);
           },
         ),
-        TalkerDioLogger(
-          settings: const TalkerDioLoggerSettings(
-            printRequestHeaders: true,
-            printResponseHeaders: true,
-            printResponseData: false,
+        if (logger is TalkerMapnessLogger)
+          TalkerDioLogger(
+            talker: (logger as TalkerMapnessLogger).talker,
+            settings: const TalkerDioLoggerSettings(
+              printRequestHeaders: true,
+              printResponseHeaders: true,
+              printResponseData: false,
+            ),
           ),
-        ),
       ]);
   }
 }

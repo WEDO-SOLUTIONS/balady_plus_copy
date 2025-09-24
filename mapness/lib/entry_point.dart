@@ -163,7 +163,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
       // Initialization of BSS and Search Region singleton services
-      _initBssService();
+      await _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
@@ -193,10 +193,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     super.dispose();
   }
 
-  void _initBssService() {
-    ref
-      ..watch(bssDioProvider)
-      ..watch(bssCommonProvider);
+  Future<void> _initBssService() async {
+    // Initialize BSS service with required dependencies
+    final dio = await ref.read(bssDioProvider.future);
+    final common = await ref.read(bssCommonProvider.future);
+    final dgisControllerNotifier = ref.read(dgisControllerProvider.notifier);
+
+    BssService.instance.init(
+      dio: dio,
+      common: common,
+      visibleRectStream: dgisControllerNotifier.visibleRectSubject,
+    );
   }
 
   Future<void> restoreState() async {
@@ -556,17 +563,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final query = quickFilter.query[language];
     if (query != null) {
       unawaited(
-        ref.read(bssServiceProvider.notifier).sendEvent(
-              BssRequest(
-                eventType: BSSEventType.action,
-                actionType: BSSActionType.deeplink,
-                uiElement: const BssUIElement(
-                  name: BssUIElementNames.searchStart,
-                  ownerName: BssUIElementNames.searchBar,
-                ),
-                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
-              ),
+        BssService.instance.sendEvent(
+          BssRequest(
+            eventType: BSSEventType.action,
+            actionType: BSSActionType.deeplink,
+            uiElement: const BssUIElement(
+              name: BssUIElementNames.searchStart,
+              ownerName: BssUIElementNames.searchBar,
             ),
+            payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+          ),
+        ),
       );
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));

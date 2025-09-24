@@ -5,6 +5,7 @@ import 'package:talker_flutter/talker_flutter.dart';
 
 class TalkerMapnessLogger implements IMapnessLogger {
   late final Talker _talker;
+  Talker get talker => _talker;
 
   @override
   Future<void> init() async {
