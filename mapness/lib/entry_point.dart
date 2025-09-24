@@ -10,6 +10,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +37,8 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
-import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/search/providers/search_region.dart'
+    show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -76,6 +77,7 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
 
+import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
 
@@ -148,7 +150,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initMixpanel();
     initDeepLinks();
     listenNavigationEvents();
-
+    checkConnection();
+    ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
@@ -167,6 +170,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
     });
+  }
+  Future<void> checkConnection() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.mobile)) {
+      ref
+          .read(appAnalyticsProvider)
+          .networkConnectionType(type: ConnectivityResult.mobile.name);
+    } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      ref
+          .read(appAnalyticsProvider)
+          .networkConnectionType(type: ConnectivityResult.wifi.name);
+    }
   }
 
   @override
