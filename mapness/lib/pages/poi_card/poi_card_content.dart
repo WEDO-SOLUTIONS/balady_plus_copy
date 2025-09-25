@@ -393,7 +393,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
         uiElement: const BssUIElement(
-          name: BssUIElementNames.contactTap,
+          name: BssUIElementNames.contact,
           ownerName: BssUIElementNames.actionBar,
         ),
         payload: BssPayload(
