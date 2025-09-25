@@ -20,7 +20,7 @@ pre-commit:
   commands:
     dart-formatter:
       glob: mapness/**/*.dart
-      run: dart format -l 120 --fix {staged_files} && git add {staged_files}
+      run: fvm dart format -l 120 --fix {staged_files} && git add {staged_files}
 
 commit-msg:
   skip: rebase

@@ -92,45 +92,57 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AnimatedCrossFade(
-          crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-          firstChild: const FreeRoamBar(),
-          secondChild: QuickSearchBar(
-            direction: uiDirection,
-            quickScrollController: quickScrollController,
-            showLaunchingFreeRoam: showLaunchingFreeRoam,
-          ),
-          duration: const Duration(milliseconds: 300),
-        ),
-        if (isNationalDay)
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              GestureDetector(
-                onTap: () => widget.controller.setState(ThreeStateSheet.open),
-                child: SizedBox(
-                  height: Spacing.$12x,
-                  width: double.infinity,
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
-                      color: Color(0xFF00343A),
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: isNationalDay ? Spacing.$4x : 0.0),
+              child: AnimatedCrossFade(
+                crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                firstChild: const FreeRoamBar(),
+                secondChild: QuickSearchBar(
+                  direction: uiDirection,
+                  quickScrollController: quickScrollController,
+                  showLaunchingFreeRoam: showLaunchingFreeRoam,
+                ),
+                duration: const Duration(milliseconds: 300),
+              ),
+            ),
+            if (isNationalDay)
+              MultiStateSheetBuilder(
+                defaultState: ThreeStateSheet.hidden,
+                builder: (context, state, interpolation, child) => Padding(
+                  padding:
+                      EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0),
+                  child: GestureDetector(
+                    onTap: () => widget.controller.setState(ThreeStateSheet.open),
+                    child: SizedBox(
+                      height:
+                          Spacing.$12x * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
+                      width: double.infinity,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
+                          color: Color(0xFF00343A),
+                        ),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
+                              child: Text(
+                                context.l10n.happy95thYears,
+                                style: context.textStyles.bodySmallSemiBold.copyWith(
+                                  color: context.colors.successOnSuccess,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            )),
+                      ),
                     ),
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
-                          child: Text(
-                            context.l10n.happy95thYears,
-                            style: context.textStyles.bodySmallSemiBold.copyWith(
-                              color: context.colors.successOnSuccess,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        )),
                   ),
                 ),
               ),
+            if (isNationalDay)
               NationalFlag(
                 onTap: () => widget.fireworksController
                   ..value = 0
@@ -140,8 +152,8 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                     duration: widget.fireworksController.duration,
                   ),
               ),
-            ],
-          )
+          ],
+        )
       ],
     );
   }

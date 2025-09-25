@@ -80,7 +80,9 @@ class _ParkingManage extends _$ParkingManage {
             longitude: model.lon,
             elevation: 1,
           ),
-          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+          icon: SaudiNationalDay.isNow()
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
         onTap: () {
           ref.read(appRouterProvider).replaceOrPush(
@@ -174,7 +176,9 @@ class _ParkingManage extends _$ParkingManage {
             longitude: lon,
             elevation: 1,
           ),
-          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+          icon: SaudiNationalDay.isNow()
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
         onTap: () {
           ref.read(poiCardClosingProvider.notifier).close();
