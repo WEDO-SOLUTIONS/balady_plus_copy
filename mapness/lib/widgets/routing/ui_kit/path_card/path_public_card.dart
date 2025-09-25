@@ -47,7 +47,7 @@ class PathPublicCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final duration = route.duration.formatDuration(context.l10n);
+    final duration = route.duration.formatDurationShort(context.l10n);
     final transfers = ArPlurals.transfers(route.transferCount, context.l10n);
 
     return PathCardWrapper(
