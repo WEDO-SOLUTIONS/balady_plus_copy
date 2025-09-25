@@ -17,7 +17,6 @@ import androidx.car.app.navigation.model.MapWithContentTemplate
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
-import com.dgis.map.android_auto.NavigationScreen
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import kotlinx.coroutines.CoroutineScope
@@ -196,16 +195,7 @@ class FavouritesPreviewScreen(
 
     private fun buildTitleWithEstimate(title: String, estimate: Duration?): CharSequence {
         if (estimate == null) return title
-
-        val result = SpannableString("$title •  ")
-        val spanStart = result.length
-        result.setSpan(
-            DurationSpan.create(TimeUnit.SECONDS.toSeconds(estimate.inSeconds)),
-            spanStart - 1,
-            spanStart,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        return result
+        return "$title • ${getDurationString(estimate.inSeconds)}"
     }
 
     private fun getEstimates() {
@@ -265,6 +255,30 @@ class FavouritesPreviewScreen(
             withContext(Dispatchers.Main) {
                 this@FavouritesPreviewScreen.homeWorkEstimates = homeWorkEstimates
                 invalidate()
+            }
+        }
+    }
+
+    fun getDurationString(seconds: Long): String {
+        val minutes = (seconds / 60.0).toInt()
+        val hours = minutes / 60
+        val remainingMinutes = minutes % 60
+        val hoursString = getString(R.string.hours)
+        val minutesString = getString(R.string.minutes)
+
+        return when {
+            hours > 0 -> {
+                var time = "$hours $hoursString"
+                if (remainingMinutes > 0) {
+                    time += " $remainingMinutes $minutesString"
+                }
+                time
+            }
+            minutes <= 1 -> {
+                "1 $minutesString"
+            }
+            else -> {
+                "$remainingMinutes $minutesString"
             }
         }
     }
