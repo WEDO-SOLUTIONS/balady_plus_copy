@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 #version: 3.30.3+425
-version: 3.12.17+416
+version: 3.12.18+417
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -258,7 +258,7 @@ dependencies:
   #  For Load the variable from local file  .env
   flutter_dotenv: ^5.2.1
   pdf: ^3.11.3
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.14.4
   visibility_detector: ^0.4.0+2
   in_app_review: ^2.0.10
   external_app_launcher: ^4.0.3
@@ -354,7 +354,7 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/icons/app_icon/newlogo.png"
+  image_path: "assets/icons/app_icon/app_store_icon.png"
 
   fonts:
     - family: Cairo
