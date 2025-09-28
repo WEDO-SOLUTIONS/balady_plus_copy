@@ -63,8 +63,8 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        // Plugin registration is now handled in FlutterProvider
-        // GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine)
+        // Register plugins here since FlutterProvider no longer does it
+        GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine)
         
         // Set up MediaSession method channel
         val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "balady_media_session")

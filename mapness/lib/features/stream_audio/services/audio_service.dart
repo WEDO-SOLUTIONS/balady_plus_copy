@@ -4,12 +4,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:path_provider/path_provider.dart';
 
 class AudioService extends ChangeNotifier {
   static final AudioService _instance = AudioService._internal();
-  static bool _backgroundInitialized = false;
+  static bool _globalInitialized = false;
 
   factory AudioService() => _instance;
 
@@ -35,7 +34,8 @@ class AudioService extends ChangeNotifier {
   // State
   bool _isInitialized = false;
   bool _isPlaying = false;
-  bool _isLoading = false; // Start with false, let player state listener manage it
+  bool _isLoading =
+      false; // Start with false, let player state listener manage it
   bool _hasError = false;
   String? _errorMessage;
   bool _manuallyPaused = false; // Track if user manually paused
@@ -50,7 +50,8 @@ class AudioService extends ChangeNotifier {
   bool _isPlayingFromCache = false;
 
   // Native platform
-  static const MethodChannel _mediaSessionChannel = MethodChannel('balady_media_session');
+  static const MethodChannel _mediaSessionChannel =
+      MethodChannel('balady_media_session');
 
   // Constants
   static const Duration _maxCacheDuration = Duration(hours: 1);
@@ -61,13 +62,14 @@ class AudioService extends ChangeNotifier {
 
   bool get isPlaying {
     // If we have a selected channel and cached time, and not manually paused, we're playing
-    final result = _currentChannelId != null && _totalCachedDuration.inSeconds > 0 && !_manuallyPaused;
+    final result = _currentChannelId != null &&
+        _totalCachedDuration.inSeconds > 0 &&
+        !_manuallyPaused;
 
     return result;
   }
 
   bool get isLoading => _totalCachedDuration.inSeconds == 0;
-
 
   bool get hasError => _hasError;
 
@@ -97,7 +99,8 @@ class AudioService extends ChangeNotifier {
     if (_totalCachedDuration.inMilliseconds <= 0) {
       return 0.0;
     }
-    return (_userPosition.inMilliseconds / _totalCachedDuration.inMilliseconds).clamp(0.0, 1.0);
+    return (_userPosition.inMilliseconds / _totalCachedDuration.inMilliseconds)
+        .clamp(0.0, 1.0);
   }
 
   String get formattedCurrentPosition => _formatDuration(_userPosition);
@@ -106,29 +109,46 @@ class AudioService extends ChangeNotifier {
 
   String get formattedTimeBehind => _formatDuration(timeBehindLive.abs());
 
+  // Global initialization - should be called once at app startup
+  static Future<void> initializeGlobally() async {
+    if (_globalInitialized) {
+      debugPrint('AudioService: Already globally initialized, skipping');
+      return;
+    }
+
+    // Mark as initialized immediately to prevent multiple calls
+    _globalInitialized = true;
+
+    debugPrint(
+        'AudioService: Global initialization completed (using custom MediaSession)');
+    // We'll use our custom MediaSessionHandler instead of JustAudioBackground
+    // to avoid conflicts with the custom FlutterProvider setup
+  }
+
   // Initialization
   Future<void> init() async {
     if (_isInitialized) {
+      debugPrint('AudioService: Already initialized, skipping');
       return;
     }
 
     try {
-      // Only initialize JustAudioBackground once globally
-      if (!_backgroundInitialized) {
-        await JustAudioBackground.init(
-          androidNotificationChannelId: 'momra.balady.android.channel.audio',
-          androidNotificationChannelName: 'Audio playback',
-          androidNotificationOngoing: true,
-        );
-        _backgroundInitialized = true;
+      debugPrint('AudioService: Starting instance initialization');
+
+      // Check if global initialization was successful
+      if (!_globalInitialized) {
+        debugPrint(
+            'AudioService: Global initialization was not completed successfully');
+        debugPrint('AudioService: Continuing without background audio support');
       }
 
       _player = AudioPlayer();
+
       await _setupPlayerListeners();
       await _initPlatformMediaSession();
 
       _isInitialized = true;
-      debugPrint('AudioService: Initialized');
+      debugPrint('AudioService: Instance initialized successfully');
     } catch (e) {
       debugPrint('AudioService: Init error: $e');
       _setError('Failed to initialize: $e');
@@ -165,7 +185,8 @@ class AudioService extends ChangeNotifier {
       if (_isPlayingFromCache && !_manuallyPaused) {
         // When playing from cache, update user position based on player position
         _userPosition = position;
-        debugPrint('AudioService: Position stream - updating from cache position: ${_formatDuration(position)}');
+        debugPrint(
+            'AudioService: Position stream - updating from cache position: ${_formatDuration(position)}');
         notifyListeners();
       }
       // When playing live, user position is updated by the timer
@@ -179,12 +200,16 @@ class AudioService extends ChangeNotifier {
       _isPlaying = state.playing;
 
       // Manage loading state based on processing state
-      if (state.processingState == ProcessingState.loading || state.processingState == ProcessingState.buffering) {
+      if (state.processingState == ProcessingState.loading ||
+          state.processingState == ProcessingState.buffering) {
         _isLoading = true;
-        debugPrint('AudioService: Player state listener - Setting _isLoading = true');
-      } else if (state.processingState == ProcessingState.ready || state.processingState == ProcessingState.completed) {
+        debugPrint(
+            'AudioService: Player state listener - Setting _isLoading = true');
+      } else if (state.processingState == ProcessingState.ready ||
+          state.processingState == ProcessingState.completed) {
         _isLoading = false;
-        debugPrint('AudioService: Player state listener - Setting _isLoading = false');
+        debugPrint(
+            'AudioService: Player state listener - Setting _isLoading = false');
       }
 
       // Debug logging to track state changes
@@ -193,7 +218,6 @@ class AudioService extends ChangeNotifier {
 
       // Notify listeners if either playing or loading state changed
       if (wasPlaying != _isPlaying || wasLoading != _isLoading) {
-        _updatePlatformMediaSession();
         notifyListeners();
       }
     });
@@ -264,19 +288,17 @@ class AudioService extends ChangeNotifier {
     try {
       _isPlayingFromCache = false;
 
-      final mediaItem = MediaItem(
-        id: _currentChannelId ?? 'live_radio',
-        title: title,
-        artist: artist,
-      );
-
-      final audioSource = AudioSource.uri(
-        Uri.parse(url),
-        tag: mediaItem,
-      );
+      final audioSource = AudioSource.uri(Uri.parse(url));
 
       await _player!.setAudioSource(audioSource);
+
+      // Update platform media session with metadata FIRST
+      await _updatePlatformMediaMetadata(title, artist);
+
       await _player!.play();
+
+      // Then update playback state after starting playback
+      await _updatePlatformPlaybackState(true);
 
       debugPrint('AudioService: Playing live stream');
     } catch (e) {
@@ -295,22 +317,21 @@ class AudioService extends ChangeNotifier {
     try {
       _isPlayingFromCache = true;
 
-      final mediaItem = MediaItem(
-        id: '${_currentChannelId}_cached',
-        title: 'Radio (Cached)',
-        artist: 'Buffered',
-      );
-
-      final audioSource = AudioSource.uri(
-        Uri.file(_cacheFile!.path),
-        tag: mediaItem,
-      );
+      final audioSource = AudioSource.uri(Uri.file(_cacheFile!.path));
 
       await _player!.setAudioSource(audioSource);
       await _player!.seek(position);
+
+      // Update platform media session with metadata FIRST
+      await _updatePlatformMediaMetadata('Radio (Cached)', 'Buffered');
+
       await _player!.play();
 
-      debugPrint('AudioService: Playing from cache at ${_formatDuration(position)}');
+      // Then update playback state after starting playback
+      await _updatePlatformPlaybackState(true);
+
+      debugPrint(
+          'AudioService: Playing from cache at ${_formatDuration(position)}');
     } catch (e) {
       debugPrint('AudioService: Cache playback error: $e');
     }
@@ -321,7 +342,8 @@ class AudioService extends ChangeNotifier {
     try {
       final tempDir = await getTemporaryDirectory();
       final timestamp = DateTime.now().millisecondsSinceEpoch;
-      _cacheFile = File('${tempDir.path}/radio_cache_${_currentChannelId}_$timestamp.mp3');
+      _cacheFile = File(
+          '${tempDir.path}/radio_cache_${_currentChannelId}_$timestamp.mp3');
 
       if (await _cacheFile!.exists()) {
         await _cacheFile!.delete();
@@ -382,7 +404,8 @@ class AudioService extends ChangeNotifier {
             // Playing from cache - advance user position slightly faster to catch up to live
             // Advance by timer interval + small catch-up amount
             const timerInterval = Duration(milliseconds: 100);
-            const catchUpBonus = Duration(milliseconds: 10); // 10% faster to catch up
+            const catchUpBonus =
+                Duration(milliseconds: 10); // 10% faster to catch up
             final oldPosition = _userPosition;
             _userPosition = _userPosition + timerInterval + catchUpBonus;
             // Don't go beyond total cached time
@@ -395,7 +418,8 @@ class AudioService extends ChangeNotifier {
         }
 
         // Debug: Log cache timer updates every 10 seconds
-        if (_totalCachedDuration.inSeconds % 10 == 0 && _totalCachedDuration.inMilliseconds % 1000 < 100) {
+        if (_totalCachedDuration.inSeconds % 10 == 0 &&
+            _totalCachedDuration.inMilliseconds % 1000 < 100) {
           debugPrint(
               'AudioService: Cache timer - isPlaying: $_isPlaying, userPos: ${_formatDuration(_userPosition)}, cached: ${_formatDuration(_totalCachedDuration)}');
         }
@@ -408,11 +432,16 @@ class AudioService extends ChangeNotifier {
   // Playback controls
   Future<void> pause() async {
     try {
-      debugPrint('AudioService: pause() called - setting _manuallyPaused = true');
+      debugPrint(
+          'AudioService: pause() called - setting _manuallyPaused = true');
       _manuallyPaused = true;
       await _player?.pause();
-      debugPrint('AudioService: Paused at ${_formatDuration(_userPosition)}, _manuallyPaused = $_manuallyPaused');
-      await _updatePlatformMediaSession();
+
+      // Update platform media session playback state
+      await _updatePlatformPlaybackState(false);
+
+      debugPrint(
+          'AudioService: Paused at ${_formatDuration(_userPosition)}, _manuallyPaused = $_manuallyPaused');
       notifyListeners();
     } catch (e) {
       debugPrint('AudioService: Pause error: $e');
@@ -425,14 +454,16 @@ class AudioService extends ChangeNotifier {
         return;
       }
 
-      debugPrint('AudioService: resume() called - setting _manuallyPaused = false');
+      debugPrint(
+          'AudioService: resume() called - setting _manuallyPaused = false');
       _manuallyPaused = false;
 
       // Check if user is still close to live
       final behindTime = _totalCachedDuration - _userPosition;
       final shouldPlayLive = behindTime <= _liveThreshold;
 
-      debugPrint('AudioService: Resume - Behind: ${behindTime.inSeconds}s, Play live: $shouldPlayLive');
+      debugPrint(
+          'AudioService: Resume - Behind: ${behindTime.inSeconds}s, Play live: $shouldPlayLive');
 
       if (shouldPlayLive) {
         // Play live and sync position
@@ -443,7 +474,9 @@ class AudioService extends ChangeNotifier {
         await _playFromCache(_userPosition);
       }
 
-      await _updatePlatformMediaSession();
+      // Update platform media session playback state
+      await _updatePlatformPlaybackState(true);
+
       notifyListeners();
     } catch (e) {
       debugPrint('AudioService: Resume error: $e');
@@ -451,7 +484,8 @@ class AudioService extends ChangeNotifier {
   }
 
   Future<void> togglePlayPause() async {
-    debugPrint('AudioService: togglePlayPause called - current isPlaying: $isPlaying (old _isPlaying: $_isPlaying)');
+    debugPrint(
+        'AudioService: togglePlayPause called - current isPlaying: $isPlaying (old _isPlaying: $_isPlaying)');
     if (isPlaying) {
       debugPrint('AudioService: Calling pause()');
       await pause();
@@ -459,7 +493,8 @@ class AudioService extends ChangeNotifier {
       debugPrint('AudioService: Calling resume()');
       await resume();
     }
-    debugPrint('AudioService: togglePlayPause completed - new isPlaying: $isPlaying');
+    debugPrint(
+        'AudioService: togglePlayPause completed - new isPlaying: $isPlaying');
   }
 
   // Seeking
@@ -529,7 +564,8 @@ class AudioService extends ChangeNotifier {
     }
   }
 
-  Future<void> seekForward([Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekForward(
+      [Duration duration = const Duration(seconds: 30)]) async {
     final newPosition = _userPosition + duration;
     if (newPosition >= _totalCachedDuration) {
       await goLive();
@@ -538,7 +574,8 @@ class AudioService extends ChangeNotifier {
     }
   }
 
-  Future<void> seekBackward([Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekBackward(
+      [Duration duration = const Duration(seconds: 30)]) async {
     final newPosition = _userPosition - duration;
     await seekToPosition(newPosition.isNegative ? Duration.zero : newPosition);
   }
@@ -568,8 +605,6 @@ class AudioService extends ChangeNotifier {
   Future<void> stop() async {
     try {
       await _stopCurrentStream();
-      await _releasePlatformMediaSession();
-
       await _player?.dispose();
       _player = null;
 
@@ -607,6 +642,7 @@ class AudioService extends ChangeNotifier {
   Future<void> _initPlatformMediaSession() async {
     if (Platform.isAndroid) {
       try {
+        // Initialize custom media session for better control
         await _mediaSessionChannel.invokeMethod('initMediaSession');
         _mediaSessionChannel.setMethodCallHandler((call) async {
           switch (call.method) {
@@ -621,30 +657,45 @@ class AudioService extends ChangeNotifier {
               break;
           }
         });
+        debugPrint(
+            'AudioService: Custom MediaSession initialized successfully');
       } catch (e) {
         debugPrint('AudioService: MediaSession setup failed: $e');
+        // Continue without custom media session if it fails
       }
     }
   }
 
-  Future<void> _updatePlatformMediaSession() async {
+  Future<void> _updatePlatformMediaMetadata(String title, String artist) async {
     if (Platform.isAndroid) {
       try {
-        await _mediaSessionChannel.invokeMethod('setPlaybackState', {
-          'isPlaying': _isPlaying,
+        debugPrint(
+            'AudioService: Calling updateMediaMetadata - $title by $artist');
+        await _mediaSessionChannel.invokeMethod('updateMediaMetadata', {
+          'title': title,
+          'artist': artist,
         });
+        debugPrint(
+            'AudioService: Successfully updated media metadata - $title by $artist');
       } catch (e) {
-        debugPrint('AudioService: MediaSession update failed: $e');
+        debugPrint('AudioService: MediaSession metadata update failed: $e');
       }
     }
   }
 
-  Future<void> _releasePlatformMediaSession() async {
+  Future<void> _updatePlatformPlaybackState(bool playing) async {
     if (Platform.isAndroid) {
       try {
-        await _mediaSessionChannel.invokeMethod('releaseMediaSession');
+        debugPrint(
+            'AudioService: Calling setPlaybackState - playing: $playing');
+        await _mediaSessionChannel.invokeMethod('setPlaybackState', {
+          'isPlaying': playing,
+        });
+        debugPrint(
+            'AudioService: Successfully updated playback state - playing: $playing');
       } catch (e) {
-        debugPrint('AudioService: MediaSession release failed: $e');
+        debugPrint(
+            'AudioService: MediaSession playback state update failed: $e');
       }
     }
   }

@@ -15,8 +15,8 @@ object FlutterProvider {
         if (flutterEngine == null) {
             flutterEngine = FlutterEngine(context)
             
-            // Register all plugins with the Flutter engine
-            GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine!!)
+            // Don't register plugins here - let MainActivity handle plugin registration
+            // This prevents double registration issues with audio_service
             
             flutterEngine!!.navigationChannel.setInitialRoute("/")
             flutterEngine!!.dartExecutor.executeDartEntrypoint(

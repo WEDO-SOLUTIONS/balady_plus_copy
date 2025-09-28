@@ -16,6 +16,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/stream_audio/services/audio_service.dart';
 import 'package:provider/provider.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
@@ -84,12 +85,20 @@ class AppWidget extends StatefulWidget {
 }
 
 class AppWidgetState extends State<AppWidget> {
+  static bool _audioServiceInitialized = false;
+
   @override
   void initState() {
     super.initState();
     initInsider();
-    // Audio service initialization moved to when first needed
-    // initAudioService();
+    if (!_audioServiceInitialized) {
+      // Delay audio service initialization to ensure Flutter engine is ready
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted && !_audioServiceInitialized) {
+          initAudioService();
+        }
+      });
+    }
   }
 
   Future initInsider() async {
@@ -117,6 +126,27 @@ class AppWidgetState extends State<AppWidget> {
   }
 
   void callback() {}
+
+  Future<void> initAudioService() async {
+    if (_audioServiceInitialized) {
+      debugPrint(
+          'AudioService: Global initialization already attempted, skipping');
+      return;
+    }
+
+    try {
+      debugPrint(
+          'AudioService: Attempting global initialization from app startup');
+      await AudioService.initializeGlobally();
+      _audioServiceInitialized = true;
+      debugPrint(
+          'AudioService: Global initialization completed successfully from app startup');
+    } catch (e) {
+      _audioServiceInitialized = true; // Mark as attempted to prevent retries
+      debugPrint(
+          'AudioService: Global initialization failed from app startup: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -37,26 +37,32 @@ class MediaSessionHandler(
     private var isPlaying = false
     
     override fun onMethodCall(call: MethodCall, result: Result) {
+        android.util.Log.d("MediaSessionHandler", "Received method call: ${call.method}")
         when (call.method) {
             "initMediaSession" -> {
+                android.util.Log.d("MediaSessionHandler", "Initializing MediaSession")
                 initMediaSession()
                 result.success(null)
             }
             "updateMediaMetadata" -> {
                 val metadata = call.arguments as? Map<String, Any>
+                android.util.Log.d("MediaSessionHandler", "Updating metadata: $metadata")
                 updateMediaMetadata(metadata)
                 result.success(null)
             }
             "setPlaybackState" -> {
                 val playing = call.argument<Boolean>("isPlaying") ?: false
+                android.util.Log.d("MediaSessionHandler", "Setting playback state: $playing")
                 setPlaybackState(playing)
                 result.success(null)
             }
             "releaseMediaSession" -> {
+                android.util.Log.d("MediaSessionHandler", "Releasing MediaSession")
                 releaseMediaSession()
                 result.success(null)
             }
             else -> {
+                android.util.Log.w("MediaSessionHandler", "Method not implemented: ${call.method}")
                 result.notImplemented()
             }
         }
@@ -72,6 +78,18 @@ class MediaSessionHandler(
                 setFlags(
                     MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or
                     MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+                )
+                
+                // Set initial playback state to make it appear on lock screen
+                setPlaybackState(
+                    PlaybackStateCompat.Builder()
+                        .setActions(
+                            PlaybackStateCompat.ACTION_PLAY or
+                            PlaybackStateCompat.ACTION_PAUSE or
+                            PlaybackStateCompat.ACTION_STOP
+                        )
+                        .setState(PlaybackStateCompat.STATE_STOPPED, 0L, 1.0f)
+                        .build()
                 )
                 
                 setCallback(object : MediaSessionCompat.Callback() {
@@ -110,10 +128,11 @@ class MediaSessionHandler(
             val channel = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
                 NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_DEFAULT // Changed from LOW to DEFAULT for lock screen
             ).apply {
                 description = "Audio playback controls"
                 setShowBadge(false)
+                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC // Ensure lock screen visibility
             }
             
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -133,7 +152,8 @@ class MediaSessionHandler(
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
             .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "Live Stream")
-            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, 1000L) // Show some duration for progress bar
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Live Radio")
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L) // -1 for live streams
         
         // Load artwork if provided
         artworkUrl?.let { url ->
@@ -149,10 +169,11 @@ class MediaSessionHandler(
         
         mediaSession?.setMetadata(metadataBuilder.build())
         
-        // Update notification
-        if (isPlaying) {
-            showNotification()
-        }
+        // Ensure MediaSession is active after setting metadata
+        mediaSession?.isActive = true
+        
+        // Always show notification when metadata is updated
+        showNotification()
     }
     
     private fun setPlaybackState(playing: Boolean) {
@@ -177,9 +198,14 @@ class MediaSessionHandler(
     }
     
     private fun showNotification() {
-        val metadata = currentMetadata ?: return
+        android.util.Log.d("MediaSessionHandler", "showNotification called")
+        val metadata = currentMetadata ?: run {
+            android.util.Log.w("MediaSessionHandler", "No metadata available for notification")
+            return
+        }
         val title = metadata["title"] as? String ?: "Unknown Title"
         val artist = metadata["artist"] as? String ?: "Unknown Artist"
+        android.util.Log.d("MediaSessionHandler", "Creating notification for: $title by $artist")
         
         // Create intent to open app when notification is tapped
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
@@ -195,9 +221,11 @@ class MediaSessionHandler(
             .setSmallIcon(if (isPlaying) android.R.drawable.ic_media_play else android.R.drawable.ic_media_pause)
             .setContentIntent(pendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_HIGH) // Higher priority for lock screen
+            .setCategory(NotificationCompat.CATEGORY_TRANSPORT) // Media category
             .setOngoing(true) // Keep notification visible even when paused
             .setShowWhen(false)
+            .setOnlyAlertOnce(true) // Don't alert repeatedly
             .addAction(
                 if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play,
                 if (isPlaying) "Pause" else "Play",
@@ -221,7 +249,9 @@ class MediaSessionHandler(
             )
             .build()
         
+        android.util.Log.d("MediaSessionHandler", "Showing notification with ID: $NOTIFICATION_ID")
         notificationManager?.notify(NOTIFICATION_ID, notification)
+        android.util.Log.d("MediaSessionHandler", "Notification shown successfully")
     }
     
     private fun hideNotification() {

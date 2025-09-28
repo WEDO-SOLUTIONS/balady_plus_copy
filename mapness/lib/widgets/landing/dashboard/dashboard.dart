@@ -8,6 +8,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -200,6 +201,14 @@ class _DashboardState extends ConsumerState<Dashboard>
                   QuickActionButton(
                     text: context.l10n.streamAudio,
                     icon: Icons.wifi,
+                    child: SvgPicture.asset(
+                      Assets.icons.svg.audio.audioStream.keyName,
+                      height: Spacing.$6x + Spacing.$1x,
+                      colorFilter: ColorFilter.mode(
+                        context.colors.accentDefault,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                     onTap: () async {
                       final provider = ref.read(streamAudioProvider.notifier);
 
@@ -211,7 +220,8 @@ class _DashboardState extends ConsumerState<Dashboard>
                       // Ensure we have live programs data first
                       await provider.getLiveNow();
                       if (provider.liveNow?.programs.isNotEmpty == true) {
-                        await provider.selectProgram(provider.liveNow!.programs.first);
+                        await provider
+                            .selectProgram(provider.liveNow!.programs.first);
                       }
                     },
                   ),

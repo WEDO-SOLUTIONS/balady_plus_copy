@@ -400,7 +400,8 @@ class _DraggableFloatingPlayerControlsState
                   decoration: BoxDecoration(
                     // Debug visuals - remove for production
                     // color: Colors.red.withOpacity(0.2),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                    border:
+                        Border.all(color: Colors.white.withValues(alpha: 0.15)),
                     borderRadius: BorderRadius.circular(currentBorderRadius),
                   ),
                   child: Container(
@@ -479,8 +480,8 @@ class _ContentState extends ConsumerState<Content> {
                 fit: BoxFit.cover,
               ),
               borderRadius: BorderRadius.circular(8),
-              border:
-                  Border.all(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
+              border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.15), width: 1.5),
             ),
           ),
           const SizedBox(width: 8),

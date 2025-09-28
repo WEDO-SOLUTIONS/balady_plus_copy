@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class QuickActionButton extends StatelessWidget {
   final String text;
   final IconData icon;
+  final Widget? child;
   final VoidCallback onTap;
 
   static const buttonSize = 73.0;
@@ -13,6 +14,7 @@ class QuickActionButton extends StatelessWidget {
     required this.text,
     required this.icon,
     required this.onTap,
+    this.child,
     super.key,
   });
 
@@ -31,11 +33,12 @@ class QuickActionButton extends StatelessWidget {
                   boxShadow: Shadows.s,
                 ),
                 child: Center(
-                  child: Icon(
-                    icon,
-                    size: Spacing.$6x + Spacing.$1x,
-                    color: context.colors.accentDefault,
-                  ),
+                  child: child ??
+                      Icon(
+                        icon,
+                        size: Spacing.$6x + Spacing.$1x,
+                        color: context.colors.accentDefault,
+                      ),
                 ),
               ),
             ),
