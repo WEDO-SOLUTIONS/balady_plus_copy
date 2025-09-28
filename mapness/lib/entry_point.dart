@@ -397,7 +397,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
     await FlutterInsider.Instance.init(
-        "baladyapp", "group.movingViolations",
+        "baladyappuat", "group.movingViolations",
             (int type, dynamic data) {
           switch (type) {
             case InsiderCallbackAction.NOTIFICATION_OPEN:
@@ -501,11 +501,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       var subPath;
       if(dtId!= null && path!= null)
       {
-        subPath = '#/$path/$dtId';
+        subPath = '#$path/$dtId';
       }
       else if(path!= null)
       {
-        subPath = '/#$path';
+        subPath = '#$path';
       }
 
       app=app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''),path: subPath);
