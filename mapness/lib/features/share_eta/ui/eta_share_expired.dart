@@ -42,10 +42,10 @@ class EtaShareExpired extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-               const Center(
+              const Center(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
-                  child: SheetDragger(backgroundColor: Colors.transparent),
+                  child: SheetDragger(),
                 ),
               ),
               ContentRow(
