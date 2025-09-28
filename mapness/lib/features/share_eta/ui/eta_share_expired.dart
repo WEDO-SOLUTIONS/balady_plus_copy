@@ -31,7 +31,7 @@ class EtaShareExpired extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: context.colors.backgroundSurface4,
+          color: context.colors.backgroundSurface2,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(RadiusBorder.xl),
             topRight: Radius.circular(RadiusBorder.xl),
@@ -42,10 +42,10 @@ class EtaShareExpired extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Center(
+               const Center(
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
-                  child: SheetDragger(),
+                  child: SheetDragger(backgroundColor: Colors.transparent),
                 ),
               ),
               ContentRow(
