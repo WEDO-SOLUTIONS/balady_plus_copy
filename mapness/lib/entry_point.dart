@@ -397,7 +397,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
     await FlutterInsider.Instance.init(
-        "baladyappuat", "group.movingViolations",
+        "baladyapp", "group.movingViolations",
             (int type, dynamic data) {
           switch (type) {
             case InsiderCallbackAction.NOTIFICATION_OPEN:
