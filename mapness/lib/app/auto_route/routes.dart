@@ -39,6 +39,7 @@ class Routes {
               CustomRoute(
                 path: 'help_center',
                 page: HelpCenterRoute.page,
+                customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
               ),
             ],
           ),
