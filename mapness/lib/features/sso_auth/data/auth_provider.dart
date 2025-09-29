@@ -8,6 +8,8 @@ import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_provider.g.dart';
@@ -20,6 +22,9 @@ class Auth extends _$Auth {
     await CommonFunctions.onLogin();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: doAuth');
+
+    // Notify the map about authorization change
+    await notifyAuthorizationChange(isAuthorized: true);
   }
 
   Future<void> logOut() async {
@@ -31,6 +36,9 @@ class Auth extends _$Auth {
     await mixpanel?.track('Auth: logOut');
     await mixpanel?.reset();
     await FlutterUxcam.setUserIdentity(null);
+
+    // Notify the map about authorization change
+    await notifyAuthorizationChange(isAuthorized: false);
   }
 
   Future<void> tokenExpireLogout() async {
@@ -39,6 +47,9 @@ class Auth extends _$Auth {
     await sl<EntryPointCubit>().autoLogout();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logtokenExpireLogoutOut');
+
+    // Notify the map about authorization change
+    await notifyAuthorizationChange(isAuthorized: false);
   }
 
   @override
@@ -51,7 +62,20 @@ class Auth extends _$Auth {
     }
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
-      state = AsyncValue.data(event.userInfo);
+      // TODO: When authorized send it to [authorizedNotifier]
+      final previousUserInfo = state.valueOrNull;
+      final newUserInfo = event.userInfo;
+
+      // Check if authorization state changed
+      final wasAuthorized = previousUserInfo != null;
+      final isAuthorized = newUserInfo != null;
+
+      if (wasAuthorized != isAuthorized) {
+        // Authorization state changed, notify the map
+        notifyAuthorizationChange(isAuthorized: isAuthorized);
+      }
+
+      state = AsyncValue.data(newUserInfo);
       ref
         ..invalidate(favouriteCacheProvider)
         ..invalidate(profileImageProvider)
@@ -70,5 +94,23 @@ class Auth extends _$Auth {
     await sl<EntryPointCubit>().refreshSSOProfile();
     final data = sl<EntryPointCubit>().state.userInfo;
     state = AsyncValue.data(data);
+  }
+
+  Future<void> notifyAuthorizationChange({required bool isAuthorized}) async {
+    // This method will be called when authorization state changes
+    // It will trigger the authorizationNotification method in the map
+    // to update CarPlay and Android Auto states
+    // The actual auth state is managed by the existing methods
+    // This is just for notification purposes
+
+    try {
+      // Get the map controller and call authorizationNotification
+      final dgisController = await ref.read(dgisControllerProvider.future);
+      await dgisController.authorizationNotification(isAuthorized: isAuthorized);
+      logger.log('Authorization notification sent to map: $isAuthorized');
+    } catch (e) {
+      // If the map controller is not available, just log the change
+      logger.log('Authorization state changed: $isAuthorized (map notification failed: $e)');
+    }
   }
 }

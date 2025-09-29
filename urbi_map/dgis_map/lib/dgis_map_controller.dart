@@ -569,6 +569,10 @@ class DgisMapController {
   Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState) =>
       _instance.favouritesUpdateNotification(favouritesState);
 
+  /// Notifies CarPlay and Android Auto about authorization state changes.
+  Future<void> authorizationNotification({required bool isAuthorized}) =>
+      _instance.authorizationNotification(isAuthorized: isAuthorized);
+
   /// Used to setup platform. Should be called when permission was granted.
   /// Does not request permission by itself.
   Future<void> onLocationPermissionGranted({

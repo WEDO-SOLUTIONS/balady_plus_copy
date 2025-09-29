@@ -1192,6 +1192,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.carPlayHandler?.toggleSounds(toggleType: toggleType)
          completion(Result.success(()))
     }
+    
+    func authorizationNotification(isAuthorized: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.carPlayHandler?.onAuthorizationChanged(isAuthorized: isAuthorized)
+        completion(Result.success(()))
+    }
 
     func favouritesUpdateNotification(favouritesState: FavouritesStateMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         // It's not necessary to update favorites in CarPlay, as they don't appear permanently on main screen in CarPlay by design

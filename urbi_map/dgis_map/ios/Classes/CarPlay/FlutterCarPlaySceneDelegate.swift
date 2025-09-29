@@ -89,6 +89,10 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
     static func toggleSounds(toggleType: SoundToggleType) {
         self.mainScreen?.toggleSounds(toggleType: toggleType)
     }
+    
+    static func onAuthorizationChanged(isAuthorized: Bool) {
+        self.mainScreen?.onAuthorizationChanged(isAuthorized: isAuthorized)
+    }
 }
 
 public protocol CarPlayConnectionSceneDelegate {

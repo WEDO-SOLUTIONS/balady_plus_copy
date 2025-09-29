@@ -33,6 +33,7 @@ import com.dgis.FlutterProvider
 import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
 import com.dgis.map.FavouritesUpdateNotifier
+import com.dgis.map.UserAuthorizedNotifier
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
@@ -40,6 +41,8 @@ import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -63,6 +66,7 @@ class NavigationScreen(
     private val appManager: AppManager
     private val hostFlutterApi: HostFlutterApi
     private var favouritesUpdateJob: Job? = null
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     init {
         navigationManager =
@@ -91,11 +95,17 @@ class NavigationScreen(
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                     favouritesUpdateJob?.cancel()
+                    coroutineScope.cancel()
                 }
             }
         )
 
-        getFavourites()
+        coroutineScope.launch {
+            UserAuthorizedNotifier.events.collect { isAuthorized ->
+                getFavourites(forceUpdate = true)
+            }
+        }
+
         favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
             FavouritesUpdateNotifier.events.collect { favouritesMessage ->
                 withContext(Dispatchers.Main) {
@@ -565,6 +575,11 @@ class NavigationScreen(
             )
         } else if (screenManager.top is FavouritesPreviewScreen && forceUpdate) {
             screenManager.pop()
+        } else if (screenManager.top is FavouritesScreen) {
+            screenManager.pop()
+            screenManager.push(
+                FavouritesScreen(carContext, mapController, favourites.items)
+            )
         }
     }
 

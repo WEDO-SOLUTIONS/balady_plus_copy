@@ -3,9 +3,11 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
@@ -831,5 +833,15 @@ class _HostFlutterApi extends HostFlutterApi {
       work: favouritesState.work?.message,
       items: favouritesState.items.map((item) => item.message).toList(),
     );
+  }
+
+  @override
+  Future<bool> isAuthorized() async {
+    try {
+      return sl<EntryPointCubit>().state.token != null;
+    } catch (e) {
+      logger.log('Cant get isAuthorized, $e');
+      return false;
+    }
   }
 }

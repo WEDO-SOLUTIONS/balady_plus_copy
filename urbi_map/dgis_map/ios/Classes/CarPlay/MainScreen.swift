@@ -69,6 +69,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var startedTrip: CPTrip? = nil
     private var isRoutesShown = false
     private var everyMinuteTimer: Timer?
+    private var isAuthorized: Bool = false
 
     func dispose() {
         navigatorStateCancellable?.cancel()
@@ -122,10 +123,18 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func buildLeadButtons() {
-        let factories = [
+        hostFlutterApi.isAuthorized(completion: { result in
+            switch result {
+            case .success(let isAuthorized):
+                self.isAuthorized = isAuthorized
+            case .failure(let error):
+                print(error)
+            }
+        })
+        let factories = (self.isAuthorized ? [
             makeFirstLeadButton(),
-            makeSecondLeadButton(),
-        ].compactMap { $0 }
+            makeSecondLeadButton()
+        ] : [makeFirstLeadButton()]).compactMap { $0 }
 
         mapTemplate.leadingNavigationBarButtons = factories.map {
             function in function()
@@ -238,6 +247,11 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     func toggleSounds(toggleType: SoundToggleType) {
         // Update sound settings in the current settings screen if it exists
         currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
+    }
+    
+    func onAuthorizationChanged(isAuthorized: Bool) {
+        self.isAuthorized = isAuthorized
+        buildLeadButtons()
     }
 
     private func closeSettingsScreen() {

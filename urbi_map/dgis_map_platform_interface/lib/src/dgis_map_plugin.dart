@@ -971,6 +971,15 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.favouritesUpdateNotification(favouritesState);
   }
 
+  /// The [authorizationNotification] method notifies CarPlay and Android Auto about authorization state changes.
+  ///
+  /// Parameters:
+  /// - [isAuthorized]: A boolean value where `true` indicates the user is authorized,
+  /// and `false` indicates the user is not authorized.
+  Future<void> authorizationNotification({required bool isAuthorized}) {
+    return _api.authorizationNotification(isAuthorized);
+  }
+
   /// The [toggleRoadCameras] method is responsible for enabling or disabling
   /// notifications related to road cameras.
   ///
