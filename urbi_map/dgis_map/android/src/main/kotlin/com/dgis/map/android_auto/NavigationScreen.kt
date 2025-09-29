@@ -66,7 +66,6 @@ class NavigationScreen(
     private val appManager: AppManager
     private val hostFlutterApi: HostFlutterApi
     private var favouritesUpdateJob: Job? = null
-    private var isAuthorized: Boolean = false
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     init {
@@ -102,13 +101,11 @@ class NavigationScreen(
         )
 
         coroutineScope.launch {
-            UserAuthorizedNotifier.events.collect { event ->
-                isAuthorized = event
-                getFavourites()
+            UserAuthorizedNotifier.events.collect { isAuthorized ->
+                getFavourites(forceUpdate = true)
             }
         }
 
-        getFavourites()
         favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
             FavouritesUpdateNotifier.events.collect { favouritesMessage ->
                 withContext(Dispatchers.Main) {
@@ -487,9 +484,6 @@ class NavigationScreen(
     }
 
     private fun getFavourites(forceUpdate: Boolean = false) {
-        FlutterProvider.getHostFlutterApi(carContext).isAuthorized { result ->
-            isAuthorized = result.getOrNull() ?: false
-        }
         FlutterProvider.getHostFlutterApi(carContext).getFavourites { result ->
             handleFavouritesMessage(result.getOrNull()) {
                 favourites = it
@@ -581,6 +575,11 @@ class NavigationScreen(
             )
         } else if (screenManager.top is FavouritesPreviewScreen && forceUpdate) {
             screenManager.pop()
+        } else if (screenManager.top is FavouritesScreen) {
+            screenManager.pop()
+            screenManager.push(
+                FavouritesScreen(carContext, mapController, favourites.items)
+            )
         }
     }
 
