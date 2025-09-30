@@ -16,12 +16,6 @@ class StreamAudio extends ConsumerStatefulWidget {
 }
 
 class _StreamAudioState extends ConsumerState<StreamAudio> {
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() => ref.read(streamAudioProvider).getLiveNow());
-  }
-
   final DraggableScrollableController _sheetController = DraggableScrollableController();
 
   final double _minChildSize = 0.0;
@@ -36,9 +30,45 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   bool _isPanelFullyOpened = false;
 
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() => ref.read(streamAudioProvider).getLiveNow());
+  }
+
+  @override
   void dispose() {
     _autoCloseTimer?.cancel();
     super.dispose();
+  }
+
+  /// Toggles the panel between open and closed states
+  void togglePanel() {
+    if (_sheetController.isAttached) {
+      final currentSize = _sheetController.size;
+      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
+
+      /// Cancel any existing timer
+      _autoCloseTimer?.cancel();
+
+      /// If opening the panel, start the 8-second timer
+      if (targetSize == _maxChildSize) {
+        setState(() => _showRemovalZone = false);
+        _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+          if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+            _sheetController.animateTo(
+              _minChildSize,
+              duration: const Duration(milliseconds: 800),
+              curve: Curves.easeInOut,
+            );
+          }
+        });
+      }
+      _sheetController.animateTo(
+        targetSize,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -97,163 +127,17 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
           return Stack(
             children: [
-              Transform.translate(
-                offset: Offset(0, mapOffset),
-                child: Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(currentSize == _minChildSize ? 0 : 32),
-                    ),
-                  ),
-                  child: widget.child,
-                ),
-              ),
+              /// Passed [child] widget, can be anything it pushed from the bottom sheet when it's opened
+              _buildChild(mapOffset, currentSize),
 
-              if (currentSize == _minChildSize && provider.selectedProgram != null)
-                Center(
-                  child: DraggableFloatingPlayerControls(
-                    onTap: togglePanel,
-                    onChange: (isHolding, mustRemove) {
-                      setState(() => _showRemovalZone = isHolding);
-                      if (mustRemove) {
-                        // Only exit the player, don't reset immediately
-                        ref.read(streamAudioProvider.notifier).exitPlayer();
-                        setState(() => _showRemovalZone = false);
-                      }
-                    },
-                  ),
-                ),
+              /// Player controls widget, it's only visible when the panel is fully opened and there is a program selected
+              _buildFloatingControls(provider, currentSize),
 
-              /// Panel
-              DraggableScrollableSheet(
-                controller: _sheetController,
-                initialChildSize: _minChildSize,
-                minChildSize: _minChildSize,
-                maxChildSize: _maxChildSize,
-                builder: (context, scrollController) => Container(
-                  decoration: const BoxDecoration(color: Colors.black),
-                  child: SingleChildScrollView(
-                    controller: scrollController,
-                    padding: const EdgeInsets.all(0),
-                    physics: const ClampingScrollPhysics(),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 3,
-                          margin: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(36),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        const PlayingAudioTile(),
-                        if (provider.hasError) ...[
-                          const SizedBox(height: 16),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.1),
-                              border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
-                                    style: const TextStyle(
-                                      color: Colors.red,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 8),
-                        MediaCatalogList(
-                          needReset: () {
-                            //reset the timer
-                            _autoCloseTimer?.cancel();
-                            _autoCloseTimer = Timer(const Duration(seconds: 80), () {
-                              if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
-                                _sheetController.animateTo(
-                                  _minChildSize,
-                                  duration: const Duration(milliseconds: 800),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 32),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+              /// Details Radio Controls Sheet (can be dragged to close)
+              _buildDetailsControlsSheet(provider),
 
-              Positioned(
-                top: 0,
-                right: 0,
-                left: 0,
-                child: AnimatedOpacity(
-                  opacity: _showRemovalZone ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 200),
-                  child: IgnorePointer(
-                    ignoring: !_showRemovalZone,
-                    child: Container(
-                      height: 160,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: const Alignment(0.50, -0.00),
-                          end: const Alignment(0.50, 1.00),
-                          colors: [Colors.black.withValues(alpha: 0.20), Colors.black.withValues(alpha: 0)],
-                        ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          width: 226,
-                          height: 40,
-                          padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
-                          decoration: ShapeDecoration(
-                            color: Colors.black.withValues(alpha: 0.65),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white.withValues(alpha: 0.20)),
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            shadows: const [BoxShadow(color: Color(0x19000000), blurRadius: 24, offset: Offset(0, 8))],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(Icons.close, color: Colors.white.withValues(alpha: 0.80), size: 22),
-                              const Text(
-                                'Drag here to exit audio player',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontFamily: 'Golos Text',
-                                  fontWeight: FontWeight.w500,
-                                  height: 1.33,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              )
+              /// Removal zone widget, it's only visible when the panel is fully opened and there is a program selected
+              _buildRemovalZone(),
             ],
           );
         },
@@ -261,33 +145,164 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
     );
   }
 
-  /// Toggles the panel between open and closed states
-  void togglePanel() {
-    if (_sheetController.isAttached) {
-      final currentSize = _sheetController.size;
-      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
-
-      /// Cancel any existing timer
-      _autoCloseTimer?.cancel();
-
-      /// If opening the panel, start the 8-second timer
-      if (targetSize == _maxChildSize) {
-        setState(() => _showRemovalZone = false);
-        _autoCloseTimer = Timer(const Duration(seconds: 80), () {
-          if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
-            _sheetController.animateTo(
-              _minChildSize,
-              duration: const Duration(milliseconds: 800),
-              curve: Curves.easeInOut,
-            );
-          }
-        });
-      }
-      _sheetController.animateTo(
-        targetSize,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+  Widget _buildChild(double mapOffset, double currentSize) => Transform.translate(
+        offset: Offset(0, mapOffset),
+        child: Container(
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(currentSize == _minChildSize ? 0 : 32),
+            ),
+          ),
+          child: widget.child,
+        ),
       );
+
+  Widget _buildFloatingControls(StreamAudioProvider provider, double currentSize) {
+    if (currentSize != _minChildSize || provider.selectedProgram == null) {
+      return const SizedBox.shrink();
     }
+    return Center(
+      child: DraggableFloatingPlayerControls(
+        onTap: togglePanel,
+        onChange: ({required isHolding, required mustRemove}) {
+          setState(() => _showRemovalZone = isHolding);
+          if (mustRemove) {
+            // Only exit the player, don't reset immediately
+            ref.read(streamAudioProvider.notifier).exitPlayer();
+            setState(() => _showRemovalZone = false);
+          }
+        },
+      ),
+    );
   }
+
+  Widget _buildDetailsControlsSheet(StreamAudioProvider provider) => DraggableScrollableSheet(
+        controller: _sheetController,
+        initialChildSize: _minChildSize,
+        minChildSize: _minChildSize,
+        maxChildSize: _maxChildSize,
+        builder: (context, scrollController) => Container(
+          decoration: const BoxDecoration(color: Colors.black),
+          child: SingleChildScrollView(
+            controller: scrollController,
+            padding: const EdgeInsets.all(0),
+            physics: const ClampingScrollPhysics(),
+            child: Column(
+              children: [
+                Container(
+                  width: 40,
+                  height: 3,
+                  margin: const EdgeInsets.symmetric(vertical: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey,
+                    borderRadius: BorderRadius.circular(36),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const PlayingAudioTile(),
+                if (provider.hasError) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.1),
+                      border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                MediaCatalogList(
+                  needReset: () {
+                    //reset the timer
+                    _autoCloseTimer?.cancel();
+                    _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+                      if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+                        _sheetController.animateTo(
+                          _minChildSize,
+                          duration: const Duration(milliseconds: 800),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    });
+                  },
+                ),
+                const SizedBox(height: 32),
+              ],
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildRemovalZone() => Positioned(
+        top: 0,
+        right: 0,
+        left: 0,
+        child: AnimatedOpacity(
+          opacity: _showRemovalZone ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 200),
+          child: IgnorePointer(
+            ignoring: !_showRemovalZone,
+            child: Container(
+              height: 160,
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: const Alignment(0.50, -0.00),
+                  end: const Alignment(0.50, 1.00),
+                  colors: [Colors.black.withValues(alpha: 0.20), Colors.black.withValues(alpha: 0)],
+                ),
+              ),
+              child: Center(
+                child: Container(
+                  width: 226,
+                  height: 40,
+                  padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
+                  decoration: ShapeDecoration(
+                    color: Colors.black.withValues(alpha: 0.65),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.white.withValues(alpha: 0.20)),
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    shadows: const [BoxShadow(color: Color(0x19000000), blurRadius: 24, offset: Offset(0, 8))],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.close, color: Colors.white.withValues(alpha: 0.80), size: 22),
+                      const Text(
+                        'Drag here to exit audio player',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontFamily: 'Golos Text',
+                          fontWeight: FontWeight.w500,
+                          height: 1.33,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
 }

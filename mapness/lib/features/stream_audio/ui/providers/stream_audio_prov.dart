@@ -5,7 +5,7 @@ import 'package:mapness/features/stream_audio/data/dto/LiveNowDto.dart';
 import 'package:mapness/features/stream_audio/services/audio_service.dart';
 
 class StreamAudioProvider extends ChangeNotifier {
-  AudioService _audioService = AudioService();
+  final AudioService _audioService = AudioService();
   ProgramDto? _selectedProgram;
   LiveNowDto? _liveNow;
   bool _isExited = false;
@@ -70,7 +70,9 @@ class StreamAudioProvider extends ChangeNotifier {
   double get progress {
     final totalCached = _audioService.totalCachedTime.inMilliseconds;
     final currentPos = _audioService.currentPosition.inMilliseconds;
-    if (totalCached <= 0) return 0.0;
+    if (totalCached <= 0) {
+      return 0.0;
+    }
     return (currentPos / totalCached).clamp(0.0, 1.0);
   }
 
@@ -101,7 +103,9 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Program selection and playback
   Future<void> selectProgram(ProgramDto? program) async {
-    if (program == null || program.streamUrl.isEmpty) return;
+    if (program == null || program.streamUrl.isEmpty) {
+      return;
+    }
 
     debugPrint('StreamAudioProvider: Selecting program: ${program.title}');
 
@@ -120,10 +124,8 @@ class StreamAudioProvider extends ChangeNotifier {
         channelId: program.title,
         title: program.title,
         artist: program.sub,
-        artUri: null, // Don't use asset paths as artUri
       );
-      debugPrint(
-          'StreamAudioProvider: Successfully started playing ${program.title}');
+      debugPrint('StreamAudioProvider: Successfully started playing ${program.title}');
     } catch (e) {
       debugPrint('StreamAudioProvider: Error playing stream: $e');
     }
@@ -150,10 +152,11 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Playback controls
   Future<void> playStream() async {
-    if (_selectedProgram == null || _selectedProgram!.streamUrl.isEmpty) return;
+    if (_selectedProgram == null || _selectedProgram!.streamUrl.isEmpty) {
+      return;
+    }
 
-    debugPrint(
-        'StreamAudioProvider: Playing stream for ${_selectedProgram!.title}');
+    debugPrint('StreamAudioProvider: Playing stream for ${_selectedProgram!.title}');
 
     // If we were previously exited, reinitialize
     if (_isExited) {
@@ -168,7 +171,6 @@ class StreamAudioProvider extends ChangeNotifier {
         channelId: _selectedProgram!.title,
         title: _selectedProgram!.title,
         artist: _selectedProgram!.sub,
-        artUri: null,
       );
       debugPrint('StreamAudioProvider: Stream playing successfully');
     } catch (e) {
@@ -205,13 +207,11 @@ class StreamAudioProvider extends ChangeNotifier {
     await _audioService.goLive();
   }
 
-  Future<void> seekForward(
-      [Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekForward([Duration duration = const Duration(seconds: 30)]) async {
     await _audioService.seekForward(duration);
   }
 
-  Future<void> seekBackward(
-      [Duration duration = const Duration(seconds: 30)]) async {
+  Future<void> seekBackward([Duration duration = const Duration(seconds: 30)]) async {
     await _audioService.seekBackward(duration);
   }
 
@@ -247,13 +247,16 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   // Program reordering (for UI)
-  void reorderPrograms(int oldIndex, int newIndex) {
+  void reorderPrograms(int oldIndex, int passedNewIndex) {
     final ln = liveNow;
-    if (ln == null) return;
+    if (ln == null) {
+      return;
+    }
 
     final list = [...ln.programs];
-    if (newIndex > oldIndex) {
-      newIndex -= 1;
+    int newIndex = passedNewIndex;
+    if (passedNewIndex > oldIndex) {
+      newIndex = passedNewIndex - 1;
     }
     final item = list.removeAt(oldIndex);
     list.insert(newIndex, item);
@@ -263,8 +266,9 @@ class StreamAudioProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    _audioService.removeListener(_onAudioServiceChanged);
-    _audioService.dispose();
+    _audioService
+      ..removeListener(_onAudioServiceChanged)
+      ..dispose();
     super.dispose();
   }
 }

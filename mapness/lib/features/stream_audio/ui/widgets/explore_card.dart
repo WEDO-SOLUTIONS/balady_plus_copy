@@ -36,65 +36,73 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
                       alignment: AlignmentDirectional.centerEnd,
                       child: Assets.images.exploreMbc.image(),
                     ),
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                            top: 12.0, start: 16.0),
-                        child: RichText(
-                          text: TextSpan(
-                            text: 'Explore the', // context.l10n.driveBack,
-                            style: context.textStyles.h3Medium.copyWith(
-                              color: Colors.white,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: '\nmedia catalog',
-                                style: context.textStyles.h3Medium.copyWith(
-                                  color: const Color(0xFF00FFFA),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Align(
-                      alignment: AlignmentDirectional.bottomStart,
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.only(
-                          bottom: 12.0,
-                          start: 16.0,
-                        ),
-                        child: MBCMood(),
-                      ),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.topEnd,
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.all(Spacing.$4x),
-                        child: SizedBox(
-                          width: Spacing.$6x,
-                          height: Spacing.$6x,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(Spacing.$1_5x),
-                              color:
-                                  context.colors.staticWhite.withValues(alpha: 0.2),
-                            ),
-                            child: Center(
-                              child: Icon(
-                                SystemIcons.arrowRight,
-                                color: context.colors.staticWhite,
-                                size: Spacing.$5x,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    // Explore text
+                    _buildExploreText(),
+
+                    // MBC Mood
+                    _buildMBCMood(),
+
+                    // Arrow right
+                    _buildArrowRight(),
                   ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildExploreText() => Align(
+        alignment: AlignmentDirectional.topStart,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
+          child: RichText(
+            text: TextSpan(
+              text: 'Explore the', // context.l10n.driveBack,
+              style: context.textStyles.h3Medium.copyWith(
+                color: Colors.white,
+              ),
+              children: [
+                TextSpan(
+                  text: '\nmedia catalog',
+                  style: context.textStyles.h3Medium.copyWith(
+                    color: const Color(0xFF00FFFA),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildMBCMood() => const Align(
+        alignment: AlignmentDirectional.bottomStart,
+        child: Padding(
+          padding: EdgeInsetsDirectional.only(
+            bottom: 12.0,
+            start: 16.0,
+          ),
+          child: MBCMood(),
+        ),
+      );
+
+  Widget _buildArrowRight() => Align(
+        alignment: AlignmentDirectional.topEnd,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.all(Spacing.$4x),
+          child: SizedBox(
+            width: Spacing.$6x,
+            height: Spacing.$6x,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Spacing.$1_5x),
+                color: context.colors.staticWhite.withValues(alpha: 0.2),
+              ),
+              child: Center(
+                child: Icon(
+                  SystemIcons.arrowRight,
+                  color: context.colors.staticWhite,
+                  size: Spacing.$5x,
                 ),
               ),
             ),

@@ -1,0 +1,139 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+
+class RadioContextualButton extends ConsumerStatefulWidget {
+  const RadioContextualButton({super.key});
+
+  @override
+  ConsumerState<RadioContextualButton> createState() =>
+      _RadioContextualButtonState();
+}
+
+class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
+  bool showMessage = false;
+
+  Future<void> _openAudioPlayer(BuildContext context) async {
+    final provider = ref.read(streamAudioProvider.notifier);
+
+    // Reset if needed before getting live programs
+    if (provider.needsReinitialization) {
+      await provider.reset();
+    }
+
+    // Ensure we have live programs data first
+    await provider.getLiveNow();
+    if (provider.liveNow?.programs.isNotEmpty == true) {
+      await provider.selectProgram(provider.liveNow!.programs.first);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final provider = ref.read(streamAudioProvider.notifier);
+
+    if (provider.selectedProgram != null) {
+      return const SizedBox.shrink();
+    }
+    return Row(
+      children: [
+        /// Open Audio Button
+        GestureDetector(
+          onTap: () => setState(() => showMessage = true),
+          child: _buildActionButton(context),
+        ),
+
+        /// Message Banner
+        if (showMessage)
+          Stack(
+            children: [
+              SvgPicture.asset(
+                Assets.icons.svg.audio.contextualBanner.keyName,
+              ),
+              Positioned(left: 26, top: 8, child: _buildMessageContent(context))
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(BuildContext context) => Container(
+        width: 48,
+        height: 48,
+        padding: const EdgeInsets.all(12),
+        clipBehavior: Clip.antiAlias,
+        decoration: ShapeDecoration(
+          gradient: const LinearGradient(
+            begin: Alignment(0.50, -0.00),
+            end: Alignment(0.50, 1.00),
+            stops: [0.00, 0.0],
+            colors: [Color(0xFF212222), Color(0xFF212222)],
+          ),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+            borderRadius: BorderRadius.circular(40),
+          ),
+          shadows: const [
+            BoxShadow(
+              color: Color(0x7F212222),
+              blurRadius: 16,
+              offset: Offset(0, 8),
+              spreadRadius: -8,
+            )
+          ],
+        ),
+        child: SvgPicture.asset(
+          Assets.icons.svg.audio.audioStream.keyName,
+        ),
+      );
+
+  Widget _buildMessageContent(BuildContext context) => SizedBox(
+        width: 200,
+        child: Row(
+          spacing: 14,
+          children: [
+            Column(spacing: 2, children: [_buildHeader(), _buildSubTitle()]),
+            const Spacer(),
+            ..._buildActions(),
+          ],
+        ),
+      );
+
+  Widget _buildHeader() => const Text(
+        'Stuck in traffic?',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontFamily: 'Golos Text',
+          fontWeight: FontWeight.w600,
+          height: 1.14,
+        ),
+      );
+
+  Widget _buildSubTitle() => Text(
+        'Tune into live radio',
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.70),
+          fontSize: 12,
+          fontFamily: 'Golos Text',
+          fontWeight: FontWeight.w400,
+          height: 1.33,
+        ),
+      );
+
+  List<Widget> _buildActions() => [
+        GestureDetector(
+          onTap: () {
+            setState(() => showMessage = false);
+            _openAudioPlayer(context);
+          },
+          child: SvgPicture.asset(Assets.icons.svg.audio.check.keyName),
+        ),
+        GestureDetector(
+          onTap: () => setState(() => showMessage = false),
+          child: SvgPicture.asset(Assets.icons.svg.audio.close.keyName),
+        )
+      ];
+}

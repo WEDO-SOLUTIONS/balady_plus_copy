@@ -560,6 +560,15 @@ class $AssetsIconsSvgAudioGen {
   /// File path: assets/icons/svg/audio/audio_stream.svg
   SvgGenImage get audioStream => const SvgGenImage('assets/icons/svg/audio/audio_stream.svg');
 
+  /// File path: assets/icons/svg/audio/check.svg
+  SvgGenImage get check => const SvgGenImage('assets/icons/svg/audio/check.svg');
+
+  /// File path: assets/icons/svg/audio/close.svg
+  SvgGenImage get close => const SvgGenImage('assets/icons/svg/audio/close.svg');
+
+  /// File path: assets/icons/svg/audio/contextual_banner.svg
+  SvgGenImage get contextualBanner => const SvgGenImage('assets/icons/svg/audio/contextual_banner.svg');
+
   /// File path: assets/icons/svg/audio/pause.svg
   SvgGenImage get pause => const SvgGenImage('assets/icons/svg/audio/pause.svg');
 
@@ -576,7 +585,8 @@ class $AssetsIconsSvgAudioGen {
   SvgGenImage get waves => const SvgGenImage('assets/icons/svg/audio/waves.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [audioStream, pause, resume, seekBackward, seekForward, waves];
+  List<SvgGenImage> get values =>
+      [audioStream, check, close, contextualBanner, pause, resume, seekBackward, seekForward, waves];
 }
 
 class $AssetsIconsSvgLayersGen {

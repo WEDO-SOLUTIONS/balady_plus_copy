@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
@@ -94,8 +93,8 @@ class _DashboardState extends ConsumerState<Dashboard>
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.white.withOpacity(0),
-                      Colors.white.withOpacity(0.8)
+                      Colors.white.withValues(alpha: 0),
+                      Colors.white.withValues(alpha: 0.8)
                     ],
                   ),
                 ),
@@ -107,7 +106,7 @@ class _DashboardState extends ConsumerState<Dashboard>
             StatefulSheetDelegateFunction(function: (controller) {
           final state = controller.state;
           if (state == ThreeStateBottomSheet.expanded) {
-            return Colors.black.withOpacity(.4);
+            return Colors.black.withValues(alpha: .4);
           }
           return null;
         }),
@@ -199,7 +198,7 @@ class _DashboardState extends ConsumerState<Dashboard>
                   ),
                   const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
-                    text: context.l10n.streamAudio,
+                    text: 'Stream Audio',
                     icon: Icons.wifi,
                     child: SvgPicture.asset(
                       Assets.icons.svg.audio.audioStream.keyName,
@@ -296,16 +295,16 @@ class _DashboardState extends ConsumerState<Dashboard>
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Quran_Show_All_Surahs_Page",
+      serviceKey: 'islamicservice',
+      path: '#Quran_Show_All_Surahs_Page',
     );
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Athkar_Page",
+      serviceKey: 'islamicservice',
+      path: '#Athkar_Page',
     );
   }
 
@@ -346,7 +345,7 @@ class _DashboardState extends ConsumerState<Dashboard>
         action: MetricAction.tap.name,
         group: MetricsConstants.exploreTag);
     sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "snapandsend",
+      serviceKey: 'snapandsend',
     );
   }
 

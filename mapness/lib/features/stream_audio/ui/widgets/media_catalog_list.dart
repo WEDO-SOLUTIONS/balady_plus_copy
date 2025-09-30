@@ -22,7 +22,7 @@ class MediaCatalogList extends ConsumerWidget {
         alignment: Alignment.center,
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(
-            Colors.white.withOpacity(0.5),
+            Colors.white.withValues(alpha: 0.5),
           ),
         ),
       );
