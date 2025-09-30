@@ -501,11 +501,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       var subPath;
       if(dtId!= null && path!= null)
       {
-        subPath = '#/$path/$dtId';
+        subPath = '#$path/$dtId';
       }
       else if(path!= null)
       {
-        subPath = '/#$path';
+        subPath = '#$path';
       }
 
       app=app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''),path: subPath);
