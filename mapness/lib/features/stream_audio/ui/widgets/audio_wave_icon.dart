@@ -149,15 +149,18 @@ class AudioWavePainter extends CustomPainter {
 
       // Calculate wave height based on animation and position
       double waveHeight;
+      // Use modulo to safely access baseHeights array for any waveCount
+      final baseHeightIndex = i % baseHeights.length;
+
       if (isPlaying) {
         // Create different wave patterns for each bar
         final animationValue = controller.value;
         final sineWave = math.sin(animationValue * 2 * math.pi);
         final heightMultiplier = 0.7 + (0.3 * (sineWave.abs()));
-        waveHeight = size.height * baseHeights[i] * heightMultiplier;
+        waveHeight = size.height * baseHeights[baseHeightIndex] * heightMultiplier;
       } else {
         // Static height when not playing (reduced base height)
-        waveHeight = size.height * baseHeights[i] * 0.6;
+        waveHeight = size.height * baseHeights[baseHeightIndex] * 0.6;
       }
 
       final left = center.dx - (waveControllers.length * waveWidth / 2) + (i * waveWidth) + (waveWidth * 0.25);
