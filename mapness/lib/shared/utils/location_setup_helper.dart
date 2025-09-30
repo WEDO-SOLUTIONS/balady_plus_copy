@@ -27,20 +27,13 @@ class LocationSetupHelper with WidgetsBindingObserver {
     }
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _tryActivate();
-    }
-  }
-
   Future<void> _tryActivate() async {
     // don't access PermissionManager concurrently
     if (_requestInProgress) {
       return;
     }
 
-    var status = await Permission.location.status;
+    PermissionStatus status = await Permission.location.status;
     _log('current status: $status'); // current status
 
     // if not yet granted – request
