@@ -52,8 +52,10 @@ class MediaSessionHandler(
             }
             "setPlaybackState" -> {
                 val playing = call.argument<Boolean>("isPlaying") ?: false
-                android.util.Log.d("MediaSessionHandler", "Setting playback state: $playing")
-                setPlaybackState(playing)
+                val position = call.argument<Long>("position") ?: 0L
+                val duration = call.argument<Long>("duration") ?: -1L
+                android.util.Log.d("MediaSessionHandler", "Setting playback state: playing=$playing, position=${position}ms (${position/1000}s), duration=${duration}ms (${duration/1000}s)")
+                setPlaybackState(playing, position, duration)
                 result.success(null)
             }
             "releaseMediaSession" -> {
@@ -147,13 +149,14 @@ class MediaSessionHandler(
         val title = metadata["title"] as? String ?: "Unknown Title"
         val artist = metadata["artist"] as? String ?: "Unknown Artist"
         val artworkUrl = metadata["artworkUrl"] as? String
+        val duration = metadata["duration"] as? Long ?: -1L // Support duration from Flutter
         
         val metadataBuilder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
             .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "Live Stream")
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Live Radio")
-            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, -1L) // -1 for live streams
+            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, duration) // Use provided duration or -1 for live streams
         
         // Load artwork if provided
         artworkUrl?.let { url ->
@@ -176,10 +179,15 @@ class MediaSessionHandler(
         showNotification()
     }
     
-    private fun setPlaybackState(playing: Boolean) {
+    private fun setPlaybackState(playing: Boolean, position: Long = 0L, duration: Long = -1L) {
         isPlaying = playing
         
         val state = if (playing) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
+        
+        // For live streams with cached content, show progress
+        val playbackSpeed = if (playing) 1.0f else 0.0f
+        
+        android.util.Log.d("MediaSessionHandler", "Building playback state with position=$position, duration=$duration, speed=$playbackSpeed")
         
         val playbackState = PlaybackStateCompat.Builder()
             .setActions(
@@ -188,10 +196,30 @@ class MediaSessionHandler(
                 PlaybackStateCompat.ACTION_STOP or
                 PlaybackStateCompat.ACTION_SEEK_TO
             )
-            .setState(state, if (playing) 500L else 0L, 1.0f) // Show progress when playing
+            .setState(state, position, playbackSpeed)
             .build()
         
         mediaSession?.setPlaybackState(playbackState)
+        
+        // Always update metadata with current duration for progress calculation
+        currentMetadata?.let { metadata ->
+            val title = metadata["title"] as? String ?: "Unknown Title"
+            val artist = metadata["artist"] as? String ?: "Unknown Artist"
+            
+            // Use duration from parameter if available, otherwise use stored duration
+            val metadataDuration = if (duration > 0) duration else (metadata["duration"] as? Long ?: -1L)
+            
+            android.util.Log.d("MediaSessionHandler", "Updating metadata with duration=$metadataDuration")
+            
+            val metadataBuilder = MediaMetadataCompat.Builder()
+                .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist)
+                .putString(MediaMetadataCompat.METADATA_KEY_GENRE, "Live Stream")
+                .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "Live Radio")
+                .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, metadataDuration)
+            
+            mediaSession?.setMetadata(metadataBuilder.build())
+        }
         
         // Always show notification when there's active media session
         showNotification()
@@ -205,7 +233,13 @@ class MediaSessionHandler(
         }
         val title = metadata["title"] as? String ?: "Unknown Title"
         val artist = metadata["artist"] as? String ?: "Unknown Artist"
-        android.util.Log.d("MediaSessionHandler", "Creating notification for: $title by $artist")
+        val duration = metadata["duration"] as? Long ?: -1L
+        
+        // Get current position from MediaSession
+        val playbackState = mediaSession?.controller?.playbackState
+        val position = playbackState?.position ?: 0L
+        
+        android.util.Log.d("MediaSessionHandler", "Creating notification: title=$title, artist=$artist, position=${position}ms, duration=${duration}ms")
         
         // Create intent to open app when notification is tapped
         val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
@@ -214,18 +248,19 @@ class MediaSessionHandler(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        val notification = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
+        val notificationBuilder = NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(title)
-            .setContentText("$artist • Live Stream")
-            .setSubText(if (isPlaying) "Live • Playing" else "Live • Paused")
-            .setSmallIcon(if (isPlaying) android.R.drawable.ic_media_play else android.R.drawable.ic_media_pause)
+            .setContentText(artist)
+            .setSubText(if (isPlaying) "Playing" else "Paused")
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentIntent(pendingIntent)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setPriority(NotificationCompat.PRIORITY_HIGH) // Higher priority for lock screen
-            .setCategory(NotificationCompat.CATEGORY_TRANSPORT) // Media category
-            .setOngoing(true) // Keep notification visible even when paused
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_TRANSPORT)
+            .setOngoing(true)
             .setShowWhen(false)
-            .setOnlyAlertOnce(true) // Don't alert repeatedly
+            .setUsesChronometer(false) // Don't use chronometer for cached content with progress bar
+            .setOnlyAlertOnce(true)
             .addAction(
                 if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play,
                 if (isPlaying) "Pause" else "Play",
@@ -247,7 +282,27 @@ class MediaSessionHandler(
                     .setMediaSession(mediaSession?.sessionToken)
                     .setShowActionsInCompactView(0, 1)
             )
-            .build()
+        
+        // Add progress bar if we have valid duration
+        // Use metadata duration if position from playback state is not reliable
+        val actualDuration = if (duration > 0) duration else -1L
+        
+        android.util.Log.d("MediaSessionHandler", "Progress check - position=$position, duration=$actualDuration, fromMetadata=${duration}ms")
+        
+        if (actualDuration > 0 && position >= 0) {
+            val durationSeconds = (actualDuration / 1000).toInt()
+            val positionSeconds = (position / 1000).toInt().coerceIn(0, durationSeconds)
+            android.util.Log.d("MediaSessionHandler", "✅ Adding progress bar: $positionSeconds / $durationSeconds seconds")
+            notificationBuilder.setProgress(durationSeconds, positionSeconds, false)
+        } else {
+            android.util.Log.w("MediaSessionHandler", "❌ No progress bar - duration: $actualDuration, position: $position")
+            // Show indeterminate progress for live streams
+            if (isPlaying) {
+                notificationBuilder.setProgress(0, 0, true) // Indeterminate progress
+            }
+        }
+        
+        val notification = notificationBuilder.build()
         
         android.util.Log.d("MediaSessionHandler", "Showing notification with ID: $NOTIFICATION_ID")
         notificationManager?.notify(NOTIFICATION_ID, notification)

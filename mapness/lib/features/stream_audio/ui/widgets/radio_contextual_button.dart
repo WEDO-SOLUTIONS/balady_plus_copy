@@ -8,13 +8,10 @@ class RadioContextualButton extends ConsumerStatefulWidget {
   const RadioContextualButton({super.key});
 
   @override
-  ConsumerState<RadioContextualButton> createState() =>
-      _RadioContextualButtonState();
+  ConsumerState<RadioContextualButton> createState() => _RadioContextualButtonState();
 }
 
 class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
-  bool showMessage = false;
-
   Future<void> _openAudioPlayer(BuildContext context) async {
     final provider = ref.read(streamAudioProvider.notifier);
 
@@ -32,7 +29,8 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = ref.read(streamAudioProvider.notifier);
+    final provider = ref.watch(streamAudioProvider);
+    final providerNotifier = ref.read(streamAudioProvider.notifier);
 
     if (provider.selectedProgram != null) {
       return const SizedBox.shrink();
@@ -41,18 +39,18 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
       children: [
         /// Open Audio Button
         GestureDetector(
-          onTap: () => setState(() => showMessage = true),
+          onTap: () {
+            providerNotifier.mockUserInTraffic();
+          },
           child: _buildActionButton(context),
         ),
 
         /// Message Banner
-        if (showMessage)
+        if (provider.isContextualMessageVisible)
           Stack(
             children: [
-              SvgPicture.asset(
-                Assets.icons.svg.audio.contextualBanner.keyName,
-              ),
-              Positioned(left: 26, top: 8, child: _buildMessageContent(context))
+              SvgPicture.asset(Assets.icons.svg.audio.contextualBanner.keyName),
+              Positioned(left: 26, top: 8, child: _buildMessageContent(context, provider))
             ],
           ),
       ],
@@ -89,21 +87,21 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
         ),
       );
 
-  Widget _buildMessageContent(BuildContext context) => SizedBox(
+  Widget _buildMessageContent(BuildContext context, StreamAudioProvider provider) => SizedBox(
         width: 200,
         child: Row(
           spacing: 14,
           children: [
-            Column(spacing: 2, children: [_buildHeader(), _buildSubTitle()]),
+            Column(spacing: 2, children: [_buildHeader(provider), _buildSubTitle(provider)]),
             const Spacer(),
             ..._buildActions(),
           ],
         ),
       );
 
-  Widget _buildHeader() => const Text(
-        'Stuck in traffic?',
-        style: TextStyle(
+  Widget _buildHeader(StreamAudioProvider provider) => Text(
+        provider.contextualMessageTitle ?? 'Catch the latest',
+        style: const TextStyle(
           color: Colors.white,
           fontSize: 14,
           fontFamily: 'Golos Text',
@@ -112,8 +110,8 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
         ),
       );
 
-  Widget _buildSubTitle() => Text(
-        'Tune into live radio',
+  Widget _buildSubTitle(StreamAudioProvider provider) => Text(
+        provider.contextualMessageSubtitle ?? 'Tune into live radio',
         style: TextStyle(
           color: Colors.white.withValues(alpha: 0.70),
           fontSize: 12,
@@ -123,17 +121,21 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
         ),
       );
 
-  List<Widget> _buildActions() => [
-        GestureDetector(
-          onTap: () {
-            setState(() => showMessage = false);
-            _openAudioPlayer(context);
-          },
-          child: SvgPicture.asset(Assets.icons.svg.audio.check.keyName),
-        ),
-        GestureDetector(
-          onTap: () => setState(() => showMessage = false),
-          child: SvgPicture.asset(Assets.icons.svg.audio.close.keyName),
-        )
-      ];
+  List<Widget> _buildActions() {
+    final providerNotifier = ref.read(streamAudioProvider.notifier);
+
+    return [
+      GestureDetector(
+        onTap: () {
+          setState(() => providerNotifier.hideContextualMessage());
+          _openAudioPlayer(context);
+        },
+        child: SvgPicture.asset(Assets.icons.svg.audio.check.keyName),
+      ),
+      GestureDetector(
+        onTap: () => setState(() => providerNotifier.hideContextualMessage()),
+        child: SvgPicture.asset(Assets.icons.svg.audio.close.keyName),
+      )
+    ];
+  }
 }

@@ -30,6 +30,8 @@ class AudioService extends ChangeNotifier {
   // Stream URLs
   String? _currentStreamUrl;
   String? _currentChannelId;
+  String? _currentTitle;
+  String? _currentArtist;
 
   // State
   bool _isInitialized = false;
@@ -155,6 +157,8 @@ class AudioService extends ChangeNotifier {
         // When playing from cache, update user position based on player position
         _userPosition = position;
         notifyListeners();
+        // Update MediaSession with current position
+        _updatePlatformPlaybackState(_isPlaying);
       }
       // When playing live, user position is updated by the timer
     });
@@ -175,6 +179,10 @@ class AudioService extends ChangeNotifier {
 
       // Notify listeners if either playing or loading state changed
       if (wasPlaying != _isPlaying || wasLoading != _isLoading) {
+        // Update MediaSession when play state changes
+        if (wasPlaying != _isPlaying) {
+          _updatePlatformPlaybackState(_isPlaying);
+        }
         notifyListeners();
       }
     });
@@ -209,6 +217,8 @@ class AudioService extends ChangeNotifier {
         await _stopCurrentStream();
         _currentChannelId = channelId;
         _currentStreamUrl = url;
+        _currentTitle = title;
+        _currentArtist = artist;
 
         // Reset time tracking
         _userPosition = Duration.zero;
@@ -220,6 +230,10 @@ class AudioService extends ChangeNotifier {
         await _startCaching(url);
         _startCacheTimer();
       } else {
+        // Update metadata even for same channel in case it changed
+        _currentTitle = title;
+        _currentArtist = artist;
+
         // Make sure cache timer is running even for same channel
         if (_cacheTimer == null || !_cacheTimer!.isActive) {
           _startCacheTimer();
@@ -272,8 +286,8 @@ class AudioService extends ChangeNotifier {
       await _player!.setAudioSource(audioSource);
       await _player!.seek(position);
 
-      // Update platform media session with metadata FIRST
-      await _updatePlatformMediaMetadata('Radio (Cached)', 'Buffered');
+      // Update platform media session with metadata FIRST - use stored channel info
+      await _updatePlatformMediaMetadata(_currentTitle ?? 'Radio (Cached)', _currentArtist ?? 'Buffered');
 
       await _player!.play();
 
@@ -356,6 +370,12 @@ class AudioService extends ChangeNotifier {
               _userPosition = _totalCachedDuration;
             }
           }
+
+          // Update MediaSession every second for smoother progress updates
+          if (timer.tick % 10 == 0) {
+            // Every 1 second (10 * 100ms)
+            _updatePlatformPlaybackState(_isPlaying);
+          }
         }
         notifyListeners();
       }
@@ -392,7 +412,7 @@ class AudioService extends ChangeNotifier {
       if (shouldPlayLive) {
         // Play live and sync position
         _userPosition = _totalCachedDuration;
-        await _playLiveStream(_currentStreamUrl!, 'Live Radio', 'Live');
+        await _playLiveStream(_currentStreamUrl!, _currentTitle ?? 'Live Radio', _currentArtist ?? 'Live');
       } else {
         // Play from cached position
         await _playFromCache(_userPosition);
@@ -469,7 +489,7 @@ class AudioService extends ChangeNotifier {
       _userPosition = _totalCachedDuration;
       _isPlayingFromCache = false;
 
-      await _playLiveStream(_currentStreamUrl!, 'Live Radio', 'Live');
+      await _playLiveStream(_currentStreamUrl!, _currentTitle ?? 'Live Radio', _currentArtist ?? 'Live');
 
       notifyListeners();
     } catch (e) {
@@ -531,6 +551,8 @@ class AudioService extends ChangeNotifier {
     _isLoading = false;
     _currentChannelId = null;
     _currentStreamUrl = null;
+    _currentTitle = null;
+    _currentArtist = null;
     _clearError();
     notifyListeners();
   }
@@ -577,9 +599,14 @@ class AudioService extends ChangeNotifier {
   Future<void> _updatePlatformMediaMetadata(String title, String artist) async {
     if (Platform.isAndroid) {
       try {
+        final duration = _totalCachedDuration.inMilliseconds;
+        debugPrint(
+            'AudioService: Updating MediaSession metadata - title: $title, artist: $artist, duration: ${_formatDuration(_totalCachedDuration)}');
+
         await _mediaSessionChannel.invokeMethod('updateMediaMetadata', {
           'title': title,
           'artist': artist,
+          'duration': duration > 0 ? duration : -1, // Send cached duration or -1 for live
         });
       } catch (e) {
         debugPrint('AudioService: MediaSession metadata update failed: $e');
@@ -590,11 +617,31 @@ class AudioService extends ChangeNotifier {
   Future<void> _updatePlatformPlaybackState(bool playing) async {
     if (Platform.isAndroid) {
       try {
+        // Ensure we have valid duration for progress display
+        final duration = _totalCachedDuration.inMilliseconds;
+        final position = _userPosition.inMilliseconds.clamp(0, duration);
+
+        debugPrint(
+            'AudioService: Updating MediaSession - playing: $playing, position: ${_formatDuration(_userPosition)}, duration: ${_formatDuration(_totalCachedDuration)}');
+
         await _mediaSessionChannel.invokeMethod('setPlaybackState', {
           'isPlaying': playing,
+          'position': position, // Send clamped position
+          'duration': duration > 0 ? duration : -1, // Send duration or -1 for live
         });
       } catch (e) {
         debugPrint('AudioService: MediaSession playback state update failed: $e');
+      }
+    }
+  }
+
+  Future<void> releaseMediaSession() async {
+    if (Platform.isAndroid) {
+      try {
+        await _mediaSessionChannel.invokeMethod('releaseMediaSession');
+        debugPrint('AudioService: MediaSession released');
+      } catch (e) {
+        debugPrint('AudioService: MediaSession release failed: $e');
       }
     }
   }

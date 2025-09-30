@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/data/datasource/channels_data_source.dart';
@@ -10,6 +11,10 @@ class StreamAudioProvider extends ChangeNotifier {
   LiveNowDto? _liveNow;
   bool _isExited = false;
   bool _isInitialized = false;
+  bool _isContextualMessageVisible = false;
+  String? _contextualMessageTitle;
+  String? _contextualMessageSubtitle;
+  Timer? _contextualMessageTimer;
 
   StreamAudioProvider() {
     _initializeService();
@@ -31,6 +36,52 @@ class StreamAudioProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint('StreamAudioProvider: Error in _onAudioServiceChanged: $e');
     }
+  }
+
+  bool get isContextualMessageVisible => _isContextualMessageVisible;
+  String? get contextualMessageTitle => _contextualMessageTitle;
+  String? get contextualMessageSubtitle => _contextualMessageSubtitle;
+
+  void showContextualMessage() {
+    _isContextualMessageVisible = true;
+
+    // Cancel any existing timer
+    _contextualMessageTimer?.cancel();
+
+    // Start new timer to auto-hide after 15 seconds
+    _contextualMessageTimer = Timer(const Duration(seconds: 15), () {
+      hideContextualMessage();
+    });
+
+    notifyListeners();
+  }
+
+  void hideContextualMessage() {
+    _isContextualMessageVisible = false;
+
+    // Cancel the timer if it's still active
+    if (_contextualMessageTimer != null && _contextualMessageTimer!.isActive) {
+      _contextualMessageTimer!.cancel();
+      _contextualMessageTimer = null;
+    }
+
+    notifyListeners();
+  }
+
+  set contextualMessageTitle(String? value) {
+    _contextualMessageTitle = value;
+    notifyListeners();
+  }
+
+  set contextualMessageSubtitle(String? value) {
+    _contextualMessageSubtitle = value;
+    notifyListeners();
+  }
+
+  void mockUserInTraffic() {
+    contextualMessageTitle = 'Stuck in traffic';
+    contextualMessageSubtitle = 'Tune into live radio';
+    showContextualMessage();
   }
 
   // Program management
@@ -225,6 +276,9 @@ class StreamAudioProvider extends ChangeNotifier {
     // Stop the audio service (don't dispose here, let reinitialize handle it)
     await _audioService.stop();
 
+    // Release MediaSession to hide notification
+    await _audioService.releaseMediaSession();
+
     // Mark as exited and clear selected program
     _isExited = true;
     _selectedProgram = null;
@@ -266,6 +320,9 @@ class StreamAudioProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    // Cancel the contextual message timer if active
+    _contextualMessageTimer?.cancel();
+
     _audioService
       ..removeListener(_onAudioServiceChanged)
       ..dispose();
