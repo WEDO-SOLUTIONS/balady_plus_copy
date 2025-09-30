@@ -71,7 +71,7 @@ android {
                 'appAuthRedirectScheme': 'com.balady'
         ]
         manifestPlaceholders = [partner:"baladyapp"]
-        manifestPlaceholders = [partner:"baladyappuat"]
+       // manifestPlaceholders = [partner:"baladyappuat"]
     }
     signingConfigs {
         release {
