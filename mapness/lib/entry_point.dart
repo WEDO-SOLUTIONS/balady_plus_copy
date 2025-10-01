@@ -539,13 +539,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openSnapSend();
       } else if (url.path == '/parking') {
         _openParking();
-      } else {
+      }else if (url.path == '/register') {
+        await _openRegisterPage();
+      }
+
+      else {
         await router.pushNamed(url.toString());
       }
     }
   }
 
-  void _openParking() {
+
+
+  Future<void> _openRegisterPage() async {
+    await CommonFunctions.onLogin();
+  }
+    void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
       await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
@@ -599,6 +608,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       path:  "#Athkar_Page",
     );
   }
+
+
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
