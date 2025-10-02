@@ -16,8 +16,7 @@ import 'package:mapness/pages/poi_card/poi_card_widget_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
-import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
-import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
+import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
@@ -36,8 +35,10 @@ class SearchItemQuickActions extends HookConsumerWidget {
     ref.watch(favouriteCacheProvider).valueOrNull;
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
-    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
-    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
+    final favouriteItem =
+        objectId != null ? provider.getFavouriteOrNull(objectId) : null;
+    final iconData =
+        isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
@@ -72,9 +73,10 @@ class SearchItemQuickActions extends HookConsumerWidget {
         buttonType: ButtonType.secondary,
         colorScheme: ButtonColorScheme.accent,
         label: context.l10n.poiCardDirections,
-        innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+        innerPadding: const EdgeInsets.symmetric(
+            vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
-          _bssOnRouteTap(directoryObject);
+          BssService.instance.trackRouteTap(directoryObject);
           openRoutingRoutes(
             context,
             directoryObject.id!.objectId,
@@ -107,7 +109,9 @@ class SearchItemQuickActions extends HookConsumerWidget {
         callback: () {
           final markerPosition = directoryObject.markerPosition;
           final latLng = markerPosition != null
-              ? LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude)
+              ? LatLng(
+                  latitude: markerPosition.latitude,
+                  longitude: markerPosition.longitude)
               : null;
 
           poiActions.share(
@@ -129,7 +133,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: () {
-            _bssOnCallTap(directoryObject, phoneNumber);
+            BssService.instance.trackCallTap(directoryObject, phoneNumber);
             poiActions.callPhone(phoneNumber);
           },
         ),
@@ -139,7 +143,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: () {
-            _bssOnLinkTap(directoryObject, website, BssContactType.website);
+            BssService.instance
+                .trackLinkTap(directoryObject, BssContactType.website, website);
             poiActions.launch(website);
           },
         ),
@@ -148,11 +153,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           buttonType: ButtonType.secondary,
           onPressed: () {
-            _bssOnLinkTap(
-              directoryObject,
-              socialMedia.link,
-              _bssContactTypeFromPoiContentSocialMediaTypes(socialMedia.type),
-            );
+            BssService.instance.trackLinkTap(
+                directoryObject, socialMedia.type.toBss(), socialMedia.link);
             poiActions.launch(socialMedia.link);
           },
         ),
@@ -161,7 +163,8 @@ class SearchItemQuickActions extends HookConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.$3x),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: Spacing.$10x + Spacing.$3x),
+        constraints:
+            const BoxConstraints(maxHeight: Spacing.$10x + Spacing.$3x),
         child: Padding(
           padding: const EdgeInsets.only(top: Spacing.$3x),
           child: ListView.separated(
@@ -185,88 +188,13 @@ class SearchItemQuickActions extends HookConsumerWidget {
     await ref.read(authMethodsProvider.notifier).authOrOpen(
       context,
       callback: () {
-        _bssOnFavouritesTap(data);
-        toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+        BssService.instance.trackFavoriteTap(data);
+        toggleFavoriteDirectoryObject(
+            context: context,
+            ref: ref,
+            data: data,
+            favouriteItem: favouriteItem);
       },
     );
-  }
-
-  // BSS
-  void _bssOnRouteTap(DirectoryObjectMessage data) {
-    BssService.instance.sendEvent(
-      BssRequest(
-        eventType: BSSEventType.action,
-        actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.buildRoute,
-          ownerName: BssUIElementNames.placeCardMini,
-        ),
-        payload: BssPayload(
-          placeItem: data.toBss(0),
-        ),
-      ),
-    );
-  }
-
-  void _bssOnFavouritesTap(DirectoryObjectMessage data) {
-    BssService.instance.sendEvent(
-      BssRequest(
-        eventType: BSSEventType.action,
-        actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.bookmark,
-          ownerName: BssUIElementNames.placeCardMini,
-        ),
-        payload: BssPayload(
-          placeItem: data.toBss(1),
-        ),
-      ),
-    );
-  }
-
-  void _bssOnCallTap(DirectoryObjectMessage data, String phoneNumber) {
-    BssService.instance.sendEvent(
-      BssRequest(
-        eventType: BSSEventType.action,
-        actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.contact,
-          ownerName: BssUIElementNames.placeCardMini,
-        ),
-        payload: BssPayload(
-          placeItem: data.toBss(2),
-          contact: BssContact(type: BssContactType.phone, value: phoneNumber),
-        ),
-      ),
-    );
-  }
-
-  void _bssOnLinkTap(DirectoryObjectMessage data, String link, BssContactType type) {
-    BssService.instance.sendEvent(
-      BssRequest(
-        eventType: BSSEventType.action,
-        actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.contact,
-          ownerName: BssUIElementNames.placeCardMini,
-        ),
-        payload: BssPayload(
-          placeItem: data.toBss(3),
-          contact: BssContact(type: type, value: link),
-        ),
-      ),
-    );
-  }
-
-  BssContactType _bssContactTypeFromPoiContentSocialMediaTypes(PoiContentSocialMediaTypes type) {
-    return switch (type) {
-      PoiContentSocialMediaTypes.website => BssContactType.website,
-      PoiContentSocialMediaTypes.instagram => BssContactType.instagram,
-      PoiContentSocialMediaTypes.facebook => BssContactType.facebook,
-      PoiContentSocialMediaTypes.youtube => BssContactType.youtube,
-      PoiContentSocialMediaTypes.linkedin => BssContactType.linkedin,
-      PoiContentSocialMediaTypes.whatsapp => BssContactType.whatsapp,
-      PoiContentSocialMediaTypes.telegram => BssContactType.telegram,
-    };
   }
 }
