@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper_v2.dart';
-import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -22,9 +22,11 @@ import 'package:sheetify/sheetify.dart';
 @RoutePage()
 class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
   final int? rating;
+  final FeedbackSource source;
 
   const AppFeedbackSheetV2({
     required this.rating,
+    this.source = FeedbackSource.main,
     super.key,
   });
 
@@ -137,7 +139,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                                   )
                                   .toList(),
                               text: feedbackText,
-                              source: FeedbackSourceProvider.of(context).source,
+                              source: widget.source,
                             );
                       },
                     ),
