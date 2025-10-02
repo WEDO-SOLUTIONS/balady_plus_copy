@@ -171,7 +171,6 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'add_phtoto_feedback',
               page: QuickFeedbackPhotoRoute.page,
-              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'feedback/:objectId',
