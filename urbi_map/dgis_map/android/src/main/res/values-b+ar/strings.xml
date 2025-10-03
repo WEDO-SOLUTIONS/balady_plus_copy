@@ -42,8 +42,8 @@
   <string name="meter">م</string>
   <string name="kilometer">كم</string>
   <string name="back">رجوع</string>
-  <string name="hours">ساعة</string>
-  <string name="minutes">دقيقة</string>
+  <string name="hoursShort">س</string>
+  <string name="minutesShort">د</string>
 
   <!-- Settings -->
   <string name="settings_title">الإعدادات</string>

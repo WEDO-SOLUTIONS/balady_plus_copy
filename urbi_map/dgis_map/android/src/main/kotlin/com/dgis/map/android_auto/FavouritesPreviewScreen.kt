@@ -8,7 +8,6 @@ import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.DistanceSpan
-import androidx.car.app.model.DurationSpan
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
@@ -263,8 +262,8 @@ class FavouritesPreviewScreen(
         val minutes = (seconds / 60.0).toInt()
         val hours = minutes / 60
         val remainingMinutes = minutes % 60
-        val hoursString = getString(R.string.hours)
-        val minutesString = getString(R.string.minutes)
+        val hoursString = getString(R.string.hoursShort)
+        val minutesString = getString(R.string.minutesShort)
 
         return when {
             hours > 0 -> {
