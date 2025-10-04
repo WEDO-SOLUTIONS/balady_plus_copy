@@ -15,7 +15,8 @@ class DimensionControl extends ConsumerWidget {
     const double iconSize = 24;
 
     if (mapDimensionsState == MapDimensionsState.hide) {
-      return const SizedBox.shrink();
+      // To keep the same height as the other controls to not jump when the control is hidden
+      return const SizedBox(height: 48);
     }
 
     return MapButton(
