@@ -127,144 +127,148 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
     final _subtitleVoiceInstruction =
         voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
 
-    return SizedBox(
-      width: widget.isLandscape ? NaviSheetPanel.landscapeWidth : null,
-      child: ToggleSheet(
-        key: sheetKey,
-        dragger: null,
-        shouldPop: (controller) {
-          ref.read(pathNavMessageProvider.notifier).stopNavigation();
-          ref.read(dgisControllerProvider).value?.stopNavigation();
-          return false;
-        },
-        startConfig: ToggleSheetStart.closed,
-        backgroundColor: colors.backgroundSurface4,
-        scrollController: widget.sheetController,
-        shapeBorderDelegate: shapeDelegate,
-        paddingDelegate: paddingDelegate,
-        barrierColorDelegate: barrierDelegate,
-        topHeader: ValueListenableBuilder(
-          valueListenable: widget.betterRouteDurationProfit,
-          builder: (context, duration, child) => duration != null
-              ? Padding(
-                  padding: const EdgeInsets.only(
-                    left: Spacing.$4x,
-                    right: Spacing.$4x,
-                    bottom: Spacing.$3x,
+    return Padding(
+      padding: EdgeInsetsDirectional.only(start: MediaQuery.paddingOf(context).left),
+      child: SizedBox(
+        width: widget.isLandscape ? NaviSheetPanel.landscapeWidth : null,
+        child: ToggleSheet(
+          key: sheetKey,
+          dragger: null,
+          useSafeArea: false,
+          shouldPop: (controller) {
+            ref.read(pathNavMessageProvider.notifier).stopNavigation();
+            ref.read(dgisControllerProvider).value?.stopNavigation();
+            return false;
+          },
+          startConfig: ToggleSheetStart.closed,
+          backgroundColor: colors.backgroundSurface4,
+          scrollController: widget.sheetController,
+          shapeBorderDelegate: shapeDelegate,
+          paddingDelegate: paddingDelegate,
+          barrierColorDelegate: barrierDelegate,
+          topHeader: ValueListenableBuilder(
+            valueListenable: widget.betterRouteDurationProfit,
+            builder: (context, duration, child) => duration != null
+                ? Padding(
+                    padding: const EdgeInsets.only(
+                      left: Spacing.$4x,
+                      right: Spacing.$4x,
+                      bottom: Spacing.$3x,
+                    ),
+                    child: BetterRouteButton(
+                      title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
+                      onTap: () => widget.acceptBetterRoute(context),
+                      onCloseTap: () => widget.rejectBetterRoute(context),
+                    ),
+                  )
+                : ParkingBanner(
+                    navigatorType: widget.navType,
+                    navigationState: widget.navigationState,
+                    isHomeOrWork: widget.isHomeOrWork,
+                    bottomSheetController: widget.sheetController,
                   ),
-                  child: BetterRouteButton(
-                    title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
-                    onTap: () => widget.acceptBetterRoute(context),
-                    onCloseTap: () => widget.rejectBetterRoute(context),
-                  ),
-                )
-              : ParkingBanner(
-                  navigatorType: widget.navType,
-                  navigationState: widget.navigationState,
-                  isHomeOrWork: widget.isHomeOrWork,
-                  bottomSheetController: widget.sheetController,
-                ),
-        ),
-        header: ValueListenableBuilder<PathNavState>(
-          valueListenable: widget.navigationState,
-          builder: (context, state, child) => EtaHeader(
-            sheetController: widget.sheetController,
-            onEndTripPressed: widget.onEndTripPressed,
-            onSearchPressed: () => widget.onSearchPressed(context),
-            onContinuePressed: widget.onContinuePressed,
-            onTapRoute: widget.onTapRoute,
-            state: state,
           ),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$4x),
-        content: [
-          ShareEtaBtn(
-            durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: Spacing.$3x,
+          header: ValueListenableBuilder<PathNavState>(
+            valueListenable: widget.navigationState,
+            builder: (context, state, child) => EtaHeader(
+              sheetController: widget.sheetController,
+              onEndTripPressed: widget.onEndTripPressed,
+              onSearchPressed: () => widget.onSearchPressed(context),
+              onContinuePressed: widget.onContinuePressed,
+              onTapRoute: widget.onTapRoute,
+              state: state,
             ),
-            child: ContentRow(
-              onTap: () => widget.onTapRoute.call(),
-              options: ContentRowOptions(
-                wrapperColor: colors.staticWhite,
-                wrapperEnabled: true,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                title: l10n.route,
-                actionWidget: ContentRowActionOptions(
-                  actionIcon: AppIcons(
-                    iconData: GeneralIcons.routeStroke,
-                    color: context.colors.foregroundMuted,
-                  ),
-                ),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$4x),
+          content: [
+            ShareEtaBtn(
+              durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                top: Spacing.$3x,
               ),
-            ),
-          ),
-          Spacing.$3x.heightBox,
-          ContentWrapper(
-            color: colors.staticWhite,
-            children: [
-              ContentRow(
-                onTap: () => context.router.push(const SoundSettingsRoute()),
+              child: ContentRow(
+                onTap: () => widget.onTapRoute.call(),
                 options: ContentRowOptions(
-                  titleStyle: textStyles.bodyLargeRegular.copyWith(
-                    color: colors.foregroundDefault,
-                  ),
-                  subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                    color: colors.foregroundSoft,
-                  ),
-                  title: l10n.voiceInstruction,
-                  subtitle: _subtitleVoiceInstruction,
+                  wrapperColor: colors.staticWhite,
+                  wrapperEnabled: true,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  title: l10n.route,
                   actionWidget: ContentRowActionOptions(
                     actionIcon: AppIcons(
-                      iconData: SystemIcons.arrowCornerRightLarge,
+                      iconData: GeneralIcons.routeStroke,
                       color: context.colors.foregroundMuted,
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
-                child: SegmentTabsButton(
-                  tabsContent: [
-                    TabsRowV2Content(title: l10n.segmentButtonOffTitle),
-                    TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
-                    TabsRowV2Content(title: l10n.segmentButtonAllTitle),
-                  ],
-                  onIndexChanged: (value) {
-                    if (value != null) {
-                      soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
-                    }
-                  },
-                  initialIndex: soundSettingsModel.voiceInstructionIndex,
+            ),
+            Spacing.$3x.heightBox,
+            ContentWrapper(
+              color: colors.staticWhite,
+              children: [
+                ContentRow(
+                  onTap: () => context.router.push(const SoundSettingsRoute()),
+                  options: ContentRowOptions(
+                    titleStyle: textStyles.bodyLargeRegular.copyWith(
+                      color: colors.foregroundDefault,
+                    ),
+                    subtitleStyle: textStyles.bodySmallRegular.copyWith(
+                      color: colors.foregroundSoft,
+                    ),
+                    title: l10n.voiceInstruction,
+                    subtitle: _subtitleVoiceInstruction,
+                    actionWidget: ContentRowActionOptions(
+                      actionIcon: AppIcons(
+                        iconData: SystemIcons.arrowCornerRightLarge,
+                        color: context.colors.foregroundMuted,
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          Spacing.$3x.heightBox,
-          ContentRow(
-            onTap: () => context.router.push(const NavigatorSettingsRoute()),
-            options: ContentRowOptions(
-              titleStyle: textStyles.bodyLargeRegular.copyWith(
-                color: colors.foregroundDefault,
-              ),
-              wrapperColor: context.colors.staticWhite,
-              wrapperEnabled: true,
-              title: l10n.navigatorSettings,
-              leadingIcon: Icon(
-                SystemIcons.settings,
-                color: colors.foregroundSoft,
-              ),
-              actionWidget: ContentRowActionOptions(
-                actionIcon: AppIcons(
-                  iconData: SystemIcons.arrowCornerRightLarge,
-                  color: context.colors.foregroundMuted,
+                Padding(
+                  padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+                  child: SegmentTabsButton(
+                    tabsContent: [
+                      TabsRowV2Content(title: l10n.segmentButtonOffTitle),
+                      TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
+                      TabsRowV2Content(title: l10n.segmentButtonAllTitle),
+                    ],
+                    onIndexChanged: (value) {
+                      if (value != null) {
+                        soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
+                      }
+                    },
+                    initialIndex: soundSettingsModel.voiceInstructionIndex,
+                  ),
+                ),
+              ],
+            ),
+            Spacing.$3x.heightBox,
+            ContentRow(
+              onTap: () => context.router.push(const NavigatorSettingsRoute()),
+              options: ContentRowOptions(
+                titleStyle: textStyles.bodyLargeRegular.copyWith(
+                  color: colors.foregroundDefault,
+                ),
+                wrapperColor: context.colors.staticWhite,
+                wrapperEnabled: true,
+                title: l10n.navigatorSettings,
+                leadingIcon: Icon(
+                  SystemIcons.settings,
+                  color: colors.foregroundSoft,
+                ),
+                actionWidget: ContentRowActionOptions(
+                  actionIcon: AppIcons(
+                    iconData: SystemIcons.arrowCornerRightLarge,
+                    color: context.colors.foregroundMuted,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
