@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/routing/providers/routes_update_tab.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui/route_carusel_wrapper.dart';
@@ -43,22 +45,32 @@ class RoutesCarousel extends ConsumerWidget {
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: Because public transport can't build navigation, we can improve experience
-    // for pedestrian routes that was found for public transport
-    // Add method that call [startNavigation] for the same pedestrian route (need to get data from pedestrian route tab)
     if (navType == RouteSearchOptionsMessage.publicTransport) {
       if (publicTransportVisibility.isLoading || publicTransportRoutes.isLoading) {
         return PathCardLoading(text: context.l10n.loading, currentType: navType);
       }
-      if (publicTransportVisibility.hasError || publicTransportRoutes.hasError) {
-        return PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound);
-      }
-      if (!publicTransportVisibility.value!.isPublicTransportAvailable) {
-        return PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound);
-      }
+
       final routes = publicTransportRoutes.value;
+
+      if (publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
+        return PathCardFailure.nearestMetroTooFar(
+          refresh: () {
+            print('publicTransportVisibility');
+            ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+          },
+          text: 'The nearest metro is too far. \nTry another mode',
+        );
+      }
+
       if (routes == null || routes.isEmpty) {
-        return PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound);
+        return PathCardFailure.nearestMetroTooFar(
+          refresh: () {
+            print('publicTransportVisibility nearestMetroTooFar');
+            ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+          },
+          text: 'The nearest metro is too far. \nTry another mode',
+          labelButton: 'Go by car',
+        );
       }
       final shortest = shortestIsOnlyOnePublicTransport(routes);
 
@@ -133,7 +145,13 @@ class RoutesCarousel extends ConsumerWidget {
           },
         );
       },
-      error: (_, __) => PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound),
+      error: (error, __) {
+        if (error is NoInternetException) {
+          return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.tryAgain);
+        }
+
+        return PathCardFailure.routeNotFound(refresh: refresh, text: 'Change route');
+      },
       loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
       skipLoadingOnRefresh: false,
       skipLoadingOnReload: false,

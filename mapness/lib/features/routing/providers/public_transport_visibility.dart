@@ -35,6 +35,10 @@ class PublicTransportVisibilityException implements Exception {
   });
 }
 
+class PublicTransportVisibilityIsTooFarException implements Exception {
+  const PublicTransportVisibilityIsTooFarException();
+}
+
 /// Result of public transport visibility check
 class PublicTransportVisibilityResult {
   final bool isBothInRiyadh;
@@ -91,12 +95,6 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         hasPublicTransportRoutes: false,
         reason: e.reason,
       );
-    } catch (error) {
-      return const PublicTransportVisibilityResult(
-        isBothInRiyadh: false,
-        hasPublicTransportRoutes: false,
-        reason: PublicTransportVisibilityReason.unknownError,
-      );
     }
   }
 
@@ -137,14 +135,9 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       if (initialRoutes.routes.isNotEmpty) {
         return true;
       }
-    } catch (e) {
-      debugPrint('Error checking public transport routes: ${e.toString()}');
-    }
 
-    // Retry with delay if no routes found
-    await Future.delayed(PublicTransportVisibilityConfig.retryDelay);
+      await Future.delayed(PublicTransportVisibilityConfig.retryDelay);
 
-    try {
       final retryRoutes = await dgisController.findRoute(
         options: RouteSearchOptionsMessage.publicTransport,
         startPoint: startPoint.routeSearchPointMessage,
@@ -153,10 +146,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
 
       return retryRoutes.routes.isNotEmpty;
     } catch (e) {
-      throw PublicTransportVisibilityException(
-        message: 'Error checking public transport routes: ${e.toString()}',
-        reason: PublicTransportVisibilityReason.findRouteError,
-      );
+      throw const PublicTransportVisibilityIsTooFarException();
     }
   }
 

@@ -15,6 +15,7 @@ import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
+import 'package:mapness/features/routing/providers/routes_update_tab.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
@@ -201,12 +202,21 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       startPoint: widget.points[0],
       finishPoint: widget.points[1],
     ));
-    ref.listen(carConnectionProvider, (_, next) {
-      final connected = next.valueOrNull ?? false;
-      if (connected) {
-        _navType.value = RouteSearchOptionsMessage.car;
+    ref
+      ..listen(carConnectionProvider, (_, next) {
+        final connected = next.valueOrNull ?? false;
+        if (connected) {
+          _navType.value = RouteSearchOptionsMessage.car;
       }
-    });
+      })
+      ..listen<RouteSearchOptionsMessage>(
+        routesUpdateTabProvider,
+        (previous, next) {
+          if (previous != next) {
+            _navType.value = next;
+          }
+        },
+      );
     return ValueListenableBuilder(
       valueListenable: _isNavTypeLoading,
       builder: (context, isLoading, child) {
@@ -322,6 +332,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       },
     );
 
+    ref.read(routesUpdateTabProvider.notifier).update = routeSearch;
     _navType.value = routeSearch;
   }
 }

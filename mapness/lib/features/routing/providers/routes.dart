@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -12,6 +13,10 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';
+
+class NoInternetException implements Exception {
+  const NoInternetException();
+}
 
 @riverpod
 class Routes extends _$Routes {
@@ -55,6 +60,12 @@ class Routes extends _$Routes {
       subscription?.cancel();
       cancelableCompleter.operation.cancel();
     });
+
+    final online = ref.read(networkStatusProvider);
+
+    if (!online && !cancelableCompleter.isCompleted) {
+      cancelableCompleter.completeError(const NoInternetException());
+    }
 
     await dgisController.value?.setRouteParams(params);
     try {
