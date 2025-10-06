@@ -1992,6 +1992,42 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.0"
+  keyboard_insets:
+    dependency: transitive
+    description:
+      path: keyboard_insets
+      ref: main
+      resolved-ref: ae9062408f8263e6d5006a94f39144ab10c0ae18
+      url: "https://github.com/urbi-ae/keyboard_insets.git"
+    source: git
+    version: "0.1.0"
+  keyboard_insets_mobile:
+    dependency: transitive
+    description:
+      path: keyboard_insets_mobile
+      ref: main
+      resolved-ref: ae9062408f8263e6d5006a94f39144ab10c0ae18
+      url: "https://github.com/urbi-ae/keyboard_insets.git"
+    source: git
+    version: "0.1.0"
+  keyboard_insets_platform_interface:
+    dependency: transitive
+    description:
+      path: keyboard_insets_platform_interface
+      ref: main
+      resolved-ref: ae9062408f8263e6d5006a94f39144ab10c0ae18
+      url: "https://github.com/urbi-ae/keyboard_insets.git"
+    source: git
+    version: "1.0.0"
+  keyboard_insets_web:
+    dependency: transitive
+    description:
+      path: keyboard_insets_web
+      ref: main
+      resolved-ref: ae9062408f8263e6d5006a94f39144ab10c0ae18
+      url: "https://github.com/urbi-ae/keyboard_insets.git"
+    source: git
+    version: "0.1.0"
   launch_review:
     dependency: transitive
     description:
@@ -2837,11 +2873,12 @@ packages:
   sheetify:
     dependency: "direct main"
     description:
-      name: sheetify
-      sha256: "1b677152c95a77ae00e6163cd6ca2a3dd26a6fc2ff28c57ee333459babbcbd6e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
+      path: "."
+      ref: "feature/native-keyboard-insets-stream"
+      resolved-ref: "97d869d6dd895737d673e420ef40c09862d617bb"
+      url: "https://github.com/urbi-ae/sheetify.git"
+    source: git
+    version: "1.0.2"
   sheetify_lint:
     dependency: "direct dev"
     description:
