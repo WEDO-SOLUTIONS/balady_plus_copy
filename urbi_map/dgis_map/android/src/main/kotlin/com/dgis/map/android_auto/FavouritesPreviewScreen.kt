@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.min
+`import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class FavouritesPreviewScreen(
     carContext: CarContext,
@@ -259,9 +261,11 @@ class FavouritesPreviewScreen(
     }
 
     fun getDurationString(seconds: Long): String {
-        val minutes = (seconds / 60.0).toInt()
-        val hours = minutes / 60
+        val duration = seconds.toDuration(DurationUnit.SECONDS)
+        val hours = duration.inWholeHours
+        val minutes = duration.inWholeMinutes
         val remainingMinutes = minutes % 60
+
         val hoursString = getString(R.string.hoursShort)
         val minutesString = getString(R.string.minutesShort)
 
