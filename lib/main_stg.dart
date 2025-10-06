@@ -30,7 +30,8 @@ void main() async {
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
           options.profilesSampleRate = 1.0;
-          // options.attachScreenshot = true;
+          options.attachScreenshot = true;
+          options.screenshotQuality = SentryScreenshotQuality.medium;
           options.enableUserInteractionTracing = true;
           options.reportSilentFlutterErrors = true;
           options.enableAppHangTracking = true;
@@ -45,9 +46,11 @@ void main() async {
           options.environment = EnvType.stg.name;
         },
         appRunner: () => runApp(
-          const MapnessProviderScope(
-            child: LocalizedApp(
-              child: App(),
+          SentryWidget(
+            child: const MapnessProviderScope(
+              child: LocalizedApp(
+                child: App(),
+              ),
             ),
           ),
         ),

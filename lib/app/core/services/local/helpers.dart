@@ -129,7 +129,7 @@ class Helpers {
             timeLimit: duration ?? const Duration(seconds: 13)),
       );
       //    EasyLoading.dismiss();
-      return LatLng(latitude:position.latitude,longitude: position.longitude);
+      return LatLng(latitude: position.latitude, longitude: position.longitude);
     } catch (error, stackTrace) {
       return CommonFunctions.handelLocationCatch(false, error, stackTrace);
     }
@@ -206,7 +206,6 @@ class Helpers {
       return ("mobile_number_err1").tr();
     }
   }
-
 
   static String? validateIBAN(String? iban) {
     RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');
@@ -293,17 +292,19 @@ class Helpers {
       String? errorMsg}) async {
     try {
       SentryRequest request = SentryRequest(
-          url: url,
-          queryString: qeuryParms,
-          data: body != null ? body.toString() : "",
-          other: {"StatusCode": (statusCode ?? 0).toString()});
+        url: url,
+        queryString: qeuryParms,
+        data: body != null ? body.toString() : "",
+        unknown: {"StatusCode": (statusCode ?? 0).toString()},
+      );
       SentryMessage sentryMessage =
           SentryMessage(data != null ? data.toString() : "");
 
       SentryUser sentryUser = SentryUser(
-          id: CommonProperties.userInfo?.idNo,
-          name: CommonProperties.userInfo?.arName,
-          email: "");
+        id: CommonProperties.userInfo?.idNo,
+        name: CommonProperties.userInfo?.arName,
+        email: "",
+      );
 
       SentryEvent event = SentryEvent(
         user: sentryUser,

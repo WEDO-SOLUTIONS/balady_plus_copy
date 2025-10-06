@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'Requirement_enum.dart';
 import 'package:archive/archive.dart';
@@ -80,7 +81,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openPdfFile);
     registerFunction(openAppSetting);
   }
-
 
   @pragma('vm:entry-point')
   void openAppSetting(dynamic msg, CompletionHandler handler) async {
@@ -425,7 +425,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         true) {
       if (msg != null && (msg is String || msg is Map)) {
         Map data;
-        msg is String ? data= jsonDecode(msg):data=msg;
+        msg is String ? data = jsonDecode(msg) : data = msg;
         String permissionName = data["permission_name"];
         bool state = false;
         BaseResponse response;
@@ -503,15 +503,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           message: "Can't get location",
           data: null,
         );
-       handler.complete(response.jsonEncodeModel());
-       // var res=  await CommonFunctions.checkLocationSettings(
-       //    NavigationService.navigatorKey.currentContext!,
-       //  );
-       // if(res)
-       //   {
-       //     getLocation(msg, handler);
-       //   }
-
+        handler.complete(response.jsonEncodeModel());
+        // var res=  await CommonFunctions.checkLocationSettings(
+        //    NavigationService.navigatorKey.currentContext!,
+        //  );
+        // if(res)
+        //   {
+        //     getLocation(msg, handler);
+        //   }
       }
     } else {
       BaseResponse response = BaseResponse(
@@ -640,19 +639,23 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
 
     // Extract values safely
-    final String serviceKey = data["serviceKey"]?.toString() ?? "municipalservice";
+    final String serviceKey =
+        data["serviceKey"]?.toString() ?? "municipalservice";
     final String? attachmentSource = data["attachmentSource"]?.toString();
     final List<String> attachmentExtension = data["attachmentExtension"] != null
         ? (data["attachmentExtension"] as List<dynamic>)
-        .map((e) => e.toString())
-        .toList()
+            .map((e) => e.toString())
+            .toList()
         : [];
 
-    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) == true) {
+    if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
+        true) {
       var file = await FilePicker.platform.pickFiles(
-        type: (attachmentSource == "gallery" ? FileType.image : FileType.custom),
+        type:
+            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
         allowMultiple: false,
-        allowedExtensions: attachmentSource == "gallery" ? [] : attachmentExtension,
+        allowedExtensions:
+            attachmentSource == "gallery" ? [] : attachmentExtension,
       );
 
       late BaseResponse response;
@@ -664,8 +667,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName =
-              path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
+              String fileName = path.isNotEmpty
+                  ? path.split('/').last
+                  : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
 
@@ -711,7 +715,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
-
 
   /// TODO: Need To Test
   @pragma('vm:entry-point')
@@ -859,9 +862,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-
-
-
   @pragma('vm:entry-point')
   void trackLogs(dynamic msg, CompletionHandler handler) {
     BaseResponse response = BaseResponse(
@@ -870,43 +870,47 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       message: "Invalid event data",
       data: null,
     );
-    if (kDebugMode) print("%%%%%%%%%  $msg %%%%%%%%%");
+    if (kDebugMode) print("Errors :  $msg");
     if (msg != null && msg is String && msg.isNotEmpty) {
       try {
-        Map<String, dynamic>? data = jsonDecode(msg);
+        Map<String, dynamic> data = jsonDecode(msg);
         response = BaseResponse(
           code: 200,
           eventName: "trackLogs",
           message: "Event tracked successfully",
           data: null,
         );
-        CommonFunctions.sendUXCamEvent(data!['event_name']);
-        data['MiniAppKey'] = miniAppsEngineBloc.miniApp.serviceKey;
-        data['MiniAppVersion'] =
-            miniAppsEngineBloc.miniApp.latestVersion?.versionNumber;
-        if (data['type'] == "exception") {
-
-          Sentry.captureException(
-            SentryException(
-              type: data['event_name'],
-              value: data['errors_model'],
-              module: miniAppsEngineBloc.miniApp.serviceKey,
-              unknown: data,
+        Map<String, dynamic> miniAppData = {
+          'MiniAppKey': miniAppsEngineBloc.miniApp.serviceKey,
+          'MiniAppVersion':
+              miniAppsEngineBloc.miniApp.latestVersion?.versionNumber,
+        };
+        if (data['type'] == "marketing") {
+          FlutterUxcam.logEventWithProperties(data['event_name'], miniAppData);
+          Sentry.addBreadcrumb(
+            Breadcrumb(
+              message: data['event_name'],
+              data: miniAppData,
             ),
           );
-        } else {
+        } else if (data['type'] == "exception") {
+          data.addAll(miniAppData);
+          FlutterUxcam.logEventWithProperties(data['event_name'], data);
           Sentry.captureEvent(
             SentryEvent(
               message: SentryMessage(data['event_name']),
-              contexts: Contexts()..['event_data'] = data,
-              tags: {
-                "MiniAppKey": miniAppsEngineBloc.miniApp.serviceKey ?? "",
-              },
-              // serverName: miniAppsEngineBloc.miniApp.serviceKey,
+              transaction: data['errors_model']?['error']?.toString() ?? "",
+              // value: data['errors_model']?['error']?.toString() ?? "",
+              // module: miniAppsEngineBloc.miniApp.serviceKey,
+              serverName: miniAppsEngineBloc.miniApp.serviceKey,
+              contexts: Contexts()..['MiniAppDataErrors'] = data,
             ),
+            stackTrace: data['errors_model']?['stackTrace'],
           );
-        }
-      } catch (_) {}
+        } else {}
+      } catch (e) {
+        print(e);
+      }
     }
     handler.complete(response.jsonEncodeModel());
   }
@@ -1003,13 +1007,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.sendToCalender.name) ==
         true) {
-      Map? data ;
-      if(mas is String) {
-        data =  jsonDecode(mas);
+      Map? data;
+      if (mas is String) {
+        data = jsonDecode(mas);
       } else {
         data = mas;
       }
-      if (data != null ) {
+      if (data != null) {
         BaseResponse response = BaseResponse(
           code: 200,
           eventName: "sendToCalender",

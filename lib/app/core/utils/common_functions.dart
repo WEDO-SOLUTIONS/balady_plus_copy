@@ -209,7 +209,7 @@ class CommonFunctions {
     return mime.lookupMimeType(
       '',
       headerBytes:
-      base64.decode(base64String.substring(0, minimumBase64Length)),
+          base64.decode(base64String.substring(0, minimumBase64Length)),
     );
   }
 
@@ -224,13 +224,12 @@ class CommonFunctions {
     entryPointBridge(params);
   }
 
-  static void openVolunteerProfileScreen()
-  {
-    NavigationService.navigatorKey.currentState!
-        .pushNamed(
+  static void openVolunteerProfileScreen() {
+    NavigationService.navigatorKey.currentState!.pushNamed(
       RouteName.VolunteerProfile,
     );
   }
+
   static Future<bool> isHuaweiDevice() async {
     return await FlutterHmsGmsAvailability.isHmsAvailable;
   }
@@ -293,18 +292,11 @@ class CommonFunctions {
     return null;
   }
 
-
   static void openMiniApp(MiniAppModel? miniApp) {
-
-    if(miniApp != null) {
-
-
+    if (miniApp != null) {
       sl<HomeMiniAppsListCubit>()
-          .openMiniApp(serviceKey: miniApp.serviceKey!, path:miniApp.path);
-
-
+          .openMiniApp(serviceKey: miniApp.serviceKey!, path: miniApp.path);
     }
-
   }
 
   static Future<LatLng?> handelLocationCatch(
@@ -793,8 +785,12 @@ class CommonFunctions {
 
   // add isMunicipality to check if the user is access municipality services
   // or life style services, make teh default value is false for life style services
-  static Future<bool> onLogin({bool isMunicipality = false, String? mainPage}) async =>
-      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality,mainPage:mainPage,);
+  static Future<bool> onLogin(
+          {bool isMunicipality = false, String? mainPage}) async =>
+      await sl<EntryPointCubit>().onLogin(
+        isMunicipality: isMunicipality,
+        mainPage: mainPage,
+      );
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -1010,22 +1006,14 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url ,
-      {bool isObjections = false,bool needLogin = true}) async {
-
-    if(needLogin==false) {
-      Navigator.of(NavigationService.navigatorKey.currentContext!)
-          .pushNamed(
+  static void openBaladyWebView(String? url,
+      {bool isObjections = false, bool needLogin = true}) async {
+    if (needLogin == false) {
+      Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
         RouteName.inappWebview,
-        arguments: (
-        requestNum: ''.tr(),
-        url: url,
-        isObjections: isObjections
-        ),
+        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections),
       );
-    }
-    else {
-
+    } else {
       if (CommonProperties.isLoggedIn) {
         EasyLoading.show();
         GetCookie getCookie = GetCookie(repository: sl());
@@ -1694,6 +1682,7 @@ class CommonFunctions {
   static void sendUXCamEvent(String event) {
     try {
       FlutterUxcam.logEvent(event);
+      Sentry.addBreadcrumb(Breadcrumb(message: event));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1709,6 +1698,7 @@ class CommonFunctions {
       String event, Map<String, dynamic> data) {
     try {
       FlutterUxcam.logEventWithProperties(event, data);
+      Sentry.addBreadcrumb(Breadcrumb(message: event, data: data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1849,6 +1839,7 @@ class CommonProperties {
   static String? sessionId;
   static String? fcmToken;
   static String? currentLocalServerDirectory;
+
   // static String? serverRootPath;
 
   static bool showEkramDriver = false;
@@ -1857,7 +1848,6 @@ class CommonProperties {
   static List<String> allowedSHAFingerprints = [
     "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15",
     "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
-
   ];
 
   //static String get token =>
