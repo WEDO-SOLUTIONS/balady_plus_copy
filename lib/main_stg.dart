@@ -44,6 +44,14 @@ void main() async {
           options.enableFramesTracking = true;
           options.captureFailedRequests = true;
           options.environment = EnvType.stg.name;
+
+          options.replay.onErrorSampleRate = 1.0;
+          options.replay.sessionSampleRate = 1.0;
+
+          // Screenshots and Attachments
+          options.attachScreenshot = true;
+          options.screenshotQuality = SentryScreenshotQuality.high;
+          options.attachViewHierarchy = true;
         },
         appRunner: () => runApp(
           SentryWidget(
