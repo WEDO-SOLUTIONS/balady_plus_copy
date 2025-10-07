@@ -16,6 +16,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
@@ -202,6 +203,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           errorMessage: "",
         ),
       );
+      Sentry.configureScope((scope) {
+        scope.setUser(
+          SentryUser(
+            id: data.sub.toString(),
+            username: data.enName,
+            email: data.email,
+          ),
+        );
+      });
     }
 
     if (CommonProperties.fcmToken != null &&
@@ -560,6 +570,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         );
         FlutterUxcam.setUserIdentity(user.idNo);
         FlutterUxcam.setUserProperty("name", user.arName ?? "");
+        Sentry.configureScope((scope) {
+          scope.setUser(
+            SentryUser(
+              id: user.idNo,
+              username: user.enName,
+              email: user.mail,
+            ),
+          );
+        });
       }
 
       final failureOrSuccessForCookie = await _getCookie(true);

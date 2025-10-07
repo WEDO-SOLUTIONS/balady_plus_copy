@@ -1682,6 +1682,7 @@ class CommonFunctions {
   static void sendUXCamEvent(String event) {
     try {
       FlutterUxcam.logEvent(event);
+      Sentry.addBreadcrumb(Breadcrumb(message: event));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1697,6 +1698,7 @@ class CommonFunctions {
       String event, Map<String, dynamic> data) {
     try {
       FlutterUxcam.logEventWithProperties(event, data);
+      Sentry.addBreadcrumb(Breadcrumb(message: event, data: data));
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
