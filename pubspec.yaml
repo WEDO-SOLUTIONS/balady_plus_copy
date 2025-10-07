@@ -344,3 +344,17 @@ flutter_launcher_icons:
           weight: 400
         - asset: assets/fonts/SomarSans/SomarSans-SemiBold.ttf
           weight: 600
+
+
+
+
+sentry:
+  url: https://sentry.momah.gov.sa  # if self-hoste
+  org: momah
+  project: super-app
+  auth_token: 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
+  upload_source_maps: true      # <— enable sourcemaps
+  upload_sources: true          # <— optional: also upload .dart/.js sources
+  wait_for_processing: true     # optional
+  log_level: debug              # optional
+
