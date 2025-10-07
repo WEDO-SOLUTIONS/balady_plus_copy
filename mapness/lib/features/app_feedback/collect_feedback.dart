@@ -15,7 +15,7 @@ class CollectFeedback extends _$CollectFeedback {
 
   Future<void> collectFeedback({
     required int stars,
-    required FeedbackSource source,
+    FeedbackSource? source,
     String? text,
     List<String>? tags,
   }) async {
