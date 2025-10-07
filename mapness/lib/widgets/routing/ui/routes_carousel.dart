@@ -55,7 +55,6 @@ class RoutesCarousel extends ConsumerWidget {
       if (publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
         return PathCardFailure.nearestMetroTooFar(
           refresh: () {
-            print('publicTransportVisibility');
             ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
           },
           text: 'The nearest metro is too far. \nTry another mode',
@@ -65,7 +64,6 @@ class RoutesCarousel extends ConsumerWidget {
       if (routes == null || routes.isEmpty) {
         return PathCardFailure.nearestMetroTooFar(
           refresh: () {
-            print('publicTransportVisibility nearestMetroTooFar');
             ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
           },
           text: 'The nearest metro is too far. \nTry another mode',
@@ -148,9 +146,17 @@ class RoutesCarousel extends ConsumerWidget {
       error: (error, __) {
         if (error is NoInternetException) {
           return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.tryAgain);
+        } else if (error is WalkingDistanceException) {
+          return PathCardFailure.walkingDistance(
+            refresh: () {
+              ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+            },
+            text: 'Walking distance is too long.\nTry another mode',
+            labelButton: 'Go by car',
+          );
         }
 
-        return PathCardFailure.routeNotFound(refresh: refresh, text: 'Change route');
+        return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
       },
       loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
       skipLoadingOnRefresh: false,

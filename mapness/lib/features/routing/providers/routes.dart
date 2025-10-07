@@ -18,6 +18,10 @@ class NoInternetException implements Exception {
   const NoInternetException();
 }
 
+class WalkingDistanceException implements Exception {
+  const WalkingDistanceException();
+}
+
 @riverpod
 class Routes extends _$Routes {
   @override
@@ -74,6 +78,9 @@ class Routes extends _$Routes {
         onTimeout: () => throw TimeoutException('Timeout while waiting for routes'),
       );
     } catch (e) {
+      if (navType == RouteSearchOptionsMessage.pedestrian) {
+        throw const WalkingDistanceException();
+      }
       throw TimeoutException('Timeout while waiting for routes');
     }
   }
