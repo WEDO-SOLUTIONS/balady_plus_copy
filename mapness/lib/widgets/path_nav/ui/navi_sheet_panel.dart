@@ -115,7 +115,6 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colors = context.colors;
-    // final color = context.color;
     final textStyles = context.textStyles;
 
     final eta = ref.watch(pathNavEtaProvider);
@@ -134,7 +133,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
         child: ToggleSheet(
           key: sheetKey,
           dragger: null,
-          useSafeArea: false,
+          useSafeArea: !widget.isLandscape,
           shouldPop: (controller) {
             ref.read(pathNavMessageProvider.notifier).stopNavigation();
             ref.read(dgisControllerProvider).value?.stopNavigation();
@@ -188,17 +187,25 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               padding: const EdgeInsets.only(
                 top: Spacing.$3x,
               ),
-              child: ContentRow(
-                onTap: () => widget.onTapRoute.call(),
-                options: ContentRowOptions(
-                  wrapperColor: colors.staticWhite,
-                  wrapperEnabled: true,
+              child: ContentWrapper.single(
+                color: colors.staticWhite,
+                child: ContentRow(
+                  onTap: () => widget.onTapRoute.call(),
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  title: l10n.route,
-                  actionWidget: ContentRowActionOptions(
-                    actionIcon: AppIcons(
-                      iconData: GeneralIcons.routeStroke,
-                      color: context.colors.foregroundMuted,
+                  text: ContentRowTextOptions(
+                    title: l10n.route,
+                  ),
+                  trailing: ContentRowCustomTrailingOptions(
+                    builder: (_) => Padding(
+                      padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
+                      child: ContentRowAction(
+                        actionOptions: ContentRowActionOptions(
+                          actionIcon: AppIcons(
+                            iconData: GeneralIcons.routeStroke,
+                            color: context.colors.foregroundMuted,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -210,19 +217,30 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               children: [
                 ContentRow(
                   onTap: () => context.router.push(const SoundSettingsRoute()),
-                  options: ContentRowOptions(
-                    titleStyle: textStyles.bodyLargeRegular.copyWith(
-                      color: colors.foregroundDefault,
-                    ),
-                    subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                      color: colors.foregroundSoft,
-                    ),
+                  text: ContentRowTextOptions(
                     title: l10n.voiceInstruction,
+                    titleOptions: ContentRowTextOption(
+                      isBold: textStyles.bodyLargeRegular.fontWeight?.value != null &&
+                          textStyles.bodyLargeRegular.fontWeight!.value >= FontWeight.w500.value,
+                      baseColor: colors.foregroundDefault,
+                    ),
                     subtitle: _subtitleVoiceInstruction,
-                    actionWidget: ContentRowActionOptions(
-                      actionIcon: AppIcons(
-                        iconData: SystemIcons.arrowCornerRightLarge,
-                        color: context.colors.foregroundMuted,
+                    subtitleOptions: ContentRowTextOption(
+                      isBold: textStyles.bodySmallRegular.fontWeight?.value != null &&
+                          textStyles.bodySmallRegular.fontWeight!.value >= FontWeight.w500.value,
+                      baseColor: colors.foregroundSoft,
+                    ),
+                  ),
+                  trailing: ContentRowCustomTrailingOptions(
+                    builder: (_) => Padding(
+                      padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
+                      child: ContentRowAction(
+                        actionOptions: ContentRowActionOptions(
+                          actionIcon: AppIcons(
+                            iconData: SystemIcons.arrowCornerRightLarge,
+                            color: context.colors.foregroundMuted,
+                          ),
+                        ),
                       ),
                     ),
                   ),
