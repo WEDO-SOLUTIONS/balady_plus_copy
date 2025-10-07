@@ -33,7 +33,6 @@ import com.dgis.FlutterProvider
 import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
 import com.dgis.map.FavouritesUpdateNotifier
-import com.dgis.map.UserAuthorizedNotifier
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
@@ -100,14 +99,10 @@ class NavigationScreen(
             }
         )
 
-        coroutineScope.launch {
-            UserAuthorizedNotifier.events.collect { isAuthorized ->
-                getFavourites(forceUpdate = true)
-            }
-        }
+        getFavourites()
 
         favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
-            FavouritesUpdateNotifier.events.collect { favouritesMessage ->
+            for (favouritesMessage in FavouritesUpdateNotifier.events) {
                 withContext(Dispatchers.Main) {
                     handleFavouritesMessage(favouritesMessage) {
                         favourites = it
