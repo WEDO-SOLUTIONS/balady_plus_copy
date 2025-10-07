@@ -31,7 +31,6 @@ void main() async {
           // We recommend adjusting this value in production.
           options.profilesSampleRate = 1.0;
           options.attachScreenshot = true;
-          options.screenshotQuality = SentryScreenshotQuality.medium;
           options.enableUserInteractionTracing = true;
           options.reportSilentFlutterErrors = true;
           options.enableAppHangTracking = true;
@@ -44,14 +43,16 @@ void main() async {
           options.enableFramesTracking = true;
           options.captureFailedRequests = true;
           options.environment = EnvType.stg.name;
-
           options.replay.onErrorSampleRate = 1.0;
           options.replay.sessionSampleRate = 1.0;
 
           // Screenshots and Attachments
           options.attachScreenshot = true;
-          options.screenshotQuality = SentryScreenshotQuality.high;
+          options.screenshotQuality = SentryScreenshotQuality.medium;
           options.attachViewHierarchy = true;
+
+          // Debug Options
+          options.diagnosticLevel = SentryLevel.debug;
         },
         appRunner: () => runApp(
           SentryWidget(
