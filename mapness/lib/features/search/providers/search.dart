@@ -66,6 +66,7 @@ class Search extends _$Search {
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
+
   bool get searchFromSuggest => _previousType == SearchType.searchByQuery;
 
   @override

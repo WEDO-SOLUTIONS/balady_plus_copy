@@ -9,6 +9,7 @@ import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/package_info.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -54,12 +55,17 @@ class _DGisNetwork extends _$DGisNetwork {
     );
     dio.interceptors.addAll(
       [
-        TalkerDioLogger(
-          settings: const TalkerDioLoggerSettings(
-            /// Since protobufs are just binary files what a purpose to print it
-            printResponseData: false,
+        if (logger is TalkerMapnessLogger)
+          TalkerDioLogger(
+            talker: (logger as TalkerMapnessLogger).talker,
+            settings: const TalkerDioLoggerSettings(
+              printRequestHeaders: true,
+              printResponseHeaders: true,
+
+              /// Since protobufs are just binary files what a purpose to print it
+              printResponseData: false,
+            ),
           ),
-        ),
         AuthTokenInterceptor.tokenInterceptor(
           ref,
           BaseOptions(

@@ -28,7 +28,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
       onClose: (controller) {
         context.router.popForced();
       },
-      heightModel: ToggleSheetHeightModel.fraction(0.9),
+      heightModel: ToggleSheetHeightModel.fraction(.98),
     );
 
     final textEditingController = useTextEditingController(text: initialText);
@@ -59,13 +59,18 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
           ),
           child: SizedBox(
             width: double.infinity,
-            child: AppButton(
-              primaryLabel: context.l10n.appFeedbackAddNote,
-              buttonColorScheme: ButtonColorScheme.accentSecondary,
-              size: ButtonSize.large,
-              onTap: () {
-                context.router.popForced(textEditingController.text);
-              },
+            child: ListenableBuilder(
+              listenable: textEditingController,
+              builder: (context, child) => AppButton(
+                primaryLabel: context.l10n.appFeedbackAddNote,
+                buttonColorScheme: ButtonColorScheme.accentSecondary,
+                buttonState:
+                    textEditingController.text.length > maxCharsAllowed ? ButtonState.disabled : ButtonState.defaultState,
+                size: ButtonSize.large,
+                onTap: () {
+                  context.router.popForced(textEditingController.text);
+                },
+              ),
             ),
           ),
         ),

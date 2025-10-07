@@ -28,6 +28,7 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PoiContentSliver extends ConsumerWidget {
@@ -86,26 +87,26 @@ class PoiContentSliver extends ConsumerWidget {
             return const SizedBox.shrink();
           }
           final about = data.getAbout(context.l10n);
-          final workTime = data.getOpeningHours(context.l10n);
+          final workingHours = data.openingHours?.toWorkingHours();
 
           Future<void> bssOnContactTap(BssContactType type, String value) async {
-            await ref.read(bssServiceProvider.notifier).sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.action,
-                    actionType: BSSActionType.tap,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.contactTap,
-                      ownerName: BssUIElementNames.cardInformation,
-                    ),
-                    payload: BssPayload(
-                      placeItem: data.toBss(),
-                      contact: BssContact(
-                        type: type,
-                        value: value,
-                      ),
-                    ),
+            await BssService.instance.sendEvent(
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.contactTap,
+                  ownerName: BssUIElementNames.cardInformation,
+                ),
+                payload: BssPayload(
+                  placeItem: data.toBss(),
+                  contact: BssContact(
+                    type: type,
+                    value: value,
                   ),
-                );
+                ),
+              ),
+            );
           }
 
           // Contacts
@@ -205,10 +206,10 @@ class PoiContentSliver extends ConsumerWidget {
                   padding: itemPadding,
                   child: PoiContentAboutCard(data: about),
                 ),
-              if (workTime != null) //
+              if (workingHours != null) //
                 Padding(
                   padding: itemPadding,
-                  child: PoiContentWorkingHoursCard(data: workTime),
+                  child: PoiContentWorkingHoursCard(workingHours: workingHours, workStatusMessage: data.workStatus),
                 ),
               if (contacts != null) //
                 Padding(

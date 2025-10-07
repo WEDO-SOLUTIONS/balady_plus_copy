@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -35,8 +37,12 @@ class MapSearchEmpty extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: Spacing.$2x),
-          SvgPicture.asset(
-            Assets.imagesSvg.illustrationError.keyName,
+          Transform(
+            transform: Matrix4.rotationY(context.locale.languageCode == 'ar' ? pi : 0),
+            alignment: Alignment.center,
+            child: SvgPicture.asset(
+              Assets.imagesSvg.illustrationError.keyName,
+            ),
           ),
           const SizedBox(height: Spacing.$1x),
           Text(
@@ -65,16 +71,15 @@ class MapSearchEmpty extends ConsumerWidget {
           AppButton(
             onTap: _onAlternativeSearchPressed,
             buttonColorScheme: ButtonColorScheme.accentSecondary,
-            buttonType: ButtonType.secondary,
-            primaryLabel: context.l10n.showMore,
+            primaryLabel: context.l10n.searchMore,
             primaryIcon: SystemIcons.search,
           ),
           const SizedBox(height: Spacing.$2x),
           if (isShowAddPlaceButton)
             AppButton(
-              buttonColorScheme: ButtonColorScheme.accent,
+              buttonColorScheme: ButtonColorScheme.accentSecondary,
+              buttonType: ButtonType.secondary,
               primaryIcon: GeneralIcons.plusCircle,
-              // for the first iteration all buttons have same label. Will be changed later
               primaryLabel: context.l10n.addPlace,
               onTap: () {
                 ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);

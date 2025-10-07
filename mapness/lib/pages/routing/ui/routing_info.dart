@@ -11,6 +11,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
@@ -243,13 +244,22 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
   }
 
-  void _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) {
+  Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
     _navigationStarted = true;
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
+    final location = ref.read(cityByLocationProvider.notifier);
+    final originCity = await location.getCityByLatLng(
+      lat: widget.pointsWithLabel.first.value?.latitude,
+      lng: widget.pointsWithLabel.first.value?.longitude,
+    );
+    final destinationCity = await location.getCityByLatLng(
+      lat: widget.pointsWithLabel.lastOrNull?.value?.latitude,
+      lng: widget.pointsWithLabel.lastOrNull?.value?.longitude,
+    );
 
     for (final settings in [mapSetting, markerSettings]) {
-      ref
+      await ref
           .read(
             mapObjectManagerProvider(
               named: settings.name,
@@ -258,6 +268,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           )
           .removeAllMarkers();
     }
+
+    ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
 
     Metrics.logEventAdvanced(
       MetricsConstants.routesKeys.routeSelectionGoButton,
@@ -275,19 +287,21 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     ref.read(appAnalyticsProvider).navigationStarted(
           originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
           destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
+          originCity: originCity.name,
+          destinationCity: destinationCity.name,
           estimateTime: route.duration,
           estimateDistance: route.distance,
         );
 
-    ref.read(urbiAnalyticsProvider).track(
+    unawaited(ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
       properties: {
         'duration': route.duration,
         'distance': route.distance,
       },
-    );
+    ));
 
-    context.router.pushAndPopUntil(
+    await context.router.pushAndPopUntil(
         PathNavRoute(
           navType: navigatingType,
           isHomeOrWork: widget.isHomeOrWork,

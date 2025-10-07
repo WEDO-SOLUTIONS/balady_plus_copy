@@ -7,6 +7,8 @@ import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -30,6 +32,7 @@ class _HajjRcmc extends _$HajjRcmc {
     ..interceptors.clear()
     ..interceptors.add(
       TalkerDioLogger(
+        talker: logger is TalkerMapnessLogger ? (logger as TalkerMapnessLogger).talker : null,
         settings: const TalkerDioLoggerSettings(
           printResponseData: false,
         ),

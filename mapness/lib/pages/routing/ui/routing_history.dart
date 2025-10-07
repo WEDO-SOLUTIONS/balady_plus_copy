@@ -93,22 +93,22 @@ class RoutingHistory extends ConsumerWidget {
               final bssHistoryHandlingType = item.objectId != null
                   ? BssHistoryHandlingType.openRecord
                   : BssHistoryHandlingType.searchSuggestedText;
-              await ref.read(bssServiceProvider.notifier).sendEvent(
-                    BssRequest(
-                      eventType: BSSEventType.action,
-                      actionType: BSSActionType.tap,
-                      uiElement: BssUIElement(
-                        name: BssUIElementNames.historyItem,
-                        ownerName: BssUIElementNames.historyList,
-                        position: index + 1,
-                      ),
-                      payload: BssPayload(
-                        searchRequest: BssSearchRequest(text: item.title),
-                        historyItem: item.toBss(bssHistoryHandlingType),
-                        historyList: historyList,
-                      ),
-                    ),
-                  );
+              await BssService.instance.sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: BssUIElement(
+                    name: BssUIElementNames.historyItem,
+                    ownerName: BssUIElementNames.historyList,
+                    position: index + 1,
+                  ),
+                  payload: BssPayload(
+                    searchRequest: BssSearchRequest(text: item.title),
+                    historyItem: item.toBss(bssHistoryHandlingType),
+                    historyList: historyList,
+                  ),
+                ),
+              );
             },
           );
   }

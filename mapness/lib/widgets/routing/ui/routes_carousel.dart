@@ -114,14 +114,14 @@ class RoutesCarousel extends ConsumerWidget {
             return Padding(
               padding: padding(index: index, length: routes.length),
               child: PathCard(
-                distance: distanceInMeters.formatDistance(context.l10n),
+                distance: distanceInMeters.formatDistanceShort(context.l10n),
                 isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
                 localizations: PathCardLocalization(
                   calories: context.l10n.calories,
                   steps: context.l10n.steps,
                   go: context.l10n.go,
                 ),
-                duration: durationInSeconds.formatDuration(context.l10n),
+                duration: durationInSeconds.formatDurationShort(context.l10n),
                 steps: steps,
                 calories: calories,
                 onStartTap: () => startNavigation(route),

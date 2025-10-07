@@ -123,13 +123,13 @@ class DashboardHeader extends ConsumerWidget {
                 action: MetricAction.tap.name,
                 group: MetricsConstants.exploreTag,
               );
-              ref.read(bssServiceProvider.notifier).sendEvent(
-                    const BssRequest(
-                      eventType: BSSEventType.action,
-                      actionType: BSSActionType.tap,
-                      uiElement: BssUIElement(name: BssUIElementNames.searchField),
-                    ),
-                  );
+              BssService.instance.sendEvent(
+                const BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: BssUIElement(name: BssUIElementNames.searchField),
+                ),
+              );
 
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 

@@ -21,7 +21,7 @@ class BssCommon {
   /// Unique identifier of the application installation (Application Instance Id).
   final String appInstanceId;
 
-  /// Product ID (86 -Balady App iOS 87 -Balady App Android)
+  /// Product ID (88 -Balady App iOS 89 -Balady App Android)
   final int product;
 
   /// Unique identifier of the user session. Session — user session.
@@ -58,10 +58,13 @@ class BssCommon {
   final String deviceLocale;
 
   Map<String, dynamic> toJson() => {
-        'formatVersion': formatVersion,
         'appVersion': appVersion,
         'appInstanceId': appInstanceId,
         'product': product,
+        'sessionId': sessionId,
+        'user': user,
+        'deviceLocale': deviceLocale,
+        'formatVersion': formatVersion,
       };
 
   BssCommon copyWith({

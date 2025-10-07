@@ -86,10 +86,14 @@ class ShareMyLocationPage extends HookConsumerWidget {
         context.router.popForced();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
-          firstText: context.l10n.tryAgain,
-          onFirstTap: () {
-            _showEtaTimeSheet(context, ref);
-          },
+          actions: [
+            ToastAction(
+              title: context.l10n.tryAgain,
+              onTap: () {
+                _showEtaTimeSheet(context, ref);
+              },
+            ),
+          ],
         );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();

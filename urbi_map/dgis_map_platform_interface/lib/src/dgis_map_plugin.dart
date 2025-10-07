@@ -878,12 +878,12 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Start navigation.
-  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) {
+  Future<void> startNavigation(List<SpeedRangeZoom> speedRangeZoom) {
     return _api.startNavigation(speedRangeZoom);
   }
 
   /// Start navigation simulation.
-  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) {
+  Future<void> startNavigationSimulation(List<SpeedRangeZoom> speedRangeZoom) {
     return _api.startNavigationSimulation(speedRangeZoom);
   }
 
@@ -898,7 +898,7 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Restore navigation state.
-  Future<void> restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom) {
+  Future<void> restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom) {
     return _api.restoreNavigationState(state, speedRangeZoom);
   }
 
@@ -936,7 +936,7 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Start Free Roam
-  Future<void> startFreeRoam(SpeedRangeZoom speedRangeZoom) {
+  Future<void> startFreeRoam(List<SpeedRangeZoom> speedRangeZoom) {
     return _api.startFreeRoam(speedRangeZoom);
   }
 
@@ -961,6 +961,23 @@ class DgisMapPlugin extends FlutterMapApi {
   /// [SoundToggleType.all], enable voice acting for all sounds.
   Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) {
     return _api.toggleVoiceInstruction(toggleType);
+  }
+
+  /// The [favouritesUpdateNotification] method notifies CarPlay and Android Auto about favourites state changes.
+  ///
+  /// Parameters:
+  /// - [favouritesState]: A current favourites satet
+  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState) {
+    return _api.favouritesUpdateNotification(favouritesState);
+  }
+
+  /// The [authorizationNotification] method notifies CarPlay and Android Auto about authorization state changes.
+  ///
+  /// Parameters:
+  /// - [isAuthorized]: A boolean value where `true` indicates the user is authorized,
+  /// and `false` indicates the user is not authorized.
+  Future<void> authorizationNotification({required bool isAuthorized}) {
+    return _api.authorizationNotification(isAuthorized);
   }
 
   /// The [toggleRoadCameras] method is responsible for enabling or disabling

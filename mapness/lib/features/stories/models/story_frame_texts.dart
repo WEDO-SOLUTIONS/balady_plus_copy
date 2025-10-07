@@ -23,7 +23,13 @@ class StoryFrameTexts {
         title: _titleFromId(l10n, id),
         description: _descriptionFromId(l10n, id),
         titleAlign: _titleAlignFromId(l10n, id),
+        subTitle: _subTitleFromId(l10n, id),
       );
+
+  static String? _subTitleFromId(AppLocalizations l10n, String id) => switch (id) {
+        'saudiDay' => l10n.saudiDayTitle.split(RegExp(r'[,\u060C]')).lastOrNull?.trim(),
+        _ => null,
+      };
 
   /// Retrieves the title based on the ID.
   static String _titleFromId(AppLocalizations l10n, String id) => switch (id) {
@@ -36,7 +42,13 @@ class StoryFrameTexts {
         'onboarding1' => l10n.onboarding1Title,
         'onboarding2' => l10n.onboarding2Title,
         'onboarding3' => l10n.onboarding3Title,
-        'saudiDay' => l10n.saudiDayTitle,
+        'saudiDay' => () {
+            final text = l10n.saudiDayTitle;
+            final match = RegExp(r'[,\u060C]').firstMatch(text);
+            final separator = match?.group(0) ?? '';
+            final firstPart = text.split(RegExp(r'[,\u060C]')).firstOrNull??'';
+            return '$firstPart$separator';
+          }(),
         _ => 'No title',
       };
 
