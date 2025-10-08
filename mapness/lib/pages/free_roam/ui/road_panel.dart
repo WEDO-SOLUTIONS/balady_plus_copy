@@ -9,10 +9,15 @@ class RoadPanel extends ConsumerWidget {
   final bool isLoading;
   final VoidCallback onEndTrip;
   final VoidCallback onOpenSheet;
-  final VoidCallback onSearch;
+  final VoidCallback? onSearch;
 
-  const RoadPanel(
-      {required this.isLoading, required this.onEndTrip, required this.onOpenSheet, required this.onSearch, super.key});
+  const RoadPanel({
+    required this.isLoading,
+    required this.onEndTrip,
+    required this.onOpenSheet,
+    this.onSearch,
+    super.key,
+  });
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.all(Spacing.$4x),
@@ -31,7 +36,7 @@ class RoadPanel extends ConsumerWidget {
                     child: Center(child: Loading.small()))
                 : Row(
                     children: [
-                      GestureDetector(
+                      if (onSearch != null) GestureDetector(
                         onTap: onSearch,
                         child: DecoratedBox(
                           decoration: BoxDecoration(
@@ -44,7 +49,7 @@ class RoadPanel extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(width: Spacing.$2x),
+                      if (onSearch != null) const SizedBox(width: Spacing.$2x),
                       Expanded(
                         child: GestureDetector(
                           onTap: onEndTrip,
