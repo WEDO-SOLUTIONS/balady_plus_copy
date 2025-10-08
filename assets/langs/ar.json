@@ -4572,5 +4572,6 @@
   "cv_uploaded_successfully": "تم رفع السيرة الذاتية بنجاح",
   "AppsTitle": "التطبيقات",
   "passcode_sequence_error": "يجب ألا تكون كلمة المرور عبارة عن تسلسل رقمي.",
-  "passcode_id_error": "يجب ألا تحتوي كلمة المرور على جزء من رقم الهوية."
+  "passcode_id_error": "يجب ألا تحتوي كلمة المرور على جزء من رقم الهوية.",
+  "incorrect_username_password": "اسم المستخدم أو كلمة المرور غير صحيحة"
 }
