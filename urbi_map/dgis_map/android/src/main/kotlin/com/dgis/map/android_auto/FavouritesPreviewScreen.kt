@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.min
-`import kotlin.time.DurationUnit
+import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
 class FavouritesPreviewScreen(
