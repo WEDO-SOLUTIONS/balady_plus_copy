@@ -23,8 +23,9 @@ class RoadPanel extends ConsumerWidget {
         padding: const EdgeInsets.all(Spacing.$4x),
         child: SizedBox(
           height: 56,
-          width:
-              MediaQuery.orientationOf(context) == Orientation.portrait ? double.infinity : FreeRoamPage.landscapeWidth,
+          width: MediaQuery.orientationOf(context) == Orientation.portrait
+              ? double.infinity
+              : FreeRoamPage.landscapeWidth,
           child: Material(
             color: Colors.transparent,
             child: isLoading
@@ -36,19 +37,21 @@ class RoadPanel extends ConsumerWidget {
                     child: Center(child: Loading.small()))
                 : Row(
                     children: [
-                      if (onSearch != null) GestureDetector(
-                        onTap: onSearch,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: context.colors.backgroundSurface1,
-                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(Spacing.$4x),
-                            child: Icon(SystemIcons.search),
+                      if (onSearch != null)
+                        GestureDetector(
+                          onTap: onSearch,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: context.colors.backgroundSurface1,
+                              borderRadius:
+                                  BorderRadius.circular(RadiusBorder.xl),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.all(Spacing.$4x),
+                              child: Icon(SystemIcons.search),
+                            ),
                           ),
                         ),
-                      ),
                       if (onSearch != null) const SizedBox(width: Spacing.$2x),
                       Expanded(
                         child: GestureDetector(
@@ -56,10 +59,12 @@ class RoadPanel extends ConsumerWidget {
                           child: DecoratedBox(
                             decoration: BoxDecoration(
                               color: context.colors.backgroundSurface1,
-                              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                              borderRadius:
+                                  BorderRadius.circular(RadiusBorder.xl),
                             ),
                             child: Center(
-                              child: Text(context.l10n.endTrip, style: context.textStyles.h4Medium),
+                              child: Text(context.l10n.endTrip,
+                                  style: context.textStyles.h4Medium),
                             ),
                           ),
                         ),
@@ -70,7 +75,8 @@ class RoadPanel extends ConsumerWidget {
                         child: DecoratedBox(
                           decoration: BoxDecoration(
                             color: context.colors.backgroundSurface1,
-                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                            borderRadius:
+                                BorderRadius.circular(RadiusBorder.xl),
                           ),
                           child: const Padding(
                             padding: EdgeInsets.all(Spacing.$4x),
