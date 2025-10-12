@@ -195,39 +195,45 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             ),
           ),
           Spacing.$3x.heightBox,
-          ContentRow(
-            onTap: () => context.router.push(const SoundSettingsRoute()),
-            options: ContentRowOptions(
-              subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                color: colors.foregroundSoft,
-              ),
-              titleStyle: textStyles.bodyLargeRegular.copyWith(
-                color: colors.foregroundDefault,
-              ),
-              wrapperColor: context.colors.staticWhite,
-              wrapperEnabled: true,
-              title: l10n.voiceInstruction,
-              subtitle: _subtitleVoiceInstruction,
-              actionWidget: ContentRowActionOptions(
-                actionIcon: AppIcons(
-                  iconData: SystemIcons.arrowCornerRightLarge,
-                  color: context.colors.foregroundMuted,
+          ContentWrapper(
+            color: colors.staticWhite,
+            children: [
+              ContentRow(
+                onTap: () => context.router.push(const SoundSettingsRoute()),
+                options: ContentRowOptions(
+                  titleStyle: textStyles.bodyLargeRegular.copyWith(
+                    color: colors.foregroundDefault,
+                  ),
+                  subtitleStyle: textStyles.bodySmallRegular.copyWith(
+                    color: colors.foregroundSoft,
+                  ),
+                  title: l10n.voiceInstruction,
+                  subtitle: _subtitleVoiceInstruction,
+                  actionWidget: ContentRowActionOptions(
+                    actionIcon: AppIcons(
+                      iconData: SystemIcons.arrowCornerRightLarge,
+                      color: context.colors.foregroundMuted,
+                    ),
+                  ),
                 ),
               ),
-              bottomWidget: SegmentTabsButton(
-                tabsContent: [
-                  TabsRowV2Content(title: l10n.segmentButtonOffTitle),
-                  TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
-                  TabsRowV2Content(title: l10n.segmentButtonAllTitle),
-                ],
-                onIndexChanged: (value) {
-                  if (value != null) {
-                    soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
-                  }
-                },
-                initialIndex: soundSettingsModel.voiceInstructionIndex,
+              Padding(
+                padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+                child: SegmentTabsButton(
+                  tabsContent: [
+                    TabsRowV2Content(title: l10n.segmentButtonOffTitle),
+                    TabsRowV2Content(title: l10n.segmentButtonImportantTitle),
+                    TabsRowV2Content(title: l10n.segmentButtonAllTitle),
+                  ],
+                  onIndexChanged: (value) {
+                    if (value != null) {
+                      soundSettingsNotifier.toggleVoiceInstruction(currentVoiceInstruction: value);
+                    }
+                  },
+                  initialIndex: soundSettingsModel.voiceInstructionIndex,
+                ),
               ),
-            ),
+            ],
           ),
           Spacing.$3x.heightBox,
           ContentRow(

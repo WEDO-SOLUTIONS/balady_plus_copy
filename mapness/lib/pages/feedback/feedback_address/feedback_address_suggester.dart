@@ -8,9 +8,13 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_content.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_search_bar.dart';
+import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -100,6 +104,11 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
       // when the user is typing a long text and the TextField is scrolling to show it
       if (notification.dragDetails != null) {
         _unFocusOnScroll();
+        MapSearchContent.scrollSendEvent(
+          searchState: ref.read(searchProvider(SearchScopeEnum.feedback.value)),
+          historyListSize: ref.read(searchHistoryProvider(SearchScopeEnum.feedback.value)).length,
+          sendEvent: BssService.instance.sendEvent,
+        );
       }
     }
     return true;

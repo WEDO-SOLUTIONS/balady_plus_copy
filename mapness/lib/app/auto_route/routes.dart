@@ -36,6 +36,11 @@ class Routes {
                 page: ChangeProfilePhotoRoute.page,
                 customRouteBuilder: RouteBuilders.modalSheetBuilder,
               ),
+              CustomRoute(
+                path: 'help_center',
+                page: HelpCenterRoute.page,
+                customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+              ),
             ],
           ),
         ],

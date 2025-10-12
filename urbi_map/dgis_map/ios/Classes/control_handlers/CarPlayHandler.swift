@@ -33,6 +33,10 @@ class CarPlayHandler: CarPlayConnectionSceneDelegate {
     func toggleSounds(toggleType: SoundToggleType) {
         FlutterCarPlaySceneDelegate.toggleSounds(toggleType: toggleType)
     }
+    
+    func onAuthorizationChanged(isAuthorized: Bool) {
+        FlutterCarPlaySceneDelegate.onAuthorizationChanged(isAuthorized: isAuthorized)
+    }
 
     
 }

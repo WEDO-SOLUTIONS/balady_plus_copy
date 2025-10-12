@@ -5,30 +5,34 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
+import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/features/stories/ui/fullscreen_strory_error.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:video_player/video_player.dart';
 
 part 'models/video_story_state.dart';
 
-class StoryVideoPlayer extends StatefulWidget {
+class StoryVideoPlayer extends ConsumerStatefulWidget {
   final List<String> videoUrls;
   final VoidCallback? onNextStory;
   final VoidCallback? onPreviousStory;
+  final String storyId;
 
   const StoryVideoPlayer({
     required this.videoUrls,
+    required this.storyId,
     super.key,
     this.onNextStory,
     this.onPreviousStory,
   });
 
   @override
-  State<StoryVideoPlayer> createState() => _StoryVideoPlayerState();
+  ConsumerState<StoryVideoPlayer> createState() => _StoryVideoPlayerState();
 }
 
-class _StoryVideoPlayerState extends State<StoryVideoPlayer> {
+class _StoryVideoPlayerState extends ConsumerState<StoryVideoPlayer> {
   int _currentIndex = 0;
 
   VideoPlayerController? _controller;
@@ -59,6 +63,7 @@ class _StoryVideoPlayerState extends State<StoryVideoPlayer> {
     final manager = DefaultCacheManager();
 
     try {
+      unawaited(ref.read(storyServiceProvider.notifier).markStoryAsRead(widget.storyId, _currentIndex));
       final cachedFile = await manager.getFileFromCache(url);
 
       var file = cachedFile?.file;
@@ -244,9 +249,9 @@ class _StoryVideoPlayerState extends State<StoryVideoPlayer> {
                                                             child: LinearProgressIndicator(
                                                               value: progress,
                                                               backgroundColor:
-                                                                  context.colorsV3.staticWhite.withOpacity(0.3),
+                                                                  context.colors.staticWhite.withOpacity(0.3),
                                                               valueColor: AlwaysStoppedAnimation<Color>(
-                                                                  context.colorsV3.staticWhite),
+                                                                  context.colors.staticWhite),
                                                             ),
                                                           ),
                                                         ),
@@ -283,13 +288,13 @@ class _StoryVideoPlayerState extends State<StoryVideoPlayer> {
                                               width: 80,
                                               height: 80,
                                               decoration: BoxDecoration(
-                                                color: context.colorsV3.staticBlack.withOpacity(0.5),
+                                                color: context.colors.staticBlack.withOpacity(0.5),
                                                 shape: BoxShape.circle,
                                               ),
                                               child: Center(
                                                 child: Icon(
                                                   _isMuted ? noSoundIc : soundIc,
-                                                  color: context.colorsV3.staticWhite,
+                                                  color: context.colors.staticWhite,
                                                   size: 24,
                                                 ),
                                               ),

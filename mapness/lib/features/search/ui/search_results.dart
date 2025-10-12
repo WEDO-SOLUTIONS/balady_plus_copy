@@ -109,7 +109,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
             onTap: _onAlternativeSearchPressed,
             buttonColorScheme: ButtonColorScheme.accentSecondary,
             buttonType: ButtonType.secondary,
-            primaryLabel: context.l10n.showMore,
+            primaryLabel: context.l10n.searchMore,
             primaryIcon: SystemIcons.search,
           );
         }

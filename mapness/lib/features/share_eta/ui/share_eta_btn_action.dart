@@ -21,14 +21,9 @@ class ShareEtaBtnAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) => switch (type) {
         ShareEtaBtnActionType.loading => Loading.small(),
-        ShareEtaBtnActionType.active => AppButton(
-            size: ButtonSize.small,
-            primaryIcon: SystemIcons.ellipsis,
-            buttonColorScheme: ButtonColorScheme.onColor,
-            color: Colors.transparent,
+        ShareEtaBtnActionType.active => GestureDetector(
             onTap: () => _showEtaControlSheet(context),
-            innerPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            padding: EdgeInsets.zero,
+            child: SystemIcons.ellipsis.icon(color: context.colors.foregroundSoft),
           ),
         ShareEtaBtnActionType.stoped => Icon(
             SystemIcons.share,

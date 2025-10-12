@@ -19,6 +19,6 @@ class SheetDragger extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DraggerContainer(
         draggerColor: draggerColor ?? context.colors.backgroundSurface5,
-        backgroundColor: backgroundColor ?? context.colors.backgroundSurface1,
+        backgroundColor: backgroundColor ?? Colors.transparent,
       );
 }

@@ -27,7 +27,7 @@ class StoryFrameTexts {
       );
 
   static String? _subTitleFromId(AppLocalizations l10n, String id) => switch (id) {
-        'saudiDay' => l10n.saudiDayTitle.split(RegExp(r'[,\u060C]')).last,
+        'saudiDay' => l10n.saudiDayTitle.split(RegExp(r'[,\u060C]')).lastOrNull?.trim(),
         _ => null,
       };
 
@@ -46,7 +46,7 @@ class StoryFrameTexts {
             final text = l10n.saudiDayTitle;
             final match = RegExp(r'[,\u060C]').firstMatch(text);
             final separator = match?.group(0) ?? '';
-            final firstPart = text.split(RegExp(r'[,\u060C]')).first;
+            final firstPart = text.split(RegExp(r'[,\u060C]')).firstOrNull??'';
             return '$firstPart$separator';
           }(),
         _ => 'No title',
