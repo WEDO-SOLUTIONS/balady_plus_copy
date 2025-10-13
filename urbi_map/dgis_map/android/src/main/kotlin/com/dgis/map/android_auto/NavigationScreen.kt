@@ -28,6 +28,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.FlutterProvider
 import com.dgis.map.map_api.HostFlutterApi
@@ -329,15 +330,18 @@ class NavigationScreen(
             previousStep != null &&
                     (step?.road != previousStep.road ||
                             step?.maneuver?.type != previousStep.maneuver?.type)
-        carNotificationManager.notify(
-            NavigationCarAppService.notificationId,
-            getNavigationNotification(
-                "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
-                maneuver.roadName,
-                maneuver.iconId,
-                shouldNotify,
-            ),
-        )
+        if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+            carNotificationManager.notify(
+                NavigationCarAppService.notificationId,
+                getNavigationNotification(
+                    "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
+                    maneuver.roadName,
+                    maneuver.iconId,
+                    shouldNotify,
+                ),
+            )
+        }
+
         invalidate()
     }
 
