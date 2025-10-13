@@ -12,9 +12,11 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
+import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
@@ -130,6 +132,11 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
       child: ToggleSheet(
         key: sheetKey,
         dragger: null,
+        shouldPop: (controller) {
+          ref.read(pathNavMessageProvider.notifier).stopNavigation();
+          ref.read(dgisControllerProvider).value?.stopNavigation();
+          return false;
+        },
         startConfig: ToggleSheetStart.closed,
         backgroundColor: colors.backgroundSurface4,
         scrollController: widget.sheetController,
