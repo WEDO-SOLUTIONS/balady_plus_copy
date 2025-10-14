@@ -44,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.dgis.sdk.DgisObjectId
@@ -53,6 +54,7 @@ import java.util.concurrent.CompletableFuture
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
+import kotlin.time.Duration
 
 class NavigationScreen(
     carContext: CarContext,
@@ -391,6 +393,16 @@ class NavigationScreen(
         mapController.stopNavigation()
         if (!bySystem) {
             tryToShowFavourites()
+        } else {
+            CoroutineScope(Dispatchers.Default).launch {
+                // We should wait until the system completes the state changes
+                delay(800)
+                if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                    withContext(Dispatchers.Main) {
+                        tryToShowFavourites()
+                    }
+                }
+            }
         }
     }
 
