@@ -3,11 +3,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 
 extension RouteSearchOptionsMessageIcon on RouteSearchOptionsMessage {
-  IconData icon(BuildContext context) => switch (this) {
+  IconData icon(BuildContext context, List<BriefPublicTransportModel> list, {required bool errorPedestrian}) => switch (this) {
         RouteSearchOptionsMessage.pedestrian =>
-          Directionality.of(context) == TextDirection.ltr ? TransportIcons.pedestrianLTR : TransportIcons.pedestrianRTL,
+          Directionality.of(context) == TextDirection.ltr ? errorPedestrian
+                ? TransportIcons.pedestrianErrorLTR : TransportIcons.pedestrianLTR : errorPedestrian ? TransportIcons.pedestrianErrorRTL : TransportIcons.pedestrianRTL,
         RouteSearchOptionsMessage.car => TransportIcons.car,
-        RouteSearchOptionsMessage.publicTransport => TransportIcons.tram,
+        RouteSearchOptionsMessage.publicTransport => list.isEmpty ? TransportIcons.tramError : TransportIcons.tram,
         _ => TransportIcons.car,
       };
 }

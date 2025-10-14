@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/pages/routing/lib/route_search_options_extension.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -16,12 +17,16 @@ class RouteTabBar extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage active;
   final List<RouteParamsPoint?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
+  final AsyncValue<List<RouteInfo>> routes;
+  final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
 
   const RouteTabBar({
     required this.onChanged,
     required this.active,
     required this.points,
     required this.publicTransportVisibility,
+    required this.routes,
+    required this.publicTransportRoutes,
     super.key,
   });
 
@@ -50,19 +55,21 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
               primaryIcon: SystemIcons.tuning,
             ),
             // when car connected, choice of route search options shouldn't be available to user
-            if (!carConnected) _getRouteSearchOptionsWidgets(context, widget.publicTransportVisibility),
+            if (!carConnected) _getRouteSearchOptionsWidgets(context),
           ].insertBetween(Spacing.$2x.widthBox).toList(),
         ),
       ),
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(BuildContext context, AsyncValue<PublicTransportVisibilityResult> pubState) {
+  Widget _getRouteSearchOptionsWidgets(BuildContext context) {
     final chips = [
       RouteSearchOptionsMessage.car,
       RouteSearchOptionsMessage.publicTransport,
       RouteSearchOptionsMessage.pedestrian,
     ];
+
+    final errorPedestrian = widget.routes.error is WalkingDistanceException;
 
     return Expanded(
       child: TabsRow.v2(
@@ -70,7 +77,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
         onIndexChanged: (index) => {},
         tabsContent: chips
             .map((chip) => TabsRowV2Content(
-                  leadingIcon: TabsV2IconData(chip.icon(context)),
+                  leadingIcon: TabsV2IconData(chip.icon(context, widget.publicTransportRoutes.value ?? [], errorPedestrian: errorPedestrian)),
                   onTap: () => widget.onChanged(chip),
                 ))
             .toList(),
