@@ -39,7 +39,9 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
     String? todayBreaks() {
       final breaks = workingHours.todayBreaks(DateTime.now().weekday);
       if (breaks.isNotEmpty) {
-        return formatBreaks(breaks);
+        final breakHour = l10n.breakHour;
+        final breaksHoursString = formatBreaks(breaks);
+        return '$breakHour $breaksHoursString';
       }
       return null;
     }
