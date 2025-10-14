@@ -1,4 +1,3 @@
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
@@ -9,18 +8,20 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
-import 'app/core/dependency_injection/injection_container.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 void main() async {
+  // Ensure Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.prod, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
       await SentryFlutter.init(
-            (options) {
+        (options) {
           options.dsn = 'https://9aa759b78c44294405004545d91488a6@sentry.momah.gov.sa/85';
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
@@ -42,10 +43,6 @@ void main() async {
           // options.captureFailedRequests = true;
           options.environment = EnvType.stg.name;
 
-
-
-
-
           // Performance Monitoring
           options.tracesSampleRate = 1.0; // 100% sampling for development
           // options.tracesSampleRate = 0.1; // 10% sampling for production
@@ -57,7 +54,6 @@ void main() async {
           options.enableAutoPerformanceTracing = true;
           options.enableUserInteractionTracing = true;
           options.enableAppHangTracking = true;
-
 
           // Session Tracking
           options.enableAutoSessionTracking = true;
@@ -74,7 +70,6 @@ void main() async {
 
           // Additional Performance Settings
           options.enableTimeToFullDisplayTracing = true;
-
         },
         appRunner: () => runApp(MapnessProviderScope(child: LocalizedApp(child: App()))),
       );

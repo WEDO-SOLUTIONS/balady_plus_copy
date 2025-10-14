@@ -8,9 +8,11 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
-import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
+  // Ensure Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.prod, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
@@ -39,10 +41,6 @@ void main() async {
           // options.captureFailedRequests = true;
           options.environment = EnvType.stg.name;
 
-
-
-
-
           // Performance Monitoring
           options.tracesSampleRate = 1.0; // 100% sampling for development
           // options.tracesSampleRate = 0.1; // 10% sampling for production
@@ -54,7 +52,6 @@ void main() async {
           options.enableAutoPerformanceTracing = true;
           options.enableUserInteractionTracing = true;
           options.enableAppHangTracking = true;
-
 
           // Session Tracking
           options.enableAutoSessionTracking = true;
@@ -71,7 +68,6 @@ void main() async {
 
           // Additional Performance Settings
           options.enableTimeToFullDisplayTracing = true;
-
         },
         appRunner: () => runApp(
           SentryScreenshotWidget(

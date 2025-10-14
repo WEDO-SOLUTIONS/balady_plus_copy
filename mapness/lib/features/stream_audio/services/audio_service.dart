@@ -6,13 +6,14 @@ import 'package:just_audio_background/just_audio_background.dart';
 class AudioService extends ChangeNotifier {
   static final AudioService _instance = AudioService._internal();
   static bool _globalInitialized = false;
+  static AudioPlayer? _globalPlayer; // Global static player instance
 
   factory AudioService() => _instance;
 
   AudioService._internal();
 
-  // Player
-  AudioPlayer? _player;
+  // Player (reference to global static instance)
+  AudioPlayer? get _player => _globalPlayer;
 
   // Player stream subscriptions
   StreamSubscription<PlayerState>? _playerStateSubscription;
@@ -42,39 +43,57 @@ class AudioService extends ChangeNotifier {
   // Global initialization - should be called once at app startup
   static Future<void> initializeGlobally() async {
     if (_globalInitialized) {
+      debugPrint('AudioService: Global initialization already completed, skipping');
       return;
     }
 
-    // Initialize just_audio_background
-    await JustAudioBackground.init(
-      androidNotificationChannelId: 'com.balady.audio',
-      androidNotificationChannelName: 'Audio Streaming',
-      androidNotificationOngoing: true,
-    );
+    debugPrint(
+        'AudioService: Marking global initialization as complete (JustAudioBackground initialized in main.dart)');
+
+    // Dispose any existing global player first
+    if (_globalPlayer != null) {
+      debugPrint('AudioService: Disposing existing global player before initialization');
+      try {
+        await _globalPlayer!.dispose();
+      } catch (e) {
+        debugPrint('AudioService: Error disposing existing player: $e');
+      }
+      _globalPlayer = null;
+    }
 
     _globalInitialized = true;
+    debugPrint('AudioService: Global initialization completed successfully');
   }
 
   // Initialization
   Future<void> init() async {
-    if (_isInitialized && _player != null) {
+    if (_isInitialized && _globalPlayer != null) {
+      debugPrint('AudioService: Already initialized, skipping');
       return;
     }
 
     try {
+      // Mark global as initialized since JustAudioBackground is initialized in main.dart
+      _globalInitialized = true;
+
       // Ensure no existing player (just_audio_background only supports one instance)
-      if (_player != null) {
+      if (_globalPlayer != null) {
         try {
-          await _player!.dispose();
+          debugPrint('AudioService: Disposing existing player in init');
+          await _globalPlayer!.dispose();
         } catch (e) {
           debugPrint('AudioService: Error disposing existing player in init: $e');
         }
+        _globalPlayer = null;
       }
 
-      _player = AudioPlayer();
+      debugPrint('AudioService: Creating new AudioPlayer instance');
+      _globalPlayer = AudioPlayer();
       await _setupPlayerListeners();
       _isInitialized = true;
+      debugPrint('AudioService: AudioPlayer initialization completed');
     } catch (e) {
+      debugPrint('AudioService: Failed to initialize: $e');
       _setError('Failed to initialize: $e');
     }
   }
@@ -86,13 +105,13 @@ class AudioService extends ChangeNotifier {
     _playerStateSubscription = null;
 
     // Dispose old player if it exists
-    if (_player != null) {
+    if (_globalPlayer != null) {
       try {
-        await _player!.dispose();
+        await _globalPlayer!.dispose();
       } catch (e) {
         debugPrint('AudioService: Error disposing during reinitialize: $e');
       }
-      _player = null;
+      _globalPlayer = null;
     }
 
     _isInitialized = false;
@@ -254,9 +273,9 @@ class AudioService extends ChangeNotifier {
     try {
       await _playerStateSubscription?.cancel();
       _playerStateSubscription = null;
-      await _player?.stop();
-      await _player?.dispose();
-      _player = null;
+      await _globalPlayer?.stop();
+      await _globalPlayer?.dispose();
+      _globalPlayer = null;
       _isInitialized = false;
       _resetState();
     } catch (e) {
@@ -293,7 +312,7 @@ class AudioService extends ChangeNotifier {
   @override
   void dispose() {
     _playerStateSubscription?.cancel();
-    _player?.dispose();
+    _globalPlayer?.dispose();
     super.dispose();
   }
 }

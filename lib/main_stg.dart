@@ -11,6 +11,9 @@ import 'package:flutter/material.dart';
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
+  // Ensure Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
+
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);

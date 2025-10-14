@@ -374,7 +374,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             // Left side: PlayingAudioTile (vertical layout)
             const Expanded(
               flex: 2,
-              child: PlayingAudioTile(isLandscape: true),
+              child: PlayingAudioTile(isLandscape: true, instanceId: 'landscape_sheet'),
             ),
             const SizedBox(width: 16),
             // Right side: MediaCatalogList (vertical layout)
@@ -420,7 +420,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const PlayingAudioTile(),
+                const PlayingAudioTile(instanceId: 'portrait_sheet'),
                 if (provider.hasError) ...[
                   const SizedBox(height: 16),
                   Container(

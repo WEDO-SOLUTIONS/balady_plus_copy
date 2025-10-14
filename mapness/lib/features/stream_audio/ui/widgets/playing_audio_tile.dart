@@ -6,8 +6,9 @@ import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dar
 
 class PlayingAudioTile extends ConsumerStatefulWidget {
   final bool isLandscape;
+  final String? instanceId;
 
-  const PlayingAudioTile({this.isLandscape = false, super.key});
+  const PlayingAudioTile({this.isLandscape = false, this.instanceId, super.key});
 
   @override
   ConsumerState<PlayingAudioTile> createState() => _PlayingAudioTileState();
@@ -95,23 +96,23 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
     const url = 'https://assets.mbcmood.com/channels/1708604937logombc.png';
 
     return AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          image: url.contains('svg') ? null : const DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
-          color: Colors.grey[300],
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
+      duration: const Duration(milliseconds: 300),
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: url.contains('svg') ? null : const DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
+        color: Colors.grey[300],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
-      );
+    );
   }
 
   Widget _buildTitleSubtitle(StreamAudioProvider provider, CrossAxisAlignment alignment) => Column(
@@ -183,28 +184,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         child: Center(
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 200),
-            child: provider.isLoading
-                ? SizedBox(
-                    key: const ValueKey('loading'),
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white.withValues(alpha: 0.8),
-                      ),
-                    ),
-                  )
-                : SvgPicture.asset(
-                    key: ValueKey(provider.isPlaying),
-                    provider.isPlaying ? Assets.icons.svg.audio.pause.keyName : Assets.icons.svg.audio.resume.keyName,
-                    width: 20,
-                    height: 20,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
-                  ),
+            child: _buildPlayPauseIcon(provider),
           ),
         ),
       ),
@@ -259,5 +239,33 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         ],
       );
     }
+  }
+
+  Widget _buildPlayPauseIcon(StreamAudioProvider provider) {
+    // Remove keys entirely to avoid conflicts - AnimatedSwitcher can work without them
+    // The widget type difference (SizedBox vs SvgPicture) is enough for Flutter to distinguish them
+
+    if (provider.isLoading) {
+      return SizedBox(
+        width: 20,
+        height: 20,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(
+            Colors.white.withValues(alpha: 0.8),
+          ),
+        ),
+      );
+    }
+
+    return SvgPicture.asset(
+      provider.isPlaying ? Assets.icons.svg.audio.pause.keyName : Assets.icons.svg.audio.resume.keyName,
+      width: 20,
+      height: 20,
+      colorFilter: const ColorFilter.mode(
+        Colors.white,
+        BlendMode.srcIn,
+      ),
+    );
   }
 }

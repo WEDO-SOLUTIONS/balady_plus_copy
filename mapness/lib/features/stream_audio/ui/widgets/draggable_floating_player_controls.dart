@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -458,20 +460,7 @@ class _ContentState extends ConsumerState<Content> {
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: Row(
         children: [
-          Container(
-            height: 32,
-            width: 32,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade800,
-              //TODO: Uncomment when images are available
-              // image: DecorationImage(
-              //   image: AssetImage(selectedProgram?.programImage.keyName ?? ''),
-              //   fit: BoxFit.cover,
-              // ),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
-            ),
-          ),
+          buildProgramImage(provider),
           const SizedBox(width: 8),
           Expanded(
             child: Column(
@@ -503,24 +492,6 @@ class _ContentState extends ConsumerState<Content> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Backward button
-              Visibility(
-                visible: provider.canGoToPreviousChannel,
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-                child: GestureDetector(
-                  onTap: () async {
-                    await ref.read(streamAudioProvider).goToPreviousChannel();
-                  },
-                  child: SvgPicture.asset(
-                    Assets.icons.svg.audio.seekBackward.keyName,
-                    width: 16,
-                    height: 16,
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                  ),
-                ),
-              ),
               const SizedBox(width: 12),
               // Play/Pause button
               GestureDetector(
@@ -571,4 +542,59 @@ class _ContentState extends ConsumerState<Content> {
       ),
     );
   }
+
+  Widget buildProgramImage(StreamAudioProvider provider){
+    final channel = provider.selectedChannel;
+    final hasProgram = channel?.currentPlayedProgram != null;
+    final programLogo = channel?.currentPlayedProgram?.image;
+    final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
+
+    //TODO: fix images when backend is ready (circledLogo)
+    final url = hasProgramLogo
+        ? 'https://assets.mbcmood.com/programs_thumbnails/1745311050%D8%AD%D9%84%D9%88%20%D8%A7%D9%84%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D8%AE%D9%8A%D8%B1%20.jpg'
+        : 'https://assets.mbcmood.com/channels/1708604937logombc.png';
+
+    // final url = hasProgramLogo ? programLogo : (channel.logo ?? 'https://www.mbcmood.com/images/Logo.png');
+
+    return Stack(
+      children: [
+        Container(
+          height: 32,
+          width: 32,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            image: url.contains('svg') ? null : DecorationImage(image: NetworkImage(url), fit: BoxFit.fitWidth),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
+          ),
+          child: !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+        ),
+        if (!hasProgram)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+              child: Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.00, 1.00],
+                    colors: [
+                      Colors.black.withValues(alpha: 0.6),
+                      Colors.black.withValues(alpha: 0.2)
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
 }

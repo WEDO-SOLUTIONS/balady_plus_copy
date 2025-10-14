@@ -159,10 +159,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Reorder channels and save to SharedPreferences
   Future<void> reorderChannels(int oldIndex, int newIndex) async {
-    if (oldIndex < 0 ||
-        newIndex < 0 ||
-        oldIndex >= filteredChannels.length ||
-        newIndex >= filteredChannels.length) {
+    if (oldIndex < 0 || newIndex < 0 || oldIndex >= filteredChannels.length || newIndex >= filteredChannels.length) {
       return;
     }
 
@@ -180,8 +177,7 @@ class StreamAudioProvider extends ChangeNotifier {
     await _saveChannelOrder();
 
     notifyListeners();
-    debugPrint(
-        'StreamAudioProvider: Reordered channels from index $oldIndex to $adjustedNewIndex');
+    debugPrint('StreamAudioProvider: Reordered channels from index $oldIndex to $adjustedNewIndex');
   }
 
   // Save current channel order to SharedPreferences
@@ -195,8 +191,7 @@ class StreamAudioProvider extends ChangeNotifier {
       }
 
       await sharedPrefs.saveChannelOrder(channelOrder);
-      debugPrint(
-          'StreamAudioProvider: Saved channel order to SharedPreferences');
+      debugPrint('StreamAudioProvider: Saved channel order to SharedPreferences');
     } catch (e) {
       debugPrint('StreamAudioProvider: Error saving channel order: $e');
     }
@@ -204,9 +199,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Program selection and playback
   Future<void> selectChannel(FilteredChannel? channel) async {
-    if (channel == null ||
-        channel.audioUrl == null ||
-        channel.audioUrl?.isEmpty == true) {
+    if (channel == null || channel.audioUrl == null || channel.audioUrl?.isEmpty == true) {
       return;
     }
 
@@ -228,8 +221,7 @@ class StreamAudioProvider extends ChangeNotifier {
         title: channel.name,
         programName: channel.currentPlayedProgram?.name ?? 'on Air',
       );
-      debugPrint(
-          'StreamAudioProvider: Successfully started playing ${channel.name}');
+      debugPrint('StreamAudioProvider: Successfully started playing ${channel.name}');
     } catch (e) {
       debugPrint('StreamAudioProvider: Error playing stream: $e');
     }
@@ -256,14 +248,11 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Playback controls
   Future<void> playStream() async {
-    if (_selectedChannel == null ||
-        _selectedChannel?.audioUrl == null ||
-        _selectedChannel?.audioUrl?.isEmpty == true) {
+    if (_selectedChannel == null || _selectedChannel?.audioUrl == null || _selectedChannel?.audioUrl?.isEmpty == true) {
       return;
     }
 
-    debugPrint(
-        'StreamAudioProvider: Playing stream for ${_selectedChannel?.name}');
+    debugPrint('StreamAudioProvider: Playing stream for ${_selectedChannel?.name}');
 
     // If we were previously exited, reinitialize
     if (_isExited) {
@@ -298,7 +287,32 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   Future<void> togglePlayPause() async {
-    await _audioService.togglePlayPause();
+    debugPrint(
+        'StreamAudioProvider: togglePlayPause called - selectedChannel: ${_selectedChannel?.name}, isPlaying: ${_audioService.isPlaying}, isLoading: ${_audioService.isLoading}');
+
+    // If no channel is selected, select the first available channel and start playing
+    if (_selectedChannel == null) {
+      debugPrint('StreamAudioProvider: No channel selected, loading channels...');
+      await getChannels();
+      if (filteredChannels.isNotEmpty) {
+        debugPrint('StreamAudioProvider: Auto-selecting first channel: ${filteredChannels.first.name}');
+        await selectChannel(filteredChannels.first);
+        return;
+      } else {
+        debugPrint('StreamAudioProvider: No channels available to play');
+        return;
+      }
+    }
+
+    // If we have a selected channel but audio service is not playing, start playing
+    if (!_audioService.isPlaying && !_audioService.isLoading) {
+      debugPrint('StreamAudioProvider: Starting playback for selected channel: ${_selectedChannel!.name}');
+      await playStream();
+    } else {
+      // Otherwise, toggle play/pause normally
+      debugPrint('StreamAudioProvider: Toggling play/pause state');
+      await _audioService.togglePlayPause();
+    }
   }
 
   // Channel navigation
@@ -306,8 +320,7 @@ class StreamAudioProvider extends ChangeNotifier {
     if (_selectedChannel == null || filteredChannels.isEmpty) {
       return false;
     }
-    final currentIndex =
-        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     return currentIndex > 0;
   }
 
@@ -315,8 +328,7 @@ class StreamAudioProvider extends ChangeNotifier {
     if (_selectedChannel == null || filteredChannels.isEmpty) {
       return false;
     }
-    final currentIndex =
-        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     return currentIndex >= 0 && currentIndex < filteredChannels.length - 1;
   }
 
@@ -324,8 +336,7 @@ class StreamAudioProvider extends ChangeNotifier {
     if (!canGoToPreviousChannel) {
       return;
     }
-    final currentIndex =
-        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     if (currentIndex > 0) {
       await selectChannel(filteredChannels[currentIndex - 1]);
     }
@@ -335,8 +346,7 @@ class StreamAudioProvider extends ChangeNotifier {
     if (!canGoToNextChannel) {
       return;
     }
-    final currentIndex =
-        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     if (currentIndex >= 0 && currentIndex < filteredChannels.length - 1) {
       await selectChannel(filteredChannels[currentIndex + 1]);
     }
