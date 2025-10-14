@@ -131,23 +131,40 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
     final screenWidth = screenSize.width;
     final screenHeight = screenSize.height;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final isLandscape = screenWidth > screenHeight;
 
     // Calculate boundaries
     final leftBoundaryRect = -screenWidth / 2 + widgetWidth / 2;
     final rightBoundaryRect = screenWidth / 2 - widgetWidth / 2;
     final bottomBoundary = screenHeight / 2 - widgetHeight / 2 - bottomPadding;
 
-    // Check if at bottom edge
-    final distanceFromBottom = (bottomBoundary - _position.dy).abs();
-    if (distanceFromBottom < 10) {
-      // Hit bottom edge - triggering onTap
-      widget.onChange(isHolding: false, mustRemove: false);
-      widget.onTap();
-      setState(() {
-        _position = Offset(_position.dx, bottomBoundary - 20);
-      });
-      HapticFeedback.mediumImpact();
-      return;
+    // Check orientation-specific trigger edge
+    if (isLandscape) {
+      // In landscape, check right edge
+      final distanceFromRight = (rightBoundaryRect - _position.dx).abs();
+      if (distanceFromRight < 10) {
+        // Hit right edge - triggering onTap
+        widget.onChange(isHolding: false, mustRemove: false);
+        widget.onTap();
+        setState(() {
+          _position = Offset(rightBoundaryRect - 20, _position.dy);
+        });
+        HapticFeedback.mediumImpact();
+        return;
+      }
+    } else {
+      // In portrait, check bottom edge
+      final distanceFromBottom = (bottomBoundary - _position.dy).abs();
+      if (distanceFromBottom < 10) {
+        // Hit bottom edge - triggering onTap
+        widget.onChange(isHolding: false, mustRemove: false);
+        widget.onTap();
+        setState(() {
+          _position = Offset(_position.dx, bottomBoundary - 20);
+        });
+        HapticFeedback.mediumImpact();
+        return;
+      }
     }
 
     // For expanded controls, check if near edges to collapse
@@ -298,10 +315,20 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                     }
                   }
 
-                  // Check for bottom edge hit during drag
-                  if ((bottomBoundary - constrainedY).abs() < 5 && constrainedY != newPosition.dy) {
-                    widget.onTap();
-                    HapticFeedback.mediumImpact();
+                  // Check for edge hit during drag (orientation-specific)
+                  final isLandscape = screenWidth > screenHeight;
+                  if (isLandscape) {
+                    // Check for right edge hit in landscape
+                    if ((rightBoundary - constrainedX).abs() < 5 && constrainedX != newPosition.dx) {
+                      widget.onTap();
+                      HapticFeedback.mediumImpact();
+                    }
+                  } else {
+                    // Check for bottom edge hit in portrait
+                    if ((bottomBoundary - constrainedY).abs() < 5 && constrainedY != newPosition.dy) {
+                      widget.onTap();
+                      HapticFeedback.mediumImpact();
+                    }
                   }
 
                   // For expanded controls, check if dragging to edges (similar to old code)
@@ -425,7 +452,7 @@ class _ContentState extends ConsumerState<Content> {
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
-    final selectedProgram = provider.selectedProgram;
+    final selectedChannel = provider.selectedChannel;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -435,10 +462,12 @@ class _ContentState extends ConsumerState<Content> {
             height: 32,
             width: 32,
             decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(selectedProgram?.programImage.keyName ?? ''),
-                fit: BoxFit.cover,
-              ),
+              color: Colors.grey.shade800,
+              //TODO: Uncomment when images are available
+              // image: DecorationImage(
+              //   image: AssetImage(selectedProgram?.programImage.keyName ?? ''),
+              //   fit: BoxFit.cover,
+              // ),
               borderRadius: BorderRadius.circular(8),
               border: Border.all(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
             ),
@@ -450,7 +479,7 @@ class _ContentState extends ConsumerState<Content> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  selectedProgram?.title ?? '-',
+                  selectedChannel?.currentPlayedProgram?.name ?? 'On Air',
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -459,7 +488,7 @@ class _ContentState extends ConsumerState<Content> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  selectedProgram?.sub ?? '-',
+                  selectedChannel?.name ?? '-',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 12,
@@ -474,6 +503,26 @@ class _ContentState extends ConsumerState<Content> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Backward button
+              Visibility(
+                visible: provider.canGoToPreviousChannel,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: GestureDetector(
+                  onTap: () async {
+                    await ref.read(streamAudioProvider).goToPreviousChannel();
+                  },
+                  child: SvgPicture.asset(
+                    Assets.icons.svg.audio.seekBackward.keyName,
+                    width: 16,
+                    height: 16,
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Play/Pause button
               GestureDetector(
                 onTap: () async {
                   final audioProvider = ref.read(streamAudioProvider);
@@ -492,15 +541,29 @@ class _ContentState extends ConsumerState<Content> {
                         provider.isPlaying
                             ? Assets.icons.svg.audio.pause.keyName
                             : Assets.icons.svg.audio.resume.keyName,
+                        width: 16,
+                        height: 16,
+                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                       ),
               ),
               const SizedBox(width: 12),
-              GestureDetector(
-                onTap: () async {
-                  final audioProvider = ref.read(streamAudioProvider);
-                  await audioProvider.seekForward();
-                },
-                child: SvgPicture.asset(Assets.icons.svg.audio.seekForward.keyName),
+              // Forward button
+              Visibility(
+                visible: provider.canGoToNextChannel,
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: GestureDetector(
+                  onTap: () async {
+                    await ref.read(streamAudioProvider).goToNextChannel();
+                  },
+                  child: SvgPicture.asset(
+                    Assets.icons.svg.audio.seekForward.keyName,
+                    width: 16,
+                    height: 16,
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  ),
+                ),
               ),
             ],
           ),

@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
-import 'package:mapness/features/stream_audio/ui/widgets/cached_audio_progress_bar.dart';
 
 class PlayingAudioTile extends ConsumerStatefulWidget {
-  const PlayingAudioTile({super.key});
+  final bool isLandscape;
+
+  const PlayingAudioTile({this.isLandscape = false, super.key});
 
   @override
   ConsumerState<PlayingAudioTile> createState() => _PlayingAudioTileState();
 }
 
-class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
-    with SingleTickerProviderStateMixin {
+class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -46,7 +46,11 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
 
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: Column(
+      child: widget.isLandscape ? _buildLandscapeLayout(provider) : _buildPortraitLayout(provider),
+    );
+  }
+
+  Widget _buildPortraitLayout(StreamAudioProvider provider) => Column(
         children: [
           // Simplified audio player row
           Container(
@@ -54,140 +58,206 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile>
             child: Row(
               children: [
                 // Album art with subtle animation
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: provider.selectedProgram?.programImage != null
-                        ? DecorationImage(
-                            image: AssetImage(
-                                provider.selectedProgram!.programImage.keyName),
-                            fit: BoxFit.cover,
-                          )
-                        : null,
-                    color: provider.selectedProgram?.programImage == null
-                        ? Colors.grey[300]
-                        : null,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                ),
-
+                _buildAlbumArt(provider, 48),
                 const SizedBox(width: 16),
-
                 // Title and subtitle
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        provider.selectedProgram?.title ?? 'No Title',
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          letterSpacing: -0.3,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        provider.selectedProgram?.sub ?? '',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.white.withValues(alpha: 0.5),
-                          letterSpacing: -0.2,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-
+                Expanded(child: _buildTitleSubtitle(provider, CrossAxisAlignment.start)),
                 // Play/Pause button with animation
                 const SizedBox(width: 12),
-                Row(
-                  spacing: 14,
-                  children: [
-                    GestureDetector(
-                      onTap: () async {
-                        await ref.read(streamAudioProvider).togglePlayPause();
-                      },
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        width: 44,
-                        height: 44,
-                        child: Center(
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            child: provider.isLoading
-                                ? SizedBox(
-                                    key: const ValueKey('loading'),
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        Colors.white.withValues(alpha: 0.8),
-                                      ),
-                                    ),
-                                  )
-                                : SvgPicture.asset(
-                                    key: ValueKey(provider.isPlaying),
-                                    provider.isPlaying
-                                        ? Assets.icons.svg.audio.pause.keyName
-                                        : Assets.icons.svg.audio.resume.keyName,
-                                    width: 20,
-                                    height: 20,
-                                    colorFilter: const ColorFilter.mode(
-                                      Colors.white,
-                                      BlendMode.srcIn,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        await ref.read(streamAudioProvider).seekForward();
-                      },
-                      child: SvgPicture.asset(
-                        Assets.icons.svg.audio.seekForward.keyName,
-                        key: ValueKey(provider.isPlaying),
-                        width: 18,
-                        height: 18,
-                        colorFilter: const ColorFilter.mode(
-                          Colors.white,
-                          BlendMode.srcIn,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+                _buildControls(provider, isVertical: false),
               ],
             ),
           ),
-
-          // Modern progress bar
-          if (provider.selectedProgram != null)
-            LiveRadioProgressBar(
-              onGoLive: () async {
-                await ref.read(streamAudioProvider).goLive();
-              },
-            ),
         ],
+      );
+
+  Widget _buildLandscapeLayout(StreamAudioProvider provider) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Album art (larger in landscape)
+            _buildAlbumArt(provider, 120),
+            const SizedBox(height: 20),
+            // Title and subtitle (center aligned)
+            _buildTitleSubtitle(provider, CrossAxisAlignment.center),
+            const SizedBox(height: 24),
+            // Play/Pause and Seek buttons (vertically stacked)
+            _buildControls(provider, isVertical: true),
+          ],
+        ),
+      );
+
+  Widget _buildAlbumArt(StreamAudioProvider provider, double size) {
+    //TODO: fix images when backend is ready (circledLogo)
+    // final channel = provider.selectedChannel;
+    // final url = channel?.circledLogo;
+    const url = 'https://assets.mbcmood.com/channels/1708604937logombc.png';
+
+    return AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          image: url.contains('svg') ? null : const DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
+          color: Colors.grey[300],
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+      child: !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+      );
+  }
+
+  Widget _buildTitleSubtitle(StreamAudioProvider provider, CrossAxisAlignment alignment) => Column(
+        crossAxisAlignment: alignment,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            provider.selectedChannel?.currentPlayedProgram?.name ?? 'On Air',
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              letterSpacing: -0.3,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: alignment == CrossAxisAlignment.center ? TextAlign.center : TextAlign.start,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            provider.selectedChannel?.name ?? '-',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.white.withValues(alpha: 0.5),
+              letterSpacing: -0.2,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: alignment == CrossAxisAlignment.center ? TextAlign.center : TextAlign.start,
+          ),
+        ],
+      );
+
+  Widget _buildControls(StreamAudioProvider provider, {required bool isVertical}) {
+    final backwardButton = Visibility(
+      visible: provider.canGoToPreviousChannel,
+      maintainSize: true,
+      maintainAnimation: true,
+      maintainState: true,
+      child: GestureDetector(
+        onTap: () async {
+          await ref.read(streamAudioProvider).goToPreviousChannel();
+        },
+        child: Container(
+          width: 44,
+          height: 44,
+          alignment: Alignment.center,
+          child: SvgPicture.asset(
+            Assets.icons.svg.audio.seekBackward.keyName,
+            width: 18,
+            height: 18,
+            colorFilter: const ColorFilter.mode(
+              Colors.white,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
       ),
     );
+
+    final playPauseButton = GestureDetector(
+      onTap: () async {
+        await ref.read(streamAudioProvider).togglePlayPause();
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 44,
+        height: 44,
+        child: Center(
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: provider.isLoading
+                ? SizedBox(
+                    key: const ValueKey('loading'),
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.white.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  )
+                : SvgPicture.asset(
+                    key: ValueKey(provider.isPlaying),
+                    provider.isPlaying ? Assets.icons.svg.audio.pause.keyName : Assets.icons.svg.audio.resume.keyName,
+                    width: 20,
+                    height: 20,
+                    colorFilter: const ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    );
+
+    final forwardButton = Visibility(
+      visible: provider.canGoToNextChannel,
+      maintainSize: true,
+      maintainAnimation: true,
+      maintainState: true,
+      child: GestureDetector(
+        onTap: () async {
+          await ref.read(streamAudioProvider).goToNextChannel();
+        },
+        child: Container(
+          width: 44,
+          height: 44,
+          alignment: Alignment.center,
+          child: SvgPicture.asset(
+            Assets.icons.svg.audio.seekForward.keyName,
+            width: 18,
+            height: 18,
+            colorFilter: const ColorFilter.mode(
+              Colors.white,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    if (isVertical) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          backwardButton,
+          const SizedBox(height: 8),
+          playPauseButton,
+          const SizedBox(height: 8),
+          forwardButton,
+        ],
+      );
+    } else {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          backwardButton,
+          const SizedBox(width: 8),
+          playPauseButton,
+          const SizedBox(width: 8),
+          forwardButton,
+        ],
+      );
+    }
   }
 }

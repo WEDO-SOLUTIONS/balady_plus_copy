@@ -16,6 +16,7 @@ class StreamAudio extends ConsumerStatefulWidget {
 }
 
 class _StreamAudioState extends ConsumerState<StreamAudio> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final DraggableScrollableController _sheetController = DraggableScrollableController();
 
   final double _minChildSize = 0.0;
@@ -29,10 +30,18 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   bool _hasTriggeredHeightThreshold = false;
   bool _isPanelFullyOpened = false;
 
+  /// Landscape mode properties
+  double _landscapeSheetWidth = 0.0; // 0 = closed, 1 = fully open (in percentage)
+  final double _landscapeMaxWidth = 0.4; // 30% of screen width
+
+  /// Track previous orientation to handle transitions
+  Orientation? _previousOrientation;
+  bool _isTransitioningOrientation = false;
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(streamAudioProvider).getLiveNow());
+    Future.microtask(() => ref.read(streamAudioProvider).getChannels());
   }
 
   @override
@@ -43,40 +52,163 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
   /// Toggles the panel between open and closed states
   void togglePanel() {
-    if (_sheetController.isAttached) {
-      final currentSize = _sheetController.size;
-      final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+
+    if (isLandscape) {
+      // Toggle landscape side sheet
+      final targetWidth = _landscapeSheetWidth > _landscapeMaxWidth / 2 ? 0.0 : _landscapeMaxWidth;
 
       /// Cancel any existing timer
       _autoCloseTimer?.cancel();
 
       /// If opening the panel, start the 8-second timer
-      if (targetSize == _maxChildSize) {
-        setState(() => _showRemovalZone = false);
+      if (targetWidth == _landscapeMaxWidth) {
+        if (mounted) {
+          setState(() => _showRemovalZone = false);
+        }
         _autoCloseTimer = Timer(const Duration(seconds: 80), () {
-          if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
-            _sheetController.animateTo(
-              _minChildSize,
-              duration: const Duration(milliseconds: 800),
-              curve: Curves.easeInOut,
-            );
+          if (mounted && _landscapeSheetWidth > 0) {
+            setState(() => _landscapeSheetWidth = 0.0);
           }
         });
       }
-      _sheetController.animateTo(
-        targetSize,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+
+      if (mounted) {
+        setState(() => _landscapeSheetWidth = targetWidth);
+      }
+    } else {
+      // Toggle portrait bottom sheet
+      if (_sheetController.isAttached) {
+        final currentSize = _sheetController.size;
+        final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
+
+        /// Cancel any existing timer
+        _autoCloseTimer?.cancel();
+
+        /// If opening the panel, start the 8-second timer
+        if (targetSize == _maxChildSize) {
+          if (mounted) {
+            setState(() => _showRemovalZone = false);
+          }
+          _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+            if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
+              _sheetController.animateTo(
+                _minChildSize,
+                duration: const Duration(milliseconds: 800),
+                curve: Curves.easeInOut,
+              );
+            }
+          });
+        }
+        _sheetController.animateTo(
+          targetSize,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
+
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.black,
-      body: AnimatedBuilder(
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          final isLandscape = orientation == Orientation.landscape;
+
+          // Handle orientation change after frame
+          if (_previousOrientation != null && _previousOrientation != orientation && !_isTransitioningOrientation) {
+            _isTransitioningOrientation = true;
+
+            WidgetsBinding.instance.addPostFrameCallback((_) async {
+              if (!mounted) {
+                _isTransitioningOrientation = false;
+                return;
+              }
+
+              try {
+                // Small delay to let the layout settle
+                await Future.delayed(const Duration(milliseconds: 50));
+                if (!mounted) {
+                  return;
+                }
+
+                if (isLandscape) {
+                  // Switching to landscape: if portrait sheet was open, open landscape sheet
+                  if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+                    if (mounted) {
+                      setState(() {
+                        _landscapeSheetWidth = _landscapeMaxWidth;
+                        _isTransitioningOrientation = false;
+                      });
+                    }
+                  } else {
+                    if (mounted) {
+                      setState(() => _isTransitioningOrientation = false);
+                    }
+                  }
+                } else {
+                  // Switching to portrait: if landscape sheet was open, open portrait sheet
+                  if (_landscapeSheetWidth > 0) {
+                    if (mounted) {
+                      setState(() {
+                        _landscapeSheetWidth = 0;
+                        _isTransitioningOrientation = false;
+                      });
+                    }
+
+                    // Wait a frame before animating the portrait sheet
+                    await Future.delayed(const Duration(milliseconds: 100));
+                    if (mounted && _sheetController.isAttached) {
+                      await _sheetController.animateTo(
+                        _maxChildSize,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOutCubic,
+                      );
+                    }
+                  } else {
+                    if (mounted) {
+                      setState(() => _isTransitioningOrientation = false);
+                    }
+                  }
+                }
+              } catch (e) {
+                // Silently handle any state transition errors during orientation change
+                debugPrint('StreamAudio orientation change error: $e');
+                if (mounted) {
+                  setState(() => _isTransitioningOrientation = false);
+                }
+              }
+            });
+          }
+
+          // Update orientation tracking after frame to avoid build-time mutation
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _previousOrientation = orientation;
+          });
+
+          // Show a simple black screen during rapid transitions to avoid layer disposal errors
+          if (_isTransitioningOrientation) {
+            return Container(
+              color: Colors.black,
+              child: Center(
+                child: widget.child,
+              ),
+            );
+          }
+
+          return isLandscape ? _buildLandscapeLayout(provider) : _buildPortraitLayout(provider);
+        },
+      ),
+    );
+  }
+
+  Widget _buildPortraitLayout(StreamAudioProvider provider) => AnimatedBuilder(
         animation: _sheetController,
         builder: (context, _) {
           final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
@@ -128,10 +260,10 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
           return Stack(
             children: [
               /// Passed [child] widget, can be anything it pushed from the bottom sheet when it's opened
-              _buildChild(mapOffset, currentSize),
+              _buildChild(mapOffset, currentSize, false),
 
               /// Player controls widget, it's only visible when the panel is fully opened and there is a program selected
-              _buildFloatingControls(provider, currentSize),
+              _buildFloatingControls(provider, currentSize, false),
 
               /// Details Radio Controls Sheet (can be dragged to close)
               _buildDetailsControlsSheet(provider),
@@ -141,11 +273,66 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             ],
           );
         },
-      ),
+      );
+
+  Widget _buildLandscapeLayout(StreamAudioProvider provider) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final sheetWidthPx = screenWidth * _landscapeSheetWidth;
+    final childOffset = -sheetWidthPx;
+
+    return Stack(
+      children: [
+        /// Passed [child] widget, pushed to left when sheet opens
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
+          transform: Matrix4.translationValues(childOffset, 0, 0),
+          child: widget.child,
+        ),
+
+        /// Player controls widget
+        if (_landscapeSheetWidth == 0 && provider.selectedChannel != null)
+          Center(
+            child: DraggableFloatingPlayerControls(
+              onTap: togglePanel,
+              onChange: ({required isHolding, required mustRemove}) {
+                if (mounted) {
+                  setState(() => _showRemovalZone = isHolding);
+                  if (mustRemove) {
+                    ref.read(streamAudioProvider.notifier).exitPlayer();
+                    setState(() => _showRemovalZone = false);
+                  }
+                }
+              },
+            ),
+          ),
+
+        /// Side sheet from right
+        AnimatedPositioned(
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeOutCubic,
+          right: _landscapeSheetWidth == 0 ? -screenWidth * _landscapeMaxWidth : 0,
+          top: 0,
+          bottom: 0,
+          width: screenWidth * _landscapeMaxWidth,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.black,
+              border: Border(left: BorderSide(color: Colors.white24, width: 1)),
+            ),
+            child: Expanded(
+              child: _buildLandscapeSheetContent(provider),
+            ),
+          ),
+        ),
+
+        /// Removal zone widget
+        _buildRemovalZone(),
+      ],
     );
   }
 
-  Widget _buildChild(double mapOffset, double currentSize) => Transform.translate(
+  Widget _buildChild(double mapOffset, double currentSize, bool isLandscape) => Transform.translate(
         offset: Offset(0, mapOffset),
         child: Container(
           clipBehavior: Clip.antiAlias,
@@ -158,24 +345,57 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
         ),
       );
 
-  Widget _buildFloatingControls(StreamAudioProvider provider, double currentSize) {
-    if (currentSize != _minChildSize || provider.selectedProgram == null) {
+  Widget _buildFloatingControls(StreamAudioProvider provider, double currentSize, bool isLandscape) {
+    if (currentSize != _minChildSize || provider.selectedChannel == null) {
       return const SizedBox.shrink();
     }
     return Center(
       child: DraggableFloatingPlayerControls(
         onTap: togglePanel,
         onChange: ({required isHolding, required mustRemove}) {
-          setState(() => _showRemovalZone = isHolding);
-          if (mustRemove) {
-            // Only exit the player, don't reset immediately
-            ref.read(streamAudioProvider.notifier).exitPlayer();
-            setState(() => _showRemovalZone = false);
+          if (mounted) {
+            setState(() => _showRemovalZone = isHolding);
+            if (mustRemove) {
+              // Only exit the player, don't reset immediately
+              ref.read(streamAudioProvider.notifier).exitPlayer();
+              setState(() => _showRemovalZone = false);
+            }
           }
         },
       ),
     );
   }
+
+  Widget _buildLandscapeSheetContent(StreamAudioProvider provider) => SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Left side: PlayingAudioTile (vertical layout)
+            const Expanded(
+              flex: 2,
+              child: PlayingAudioTile(isLandscape: true),
+            ),
+            const SizedBox(width: 16),
+            // Right side: MediaCatalogList (vertical layout)
+            SizedBox(
+              width: 160,
+              child: MediaCatalogList(
+                isLandscape: true,
+                needReset: () {
+                  //reset the timer
+                  _autoCloseTimer?.cancel();
+                  _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+                    if (mounted && _landscapeSheetWidth > 0) {
+                      setState(() => _landscapeSheetWidth = 0.0);
+                    }
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget _buildDetailsControlsSheet(StreamAudioProvider provider) => DraggableScrollableSheet(
         controller: _sheetController,
@@ -234,7 +454,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                     //reset the timer
                     _autoCloseTimer?.cancel();
                     _autoCloseTimer = Timer(const Duration(seconds: 80), () {
-                      if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+                      if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
                         _sheetController.animateTo(
                           _minChildSize,
                           duration: const Duration(milliseconds: 800),

@@ -2,13 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/data/datasource/channels_data_source.dart';
-import 'package:mapness/features/stream_audio/data/dto/LiveNowDto.dart';
+import 'package:mapness/features/stream_audio/data/dto/channel_dto.dart';
+import 'package:mapness/features/stream_audio/data/dto/filtered_channel.dart';
 import 'package:mapness/features/stream_audio/services/audio_service.dart';
 
 class StreamAudioProvider extends ChangeNotifier {
   final AudioService _audioService = AudioService();
-  ProgramDto? _selectedProgram;
-  LiveNowDto? _liveNow;
+  FilteredChannel? _selectedChannel;
+  List<ChannelDTO> _channels = [];
+  List<FilteredChannel> filteredChannels = [];
   bool _isExited = false;
   bool _isInitialized = false;
   bool _isContextualMessageVisible = false;
@@ -39,7 +41,9 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   bool get isContextualMessageVisible => _isContextualMessageVisible;
+
   String? get contextualMessageTitle => _contextualMessageTitle;
+
   String? get contextualMessageSubtitle => _contextualMessageSubtitle;
 
   void showContextualMessage() {
@@ -85,19 +89,18 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   // Program management
-  ProgramDto? get selectedProgram => _selectedProgram;
+  FilteredChannel? get selectedChannel => _selectedChannel;
 
-  LiveNowDto? get liveNow => _liveNow;
+  // LiveNowDto? get liveNow => _liveNow;
 
-  set liveNow(LiveNowDto? value) {
-    _liveNow = value;
-    notifyListeners();
-  }
+  // set liveNow(LiveNowDto? value) {
+  //   _liveNow = value;
+  //   notifyListeners();
+  // }
 
   // State getters from audio service
   bool get isPlaying => _audioService.isPlaying;
 
-  // Show loading when: no program selected OR audio service is loading but not yet playing
   bool get isLoading => _audioService.isLoading;
 
   bool get hasError => _audioService.hasError;
@@ -106,59 +109,39 @@ class StreamAudioProvider extends ChangeNotifier {
 
   bool get isExited => _isExited;
 
-  bool get needsReinitialization => _isExited || _selectedProgram == null;
+  bool get needsReinitialization => _isExited || selectedChannel == null;
 
   bool get isInitialized => _isInitialized;
 
-  // Time and progress getters
-  Duration get currentPosition => _audioService.currentPosition;
-
-  Duration get totalCachedTime => _audioService.totalCachedTime;
-
-  Duration get timeBehindLive => _audioService.timeBehindLive;
-
-  // Fix progress calculation
-  double get progress {
-    final totalCached = _audioService.totalCachedTime.inMilliseconds;
-    final currentPos = _audioService.currentPosition.inMilliseconds;
-    if (totalCached <= 0) {
-      return 0.0;
-    }
-    return (currentPos / totalCached).clamp(0.0, 1.0);
-  }
-
-  // Fix live detection - we're live if time behind is very small
-  bool get isLive {
-    final behindTime = _audioService.timeBehindLive.inSeconds;
-    return behindTime <= 2; // Consider live if within 2 seconds
-  }
-
-  // Formatted time strings
-  String get formattedCurrentPosition => _audioService.formattedCurrentPosition;
-
-  String get formattedLivePosition => _audioService.formattedLivePosition;
-
-  String get formattedTimeBehind => _audioService.formattedTimeBehind;
-
   // Load channels data
-  Future<void> getLiveNow() async {
-    if (_liveNow == null) {
+  Future<void> getChannels() async {
+    if (_channels.isEmpty) {
       try {
-        _liveNow = await ChannelsDataSource().getLiveNow();
+        _channels = await ChannelsDataSource().getChannels();
+        filterChannels();
         notifyListeners();
+        debugPrint('StreamAudioProvider: Loaded ${_channels.length} channels');
       } catch (e) {
         debugPrint('StreamAudioProvider: Failed to load channels: $e');
       }
     }
   }
 
+  void filterChannels() {
+    for (final ChannelDTO channel in _channels) {
+      if (channel.audioUrl != null && channel.audioUrl!.isNotEmpty) {
+        filteredChannels.add(FilteredChannel.fromDTO(channel));
+      }
+    }
+  }
+
   // Program selection and playback
-  Future<void> selectProgram(ProgramDto? program) async {
-    if (program == null || program.streamUrl.isEmpty) {
+  Future<void> selectChannel(FilteredChannel? channel) async {
+    if (channel == null || channel.audioUrl == null || channel.audioUrl?.isEmpty == true) {
       return;
     }
 
-    debugPrint('StreamAudioProvider: Selecting program: ${program.title}');
+    debugPrint('StreamAudioProvider: Selecting program: ${channel.name}');
 
     // If we were previously exited, reinitialize the audio service
     if (_isExited) {
@@ -166,17 +149,17 @@ class StreamAudioProvider extends ChangeNotifier {
       await _reinitializeAudioService();
     }
 
-    _selectedProgram = program;
+    _selectedChannel = channel;
     _isExited = false;
 
     try {
       await _audioService.playStream(
-        url: program.streamUrl,
-        channelId: program.title,
-        title: program.title,
-        artist: program.sub,
+        url: channel.audioUrl!,
+        channelId: channel.id.toString(),
+        title: channel.name,
+        programName: channel.currentPlayedProgram?.name ?? 'on Air',
       );
-      debugPrint('StreamAudioProvider: Successfully started playing ${program.title}');
+      debugPrint('StreamAudioProvider: Successfully started playing ${channel.name}');
     } catch (e) {
       debugPrint('StreamAudioProvider: Error playing stream: $e');
     }
@@ -203,11 +186,11 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Playback controls
   Future<void> playStream() async {
-    if (_selectedProgram == null || _selectedProgram!.streamUrl.isEmpty) {
+    if (_selectedChannel == null || _selectedChannel?.audioUrl == null || _selectedChannel?.audioUrl?.isEmpty == true) {
       return;
     }
 
-    debugPrint('StreamAudioProvider: Playing stream for ${_selectedProgram!.title}');
+    debugPrint('StreamAudioProvider: Playing stream for ${_selectedChannel?.name}');
 
     // If we were previously exited, reinitialize
     if (_isExited) {
@@ -218,10 +201,10 @@ class StreamAudioProvider extends ChangeNotifier {
 
     try {
       await _audioService.playStream(
-        url: _selectedProgram!.streamUrl,
-        channelId: _selectedProgram!.title,
-        title: _selectedProgram!.title,
-        artist: _selectedProgram!.sub,
+        url: _selectedChannel!.audioUrl!,
+        channelId: _selectedChannel!.id!.toString(),
+        title: _selectedChannel!.name,
+        programName: _selectedChannel!.currentPlayedProgram?.name ?? 'on Air',
       );
       debugPrint('StreamAudioProvider: Stream playing successfully');
     } catch (e) {
@@ -245,25 +228,41 @@ class StreamAudioProvider extends ChangeNotifier {
     await _audioService.togglePlayPause();
   }
 
-  // Seeking controls
-  Future<void> seekToProgress(double progress) async {
-    await _audioService.seekToProgress(progress);
+  // Channel navigation
+  bool get canGoToPreviousChannel {
+    if (_selectedChannel == null || filteredChannels.isEmpty) {
+      return false;
+    }
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    return currentIndex > 0;
   }
 
-  Future<void> seekToPosition(Duration position) async {
-    await _audioService.seekToPosition(position);
+  bool get canGoToNextChannel {
+    if (_selectedChannel == null || filteredChannels.isEmpty) {
+      return false;
+    }
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    return currentIndex >= 0 && currentIndex < filteredChannels.length - 1;
   }
 
-  Future<void> goLive() async {
-    await _audioService.goLive();
+  Future<void> goToPreviousChannel() async {
+    if (!canGoToPreviousChannel) {
+      return;
+    }
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    if (currentIndex > 0) {
+      await selectChannel(filteredChannels[currentIndex - 1]);
+    }
   }
 
-  Future<void> seekForward([Duration duration = const Duration(seconds: 30)]) async {
-    await _audioService.seekForward(duration);
-  }
-
-  Future<void> seekBackward([Duration duration = const Duration(seconds: 30)]) async {
-    await _audioService.seekBackward(duration);
+  Future<void> goToNextChannel() async {
+    if (!canGoToNextChannel) {
+      return;
+    }
+    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    if (currentIndex >= 0 && currentIndex < filteredChannels.length - 1) {
+      await selectChannel(filteredChannels[currentIndex + 1]);
+    }
   }
 
   // Exit and cleanup
@@ -276,12 +275,9 @@ class StreamAudioProvider extends ChangeNotifier {
     // Stop the audio service (don't dispose here, let reinitialize handle it)
     await _audioService.stop();
 
-    // Release MediaSession to hide notification
-    await _audioService.releaseMediaSession();
-
     // Mark as exited and clear selected program
     _isExited = true;
-    _selectedProgram = null;
+    _selectedChannel = null;
     _isInitialized = false;
 
     debugPrint('StreamAudioProvider: Player exited successfully');
@@ -301,22 +297,22 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   // Program reordering (for UI)
-  void reorderPrograms(int oldIndex, int passedNewIndex) {
-    final ln = liveNow;
-    if (ln == null) {
-      return;
-    }
-
-    final list = [...ln.programs];
-    int newIndex = passedNewIndex;
-    if (passedNewIndex > oldIndex) {
-      newIndex = passedNewIndex - 1;
-    }
-    final item = list.removeAt(oldIndex);
-    list.insert(newIndex, item);
-
-    liveNow = ln.copyWith(programs: list);
-  }
+  // void reorderPrograms(int oldIndex, int passedNewIndex) {
+  //   final ln = liveNow;
+  //   if (ln == null) {
+  //     return;
+  //   }
+  //
+  //   final list = [...ln.programs];
+  //   int newIndex = passedNewIndex;
+  //   if (passedNewIndex > oldIndex) {
+  //     newIndex = passedNewIndex - 1;
+  //   }
+  //   final item = list.removeAt(oldIndex);
+  //   list.insert(newIndex, item);
+  //
+  //   liveNow = ln.copyWith(programs: list);
+  // }
 
   @override
   void dispose() {

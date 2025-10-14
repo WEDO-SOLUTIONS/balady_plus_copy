@@ -21,9 +21,9 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
     }
 
     // Ensure we have live programs data first
-    await provider.getLiveNow();
-    if (provider.liveNow?.programs.isNotEmpty == true) {
-      await provider.selectProgram(provider.liveNow!.programs.first);
+    await provider.getChannels();
+    if (provider.filteredChannels.isNotEmpty == true) {
+      await provider.selectChannel(provider.filteredChannels.first);
     }
   }
 
@@ -32,7 +32,7 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
     final provider = ref.watch(streamAudioProvider);
     final providerNotifier = ref.read(streamAudioProvider.notifier);
 
-    if (provider.selectedProgram != null) {
+    if (provider.selectedChannel != null) {
       return const SizedBox.shrink();
     }
     return Row(
