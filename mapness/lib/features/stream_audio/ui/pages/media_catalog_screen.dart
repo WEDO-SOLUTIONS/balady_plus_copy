@@ -1,5 +1,6 @@
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/media_catalog_item.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 
 @RoutePage()
@@ -22,7 +24,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
   @override
   void initState() {
     super.initState();
-    // Future.microtask(() => ref.read(streamAudioProvider).getChannels());
+    Future.microtask(() => ref.read(streamAudioProvider).getChannels());
   }
 
   @override
@@ -56,7 +58,8 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                 ),
               ),
               Builder(builder: (_) {
-                final channels = ref.watch(streamAudioProvider).filteredChannels;
+                final channels =
+                    ref.watch(streamAudioProvider).filteredChannels;
                 if (channels.isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.all(16.0),
@@ -70,12 +73,9 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                     shrinkWrap: true,
                     // onReorder: ref.watch(streamAudioProvider).reorderPrograms,
                     onReorder: (oldIndex, newIndex) {
-                      // if (newIndex > oldIndex) {
-                      //   newIndex -= 1;
-                      // }
-                      // final item = channels.removeAt(oldIndex);
-                      // channels.insert(newIndex, item);
-                      // setState(() {});
+                      ref
+                          .read(streamAudioProvider)
+                          .reorderChannels(oldIndex, newIndex);
                     },
                     itemCount: channels.length,
                     proxyDecorator: (child, index, animation) => Material(
@@ -86,15 +86,29 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                     ),
                     itemBuilder: (_, index) {
                       final channel = channels[index];
-                      final bool isSelected = ref.watch(streamAudioProvider).selectedChannel?.id == channel.id;
-                      final imagesWidth = MediaQuery.of(context).size.width * 0.25;
+                      final bool isSelected =
+                          ref.watch(streamAudioProvider).selectedChannel?.id ==
+                              channel.id;
+                      final programLogo = channel.currentPlayedProgram?.image;
+                      final bool hasProgramLogo =
+                          programLogo != null && programLogo.isNotEmpty;
+
+                      //TODO: fix images when backend is ready (circledLogo)
+                      final url = hasProgramLogo
+                          ? 'https://assets.mbcmood.com/programs_thumbnails/1745311050%D8%AD%D9%84%D9%88%20%D8%A7%D9%84%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D8%AE%D9%8A%D8%B1%20.jpg'
+                          : 'https://assets.mbcmood.com/channels/1708604937logombc.png';
+                      final hasProgram = channel.currentPlayedProgram != null;
+                      final imagesWidth =
+                          MediaQuery.of(context).size.width * 0.25;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4.0, horizontal: 16),
                         key: ValueKey(channel.id),
                         child: Material(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                            borderRadius:
+                                BorderRadius.circular(RadiusBorder.xl),
                           ),
                           shadowColor: const Color(0x19000000),
                           child: ListTile(
@@ -102,16 +116,22 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             // onTap: () => ref.read(streamAudioProvider).selectProgram(p),
                             onTap: () {
                               if (!isSelected) {
-                                ref.read(streamAudioProvider).selectChannel(channel);
+                                ref
+                                    .read(streamAudioProvider)
+                                    .selectChannel(channel);
                               }
                             },
                             shape: RoundedRectangleBorder(
                               side: isSelected
-                                  ? BorderSide(color: const Color(0xff9547E9).withValues(alpha: 0.4))
+                                  ? BorderSide(
+                                      color: const Color(0xff9547E9)
+                                          .withValues(alpha: 0.4))
                                   : BorderSide.none,
-                              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                              borderRadius:
+                                  BorderRadius.circular(RadiusBorder.xl),
                             ),
-                            contentPadding: const EdgeInsets.only(left: 8, right: 16),
+                            contentPadding:
+                                const EdgeInsets.only(left: 8, right: 16),
                             tileColor: Colors.white,
                             minLeadingWidth: imagesWidth,
                             leading: SizedBox(
@@ -123,69 +143,82 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                                     top: 0,
                                     bottom: 0,
                                     width: imagesWidth / 2,
-                                    child: Container(
-                                      width: 56,
-                                      height: 56,
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white,
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            channel.logo!,
-                                            headers: {
-                                              'verifyingKEY': CommonFunctions.hashRequest(channel.logo!, 'GET'),
-                                            },
-                                          ),
-                                          fit: BoxFit.fill,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                            color: Colors.black.withValues(alpha: 0.10),
-                                          ),
-                                          borderRadius: BorderRadius.circular(48),
-                                        ),
-                                        shadows: const [
-                                          BoxShadow(
-                                            color: Color(0x19000000),
-                                            blurRadius: 12,
-                                            offset: Offset(0, 8),
-                                          )
-                                        ],
-                                      ),
-                                    ),
+                                    child: const CircleImage(
+                                        url:
+                                            'https://assets.mbcmood.com/channels/1708604937logombc.png'),
                                   ),
                                   Positioned(
-                                    bottom: 6,
-                                    right: 12,
-                                    top: 6,
-                                    width: imagesWidth / 2.3,
-                                    child: Container(
-                                      height: 32,
-                                      width: 32,
-                                      decoration: BoxDecoration(
-                                        // image: DecorationImage(
-                                        //   image: AssetImage(p.programImage.keyName),
-                                        //   fit: BoxFit.cover,
-                                        // ),
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: Colors.black.withValues(alpha: 0.10), width: 2),
-                                      ),
-                                    ),
-                                  ),
+                                      bottom: 6,
+                                      right: 12,
+                                      top: 6,
+                                      width: imagesWidth / 2.3,
+                                      child: Stack(
+                                        children: [
+                                          ProgramImage(url: url),
+                                          if (!hasProgram)
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              child: BackdropFilter(
+                                                filter: ImageFilter.blur(
+                                                    sigmaX: 2, sigmaY: 2),
+                                                child: Container(
+                                                  width: 96,
+                                                  height: 96,
+                                                  decoration: BoxDecoration(
+                                                    gradient: LinearGradient(
+                                                      begin: const Alignment(
+                                                          0.50, -0.00),
+                                                      end: const Alignment(
+                                                          0.50, 1.00),
+                                                      stops: const [0.00, 1.00],
+                                                      colors: [
+                                                        Colors.black.withValues(
+                                                            alpha: 0.10),
+                                                        Colors.black.withValues(
+                                                            alpha: 0)
+                                                      ],
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    border: Border.all(
+                                                      color: Colors.black
+                                                          .withValues(
+                                                              alpha: 0.10),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      )),
                                 ],
                               ),
                             ),
                             title: Text(channel.name ?? 'name',
-                                style: TextStyle(color: isSelected ? const Color(0xff9547E9) : null)),
+                                style: TextStyle(
+                                    color: isSelected
+                                        ? const Color(0xff9547E9)
+                                        : null)),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(channel.currentPlayedProgram?.name ?? 'On Air',
+                                Text(
+                                    channel.currentPlayedProgram?.name ??
+                                        'On Air',
                                     style: TextStyle(
-                                        color: isSelected ? const Color(0xff9547E9).withValues(alpha: 0.7) : null)),
+                                        color: isSelected
+                                            ? const Color(0xff9547E9)
+                                                .withValues(alpha: 0.7)
+                                            : null)),
                                 if (channel.currentPlayedProgram?.date != null)
                                   Text(channel.currentPlayedProgram!.date!,
                                       style: TextStyle(
-                                          color: isSelected ? const Color(0xff9547E9).withValues(alpha: 0.7) : null)),
+                                          color: isSelected
+                                              ? const Color(0xff9547E9)
+                                                  .withValues(alpha: 0.7)
+                                              : null)),
                               ],
                             ),
                             trailing: SizedBox(
@@ -195,7 +228,8 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                                 children: [
                                   if (isSelected) ...[
                                     Assets.icons.svg.audio.waves.svg(
-                                      colorFilter: const ColorFilter.mode(Color(0xff9547E9), BlendMode.srcIn),
+                                      colorFilter: const ColorFilter.mode(
+                                          Color(0xff9547E9), BlendMode.srcIn),
                                     ),
                                     const SizedBox(width: 12),
                                   ],
@@ -210,6 +244,9 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                   ),
                 );
               }),
+              const SizedBox(
+                height: 24,
+              ),
               const DashboardTitle('Arriving soon'),
               const ArrivingSoon()
             ],
@@ -230,15 +267,18 @@ class ArrivingSoon extends StatelessWidget {
       ),
       ArrivingSoonModel(
         title: 'MBC Video & News',
-        image: Assets.images.audioPlaceholders.arrivingSoon.mbcVideoNews.keyName,
+        image:
+            Assets.images.audioPlaceholders.arrivingSoon.mbcVideoNews.keyName,
       ),
       ArrivingSoonModel(
         title: 'Original Balady Content',
-        image: Assets.images.audioPlaceholders.arrivingSoon.baladyContent.keyName,
+        image:
+            Assets.images.audioPlaceholders.arrivingSoon.baladyContent.keyName,
       ),
       ArrivingSoonModel(
         title: 'Balady in Apple CarPlay',
-        image: Assets.images.audioPlaceholders.arrivingSoon.appleCarPlay.keyName,
+        image:
+            Assets.images.audioPlaceholders.arrivingSoon.appleCarPlay.keyName,
       ),
       ArrivingSoonModel(
         title: 'Speed alerts',

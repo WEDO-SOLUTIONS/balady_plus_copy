@@ -34,6 +34,9 @@ class MediaCatalogItem extends StatelessWidget {
                 Stack(
                   children: [
                     buildProgramImage(),
+
+                    /// Channel selected and has current program
+                    /// -> normal gradient
                     if (isSelected && hasProgram)
                       Container(
                         width: 96,
@@ -42,14 +45,21 @@ class MediaCatalogItem extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: const Alignment(0.50, -0.00),
                             end: const Alignment(0.50, 1.00),
-                            colors: [Colors.black.withValues(alpha: 0.60), Colors.black.withValues(alpha: 0.90)],
+                            colors: [
+                              Colors.black.withValues(alpha: 0.60),
+                              Colors.black.withValues(alpha: 0.90)
+                            ],
                           ),
                           shape: RoundedRectangleBorder(
-                            side: BorderSide(color: Colors.white.withValues(alpha: 0.10)),
+                            side: BorderSide(
+                                color: Colors.white.withValues(alpha: 0.10)),
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                       ),
+
+                    /// channel hasn't program
+                    /// -> blur effect with gradient
                     if (!hasProgram)
                       ClipRRect(
                         borderRadius: BorderRadius.circular(8),
@@ -65,7 +75,8 @@ class MediaCatalogItem extends StatelessWidget {
                                 stops: const [0.00, 1.00],
                                 colors: [
                                   Colors.black.withValues(alpha: 0.6),
-                                  Colors.black.withValues(alpha: isSelected ? 0.9 : 0.2)
+                                  Colors.black
+                                      .withValues(alpha: isSelected ? 0.9 : 0.2)
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(8),
@@ -74,6 +85,8 @@ class MediaCatalogItem extends StatelessWidget {
                           ),
                         ),
                       ),
+
+                    /// Wave Icon above selected channel with or without program
                     if (isSelected)
                       Positioned(
                         top: 0,
@@ -85,7 +98,8 @@ class MediaCatalogItem extends StatelessWidget {
                             Assets.icons.svg.audio.waves.keyName,
                             width: 32,
                             height: 32,
-                            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            colorFilter: const ColorFilter.mode(
+                                Colors.white, BlendMode.srcIn),
                           ),
                         ),
                       )
@@ -97,12 +111,16 @@ class MediaCatalogItem extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       subTitle,
-                      style: const TextStyle(fontSize: 12, color: Colors.white60),
+                      style:
+                          const TextStyle(fontSize: 12, color: Colors.white60),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
@@ -115,7 +133,9 @@ class MediaCatalogItem extends StatelessWidget {
             right: 0,
             //TODO: fix images when backend is ready (circledLogo)
             // child: buildCircleImage(channel.circledLogo ?? channel.logo ?? ''),
-            child: buildCircleImage('https://assets.mbcmood.com/channels/1708604937logombc.png'),
+            child: CircleImage(
+                url:
+                    'https://assets.mbcmood.com/channels/1708604937logombc.png'),
           ),
         ],
       ),
@@ -133,34 +153,73 @@ class MediaCatalogItem extends StatelessWidget {
 
     // final url = hasProgramLogo ? programLogo : (channel.logo ?? 'https://www.mbcmood.com/images/Logo.png');
 
-    return Container(
-      width: 96,
-      height: 96,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white10),
-        color: Colors.white,
-        image: url.contains('svg') ? null : DecorationImage(image: NetworkImage(url), fit: BoxFit.fitWidth),
-      ),
-      child: !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
-    );
+    return ProgramImage(url: url);
   }
+}
 
-  Widget buildCircleImage(String url) => Container(
+class CircleImage extends StatelessWidget {
+  const CircleImage({
+    required this.url,
+    super.key,
+  });
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) => Container(
         height: 45,
         width: 45,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.full),
-          border: Border.all(color: Colors.white10),
+          border: Border.all(
+            color: Colors.black.withValues(alpha: 0.10),
+          ),
           color: Colors.white,
-          image: url.contains('svg') ? null : DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
+          image: url.contains('svg')
+              ? null
+              : DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
           boxShadow: const [
-            BoxShadow(color: Colors.black26, blurRadius: 12, offset: Offset(0, 10)),
-            BoxShadow(color: Colors.black26, blurRadius: 36, offset: Offset(0, 12))
+            BoxShadow(
+                color: Colors.black26, blurRadius: 12, offset: Offset(0, 10)),
+            BoxShadow(
+                color: Colors.black26, blurRadius: 36, offset: Offset(0, 12))
           ],
         ),
-        child:
-            !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+        child: !url.contains('svg')
+            ? null
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.network(url)),
+      );
+}
+
+class ProgramImage extends StatelessWidget {
+  const ProgramImage({
+    required this.url,
+    super.key,
+  });
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: 96,
+        height: 96,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: Colors.black.withValues(alpha: 0.10),
+          ),
+          color: Colors.white,
+          image: url.contains('svg')
+              ? null
+              : DecorationImage(image: NetworkImage(url), fit: BoxFit.fitWidth),
+        ),
+        child: !url.contains('svg')
+            ? null
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.network(url)),
       );
 }

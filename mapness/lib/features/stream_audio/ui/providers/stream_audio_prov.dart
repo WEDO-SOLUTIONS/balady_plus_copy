@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/data/datasource/channels_data_source.dart';
@@ -119,6 +120,7 @@ class StreamAudioProvider extends ChangeNotifier {
       try {
         _channels = await ChannelsDataSource().getChannels();
         filterChannels();
+        await _applySavedChannelOrder();
         notifyListeners();
         debugPrint('StreamAudioProvider: Loaded ${_channels.length} channels');
       } catch (e) {
@@ -128,6 +130,7 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   void filterChannels() {
+    filteredChannels.clear();
     for (final ChannelDTO channel in _channels) {
       if (channel.audioUrl != null && channel.audioUrl!.isNotEmpty) {
         filteredChannels.add(FilteredChannel.fromDTO(channel));
@@ -135,9 +138,75 @@ class StreamAudioProvider extends ChangeNotifier {
     }
   }
 
+  // Apply saved channel order from SharedPreferences
+  Future<void> _applySavedChannelOrder() async {
+    try {
+      await sharedPrefs.init();
+      final savedOrder = sharedPrefs.getChannelOrder();
+      if (savedOrder != null && savedOrder.isNotEmpty) {
+        // Sort filteredChannels based on saved order
+        filteredChannels.sort((a, b) {
+          final orderA = savedOrder[a.id.toString()] ?? 999;
+          final orderB = savedOrder[b.id.toString()] ?? 999;
+          return orderA.compareTo(orderB);
+        });
+        debugPrint('StreamAudioProvider: Applied saved channel order');
+      }
+    } catch (e) {
+      debugPrint('StreamAudioProvider: Error applying saved channel order: $e');
+    }
+  }
+
+  // Reorder channels and save to SharedPreferences
+  Future<void> reorderChannels(int oldIndex, int newIndex) async {
+    if (oldIndex < 0 ||
+        newIndex < 0 ||
+        oldIndex >= filteredChannels.length ||
+        newIndex >= filteredChannels.length) {
+      return;
+    }
+
+    // Adjust newIndex for ReorderableListView behavior
+    int adjustedNewIndex = newIndex;
+    if (newIndex > oldIndex) {
+      adjustedNewIndex = newIndex - 1;
+    }
+
+    // Reorder the channels list
+    final item = filteredChannels.removeAt(oldIndex);
+    filteredChannels.insert(adjustedNewIndex, item);
+
+    // Save the new order to SharedPreferences
+    await _saveChannelOrder();
+
+    notifyListeners();
+    debugPrint(
+        'StreamAudioProvider: Reordered channels from index $oldIndex to $adjustedNewIndex');
+  }
+
+  // Save current channel order to SharedPreferences
+  Future<void> _saveChannelOrder() async {
+    try {
+      await sharedPrefs.init();
+      final Map<String, int> channelOrder = {};
+
+      for (int i = 0; i < filteredChannels.length; i++) {
+        channelOrder[filteredChannels[i].id.toString()] = i;
+      }
+
+      await sharedPrefs.saveChannelOrder(channelOrder);
+      debugPrint(
+          'StreamAudioProvider: Saved channel order to SharedPreferences');
+    } catch (e) {
+      debugPrint('StreamAudioProvider: Error saving channel order: $e');
+    }
+  }
+
   // Program selection and playback
   Future<void> selectChannel(FilteredChannel? channel) async {
-    if (channel == null || channel.audioUrl == null || channel.audioUrl?.isEmpty == true) {
+    if (channel == null ||
+        channel.audioUrl == null ||
+        channel.audioUrl?.isEmpty == true) {
       return;
     }
 
@@ -159,7 +228,8 @@ class StreamAudioProvider extends ChangeNotifier {
         title: channel.name,
         programName: channel.currentPlayedProgram?.name ?? 'on Air',
       );
-      debugPrint('StreamAudioProvider: Successfully started playing ${channel.name}');
+      debugPrint(
+          'StreamAudioProvider: Successfully started playing ${channel.name}');
     } catch (e) {
       debugPrint('StreamAudioProvider: Error playing stream: $e');
     }
@@ -186,11 +256,14 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Playback controls
   Future<void> playStream() async {
-    if (_selectedChannel == null || _selectedChannel?.audioUrl == null || _selectedChannel?.audioUrl?.isEmpty == true) {
+    if (_selectedChannel == null ||
+        _selectedChannel?.audioUrl == null ||
+        _selectedChannel?.audioUrl?.isEmpty == true) {
       return;
     }
 
-    debugPrint('StreamAudioProvider: Playing stream for ${_selectedChannel?.name}');
+    debugPrint(
+        'StreamAudioProvider: Playing stream for ${_selectedChannel?.name}');
 
     // If we were previously exited, reinitialize
     if (_isExited) {
@@ -233,7 +306,8 @@ class StreamAudioProvider extends ChangeNotifier {
     if (_selectedChannel == null || filteredChannels.isEmpty) {
       return false;
     }
-    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex =
+        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     return currentIndex > 0;
   }
 
@@ -241,7 +315,8 @@ class StreamAudioProvider extends ChangeNotifier {
     if (_selectedChannel == null || filteredChannels.isEmpty) {
       return false;
     }
-    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex =
+        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     return currentIndex >= 0 && currentIndex < filteredChannels.length - 1;
   }
 
@@ -249,7 +324,8 @@ class StreamAudioProvider extends ChangeNotifier {
     if (!canGoToPreviousChannel) {
       return;
     }
-    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex =
+        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     if (currentIndex > 0) {
       await selectChannel(filteredChannels[currentIndex - 1]);
     }
@@ -259,7 +335,8 @@ class StreamAudioProvider extends ChangeNotifier {
     if (!canGoToNextChannel) {
       return;
     }
-    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    final currentIndex =
+        filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
     if (currentIndex >= 0 && currentIndex < filteredChannels.length - 1) {
       await selectChannel(filteredChannels[currentIndex + 1]);
     }
