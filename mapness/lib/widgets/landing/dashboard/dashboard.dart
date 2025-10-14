@@ -184,7 +184,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   ),
                   const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
-                    text: 'Stream Audio',
+                    text:context.l10n.streamAudio,
                     icon: Icons.wifi,
                     child: SvgPicture.asset(
                       Assets.icons.svg.audio.audioStream.keyName,

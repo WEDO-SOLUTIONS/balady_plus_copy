@@ -1,4 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExploreCard extends ConsumerStatefulWidget {
   const ExploreCard({super.key});
@@ -33,9 +37,13 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
                 child: Stack(
                   children: [
                     Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: Assets.images.exploreMbc.image(),
-                    ),
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: CommonFunctions.isAppAR
+                            ? Transform(
+                                alignment: Alignment.center,
+                                transform: Matrix4.rotationY(math.pi),
+                                child: Assets.images.exploreMbc.image())
+                            : Assets.images.exploreMbc.image()),
                     // Explore text
                     _buildExploreText(),
 
@@ -58,13 +66,13 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
           padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
           child: RichText(
             text: TextSpan(
-              text: 'Explore the', // context.l10n.driveBack,
+              text: context.l10n.mediaHeader, // context.l10n.driveBack,
               style: context.textStyles.h3Medium.copyWith(
                 color: Colors.white,
               ),
               children: [
                 TextSpan(
-                  text: '\nmedia catalog',
+                  text: context.l10n.mediaSub,
                   style: context.textStyles.h3Medium.copyWith(
                     color: const Color(0xFF00FFFA),
                   ),

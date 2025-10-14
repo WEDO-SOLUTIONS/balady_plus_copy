@@ -1,6 +1,8 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/media_catalog_item.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 
 @RoutePage()
@@ -34,7 +37,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
           backgroundColor: Colors.grey.shade100,
           appBar: BaladyTopBar.iconAndText(
             systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-            title: 'Media Catalog',
+            title: context.l10n.mediaSub,
             colorEnabled: context.color.textAndIconsStatusAccent,
             leading: ActionModel(
               onPressed: () => context.router.popForced(),
@@ -44,13 +47,13 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    DashboardTitle('Live now'),
-                    Padding(
+                    DashboardTitle(context.l10n.liveNow),
+                    const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: MBCMood(color: Color.fromRGBO(242, 74, 56, 1)),
                     )
@@ -61,9 +64,9 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                 final channels =
                     ref.watch(streamAudioProvider).filteredChannels;
                 if (channels.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('No Channels right now'),
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(context.l10n.noChannels),
                   );
                 }
 
@@ -136,67 +139,24 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             minLeadingWidth: imagesWidth,
                             leading: SizedBox(
                               width: imagesWidth,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                    left: 0,
-                                    top: 0,
-                                    bottom: 0,
-                                    width: imagesWidth / 2,
-                                    child: const CircleImage(
-                                        url:
-                                            'https://assets.mbcmood.com/channels/1708604937logombc.png'),
-                                  ),
-                                  Positioned(
-                                      bottom: 6,
-                                      right: 12,
-                                      top: 6,
-                                      width: imagesWidth / 2.3,
-                                      child: Stack(
-                                        children: [
-                                          ProgramImage(url: url),
-                                          if (!hasProgram)
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              child: BackdropFilter(
-                                                filter: ImageFilter.blur(
-                                                    sigmaX: 2, sigmaY: 2),
-                                                child: Container(
-                                                  width: 96,
-                                                  height: 96,
-                                                  decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      begin: const Alignment(
-                                                          0.50, -0.00),
-                                                      end: const Alignment(
-                                                          0.50, 1.00),
-                                                      stops: const [0.00, 1.00],
-                                                      colors: [
-                                                        Colors.black.withValues(
-                                                            alpha: 0.10),
-                                                        Colors.black.withValues(
-                                                            alpha: 0)
-                                                      ],
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    border: Border.all(
-                                                      color: Colors.black
-                                                          .withValues(
-                                                              alpha: 0.10),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      )),
-                                ],
-                              ),
+                              child: CommonFunctions.isAppAR
+                                  ? Transform(
+                                      alignment: Alignment.center,
+                                      transform: Matrix4.rotationY(math.pi),
+                                      child: MediaImages(
+                                        imagesWidth: imagesWidth,
+                                        url: url,
+                                        hasProgram: hasProgram,
+                                      ),
+                                    )
+                                  : MediaImages(
+                                      imagesWidth: imagesWidth,
+                                      url: url,
+                                      hasProgram: hasProgram,
+                                    ),
                             ),
-                            title: Text(channel.name ?? 'name',
+
+                            title: Text(channel.name ?? context.l10n.name,
                                 style: TextStyle(
                                     color: isSelected
                                         ? const Color(0xff9547E9)
@@ -206,7 +166,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                               children: [
                                 Text(
                                     channel.currentPlayedProgram?.name ??
-                                        'On Air',
+                                        context.l10n.onAir,
                                     style: TextStyle(
                                         color: isSelected
                                             ? const Color(0xff9547E9)
@@ -247,11 +207,75 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               const SizedBox(
                 height: 24,
               ),
-              const DashboardTitle('Arriving soon'),
+              DashboardTitle(context.l10n.arrivingSoon),
               const ArrivingSoon()
             ],
           ),
         ),
+      );
+}
+
+class MediaImages extends StatelessWidget {
+  const MediaImages({
+    super.key,
+    required this.imagesWidth,
+    required this.url,
+    required this.hasProgram,
+  });
+
+  final double imagesWidth;
+  final String url;
+  final bool hasProgram;
+
+  @override
+  Widget build(BuildContext context) => Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: imagesWidth / 2,
+            child: const CircleImage(
+                url:
+                    'https://assets.mbcmood.com/channels/1708604937logombc.png'),
+          ),
+          Positioned(
+              bottom: 6,
+              right: 12,
+              top: 6,
+              width: imagesWidth / 2.3,
+              child: Stack(
+                children: [
+                  ProgramImage(url: url),
+                  if (!hasProgram)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                        child: Container(
+                          width: 96,
+                          height: 96,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: const Alignment(0.50, -0.00),
+                              end: const Alignment(0.50, 1.00),
+                              stops: const [0.00, 1.00],
+                              colors: [
+                                Colors.black.withValues(alpha: 0.10),
+                                Colors.black.withValues(alpha: 0)
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: Colors.black.withValues(alpha: 0.10),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              )),
+        ],
       );
 }
 
