@@ -147,15 +147,11 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       );
 
   Widget _buildControls(StreamAudioProvider provider, {required bool isVertical}) {
-    final backwardButton = Visibility(
-      visible: provider.canGoToPreviousChannel,
-      maintainSize: true,
-      maintainAnimation: true,
-      maintainState: true,
+    final backwardButton = AnimatedOpacity(
+      opacity: provider.canGoToPreviousChannel ? 1.0 : 0.4,
+      duration: const Duration(milliseconds: 200),
       child: GestureDetector(
-        onTap: () async {
-          await ref.read(streamAudioProvider).goToPreviousChannel();
-        },
+        onTap: !provider.canGoToPreviousChannel ? null : () => ref.read(streamAudioProvider).goToPreviousChannel(),
         child: Container(
           width: 44,
           height: 44,
@@ -190,15 +186,11 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       ),
     );
 
-    final forwardButton = Visibility(
-      visible: provider.canGoToNextChannel,
-      maintainSize: true,
-      maintainAnimation: true,
-      maintainState: true,
+    final forwardButton = AnimatedOpacity(
+      opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
+      duration: const Duration(milliseconds: 200),
       child: GestureDetector(
-        onTap: () async {
-          await ref.read(streamAudioProvider).goToNextChannel();
-        },
+        onTap: !provider.canGoToNextChannel ? null : () => ref.read(streamAudioProvider).goToNextChannel(),
         child: Container(
           width: 44,
           height: 44,

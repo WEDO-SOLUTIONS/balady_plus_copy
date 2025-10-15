@@ -11,10 +11,10 @@ class FilteredChannel extends ChannelDTO {
     super.maximizedLogo,
     super.minimizedLogo,
     super.circledLogo,
-    super.audioUrl,
     super.channelBanners,
     super.channelOrder,
     super.programs,
+    super.streamUrl,
   });
 
     factory FilteredChannel.fromDTO(ChannelDTO dto) => FilteredChannel(
@@ -25,10 +25,10 @@ class FilteredChannel extends ChannelDTO {
       maximizedLogo: dto.maximizedLogo,
       minimizedLogo: dto.minimizedLogo,
       circledLogo: dto.circledLogo,
-      audioUrl: dto.audioUrl,
       channelBanners: dto.channelBanners,
       channelOrder: dto.channelOrder,
       programs: dto.programs,
+      streamUrl: dto.streamUrl,
     );
 
   Program? get currentPlayedProgram {

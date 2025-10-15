@@ -14,8 +14,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:mapness/entry_point.dart';
-import 'package:mapness/features/stream_audio/services/audio_service.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:provider/provider.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
@@ -84,18 +82,10 @@ class AppWidget extends StatefulWidget {
 }
 
 class AppWidgetState extends State<AppWidget> {
-  static bool _audioServiceInitialized = false;
-
   @override
   void initState() {
     super.initState();
     initInsider();
-
-    // TEMPORARILY DISABLED: Initialize audio service asynchronously without blocking UI
-    // TODO: Re-enable after fixing splash screen issue
-    // if (!_audioServiceInitialized) {
-    //   _initAudioServiceAsync();
-    // }
   }
 
   Future initInsider() async {
@@ -122,46 +112,6 @@ class AppWidgetState extends State<AppWidget> {
   }
 
   void callback() {}
-
-  // TEMPORARILY DISABLED: Audio service initialization
-  // void _initAudioServiceAsync() {
-  //   // Run audio service initialization in background without blocking UI
-  //   Future.delayed(const Duration(milliseconds: 2000), () {
-  //     if (mounted && !_audioServiceInitialized) {
-  //       initAudioService();
-  //     }
-  //   });
-  // }
-
-  Future<void> initAudioService() async {
-    if (_audioServiceInitialized) {
-      debugPrint('AudioService: Global initialization already attempted, skipping');
-      return;
-    }
-
-    try {
-      debugPrint('AudioService: Initializing JustAudioBackground...');
-
-      // Initialize JustAudioBackground first
-      await JustAudioBackground.init(
-        androidNotificationChannelId: 'com.balady.audio',
-        androidNotificationChannelName: 'Audio Streaming',
-        androidNotificationOngoing: true,
-      );
-
-      debugPrint('AudioService: JustAudioBackground initialized successfully');
-
-      // Then initialize our audio service
-      await AudioService.initializeGlobally();
-      _audioServiceInitialized = true;
-
-      debugPrint('AudioService: Global initialization completed successfully from app startup');
-    } catch (e) {
-      debugPrint('AudioService: Global initialization failed from app startup: $e');
-      // Don't mark as initialized if it failed, allow retry
-      // _audioServiceInitialized = true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

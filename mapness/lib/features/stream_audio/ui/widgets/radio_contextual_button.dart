@@ -30,7 +30,7 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
   @override
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
-    final providerNotifier = ref.read(streamAudioProvider.notifier);
+    // final providerNotifier = ref.read(streamAudioProvider.notifier);
 
     if (provider.selectedChannel != null) {
       return const SizedBox.shrink();
@@ -40,7 +40,8 @@ class _RadioContextualButtonState extends ConsumerState<RadioContextualButton> {
         /// Open Audio Button
         GestureDetector(
           onTap: () {
-            providerNotifier.mockUserInTraffic();
+            _openAudioPlayer(context);
+            // providerNotifier.mockUserInTraffic();
           },
           child: _buildActionButton(context),
         ),

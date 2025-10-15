@@ -7,8 +7,6 @@ class ChannelDTO {
   String? minimizedLogo;
   String? circledLogo;
   String? streamUrl;
-  String? audioUrl;
-  String? videoUrl;
   String? mobileNumber;
   String? mobileNumberKsa;
   String? mobileNumberUae;
@@ -40,8 +38,6 @@ class ChannelDTO {
         this.minimizedLogo,
         this.circledLogo,
         this.streamUrl,
-        this.audioUrl,
-        this.videoUrl,
         this.mobileNumber,
         this.mobileNumberKsa,
         this.mobileNumberUae,
@@ -73,8 +69,6 @@ class ChannelDTO {
     minimizedLogo = json['minimizedLogo'];
     circledLogo = json['circledLogo'];
     streamUrl = json['stream_url'];
-    audioUrl = json['audio_url'];
-    videoUrl = json['video_url'];
     mobileNumber = json['mobile_number'];
     mobileNumberKsa = json['mobile_number_ksa'];
     mobileNumberUae = json['mobile_number_uae'];
@@ -123,8 +117,6 @@ class ChannelDTO {
     data['minimizedLogo'] = this.minimizedLogo;
     data['circledLogo'] = this.circledLogo;
     data['stream_url'] = this.streamUrl;
-    data['audio_url'] = this.audioUrl;
-    data['video_url'] = this.videoUrl;
     data['mobile_number'] = this.mobileNumber;
     data['mobile_number_ksa'] = this.mobileNumberKsa;
     data['mobile_number_uae'] = this.mobileNumberUae;

@@ -10,8 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/channel_item.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
-import 'package:mapness/features/stream_audio/ui/widgets/media_catalog_item.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 
@@ -61,8 +61,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                 ),
               ),
               Builder(builder: (_) {
-                final channels =
-                    ref.watch(streamAudioProvider).filteredChannels;
+                final channels = ref.watch(streamAudioProvider).filteredChannels;
                 if (channels.isEmpty) {
                   return Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -74,12 +73,8 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                   height: MediaQuery.of(context).size.height * 0.44,
                   child: ReorderableListView.builder(
                     shrinkWrap: true,
-                    // onReorder: ref.watch(streamAudioProvider).reorderPrograms,
-                    onReorder: (oldIndex, newIndex) {
-                      ref
-                          .read(streamAudioProvider)
-                          .reorderChannels(oldIndex, newIndex);
-                    },
+                    onReorder: (oldIndex, newIndex) =>
+                        ref.read(streamAudioProvider).reorderChannels(oldIndex, newIndex),
                     itemCount: channels.length,
                     proxyDecorator: (child, index, animation) => Material(
                       type: MaterialType.transparency,
@@ -89,29 +84,27 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                     ),
                     itemBuilder: (_, index) {
                       final channel = channels[index];
-                      final bool isSelected =
-                          ref.watch(streamAudioProvider).selectedChannel?.id ==
-                              channel.id;
+                      final bool isSelected = ref.watch(streamAudioProvider).selectedChannel?.id == channel.id;
                       final programLogo = channel.currentPlayedProgram?.image;
-                      final bool hasProgramLogo =
-                          programLogo != null && programLogo.isNotEmpty;
+                      final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
 
                       //TODO: fix images when backend is ready (circledLogo)
-                      final url = hasProgramLogo
+                      final programUrl = hasProgramLogo
                           ? 'https://assets.mbcmood.com/programs_thumbnails/1745311050%D8%AD%D9%84%D9%88%20%D8%A7%D9%84%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D8%AE%D9%8A%D8%B1%20.jpg'
                           : 'https://assets.mbcmood.com/channels/1708604937logombc.png';
+
+                      // final channelUrl = channel.circledLogo ?? channel.logo ?? '';
+                      const channelUrl = 'https://assets.mbcmood.com/channels/1708604937logombc.png';
+
                       final hasProgram = channel.currentPlayedProgram != null;
-                      final imagesWidth =
-                          MediaQuery.of(context).size.width * 0.25;
+                      final imagesWidth = MediaQuery.of(context).size.width * 0.25;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4.0, horizontal: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
                         key: ValueKey(channel.id),
                         child: Material(
                           elevation: 4,
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(RadiusBorder.xl),
+                            borderRadius: BorderRadius.circular(RadiusBorder.xl),
                           ),
                           shadowColor: const Color(0x19000000),
                           child: ListTile(
@@ -119,22 +112,16 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             // onTap: () => ref.read(streamAudioProvider).selectProgram(p),
                             onTap: () {
                               if (!isSelected) {
-                                ref
-                                    .read(streamAudioProvider)
-                                    .selectChannel(channel);
+                                ref.read(streamAudioProvider).selectChannel(channel);
                               }
                             },
                             shape: RoundedRectangleBorder(
                               side: isSelected
-                                  ? BorderSide(
-                                      color: const Color(0xff9547E9)
-                                          .withValues(alpha: 0.4))
+                                  ? BorderSide(color: const Color(0xff9547E9).withValues(alpha: 0.4))
                                   : BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.circular(RadiusBorder.xl),
+                              borderRadius: BorderRadius.circular(RadiusBorder.xl),
                             ),
-                            contentPadding:
-                                const EdgeInsets.only(left: 8, right: 16),
+                            contentPadding: const EdgeInsets.only(left: 8, right: 16),
                             tileColor: Colors.white,
                             minLeadingWidth: imagesWidth,
                             leading: SizedBox(
@@ -145,40 +132,31 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                                       transform: Matrix4.rotationY(math.pi),
                                       child: MediaImages(
                                         imagesWidth: imagesWidth,
-                                        url: url,
+                                        programUrl: programUrl,
+                                        channelUrl: channelUrl,
                                         hasProgram: hasProgram,
                                       ),
                                     )
                                   : MediaImages(
                                       imagesWidth: imagesWidth,
-                                      url: url,
+                                      programUrl: programUrl,
+                                      channelUrl: channelUrl,
                                       hasProgram: hasProgram,
                                     ),
                             ),
 
                             title: Text(channel.name ?? context.l10n.name,
-                                style: TextStyle(
-                                    color: isSelected
-                                        ? const Color(0xff9547E9)
-                                        : null)),
+                                style: TextStyle(color: isSelected ? const Color(0xff9547E9) : null)),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                    channel.currentPlayedProgram?.name ??
-                                        context.l10n.onAir,
+                                Text(channel.currentPlayedProgram?.name ?? context.l10n.onAir,
                                     style: TextStyle(
-                                        color: isSelected
-                                            ? const Color(0xff9547E9)
-                                                .withValues(alpha: 0.7)
-                                            : null)),
+                                        color: isSelected ? const Color(0xff9547E9).withValues(alpha: 0.7) : null)),
                                 if (channel.currentPlayedProgram?.date != null)
                                   Text(channel.currentPlayedProgram!.date!,
                                       style: TextStyle(
-                                          color: isSelected
-                                              ? const Color(0xff9547E9)
-                                                  .withValues(alpha: 0.7)
-                                              : null)),
+                                          color: isSelected ? const Color(0xff9547E9).withValues(alpha: 0.7) : null)),
                               ],
                             ),
                             trailing: SizedBox(
@@ -188,8 +166,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                                 children: [
                                   if (isSelected) ...[
                                     Assets.icons.svg.audio.waves.svg(
-                                      colorFilter: const ColorFilter.mode(
-                                          Color(0xff9547E9), BlendMode.srcIn),
+                                      colorFilter: const ColorFilter.mode(Color(0xff9547E9), BlendMode.srcIn),
                                     ),
                                     const SizedBox(width: 12),
                                   ],
@@ -217,36 +194,34 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
 
 class MediaImages extends StatelessWidget {
   const MediaImages({
-    super.key,
     required this.imagesWidth,
-    required this.url,
+    required this.programUrl,
+    required this.channelUrl,
     required this.hasProgram,
+    super.key,
   });
 
   final double imagesWidth;
-  final String url;
   final bool hasProgram;
+  final String programUrl;
+  final String channelUrl;
 
   @override
   Widget build(BuildContext context) => Stack(
         children: [
           Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: imagesWidth / 2,
-            child: const CircleImage(
-                url:
-                    'https://assets.mbcmood.com/channels/1708604937logombc.png'),
+            height: (imagesWidth / 2) + 4,
+            width: (imagesWidth / 2) + 4,
+            child: CircleImage(url: channelUrl),
           ),
           Positioned(
-              bottom: 6,
+              top: 5,
               right: 12,
-              top: 6,
-              width: imagesWidth / 2.3,
+              height: (imagesWidth / 2) - 4,
+              width: (imagesWidth / 2) - 4,
               child: Stack(
                 children: [
-                  ProgramImage(url: url),
+                  ProgramImage(url: programUrl),
                   if (!hasProgram)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(8),
@@ -260,10 +235,7 @@ class MediaImages extends StatelessWidget {
                               begin: const Alignment(0.50, -0.00),
                               end: const Alignment(0.50, 1.00),
                               stops: const [0.00, 1.00],
-                              colors: [
-                                Colors.black.withValues(alpha: 0.10),
-                                Colors.black.withValues(alpha: 0)
-                              ],
+                              colors: [Colors.black.withValues(alpha: 0.10), Colors.black.withValues(alpha: 0)],
                             ),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
@@ -291,18 +263,15 @@ class ArrivingSoon extends StatelessWidget {
       ),
       ArrivingSoonModel(
         title: 'MBC Video & News',
-        image:
-            Assets.images.audioPlaceholders.arrivingSoon.mbcVideoNews.keyName,
+        image: Assets.images.audioPlaceholders.arrivingSoon.mbcVideoNews.keyName,
       ),
       ArrivingSoonModel(
         title: 'Original Balady Content',
-        image:
-            Assets.images.audioPlaceholders.arrivingSoon.baladyContent.keyName,
+        image: Assets.images.audioPlaceholders.arrivingSoon.baladyContent.keyName,
       ),
       ArrivingSoonModel(
         title: 'Balady in Apple CarPlay',
-        image:
-            Assets.images.audioPlaceholders.arrivingSoon.appleCarPlay.keyName,
+        image: Assets.images.audioPlaceholders.arrivingSoon.appleCarPlay.keyName,
       ),
       ArrivingSoonModel(
         title: 'Speed alerts',

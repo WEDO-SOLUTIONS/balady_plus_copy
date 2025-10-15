@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/data/dto/filtered_channel.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
-import 'package:mapness/features/stream_audio/ui/widgets/media_catalog_item.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/channel_item.dart';
 
 class MediaCatalogList extends ConsumerWidget {
   final VoidCallback? needReset;

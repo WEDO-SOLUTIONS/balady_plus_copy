@@ -132,7 +132,7 @@ class StreamAudioProvider extends ChangeNotifier {
   void filterChannels() {
     filteredChannels.clear();
     for (final ChannelDTO channel in _channels) {
-      if (channel.audioUrl != null && channel.audioUrl!.isNotEmpty) {
+      if (channel.streamUrl != null && channel.streamUrl!.isNotEmpty) {
         filteredChannels.add(FilteredChannel.fromDTO(channel));
       }
     }
@@ -159,7 +159,8 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Reorder channels and save to SharedPreferences
   Future<void> reorderChannels(int oldIndex, int newIndex) async {
-    if (oldIndex < 0 || newIndex < 0 || oldIndex >= filteredChannels.length || newIndex >= filteredChannels.length) {
+    // Allow newIndex == length to support dropping at the end of the list
+    if (oldIndex < 0 || newIndex < 0 || oldIndex >= filteredChannels.length || newIndex > filteredChannels.length) {
       return;
     }
 
@@ -199,7 +200,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Program selection and playback
   Future<void> selectChannel(FilteredChannel? channel) async {
-    if (channel == null || channel.audioUrl == null || channel.audioUrl?.isEmpty == true) {
+    if (channel == null || channel.streamUrl == null || channel.streamUrl?.isEmpty == true) {
       return;
     }
 
@@ -216,7 +217,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
     try {
       await _audioService.playStream(
-        url: channel.audioUrl!,
+        url: channel.streamUrl!,
         channelId: channel.id.toString(),
         title: channel.name,
         programName: channel.currentPlayedProgram?.name ?? 'on Air',
@@ -248,7 +249,9 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // Playback controls
   Future<void> playStream() async {
-    if (_selectedChannel == null || _selectedChannel?.audioUrl == null || _selectedChannel?.audioUrl?.isEmpty == true) {
+    if (_selectedChannel == null ||
+        _selectedChannel?.streamUrl == null ||
+        _selectedChannel?.streamUrl?.isEmpty == true) {
       return;
     }
 
@@ -263,7 +266,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
     try {
       await _audioService.playStream(
-        url: _selectedChannel!.audioUrl!,
+        url: _selectedChannel!.streamUrl!,
         channelId: _selectedChannel!.id!.toString(),
         title: _selectedChannel!.name,
         programName: _selectedChannel!.currentPlayedProgram?.name ?? 'on Air',

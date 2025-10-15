@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 
 class AudioService extends ChangeNotifier {
   static final AudioService _instance = AudioService._internal();
@@ -212,12 +211,12 @@ class AudioService extends ChangeNotifier {
 
       final audioSource = AudioSource.uri(
         Uri.parse(_currentStreamUrl!),
-        tag: MediaItem(
-          id: _currentChannelId ?? 'unknown',
-          title: _currentTitle ?? 'Live Radio',
-          artist: _currentArtist ?? 'Unknown',
-          artUri: _currentArtUri != null ? Uri.parse(_currentArtUri!) : null,
-        ),
+        // tag: MediaItem(
+        //   id: _currentChannelId ?? 'unknown',
+        //   title: _currentTitle ?? 'Live Radio',
+        //   artist: _currentArtist ?? 'Unknown',
+        //   artUri: _currentArtUri != null ? Uri.parse(_currentArtUri!) : null,
+        // ),
       );
 
       await _player!.setAudioSource(audioSource);
