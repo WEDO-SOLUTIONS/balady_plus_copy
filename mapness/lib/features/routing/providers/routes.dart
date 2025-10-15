@@ -65,7 +65,7 @@ class Routes extends _$Routes {
       cancelableCompleter.operation.cancel();
     });
 
-    final online = ref.read(networkStatusProvider);
+    final online = ref.watch(networkStatusProvider);
 
     if (!online && !cancelableCompleter.isCompleted) {
       cancelableCompleter.completeError(const NoInternetException());
@@ -107,7 +107,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     bool? showOnlyActiveRoute,
     Duration? timeout,
   }) async {
-    final online = ref.read(networkStatusProvider);
+    final online = ref.watch(networkStatusProvider);
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
       finishPoint != null ? [finishPoint.latitude, finishPoint.longitude] : null,
@@ -138,6 +138,10 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
       publicTransportRoutesSubscription?.cancel();
       cancelableCompleter.operation.cancel();
     });
+
+    if (!online && !cancelableCompleter.isCompleted) {
+      cancelableCompleter.completeError(const NoInternetException());
+    }
 
     await dgisController.value?.setRouteParams(params);
     return cancelableCompleter.operation.value.timeout(

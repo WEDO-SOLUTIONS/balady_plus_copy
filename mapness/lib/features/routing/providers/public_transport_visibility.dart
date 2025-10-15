@@ -65,6 +65,12 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     required RouteParamsPoint? finishPoint,
   }) async {
     try {
+      final online = ref.watch(networkStatusProvider);
+
+      if (!online) {
+        throw const NoInternetException();
+      }
+
       final normalizedStartPoint = _normalizePoint(startPoint);
       final normalizedFinishPoint = _normalizePoint(finishPoint);
 
