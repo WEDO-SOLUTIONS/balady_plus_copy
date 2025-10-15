@@ -17,7 +17,8 @@ class StreamAudio extends ConsumerStatefulWidget {
 
 class _StreamAudioState extends ConsumerState<StreamAudio> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final DraggableScrollableController _sheetController = DraggableScrollableController();
+  final DraggableScrollableController _sheetController =
+      DraggableScrollableController();
 
   final double _minChildSize = 0.0;
   final double _maxChildSize = 0.34;
@@ -31,7 +32,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   bool _isPanelFullyOpened = false;
 
   /// Landscape mode properties
-  double _landscapeSheetWidth = 0.0; // 0 = closed, 1 = fully open (in percentage)
+  double _landscapeSheetWidth =
+      0.0; // 0 = closed, 1 = fully open (in percentage)
   final double _landscapeMaxWidth = 0.4; // 30% of screen width
 
   /// Track previous orientation to handle transitions
@@ -57,7 +59,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
     if (isLandscape) {
       // Toggle landscape side sheet
-      final targetWidth = _landscapeSheetWidth > _landscapeMaxWidth / 2 ? 0.0 : _landscapeMaxWidth;
+      final targetWidth = _landscapeSheetWidth > _landscapeMaxWidth / 2
+          ? 0.0
+          : _landscapeMaxWidth;
 
       /// Cancel any existing timer
       _autoCloseTimer?.cancel();
@@ -81,7 +85,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
       // Toggle portrait bottom sheet
       if (_sheetController.isAttached) {
         final currentSize = _sheetController.size;
-        final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2 ? _minChildSize : _maxChildSize;
+        final targetSize = currentSize > (_minChildSize + _maxChildSize) / 2
+            ? _minChildSize
+            : _maxChildSize;
 
         /// Cancel any existing timer
         _autoCloseTimer?.cancel();
@@ -92,7 +98,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             setState(() => _showRemovalZone = false);
           }
           _autoCloseTimer = Timer(const Duration(seconds: 80), () {
-            if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
+            if (mounted &&
+                _sheetController.isAttached &&
+                _sheetController.size > _minChildSize) {
               _sheetController.animateTo(
                 _minChildSize,
                 duration: const Duration(milliseconds: 800),
@@ -122,7 +130,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
           final isLandscape = orientation == Orientation.landscape;
 
           // Handle orientation change after frame
-          if (_previousOrientation != null && _previousOrientation != orientation && !_isTransitioningOrientation) {
+          if (_previousOrientation != null &&
+              _previousOrientation != orientation &&
+              !_isTransitioningOrientation) {
             _isTransitioningOrientation = true;
 
             WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -140,7 +150,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
                 if (isLandscape) {
                   // Switching to landscape: if portrait sheet was open, open landscape sheet
-                  if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+                  if (_sheetController.isAttached &&
+                      _sheetController.size > _minChildSize) {
                     if (mounted) {
                       setState(() {
                         _landscapeSheetWidth = _landscapeMaxWidth;
@@ -202,7 +213,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             );
           }
 
-          return isLandscape ? _buildLandscapeLayout(provider) : _buildPortraitLayout(provider);
+          return isLandscape
+              ? _buildLandscapeLayout(provider)
+              : _buildPortraitLayout(provider);
         },
       ),
     );
@@ -211,9 +224,12 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   Widget _buildPortraitLayout(StreamAudioProvider provider) => AnimatedBuilder(
         animation: _sheetController,
         builder: (context, _) {
-          final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+          final double currentSize = _sheetController.isAttached
+              ? _sheetController.size
+              : _minChildSize;
 
-          final double progress = (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
+          final double progress =
+              (currentSize - _minChildSize) / (_maxChildSize - _minChildSize);
 
           final double mapOffset = -320 * progress;
 
@@ -278,7 +294,10 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   Widget _buildLandscapeLayout(StreamAudioProvider provider) {
     final screenWidth = MediaQuery.of(context).size.width;
     final sheetWidthPx = screenWidth * _landscapeSheetWidth;
-    final childOffset = -sheetWidthPx;
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
+    final bool sheetFromLeft =
+        isRtl; // Arabic -> from left, English -> from right
+    final double childOffset = sheetFromLeft ? sheetWidthPx : -sheetWidthPx;
 
     return Stack(
       children: [
@@ -307,21 +326,65 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             ),
           ),
 
-        /// Side sheet from right
+        /// Side sheet (RTL: left, LTR: right)
         AnimatedPositioned(
           duration: const Duration(milliseconds: 350),
           curve: Curves.easeOutCubic,
-          right: _landscapeSheetWidth == 0 ? -screenWidth * _landscapeMaxWidth : 0,
+          left: sheetFromLeft
+              ? (_landscapeSheetWidth == 0
+                  ? -screenWidth * _landscapeMaxWidth
+                  : 0)
+              : null,
+          right: !sheetFromLeft
+              ? (_landscapeSheetWidth == 0
+                  ? -screenWidth * _landscapeMaxWidth
+                  : 0)
+              : null,
           top: 0,
           bottom: 0,
           width: screenWidth * _landscapeMaxWidth,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.black,
-              border: Border(left: BorderSide(color: Colors.white24, width: 1)),
-            ),
-            child: Expanded(
-              child: _buildLandscapeSheetContent(provider),
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onHorizontalDragUpdate: (details) {
+              // Close when dragging toward the outside edge
+              final bool shouldClose = sheetFromLeft
+                  ? (details.delta.dx < -6) // drag left to close
+                  : (details.delta.dx > 6); // drag right to close
+              if (shouldClose) {
+                if (mounted && _landscapeSheetWidth > 0) {
+                  setState(() => _landscapeSheetWidth = 0.0);
+                }
+              }
+            },
+            onHorizontalDragEnd: (details) {
+              // Also close on a fling toward the outside edge
+              final double velocity = details.primaryVelocity ?? 0;
+              final bool shouldClose = sheetFromLeft
+                  ? (velocity < -300) // fling left
+                  : (velocity > 300); // fling right
+              if (shouldClose) {
+                if (mounted && _landscapeSheetWidth > 0) {
+                  setState(() => _landscapeSheetWidth = 0.0);
+                }
+              }
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.black,
+                // Border is updated below based on side
+              ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: sheetFromLeft
+                      ? const Border(
+                          right: BorderSide(color: Colors.white24, width: 1),
+                        )
+                      : const Border(
+                          left: BorderSide(color: Colors.white24, width: 1),
+                        ),
+                ),
+                child: _buildLandscapeSheetContent(provider),
+              ),
             ),
           ),
         ),
@@ -332,7 +395,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
     );
   }
 
-  Widget _buildChild(double mapOffset, double currentSize, bool isLandscape) => Transform.translate(
+  Widget _buildChild(double mapOffset, double currentSize, bool isLandscape) =>
+      Transform.translate(
         offset: Offset(0, mapOffset),
         child: Container(
           clipBehavior: Clip.antiAlias,
@@ -345,7 +409,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
         ),
       );
 
-  Widget _buildFloatingControls(StreamAudioProvider provider, double currentSize, bool isLandscape) {
+  Widget _buildFloatingControls(
+      StreamAudioProvider provider, double currentSize, bool isLandscape) {
     if (currentSize != _minChildSize || provider.selectedChannel == null) {
       return const SizedBox.shrink();
     }
@@ -366,7 +431,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
     );
   }
 
-  Widget _buildLandscapeSheetContent(StreamAudioProvider provider) => SingleChildScrollView(
+  Widget _buildLandscapeSheetContent(StreamAudioProvider provider) =>
+      SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -374,7 +440,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             // Left side: PlayingAudioTile (vertical layout)
             const Expanded(
               flex: 2,
-              child: PlayingAudioTile(isLandscape: true, instanceId: 'landscape_sheet'),
+              child: PlayingAudioTile(
+                  isLandscape: true, instanceId: 'landscape_sheet'),
             ),
             const SizedBox(width: 16),
             // Right side: MediaCatalogList (vertical layout)
@@ -397,7 +464,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
         ),
       );
 
-  Widget _buildDetailsControlsSheet(StreamAudioProvider provider) => DraggableScrollableSheet(
+  Widget _buildDetailsControlsSheet(StreamAudioProvider provider) =>
+      DraggableScrollableSheet(
         controller: _sheetController,
         initialChildSize: _minChildSize,
         minChildSize: _minChildSize,
@@ -428,12 +496,14 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.red.withValues(alpha: 0.1),
-                      border: Border.all(color: Colors.red.withValues(alpha: 0.3)),
+                      border:
+                          Border.all(color: Colors.red.withValues(alpha: 0.3)),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                        const Icon(Icons.error_outline,
+                            color: Colors.red, size: 20),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -454,7 +524,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                     //reset the timer
                     _autoCloseTimer?.cancel();
                     _autoCloseTimer = Timer(const Duration(seconds: 80), () {
-                      if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
+                      if (mounted &&
+                          _sheetController.isAttached &&
+                          _sheetController.size > _minChildSize) {
                         _sheetController.animateTo(
                           _minChildSize,
                           duration: const Duration(milliseconds: 800),
@@ -487,26 +559,38 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                 gradient: LinearGradient(
                   begin: const Alignment(0.50, -0.00),
                   end: const Alignment(0.50, 1.00),
-                  colors: [Colors.black.withValues(alpha: 0.20), Colors.black.withValues(alpha: 0)],
+                  colors: [
+                    Colors.black.withValues(alpha: 0.20),
+                    Colors.black.withValues(alpha: 0)
+                  ],
                 ),
               ),
               child: Center(
                 child: Container(
                   width: 226,
                   height: 40,
-                  padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
+                  padding: const EdgeInsets.only(
+                      top: 8, left: 8, right: 16, bottom: 8),
                   decoration: ShapeDecoration(
                     color: Colors.black.withValues(alpha: 0.65),
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.white.withValues(alpha: 0.20)),
+                      side: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.20)),
                       borderRadius: BorderRadius.circular(40),
                     ),
-                    shadows: const [BoxShadow(color: Color(0x19000000), blurRadius: 24, offset: Offset(0, 8))],
+                    shadows: const [
+                      BoxShadow(
+                          color: Color(0x19000000),
+                          blurRadius: 24,
+                          offset: Offset(0, 8))
+                    ],
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(Icons.close, color: Colors.white.withValues(alpha: 0.80), size: 22),
+                      Icon(Icons.close,
+                          color: Colors.white.withValues(alpha: 0.80),
+                          size: 22),
                       const Text(
                         'Drag here to exit audio player',
                         style: TextStyle(

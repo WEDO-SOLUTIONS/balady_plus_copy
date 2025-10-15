@@ -9,16 +9,19 @@ import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dar
 import 'package:mapness/features/stream_audio/ui/widgets/audio_wave_icon.dart';
 
 class DraggableFloatingPlayerControls extends StatefulWidget {
-  const DraggableFloatingPlayerControls({required this.onTap, required this.onChange, super.key});
+  const DraggableFloatingPlayerControls(
+      {required this.onTap, required this.onChange, super.key});
 
   final Function onTap;
   final Function({required bool isHolding, required bool mustRemove}) onChange;
 
   @override
-  State<DraggableFloatingPlayerControls> createState() => _DraggableFloatingPlayerControlsState();
+  State<DraggableFloatingPlayerControls> createState() =>
+      _DraggableFloatingPlayerControlsState();
 }
 
-class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlayerControls>
+class _DraggableFloatingPlayerControlsState
+    extends State<DraggableFloatingPlayerControls>
     with TickerProviderStateMixin {
   // Position tracking
   Offset _position = const Offset(0, 0);
@@ -46,6 +49,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
   bool _isDragging = false;
   bool isCollapsed = false;
   bool _inRemovalZone = false;
+  bool _openTriggeredThisDrag = false;
 
   @override
   void initState() {
@@ -55,7 +59,8 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(_scaleController);
+    _scaleAnimation =
+        Tween<double>(begin: 1.0, end: 0.95).animate(_scaleController);
 
     _snapController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -66,13 +71,14 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
       duration: const Duration(milliseconds: 200),
       vsync: this,
     );
-    _shapeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_shapeController);
+    _shapeAnimation =
+        Tween<double>(begin: 0.0, end: 1.0).animate(_shapeController);
 
     _momentumController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-
+ 
     _momentumController
       ..addListener(() {
         if (_momentumAnimation != null && _momentumController.isAnimating) {
@@ -87,7 +93,8 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
         }
       });
 
-    _snapAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero).animate(_snapController);
+    _snapAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero)
+        .animate(_snapController);
   }
 
   @override
@@ -117,7 +124,9 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
 
   void _collapseToEdge(bool toLeft, double yPosition) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final targetX = toLeft ? -screenWidth / 2 + circleSize / 2 : screenWidth / 2 - circleSize / 2;
+    final targetX = toLeft
+        ? -screenWidth / 2 + circleSize / 2
+        : screenWidth / 2 - circleSize / 2;
 
     setState(() {
       _position = Offset(targetX, yPosition);
@@ -134,6 +143,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
     final screenHeight = screenSize.height;
     final bottomPadding = MediaQuery.of(context).padding.bottom;
     final isLandscape = screenWidth > screenHeight;
+    final bool isRtl = Directionality.of(context) == TextDirection.rtl;
 
     // Calculate boundaries
     final leftBoundaryRect = -screenWidth / 2 + widgetWidth / 2;
@@ -142,17 +152,30 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
 
     // Check orientation-specific trigger edge
     if (isLandscape) {
-      // In landscape, check right edge
-      final distanceFromRight = (rightBoundaryRect - _position.dx).abs();
-      if (distanceFromRight < 10) {
-        // Hit right edge - triggering onTap
-        widget.onChange(isHolding: false, mustRemove: false);
-        widget.onTap();
-        setState(() {
-          _position = Offset(rightBoundaryRect - 20, _position.dy);
-        });
-        HapticFeedback.mediumImpact();
-        return;
+      if (isRtl) {
+        // RTL landscape: open when hitting the far LEFT edge
+        final distanceFromLeft = (_position.dx - leftBoundaryRect).abs();
+        if (distanceFromLeft < 10) {
+          widget.onChange(isHolding: false, mustRemove: false);
+          widget.onTap();
+          setState(() {
+            _position = Offset(leftBoundaryRect + 20, _position.dy);
+          });
+          HapticFeedback.mediumImpact();
+          return;
+        }
+      } else {
+        // LTR landscape: open when hitting the far RIGHT edge
+        final distanceFromRight = (rightBoundaryRect - _position.dx).abs();
+        if (distanceFromRight < 10) {
+          widget.onChange(isHolding: false, mustRemove: false);
+          widget.onTap();
+          setState(() {
+            _position = Offset(rightBoundaryRect - 20, _position.dy);
+          });
+          HapticFeedback.mediumImpact();
+          return;
+        }
       }
     } else {
       // In portrait, check bottom edge
@@ -187,7 +210,8 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
       final distanceFromRight = (rightEdge - _position.dx).abs();
 
       // If we're close to either edge, stay collapsed and snap to the nearest edge
-      if (distanceFromLeft < edgeThreshold || distanceFromRight < edgeThreshold) {
+      if (distanceFromLeft < edgeThreshold ||
+          distanceFromRight < edgeThreshold) {
         final snapToLeft = distanceFromLeft < distanceFromRight;
         _collapseToEdge(snapToLeft, _position.dy);
       } else {
@@ -214,8 +238,12 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
 
     final leftBoundary = -screenSize.width / 2 + currentWidth / 2;
     final rightBoundary = screenSize.width / 2 - currentWidth / 2;
-    final topBoundary = -screenSize.height / 2 + currentHeight / 2 + MediaQuery.of(context).padding.top;
-    final bottomBoundary = screenSize.height / 2 - currentHeight / 2 - MediaQuery.of(context).padding.bottom;
+    final topBoundary = -screenSize.height / 2 +
+        currentHeight / 2 +
+        MediaQuery.of(context).padding.top;
+    final bottomBoundary = screenSize.height / 2 -
+        currentHeight / 2 -
+        MediaQuery.of(context).padding.bottom;
 
     final constrainedEnd = Offset(
       endPosition.dx.clamp(leftBoundary, rightBoundary),
@@ -235,14 +263,24 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: Listenable.merge([_scaleAnimation, _snapController, _shapeAnimation, _momentumController]),
+        animation: Listenable.merge([
+          _scaleAnimation,
+          _snapController,
+          _shapeAnimation,
+          _momentumController
+        ]),
         builder: (context, child) {
           final currentPosition =
-              _snapController.isAnimating && _snapAnimation != null ? _snapAnimation!.value : _position;
+              _snapController.isAnimating && _snapAnimation != null
+                  ? _snapAnimation!.value
+                  : _position;
 
-          final currentWidth = widgetWidth + (circleSize - widgetWidth) * _shapeAnimation.value;
-          final currentHeight = widgetHeight + (circleSize - widgetHeight) * _shapeAnimation.value;
-          final currentBorderRadius = 12.0 + (circleSize / 2 - 12.0) * _shapeAnimation.value;
+          final currentWidth =
+              widgetWidth + (circleSize - widgetWidth) * _shapeAnimation.value;
+          final currentHeight = widgetHeight +
+              (circleSize - widgetHeight) * _shapeAnimation.value;
+          final currentBorderRadius =
+              12.0 + (circleSize / 2 - 12.0) * _shapeAnimation.value;
 
           return Transform.translate(
             offset: currentPosition,
@@ -268,11 +306,14 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                     _initialPosition = _position;
                     _dragStartPosition = details.localPosition;
                     _inRemovalZone = false;
+                    _openTriggeredThisDrag = false;
                   });
                   _scaleController.forward();
                 },
                 onPanUpdate: (details) {
                   final screenSize = MediaQuery.of(context).size;
+                  final bool isRtl =
+                      Directionality.of(context) == TextDirection.rtl;
                   final dragDelta = details.localPosition - _dragStartPosition;
                   final newPosition = _initialPosition + dragDelta;
 
@@ -288,12 +329,16 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
 
                   final leftBoundary = -screenWidth / 2 + currentWidth / 2;
                   final rightBoundary = screenWidth / 2 - currentWidth / 2;
-                  final topBoundary = -screenHeight / 2 + currentHeight / 2 + topPadding;
-                  final bottomBoundary = screenHeight / 2 - currentHeight / 2 - bottomPadding;
+                  final topBoundary =
+                      -screenHeight / 2 + currentHeight / 2 + topPadding;
+                  final bottomBoundary =
+                      screenHeight / 2 - currentHeight / 2 - bottomPadding;
 
                   // Constrain position (but allow going beyond top for removal)
-                  final constrainedX = newPosition.dx.clamp(leftBoundary, rightBoundary);
-                  final constrainedY = newPosition.dy.clamp(topBoundary, bottomBoundary);
+                  final constrainedX =
+                      newPosition.dx.clamp(leftBoundary, rightBoundary);
+                  final constrainedY =
+                      newPosition.dy.clamp(topBoundary, bottomBoundary);
 
                   setState(() {
                     _position = Offset(constrainedX, constrainedY);
@@ -302,7 +347,8 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                   // Check if dragging to top for removal
                   final distanceFromTop = (constrainedY - topBoundary).abs();
 
-                  if (distanceFromTop < removeThreshold && constrainedY == topBoundary) {
+                  if (distanceFromTop < removeThreshold &&
+                      constrainedY == topBoundary) {
                     // In removal zone - notify parent to show removal UI
                     if (!_inRemovalZone) {
                       _inRemovalZone = true;
@@ -320,14 +366,27 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                   // Check for edge hit during drag (orientation-specific)
                   final isLandscape = screenWidth > screenHeight;
                   if (isLandscape) {
-                    // Check for right edge hit in landscape
-                    if ((rightBoundary - constrainedX).abs() < 5 && constrainedX != newPosition.dx) {
-                      widget.onTap();
-                      HapticFeedback.mediumImpact();
+                    if (isRtl) {
+                      // RTL landscape: only open when reaching far LEFT edge
+                      if ((constrainedX - leftBoundary).abs() < 5 &&
+                          constrainedX != newPosition.dx &&
+                          !_openTriggeredThisDrag) {
+                        _openTriggeredThisDrag = true;
+                        widget.onTap();
+                        HapticFeedback.mediumImpact();
+                      }
+                    } else {
+                      // LTR landscape: open when reaching far RIGHT edge
+                      if ((rightBoundary - constrainedX).abs() < 5 &&
+                          constrainedX != newPosition.dx) {
+                        widget.onTap();
+                        HapticFeedback.mediumImpact();
+                      }
                     }
                   } else {
                     // Check for bottom edge hit in portrait
-                    if ((bottomBoundary - constrainedY).abs() < 5 && constrainedY != newPosition.dy) {
+                    if ((bottomBoundary - constrainedY).abs() < 5 &&
+                        constrainedY != newPosition.dy) {
                       widget.onTap();
                       HapticFeedback.mediumImpact();
                     }
@@ -338,14 +397,20 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                     final leftBoundaryRect = -screenWidth / 2 + widgetWidth / 2;
                     final rightBoundaryRect = screenWidth / 2 - widgetWidth / 2;
 
-                    final isAtLeftEdge = (constrainedX - leftBoundaryRect).abs() < 0.5;
-                    final isAtRightEdge = (constrainedX - rightBoundaryRect).abs() < 0.5;
+                    final isAtLeftEdge =
+                        (constrainedX - leftBoundaryRect).abs() < 0.5;
+                    final isAtRightEdge =
+                        (constrainedX - rightBoundaryRect).abs() < 0.5;
                     final wasConstrained = constrainedX != newPosition.dx;
 
                     if ((isAtLeftEdge || isAtRightEdge) && wasConstrained) {
-                      final leftBoundaryCircle = -screenWidth / 2 + circleSize / 2;
-                      final rightBoundaryCircle = screenWidth / 2 - circleSize / 2;
-                      final adjustedX = isAtLeftEdge ? leftBoundaryCircle : rightBoundaryCircle;
+                      final leftBoundaryCircle =
+                          -screenWidth / 2 + circleSize / 2;
+                      final rightBoundaryCircle =
+                          screenWidth / 2 - circleSize / 2;
+                      final adjustedX = isAtLeftEdge
+                          ? leftBoundaryCircle
+                          : rightBoundaryCircle;
 
                       setState(() {
                         _position = Offset(adjustedX, constrainedY);
@@ -363,7 +428,8 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                   final screenSize = MediaQuery.of(context).size;
                   final topPadding = MediaQuery.of(context).padding.top;
                   final currentHeight = isCollapsed ? circleSize : widgetHeight;
-                  final topBoundary = -screenSize.height / 2 + currentHeight / 2 + topPadding;
+                  final topBoundary =
+                      -screenSize.height / 2 + currentHeight / 2 + topPadding;
                   final distanceFromTop = (_position.dy - topBoundary).abs();
                   if (distanceFromTop < removeThreshold && _inRemovalZone) {
                     widget.onChange(isHolding: false, mustRemove: true);
@@ -376,6 +442,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                   setState(() {
                     _isDragging = false;
                     _inRemovalZone = false;
+                    _openTriggeredThisDrag = false;
                   });
                   _scaleController.reverse();
 
@@ -393,7 +460,8 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                   decoration: BoxDecoration(
                     // Debug visuals - remove for production
                     // color: Colors.red.withOpacity(0.2),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                    border:
+                        Border.all(color: Colors.white.withValues(alpha: 0.15)),
                     borderRadius: BorderRadius.circular(currentBorderRadius),
                   ),
                   child: Container(
@@ -402,7 +470,9 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                         BoxShadow(
                           color: const Color(0x7F212222),
                           blurRadius: _isDragging ? 24 : 16,
-                          offset: _isDragging ? const Offset(0, 12) : const Offset(0, 8),
+                          offset: _isDragging
+                              ? const Offset(0, 12)
+                              : const Offset(0, 8),
                           spreadRadius: -8,
                         )
                       ],
@@ -412,7 +482,8 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                         colors: [Color(0xFF212222), Color(0xFF212222)],
                       ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(currentBorderRadius)),
+                        borderRadius: BorderRadius.all(
+                            Radius.circular(currentBorderRadius)),
                         side: BorderSide(
                           width: 2,
                           color: Colors.white.withValues(alpha: 0.15),
@@ -505,7 +576,8 @@ class _ContentState extends ConsumerState<Content> {
                         height: 16,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : SvgPicture.asset(
@@ -514,7 +586,8 @@ class _ContentState extends ConsumerState<Content> {
                             : Assets.icons.svg.audio.resume.keyName,
                         width: 16,
                         height: 16,
-                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                        colorFilter: const ColorFilter.mode(
+                            Colors.white, BlendMode.srcIn),
                       ),
               ),
               const SizedBox(width: 12),
@@ -532,7 +605,8 @@ class _ContentState extends ConsumerState<Content> {
                     Assets.icons.svg.audio.seekForward.keyName,
                     width: 16,
                     height: 16,
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    colorFilter:
+                        const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                   ),
                 ),
               ),
@@ -543,7 +617,7 @@ class _ContentState extends ConsumerState<Content> {
     );
   }
 
-  Widget buildProgramImage(StreamAudioProvider provider){
+  Widget buildProgramImage(StreamAudioProvider provider) {
     final channel = provider.selectedChannel;
     final hasProgram = channel?.currentPlayedProgram != null;
     final programLogo = channel?.currentPlayedProgram?.image;
@@ -563,11 +637,19 @@ class _ContentState extends ConsumerState<Content> {
           width: 32,
           decoration: BoxDecoration(
             color: Colors.white,
-            image: url.contains('svg') ? null : DecorationImage(image: NetworkImage(url), fit: BoxFit.fitWidth),
+            image: url.contains('svg')
+                ? null
+                : DecorationImage(
+                    image: NetworkImage(url), fit: BoxFit.fitWidth),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.15), width: 1.5),
+            border: Border.all(
+                color: Colors.white.withValues(alpha: 0.15), width: 1.5),
           ),
-          child: !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+          child: !url.contains('svg')
+              ? null
+              : Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.network(url)),
         ),
         if (!hasProgram)
           ClipRRect(
@@ -596,5 +678,4 @@ class _ContentState extends ConsumerState<Content> {
       ],
     );
   }
-
 }
