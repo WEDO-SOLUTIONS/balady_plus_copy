@@ -175,7 +175,8 @@ dependency_overrides:
   # https://github.com/flutter/packages/pull/8656
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
-  sentry_dio: ^9.6.0
+  sentry_flutter: 8.14.2
+  sentry_dio: 8.14.2
   analyzer: ^6.5.0
   custom_lint_builder: ^0.7.0
   analyzer_plugin: ^0.11.2
