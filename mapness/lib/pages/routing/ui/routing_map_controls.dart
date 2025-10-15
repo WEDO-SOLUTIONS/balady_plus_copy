@@ -1,7 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/eta_sharing_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
@@ -14,7 +18,8 @@ import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
-    @Deprecated('Please use sheetify outside property') this.bottomHeightNotifier,
+    @Deprecated('Please use sheetify outside property')
+    this.bottomHeightNotifier,
     super.key,
   });
 
@@ -26,11 +31,11 @@ class RoutingMapControls extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Directionality(
+            Directionality(
               textDirection: TextDirection.ltr,
               child: Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: 12,
                     top: 12,
                     right: 12,
@@ -41,15 +46,48 @@ class RoutingMapControls extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          WeatherControl(),
-                          Spacer(),
-                          IndoorControl(),
-                          Spacer(),
-                          EtaSharingControl(),
+                          const WeatherControl(),
+                          const Spacer(),
+                          const IndoorControl(),
+                          const Spacer(),
+                          const EtaSharingControl(),
+                          const Spacer(),
+                          Row(
+                            children: [
+                              uikit.AppButton(
+                                color: context.colors.backgroundSurface4,
+                                iconColor: context.colors.foregroundMuted,
+                                innerPadding: const EdgeInsets.symmetric(
+                                  horizontal: uikit.Spacing.$3x,
+                                ),
+                                onTap: () => context.router
+                                    .push(const NavigatorSettingsRoute()),
+                                buttonColorScheme:
+                                    uikit.ButtonColorScheme.neutral,
+                                primaryIcon: uikit.SystemIcons.tuning,
+                              ),
+                              const SizedBox(width: uikit.Spacing.$2x),
+                              uikit.AppButton(
+                                color: context.colors.backgroundSurface4,
+                                iconColor: context.colors.foregroundMuted,
+                                innerPadding: const EdgeInsets.symmetric(
+                                  horizontal: uikit.Spacing.$3x,
+                                ),
+                                primaryLabel: context.l10n.addStop,
+                                onTap: () => context.router
+                                    .push(const NavigatorSettingsRoute()),
+                                buttonColorScheme:
+                                    uikit.ButtonColorScheme.neutral,
+                                //TODO: set correct icon
+                                primaryIcon: Icons.add_location,
+                                textColor: context.colors.foregroundDefault,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                      Spacer(),
-                      Column(
+                      const Spacer(),
+                      const Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           LayersControl(),
