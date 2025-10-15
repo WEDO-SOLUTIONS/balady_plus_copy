@@ -1,7 +1,9 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_region_bound.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search_region_bound_provider.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -123,6 +125,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     RouteParamsPoint startPoint,
     RouteParamsPoint finishPoint,
   ) async {
+    final online = ref.read(networkStatusProvider);
     final dgisController = await ref.read(dgisControllerProvider.future);
     try {
       // Initial route search
@@ -146,6 +149,10 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
 
       return retryRoutes.routes.isNotEmpty;
     } catch (e) {
+      if (!online) {
+        throw const NoInternetException();
+      }
+
       throw const PublicTransportVisibilityIsTooFarException();
     }
   }

@@ -70,6 +70,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
     ];
 
     final errorPedestrian = widget.routes.error is WalkingDistanceException;
+    final noInternetException = widget.routes.error is NoInternetException;
 
     return Expanded(
       child: TabsRow.v2(
@@ -77,9 +78,17 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
         onIndexChanged: (index) => {},
         tabsContent: chips
             .map((chip) => TabsRowV2Content(
-                  leadingIcon: TabsV2IconData(chip.icon(context, widget.publicTransportRoutes.value ?? [], errorPedestrian: errorPedestrian)),
-                  onTap: () => widget.onChanged(chip),
-                ))
+                leadingIcon: TabsV2IconData(
+                  chip.icon(
+                    context,
+                    hasPublicTransportData: (widget.publicTransportRoutes.asData?.valueOrNull ?? []).isEmpty,
+                    isPedestrianBlocked: errorPedestrian,
+                    isOffline: noInternetException,
+                  ),
+                ),
+                onTap: () => widget.onChanged(chip),
+              ),
+            )
             .toList(),
       ),
     );

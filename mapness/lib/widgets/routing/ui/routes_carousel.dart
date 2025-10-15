@@ -46,30 +46,24 @@ class RoutesCarousel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {
-      if (publicTransportVisibility.isLoading || publicTransportRoutes.isLoading) {
-        return PathCardLoading(text: context.l10n.loading, currentType: navType);
-      }
+      final routes = publicTransportRoutes.asData?.valueOrNull;
 
-      final routes = publicTransportRoutes.value;
-
-      if (publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
+      if (publicTransportVisibility.error is NoInternetException) {
+        return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
+      } else if (publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
         return PathCardFailure.nearestMetroTooFar(
           refresh: () {
             ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
           },
-          text: 'The nearest metro is too far. \nTry another mode',
+          text: context.l10n.nearestMetroTooFar,
+          labelButton: context.l10n.goByCar,
         );
       }
 
-      if (routes == null || routes.isEmpty) {
-        return PathCardFailure.nearestMetroTooFar(
-          refresh: () {
-            ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
-          },
-          text: 'The nearest metro is too far. \nTry another mode',
-          labelButton: 'Go by car',
-        );
+      if (routes == null || routes.isEmpty || publicTransportVisibility.hasError) {
+        return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
       }
+
       final shortest = shortestIsOnlyOnePublicTransport(routes);
 
       return RouteCarouselWrapper(
@@ -145,14 +139,14 @@ class RoutesCarousel extends ConsumerWidget {
       },
       error: (error, __) {
         if (error is NoInternetException) {
-          return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.tryAgain);
+          return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
         } else if (error is WalkingDistanceException) {
           return PathCardFailure.walkingDistance(
             refresh: () {
               ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
             },
-            text: 'Walking distance is too long.\nTry another mode',
-            labelButton: 'Go by car',
+            text: context.l10n.walkingDistanceTooLong,
+            labelButton: context.l10n.goByCar,
           );
         }
 

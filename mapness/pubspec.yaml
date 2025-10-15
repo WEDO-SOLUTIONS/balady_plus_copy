@@ -39,9 +39,8 @@ dependencies:
     path: ..
 
   balady_uikit:
-    git:
-      url: git@github.com:urbi-ae/balady_uikit.git
-      ref: 504ae06dd5b3564892d2cc7d404da0ebe7c5532d
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 4.1.6
 
   sheetify: 1.0.1
 

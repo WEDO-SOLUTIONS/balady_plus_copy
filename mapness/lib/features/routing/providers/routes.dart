@@ -81,6 +81,11 @@ class Routes extends _$Routes {
       if (navType == RouteSearchOptionsMessage.pedestrian) {
         throw const WalkingDistanceException();
       }
+
+      if (!online) {
+        throw const NoInternetException();
+      }
+
       throw TimeoutException('Timeout while waiting for routes');
     }
   }

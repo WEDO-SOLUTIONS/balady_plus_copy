@@ -14,7 +14,9 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/providers/routes_update_tab.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
@@ -198,6 +200,24 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(activePublicTransportRouteProvider);
+
+    final routes = ref.watch(
+      routesProvider(
+        startPoint: widget.points[0],
+        finishPoint: widget.points[1],
+        navType: _navType.value,
+      ),
+    );
+
+    final publicTransportRoutes = ref.watch(
+      publicTransportRoutesProvider(
+        startPoint: widget.points[0],
+        finishPoint: widget.points[1],
+        navType: RouteSearchOptionsMessage.publicTransport,
+      ),
+    );
+
     final publicTransportVisibility = ref.watch(publicTransportVisibilityProvider(
       startPoint: widget.points[0],
       finishPoint: widget.points[1],
@@ -218,39 +238,30 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         },
       );
     return ValueListenableBuilder(
-      valueListenable: _isNavTypeLoading,
-      builder: (context, isLoading, child) {
-        if (isLoading) {
-          return Center(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
-            child: Loading.large(),
-          ));
-        }
-        return ValueListenableBuilder(
-          valueListenable: _navType,
-          builder: (context, navigatingType, _) => Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Spacing.$4x.heightBox,
-              RoutesCarousel(
-                points: widget.pointsWithLabel,
-                startNavigation: (route) => _startNavigation(route, navigatingType),
-                navType: navigatingType,
-                publicTransportVisibility: publicTransportVisibility,
-              ),
-              Spacing.$4x.heightBox,
-              RouteTabBar(
-                active: navigatingType,
-                onChanged: _onChanged,
-                points: widget.points,
-                publicTransportVisibility: publicTransportVisibility,
-              ),
-            ],
+      valueListenable: _navType,
+      builder: (context, navigatingType, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Spacing.$4x.heightBox,
+          RoutesCarousel(
+            points: widget.pointsWithLabel,
+            startNavigation: (route) => _startNavigation(route, navigatingType),
+            navType: navigatingType,
+            publicTransportVisibility: publicTransportVisibility,
+            routes: routes,
           ),
-        );
-      },
+          Spacing.$4x.heightBox,
+          RouteTabBar(
+            active: navigatingType,
+            onChanged: _onChanged,
+            points: widget.points,
+            publicTransportVisibility: publicTransportVisibility,
+            routes: routes,
+            publicTransportRoutes: publicTransportRoutes,
+          ),
+        ],
+      ),
     );
   }
 
