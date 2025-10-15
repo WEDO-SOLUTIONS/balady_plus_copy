@@ -240,7 +240,7 @@ dependencies:
   ############################################################
   balady_authorization:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.64
+    version: ^0.0.71
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -265,8 +265,8 @@ dependencies:
   store_redirect: ^2.0.4
 
 
-  sentry_flutter: ^9.6.0
-  sentry_dio: ^9.6.0
+  sentry_flutter: 8.14.2
+  sentry_dio: 8.14.2
 
 dependency_overrides:
   # for dio_http_cache
