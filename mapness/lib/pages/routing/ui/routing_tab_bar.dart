@@ -77,11 +77,14 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
         initialIndex: chips.indexOf(widget.active),
         onIndexChanged: (index) => {},
         tabsContent: chips
-            .map((chip) => TabsRowV2Content(
+            .map(
+              (chip) => TabsRowV2Content(
                 leadingIcon: TabsV2IconData(
                   chip.icon(
                     context,
-                    hasPublicTransportData: (widget.publicTransportRoutes.asData?.valueOrNull ?? []).isEmpty,
+                    hasPublicTransportData:
+                        (widget.publicTransportRoutes.asData?.valueOrNull ?? [])
+                            .isEmpty,
                     isPedestrianBlocked: errorPedestrian,
                     isOffline: noInternetException,
                   ),

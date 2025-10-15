@@ -40,7 +40,7 @@ class RoutesCarousel extends StatelessWidget {
           biggestWidth: constraints.biggest.width,
           navType: navType,
           publicTransportVisibility: publicTransportVisibility,
-            routes: routes,
+          routes: routes,
         ),
       );
 }
@@ -75,7 +75,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: widget.navType.cardWidthWithPadding / widget.biggestWidth,
+      viewportFraction:
+          widget.navType.cardWidthWithPadding / widget.biggestWidth,
     );
   }
 
@@ -113,7 +114,10 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
     _activeRoute = index;
 
-    ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
+    ref
+        .read(dgisControllerProvider)
+        .value
+        ?.setPublicTransportActiveRoute(index);
   }
 
   void _refresh() {
@@ -144,7 +148,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       ..setLatitude(finishLocation.latitude)
       ..setLongitude(finishLocation.longitude);
 
-    final startPointExists = startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
+    final startPointExists =
+        startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
     final startPointEta = startPointExists
         ? startPoint!.etaPoint
         : EtaRoutePoint(
@@ -152,7 +157,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
             lon: location.longitude,
             label: startPoint?.label,
           );
-    final finishPointExists = finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
+    final finishPointExists =
+        finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
     final finishPointEta = finishPointExists
         ? finishPoint!.etaPoint
         : EtaRoutePoint(
