@@ -43,6 +43,7 @@ class RoutesCarousel extends ConsumerWidget {
   final RouteParamsPointWithLabel? destination;
   final RouteParamsPointWithLabel? startPoint;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {

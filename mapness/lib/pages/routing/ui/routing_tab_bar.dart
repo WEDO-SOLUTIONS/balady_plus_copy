@@ -82,9 +82,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
                 leadingIcon: TabsV2IconData(
                   chip.icon(
                     context,
-                    hasPublicTransportData:
-                        (widget.publicTransportRoutes.asData?.valueOrNull ?? [])
-                            .isEmpty,
+                    hasPublicTransportData: (widget.publicTransportRoutes.asData?.valueOrNull ?? []).isEmpty,
                     isPedestrianBlocked: errorPedestrian,
                     isOffline: noInternetException,
                   ),

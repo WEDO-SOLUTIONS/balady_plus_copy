@@ -51,8 +51,7 @@ class RoutingInfo extends ConsumerStatefulWidget {
 }
 
 class _RoutingInfoState extends ConsumerState<RoutingInfo> {
-  final ValueNotifier<RouteSearchOptionsMessage> _navType =
-      ValueNotifier(RouteSearchOptionsMessage.car);
+  final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(RouteSearchOptionsMessage.car);
 
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
   bool _navigationStarted = false;
@@ -61,8 +60,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (widget.points.firstOrNull != null &&
-          widget.points.lastOrNull != null) {
+      if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
         unawaited(_calculateNavigationType(null));
       } else {
         Position? location = ref.read(locationProvider);
@@ -220,8 +218,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       ),
     );
 
-    final publicTransportVisibility =
-        ref.watch(publicTransportVisibilityProvider(
+    final publicTransportVisibility = ref.watch(publicTransportVisibilityProvider(
       startPoint: widget.points[0],
       finishPoint: widget.points[1],
     ));
@@ -268,8 +265,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
   }
 
-  Future<void> _startNavigation(
-      RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
+  Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
     _navigationStarted = true;
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
@@ -294,9 +290,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           .removeAllMarkers();
     }
 
-    ref
-        .read(appAnalyticsProvider)
-        .transportModeSelected(type: navigatingType.name);
+    ref.read(appAnalyticsProvider).transportModeSelected(type: navigatingType.name);
 
     Metrics.logEventAdvanced(
       MetricsConstants.routesKeys.routeSelectionGoButton,
@@ -305,18 +299,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
 
     // log advert analytics event
-    ref
-        .read(advertMetricsProvider.notifier)
-        .sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
     ref.read(advertMetricsProvider.notifier).sendEvent(
           AdvertMetricsKeys.journeyStartedUnique,
           isUniquePerSession: true,
         );
 
     ref.read(appAnalyticsProvider).navigationStarted(
-          originLocation: widget.pointsWithLabel.length > 1
-              ? widget.pointsWithLabel.first.label
-              : '',
+          originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
           destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
           originCity: originCity.name,
           destinationCity: destinationCity.name,
