@@ -70,12 +70,15 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required bool isDark,
     bool withLabel = true,
     bool isRtl = true,
-    Future<void> Function(ItemMarkerInfoMessage? data, int index)? onTapAnalytic,
+    Future<void> Function(ItemMarkerInfoMessage? data, int index)?
+        onTapAnalytic,
   }) async {
     final itemMarkerInfos = this.itemMarkerInfos;
     if (itemMarkerInfos == null) {
       return [];
     }
+
+    print('itemMarkerInfos: ${itemMarkerInfos.length}');
 
     final markers = <Marker>[];
     final existingPositions = <LatLng>{};
@@ -83,7 +86,8 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     for (final item in itemMarkerInfos.indexed) {
       final markerInfo = item.$2;
       final position = markerInfo.geoPoint;
-      final latLng = LatLng(latitude: position.latitude, longitude: position.longitude);
+      final latLng =
+          LatLng(latitude: position.latitude, longitude: position.longitude);
 
       if (existingPositions.contains(latLng)) {
         continue;
@@ -96,7 +100,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
       final rubrics = Set<int>.from(cleanupRubrics);
       final icon = (await iconResolver(rubrics))?.iconPath.markerIcon(size: 32);
 
-      final text = withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null;
+      final text = withLabel && markerInfo.title != null
+          ? _breakLineInTwo(_removeComma(markerInfo.title!))
+          : null;
       markers.add(
         Marker(
           id: objectId?.toString() ?? _invalidMarkerId,
@@ -124,12 +130,14 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
               strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
               fontSize: 13,
-              fontName: text.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
+              fontName:
+                  text.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
               textOffset: 4,
               strokeWidth: 1,
               textPlacement: MarkerTextPlacementMessage(
-                placement:
-                    text.containsArabic() || isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
+                placement: text.containsArabic() || isRtl
+                    ? TextPlacementMessage.leftCenter
+                    : TextPlacementMessage.rightCenter,
               ),
             ),
             position: position,
@@ -155,10 +163,12 @@ extension IconPathFromMapMarkersType on MapMarkersType {
         MapMarkersType.markets => isSaudiDay
             ? Assets.icons.svg.placesNewSaudiDay.icMarkets.keyName
             : Assets.icons.svg.placesNew.icMarkets.keyName,
-        MapMarkersType.beach =>
-          isSaudiDay ? Assets.icons.svg.placesNewSaudiDay.icBeach.keyName : Assets.icons.svg.placesNew.icBeach.keyName,
-        MapMarkersType.gym =>
-          isSaudiDay ? Assets.icons.svg.placesNewSaudiDay.icGym.keyName : Assets.icons.svg.placesNew.icGym.keyName,
+        MapMarkersType.beach => isSaudiDay
+            ? Assets.icons.svg.placesNewSaudiDay.icBeach.keyName
+            : Assets.icons.svg.placesNew.icBeach.keyName,
+        MapMarkersType.gym => isSaudiDay
+            ? Assets.icons.svg.placesNewSaudiDay.icGym.keyName
+            : Assets.icons.svg.placesNew.icGym.keyName,
         MapMarkersType.gasStation => isSaudiDay
             ? Assets.icons.svg.placesNewSaudiDay.icGasstationLtr.keyName
             : Assets.icons.svg.placesNew.icGasstationLtr.keyName,
@@ -180,17 +190,21 @@ extension IconPathFromMapMarkersType on MapMarkersType {
         MapMarkersType.mosques => isSaudiDay
             ? Assets.icons.svg.placesNewSaudiDay.icMosques.keyName
             : Assets.icons.svg.placesNew.icMosques.keyName,
-        MapMarkersType.parks =>
-          isSaudiDay ? Assets.icons.svg.placesNewSaudiDay.icPark.keyName : Assets.icons.svg.placesNew.icPark.keyName,
-        MapMarkersType.qibla =>
-          isSaudiDay ? Assets.icons.svg.placesNewSaudiDay.icQibla.keyName : Assets.icons.svg.placesNew.icQibla.keyName,
+        MapMarkersType.parks => isSaudiDay
+            ? Assets.icons.svg.placesNewSaudiDay.icPark.keyName
+            : Assets.icons.svg.placesNew.icPark.keyName,
+        MapMarkersType.qibla => isSaudiDay
+            ? Assets.icons.svg.placesNewSaudiDay.icQibla.keyName
+            : Assets.icons.svg.placesNew.icQibla.keyName,
         MapMarkersType.restaurants => isSaudiDay
             ? Assets.icons.svg.placesNewSaudiDay.icRestaurant.keyName
             : Assets.icons.svg.placesNew.icRestaurant.keyName,
-        MapMarkersType.wc =>
-          isSaudiDay ? Assets.icons.svg.placesNewSaudiDay.icWc.keyName : Assets.icons.svg.placesNew.icWc.keyName,
-        MapMarkersType.dentalCenters =>
-          isSaudiDay ? Assets.icons.svg.placesNewSaudiDay.icTooth.keyName : Assets.icons.svg.placesNew.icTooth.keyName,
+        MapMarkersType.wc => isSaudiDay
+            ? Assets.icons.svg.placesNewSaudiDay.icWc.keyName
+            : Assets.icons.svg.placesNew.icWc.keyName,
+        MapMarkersType.dentalCenters => isSaudiDay
+            ? Assets.icons.svg.placesNewSaudiDay.icTooth.keyName
+            : Assets.icons.svg.placesNew.icTooth.keyName,
         MapMarkersType.schools => isSaudiDay
             ? Assets.icons.svg.placesNewSaudiDay.icSchoolLtr.keyName
             : Assets.icons.svg.placesNew.icSchoolLtr.keyName,
@@ -287,8 +301,9 @@ extension BigIconPath on String {
       'ic_restaurant.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icRestaurant.keyName
           : Assets.icons.svg.placesBigNew.icRestaurant.keyName,
-      'ic_wc.svg':
-          isSaudiPath ? Assets.icons.svg.placesBigNewSaudiDay.icWc.keyName : Assets.icons.svg.placesBigNew.icWc.keyName,
+      'ic_wc.svg': isSaudiPath
+          ? Assets.icons.svg.placesBigNewSaudiDay.icWc.keyName
+          : Assets.icons.svg.placesBigNew.icWc.keyName,
       'ic_tooth.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icTooth.keyName
           : Assets.icons.svg.placesBigNew.icTooth.keyName,
@@ -342,6 +357,7 @@ extension BigIconPath on String {
           : Assets.icons.svg.placesBigNew.icStairs.keyName,
     };
 
-    return bigIcons[iconName] ?? (isSaudiPath ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew);
+    return bigIcons[iconName] ??
+        (isSaudiPath ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew);
   }
 }
