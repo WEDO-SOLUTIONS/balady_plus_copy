@@ -757,6 +757,7 @@ class RouteEditorRouteParamsMessage {
     this.options,
     this.searchParams,
     this.showOnlyActiveRoute,
+    this.intermediatePoints,
   );
 
   final RouteEditorRoutePointMessage? startPoint;
@@ -765,6 +766,7 @@ class RouteEditorRouteParamsMessage {
   final RouteSearchOptionsMessage options;
   final CarRouteSearchOptionParamsMessage? searchParams;
   final bool? showOnlyActiveRoute;
+  final List<RouteEditorRoutePointMessage>? intermediatePoints;
 }
 
 class CarRouteSearchOptionParamsMessage {
