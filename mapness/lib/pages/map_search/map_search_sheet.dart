@@ -57,10 +57,8 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   ConsumerState<MapSearchSheet> createState() => _MapSearchSheetState();
 }
 
-class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
-    with WidgetsBindingObserver {
-  late final MultiStateSheetController<ThreeStateSheet>
-      _multiStateSheetController;
+class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
+  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -70,8 +68,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
 
   ClusteringMapObjectManager? _clustering;
 
-  final outsideOpacityDelegate =
-      StatefulSheetDelegate.func<double, ThreeStateSheet>(
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>(
     (controller) {
       final fraction = controller.fraction;
       final state = controller.state;
@@ -93,8 +90,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
       }),
       stateMapper: const LandingStateMapper(),
     );
-    _keyboardVisible =
-        kbVisibilityController.onChange.listen(_onKeyboardToggle);
+    _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -178,19 +174,16 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
               outsideOpacityDelegate: outsideOpacityDelegate,
               header: Container(
                 color: contentColor,
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x)
-                    .copyWith(bottom: Spacing.$4x),
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
                 child: MapSearchBar(
                   requestFocus: widget.requestFocus,
                   onClose: onClose,
                 ),
               ),
-              outside: MapSearchSheetControls(
-                  currentSize: currentSize, collapsedSize: collapsedHeight),
+              outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
               content: [
                 MapSearchContent(
-                  bottomSheetContentScrollController:
-                      _multiStateSheetController,
+                  bottomSheetContentScrollController: _multiStateSheetController,
                 ),
               ],
             ),
@@ -206,8 +199,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
     MapObjectManager mapObjectManager,
   ) async {
     if (searchState is SearchStateResults &&
-        (prevState is! SearchStateResults ||
-            prevState.results != searchState.results)) {
+        (prevState is! SearchStateResults || prevState.results != searchState.results)) {
       final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier);
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
@@ -216,6 +208,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
       final markers = await searchState.results.getMarkers(
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
+        advancedIconResolver: mapMarkerMapper.getMarkerPath,
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
@@ -240,20 +233,16 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
         },
       );
       if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
-        ref
-            .read(searchInRectProvider(_scope).notifier)
-            .searchInThisAreaSwitch(value: false);
+        ref.read(searchInRectProvider(_scope).notifier).searchInThisAreaSwitch(value: false);
         await mapObjectManager.removeAllMarkers();
       }
       await mapObjectManager.addMarkers(markers);
-    } else if (searchState is SearchStateEmpty ||
-        searchState is SearchStateHistory && searchState.searchText.isEmpty) {
+    } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory && searchState.searchText.isEmpty) {
       await mapObjectManager.removeAllMarkers();
     }
   }
 
-  SimpleClusterOptionsMessage _renderCluster(int objectCount) =>
-      SimpleClusterOptionsMessage(
+  SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
         icon: SaudiNationalDay.isNow()
             ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
             : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
@@ -292,8 +281,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet>
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState ||
-        _multiStateSheetController.state == ThreeStateSheet.expanded) {
+    if (!kbState || _multiStateSheetController.state == ThreeStateSheet.expanded) {
       return;
     }
 

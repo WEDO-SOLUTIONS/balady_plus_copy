@@ -1,7 +1,8 @@
-import 'dart:async';
-
 import 'package:dgis_map/library.dart' as sdk;
+import 'package:dgis_map/library.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -26,7 +27,8 @@ class CityscapeConfig {
 /// `false` otherwise.
 @riverpod
 class Cityscape extends _$Cityscape {
-  Timer? _timer;
+  /// Object IDs for Riyadh International Convention & Exhibition Center
+  static const Set<int> _cityscapeObjectIds = {70030076199202072, 70030076199202166};
 
   // Riyadh International Convention & Exhibition Center,
   // Riyadh, Ar-Riyad, Riyadh, Saudi Arabia (N 24° 45' 8.46", E 46° 43' 34.5828").
@@ -34,6 +36,10 @@ class Cityscape extends _$Cityscape {
     latitude: 24.750968,
     longitude: 46.725982,
   );
+
+  MarkerIconMessage get customPin => Assets.images.icCityscapePin.keyName.resolvedMarkerIcon(size: 58);
+
+  String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
   @override
   bool build() {
@@ -43,69 +49,26 @@ class Cityscape extends _$Cityscape {
       return true;
     }
 
-    // Start the periodic timer to update the state every 15 minutes
-    _startPeriodicUpdate();
-
-    // Set up cleanup when the provider is disposed
-    ref.onDispose(() {
-      _timer?.cancel();
-    });
-
     // Return the initial state
     return _isCurrentTimeInRange();
-  }
-
-  /// Starts a periodic timer that updates the state every 15 minutes
-  void _startPeriodicUpdate() {
-    _timer?.cancel();
-
-    final now = DateTime.now();
-
-    // If the current time is more than 2 hours before the start or after end date, don't start the timer
-    final isBeforeStart = now
-        .isBefore(CityscapeConfig.startDate.subtract(const Duration(hours: 2)));
-    final isAfterEnd =
-        now.isAfter(CityscapeConfig.endDate.add(const Duration(hours: 2)));
-    if (isBeforeStart || isAfterEnd) {
-      return;
-    }
-
-    _timer = Timer.periodic(
-      CityscapeConfig.updateInterval,
-      (_) {
-        // Update the state with the current check result
-        state = _isCurrentTimeInRange();
-      },
-    );
   }
 
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) &&
-        now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
   }
+
+  /// Checks if the custom pin should be shown, based on the object ID
+  bool showCustomPin(int objectId) => _cityscapeObjectIds.contains(objectId) && state;
 
   /// Manually triggers an update of the state
   void refresh() {
     state = _isCurrentTimeInRange();
   }
 
-  /// Stops the periodic timer
-  void stopTimer() {
-    _timer?.cancel();
-    _timer = null;
-  }
-
-  /// Restarts the periodic timer
-  void restartTimer() {
-    _startPeriodicUpdate();
-  }
-
   void openThePlace() {
-    ref
-        .read(cameraPositionProvider.notifier)
-        .animateTo(sdk.CameraPositionMessage(
+    ref.read(cameraPositionProvider.notifier).animateTo(sdk.CameraPositionMessage(
           point: center,
           zoom: 18.0,
           tilt: 0.0,
@@ -122,8 +85,7 @@ class Cityscape extends _$Cityscape {
     }
 
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) &&
-        now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Provider that returns the remaining time until Saudi National Day

@@ -1,5 +1,4 @@
 class IwishEntityVariant {
-
   IwishEntityVariant({
     required this.id,
     required this.title,

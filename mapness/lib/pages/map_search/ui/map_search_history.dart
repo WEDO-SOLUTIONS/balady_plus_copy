@@ -66,24 +66,17 @@ class MapSearchHistory extends ConsumerWidget {
                 onBarrierTap: () => context.router.popForced(true),
               ),
             );
-            await ref
-                .read(searchHistoryProvider(scope.value).notifier)
-                .delete(item);
+            await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);
 
             if (result != null && result as bool) {
-              await ref
-                  .read(searchProvider(scope.value).notifier)
-                  .searchByText(item.title);
+              await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
             }
           }
         } else {
-          await ref
-              .read(searchProvider(scope.value).notifier)
-              .searchByText(item.title);
+          await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
-        final bssHistoryHandlingType = item.objectId != null
-            ? BssHistoryHandlingType.openRecord
-            : BssHistoryHandlingType.searchSuggestedText;
+        final bssHistoryHandlingType =
+            item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.action,

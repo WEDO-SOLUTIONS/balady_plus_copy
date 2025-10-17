@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class VerticalScrollListener extends StatelessWidget {
-
   const VerticalScrollListener({
     required this.onVerticalDragUpdate,
     required this.onVerticalDragEnd,

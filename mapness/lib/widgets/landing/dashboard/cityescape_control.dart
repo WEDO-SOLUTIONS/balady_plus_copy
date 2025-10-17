@@ -32,8 +32,7 @@ class CityscapeGlobal extends StatelessWidget {
             Align(
               alignment: Alignment.bottomLeft,
               child: Padding(
-                padding: const EdgeInsets.only(
-                    left: Spacing.$6x, bottom: Spacing.$1_5x),
+                padding: const EdgeInsets.only(left: Spacing.$6x, bottom: Spacing.$1_5x),
                 child: Transform.translate(
                   // transform y to move it down, cut off the bottom by design
                   offset: const Offset(0, 25),
@@ -53,8 +52,7 @@ class _CityescapeBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) => DecoratedBox(
         decoration: const BoxDecoration(
-          borderRadius:
-              BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
           color: Color(0xFF6B57E0),
         ),
         child: Align(
