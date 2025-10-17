@@ -554,28 +554,30 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
     final position = ref.read(locationProvider);
 
-    ToastOverlay.of(context).show(
-      title: ctx.l10n.youWantSaveParking,
-      actions: [
-        ToastAction(title: ctx.l10n.feedbackBreaksSheetClose),
-        ToastAction(
-          title: ctx.l10n.save,
-          onTap: () {
-            rootNavigatorKey.currentContext?.router.push(
-              ParkingSpotRoute(
-                isEdit: !parkingManage,
-                markerPosition: GeoPointWithElevationMessage(
-                  latitude: position?.latitude ?? 0,
-                  longitude: position?.longitude ?? 0,
-                  elevation: 1,
+    if (widget.navType == RouteSearchOptionsMessage.car) {
+      ToastOverlay.of(context).show(
+        title: ctx.l10n.youWantSaveParking,
+        actions: [
+          ToastAction(title: ctx.l10n.feedbackBreaksSheetClose),
+          ToastAction(
+            title: ctx.l10n.save,
+            onTap: () {
+              rootNavigatorKey.currentContext?.router.push(
+                ParkingSpotRoute(
+                  isEdit: !parkingManage,
+                  markerPosition: GeoPointWithElevationMessage(
+                    latitude: position?.latitude ?? 0,
+                    longitude: position?.longitude ?? 0,
+                    elevation: 1,
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
-      ],
-      icon: ToastIconAsset(Assets.icons.svg.icParkingSpot.keyName),
-    );
+              );
+            },
+          ),
+        ],
+        icon: ToastIconAsset(Assets.icons.svg.icParkingSpot.keyName),
+      );
+    }
 
     if (!mounted) {
       return;

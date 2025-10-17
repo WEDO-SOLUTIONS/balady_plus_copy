@@ -8,7 +8,6 @@ import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.DistanceSpan
-import androidx.car.app.model.DurationSpan
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
@@ -17,7 +16,6 @@ import androidx.car.app.navigation.model.MapWithContentTemplate
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
-import com.dgis.map.android_auto.NavigationScreen
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +33,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.math.min
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class FavouritesPreviewScreen(
     carContext: CarContext,
@@ -196,16 +196,7 @@ class FavouritesPreviewScreen(
 
     private fun buildTitleWithEstimate(title: String, estimate: Duration?): CharSequence {
         if (estimate == null) return title
-
-        val result = SpannableString("$title •  ")
-        val spanStart = result.length
-        result.setSpan(
-            DurationSpan.create(TimeUnit.SECONDS.toSeconds(estimate.inSeconds)),
-            spanStart - 1,
-            spanStart,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        return result
+        return "$title • ${getDurationString(estimate.inSeconds)}"
     }
 
     private fun getEstimates() {
@@ -265,6 +256,32 @@ class FavouritesPreviewScreen(
             withContext(Dispatchers.Main) {
                 this@FavouritesPreviewScreen.homeWorkEstimates = homeWorkEstimates
                 invalidate()
+            }
+        }
+    }
+
+    fun getDurationString(seconds: Long): String {
+        val duration = seconds.toDuration(DurationUnit.SECONDS)
+        val hours = duration.inWholeHours
+        val minutes = duration.inWholeMinutes
+        val remainingMinutes = minutes % 60
+
+        val hoursString = getString(R.string.hoursShort)
+        val minutesString = getString(R.string.minutesShort)
+
+        return when {
+            hours > 0 -> {
+                var time = "$hours $hoursString"
+                if (remainingMinutes > 0) {
+                    time += " $remainingMinutes $minutesString"
+                }
+                time
+            }
+            minutes <= 1 -> {
+                "1 $minutesString"
+            }
+            else -> {
+                "$remainingMinutes $minutesString"
             }
         }
     }

@@ -4045,9 +4045,11 @@ digraph "" {
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/entities/path_nav/models/path_nav_state.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/features/path_nav/providers/path_nav_eta.dart";
+  "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/features/path_nav/providers/path_nav_message.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/features/share_eta/ui/share_eta_btn.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/pages/navigator_settings/utils/sound_type_extension.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/shared/providers/map/sound_settings.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/shared/providers/media_query.dart";
   "/lib/widgets/path_nav/ui/navi_sheet_panel.dart" -> "/lib/widgets/path_nav/ui/better_route_button.dart";
