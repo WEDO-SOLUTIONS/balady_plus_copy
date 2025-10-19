@@ -1,5 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -9,6 +11,8 @@ import 'package:mapness/shared/ui/toast/app_locale.dart';
 
 part 'toast_transition.dart';
 part 'toast_widget.dart';
+part 'models/toast_action.dart';
+part 'models/toast_icon.dart';
 
 /// A widget that overlays a toast on top of its child widget.
 class ToastOverlay extends StatefulWidget {
@@ -60,13 +64,8 @@ class ToastOverlayState extends State<ToastOverlay> {
   void show({
     required String title,
     TextStyle? titleStyle,
-    String? firstText,
-    String? secondText,
-    VoidCallback? onFirstTap,
-    VoidCallback? onSecondTap,
-    String? iconAsset,
-    IconData? iconData,
-    Color? iconColor,
+    List<ToastAction>? actions,
+    ToastIcon? icon,
     bool? isDismissible,
     bool isClosable = false,
     bool isFlipped = false,
@@ -90,15 +89,10 @@ class ToastOverlayState extends State<ToastOverlay> {
               hide: hide,
               title: title,
               titleStyle: titleStyle,
-              firstText: firstText,
-              onFirstTap: onFirstTap,
-              secondText: secondText,
-              onSecondTap: onSecondTap,
-              iconAsset: iconAsset,
+              actions: actions,
               displayDuration: displayDuration,
               transitionDuration: transitionDuration,
-              iconData: iconData,
-              iconColor: iconColor,
+              icon: icon,
             ),
           ),
         ),
@@ -129,9 +123,13 @@ class ToastOverlayState extends State<ToastOverlay> {
   }) {
     show(
       title: context.l10n.failedToLoadData,
-      firstText: context.l10n.tryAgain,
-      onFirstTap: onRetry,
-      iconData: SystemIcons.noServer,
+      actions: [
+        ToastAction(
+          title: context.l10n.tryAgain,
+          onTap: onRetry,
+        ),
+      ],
+      icon: const ToastIconData(SystemIcons.noServer),
     );
   }
 
@@ -156,9 +154,13 @@ class ToastOverlayState extends State<ToastOverlay> {
   }) {
     show(
       title: context.l10n.youDontSeemToHaveInternet,
-      firstText: context.l10n.tryAgain,
-      onFirstTap: onRetry,
-      iconData: SystemIcons.offline,
+      actions: [
+        ToastAction(
+          title: context.l10n.tryAgain,
+          onTap: onRetry,
+        ),
+      ],
+      icon: const ToastIconData(SystemIcons.offline),
     );
   }
 
@@ -182,8 +184,10 @@ class ToastOverlayState extends State<ToastOverlay> {
       isDismissible: true,
       isClosable: true,
       isFlipped: true,
-      iconData: General16Icons.infoCircleFill,
-      iconColor: context.colors.accentDefault,
+      icon: ToastIconData(
+        General16Icons.infoCircleFill,
+        color: context.colors.accentDefault,
+      ),
       displayDuration: const Duration(seconds: 20),
     );
   }

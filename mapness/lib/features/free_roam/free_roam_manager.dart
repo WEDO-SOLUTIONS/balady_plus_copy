@@ -12,6 +12,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
@@ -33,12 +34,7 @@ class _FreeRoamManager extends _$FreeRoamManager {
     await dgisController.setNavigatorVoice(ref.read(navigatorVoiceProvider));
 
     await dgisController.freeRoamController.start(
-      SpeedRangeZoom(
-        maxSpeedRange: 5,
-        minSpeedRange: 0,
-        routeDistanceMillimeters: 0,
-        styleZoomValue: 16.5,
-      ),
+      NavigationConstants.navigationSpeedRangeZooms,
     );
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
     await dgisController.followNavigation();
@@ -62,12 +58,7 @@ class _FreeRoamManager extends _$FreeRoamManager {
     try {
       await dgisController.restoreNavigationState(
         state,
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
+        NavigationConstants.navigationSpeedRangeZooms,
       );
     } catch (e) {
       onError();

@@ -18,7 +18,7 @@ import kotlin.math.min
 class FavouritesScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
-    favourites: List<FavouriteItemMessage>,
+    favourites: List<FavouriteItem>,
 ) : Screen(carContext) {
 
     private val itemsLimit = carContext.getCarService(ConstraintManager::class.java)
@@ -67,7 +67,7 @@ class FavouritesScreen(
             .setSingleList(itemList).build()
     }
 
-    private fun onFavouriteTap(item: FavouriteItemMessage) {
+    private fun onFavouriteTap(item: FavouriteItem) {
         screenManager.push(
             RoutePreviewScreen(carContext, mapController, item.toRoutePreviewParams())
         )

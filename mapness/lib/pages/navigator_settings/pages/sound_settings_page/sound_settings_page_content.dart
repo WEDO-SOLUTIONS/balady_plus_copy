@@ -103,32 +103,34 @@ class SoundSettingsPageContent extends ConsumerWidget {
                 ),
               ],
             ),
-            ContentRow(
-              options: ContentRowOptions(
-                titleStyle: textStyles.bodyLargeRegular.copyWith(
-                  color: colors.foregroundDefault,
+            ContentWrapper(
+              color: colors.backgroundSurface4,
+              children: [
+                ContentRow(
+                  options: ContentRowOptions(
+                    titleStyle: textStyles.bodyLargeRegular.copyWith(
+                      color: colors.foregroundDefault,
+                    ),
+                    title: l10n.promptsVolume,
+                  ),
                 ),
-                wrapperColor: colors.backgroundSurface4,
-                wrapperEnabled: true,
-                title: l10n.promptsVolume,
-                padding: const EdgeInsets.symmetric(
-                  vertical: Spacing.$3x,
-                  horizontal: Spacing.$4x,
+                Padding(
+                  padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+                  child: SegmentTabsButton(
+                    tabsContent: [
+                      TabsRowV2Content(title: l10n.segmentButtonMinimumTitle),
+                      TabsRowV2Content(title: l10n.segmentButtonQuietTitle),
+                      TabsRowV2Content(title: l10n.segmentButtonStandardTitle),
+                    ],
+                    onIndexChanged: (value) {
+                      if (value != null) {
+                        soundSettingsNotifier.toggleNavigatorVolume(currentPromptVolumeIndex: value);
+                      }
+                    },
+                    initialIndex: soundSettingsModel.promptsVolumeIndex,
+                  ),
                 ),
-                bottomWidget: SegmentTabsButton(
-                  tabsContent: [
-                    TabsRowV2Content(title: l10n.segmentButtonMinimumTitle),
-                    TabsRowV2Content(title: l10n.segmentButtonQuietTitle),
-                    TabsRowV2Content(title: l10n.segmentButtonStandardTitle),
-                  ],
-                  onIndexChanged: (value) {
-                    if (value != null) {
-                      soundSettingsNotifier.toggleNavigatorVolume(currentPromptVolumeIndex: value);
-                    }
-                  },
-                  initialIndex: soundSettingsModel.promptsVolumeIndex,
-                ),
-              ),
+              ],
             ),
             ContentColumn(
               headerTitle: l10n.eventAlert,

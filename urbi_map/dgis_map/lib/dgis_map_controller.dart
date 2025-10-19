@@ -539,10 +539,10 @@ class DgisMapController {
   }
 
   /// Starts navigation
-  Future<void> startNavigation(SpeedRangeZoom speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
+  Future<void> startNavigation(List<SpeedRangeZoom> speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
 
   /// Starts navigation simulation.
-  Future<void> startNavigationSimulation(SpeedRangeZoom speedRangeZoom) =>
+  Future<void> startNavigationSimulation(List<SpeedRangeZoom> speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
 
   /// Starts navigation simulation settings.
@@ -552,7 +552,7 @@ class DgisMapController {
   Future<Uint8List> saveNavigationState() => _instance.saveNavigationState();
 
   /// Restores navigation state.
-  Future<void> restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom) =>
+  Future<void> restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom) =>
       _instance.restoreNavigationState(state, speedRangeZoom);
 
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
@@ -564,6 +564,14 @@ class DgisMapController {
   /// Controls sounds in navigation.
   Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
       _instance.toggleVoiceInstruction(toggleType: toggleType);
+
+  /// Notifies CarPlay and Android Auto about favourites state changes.
+  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState) =>
+      _instance.favouritesUpdateNotification(favouritesState);
+
+  /// Notifies CarPlay and Android Auto about authorization state changes.
+  Future<void> authorizationNotification({required bool isAuthorized}) =>
+      _instance.authorizationNotification(isAuthorized: isAuthorized);
 
   /// Used to setup platform. Should be called when permission was granted.
   /// Does not request permission by itself.

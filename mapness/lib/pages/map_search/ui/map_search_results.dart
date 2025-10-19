@@ -69,21 +69,21 @@ class MapSearchResults extends ConsumerWidget {
       if (item.markerPosition == null) {
         debugPrint('GeoPosition for this object is null');
       }
-      await ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.placeCardMini,
-                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                placeItem: item.toBss(index),
-                searchResultList: results.toBss(),
-              ),
-            ),
-          );
+      await BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.placeCardMini,
+            ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+            position: index + 1,
+          ),
+          payload: BssPayload(
+            placeItem: item.toBss(index),
+            searchResultList: results.toBss(),
+          ),
+        ),
+      );
     }
 
     return Padding(

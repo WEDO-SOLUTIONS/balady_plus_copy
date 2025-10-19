@@ -36,8 +36,8 @@ class BssRequest {
     this.actionType,
   });
 
-  /// Message code. For Balady - 434
-  static const int type = 434;
+  /// Message code. For Balady - 437
+  static const int type = 437;
 
   /// Globally unique event identifier in "uuid" format
   /// Note: We don't use it as parameter, because it's generated on the fly in [toJsonWithIds]
@@ -88,7 +88,7 @@ class BssRequest {
       'eventId': eventId.toString(),
       'eventOrdinal': eventOrdinal,
       'eventType': eventType.name,
-      'timestamp': timestamp.toString(),
+      'timestamp': timestamp,
       'uiElement': uiElement.toJson(),
       'map': map.toJson(),
       'common': common.toJson(),
