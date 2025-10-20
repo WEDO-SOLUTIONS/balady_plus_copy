@@ -116,7 +116,7 @@ class RoadPanelSheetPage extends HookConsumerWidget {
           ContentContainer(
             child: ContentRow(
               onTap: () {
-                context.router.push(NavigatorSettingsRoute());
+                context.router.push(const NavigatorSettingsRoute());
               },
               options: ContentRowOptions(
                 leadingIcon: Icon(

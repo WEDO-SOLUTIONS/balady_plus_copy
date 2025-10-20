@@ -43,7 +43,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
         child: Row(
           children: [
             AppButton(
-              onTap: () => context.router.push(NavigatorSettingsRoute()),
+              onTap: () => context.router.push(const NavigatorSettingsRoute()),
               buttonColorScheme: ButtonColorScheme.neutral,
               buttonType: ButtonType.secondary,
               size: ButtonSize.small,
