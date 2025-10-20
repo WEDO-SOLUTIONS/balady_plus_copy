@@ -623,7 +623,7 @@ packages:
     source: hosted
     version: "0.7.0"
   custom_lint_visitor:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: custom_lint_visitor
       sha256: "8aeb3b6ae2bb765e7716b93d1d10e8356d04e0ff6d7592de6ee04e0dd7d6587d"

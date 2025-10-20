@@ -21,6 +21,7 @@ class Routes extends _$Routes {
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
+    List<RouteEditorRoutePointMessage>? intermediatePoints,
   }) async {
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
@@ -36,6 +37,7 @@ class Routes extends _$Routes {
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      intermediatePoints: intermediatePoints,
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
@@ -77,6 +79,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
     Duration? timeout,
+    List<RouteEditorRoutePointMessage>? intermediatePoints,
   }) async {
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
@@ -91,6 +94,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      intermediatePoints: intermediatePoints,
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,

@@ -48,7 +48,7 @@ class LanguageRow extends ConsumerWidget {
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
       child: Material(
-        color: context.colors.backgroundSurface4,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           bottomLeft: border ? radius12 : radiusZero,
           bottomRight: (border ? radius12 : radiusZero),
@@ -62,17 +62,11 @@ class LanguageRow extends ConsumerWidget {
             ref.read(appLanguageProvider.notifier).update(language);
           },
           child: ContentRow(
-            options: ContentRowOptions(
-              leadingIcon: leadingIcon,
-              title: language.title,
-              actionWidget: ContentRowActionOptions(
-                actionIcon: AppIcons(
-                  iconData: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
-                  size: 24,
-                  color: currentLanguage == language ? context.colors.accentDefault : context.color.surfaceContrastHigh,
-                  // : context.colors.backgroundSurface4,
-                ),
-              ),
+            leading: leadingIcon,
+            text: ContentRowTextOptions(title: language.title),
+            trailing: ContentRowTextTrailingOptions(
+              icon: currentLanguage == language ? GeneralIcons.bulletCircleSolid : GeneralIcons.circleNull,
+              iconColor: currentLanguage == language ? context.colors.accentDefault : context.colors.foregroundMuted,
             ),
           ),
         ),

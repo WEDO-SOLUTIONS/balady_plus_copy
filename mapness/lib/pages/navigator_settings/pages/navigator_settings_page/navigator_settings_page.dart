@@ -9,7 +9,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 @RoutePage()
 class NavigatorSettingsPage extends ConsumerWidget {
-  const NavigatorSettingsPage({super.key});
+  const NavigatorSettingsPage({this.showDarkModeSection = true, super.key});
+  final bool showDarkModeSection;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
@@ -31,7 +32,9 @@ class NavigatorSettingsPage extends ConsumerWidget {
                     icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),
-                body: const NavigatorSettingsPageContent(),
+                body: NavigatorSettingsPageContent(
+                  showDarkModeSection: showDarkModeSection,
+                ),
               ),
             ),
           ),
