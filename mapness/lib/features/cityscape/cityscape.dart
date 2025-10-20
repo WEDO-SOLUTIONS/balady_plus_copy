@@ -28,16 +28,17 @@ class CityscapeConfig {
 @riverpod
 class Cityscape extends _$Cityscape {
   /// Object IDs for Riyadh International Convention & Exhibition Center
-  static const Set<int> _cityscapeObjectIds = {70030076199202072, 70030076199202166};
+  static const int _cityscapeObjectIds = 70030076677108076;
 
   // Riyadh International Convention & Exhibition Center,
   // Riyadh, Ar-Riyad, Riyadh, Saudi Arabia (N 24° 45' 8.46", E 46° 43' 34.5828").
   static final sdk.GeoPointMessage center = sdk.GeoPointMessage(
-    latitude: 24.750968,
-    longitude: 46.725982,
+    latitude: 25.252325164174778,
+    longitude: 46.38741921633482,
   );
 
-  MarkerIconMessage get customPin => Assets.images.icCityscapePin.keyName.resolvedMarkerIcon(size: 58);
+  MarkerIconMessage get customPin =>
+      Assets.images.icCityscapePin.keyName.resolvedMarkerIcon(size: 58);
 
   String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
@@ -56,11 +57,12 @@ class Cityscape extends _$Cityscape {
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) &&
+        now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
-  bool showCustomPin(int objectId) => _cityscapeObjectIds.contains(objectId) && state;
+  bool showCustomPin(int objectId) => _cityscapeObjectIds == objectId && state;
 
   /// Manually triggers an update of the state
   void refresh() {
@@ -68,7 +70,9 @@ class Cityscape extends _$Cityscape {
   }
 
   void openThePlace() {
-    ref.read(cameraPositionProvider.notifier).animateTo(sdk.CameraPositionMessage(
+    ref
+        .read(cameraPositionProvider.notifier)
+        .animateTo(sdk.CameraPositionMessage(
           point: center,
           zoom: 18.0,
           tilt: 0.0,
@@ -85,7 +89,8 @@ class Cityscape extends _$Cityscape {
     }
 
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) &&
+        now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Provider that returns the remaining time until Saudi National Day
