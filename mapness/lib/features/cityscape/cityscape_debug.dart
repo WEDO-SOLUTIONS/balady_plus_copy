@@ -4,7 +4,7 @@ part 'cityscape_debug.g.dart';
 
 /// Global debug override flag for Cityscape Global
 /// This allows static methods to work with debug override
-bool _cityscapeDebugOverride = true;
+bool _cityscapeDebugOverride = false;
 bool get cityscapeDebugOverride => _cityscapeDebugOverride;
 
 /// Debug provider to override Cityscape Global status

@@ -8,6 +8,7 @@ import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
+import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
 import 'package:mapness/widgets/debug_overlay/link_checker.dart';
@@ -74,18 +75,21 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                         children: [
                           Text(
                             'development-menu',
-                            style: context.textStyle.heading1.copyWith(color: Colors.black),
+                            style: context.textStyle.heading1
+                                .copyWith(color: Colors.black),
                           ),
                           RichText(
                             text: TextSpan(
                               children: [
                                 TextSpan(
                                   text: 'Urbi Release Version: ',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                  style: context.textStyle.footNote
+                                      .copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
                                   text: PackageConfig.releaseVersion,
-                                  style: context.textStyle.footNoteBold.copyWith(
+                                  style:
+                                      context.textStyle.footNoteBold.copyWith(
                                     color: Colors.black87,
                                   ),
                                 ),
@@ -97,11 +101,14 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                               children: [
                                 TextSpan(
                                   text: 'App version: ',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                  style: context.textStyle.footNote
+                                      .copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
-                                  text: '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
-                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
+                                  text:
+                                      '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
+                                  style: context.textStyle.footNoteBold
+                                      .copyWith(color: Colors.black87),
                                 ),
                               ],
                             ),
@@ -112,11 +119,13 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                               children: [
                                 TextSpan(
                                   text: 'Android Auto: ',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                  style: context.textStyle.footNote
+                                      .copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
                                   text: 'true',
-                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
+                                  style: context.textStyle.footNoteBold
+                                      .copyWith(color: Colors.black87),
                                 ),
                               ],
                             ),
@@ -126,11 +135,13 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                               children: [
                                 TextSpan(
                                   text: 'CI build version: \n',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
+                                  style: context.textStyle.footNote
+                                      .copyWith(color: Colors.black54),
                                 ),
                                 TextSpan(
                                   text: PackageConfig.buildName,
-                                  style: context.textStyle.footNoteBold.copyWith(
+                                  style:
+                                      context.textStyle.footNoteBold.copyWith(
                                     color: Colors.black87,
                                     fontSize: 12,
                                   ),
@@ -166,53 +177,63 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   ),
                   Text(
                     'Git branch:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitBranch,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
+                    style: context.textStyle.heading2
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Git commit:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.gitCommit,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
+                    style: context.textStyle.heading2
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Vendor:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     PackageConfig.vendorConfig,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
+                    style: context.textStyle.heading2
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(
                     height: 16,
                   ),
                   Text(
                     'Uuid:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
+                    style: context.textStyle.footNote
+                        .copyWith(color: Colors.black),
                   ),
                   Text(
                     ref.watch(uuidProviderProvider),
-                    style: context.textStyle.footNoteBold.copyWith(color: Colors.black),
+                    style: context.textStyle.footNoteBold
+                        .copyWith(color: Colors.black),
                   ),
                   const SizedBox(height: 8),
                   LabeledElevatedButton(
-                    onPressed: () => ref.read(uuidProviderProvider.notifier).randomize(),
+                    onPressed: () =>
+                        ref.read(uuidProviderProvider.notifier).randomize(),
                     label: 'randomize uuid',
                   ),
                   const DebugServerUrl(),
                   const SizedBox(height: 12),
                   const SsoCredentialView(),
+                  const CityscapeDebugSwitcher(),
                   const SaudiNationalDayDebugSwitcher(),
                   const VoicePicker(),
                   const BetterRouteSettingsWidget(),

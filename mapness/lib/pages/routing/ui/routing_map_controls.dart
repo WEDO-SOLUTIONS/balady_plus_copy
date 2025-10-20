@@ -61,7 +61,7 @@ class RoutingMapControls extends ConsumerWidget {
                                   horizontal: uikit.Spacing.$3x,
                                 ),
                                 onTap: () => context.router
-                                    .push(const NavigatorSettingsRoute()),
+                                    .push(NavigatorSettingsRoute()),
                                 buttonColorScheme:
                                     uikit.ButtonColorScheme.neutral,
                                 primaryIcon: uikit.SystemIcons.tuning,
@@ -75,7 +75,7 @@ class RoutingMapControls extends ConsumerWidget {
                                 ),
                                 primaryLabel: context.l10n.addStop,
                                 onTap: () => context.router
-                                    .push(const NavigatorSettingsRoute()),
+                                    .push(NavigatorSettingsRoute()),
                                 buttonColorScheme:
                                     uikit.ButtonColorScheme.neutral,
                                 //TODO: set correct icon
