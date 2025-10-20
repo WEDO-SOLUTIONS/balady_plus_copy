@@ -63,14 +63,7 @@ class AuthTokenInterceptor {
             }
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
-            if (e is DioException && e.response?.statusCode == 401) {
-              // LogOut and Redirect to login
-              // TODO: remove this crunch
-              if (!e.requestOptions.uri.origin.contains('momrah-balady.public-poc.urbi.ae')) {
-                await ref.read(authProvider.notifier).tokenExpireLogout();
-                await ref.read(authProvider.notifier).doAuth();
-              }
-            } else if (e is DioException) {
+            if (e is DioException) {
               handler.reject(e);
             } else {
               handler.reject(error);
