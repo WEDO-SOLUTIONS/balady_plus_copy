@@ -21,13 +21,11 @@ class CityscapeDebugSwitcher extends ConsumerWidget {
               children: [
                 Text(
                   'Cityscape Debug',
-                  style: context.textStyles.h2SemiBold
-                      .copyWith(color: Colors.black),
+                  style: context.textStyles.h2SemiBold.copyWith(color: Colors.black),
                 ),
                 Text(
                   'Override Cityscape feature to always return true',
-                  style: context.textStyles.bodySmallMedium
-                      .copyWith(color: Colors.black54),
+                  style: context.textStyles.bodySmallMedium.copyWith(color: Colors.black54),
                 ),
               ],
             ),

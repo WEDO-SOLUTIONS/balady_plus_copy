@@ -18,8 +18,7 @@ import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
-    @Deprecated('Please use sheetify outside property')
-    this.bottomHeightNotifier,
+    @Deprecated('Please use sheetify outside property') this.bottomHeightNotifier,
     super.key,
   });
 
@@ -60,10 +59,8 @@ class RoutingMapControls extends ConsumerWidget {
                                 innerPadding: const EdgeInsets.symmetric(
                                   horizontal: uikit.Spacing.$3x,
                                 ),
-                                onTap: () => context.router
-                                    .push(NavigatorSettingsRoute()),
-                                buttonColorScheme:
-                                    uikit.ButtonColorScheme.neutral,
+                                onTap: () => context.router.push(NavigatorSettingsRoute()),
+                                buttonColorScheme: uikit.ButtonColorScheme.neutral,
                                 primaryIcon: uikit.SystemIcons.tuning,
                               ),
                               const SizedBox(width: uikit.Spacing.$2x),
@@ -74,10 +71,8 @@ class RoutingMapControls extends ConsumerWidget {
                                   horizontal: uikit.Spacing.$3x,
                                 ),
                                 primaryLabel: context.l10n.addStop,
-                                onTap: () => context.router
-                                    .push(NavigatorSettingsRoute()),
-                                buttonColorScheme:
-                                    uikit.ButtonColorScheme.neutral,
+                                onTap: () => context.router.push(NavigatorSettingsRoute()),
+                                buttonColorScheme: uikit.ButtonColorScheme.neutral,
                                 //TODO: set correct icon
                                 primaryIcon: Icons.add_location,
                                 textColor: context.colors.foregroundDefault,

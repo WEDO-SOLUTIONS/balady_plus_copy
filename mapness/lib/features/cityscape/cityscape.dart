@@ -37,8 +37,7 @@ class Cityscape extends _$Cityscape {
     longitude: 46.38741921633482,
   );
 
-  MarkerIconMessage get customPin =>
-      Assets.images.icCityscapePin.keyName.resolvedMarkerIcon(size: 58);
+  MarkerIconMessage get customPin => Assets.images.icCityscapePin.keyName.resolvedMarkerIcon(size: 58);
 
   String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
@@ -57,8 +56,7 @@ class Cityscape extends _$Cityscape {
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) &&
-        now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
@@ -70,9 +68,7 @@ class Cityscape extends _$Cityscape {
   }
 
   void openThePlace() {
-    ref
-        .read(cameraPositionProvider.notifier)
-        .animateTo(sdk.CameraPositionMessage(
+    ref.read(cameraPositionProvider.notifier).animateTo(sdk.CameraPositionMessage(
           point: center,
           zoom: 18.0,
           tilt: 0.0,
@@ -89,8 +85,7 @@ class Cityscape extends _$Cityscape {
     }
 
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) &&
-        now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Provider that returns the remaining time until Saudi National Day
