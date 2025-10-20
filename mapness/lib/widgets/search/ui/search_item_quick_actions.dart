@@ -15,6 +15,9 @@ import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_co
 import 'package:mapness/pages/poi_card/poi_card_widget_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 class SearchItemQuickActions extends HookConsumerWidget {
@@ -32,8 +35,10 @@ class SearchItemQuickActions extends HookConsumerWidget {
     ref.watch(favouriteCacheProvider).valueOrNull;
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
-    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
-    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
+    final favouriteItem =
+        objectId != null ? provider.getFavouriteOrNull(objectId) : null;
+    final iconData =
+        isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
@@ -68,8 +73,10 @@ class SearchItemQuickActions extends HookConsumerWidget {
         buttonType: ButtonType.secondary,
         colorScheme: ButtonColorScheme.accent,
         label: context.l10n.poiCardDirections,
-        innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+        innerPadding: const EdgeInsets.symmetric(
+            vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
+          BssService.instance.trackRouteTap(directoryObject);
           openRoutingRoutes(
             context,
             directoryObject.id!.objectId,
@@ -102,7 +109,9 @@ class SearchItemQuickActions extends HookConsumerWidget {
         callback: () {
           final markerPosition = directoryObject.markerPosition;
           final latLng = markerPosition != null
-              ? LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude)
+              ? LatLng(
+                  latitude: markerPosition.latitude,
+                  longitude: markerPosition.longitude)
               : null;
 
           poiActions.share(
@@ -123,27 +132,39 @@ class SearchItemQuickActions extends HookConsumerWidget {
           icon: GeneralIcons.phoneLTR,
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
-          onPressed: () => poiActions.callPhone(phoneNumber),
+          onPressed: () {
+            BssService.instance.trackCallTap(directoryObject, phoneNumber);
+            poiActions.callPhone(phoneNumber);
+          },
         ),
       if (website != null)
         ItemActionBar(
           icon: GeneralIcons.web,
           colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
-          onPressed: () => poiActions.launch(website),
+          onPressed: () {
+            BssService.instance
+                .trackLinkTap(directoryObject, BssContactType.website, website);
+            poiActions.launch(website);
+          },
         ),
       if (website == null && socialMedia != null)
         ItemActionBar(
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
           buttonType: ButtonType.secondary,
-          onPressed: () => poiActions.launch(socialMedia.link),
+          onPressed: () {
+            BssService.instance.trackLinkTap(
+                directoryObject, socialMedia.type.toBss(), socialMedia.link);
+            poiActions.launch(socialMedia.link);
+          },
         ),
     ];
 
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.$3x),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxHeight: Spacing.$10x + Spacing.$3x),
+        constraints:
+            const BoxConstraints(maxHeight: Spacing.$10x + Spacing.$3x),
         child: Padding(
           padding: const EdgeInsets.only(top: Spacing.$3x),
           child: ListView.separated(
@@ -157,18 +178,23 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ),
     );
   }
-}
 
-Future<void> _onFavoriteTap({
-  required BuildContext context,
-  required WidgetRef ref,
-  required DirectoryObjectMessage data,
-  required FavouriteItem? favouriteItem,
-}) async {
-  await ref.read(authMethodsProvider.notifier).authOrOpen(
-    context,
-    callback: () {
-      toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
-    },
-  );
+  Future<void> _onFavoriteTap({
+    required BuildContext context,
+    required WidgetRef ref,
+    required DirectoryObjectMessage data,
+    required FavouriteItem? favouriteItem,
+  }) async {
+    await ref.read(authMethodsProvider.notifier).authOrOpen(
+      context,
+      callback: () {
+        BssService.instance.trackFavoriteTap(data);
+        toggleFavoriteDirectoryObject(
+            context: context,
+            ref: ref,
+            data: data,
+            favouriteItem: favouriteItem);
+      },
+    );
+  }
 }
