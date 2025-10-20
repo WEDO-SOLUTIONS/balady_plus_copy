@@ -16,8 +16,7 @@ import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.da
 import 'package:urbi_utils/urbi_utils.dart';
 
 class NavigatorSettingsPageContent extends ConsumerWidget {
-  const NavigatorSettingsPageContent({required this.showDarkModeSection, super.key});
-  final bool showDarkModeSection;
+  const NavigatorSettingsPageContent({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -136,27 +135,26 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
                 ),
               ],
             ),
-            if (showDarkModeSection)
-              ContentColumn(
-                headerTitle: context.l10n.mapStyle,
-                content: [
-                  ContentRow(
-                    onTap: () => context.router.push(const DarkMapRoute()),
-                    options: ContentRowOptions(
-                      wrapperColor: context.colors.backgroundSurface4,
-                      wrapperEnabled: true,
-                      title: context.l10n.darkMap,
-                      titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
-                      actionWidget: ContentRowActionOptions(
-                        actionIcon: AppIcons(
-                          iconData: SystemIcons.arrowCornerRightLarge,
-                          color: context.colors.foregroundSoft,
-                        ),
+            ContentColumn(
+              headerTitle: context.l10n.mapStyle,
+              content: [
+                ContentRow(
+                  onTap: () => context.router.push(const DarkMapRoute()),
+                  options: ContentRowOptions(
+                    wrapperColor: context.colors.backgroundSurface4,
+                    wrapperEnabled: true,
+                    title: context.l10n.darkMap,
+                    titleStyle: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                    actionWidget: ContentRowActionOptions(
+                      actionIcon: AppIcons(
+                        iconData: SystemIcons.arrowCornerRightLarge,
+                        color: context.colors.foregroundSoft,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
             ContentColumn(
               headerTitle: context.l10n.soundAndAlerts,
               content: [
