@@ -103,6 +103,12 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         hasPublicTransportRoutes: false,
         reason: e.reason,
       );
+    } catch (error) {
+      return const PublicTransportVisibilityResult(
+        isBothInRiyadh: false,
+        hasPublicTransportRoutes: false,
+        reason: PublicTransportVisibilityReason.unknownError,
+      );
     }
   }
 
