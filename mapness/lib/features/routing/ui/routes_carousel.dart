@@ -57,6 +57,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
   final Function(RouteInfo) startNavigation;
   final List<RouteParamsPointWithLabel?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
+
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();
 }
@@ -76,14 +77,16 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final startPoint = widget.points[0]?.value;
-    final finishPoint = widget.points[1]?.value;
+    final startPoint = widget.points.first?.value;
+    final finishPoint = widget.points.last?.value;
+    final intermediatePoints = widget.points.getIntermediatePoints();
 
     final routes = ref.watch(
       routesProvider(
         startPoint: startPoint,
         finishPoint: finishPoint,
         navType: widget.navType,
+        intermediatePoints: intermediatePoints,
       ),
     );
 
@@ -92,6 +95,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         startPoint: startPoint,
         finishPoint: finishPoint,
         navType: widget.navType,
+        intermediatePoints: intermediatePoints,
       ),
     );
     ref.watch(activePublicTransportRouteProvider);
@@ -129,8 +133,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void _startNavigation(RouteInfo info) {
     final _routeType = widget.navType.toRouteType();
 
-    final startPoint = widget.points[0];
-    final finishPoint = widget.points[1];
+    final startPoint = widget.points.first;
+    final finishPoint = widget.points.last;
 
     final location = ref.read(locationProvider);
     if (location == null && startPoint?.etaPoint == null) {

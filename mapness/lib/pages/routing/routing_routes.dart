@@ -13,10 +13,12 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/routing/providers/routes_helper.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -109,7 +111,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
               children: <Widget>[
                 Expanded(
                   child: ABPoints(
-                    locations: points.map((e) => e.label).toList(),
+                    locations: _abLocations(context.l10n),
                     onTap: _changeRoute,
                     change: points.first.value == null
                         ? ABPointsChange.off
@@ -142,6 +144,17 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         ],
       ),
     );
+  }
+
+  List<String> _abLocations(AppLocalizations l10n) {
+    if (points.length > 2) {
+      return [
+        points.first.label,
+        l10n.stopCount(points.length - 1),
+      ];
+    }
+
+    return points.map((e) => e.label).toList();
   }
 
   void _onSwipeRoutes() {
