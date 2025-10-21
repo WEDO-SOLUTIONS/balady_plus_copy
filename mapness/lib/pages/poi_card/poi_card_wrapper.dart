@@ -121,7 +121,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
         buildingInfo: BuildingInfoMessage(
           buildingName: 'RICEC',
           purposeName: 'Exhibition Center',
-          purposeCode: 501, // например, выставка
+          purposeCode: 501,
         ),
         rubricIds: [],
         group: [],

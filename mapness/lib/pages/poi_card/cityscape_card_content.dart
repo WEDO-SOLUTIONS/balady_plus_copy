@@ -123,13 +123,10 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
           closestPoint: widget.closestPoint,
           bottomSheetController: _bottomSheetController,
           data: data,
-          share: () {
-            // Можно сюда добавить твои Metrics, если нужно
-            return ref.read(poiCardActionsProvider.notifier).share(
-                  objectId: widget.objectId,
-                  markerCoords: widget.closestPoint,
-                );
-          },
+          share: () => ref.read(poiCardActionsProvider.notifier).share(
+                objectId: widget.objectId,
+                markerCoords: widget.closestPoint,
+              ),
           callPhone: () {
             final phoneNumber = data.getContactsInfoModels.firstWhereOrNull(
               (element) => element.type == ContactsInfoType.phone,
