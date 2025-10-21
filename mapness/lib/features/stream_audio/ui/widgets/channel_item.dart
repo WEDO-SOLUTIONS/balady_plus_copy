@@ -118,12 +118,10 @@ class MediaCatalogItem extends StatelessWidget {
               ],
             ),
           ),
-          const Positioned(
+          Positioned(
             top: 54,
             right: 0,
-            //TODO: fix images when backend is ready (circledLogo)
-            // child: buildCircleImage(channel.circledLogo ?? channel.logo ?? ''),
-            child: CircleImage(url: 'https://assets.mbcmood.com/channels/1708604937logombc.png'),
+            child: CircleImage(url: channel.circledLogo ?? channel.logo ?? ''),
           ),
         ],
       ),
@@ -133,13 +131,12 @@ class MediaCatalogItem extends StatelessWidget {
   Widget buildProgramImage() {
     final programLogo = channel.currentPlayedProgram?.image;
     final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
+    final url = hasProgramLogo ? programLogo : (channel.maximizedLogo ?? 'https://www.mbcmood.com/images/Logo.png');
 
-    //TODO: fix images when backend is ready (circledLogo)
-    final url = hasProgramLogo
-        ? 'https://assets.mbcmood.com/programs_thumbnails/1745311050%D8%AD%D9%84%D9%88%20%D8%A7%D9%84%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D8%AE%D9%8A%D8%B1%20.jpg'
-        : 'https://assets.mbcmood.com/channels/1708604937logombc.png';
-
-    // final url = hasProgramLogo ? programLogo : (channel.logo ?? 'https://www.mbcmood.com/images/Logo.png');
+    /// Mock Images
+    // final url = hasProgramLogo
+    //     ? 'https://assets.mbcmood.com/programs_thumbnails/1745311050%D8%AD%D9%84%D9%88%20%D8%A7%D9%84%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D8%AE%D9%8A%D8%B1%20.jpg'
+    //     : 'https://assets.mbcmood.com/channels/1708604937logombc.png';
 
     return ProgramImage(url: url);
   }
@@ -163,14 +160,17 @@ class CircleImage extends StatelessWidget {
             color: Colors.black.withValues(alpha: 0.10),
           ),
           color: Colors.white,
-          image: url.contains('svg') ? null : DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
           boxShadow: const [
             BoxShadow(color: Colors.black26, blurRadius: 12, offset: Offset(0, 10)),
             BoxShadow(color: Colors.black26, blurRadius: 36, offset: Offset(0, 12))
           ],
         ),
-        child:
-            !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+        child: !url.contains('svg')
+            ? Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Image.network(url, fit: BoxFit.fitWidth),
+            )
+            : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
       );
 }
 
@@ -184,18 +184,20 @@ class ProgramImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: 96,
-        height: 96,
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Colors.black.withValues(alpha: 0.10),
-          ),
-          color: Colors.white,
-          image: url.contains('svg') ? null : DecorationImage(image: NetworkImage(url), fit: BoxFit.fitWidth),
+      width: 96,
+      height: 96,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: Colors.black.withValues(alpha: 0.10),
         ),
-        child:
-            !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
-      );
+        color: Colors.white,
+      ),
+      child: url.contains('svg')
+          ? Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url))
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.network(url, fit: BoxFit.fitWidth),
+            ));
 }

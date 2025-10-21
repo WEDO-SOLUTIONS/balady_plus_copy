@@ -90,10 +90,8 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       );
 
   Widget _buildAlbumArt(StreamAudioProvider provider, double size) {
-    //TODO: fix images when backend is ready (circledLogo)
-    // final channel = provider.selectedChannel;
-    // final url = channel?.circledLogo;
-    const url = 'https://assets.mbcmood.com/channels/1708604937logombc.png';
+    final channel = provider.selectedChannel;
+    final String url = channel?.maximizedLogo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png';
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -101,7 +99,6 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       height: size,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        image: url.contains('svg') ? null : const DecorationImage(image: NetworkImage(url), fit: BoxFit.cover),
         color: Colors.grey[300],
         boxShadow: [
           BoxShadow(
@@ -111,7 +108,15 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
           ),
         ],
       ),
-      child: !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+      child: !url.contains('svg')
+          ? Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Image.network(
+                url,
+                fit: BoxFit.fitWidth,
+              ),
+            )
+          : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
     );
   }
 
