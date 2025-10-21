@@ -86,6 +86,7 @@ import 'package:provider/provider.dart' as provider;
 import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
+import 'features/stream_audio/ui/pages/stream_audio_screen.dart';
 
 Mixpanel? mixpanel;
 
@@ -179,11 +180,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then(
-          (RemoteMessage? message) {
+      (RemoteMessage? message) {
         if (message != null && message.data.containsKey('url')) {
-            final url = message.data['url'];
-            openAppLink(url);
-            return;
+          final url = message.data['url'];
+          openAppLink(url);
+          return;
         }
       },
     );
@@ -289,11 +290,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         child: Consumer(
           builder: (context, ref, child) {
             return MaterialApp.router(
-              routerConfig: ref.read(appRouterProvider).config(
-                    navigatorObservers: () => [
-                      RoutesObserver(ref: ref),
-                    ],
-                  ),
+              routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
               theme: ThemeData(
                 scaffoldBackgroundColor: Colors.transparent,
                 dividerColor: Colors.grey[400],
@@ -313,7 +310,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   ? LoadingOverlay(
                       child: ToastOverlay(
                         child: GlobalScopes(
-                          child: child,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: StreamAudio(child: child),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )

@@ -1,6 +1,6 @@
 part of 'path_nav_map_controls.dart';
 
-class _PortraitLayout extends StatelessWidget {
+class _PortraitLayout extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
   final ValueNotifier<double> bottomHeightNotifier;
   final ValueNotifier<PathNavState> navigationState;
@@ -26,6 +26,11 @@ class _PortraitLayout extends StatelessWidget {
   });
 
   @override
+  ConsumerState<_PortraitLayout> createState() => _PortraitLayoutState();
+}
+
+class _PortraitLayoutState extends ConsumerState<_PortraitLayout> {
+  @override
   Widget build(BuildContext context) => SafeArea(
         bottom: false,
         child: Stack(
@@ -35,38 +40,43 @@ class _PortraitLayout extends StatelessWidget {
               children: [
                 const SizedBox(height: 6, width: double.maxFinite),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                  child: maneuverAndLimitWidget,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+                  child: widget.maneuverAndLimitWidget,
                 ),
                 Expanded(
                   child: ValueListenableBuilder(
-                      valueListenable: showControls,
+                      valueListenable: widget.showControls,
                       builder: (context, isVisible, child) => AnimatedOpacity(
                             opacity: isVisible ? 1 : 0,
                             duration: const Duration(milliseconds: 250),
                             child: IgnorePointer(
                               ignoring: !isVisible,
                               child: GestureDetector(
-                                onTap: onUserActivity,
+                                onTap: widget.onUserActivity,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Padding(
-                                      padding: padding,
-                                      child: const TrafficParkingControl(trafficVisible: false),
+                                      padding: widget.padding,
+                                      child: const TrafficParkingControl(
+                                          trafficVisible: false),
                                     ),
                                     const SizedBox(height: uikit.Spacing.$2x),
                                     Padding(
-                                      padding: padding,
+                                      padding: widget.padding,
                                       child: const DimensionControl(),
                                     ),
                                     const Spacer(),
                                     Padding(
-                                      padding: padding,
+                                      padding: widget.padding,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          if (navType == RouteSearchOptionsMessage.pedestrian)
+                                          if (widget.navType ==
+                                              RouteSearchOptionsMessage
+                                                  .pedestrian)
                                             const IndoorControl()
                                           else
                                             const SizedBox.shrink(),
@@ -76,28 +86,45 @@ class _PortraitLayout extends StatelessWidget {
                                     ),
                                     const Spacer(),
                                     Padding(
-                                      padding: padding,
+                                      padding: widget.padding,
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
                                         children: [
-                                          ValueListenableBuilder(
-                                              valueListenable: navigationState,
-                                              builder: (context, state, _) {
-                                                if (state == PathNavState.finished ||
-                                                    state == PathNavState.paused ||
-                                                    onRoutePressed == null) {
-                                                  return const SizedBox.shrink();
-                                                }
-                                                return RouteControl(
-                                                  onTap: onRoutePressed!,
-                                                );
-                                              }),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const RadioContextualButton(),
+                                              const SizedBox(height: 10),
+                                              ValueListenableBuilder(
+                                                  valueListenable:
+                                                      widget.navigationState,
+                                                  builder: (context, state, _) {
+                                                    if (state ==
+                                                            PathNavState
+                                                                .finished ||
+                                                        state ==
+                                                            PathNavState
+                                                                .paused ||
+                                                        widget.onRoutePressed ==
+                                                            null) {
+                                                      return const SizedBox
+                                                          .shrink();
+                                                    }
+                                                    return RouteControl(
+                                                      onTap: widget
+                                                          .onRoutePressed!,
+                                                    );
+                                                  }),
+                                            ],
+                                          ),
                                           const Spacer(),
                                           Column(
                                             children: [
-                                              compassControlWidget,
+                                              widget.compassControlWidget,
                                               uikit.Spacing.$2x.heightBox,
-                                              pathNavFollowControlWidget,
+                                              widget.pathNavFollowControlWidget,
                                             ],
                                           ),
                                         ],
@@ -110,7 +137,7 @@ class _PortraitLayout extends StatelessWidget {
                           )),
                 ),
                 ValueListenableBuilder(
-                  valueListenable: bottomHeightNotifier,
+                  valueListenable: widget.bottomHeightNotifier,
                   builder: (context, value, _) => value.heightBox,
                 )
               ],

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 // ignore: depend_on_referenced_packages
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/gis_response_model.dart';
@@ -106,8 +107,6 @@ class SharedPrefs {
     return _sharedPreferences?.getString('guestMobile');
   }
 
-
-
   setPrayerSettings(List<String> settings) async =>
       await _sharedPreferences?.setStringList('prayer_settings', settings);
 
@@ -185,11 +184,6 @@ class SharedPrefs {
     }
   }
 
-
-
-
-
-
   setUserLocation(GISParams? item) async {
     if (item != null) {
       await _sharedPreferences?.setString(
@@ -203,7 +197,7 @@ class SharedPrefs {
     String? bookMarks = _sharedPreferences?.getString('gis_user_location');
     GISParams? model = bookMarks != null
         ? GISParams.fromMap(json
-        .decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
+            .decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
         : null;
 
     return model;
@@ -222,10 +216,35 @@ class SharedPrefs {
     String? bookMarks = _sharedPreferences?.getString('gis_user_data');
     GISResponseModel? model = bookMarks != null
         ? GISResponseModel.fromMap(
-        json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
+            json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
         : null;
 
     return model;
+  }
+
+  // Channel ordering methods
+  Future<void> saveChannelOrder(Map<String, int> channelOrder) async {
+    if (channelOrder.isNotEmpty) {
+      await _sharedPreferences?.setString(
+          LocalStorageKey.channelOrder, json.encode(channelOrder));
+    } else {
+      await _sharedPreferences?.remove(LocalStorageKey.channelOrder);
+    }
+  }
+
+  Map<String, int>? getChannelOrder() {
+    String? channelOrderString =
+        _sharedPreferences?.getString(LocalStorageKey.channelOrder);
+    if (channelOrderString != null) {
+      try {
+        Map<String, dynamic> decodedMap = json.decode(channelOrderString);
+        return decodedMap.map((key, value) => MapEntry(key, value as int));
+      } catch (e) {
+        debugPrint('Error decoding channel order: $e');
+        return null;
+      }
+    }
+    return null;
   }
 }
 

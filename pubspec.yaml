@@ -132,6 +132,10 @@ dependencies:
 
   webview_flutter: 4.10.0
   flutter_inappwebview: ^6.1.5
+  ## Audio
+  just_audio: ^0.9.46
+#  just_audio: ^0.10.5
+#  just_audio_background: ^0.0.1-beta.17
 
   version: ^2.0.0
   #google_maps_flutter: ^2.5.3
@@ -273,7 +277,7 @@ dependency_overrides:
   dio: 5.7.0
   json_serializable: 6.8.0
   device_info_plus: 11.1.1
-  google_api_headers: ^4.2.4
+#  google_api_headers: ^4.2.5
   rxdart: 0.28.0
   collection: 1.19.0
   # https://github.com/flutter/flutter/issues/162437#issuecomment-2661727397
@@ -300,7 +304,6 @@ flutter:
     - shaders/radar.frag
   assets:
     - assets/
-    - assets/services/
     - assets/icons/svg/
     - assets/icons/svg/jod/
     - assets/icons/svg/map/
@@ -326,7 +329,6 @@ flutter:
     - assets/icons/svg/weather/night/
     - assets/images/
     - assets/langs/
-    - assets/quran/
     - assets/maps/configs/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
@@ -342,10 +344,6 @@ flutter:
     - assets/icons/inq/
     - assets/icons/msr/
     - assets/icons/tsr/
-    - assets/compliance_pdf/images/
-    - assets/compliance_pdf/text/
-    - assets/athkar/
-    - assets/athkar_en/
     - assets/icons/services/
     - .env.stg
     - .env.dev
