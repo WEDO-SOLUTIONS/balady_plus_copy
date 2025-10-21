@@ -216,6 +216,10 @@ flutter:
     - assets/maps/configs/
     - packages/map_styles/src/styles.2gis
     - packages/map_styles/src/styles_saudi_day.2gis
+  fonts:
+    - family: numbers_icons
+      fonts:
+        - asset: assets/fonts/mapness_icons/numbers_icons.ttf
 
 flutter_gen:
   assets:
