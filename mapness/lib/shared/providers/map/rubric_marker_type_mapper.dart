@@ -77,12 +77,15 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
   /// Works based on intersection of rubric IDs from config with the rubric form marker info.
   Future<MapMarkersType?> getMarkerType(Set<int> rubricIds) => RubricTypeMapper.getMarkerType(rubricIds);
 
-  Future<String?> getMarkerPath(Set<int> rubricIds, int objectId) async {
+  /// Returns the most relevant marker type based on the provided set of rubric IDs.
+  ///
+  /// Replaces the default marker with custom marker
+  Future<(String? smallIcon, String? bigIcon)> getMarkerPath(Set<int> rubricIds, int objectId) async {
     final cityscapeNotifier = ref.watch(cityscapeProvider.notifier);
     if (cityscapeNotifier.showCustomPin(objectId)) {
-      return cityscapeNotifier.customMarker;
+      return (cityscapeNotifier.customMarker, cityscapeNotifier.customPinPath);
     }
     final markerType = await getMarkerType(rubricIds);
-    return markerType?.iconPath;
+    return (markerType?.iconPath, markerType?.iconPath.bigIconPath);
   }
 }

@@ -58,7 +58,7 @@ String _breakLineInTwo(String inputString) {
   return '$firstLine\n$secondLine';
 }
 
-typedef AdvancedIconResolver = Future<String?> Function(Set<int> rubricIds, int objectId);
+typedef AdvancedIconResolver = Future<(String? smallIcon, String? bigIcon)> Function(Set<int> rubricIds, int objectId);
 
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
@@ -101,7 +101,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
       MarkerIconMessage? icon;
 
       if (advancedIconResolver != null) {
-        icon = (await advancedIconResolver(rubrics, objectId!))?.resolvedMarkerIcon(size: 32);
+        icon = (await advancedIconResolver(rubrics, objectId!)).$1?.markerIcon(size: 32);
       } else {
         icon = (await iconResolver(rubrics))?.iconPath.markerIcon(size: 32);
       }
