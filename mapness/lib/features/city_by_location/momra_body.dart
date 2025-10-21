@@ -37,11 +37,7 @@ abstract class Data<R> {
   final String responseId;
   final R? result;
 
-  Data(
-      {required this.responseCode,
-      required this.responseMessage,
-      required this.responseId,
-      required this.result});
+  Data({required this.responseCode, required this.responseMessage, required this.responseId, required this.result});
 
   R dataOrThrow() {
     final result = this.result;
@@ -61,12 +57,10 @@ abstract class Data<R> {
   }
 
   @override
-  String toString() =>
-      'responseCode: $responseCode, responseMessage: $responseMessage, responseId: $responseId}';
+  String toString() => 'responseCode: $responseCode, responseMessage: $responseMessage, responseId: $responseId}';
 }
 
-const noRenameNoToJson =
-    JsonSerializable(fieldRename: FieldRename.none, createToJson: false);
+const noRenameNoToJson = JsonSerializable(fieldRename: FieldRename.none, createToJson: false);
 
 @noRenameNoToJson
 class StatusDetails {
@@ -75,6 +69,5 @@ class StatusDetails {
 
   StatusDetails({required this.code, required this.message});
 
-  factory StatusDetails.fromJson(Map<String, dynamic> json) =>
-      _$StatusDetailsFromJson(json);
+  factory StatusDetails.fromJson(Map<String, dynamic> json) => _$StatusDetailsFromJson(json);
 }

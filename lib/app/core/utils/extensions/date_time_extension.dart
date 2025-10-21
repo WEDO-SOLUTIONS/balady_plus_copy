@@ -104,3 +104,29 @@ extension DateTimeExtension on DateTime {
     return CommonFunctions.mapARNumbersToENNumbers(formattedDate);
   }
 }
+
+String formatDateRange(DateTime start, DateTime end) {
+  final sameMonth = start.month == end.month;
+  final sameYear = start.year == end.year;
+
+  final dayFormatter = DateFormat('d');
+  final monthFormatter = DateFormat('MMM');
+  final yearFormatter = DateFormat('y');
+
+  if (sameMonth && sameYear) {
+    // Example: 17–20 Nov 2025
+    return '${dayFormatter.format(start)}–${dayFormatter.format(end)} '
+        '${monthFormatter.format(start)} ${yearFormatter.format(start)}';
+  } else if (sameYear) {
+    // Example: 28 Oct – 2 Nov 2025
+    return '${dayFormatter.format(start)} ${monthFormatter.format(start)} – '
+        '${dayFormatter.format(end)} ${monthFormatter.format(end)} '
+        '${yearFormatter.format(start)}';
+  } else {
+    // Example: 28 Dec 2025 – 3 Jan 2026
+    return '${dayFormatter.format(start)} ${monthFormatter.format(start)} '
+        '${yearFormatter.format(start)} – '
+        '${dayFormatter.format(end)} ${monthFormatter.format(end)} '
+        '${yearFormatter.format(end)}';
+  }
+}

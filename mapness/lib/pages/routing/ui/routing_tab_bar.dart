@@ -41,17 +41,14 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
         child: Row(
           children: [
             // when car connected, choice of route search options shouldn't be available to user
-            if (!carConnected)
-              _getRouteSearchOptionsWidgets(
-                  context, widget.publicTransportVisibility),
+            if (!carConnected) _getRouteSearchOptionsWidgets(context, widget.publicTransportVisibility),
           ].insertBetween(Spacing.$2x.widthBox).toList(),
         ),
       ),
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(BuildContext context,
-      AsyncValue<PublicTransportVisibilityResult> pubState) {
+  Widget _getRouteSearchOptionsWidgets(BuildContext context, AsyncValue<PublicTransportVisibilityResult> pubState) {
     final chips = [
       RouteSearchOptionsMessage.car,
       RouteSearchOptionsMessage.publicTransport,

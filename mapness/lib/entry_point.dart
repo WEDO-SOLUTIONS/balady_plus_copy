@@ -32,6 +32,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
+import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -39,8 +40,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/search/providers/search_region.dart'
-    show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -109,7 +109,10 @@ class MapnessProviderScope extends StatelessWidget {
               final language = ref.watch(appLanguageProvider);
               final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
               // Initialize Saudi National Day provider to start the timer
-              ref.watch(saudiNationalDayProvider);
+              ref
+                ..watch(saudiNationalDayProvider)
+                // Initialize Cityscape provider to start the timer
+                ..watch(cityscapeProvider);
 
               return provider.MultiProvider(
                 providers: [
@@ -173,16 +176,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await AdvancedMetrics.instance.startMeasureBattery();
     });
   }
+
   Future<void> checkConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.mobile)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.mobile.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.mobile.name);
     } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.wifi.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.wifi.name);
     }
   }
 

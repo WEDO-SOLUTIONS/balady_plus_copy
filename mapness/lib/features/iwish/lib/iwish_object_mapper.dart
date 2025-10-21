@@ -21,8 +21,7 @@ extension IwishItemResponseMapper on pb.IWishObject {
       _ => IwishState.unknown,
     };
 
-    List<String> photos(List<pb.IWishObject_Photo> photos) =>
-        photos.map((e) => e.image.url).toList();
+    List<String> photos(List<pb.IWishObject_Photo> photos) => photos.map((e) => e.image.url).toList();
 
     final iwishEntity = IwishEntity(
       category: category,
@@ -35,12 +34,14 @@ extension IwishItemResponseMapper on pb.IWishObject {
       title: title,
       photos: photos(this.photos),
       variants: variants
-          .map((variant) => IwishEntityVariant(
-                id: variant.id,
-                title: variant.title,
-                preview: variant.preview.image.url,
-                photos: photos(variant.photos),
-              ),)
+          .map(
+            (variant) => IwishEntityVariant(
+              id: variant.id,
+              title: variant.title,
+              preview: variant.preview.image.url,
+              photos: photos(variant.photos),
+            ),
+          )
           .toList(),
       metadata: IwishMetadata(
         areaName: metadata.areaName,

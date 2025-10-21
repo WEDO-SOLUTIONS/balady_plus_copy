@@ -13,8 +13,7 @@ part 'iwish_markers.g.dart';
 const iwishMarkerPrefix = 'iwish-marker-';
 
 @riverpod
-Future<List<IwishMarker>> _iwishMarkersNetwork(
-    AutoDisposeFutureProviderRef<List<IwishMarker>> ref) async {
+Future<List<IwishMarker>> _iwishMarkersNetwork(AutoDisposeFutureProviderRef<List<IwishMarker>> ref) async {
   final dio = await ref.read(dGisNetworkProvider.future);
 
   final raw = await dio.get('iwish');
