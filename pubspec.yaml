@@ -285,6 +285,7 @@ flutter:
     - .env.prod
     - .env.pre
     - .env.urbiPre
+    - shorebird.yaml
 
 flutter_launcher_icons:
   android: true
