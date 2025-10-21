@@ -125,18 +125,18 @@ class ShowMapOffers extends _$ShowMapOffers {
 
       final cities = isAll
           ? {
-        cityId,
-      }
+              cityId,
+            }
           : {
-        if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
-      };
+              if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
+            };
       final updatedState = List<Offer>.from([]);
 
       final promotions = await saudiPassRepository.getPromotions(
         cityIds: cities,
         categories: categories,
         recommendedTypes: recommendedTypes,
-        pageSize: 10000,
+        pageSize: 100,
       );
 
       for (final offer in promotions.records) {
@@ -149,9 +149,7 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> toggleOffersOnMap(String cityId, {
-    required bool isAll
-  }) async {
+  Future<void> toggleOffersOnMap(String cityId, {required bool isAll}) async {
     toggleShowMap = !toggleShowMap;
 
     await switchOffersVisibility(enabled: toggleShowMap, isAll: isAll, cityId: cityId);

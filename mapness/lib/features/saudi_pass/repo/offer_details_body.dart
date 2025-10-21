@@ -64,7 +64,7 @@ class OfferDetails extends Offer {
     String? description,
     OfferType? type,
     OfferProvider? provider,
-    Iterable<Category>? categories,
+    Iterable<OfferCategory>? categories,
     Iterable<String>? images,
     DateTime? publishStartDate,
     DateTime? publishEndDate,

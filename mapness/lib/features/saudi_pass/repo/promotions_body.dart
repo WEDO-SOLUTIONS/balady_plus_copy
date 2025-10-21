@@ -65,7 +65,7 @@ class Offer {
   final String description;
   final OfferType type;
   final OfferProvider provider;
-  final Iterable<Category> categories;
+  final Iterable<OfferCategory> categories;
   final Iterable<String> images;
   final DateTime publishStartDate;
   final DateTime publishEndDate;
@@ -122,8 +122,9 @@ class Offer {
   String byDate(String languageCode) => DateFormat('d MMMM', languageCode).format(publishEndDate);
 
   OffersGroup get offerGroup {
-    final categoryIds = categories.map((e) => e.id).toList();
-    return OffersGroupMapper.fromCategoryIds(categoryIds);
+    final categoryIds = categories.map((e) => e.category?.id).toList();
+    final notNullCategoryIds = categoryIds.whereType<String>().toList();
+    return OffersGroupMapper.fromCategoryIds(notNullCategoryIds);
   }
 }
 
@@ -157,4 +158,15 @@ class TypeDetails {
   });
 
   factory TypeDetails.fromJson(Map<String, dynamic> json) => _$TypeDetailsFromJson(json);
+}
+
+@noRenameNoToJson
+class OfferCategory {
+  final Category? category;
+
+  OfferCategory({
+    this.category,
+  });
+
+  factory OfferCategory.fromJson(Map<String, dynamic> json) => _$OfferCategoryFromJson(json);
 }
