@@ -22,6 +22,7 @@ import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.routing.*
+import kotlin.collections.mutableListOf
 
 class RouteHandler(
         private val map: DgisMap,
@@ -310,12 +311,14 @@ class RouteHandler(
         startPoint: RouteSearchPoint,
         finishPoint: RouteSearchPoint,
         routeSearchOptions: RouteSearchOptions,
+        intermediatePoints: List<RouteSearchPoint>?,
         callback: (Result<FindRouteResultMessage>)->Unit
     ) {
         val routesFuture =  trafficRouter.findRoute(
             startPoint = startPoint,
             finishPoint = finishPoint,
-            routeSearchOptions = routeSearchOptions
+            routeSearchOptions = routeSearchOptions,
+            intermediatePoints = intermediatePoints ?: listOf(),
         )
 
 

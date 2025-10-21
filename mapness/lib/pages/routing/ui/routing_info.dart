@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +33,8 @@ import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+const _defaultNavType = RouteSearchOptionsMessage.car;
+
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPointWithLabel> pointsWithLabel;
   final List<RouteParamsPoint?> points;
@@ -48,7 +51,7 @@ class RoutingInfo extends ConsumerStatefulWidget {
 }
 
 class _RoutingInfoState extends ConsumerState<RoutingInfo> {
-  final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(RouteSearchOptionsMessage.car);
+  final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(_defaultNavType);
 
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
   bool _navigationStarted = false;
@@ -57,27 +60,31 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
-        unawaited(_calculateNavigationType(null));
-      } else {
-        Position? location = ref.read(locationProvider);
-        if (location == null) {
-          // TODO(Ayat) rewriting to human form is a temporary fix
-          final isGranded = await Permission.location.isGranted;
-
-          if (!isGranded) {
-            context.router.popForced();
-            return;
-          }
-          // Due to the addition of checks on Huawei, it was not possible to get the provider's
-          // location during the first installation, I made this method so as not to catch a crash
-          location = await Geolocator.getCurrentPosition();
-        }
-        unawaited(_calculateNavigationType(location));
-      }
+      await _initNavigationTypeCalculation();
       setCameraPadding();
       hideActiveLayer();
     });
+  }
+
+  Future<void> _initNavigationTypeCalculation() async {
+    if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
+      unawaited(_calculateNavigationType(null));
+    } else {
+      Position? location = ref.read(locationProvider);
+      if (location == null) {
+        // TODO(Ayat) rewriting to human form is a temporary fix
+        final isGranted = await Permission.location.isGranted;
+
+        if (!isGranted) {
+          context.router.popForced();
+          return;
+        }
+        // Due to the addition of checks on Huawei, it was not possible to get the provider's
+        // location during the first installation, I made this method so as not to catch a crash
+        location = await Geolocator.getCurrentPosition();
+      }
+      unawaited(_calculateNavigationType(location));
+    }
   }
 
   void setCameraPadding() {
@@ -112,6 +119,15 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   @override
+  void didUpdateWidget(covariant RoutingInfo oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // if points have changed we need to recalculate nav type
+    if (!const DeepCollectionEquality().equals(oldWidget.points, widget.points)) {
+      _initNavigationTypeCalculation();
+    }
+  }
+
+  @override
   void deactivate() {
     restoreActiveLayer();
     super.deactivate();
@@ -124,30 +140,33 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _calculateNavigationType(Position? location) async {
+    var navType = _defaultNavType;
     final dgisController = ref.read(dgisControllerProvider).valueOrNull;
     final carConnected = await ref.read(carConnectionProvider.future);
 
-    //TODO(scroollocker): !IMPORTANT! Change this logic when we have more than 2 points
-    int finishPointIndex = 1;
-    if (widget.points.length < 2 && widget.points[1] != null) {
+    final pointCount = widget.points.length;
+    if (pointCount < 2) {
       _isNavTypeLoading.value = false;
+      _navType.value = navType;
       return;
     }
 
-    if (widget.points.length == 2 && widget.points[1] == null) {
-      finishPointIndex = 0;
+    // As far as I can assume, null point value in list means user location point.
+    // If so we take the last point if the first one is location and
+    // we take the first point if the last one is location
+    // or skip further calculation otherwise
+    final RouteParamsPoint? finishPoint;
+    if (widget.points.first == null) {
+      finishPoint = widget.points.last;
+    } else if (widget.points.last == null) {
+      finishPoint = widget.points.first;
+    } else {
+      finishPoint = null;
     }
 
-    if (widget.points[finishPointIndex] == null) {
+    if (location == null || dgisController == null || finishPoint == null) {
       _isNavTypeLoading.value = false;
-      return;
-    }
-
-    final finishPoint = widget.points[finishPointIndex]!;
-    final dgisObjectId = finishPoint.dgisObjectId;
-
-    if (location == null || dgisController == null || dgisObjectId == null) {
-      _isNavTypeLoading.value = false;
+      _navType.value = navType;
       return;
     }
 
@@ -162,6 +181,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
       if (briefInfo.isEmpty) {
         _isNavTypeLoading.value = false;
+        _navType.value = navType;
         return;
       }
 
@@ -179,28 +199,33 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     if (!carConnected) {
       // if distance is less than 0.5 km and time <= 5 min then use pedestrian
+      final dgisObjectId = finishPoint.dgisObjectId;
       if (distance < 0.5 && time.floor() <= 5) {
-        _navType.value = RouteSearchOptionsMessage.pedestrian;
+        navType = RouteSearchOptionsMessage.pedestrian;
       }
       // if distance is less than 0.7 km and time <= 7 min then use pedestrian just for in building navigation
-      else if (distance < 0.7 && time.floor() <= 7) {
+      else if (dgisObjectId != null && distance < 0.7 && time.floor() <= 7) {
         // Check if finish point is in building, if we have building name then it's in building)
         final objectInfo = await dgisController.searchByObjectId(dgisObjectId);
         if (objectInfo.buildingInfo.buildingName != null) {
-          _navType.value = RouteSearchOptionsMessage.pedestrian;
+          navType = RouteSearchOptionsMessage.pedestrian;
         }
       }
     }
 
+    _navType.value = navType;
     _isNavTypeLoading.value = false;
   }
 
   @override
   Widget build(BuildContext context) {
-    final publicTransportVisibility = ref.watch(publicTransportVisibilityProvider(
-      startPoint: widget.points[0],
-      finishPoint: widget.points[1],
-    ));
+    final publicTransportVisibility = ref.watch(
+      publicTransportVisibilityProvider(
+        startPoint: widget.points.first,
+        finishPoint: widget.points.last,
+        intermediatePoints: widget.points.getIntermediatePoints(),
+      ),
+    );
     ref.listen(carConnectionProvider, (_, next) {
       final connected = next.valueOrNull ?? false;
       if (connected) {

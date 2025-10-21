@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/balady_uikit/components/text_input/models/input_models.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -25,11 +26,13 @@ class RoutingSearchSheetPage extends ConsumerStatefulWidget {
   final String placeholder;
   final String? initialQuery;
   final bool showMyLocation;
+  final BaladyInputAffixIcon? affixIcon;
 
   const RoutingSearchSheetPage({
     required this.placeholder,
     required this.showMyLocation,
     this.initialQuery,
+    this.affixIcon,
     super.key,
   });
 
@@ -138,6 +141,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: RoutingSearchBar(
                       placeholder: widget.placeholder,
+                      affixIcon: widget.affixIcon,
                     ),
                   ),
                   const SizedBox(
