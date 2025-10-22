@@ -91,51 +91,11 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
         .showCustomPin(widget.objectId.objectId);
 
     if (isCityscapeObject) {
-      final customCityscapeData = DirectoryObjectMessage(
-        types: [],
-        title: 'Riyadh International Exhibition & Convention Center',
-        titleAddition: '',
-        subtitle:
-            '2446, Al Sarh street\nKing Abdullah district, Riyadh, Riyadh Region',
-        about:
-            'Opened in 2009, the Riyadh International Exhibition & Convention Center (RICEC) is one of Saudi Arabia’s premier venues for trade shows, conferences, and major public events.',
-        id: DgisObjectIdMessage(
-          objectId: widget.objectId.objectId,
-          entranceId: 0,
-        ),
-        markerPosition: GeoPointWithElevationMessage(
-          latitude: widget.closestPoint?.latitude ?? 24.7136,
-          longitude: widget.closestPoint?.longitude ?? 46.6753,
-          elevation: 0,
-        ),
-        attributes: [],
-        contextAttributes: [],
-        contactInfos: [
-          ContactInfoMessage(
-            type: 'phone',
-            displayText: '+966 11 211 2222',
-            value: '+966112112222',
-          ),
-        ],
-        entrances: [],
-        buildingInfo: BuildingInfoMessage(
-          buildingName: 'RICEC',
-          purposeName: 'Exhibition Center',
-          purposeCode: 501,
-        ),
-        rubricIds: [],
-        group: [],
-        routeInfos: [],
-        platformIds: [],
-      );
       return _CityscapePoiCardContent(
         objectId: widget.objectId.objectId,
-        data: customCityscapeData,
-        poiCardState: poiCardState?.copyWith(
-          gisObjectIdMessage: customCityscapeData,
-        ),
         closestPoint: widget.closestPoint,
         cameraConfig: widget.cameraConfig,
+        poiCardState: poiCardState,
       );
     }
 

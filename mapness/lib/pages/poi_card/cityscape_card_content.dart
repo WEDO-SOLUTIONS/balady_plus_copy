@@ -1,18 +1,16 @@
 part of 'poi_card_widget_page.dart';
 
 class _CityscapePoiCardContent extends ConsumerStatefulWidget {
-  final DirectoryObjectMessage data;
   final int objectId;
   final LatLng? closestPoint;
-  final PoiCardState? poiCardState;
   final PoiCameraConfig? cameraConfig;
+  final PoiCardState? poiCardState;
 
   const _CityscapePoiCardContent({
-    required this.data,
     required this.objectId,
-    this.poiCardState,
     this.closestPoint,
     this.cameraConfig,
+    this.poiCardState,
   });
 
   @override
@@ -24,11 +22,9 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
     with SingleTickerProviderStateMixin {
   late final MultiStateSheetController<PoiCardBottomSheetState>
       _bottomSheetController;
-
   @override
   void initState() {
     super.initState();
-
     _bottomSheetController = MultiStateSheetController(
       behavior: MultiSnappingBehavior(
         models: [
@@ -58,11 +54,48 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
 
   @override
   Widget build(BuildContext context) {
-    final data = widget.data;
+    final l10n = context.l10n;
+
+    final customCityscapeData = DirectoryObjectMessage(
+      types: [],
+      title: l10n.cityscape_title,
+      titleAddition: '',
+      subtitle: l10n.cityscape_subtitle,
+      about: l10n.cityscape_about,
+      id: DgisObjectIdMessage(
+        objectId: widget.objectId,
+        entranceId: 0,
+      ),
+      markerPosition: GeoPointWithElevationMessage(
+        latitude: widget.closestPoint?.latitude ?? 24.7136,
+        longitude: widget.closestPoint?.longitude ?? 46.6753,
+        elevation: 0,
+      ),
+      attributes: [],
+      contextAttributes: [],
+      contactInfos: [
+        ContactInfoMessage(
+          type: 'phone',
+          displayText: '+966 11 211 2222',
+          value: '+966112112222',
+        ),
+      ],
+      entrances: [],
+      buildingInfo: BuildingInfoMessage(
+        buildingName: l10n.cityscape_title,
+        purposeName: l10n.cityscape_title,
+        purposeCode: 501,
+      ),
+      rubricIds: [],
+      group: [],
+      routeInfos: [],
+      platformIds: [],
+    );
+
+    final poiCardState = widget.poiCardState?.copyWith(
+      gisObjectIdMessage: customCityscapeData,
+    );
     final colors = context.colors;
-
-    final about = data.getAbout(context.l10n);
-
     final cityscapeNotifier = ref.read(cityscapeProvider.notifier);
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
@@ -75,7 +108,7 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
             ownerName: BssUIElementNames.cardInformation,
           ),
           payload: BssPayload(
-            placeItem: data.toBss(),
+            placeItem: customCityscapeData.toBss(),
             contact: BssContact(
               type: type,
               value: value,
@@ -86,7 +119,7 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
     }
 
     final actionsProvider = ref.read(poiCardActionsProvider.notifier);
-    final contacts = data.getContacts(
+    final contacts = customCityscapeData.getContacts(
       (value) {
         bssOnContactTap(BssContactType.phone, value);
         actionsProvider.callPhone(value);
@@ -114,7 +147,7 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
         outside: PoiCardMapControlsWrapper(
           bottomSheetController: _bottomSheetController,
           objectIdForIndoorLevels:
-              widget.poiCardState?.gisObjectIdMessage?.levelId != null
+              poiCardState?.gisObjectIdMessage?.levelId != null
                   ? null
                   : widget.objectId,
         ),
@@ -122,13 +155,14 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
         footer: PoiCardFooter(
           closestPoint: widget.closestPoint,
           bottomSheetController: _bottomSheetController,
-          data: data,
+          data: customCityscapeData,
           share: () => ref.read(poiCardActionsProvider.notifier).share(
                 objectId: widget.objectId,
                 markerCoords: widget.closestPoint,
               ),
           callPhone: () {
-            final phoneNumber = data.getContactsInfoModels.firstWhereOrNull(
+            final phoneNumber =
+                customCityscapeData.getContactsInfoModels.firstWhereOrNull(
               (element) => element.type == ContactsInfoType.phone,
             );
             if (phoneNumber?.value != null) {
@@ -142,15 +176,19 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
           onTapFavorite: (item) {},
         ),
         header: PoiHeader(
-          title: data.title ?? data.buildingInfo.buildingName ?? '',
-          subTitle: data.subtitle,
-          parkingInfo: data.parkingInfo,
-          poiCardState: widget.poiCardState,
-          data: data,
+          title: customCityscapeData.title ??
+              customCityscapeData.buildingInfo.buildingName ??
+              '',
+          subTitle: customCityscapeData.subtitle,
+          parkingInfo: customCityscapeData.parkingInfo,
+          poiCardState: poiCardState,
+          data: customCityscapeData,
           onTapClose: () {
             ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
             ref.read(parkingManageProvider.notifier).restoreMarker();
-            ref.read(highlightProvider.notifier).removeHighlight(data.id!);
+            ref
+                .read(highlightProvider.notifier)
+                .removeHighlight(customCityscapeData.id!);
             context.router.popForced();
           },
         ),
@@ -183,12 +221,12 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(widget.data.title,
+                                    Text(customCityscapeData.title,
                                         style: context
                                             .textStyles.bodyLargeSemiBold),
                                     const SizedBox(height: Spacing.$1_5x),
                                     Text(
-                                      widget.data.subtitle,
+                                      customCityscapeData.subtitle,
                                       style: context.textStyles.bodySmallRegular
                                           .copyWith(
                                               color: colors.foregroundSoft),
@@ -206,7 +244,8 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent>
                           ),
                         ),
                         const SizedBox(height: 16),
-                        PoiContentAboutCard(data: about!),
+                        PoiContentAboutCard(
+                            data: customCityscapeData.getAbout(context.l10n)!),
                         const SizedBox(height: 16),
                         PoiContentContactsCard(
                           data: contacts,
