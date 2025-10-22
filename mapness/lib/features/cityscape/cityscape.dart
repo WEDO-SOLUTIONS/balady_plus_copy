@@ -42,6 +42,8 @@ class Cityscape extends _$Cityscape {
 
   String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
+  String get globalImg => Assets.images.cityscapeGlobal.keyName;
+
   @override
   bool build() {
     // Check if debug override is enabled
@@ -57,7 +59,8 @@ class Cityscape extends _$Cityscape {
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) &&
+        now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
@@ -99,7 +102,8 @@ class Cityscape extends _$Cityscape {
     }
 
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) &&
+        now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Provider that returns the remaining time until Saudi National Day
