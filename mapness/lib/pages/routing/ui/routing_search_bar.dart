@@ -1,8 +1,12 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart'
+    hide BaladySearchWithBackButtonV2, BaladyTextInput, BaladyInputConfig, BaladyInputAffixIcon;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/balady_uikit/components/search_input/search_input_v2.dart';
+import 'package:mapness/balady_uikit/components/text_input/input.dart';
+import 'package:mapness/balady_uikit/components/text_input/models/input_models.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
@@ -19,9 +23,11 @@ import 'package:provider/provider.dart';
 
 class RoutingSearchBar extends ConsumerStatefulWidget {
   final String placeholder;
+  final BaladyInputAffixIcon? affixIcon;
 
   const RoutingSearchBar({
     required this.placeholder,
+    this.affixIcon,
     super.key,
   });
 
@@ -66,6 +72,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
     return BaladySearchWithBackButtonV2(
       searchInput: BaladyTextInput.search(
         controller: _controller,
+        affixIcon: widget.affixIcon,
         config: BaladyInputConfig(
           focusNode: _focusNode,
           onTap: () {

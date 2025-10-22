@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -43,11 +42,6 @@ class SelectedMarker extends _$SelectedMarker {
     if (currentSearchMarker != null) {
       marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
       _hideMarker(currentSearchMarker);
-    }
-
-    final cityscapeNotifier = ref.read(cityscapeProvider.notifier);
-    if (objectId != null && cityscapeNotifier.showCustomPin(objectId)) {
-      marker.options.icon = cityscapeNotifier.customPin;
     }
 
     await mapObjectManager.removeAllMarkers();

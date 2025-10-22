@@ -1,7 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -28,8 +27,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
-  final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerType(rubrics);
-
+  final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerPath(rubrics, objectId.objectId);
+  final bigIconPath = mapMarkerMapper.$2;
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
 
   final position = LatLng(
@@ -63,7 +62,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       ),
       text: title,
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
-      icon: mapMarkerMapper?.iconPath.bigIconPath,
+      icon: bigIconPath,
       id: poiPinId,
     ),
     objectId: objectId.objectId,

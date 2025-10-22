@@ -21,7 +21,7 @@ class Routes extends _$Routes {
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
-    List<RouteEditorRoutePointMessage>? intermediatePoints,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
@@ -30,6 +30,8 @@ class Routes extends _$Routes {
 
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.pointMessage).toList();
 
     unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
@@ -79,7 +81,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
     Duration? timeout,
-    List<RouteEditorRoutePointMessage>? intermediatePoints,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
@@ -88,6 +90,8 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
 
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
+
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.pointMessage).toList();
 
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,

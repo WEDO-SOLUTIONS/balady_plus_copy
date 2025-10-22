@@ -57,6 +57,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
   Future<PublicTransportVisibilityResult> build({
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     try {
       final normalizedStartPoint = _normalizePoint(startPoint);
@@ -65,6 +66,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       final hasRoutes = await _checkPublicTransportRoutes(
         normalizedStartPoint,
         normalizedFinishPoint,
+        intermediatePoints?.points,
       );
 
       if (!hasRoutes) {
@@ -124,14 +126,17 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
   Future<bool> _checkPublicTransportRoutes(
     RouteParamsPoint startPoint,
     RouteParamsPoint finishPoint,
+    List<RouteParamsPoint>? intermediatePoints,
   ) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
+    final intermediateSearchPoints = intermediatePoints?.map((e) => e.routeSearchPointMessage).toList();
     try {
       // Initial route search
       final initialRoutes = await dgisController.findRoute(
         options: RouteSearchOptionsMessage.publicTransport,
         startPoint: startPoint.routeSearchPointMessage,
         finishPoint: finishPoint.routeSearchPointMessage,
+        intermediatePoints: intermediateSearchPoints,
       );
 
       if (initialRoutes.routes.isNotEmpty) {
@@ -149,6 +154,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         options: RouteSearchOptionsMessage.publicTransport,
         startPoint: startPoint.routeSearchPointMessage,
         finishPoint: finishPoint.routeSearchPointMessage,
+        intermediatePoints: intermediateSearchPoints,
       );
 
       return retryRoutes.routes.isNotEmpty;

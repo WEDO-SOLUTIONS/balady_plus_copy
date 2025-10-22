@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart' as sdk;
-import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
-import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'cityscape.g.dart';
@@ -28,17 +29,16 @@ class CityscapeConfig {
 @riverpod
 class Cityscape extends _$Cityscape {
   /// Object IDs for Riyadh International Convention & Exhibition Center
-  static const int _cityscapeObjectIds = 70030076677108076;
+  static const int _cityscapeObjectId = 70030076677108076;
 
   // Riyadh International Convention & Exhibition Center,
-  // Riyadh, Ar-Riyad, Riyadh, Saudi Arabia (N 24° 45' 8.46", E 46° 43' 34.5828").
+  // Riyadh, Ar-Riyad, Riyadh, Saudi Arabia
   static final sdk.GeoPointMessage center = sdk.GeoPointMessage(
     latitude: 25.252325164174778,
     longitude: 46.38741921633482,
   );
 
-  MarkerIconMessage get customPin =>
-      Assets.images.icCityscapePin.keyName.resolvedMarkerIcon(size: 58);
+  String get customPinPath => Assets.icons.svg.icCityscapePin.keyName;
 
   String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
@@ -64,7 +64,7 @@ class Cityscape extends _$Cityscape {
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
-  bool showCustomPin(int objectId) => _cityscapeObjectIds == objectId && state;
+  bool showCustomPin(int objectId) => _cityscapeObjectId == objectId && state;
 
   /// Manually triggers an update of the state
   void refresh() {
@@ -72,14 +72,25 @@ class Cityscape extends _$Cityscape {
   }
 
   void openThePlace() {
-    ref
-        .read(cameraPositionProvider.notifier)
-        .animateTo(sdk.CameraPositionMessage(
-          point: center,
-          zoom: 18.0,
-          tilt: 0.0,
-          bearing: 0.0,
-        ));
+    unawaited(
+      ref.read(cameraPositionProvider.notifier).animateTo(
+            sdk.CameraPositionMessage(
+              point: center,
+              zoom: 18.0,
+              tilt: 0.0,
+              bearing: 0.0,
+            ),
+          ),
+    );
+
+    unawaited(
+      ref.watch(
+        pointOfInterestProvider(
+          sdk.DgisObjectIdMessage(objectId: _cityscapeObjectId, entranceId: 0),
+          sdk.LatLng(latitude: center.latitude, longitude: center.longitude),
+        ).future,
+      ),
+    );
   }
 
   /// Simple provider that returns the current status without periodic updates

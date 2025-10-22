@@ -387,12 +387,14 @@ class RouteHandler {
         startPoint: RouteSearchPoint,
         finishPoint: RouteSearchPoint,
         routeSearchOptions: RouteSearchOptions,
+        intermediatePoints: [RouteSearchPoint]?,
         completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void
     ) {
         let routesFuture = trafficRouter.findRoute(
             startPoint: startPoint,
             finishPoint: finishPoint,
-            routeSearchOptions: routeSearchOptions
+            routeSearchOptions: routeSearchOptions,
+            intermediatePoints: intermediatePoints ?? [],
         )
         
         self.cancelable.append(routesFuture.sink { (response: [TrafficRoute]) in

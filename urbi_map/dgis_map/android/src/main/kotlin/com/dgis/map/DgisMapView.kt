@@ -1165,6 +1165,7 @@ class DgisMapView(
             startPoint: RouteSearchPointMessage,
             finishPoint: RouteSearchPointMessage,
             navType: RouteSearchOptionsMessage,
+            intermediatePoints: List<RouteSearchPointMessage>?,
             callback: (Result<FindRouteResultMessage>) -> Unit
     ) {
         val routeSearchOptions = navType.toRouteSearchOptions()
@@ -1175,6 +1176,7 @@ class DgisMapView(
             startPoint = startSearchPoint,
             finishPoint = finishSearchPoint,
             routeSearchOptions = routeSearchOptions,
+            intermediatePoints = intermediatePoints?.map { it.toRouteSearchPoint() },
             callback = callback
         )
     }
