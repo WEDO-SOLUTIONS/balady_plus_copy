@@ -151,6 +151,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (website == null && socialMedia != null)
         ItemActionBar(
           icon: PoiContentContactsCard.getIconData(socialMedia.type),
+          colorScheme: ButtonColorScheme.accent,
           buttonType: ButtonType.secondary,
           onPressed: () {
             BssService.instance.trackLinkTap(
