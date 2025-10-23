@@ -193,17 +193,18 @@ packages:
   balady_authorization:
     dependency: transitive
     description:
-      path: "/Users/yousefalnajjar/work/BaladyAuthorization"
-      relative: false
-    source: path
-    version: "0.0.60"
+      name: balady_authorization
+      sha256: "091f8af25be1931003eebd2252be1dd02fa7a1a9814a8f4e59fa91efe6761f0d"
+      url: "https://baladyapp-unpub.urbi.ae"
+    source: hosted
+    version: "0.0.71"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+420"
+    version: "3.12.18+417"
   balady_uikit:
     dependency: "direct main"
     description:
