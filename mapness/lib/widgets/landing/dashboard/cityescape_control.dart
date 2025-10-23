@@ -26,6 +26,7 @@ class CityscapeGlobal extends StatelessWidget {
                 formattedDate: formatDateRange(
                   DateTime(2025, 11, 17),
                   DateTime(2025, 11, 20),
+                  context.l10n.localeName,
                 ),
               ),
             ),

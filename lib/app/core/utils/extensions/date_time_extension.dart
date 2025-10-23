@@ -18,20 +18,17 @@ extension DateTimeExtension on DateTime {
   }
 
   String toHijriFormattedDate() {
-    final date = CommonFunctions.mapARNumbersToENNumbers(
-        HijriCalendar.fromDate(this).toFormat("yyyy/mm/dd"));
+    final date = CommonFunctions.mapARNumbersToENNumbers(HijriCalendar.fromDate(this).toFormat("yyyy/mm/dd"));
     return date;
   }
 
   Future<String> toHijriFormattedDateForCompliance() async {
     var date = "";
     try {
-      date = CommonFunctions.mapARNumbersToENNumbers(
-          HijriCalendar.fromDate(this).toFormat("yyyy/mm/dd"));
+      date = CommonFunctions.mapARNumbersToENNumbers(HijriCalendar.fromDate(this).toFormat("yyyy/mm/dd"));
 
       String year = HijriCalendar.fromDate(this).hYear.toString();
-      String month =
-          HijriCalendar.fromDate(this).hMonth.toString().padLeft(2, '0');
+      String month = HijriCalendar.fromDate(this).hMonth.toString().padLeft(2, '0');
       String day = HijriCalendar.fromDate(this).hDay.toString().padLeft(2, '0');
 
       return "$year/$month/$day";
@@ -45,9 +42,7 @@ extension DateTimeExtension on DateTime {
       );
       String formattedDate = DateFormat("dd/MM/yyyy").format(this);
 
-      date = await (BaladyServices(webService: sl())
-              .getHijtiDate(formattedDate)) ??
-          "";
+      date = await (BaladyServices(webService: sl()).getHijtiDate(formattedDate)) ?? "";
     }
     return date;
   }
@@ -105,13 +100,13 @@ extension DateTimeExtension on DateTime {
   }
 }
 
-String formatDateRange(DateTime start, DateTime end) {
+String formatDateRange(DateTime start, DateTime end, [String? locale]) {
   final sameMonth = start.month == end.month;
   final sameYear = start.year == end.year;
 
-  final dayFormatter = DateFormat('d');
-  final monthFormatter = DateFormat('MMM');
-  final yearFormatter = DateFormat('y');
+  final dayFormatter = DateFormat('d', locale);
+  final monthFormatter = DateFormat('MMM', locale);
+  final yearFormatter = DateFormat('y', locale);
 
   if (sameMonth && sameYear) {
     // Example: 17–20 Nov 2025
