@@ -10,6 +10,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/utils/location_setup_helper.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -98,9 +99,13 @@ class DgisController extends _$DgisController {
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
 
-    // at this point, geolocation is either activated,
-    // or the user has definitively denied it (the helper will timeout
-    // if you add it inside _LocationSetupHelper).
+    ///Through trial and error, I found a version where the user marker is displayed.
+    ///Even if the user doesn’t grant permission, calling these functions won’t break anything.
+    await controller.onLocationPermissionGranted(
+      desiredAccuracy: DesiredAccuracyMessage.high,
+    );
+    await controller.toggleFollowState();
+
   }
 
   /// Moves camera on Riyadh Tower
