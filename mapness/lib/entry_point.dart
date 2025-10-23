@@ -43,8 +43,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/search/providers/search_region.dart'
-    show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -86,7 +85,6 @@ import 'package:provider/provider.dart' as provider;
 import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
-import 'features/stream_audio/ui/pages/stream_audio_screen.dart';
 
 Mixpanel? mixpanel;
 
@@ -191,16 +189,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     initInsider();
   }
+
   Future<void> checkConnection() async {
     final connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult.contains(ConnectivityResult.mobile)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.mobile.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.mobile.name);
     } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      ref
-          .read(appAnalyticsProvider)
-          .networkConnectionType(type: ConnectivityResult.wifi.name);
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.wifi.name);
     }
   }
 
@@ -313,7 +308,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                           child: Column(
                             children: [
                               Expanded(
-                                child: StreamAudio(child: child),
+                                child: child,
                               ),
                             ],
                           ),
@@ -416,43 +411,36 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-
   // implement insider deep link for ios
 
   Future initInsider() async {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
-    await FlutterInsider.Instance.init(
-        "baladyapp", "group.movingViolations",
-            (int type, dynamic data) {
-          switch (type) {
-            case InsiderCallbackAction.NOTIFICATION_OPEN:
-             // if(Platform.isIOS) {
-                if (data != null && data.containsKey('url')) {
-                  final url = Uri.parse(data['url']);
-                  openAppLink(url);
-                  return;
-                }
-
-            //  }
-              break;
-            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
-              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
-              break;
-            default:
-              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
-              break;
+    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations", (int type, dynamic data) {
+      switch (type) {
+        case InsiderCallbackAction.NOTIFICATION_OPEN:
+          // if(Platform.isIOS) {
+          if (data != null && data.containsKey('url')) {
+            final url = Uri.parse(data['url']);
+            openAppLink(url);
+            return;
           }
-        });
+
+          //  }
+          break;
+        case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          break;
+        default:
+          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          break;
+      }
+    });
 
     // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
     await FlutterInsider.Instance.setActiveForegroundPushView();
     await FlutterInsider.Instance.registerWithQuietPermission(false);
-
   }
-
-
-
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
@@ -468,7 +456,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
     final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
-    final serviceKey = url.path;//queryParameters[BaldayDeeplink.serviceKey];
+    final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
 
@@ -522,24 +510,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (homeWidget != null) {
       await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty&& serviceKey !='/poi-map' && serviceKey.startsWith('/app')) {
-      MiniAppModel app= MiniAppModel();
+    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
+      MiniAppModel app = MiniAppModel();
       var subPath;
-      if(dtId!= null && path!= null)
-      {
+      if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
-      }
-      else if(path!= null)
-      {
+      } else if (path != null) {
         subPath = '#$path';
       }
 
-      app=app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''),path: subPath);
+      app = app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''), path: subPath);
 
       CommonFunctions.openMiniApp(app);
-    }
-
-    else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -565,22 +548,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openSnapSend();
       } else if (url.path == '/parking') {
         _openParking();
-      }else if (url.path == '/register') {
+      } else if (url.path == '/register') {
         await _openRegisterPage();
-      }
-
-      else {
+      } else {
         await router.pushNamed(url.toString());
       }
     }
   }
 
-
-
   Future<void> _openRegisterPage() async {
     await CommonFunctions.onLogin();
   }
-    void _openParking() {
+
+  void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
       await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
@@ -617,25 +597,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path:  "#Quran_Show_All_Surahs_Page",
+      path: "#Quran_Show_All_Surahs_Page",
     );
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path:  "#Athkar_Page",
+      path: "#Athkar_Page",
     );
   }
-
-
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);

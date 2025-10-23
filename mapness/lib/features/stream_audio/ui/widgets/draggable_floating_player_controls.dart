@@ -1,5 +1,5 @@
 import 'dart:ui';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -502,15 +502,17 @@ class _ContentState extends ConsumerState<Content> {
                     color: Colors.white,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
+                    height: 1.2,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  selectedChannel?.name ?? '-',
+                  selectedChannel?.name ?? 'MBC Mood',
                   style: TextStyle(
-                    color: Colors.white.withOpacity( 0.7),
+                    color: Colors.white.withOpacity(0.7),
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
+                    height: 1.2,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -548,16 +550,19 @@ class _ContentState extends ConsumerState<Content> {
               ),
               const SizedBox(width: 12),
               // Forward button
-              AnimatedOpacity(
-                opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
-                duration: const Duration(milliseconds: 200),
-                child: GestureDetector(
-                  onTap: !provider.canGoToNextChannel ? null : () => ref.read(streamAudioProvider).goToNextChannel(),
-                  child: SvgPicture.asset(
-                    Assets.icons.svg.audio.seekForward.keyName,
-                    width: 16,
-                    height: 16,
-                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+              Transform.flip(
+                flipX: Directionality.of(context) == TextDirection.rtl,
+                child: AnimatedOpacity(
+                  opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
+                  duration: const Duration(milliseconds: 200),
+                  child: GestureDetector(
+                    onTap: !provider.canGoToNextChannel ? null : () => ref.read(streamAudioProvider).goToNextChannel(),
+                    child: SvgPicture.asset(
+                      Assets.icons.svg.audio.seekForward.keyName,
+                      width: 14,
+                      height: 14,
+                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                    ),
                   ),
                 ),
               ),
@@ -571,13 +576,9 @@ class _ContentState extends ConsumerState<Content> {
   Widget buildProgramImage(StreamAudioProvider provider) {
     final channel = provider.selectedChannel;
     final hasProgram = channel?.currentPlayedProgram != null;
-    // final programLogo = channel?.currentPlayedProgram?.image;
-    // final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
-    // final url = hasProgramLogo ? programLogo : (channel?.minimizedLogo ?? 'https://www.mbcmood.com/images/Logo.png');
-
-    //TODO: remove this line and uncomment above to show program logo when available from backend
-    final url = channel?.minimizedLogo ?? 'https://www.mbcmood.com/images/Logo.png';
-
+    final programLogo = channel?.currentPlayedProgram?.image;
+    final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
+    final url = hasProgramLogo ? programLogo : (channel?.minimizedLogo ?? 'https://www.mbcmood.com/images/Logo.png');
 
     return Stack(
       children: [
@@ -586,12 +587,31 @@ class _ContentState extends ConsumerState<Content> {
           width: 32,
           decoration: BoxDecoration(
             color: Colors.white,
-            image: url.contains('svg') ? null : DecorationImage(image: NetworkImage(url), fit: BoxFit.fitWidth),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.white.withOpacity( 0.15), width: 1.5),
           ),
-          child:
-              !url.contains('svg') ? null : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+          child: !url.contains('svg')
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.fitWidth,
+                    errorBuilder: (_, __, ___) => Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Assets.icons.svg.icMbcMood.svg(
+                        colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                      ),
+                    ),
+                  ),
+                )
+              : SvgPicture.network(
+                  url,
+                  placeholderBuilder: (_) => Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Assets.icons.svg.icMbcMood.svg(
+                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                    ),
+                  ),
+                ),
         ),
         if (!hasProgram)
           ClipRRect(
@@ -606,7 +626,7 @@ class _ContentState extends ConsumerState<Content> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     stops: const [0.00, 1.00],
-                    colors: [Colors.black.withOpacity( 0.6), Colors.black.withOpacity( 0.2)],
+                    colors: [Colors.black.withOpacity(0.6), Colors.black.withOpacity(0.2)],
                   ),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(),

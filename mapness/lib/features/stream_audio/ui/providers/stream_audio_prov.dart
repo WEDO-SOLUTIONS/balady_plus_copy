@@ -6,6 +6,7 @@ import 'package:mapness/features/stream_audio/data/datasource/channels_data_sour
 import 'package:mapness/features/stream_audio/data/dto/channel_dto.dart';
 import 'package:mapness/features/stream_audio/data/dto/filtered_channel.dart';
 import 'package:mapness/features/stream_audio/services/audio_service.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 
 class StreamAudioProvider extends ChangeNotifier {
   final AudioService _audioService = AudioService();
@@ -18,9 +19,20 @@ class StreamAudioProvider extends ChangeNotifier {
   String? _contextualMessageTitle;
   String? _contextualMessageSubtitle;
   Timer? _contextualMessageTimer;
-
+  bool _isDragging = false;
   StreamAudioProvider() {
     _initializeService();
+  }
+
+  // Set the ref to listen to language changes
+  void setRef(ChangeNotifierProviderRef<StreamAudioProvider> ref) {
+    // Listen to language changes
+    ref.listen<Language>(appLanguageProvider, (previous, next) {
+      if (previous != null && previous != next) {
+        // Language changed, refresh channels
+        refreshChannels();
+      }
+    });
   }
 
   Future<void> _initializeService() async {
@@ -114,9 +126,18 @@ class StreamAudioProvider extends ChangeNotifier {
 
   bool get isInitialized => _isInitialized;
 
+  bool get isDragging => _isDragging;
+
+  void setDraggingState(bool isDragging) {
+    debugPrint('StreamAudioProvider: setDraggingState called - old: $_isDragging, new: $isDragging');
+    _isDragging = isDragging;
+    notifyListeners();
+    debugPrint('StreamAudioProvider: notifyListeners called');
+  }
+
   // Load channels data
-  Future<void> getChannels() async {
-    if (_channels.isEmpty) {
+  Future<void> getChannels({bool forceRefresh = false}) async {
+    if (_channels.isEmpty || forceRefresh) {
       try {
         _channels = await ChannelsDataSource().getChannels();
         filterChannels();
@@ -126,6 +147,34 @@ class StreamAudioProvider extends ChangeNotifier {
       } catch (e) {
         debugPrint('StreamAudioProvider: Failed to load channels: $e');
       }
+    }
+  }
+
+  // Refresh channels when language changes
+  Future<void> refreshChannels() async {
+    debugPrint('StreamAudioProvider: Refreshing channels due to language change');
+
+    // Store the currently selected channel ID if any
+    final currentChannelId = _selectedChannel?.id;
+
+    await getChannels(forceRefresh: true);
+
+    // If there was a selected channel, find and update it with the new data
+    if (currentChannelId != null && filteredChannels.isNotEmpty) {
+      try {
+        final updatedChannel = filteredChannels.firstWhere(
+          (channel) => channel.id == currentChannelId,
+        );
+
+        _selectedChannel = updatedChannel;
+        debugPrint('StreamAudioProvider: Updated selected channel with new language data');
+      } catch (e) {
+        // If the channel is not found, keep the current selection or select the first available
+        debugPrint('StreamAudioProvider: Previously selected channel not found, keeping current selection');
+      }
+
+      // Always notify listeners to ensure UI updates
+      notifyListeners();
     }
   }
 
@@ -418,5 +467,9 @@ class StreamAudioProvider extends ChangeNotifier {
 
 // Provider definition
 final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
-  (ref) => StreamAudioProvider(),
+  (ref) {
+    final provider = StreamAudioProvider();
+    provider.setRef(ref);
+    return provider;
+  },
 );

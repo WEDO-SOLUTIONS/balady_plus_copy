@@ -1,13 +1,13 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
@@ -17,21 +17,74 @@ import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/native_overlay_controller.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 
-class MiniAppsMainScreen extends StatefulWidget {
+class MiniAppsMainScreen extends ConsumerStatefulWidget {
   const MiniAppsMainScreen({super.key});
 
   @override
-  State<MiniAppsMainScreen> createState() => _MiniAppsMainScreenState();
+  ConsumerState<MiniAppsMainScreen> createState() => _MiniAppsMainScreenState();
 }
 
-class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
+class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   late MiniAppModel data;
   bool showTooltip = true;
+  bool _webViewDialogActive = false;
 
   @override
   void initState() {
     super.initState();
+
+    // Listen to dragging state changes on iOS
+    if (Platform.isIOS) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        print('DEBUG: Setting up listener for dragging state');
+        ref.listen<StreamAudioProvider>(streamAudioProvider, (previous, next) {
+          print('DEBUG: Dragging state changed - Previous: ${previous?.isDragging}, Next: ${next.isDragging}');
+          if (previous?.isDragging != next.isDragging) {
+            if (next.isDragging && !_webViewDialogActive) {
+              print('DEBUG: Showing WebView protection dialog');
+              _showWebViewProtectionDialog();
+            } else if (!next.isDragging && _webViewDialogActive) {
+              print('DEBUG: Hiding WebView protection dialog');
+              _hideWebViewProtectionDialog();
+            }
+          }
+        });
+      });
+    }
+  }
+
+  Future<void> _showWebViewProtectionDialog() async {
+    if (_webViewDialogActive) return;
+
+    _webViewDialogActive = true;
+
+    await ShowDialogOnWebView.showAlertDialog<void>(
+      context: context,
+      title: const Text('Player Controls'),
+      content: const Text('You can now drag the player safely.'),
+      actions: (context) => [
+        TextButton(
+          onPressed: () {
+            _webViewDialogActive = false;
+            Navigator.of(context).pop();
+            // Also stop dragging state in provider
+            ref.read(streamAudioProvider).setDraggingState(false);
+          },
+          child: const Text('Done'),
+        ),
+      ],
+    );
+
+    _webViewDialogActive = false;
+  }
+
+  void _hideWebViewProtectionDialog() {
+    if (_webViewDialogActive && Navigator.of(context).canPop()) {
+      _webViewDialogActive = false;
+      Navigator.of(context).pop();
+    }
   }
 
   Future<bool> _showExitConfirmationDialog() async {
@@ -52,8 +105,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         ),
       ),
     ];
-    return await ShowDialogOnWebView.showAlertDialog<bool>(
-            context: context, title: title, actions: (_) => actions) ??
+    return await ShowDialogOnWebView.showAlertDialog<bool>(context: context, title: title, actions: (_) => actions) ??
         false;
   }
 
@@ -66,8 +118,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
-              NavigationService.navigatorKey.currentState
-                  ?.pushNamed(RouteName.chatbot);
+              NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
             }
           },
         ),
@@ -78,6 +129,25 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
+
+    // Listen to dragging state changes on iOS (alternative approach)
+    if (Platform.isIOS) {
+      ref.listen<StreamAudioProvider>(streamAudioProvider, (previous, next) {
+        print('DEBUG: Build method listener - Previous: ${previous?.isDragging}, Next: ${next.isDragging}');
+        if (previous?.isDragging != next.isDragging) {
+          if (next.isDragging && !_webViewDialogActive) {
+            print('DEBUG: Build method - Showing WebView protection dialog');
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showWebViewProtectionDialog();
+            });
+          } else if (!next.isDragging && _webViewDialogActive) {
+            print('DEBUG: Build method - Hiding WebView protection dialog');
+            _hideWebViewProtectionDialog();
+          }
+        }
+      });
+    }
+
     // HomeMiniAppsListState state = context.read<HomeMiniAppsListCubit>().state;
     return BlocProvider<MiniAppsEngineBloc>(
       create: (context) => MiniAppsEngineBloc(miniApp: data),
@@ -133,12 +203,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                                     child: SizedBox(
                                       height: 10,
                                       child: LinearProgressIndicator(
-                                        value: (double.parse(state.progress) /
-                                            100),
+                                        value: (double.parse(state.progress) / 100),
                                         backgroundColor: Colors.grey[200],
-                                        valueColor:
-                                            const AlwaysStoppedAnimation<Color>(
-                                                AppColor.primary900Light),
+                                        valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
                                       ),
                                     ),
                                   ),
@@ -159,8 +226,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                   content,
 
                   // Error / reload overlay
-                  if (state is FailedDownloadState ||
-                      state is MiniAppsEngineErrorState)
+                  if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
                     Center(
                       child: ReloadWidget(
                         errorMessage: "errors_server_error_1".tr(),

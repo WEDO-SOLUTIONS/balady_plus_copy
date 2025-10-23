@@ -91,7 +91,12 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
 
   Widget _buildAlbumArt(StreamAudioProvider provider, double size) {
     final channel = provider.selectedChannel;
-    final String url = channel?.maximizedLogo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png';
+
+    final programLogo = channel?.currentPlayedProgram?.image;
+    final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
+    final programUrl = hasProgramLogo
+        ? programLogo
+        : (channel?.maximizedLogo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -102,21 +107,35 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         color: Colors.grey[300],
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity( 0.1),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: !url.contains('svg')
-          ? Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.network(
-                url,
-                fit: BoxFit.fitWidth,
+      child: !programUrl.contains('svg')
+          ? ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.network(
+              programUrl,
+              fit: BoxFit.fitWidth,
+              errorBuilder: (_, __, ___) => Padding(
+                padding: const EdgeInsets.all(4),
+                child: Assets.icons.svg.icMbcMood.svg(
+                  colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                ),
               ),
-            )
-          : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+            ),
+          )
+          : SvgPicture.network(
+            programUrl,
+            placeholderBuilder: (_) => Padding(
+              padding: const EdgeInsets.all(4),
+              child: Assets.icons.svg.icMbcMood.svg(
+                colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+              ),
+            ),
+          ),
     );
   }
 
@@ -141,7 +160,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
             provider.selectedChannel?.name ?? '-',
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withOpacity( 0.5),
+              color: Colors.white.withOpacity(0.5),
               letterSpacing: -0.2,
             ),
             maxLines: 2,
@@ -152,22 +171,25 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       );
 
   Widget _buildControls(StreamAudioProvider provider, {required bool isVertical}) {
-    final backwardButton = AnimatedOpacity(
-      opacity: provider.canGoToPreviousChannel ? 1.0 : 0.4,
-      duration: const Duration(milliseconds: 200),
-      child: GestureDetector(
-        onTap: !provider.canGoToPreviousChannel ? null : () => ref.read(streamAudioProvider).goToPreviousChannel(),
-        child: Container(
-          width: 44,
-          height: 44,
-          alignment: Alignment.center,
-          child: SvgPicture.asset(
-            Assets.icons.svg.audio.seekBackward.keyName,
-            width: 18,
-            height: 18,
-            colorFilter: const ColorFilter.mode(
-              Colors.white,
-              BlendMode.srcIn,
+    final backwardButton = Transform.flip(
+      flipX: Directionality.of(context) == TextDirection.rtl,
+      child: AnimatedOpacity(
+        opacity: provider.canGoToPreviousChannel ? 1.0 : 0.4,
+        duration: const Duration(milliseconds: 200),
+        child: GestureDetector(
+          onTap: !provider.canGoToPreviousChannel ? null : () => ref.read(streamAudioProvider).goToPreviousChannel(),
+          child: Container(
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            child: SvgPicture.asset(
+              Assets.icons.svg.audio.seekBackward.keyName,
+              width: 18,
+              height: 18,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),
@@ -191,22 +213,25 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       ),
     );
 
-    final forwardButton = AnimatedOpacity(
-      opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
-      duration: const Duration(milliseconds: 200),
-      child: GestureDetector(
-        onTap: !provider.canGoToNextChannel ? null : () => ref.read(streamAudioProvider).goToNextChannel(),
-        child: Container(
-          width: 44,
-          height: 44,
-          alignment: Alignment.center,
-          child: SvgPicture.asset(
-            Assets.icons.svg.audio.seekForward.keyName,
-            width: 18,
-            height: 18,
-            colorFilter: const ColorFilter.mode(
-              Colors.white,
-              BlendMode.srcIn,
+    final forwardButton = Transform.flip(
+      flipX: Directionality.of(context) == TextDirection.rtl,
+      child: AnimatedOpacity(
+        opacity: provider.canGoToNextChannel ? 1.0 : 0.4,
+        duration: const Duration(milliseconds: 200),
+        child: GestureDetector(
+          onTap: !provider.canGoToNextChannel ? null : () => ref.read(streamAudioProvider).goToNextChannel(),
+          child: Container(
+            width: 44,
+            height: 44,
+            alignment: Alignment.center,
+            child: SvgPicture.asset(
+              Assets.icons.svg.audio.seekForward.keyName,
+              width: 18,
+              height: 18,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
             ),
           ),
         ),

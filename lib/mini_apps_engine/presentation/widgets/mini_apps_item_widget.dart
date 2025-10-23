@@ -1,6 +1,6 @@
-import 'package:balady_plus/app/core/base/base_view.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../app/core/utils/constants/app_colors.dart';
 
 class MiniAppsItemWidget extends StatelessWidget {
   final MiniAppModel miniApp;

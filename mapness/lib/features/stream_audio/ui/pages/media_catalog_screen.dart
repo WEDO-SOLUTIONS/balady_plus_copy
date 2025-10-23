@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+// import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -89,14 +89,11 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                           channel.maximizedLogo ??
                           'https://assets.mbcmood.com/channels/1708604937logombc.png';
 
-                      // final programLogo = channel.currentPlayedProgram?.image;
-                      // final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
-                      // final programUrl = hasProgramLogo
-                      //     ? programLogo
-                      //     : (channel.maximizedLogo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
-
-                      //TODO: remove this line and uncomment above to show program logo when available from backend
-                      final programUrl = channelUrl;
+                      final programLogo = channel.currentPlayedProgram?.image;
+                      final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
+                      final programUrl = hasProgramLogo
+                          ? programLogo
+                          : (channel.maximizedLogo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
 
                       final hasProgram = channel.currentPlayedProgram != null;
                       final imagesWidth = MediaQuery.of(context).size.width * 0.25;
@@ -128,18 +125,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             minLeadingWidth: imagesWidth,
                             leading: SizedBox(
                               width: imagesWidth,
-                              child: CommonFunctions.isAppAR
-                                  ? Transform(
-                                      alignment: Alignment.center,
-                                      transform: Matrix4.rotationY(math.pi),
-                                      child: MediaImages(
-                                        imagesWidth: imagesWidth,
-                                        programUrl: programUrl,
-                                        channelUrl: channelUrl,
-                                        hasProgram: hasProgram,
-                                      ),
-                                    )
-                                  : MediaImages(
+                              child: MediaImages(
                                       imagesWidth: imagesWidth,
                                       programUrl: programUrl,
                                       channelUrl: channelUrl,
@@ -186,7 +172,10 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               const SizedBox(
                 height: 24,
               ),
-              DashboardTitle(context.l10n.arrivingSoon),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: DashboardTitle(context.l10n.arrivingSoon),
+              ),
               const ArrivingSoon()
             ],
           ),
@@ -217,16 +206,17 @@ class MediaImages extends StatelessWidget {
             child: CircleImage(url: channelUrl),
           ),
           Positioned(
-              top: 5,
-              right: 12,
+              top: 6,
+              right: CommonFunctions.isAppAR ? null : 12,
+              left: CommonFunctions.isAppAR ? 12 : null,
               height: (imagesWidth / 2) - 4,
               width: (imagesWidth / 2) - 4,
               child: Stack(
                 children: [
-                  ProgramImage(url: programUrl),
+                  ProgramImage(url: programUrl, withBoarder: true,),
                   if (!hasProgram)
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 1.4, sigmaY: 1.4),
                         child: Container(
@@ -282,10 +272,15 @@ class ArrivingSoon extends StatelessWidget {
     ];
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding:  EdgeInsets.only(
+        top: 16.0,
+        bottom: 16.0,
+        left: CommonFunctions.isAppAR ? 0 : 14.0,
+        right: CommonFunctions.isAppAR ? 14.0 : 0,
+      ),
       child: SizedBox(
         height: 120,
-        width: MediaQuery.of(context).size.width * 0.9,
+        width: MediaQuery.of(context).size.width,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: items.length,

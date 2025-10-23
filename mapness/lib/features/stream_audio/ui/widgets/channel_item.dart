@@ -49,7 +49,7 @@ class MediaCatalogItem extends StatelessWidget {
                           ),
                           shape: RoundedRectangleBorder(
                             side: BorderSide(color: Colors.white.withOpacity(0.10)),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
@@ -70,8 +70,8 @@ class MediaCatalogItem extends StatelessWidget {
                                 end: Alignment.bottomCenter,
                                 stops: const [0.00, 1.00],
                                 colors: [
-                                  Colors.black.withOpacity( 0.6),
-                                  Colors.black.withOpacity( isSelected ? 0.9 : 0.2)
+                                  Colors.black.withOpacity(0.6),
+                                  Colors.black.withOpacity(isSelected ? 0.9 : 0.2)
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(8),
@@ -133,11 +133,6 @@ class MediaCatalogItem extends StatelessWidget {
     final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
     final url = hasProgramLogo ? programLogo : (channel.maximizedLogo ?? 'https://www.mbcmood.com/images/Logo.png');
 
-    /// Mock Images
-    // final url = hasProgramLogo
-    //     ? 'https://assets.mbcmood.com/programs_thumbnails/1745311050%D8%AD%D9%84%D9%88%20%D8%A7%D9%84%D9%83%D9%84%D8%A7%D9%85%20%D8%A7%D8%AE%D9%8A%D8%B1%20.jpg'
-    //     : 'https://assets.mbcmood.com/channels/1708604937logombc.png';
-
     return ProgramImage(url: url);
   }
 }
@@ -157,7 +152,7 @@ class CircleImage extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.full),
           border: Border.all(
-            color: Colors.black.withOpacity( 0.10),
+            color: Colors.black.withOpacity(0.10),
           ),
           color: Colors.white,
           boxShadow: const [
@@ -167,37 +162,65 @@ class CircleImage extends StatelessWidget {
         ),
         child: !url.contains('svg')
             ? Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.network(url, fit: BoxFit.fitWidth),
-            )
-            : Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url)),
+                padding: const EdgeInsets.all(4.0),
+                child: Image.network(
+                  url,
+                  fit: BoxFit.fitWidth,
+                  errorBuilder: (_, __, ___) => Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Assets.icons.svg.icMbcMood.svg(
+                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                    ),
+                  ),
+                ),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.network(
+                  url,
+                  placeholderBuilder: (context) => Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Assets.icons.svg.icMbcMood.svg(
+                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                    ),
+                  ),
+                ),
+              ),
       );
 }
 
 class ProgramImage extends StatelessWidget {
-  const ProgramImage({
-    required this.url,
-    super.key,
-  });
+  const ProgramImage({required this.url, this.withBoarder = false, super.key});
 
   final String url;
+  final bool withBoarder;
 
   @override
   Widget build(BuildContext context) => Container(
-      width: 96,
-      height: 96,
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.black.withOpacity( 0.10),
+        width: 96,
+        height: 96,
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: withBoarder ? Border.all(color: Colors.black.withOpacity(0.1)) : null,
+          color: Colors.white,
         ),
-        color: Colors.white,
-      ),
-      child: url.contains('svg')
-          ? Padding(padding: const EdgeInsets.all(8.0), child: SvgPicture.network(url))
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.network(url, fit: BoxFit.fitWidth),
-            ));
+        child: url.contains('svg')
+            ? SvgPicture.network(
+                url,
+                placeholderBuilder: (context) => Assets.icons.svg.icMbcMood.svg(
+                  colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                ),
+              )
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  url,
+                  fit: BoxFit.fitWidth,
+                  errorBuilder: (_, __, ___) => Assets.icons.svg.icMbcMood.svg(
+                    colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                  ),
+                ),
+              ),
+      );
 }
