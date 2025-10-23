@@ -237,7 +237,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
           ),
           Spacing.$3x.heightBox,
           ContentRow(
-            onTap: () => context.router.push(NavigatorSettingsRoute()),
+            onTap: () => context.router.push(const NavigatorSettingsRoute()),
             options: ContentRowOptions(
               titleStyle: textStyles.bodyLargeRegular.copyWith(
                 color: colors.foregroundDefault,

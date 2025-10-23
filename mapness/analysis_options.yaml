@@ -17,7 +17,6 @@ analyzer:
     missing_return: error
     dead_code: error
     avoid_catches_without_on_clauses: ignore
-    deprecated_member_use: ignore
   exclude:
     - "build/**"
     - "bin/cache/**"
