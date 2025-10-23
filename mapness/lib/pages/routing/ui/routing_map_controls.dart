@@ -19,10 +19,12 @@ import 'package:mapness/widgets/weather/weather_control.dart';
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
     @Deprecated('Please use sheetify outside property') this.bottomHeightNotifier,
+    this.onAddStop,
     super.key,
   });
 
   final ValueNotifier<double>? bottomHeightNotifier;
+  final VoidCallback? onAddStop;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SafeArea(
@@ -63,20 +65,22 @@ class RoutingMapControls extends ConsumerWidget {
                                 buttonColorScheme: uikit.ButtonColorScheme.neutral,
                                 primaryIcon: uikit.SystemIcons.tuning,
                               ),
-                              const SizedBox(width: uikit.Spacing.$2x),
-                              uikit.AppButton(
-                                color: context.colors.backgroundSurface4,
-                                iconColor: context.colors.foregroundMuted,
-                                innerPadding: const EdgeInsets.symmetric(
-                                  horizontal: uikit.Spacing.$3x,
+                              if (onAddStop != null) ...[
+                                const SizedBox(width: uikit.Spacing.$2x),
+                                uikit.AppButton(
+                                  color: context.colors.backgroundSurface4,
+                                  iconColor: context.colors.foregroundMuted,
+                                  innerPadding: const EdgeInsets.symmetric(
+                                    horizontal: uikit.Spacing.$3x,
+                                  ),
+                                  primaryLabel: context.l10n.addStop,
+                                  onTap: onAddStop,
+                                  buttonColorScheme: uikit.ButtonColorScheme.neutral,
+                                  //TODO: set correct icon
+                                  primaryIcon: Icons.add_location,
+                                  textColor: context.colors.foregroundDefault,
                                 ),
-                                primaryLabel: context.l10n.addStop,
-                                onTap: () => context.router.push(NavigatorSettingsRoute()),
-                                buttonColorScheme: uikit.ButtonColorScheme.neutral,
-                                //TODO: set correct icon
-                                primaryIcon: Icons.add_location,
-                                textColor: context.colors.foregroundDefault,
-                              ),
+                              ],
                             ],
                           ),
                         ],

@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide StopNumbersIcons, BaladyInputAffixIcon;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/balady_uikit/components/text_input/models/src/affix.dart';
+import 'package:mapness/balady_uikit/core/icons/stop_numbers_icons.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/routing/providers/routes_helper.dart';
@@ -98,7 +101,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       safeAreaColor: context.colors.backgroundSurface4,
       dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
       scrollController: sheetController,
-      outside: const RoutingMapControls(),
+      outside: RoutingMapControls(onAddStop: _onAddStop(context)),
       header: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -144,6 +147,65 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         ],
       ),
     );
+  }
+
+  int get intermediatePointCount {
+    final count = points.length - 2;
+    return count.clamp(0, count);
+  }
+
+  VoidCallback? _onAddStop(BuildContext context) {
+    final l10n = context.l10n;
+    final myLocation = ref.read(locationProvider);
+
+    if (intermediatePointCount >= 10) {
+      return null;
+    }
+
+    final icon = StopNumbersIcons.fromIndex(intermediatePointCount + 1);
+    if (icon == null) {
+      return null;
+    }
+
+    return () async {
+      final containsMyLocation = points.map((e) => e.label).contains(l10n.myLocation);
+
+      // Show the search route screen and get new value from it
+      final value = await context.router.push(
+        RoutingSearchSheetRoute(
+          placeholder: l10n.intermediatePoint,
+          affixIcon: BaladyInputAffixIcon(
+            icon: icon,
+            iconColor: context.colors.extra01Default,
+          ),
+          showMyLocation: !containsMyLocation,
+        ),
+      );
+
+      if (value != null && value is RoutePoint) {
+        var latitude = value.latitude;
+        var longitude = value.longitude;
+        if (value is RoutePointMyLocation && myLocation != null) {
+          latitude = myLocation.latitude;
+          longitude = myLocation.longitude;
+        }
+        if (longitude != null && latitude != null) {
+          final newPoint = RouteParamsPointWithLabel(
+            value: RouteParamsPoint(
+              latitude: latitude,
+              longitude: longitude,
+              objectId: value.objectId,
+              entranceId: value.entranceId,
+              levelId: value.levelId,
+            ),
+            label: value.title(l10n) ?? l10n.intermediatePointNumberedName(points.length),
+          );
+          setState(() {
+            points.insert(points.length - 1, newPoint);
+          });
+        }
+      }
+    };
   }
 
   List<String> _abLocations(AppLocalizations l10n) {
