@@ -220,6 +220,9 @@ flutter:
     - family: numbers_icons
       fonts:
         - asset: assets/fonts/mapness_icons/numbers_icons.ttf
+    - family: transport_icons
+      fonts:
+        - asset: assets/fonts/mapness_icons/transport_icons.ttf
 
 flutter_gen:
   assets:
