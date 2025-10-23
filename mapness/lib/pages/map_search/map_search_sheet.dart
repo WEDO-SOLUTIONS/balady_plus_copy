@@ -84,7 +84,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     _multiStateSheetController = MultiStateSheetController(
       initialState: ThreeStateSheet.expanded,
       behavior: FractionSnappingBehavior(fractions: {
-        0.0,
+        0.1,
         if (Platform.isIOS) .3 else .38,
         .931,
       }),
