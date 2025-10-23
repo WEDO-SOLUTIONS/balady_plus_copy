@@ -170,7 +170,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: containerColor,
-              dragger: SheetDragger(backgroundColor: contentColor,),
+              dragger: SheetDragger(
+                backgroundColor: contentColor,
+              ),
               outsideOpacityDelegate: outsideOpacityDelegate,
               header: Container(
                 color: contentColor,
