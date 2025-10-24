@@ -257,23 +257,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
-    // final isCityScape = ref.watch(cityscapeProvider);
-//
-    // if (isCityScape) {
-    //   ref.read(cityscapeProvider.notifier).showGlobalMarker();
-    // } else {
-    //   ref.read(cityscapeProvider.notifier).hideGlobalMarker();
-    // }
-
-    // ref.listen<bool>(cityscapeProvider, (previous, next) {
-    //   final notifier = ref.read(cityscapeProvider.notifier);
-
-    //   if (next) {
-    //     notifier.showGlobalMarker();
-    //   } else {
-    //     notifier.hideGlobalMarker();
-    //   }
-    // });
     ref.listen<bool>(cityscapeProvider, (prev, next) {
       _updateGlobalMarker(ref);
     });
