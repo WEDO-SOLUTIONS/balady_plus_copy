@@ -174,6 +174,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
+      await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
     });
   }
 
@@ -244,6 +245,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+    final isCityScape = ref.watch(cityscapeProvider);
+
+    if (isCityScape) {
+      ref.read(cityscapeProvider.notifier).showGlobalMarker();
+    } else {
+      ref.read(cityscapeProvider.notifier).hideGlobalMarker();
+    }
 
     ref
       // listen for changes in car connection state. But do not rebuild widget
@@ -805,7 +813,7 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void analyticsTrack(String event) {
-    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    analyticsClient.track(event, properties: {'app_run': isAppRun});
   }
 
   @override
