@@ -1,11 +1,11 @@
-import 'dart:async';
-
 import 'package:dgis_map/library.dart' as sdk;
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'cityscape.g.dart';
@@ -127,24 +127,16 @@ class Cityscape extends _$Cityscape {
   }
 
   void openThePlace() {
-    unawaited(
-      ref.read(cameraPositionProvider.notifier).animateTo(
-            sdk.CameraPositionMessage(
-              point: center,
-              zoom: 18.0,
-              tilt: 0.0,
-              bearing: 0.0,
-            ),
-          ),
-    );
-
-    unawaited(
-      ref.watch(
-        pointOfInterestProvider(
-          sdk.DgisObjectIdMessage(objectId: _cityscapeObjectId, entranceId: 0),
-          sdk.LatLng(latitude: center.latitude, longitude: center.longitude),
-        ).future,
+    ref.read(appRouterProvider).replaceOrPush(
+      route: PoiCardWidgetRoute(
+        objectId: sdk.DgisObjectIdMessage(
+          objectId: _cityscapeObjectId,
+          entranceId: 0,
+        ),
+        closestPoint: sdk.LatLng(latitude: center.latitude, longitude: center.longitude),
+        cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
+      toCompareRoutes: [PoiCardWidgetRoute.page],
     );
   }
 
@@ -158,26 +150,5 @@ class Cityscape extends _$Cityscape {
 
     final now = DateTime.now();
     return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
-  }
-
-  /// Provider that returns the remaining time until Saudi National Day
-  /// Returns null if the date has passed or is not this year
-  static Duration? countdown() {
-    final now = DateTime.now();
-    return countdownFromDate(now);
-  }
-
-  static Duration? countdownFromDate(DateTime now) {
-    // If debug override is enabled, return null (no countdown needed)
-    if (cityscapeDebugOverride) {
-      return null;
-    }
-
-    // If we're past the current year's date, return null
-    if (now.isAfter(CityscapeConfig.startDate)) {
-      return null;
-    }
-
-    return CityscapeConfig.startDate.difference(now);
   }
 }

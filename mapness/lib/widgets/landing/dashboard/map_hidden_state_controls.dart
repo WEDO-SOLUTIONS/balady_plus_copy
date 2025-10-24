@@ -157,10 +157,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
               ),
             if (isCityscapeDay)
               CityscapeGlobal(
+                controller: widget.controller,
                 onTap: () {
                   ref.read(cityscapeProvider.notifier).openThePlace();
                 },
-              ),
+              )
           ],
         )
       ],
