@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart' as sdk;
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -38,6 +39,10 @@ class Cityscape extends _$Cityscape {
     longitude: 46.38741921633482,
   );
 
+  static const String cityscapeGlobalMarkerId = 'cityscape_global';
+
+  MapObjectManager? mapManager;
+
   String get customPinPath => Assets.icons.svg.icCityscapePin.keyName;
 
   String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
@@ -59,8 +64,7 @@ class Cityscape extends _$Cityscape {
   /// Checks if the current time is within the specified date range
   bool _isCurrentTimeInRange() {
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) &&
-        now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
@@ -69,6 +73,57 @@ class Cityscape extends _$Cityscape {
   /// Manually triggers an update of the state
   void refresh() {
     state = _isCurrentTimeInRange();
+  }
+
+  Future<void> initializeGlobalMarker() async {
+    mapManager = ref.read(
+      mapObjectManagerProvider(
+        named: MapObjectManagerSettings.myLocation().name,
+        layerId: MapObjectManagerSettings.myLocation().layerId,
+      ).notifier,
+    );
+    await mapManager?.removeMarkerById(cityscapeGlobalMarkerId);
+
+    final globalMarker = sdk.Marker(
+      id: cityscapeGlobalMarkerId,
+      options: sdk.MarkerOptionsMessage(
+        position: sdk.GeoPointWithElevationMessage(
+          latitude: 25.252325164174778,
+          longitude: 46.38741921633482,
+          elevation: 1,
+        ),
+        icon: sdk.MarkerIconMessage(svgPath: customPinPath, width: 70),
+        anchor: sdk.MarkerAnchorMessage(x: 0.5, y: 1),
+        animatedAppearance: true,
+        isVisible: false,
+        zIndex: 50,
+      ),
+      onTap: openThePlace,
+    );
+
+    await mapManager?.addMarker(globalMarker);
+  }
+
+  Future<void> showGlobalMarker() async {
+    await mapManager?.setMarkerOptions(
+      cityscapeGlobalMarkerId,
+      sdk.ChangeMarkerOptionsMessage(
+        position: sdk.GeoPointWithElevationMessage(
+          latitude: 25.252325164174778,
+          longitude: 46.38741921633482,
+          elevation: 1,
+        ),
+        icon: sdk.MarkerIconMessage(svgPath: customPinPath, width: 70),
+        anchor: sdk.MarkerAnchorMessage(x: 0, y: 0),
+        animatedAppearance: true,
+        isVisible: true,
+        zIndex: 50,
+      ),
+    );
+  }
+
+  Future<void> hideGlobalMarker() async {
+    await mapManager?.setMarkerOptions(cityscapeGlobalMarkerId, sdk.ChangeMarkerOptionsMessage(isVisible: false));
   }
 
   void openThePlace() {
@@ -102,8 +157,7 @@ class Cityscape extends _$Cityscape {
     }
 
     final now = DateTime.now();
-    return now.isAfter(CityscapeConfig.startDate) &&
-        now.isBefore(CityscapeConfig.endDate);
+    return now.isAfter(CityscapeConfig.startDate) && now.isBefore(CityscapeConfig.endDate);
   }
 
   /// Provider that returns the remaining time until Saudi National Day

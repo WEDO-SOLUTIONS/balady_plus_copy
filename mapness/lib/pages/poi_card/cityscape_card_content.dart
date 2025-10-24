@@ -88,6 +88,7 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
       platformIds: [],
     );
 
+    final poiActions = ref.read(poiCardActionsProvider.notifier);
     final poiCardState = widget.poiCardState?.copyWith(
       gisObjectIdMessage: customCityscapeData,
     );
@@ -109,6 +110,22 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
               type: type,
               value: value,
             ),
+          ),
+        ),
+      );
+    }
+
+    void _bssOnFavouritesTap() {
+      BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: const BssUIElement(
+            name: BssUIElementNames.bookmark,
+            ownerName: BssUIElementNames.actionBar,
+          ),
+          payload: BssPayload(
+            placeItem: customCityscapeData.toBss(),
           ),
         ),
       );
@@ -161,6 +178,11 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
               ref.read(poiCardActionsProvider.notifier).callPhone(phoneNumber!.value!);
             }
           },
+          onEntranceTap: () => poiActions.toggleEntrances(
+            customCityscapeData,
+            () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+            widget.closestPoint,
+          ),
           onTapCar: () {
             final closestPoint = widget.closestPoint;
             if (closestPoint == null) {
@@ -182,7 +204,10 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
           onAddPointToRoute: () => _onAddEmptyPointToRoute(context, l10n, ref, widget.objectId, widget.closestPoint),
           onRemovePointFromRoute: () =>
               _onRemoveEmptyPointToRoute(context, l10n, ref, widget.objectId, widget.closestPoint),
-          onTapFavorite: (item) {},
+          onTapFavorite: (item) {
+            _bssOnFavouritesTap();
+            _onFavoriteTap(context: context, ref: ref, data: customCityscapeData, favouriteItem: item);
+          },
         ),
         header: PoiHeader(
           title: customCityscapeData.title,
