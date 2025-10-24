@@ -64,7 +64,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
   }) async {
-    final online = ref.watch(networkStatusProvider);
+    final online = ref.read(networkStatusProvider);
     try {
 
       if (!online) {
