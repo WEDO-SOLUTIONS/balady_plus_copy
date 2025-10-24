@@ -240,18 +240,30 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _updateGlobalMarker(WidgetRef ref) async {
+    final cityscapeEnabled = ref.read(cityscapeProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(cityscapeProvider.notifier);
+
+    if (cityscapeEnabled && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
-    final isCityScape = ref.watch(cityscapeProvider);
+    ref.listen<bool>(cityscapeProvider, (prev, next) {
+      _updateGlobalMarker(ref);
+    });
 
-    if (isCityScape) {
-      ref.read(cityscapeProvider.notifier).showGlobalMarker();
-    } else {
-      ref.read(cityscapeProvider.notifier).hideGlobalMarker();
-    }
+    ref.listen<dynamic>(selectedMarkerProvider, (prev, next) {
+      _updateGlobalMarker(ref);
+    });
 
     ref
       // listen for changes in car connection state. But do not rebuild widget
