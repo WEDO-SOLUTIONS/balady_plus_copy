@@ -3750,6 +3750,7 @@ digraph "" {
   "/lib/entry_point.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/entry_point.dart" -> "/lib/features/path_nav/lib/extensions.dart";
   "/lib/entry_point.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
+  "/lib/entry_point.dart" -> "/lib/features/search/providers/search_region.dart";
   "/lib/entry_point.dart" -> "/lib/features/share_eta/helpers/utils.dart";
   "/lib/entry_point.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/entry_point.dart" -> "/lib/features/stories/providers/stories_open_state.dart";
