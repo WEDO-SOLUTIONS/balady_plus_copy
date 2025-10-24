@@ -64,9 +64,8 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
   }) async {
+    final online = ref.read(networkStatusProvider);
     try {
-      final online = ref.watch(networkStatusProvider);
-
       if (!online) {
         throw const NoInternetException();
       }
@@ -104,6 +103,10 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         reason: e.reason,
       );
     } catch (error) {
+      if (!online) {
+        throw const NoInternetException();
+      }
+
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
@@ -137,7 +140,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     RouteParamsPoint startPoint,
     RouteParamsPoint finishPoint,
   ) async {
-    final online = ref.read(networkStatusProvider);
+    final online = ref.watch(networkStatusProvider);
     final dgisController = await ref.read(dgisControllerProvider.future);
     try {
       // Initial route search
