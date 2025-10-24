@@ -22,28 +22,34 @@ import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MapOptions
 import ru.dgis.sdk.map.MapTheme
 import ru.dgis.sdk.map.Padding
-import java.util.Locale
 
 /** Session class for the navigation car app  */
 internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Context) :
     AndroidAutoMapSession(MapOptions()) {
 
-    private var customRenderer = CustomRenderer()
+    private var stableAreaPaddingProvider = StableAreaPaddingProvider(carContext)
+    private var customRenderer = CustomRenderer(stableAreaPaddingProvider)
     private val sharedPrefs = SharedPrefs(context)
-    val flutterLoader = FlutterInjector.instance().flutterLoader().apply {
+    private val flutterLoader = FlutterInjector.instance().flutterLoader().apply {
         startInitialization(context)
     }
-    private val carMapController = CarMapController(sharedPrefs, flutterLoader)
+    private val carMapController = CarMapController(
+        sharedPrefs, flutterLoader, stableAreaPaddingProvider
+    )
     private var navigationScreen: NavigationScreen? = null
 
     init {
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
                 sharedPrefs.setSharedPrefsChangeListener(::handlePrefsChanged)
+                MainAppScreenStateNotifier.addListener(::mainAppStateListener)
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
                 sharedPrefs.resetSharedPrefsChangeListener()
+                MainAppScreenStateNotifier.removeListener(::mainAppStateListener)
+                carMapController.close()
+                customRenderer.close()
             }
         })
     }
@@ -128,7 +134,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
 
     override fun onMapReady(map: Map) {
         setMapTheme()
-        carMapController.onMapReady(map, getLocale())
+        carMapController.onMapReady(map)
         navigationScreen?.onMapReady()
     }
 
@@ -152,12 +158,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     }
 
     override fun onSurfaceStableAreaChanged(stableArea: Rect) {
-        val displayMetrics = carContext.resources.displayMetrics
-        val left = stableArea.left
-        val top = stableArea.top
-        val right = displayMetrics.widthPixels - stableArea.right
-        val bottom = displayMetrics.heightPixels - stableArea.bottom
-        carMapController.setCameraPadding(Padding(left, top, right, bottom))
+        stableAreaPaddingProvider.onStableAreaChanged(stableArea)
     }
 
     private fun setMapTheme() {
@@ -166,7 +167,7 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     }
 
     private fun setupLocale() {
-        val locale = getLocale()
+        val locale = carMapController.getLocale()
         val configuration = carContext.resources.configuration
         configuration.setLocale(locale)
         configuration.setLayoutDirection(locale)
@@ -176,14 +177,20 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
 
     private fun handlePrefsChanged(key: String) {
         when (key) {
-            SharedPrefs.languageKey -> setupLocale()
+            SharedPrefs.languageKey -> {
+                setupLocale()
+                carContext.getCarService(ScreenManager::class.java).screenStack.forEach {
+                    if (it is LocaleChangeListener) {
+                        it.onLocaleChanged()
+                    }
+                }
+            }
         }
     }
 
-    private fun getLocale(): Locale {
-        return when (carMapController.getLanguage()) {
-            Language.ENGLISH -> Locale("en")
-            Language.ARABIC -> Locale("ar")
+    private fun mainAppStateListener(state: MainAppScreenState) {
+        if (state == MainAppScreenState.CREATED) {
+            setupLocale()
         }
     }
 

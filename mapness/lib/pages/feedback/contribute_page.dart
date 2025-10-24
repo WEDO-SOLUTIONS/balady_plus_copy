@@ -99,7 +99,7 @@ class _ContributePageState extends State<ContributePage> {
                         SizedBox(
                           width: double.infinity,
                           child: AppButton(
-                            primaryLabel: context.l10n.addPlace,
+                            primaryLabel: context.l10n.addPlaceV2,
                             buttonColorScheme: ButtonColorScheme.accentSecondary,
                             onTap: () {
                               context.router.push(QuickFeedbackRoute());

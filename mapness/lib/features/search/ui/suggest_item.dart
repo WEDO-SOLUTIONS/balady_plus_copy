@@ -88,22 +88,22 @@ class SuggestItem extends ConsumerWidget {
         handlingType = BssHistoryHandlingType.openRecord;
         onObjectTap(objectItem);
       }
-      ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.suggestItem,
-                ownerName: BssUIElementNames.suggestList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                searchRequest: searchRequest,
-                suggestList: suggestList,
-                suggestItem: suggest.toBss(handlingType ?? BssHistoryHandlingType.searchSuggestedText),
-              ),
-            ),
-          );
+      BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.suggestItem,
+            ownerName: BssUIElementNames.suggestList,
+            position: index + 1,
+          ),
+          payload: BssPayload(
+            searchRequest: searchRequest,
+            suggestList: suggestList,
+            suggestItem: suggest.toBss(handlingType ?? BssHistoryHandlingType.searchSuggestedText),
+          ),
+        ),
+      );
     }
 
     return ContentRow(

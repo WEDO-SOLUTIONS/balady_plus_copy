@@ -312,25 +312,31 @@ class ParkingSpotPage extends HookConsumerWidget {
   ) {
     ToastOverlay.of(context).show(
       title: context.l10n.parkingSuccessfullySaved,
-      firstText: context.l10n.feedbackBreaksSheetClose,
-      secondText: context.l10n.share,
-      iconAsset: Assets.icons.svg.parkingControl.keyName,
-      onSecondTap: () async {
-        if (latLng.value == null) {
-          return;
-        }
+      icon: ToastIconAsset(Assets.icons.svg.parkingControl.keyName),
+      actions: [
+        ToastAction(
+          title: context.l10n.feedbackBreaksSheetClose,
+        ),
+        ToastAction(
+          title: context.l10n.share,
+          onTap: () async {
+            if (latLng.value == null) {
+              return;
+            }
 
-        final baseUri = BaldayDeeplink.basePoiUri;
-        final query = <String, String>{};
+            final baseUri = BaldayDeeplink.basePoiUri;
+            final query = <String, String>{};
 
-        query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
+            query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
 
-        query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
-        query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
+            query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
+            query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
 
-        await Share.share(
-            '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
-      },
+            await Share.share(
+                '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
+          },
+        ),
+      ],
     );
   }
 }

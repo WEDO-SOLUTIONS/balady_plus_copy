@@ -3,13 +3,16 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +39,6 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -76,6 +78,7 @@ import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
 
+import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
 
@@ -148,7 +151,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initMixpanel();
     initDeepLinks();
     listenNavigationEvents();
-
+    checkConnection();
+    ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
@@ -160,13 +164,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
       // Initialization of BSS and Search Region singleton services
-      _initBssService();
+      await _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
     });
+  }
+
+  Future<void> checkConnection() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.mobile)) {
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.mobile.name);
+    } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.wifi.name);
+    }
   }
 
   @override
@@ -178,10 +191,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     super.dispose();
   }
 
-  void _initBssService() {
-    ref
-      ..watch(bssDioProvider)
-      ..watch(bssCommonProvider);
+  Future<void> _initBssService() async {
+    // Initialize BSS service with required dependencies
+    final dio = await ref.read(bssDioProvider.future);
+    final common = await ref.read(bssCommonProvider.future);
+    final dgisControllerNotifier = ref.read(dgisControllerProvider.notifier);
+
+    BssService.instance.init(
+      dio: dio,
+      common: common,
+      visibleRectStream: dgisControllerNotifier.visibleRectSubject,
+    );
   }
 
   Future<void> restoreState() async {
@@ -541,17 +561,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final query = quickFilter.query[language];
     if (query != null) {
       unawaited(
-        ref.read(bssServiceProvider.notifier).sendEvent(
-              BssRequest(
-                eventType: BSSEventType.action,
-                actionType: BSSActionType.deeplink,
-                uiElement: const BssUIElement(
-                  name: BssUIElementNames.searchStart,
-                  ownerName: BssUIElementNames.searchBar,
-                ),
-                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
-              ),
+        BssService.instance.sendEvent(
+          BssRequest(
+            eventType: BSSEventType.action,
+            actionType: BSSActionType.deeplink,
+            uiElement: const BssUIElement(
+              name: BssUIElementNames.searchStart,
+              ownerName: BssUIElementNames.searchBar,
             ),
+            payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+          ),
+        ),
       );
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
@@ -675,7 +695,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   void _myLocationDeepLinkHandler(double latitude, double longitude) {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
-    ref.watch(appRouterProvider).push(DeeplinkRoute(closestPoint: latLng));
+    ref.watch(appRouterProvider).push(DeeplinkRoute(closestPoint: latLng, cameraConfig: const PoiCameraConfig(zoom: 17)));
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
@@ -809,5 +829,15 @@ class _HostFlutterApi extends HostFlutterApi {
       work: favouritesState.work?.message,
       items: favouritesState.items.map((item) => item.message).toList(),
     );
+  }
+
+  @override
+  Future<bool> isAuthorized() async {
+    try {
+      return sl<EntryPointCubit>().state.token != null;
+    } catch (e) {
+      logger.log('Cant get isAuthorized, $e');
+      return false;
+    }
   }
 }
