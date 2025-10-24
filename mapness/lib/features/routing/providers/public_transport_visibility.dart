@@ -66,7 +66,6 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
   }) async {
     final online = ref.read(networkStatusProvider);
     try {
-
       if (!online) {
         throw const NoInternetException();
       }
