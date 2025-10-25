@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/utils/logger/talker_logger.dart';
