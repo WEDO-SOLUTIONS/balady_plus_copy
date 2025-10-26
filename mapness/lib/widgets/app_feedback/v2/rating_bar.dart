@@ -17,34 +17,37 @@ class RatingBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-        height: ratingItemSize,
-        child: ListView.builder(
-          itemCount: maxRating,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            final isActive = index < rating;
-            return Material(
-              borderRadius: BorderRadius.circular(50),
-              color: Colors.transparent,
-              child: InkWell(
+  Widget build(BuildContext context) => Directionality(
+        textDirection: TextDirection.ltr,
+        child: SizedBox(
+          height: ratingItemSize,
+          child: ListView.builder(
+            itemCount: maxRating,
+            scrollDirection: Axis.horizontal,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              final isActive = index < rating;
+              return Material(
                 borderRadius: BorderRadius.circular(50),
-                splashColor: context.colors.foregroundSoft.withOpacity(0.01),
-                onTap: () => onRatingChanged?.call(index + 1),
-                child: SizedBox(
-                  width: ratingItemSize,
-                  height: ratingItemSize,
-                  child: SvgPicture.asset(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(50),
+                  splashColor: context.colors.foregroundSoft.withOpacity(0.01),
+                  onTap: () => onRatingChanged?.call(index + 1),
+                  child: SizedBox(
                     width: ratingItemSize,
                     height: ratingItemSize,
-                    key: ValueKey('rating_star-$index-$isActive'),
-                    isActive ? Assets.imagesSvg.activeStar.keyName : Assets.imagesSvg.inactiveStar.keyName,
+                    child: SvgPicture.asset(
+                      width: ratingItemSize,
+                      height: ratingItemSize,
+                      key: ValueKey('rating_star-$index-$isActive'),
+                      isActive ? Assets.imagesSvg.activeStar.keyName : Assets.imagesSvg.inactiveStar.keyName,
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       );
 }
