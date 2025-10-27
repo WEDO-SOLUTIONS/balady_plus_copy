@@ -4,15 +4,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/routing/providers/routes_update_tab.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart' as eta;
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/routing/ui/routes_carousel.dart' as widgets;
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_failure.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_loading.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
 class RoutesCarousel extends StatelessWidget {
@@ -85,25 +89,45 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     final startPoint = widget.points[0]?.value;
     final finishPoint = widget.points[1]?.value;
 
-    final publicTransportRoutes = ref.watch(
-      publicTransportRoutesProvider(
-        startPoint: startPoint,
-        finishPoint: finishPoint,
-        navType: widget.navType,
-      ),
-    );
+    return widget.routes.when(
+      data: (routes) {
+        final publicTransportRoutes = ref.watch(
+          publicTransportRoutesProvider(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            navType: widget.navType,
+          ),
+        );
 
-    return widgets.RoutesCarousel(
-      navType: widget.navType,
-      pageController: _pageController,
-      routes: widget.routes,
-      publicTransportRoutes: publicTransportRoutes,
-      onActiveChanged: _onActiveChanged,
-      refresh: _refresh,
-      destination: widget.points.lastOrNull,
-      startPoint: widget.points.firstOrNull,
-      startNavigation: _startNavigation,
-      publicTransportVisibility: widget.publicTransportVisibility,
+        return widgets.RoutesCarousel(
+          navType: widget.navType,
+          pageController: _pageController,
+          routes: routes,
+          publicTransportRoutes: publicTransportRoutes,
+          onActiveChanged: _onActiveChanged,
+          refresh: _refresh,
+          destination: widget.points.lastOrNull,
+          startPoint: widget.points.firstOrNull,
+          startNavigation: _startNavigation,
+          publicTransportVisibility: widget.publicTransportVisibility,
+        );
+      },
+      error: (error, __) {
+        if (error is NoInternetException) {
+          return PathCardFailure.noInternet(refresh: _refresh, text: context.l10n.noInternetConnection);
+        } else if (error is WalkingDistanceException) {
+          return PathCardFailure.walkingDistance(
+            refresh: () {
+              ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+            },
+            text: context.l10n.walkingDistanceTooLong,
+            labelButton: context.l10n.goByCar,
+          );
+        }
+
+        return PathCardFailure.routeNotFound(refresh: _refresh, text: context.l10n.routeNotFound);
+      },
+      loading: () => PathCardLoading(text: context.l10n.loading, currentType: widget.navType),
     );
   }
 

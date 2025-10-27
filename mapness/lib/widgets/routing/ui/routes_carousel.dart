@@ -14,7 +14,6 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_locali
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_failure.dart';
-import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_loading.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
@@ -35,7 +34,7 @@ class RoutesCarousel extends ConsumerWidget {
 
   final RouteSearchOptionsMessage navType;
   final PageController pageController;
-  final AsyncValue<List<RouteInfo>> routes;
+  final List<RouteInfo> routes;
   final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
   final ValueChanged<int> onActiveChanged;
   final Function(RouteInfo) startNavigation;
@@ -98,64 +97,42 @@ class RoutesCarousel extends ConsumerWidget {
         },
       );
     }
-    return routes.when(
-      data: (routes) {
-        final shortest = shortestIsOnlyOne(routes);
-        return RouteCarouselWrapper(
-          pageController: pageController,
-          routesCount: routes.length,
-          height: navType.cardHeight,
-          onActiveChanged: onActiveChanged,
-          itemBuilder: (context, index) {
-            final route = routes[index];
-            final distanceInMeters = route.distance;
-            final durationInSeconds = route.duration;
+    final shortest = shortestIsOnlyOne(routes);
+    return RouteCarouselWrapper(
+      pageController: pageController,
+      routesCount: routes.length,
+      height: navType.cardHeight,
+      onActiveChanged: onActiveChanged,
+      itemBuilder: (context, index) {
+        final route = routes[index];
+        final distanceInMeters = route.distance;
+        final durationInSeconds = route.duration;
 
-            const averageHumanStepsByKm = 1350;
-            const averageCaloriesPerMinute = 4.6;
+        const averageHumanStepsByKm = 1350;
+        const averageCaloriesPerMinute = 4.6;
 
-            final steps = ((distanceInMeters / 1000) * averageHumanStepsByKm).toInt();
-            final calories = ((durationInSeconds / 60.0) * averageCaloriesPerMinute).toInt();
-            return Padding(
-              padding: padding(index: index, length: routes.length),
-              child: PathCard(
-                distance: distanceInMeters.formatDistanceShort(context.l10n),
-                isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
-                localizations: PathCardLocalization(
-                  calories: context.l10n.calories,
-                  steps: context.l10n.steps,
-                  go: context.l10n.go,
-                ),
-                duration: durationInSeconds.formatDurationShort(context.l10n),
-                steps: steps,
-                calories: calories,
-                onStartTap: () => startNavigation(route),
-                additionalInfo: shortest != null && shortest == durationInSeconds
-                    ? PathCardStatus.shortest(context.l10n.shortest)
-                    : null,
-              ),
-            );
-          },
+        final steps = ((distanceInMeters / 1000) * averageHumanStepsByKm).toInt();
+        final calories = ((durationInSeconds / 60.0) * averageCaloriesPerMinute).toInt();
+        return Padding(
+          padding: padding(index: index, length: routes.length),
+          child: PathCard(
+            distance: distanceInMeters.formatDistanceShort(context.l10n),
+            isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
+            localizations: PathCardLocalization(
+              calories: context.l10n.calories,
+              steps: context.l10n.steps,
+              go: context.l10n.go,
+            ),
+            duration: durationInSeconds.formatDurationShort(context.l10n),
+            steps: steps,
+            calories: calories,
+            onStartTap: () => startNavigation(route),
+            additionalInfo: shortest != null && shortest == durationInSeconds
+                ? PathCardStatus.shortest(context.l10n.shortest)
+                : null,
+          ),
         );
       },
-      error: (error, __) {
-        if (error is NoInternetException) {
-          return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
-        } else if (error is WalkingDistanceException) {
-          return PathCardFailure.walkingDistance(
-            refresh: () {
-              ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
-            },
-            text: context.l10n.walkingDistanceTooLong,
-            labelButton: context.l10n.goByCar,
-          );
-        }
-
-        return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
-      },
-      loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
-      skipLoadingOnRefresh: false,
-      skipLoadingOnReload: false,
     );
   }
 
