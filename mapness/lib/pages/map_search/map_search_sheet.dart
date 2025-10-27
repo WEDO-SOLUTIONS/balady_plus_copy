@@ -284,7 +284,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       return;
     }
 
-    _multiStateSheetController.open();
+    _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 
   void onClose() {
