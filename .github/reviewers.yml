@@ -7,12 +7,11 @@ reviewers:
     - support-team
   groups:
     platform-team:
-      - AlexStrNik
-      - wultriel
       - cutzmf
       - anisovdev
-    feature-team:
       - scroollocker
+    feature-team:
+      - wultriel
       - ForesThule
       - DmitriiProshutinskii
       - smitsk
@@ -30,16 +29,19 @@ files:
   ".lefthook/**":
     - devops-team
     - scroollocker
+    - AlexStrNik
   "justscripts/**":
     - devops-team
     - platform-team
     - DmitriiProshutinskii
+    - AlexStrNik
   "urbi_map/**":
     - platform-team
     - scroollocker
   "mapness/scripts/**":
     - platform-team
     - devops-team
+    - AlexStrNik
     - DmitriiProshutinskii
   "tests/**":
     - support-team
@@ -50,6 +52,7 @@ files:
     - scroollocker
   "mapness/**":
     - support-team
+  "urbi_map/dgis_map/ios/**":
+    - AlexStrNik
   "**":
-    - alexstrnik
     - scroollocker
