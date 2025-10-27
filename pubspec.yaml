@@ -194,10 +194,7 @@ dependencies:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: 4.1.6
 
-  sheetify: 
-    git:
-      url: https://github.com/urbi-ae/sheetify.git
-      ref: feature/native-keyboard-insets-stream
+  sheetify: 1.1.0
 
   smooth_corner: ^1.0.0
 
