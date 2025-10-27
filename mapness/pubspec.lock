@@ -1996,18 +1996,18 @@ packages:
     dependency: transitive
     description:
       name: keyboard_insets
-      sha256: "8a65999bba7778b512faca56bb09dde3009614f3e068e3b208d997e5e05f7cd6"
+      sha256: "9703806366f2ba21816b0195f0418dc7f27b3e91ea6fc04859daa24d5041b921"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0+1"
+    version: "0.1.1"
   keyboard_insets_mobile:
     dependency: transitive
     description:
       name: keyboard_insets_mobile
-      sha256: "74cc51c829b511be0badebf43904e19932d38def5d076c50bf90b4130a8275b2"
+      sha256: "1dbd857a39d26f980d3bdd20ef390141e7971d73bd94738c4c2748e564f9882c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   keyboard_insets_platform_interface:
     dependency: transitive
     description:
@@ -2020,10 +2020,10 @@ packages:
     dependency: transitive
     description:
       name: keyboard_insets_web
-      sha256: "6fd1bb2a31f0ef904b8b037dc5656e7463629111ae0e1d6137400f2f4f2e6698"
+      sha256: ec5647cea258ff468ffc44086ef9d3a378c781fb9a8b74fc29b3b88ed3e05692
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   launch_review:
     dependency: transitive
     description:
@@ -2869,11 +2869,10 @@ packages:
   sheetify:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "feature/native-keyboard-insets-stream"
-      resolved-ref: "23e7aabfd8162f46e93de71988c1771890e2cf4d"
-      url: "https://github.com/urbi-ae/sheetify.git"
-    source: git
+      name: sheetify
+      sha256: baeaaa8aff748b2f54e9c52d8bcf43b8ece27cb6121a07564fe4de16e627584e
+      url: "https://pub.dev"
+    source: hosted
     version: "1.1.0"
   sheetify_lint:
     dependency: "direct dev"
