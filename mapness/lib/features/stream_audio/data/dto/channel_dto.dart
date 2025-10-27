@@ -31,34 +31,34 @@ class ChannelDTO {
 
   ChannelDTO(
       {this.id,
-        this.name,
-        this.logo,
-        this.webLogo,
-        this.maximizedLogo,
-        this.minimizedLogo,
-        this.circledLogo,
-        this.streamUrl,
-        this.mobileNumber,
-        this.mobileNumberKsa,
-        this.mobileNumberUae,
-        this.socialMedia,
-        this.email,
-        this.type,
-        this.favorite,
-        this.metaData,
-        this.hasVoiceNote,
-        this.hasMessaging,
-        this.hasHosts,
-        this.hasSchedule,
-        this.hasCall,
-        this.hasNews,
-        this.defaultChannel,
-        this.landingPage,
-        this.placeholder,
-        this.channelBanners,
-        this.channelOrder,
-        this.programs,
-        this.podcasts});
+      this.name,
+      this.logo,
+      this.webLogo,
+      this.maximizedLogo,
+      this.minimizedLogo,
+      this.circledLogo,
+      this.streamUrl,
+      this.mobileNumber,
+      this.mobileNumberKsa,
+      this.mobileNumberUae,
+      this.socialMedia,
+      this.email,
+      this.type,
+      this.favorite,
+      this.metaData,
+      this.hasVoiceNote,
+      this.hasMessaging,
+      this.hasHosts,
+      this.hasSchedule,
+      this.hasCall,
+      this.hasNews,
+      this.defaultChannel,
+      this.landingPage,
+      this.placeholder,
+      this.channelBanners,
+      this.channelOrder,
+      this.programs,
+      this.podcasts});
 
   ChannelDTO.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -177,19 +177,23 @@ class Program {
   String? category;
   String? censorship;
   String? date;
+  String? startTime;
+  String? endTime;
   List<SocialMedia>? socialMedia;
 
   Program(
       {this.id,
-        this.channelId,
-        this.name,
-        this.text,
-        this.image,
-        this.thumbnail,
-        this.category,
-        this.censorship,
-        this.date,
-        this.socialMedia});
+      this.channelId,
+      this.name,
+      this.text,
+      this.image,
+      this.thumbnail,
+      this.category,
+      this.censorship,
+      this.date,
+      this.startTime,
+      this.endTime,
+      this.socialMedia});
 
   Program.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -200,6 +204,8 @@ class Program {
     thumbnail = json['thumbnail'];
     category = json['category'];
     censorship = json['censorship'];
+    startTime = json['start_time'];
+    endTime = json['end_time'];
     date = json['date'];
     if (json['social_media'] != null) {
       socialMedia = <SocialMedia>[];
@@ -219,6 +225,8 @@ class Program {
     data['thumbnail'] = this.thumbnail;
     data['category'] = this.category;
     data['censorship'] = this.censorship;
+    data['start_time'] = this.startTime;
+    data['end_time'] = this.endTime;
     data['date'] = this.date;
     if (this.socialMedia != null) {
       data['social_media'] = this.socialMedia!.map((v) => v.toJson()).toList();
@@ -240,14 +248,14 @@ class Podcasts {
 
   Podcasts(
       {this.id,
-        this.channelId,
-        this.thumbnail,
-        this.image,
-        this.hashtag,
-        this.title,
-        this.name,
-        this.description,
-        this.episodes});
+      this.channelId,
+      this.thumbnail,
+      this.image,
+      this.hashtag,
+      this.title,
+      this.name,
+      this.description,
+      this.episodes});
 
   Podcasts.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -296,14 +304,14 @@ class Episodes {
 
   Episodes(
       {this.id,
-        this.title,
-        this.description,
-        this.date,
-        this.episode,
-        this.link,
-        this.externalLink,
-        this.isVideo,
-        this.podcastId});
+      this.title,
+      this.description,
+      this.date,
+      this.episode,
+      this.link,
+      this.externalLink,
+      this.isVideo,
+      this.podcastId});
 
   Episodes.fromJson(Map<String, dynamic> json) {
     id = json['id'];

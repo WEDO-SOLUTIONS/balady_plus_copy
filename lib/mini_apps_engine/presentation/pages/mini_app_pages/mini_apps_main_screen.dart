@@ -18,6 +18,7 @@ import 'package:balady_plus/app/core/utils/dialog_on_web_view/native_overlay_con
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/audio_player_banner.dart';
 
 class MiniAppsMainScreen extends ConsumerStatefulWidget {
   const MiniAppsMainScreen({super.key});
@@ -34,6 +35,11 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   @override
   void initState() {
     super.initState();
+
+    // Hide floating player when mini app opens
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(streamAudioProvider).setFloatingPlayerVisibility(false);
+    });
 
     // Listen to dragging state changes on iOS
     if (Platform.isIOS) {
@@ -126,6 +132,93 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
     }
   }
 
+  // void _openAudioPlayerBottomSheet() {
+  //   final provider = ref.read(streamAudioProvider);
+  //   if (provider.selectedChannel == null) {
+  //     debugPrint('MiniApp: No selected channel, cannot open bottom sheet');
+  //     return;
+  //   }
+
+  //   debugPrint('MiniApp: Opening audio player bottom sheet');
+
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     backgroundColor: Colors.transparent,
+  //     builder: (context) => DraggableScrollableSheet(
+  //       initialChildSize: 0.34,
+  //       minChildSize: 0.0,
+  //       maxChildSize: 0.34,
+  //       builder: (context, scrollController) => Container(
+  //         decoration: const BoxDecoration(
+  //           color: Colors.black,
+  //           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+  //         ),
+  //         child: SingleChildScrollView(
+  //           controller: scrollController,
+  //           padding: const EdgeInsets.all(0),
+  //           physics: const ClampingScrollPhysics(),
+  //           child: Column(
+  //             children: [
+  //               Container(
+  //                 width: 40,
+  //                 height: 3,
+  //                 margin: const EdgeInsets.symmetric(vertical: 16),
+  //                 decoration: BoxDecoration(
+  //                   color: Colors.grey,
+  //                   borderRadius: BorderRadius.circular(36),
+  //                 ),
+  //               ),
+  //               const SizedBox(height: 8),
+  //               const PlayingAudioTile(instanceId: 'mini_app_sheet'),
+  //               Consumer(
+  //                 builder: (context, ref, child) {
+  //                   final provider = ref.watch(streamAudioProvider);
+  //                   if (provider.hasError) {
+  //                     return Column(
+  //                       children: [
+  //                         const SizedBox(height: 16),
+  //                         Container(
+  //                           margin: const EdgeInsets.symmetric(horizontal: 16),
+  //                           padding: const EdgeInsets.all(12),
+  //                           decoration: BoxDecoration(
+  //                             color: Colors.red.withOpacity(0.1),
+  //                             border: Border.all(color: Colors.red.withOpacity(0.3)),
+  //                             borderRadius: BorderRadius.circular(8),
+  //                           ),
+  //                           child: Row(
+  //                             children: [
+  //                               const Icon(Icons.error_outline, color: Colors.red, size: 20),
+  //                               const SizedBox(width: 8),
+  //                               Expanded(
+  //                                 child: Text(
+  //                                   'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
+  //                                   style: const TextStyle(
+  //                                     color: Colors.red,
+  //                                     fontSize: 12,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     );
+  //                   }
+  //                   return const SizedBox.shrink();
+  //                 },
+  //               ),
+  //               const SizedBox(height: 8),
+  //               const MediaCatalogList(),
+  //               const SizedBox(height: 32),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
@@ -156,7 +249,11 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
         onPopInvokedWithResult: (didPop, result) async {
           if (didPop) return;
           final shouldExit = await _showExitConfirmationDialog();
-          if (shouldExit && context.mounted) Navigator.of(context).pop();
+          if (shouldExit && context.mounted) {
+            // Show floating player when mini app is closed
+            ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+            Navigator.of(context).pop();
+          }
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
@@ -167,79 +264,108 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
               icon: const Icon(Icons.close),
               onPressed: () async {
                 final shouldExit = await _showExitConfirmationDialog();
-                if (shouldExit && context.mounted) Navigator.of(context).pop();
+                if (shouldExit && context.mounted) {
+                  // Show floating player when mini app is closed
+                  ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+                  Navigator.of(context).pop();
+                }
               },
             ),
           ),
-          body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
-            builder: (contextBloc, state) {
-              Widget content = const SizedBox.shrink();
+          body: Column(
+            children: [
+              // Audio Player Banner
+              Consumer(
+                builder: (context, ref, child) {
+                  final provider = ref.watch(streamAudioProvider);
+                  if (provider.selectedChannel == null) {
+                    return const SizedBox.shrink();
+                  }
+                  return AudioPlayerBanner(
+                    onTap: () {
+                      // Call togglePanel through the provider
+                      ref.read(streamAudioProvider).togglePanel();
+                    },
+                    onClose: () async {
+                      await ref.read(streamAudioProvider).exitPlayer();
+                    },
+                  );
+                },
+              ),
+              // Main content
+              Expanded(
+                child: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
+                  builder: (contextBloc, state) {
+                    Widget content = const SizedBox.shrink();
 
-              if (state is MiniAppsEngineLoadedState) {
-                content = const WebMiniAppsScreen();
-              }
+                    if (state is MiniAppsEngineLoadedState) {
+                      content = const WebMiniAppsScreen();
+                    }
 
-              return Stack(
-                children: [
-                  // Loader background
-                  Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "assets/images/loader.gif",
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.contain,
-                          ),
-                          const SizedBox(height: 16),
-                          if (state is MiniAppsEngineLoadingState)
-                            state.progress.isEmpty
-                                ? const SizedBox()
-                                : Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: SizedBox(
-                                      height: 10,
-                                      child: LinearProgressIndicator(
-                                        value: (double.parse(state.progress) / 100),
-                                        backgroundColor: Colors.grey[200],
-                                        valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
-                                      ),
-                                    ),
+                    return Stack(
+                      children: [
+                        // Loader background
+                        Container(
+                          color: Colors.white,
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  "assets/images/loader.gif",
+                                  width: 120,
+                                  height: 120,
+                                  fit: BoxFit.contain,
+                                ),
+                                const SizedBox(height: 16),
+                                if (state is MiniAppsEngineLoadingState)
+                                  state.progress.isEmpty
+                                      ? const SizedBox()
+                                      : Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: SizedBox(
+                                            height: 10,
+                                            child: LinearProgressIndicator(
+                                              value: (double.parse(state.progress) / 100),
+                                              backgroundColor: Colors.grey[200],
+                                              valueColor: const AlwaysStoppedAnimation<Color>(AppColor.primary900Light),
+                                            ),
+                                          ),
+                                        ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  "loading".tr(),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                          const SizedBox(height: 16),
-                          Text(
-                            "loading".tr(),
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
 
-                  // WebMiniAppsScreen
-                  content,
+                        // WebMiniAppsScreen
+                        content,
 
-                  // Error / reload overlay
-                  if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
-                    Center(
-                      child: ReloadWidget(
-                        errorMessage: "errors_server_error_1".tr(),
-                        onTab: () {
-                          BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
-                            DownloadMiniAppsEngineEvent(miniApp: data),
-                          );
-                        },
-                      ),
-                    ),
-                ],
-              );
-            },
+                        // Error / reload overlay
+                        if (state is FailedDownloadState || state is MiniAppsEngineErrorState)
+                          Center(
+                            child: ReloadWidget(
+                              errorMessage: "errors_server_error_1".tr(),
+                              onTab: () {
+                                BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
+                                  DownloadMiniAppsEngineEvent(miniApp: data),
+                                );
+                              },
+                            ),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -248,6 +374,8 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
 
   @override
   void dispose() {
+    // Show floating player when mini app is closed
+    ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
     NativeOverlayController.hideOverlay();
     super.dispose();
   }

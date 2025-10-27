@@ -42,12 +42,18 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => ref.read(streamAudioProvider).getChannels());
+    Future.microtask(() {
+      ref.read(streamAudioProvider).getChannels();
+      // Register the togglePanel callback with the provider
+      ref.read(streamAudioProvider).setTogglePanelCallback(togglePanel);
+    });
   }
 
   @override
   void dispose() {
     _autoCloseTimer?.cancel();
+    // Unregister the callback when disposing
+    ref.read(streamAudioProvider).setTogglePanelCallback(null);
     super.dispose();
   }
 
@@ -294,7 +300,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
         ),
 
         /// Player controls widget
-        if (_landscapeSheetWidth == 0 && provider.selectedChannel != null)
+        if (_landscapeSheetWidth == 0 && provider.selectedChannel != null && provider.isFloatingPlayerVisible)
           Center(
             child: DraggableFloatingPlayerControls(
               onTap: togglePanel,
@@ -385,7 +391,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
       );
 
   Widget _buildFloatingControls(StreamAudioProvider provider, double currentSize, bool isLandscape) {
-    if (currentSize != _minChildSize || provider.selectedChannel == null) {
+    if (currentSize != _minChildSize || provider.selectedChannel == null || !provider.isFloatingPlayerVisible) {
       return const SizedBox.shrink();
     }
     return Center(
@@ -466,8 +472,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                     margin: const EdgeInsets.symmetric(horizontal: 16),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity( 0.1),
-                      border: Border.all(color: Colors.red.withOpacity( 0.3)),
+                      color: Colors.red.withOpacity(0.1),
+                      border: Border.all(color: Colors.red.withOpacity(0.3)),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
@@ -554,16 +560,16 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                       height: 40,
                       padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
                       decoration: ShapeDecoration(
-                        color: Colors.black.withOpacity( 0.65),
+                        color: Colors.black.withOpacity(0.65),
                         shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.white.withOpacity( 0.20)),
+                          side: BorderSide(color: Colors.white.withOpacity(0.20)),
                           borderRadius: BorderRadius.circular(40),
                         ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Icon(Icons.close, color: Colors.white.withOpacity( 0.80), size: 22),
+                          Icon(Icons.close, color: Colors.white.withOpacity(0.80), size: 22),
                           const Text(
                             'Drag here to exit audio player',
                             style: TextStyle(

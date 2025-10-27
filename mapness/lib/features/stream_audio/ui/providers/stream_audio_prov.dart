@@ -20,6 +20,11 @@ class StreamAudioProvider extends ChangeNotifier {
   String? _contextualMessageSubtitle;
   Timer? _contextualMessageTimer;
   bool _isDragging = false;
+  bool _isFloatingPlayerVisible = true;
+
+  // Callback to trigger panel toggle from external widgets
+  VoidCallback? _togglePanelCallback;
+
   StreamAudioProvider() {
     _initializeService();
   }
@@ -128,11 +133,38 @@ class StreamAudioProvider extends ChangeNotifier {
 
   bool get isDragging => _isDragging;
 
+  bool get isFloatingPlayerVisible => _isFloatingPlayerVisible;
+
   void setDraggingState(bool isDragging) {
     debugPrint('StreamAudioProvider: setDraggingState called - old: $_isDragging, new: $isDragging');
     _isDragging = isDragging;
     notifyListeners();
     debugPrint('StreamAudioProvider: notifyListeners called');
+  }
+
+  void setFloatingPlayerVisibility(bool isVisible) {
+    debugPrint(
+        'StreamAudioProvider: setFloatingPlayerVisibility called - old: $_isFloatingPlayerVisible, new: $isVisible');
+    _isFloatingPlayerVisible = isVisible;
+    notifyListeners();
+    debugPrint('StreamAudioProvider: Floating player visibility changed to $isVisible');
+  }
+
+  // Register the toggle panel callback from StreamAudio widget
+  void setTogglePanelCallback(VoidCallback? callback) {
+    _togglePanelCallback = callback;
+    debugPrint('StreamAudioProvider: Toggle panel callback ${callback != null ? 'registered' : 'unregistered'}');
+  }
+
+  // Trigger the panel toggle from external widgets (like mini apps)
+  void togglePanel() {
+    debugPrint('StreamAudioProvider: togglePanel called');
+    if (_togglePanelCallback != null) {
+      _togglePanelCallback!();
+      debugPrint('StreamAudioProvider: Panel toggle callback executed');
+    } else {
+      debugPrint('StreamAudioProvider: No toggle panel callback registered');
+    }
   }
 
   // Load channels data
