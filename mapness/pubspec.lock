@@ -2870,10 +2870,10 @@ packages:
     dependency: "direct main"
     description:
       name: sheetify
-      sha256: baeaaa8aff748b2f54e9c52d8bcf43b8ece27cb6121a07564fe4de16e627584e
+      sha256: "49775e246c412c163875c64c20cbc76ff6af9caaeb79eed074e2af2e3c1ec531"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   sheetify_lint:
     dependency: "direct dev"
     description:
