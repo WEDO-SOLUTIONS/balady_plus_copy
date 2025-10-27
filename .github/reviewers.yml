@@ -2,12 +2,15 @@ reviewers:
   defaults:
     - platform-team
     - feature-team
-    - doldrums # Arina Kharlamova (Tech Lead)
+    # - doldrums # Arina Kharlamova (Tech Lead)
+    - scroollocker # Alex Haylov (Team Lead)
     - support-team
   groups:
     platform-team:
       - AlexStrNik
       - wultriel
+      - cutzmf
+      - anisovdev
     feature-team:
       - scroollocker
       - ForesThule
@@ -17,39 +20,36 @@ reviewers:
       - r9odt
       - popov-ilya
     support-team:
-      - Demezy
       - AyatAliev
-      - RomanSurjan
+      - wultriel
+      - anisovdev
 files:
   ".github/**":
-    - doldrums
     - devops-team
     - alexstrnik
   ".lefthook/**":
-    - doldrums
     - devops-team
-    - demezy
+    - scroollocker
   "justscripts/**":
-    - doldrums
     - devops-team
     - platform-team
+    - DmitriiProshutinskii
   "urbi_map/**":
     - platform-team
-    - doldrums
+    - scroollocker
   "mapness/scripts/**":
     - platform-team
-    - doldrums
     - devops-team
+    - DmitriiProshutinskii
   "tests/**":
-    - doldrums
     - support-team
+    - scroollocker
   "mapness/features/**":
     - feature-team
-    - doldrums
+    - wultriel
+    - scroollocker
   "mapness/**":
     - support-team
-    - doldrums
   "**":
-    - doldrums
     - alexstrnik
-    - demezy
+    - scroollocker
