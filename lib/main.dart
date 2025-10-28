@@ -28,13 +28,13 @@ void main() async {
 
           // Disable heavy features
           options.enableAppHangTracking = false;
-          options.attachScreenshot = true;
-          options.attachViewHierarchy = true;
+          options.attachScreenshot = false;
+          options.attachViewHierarchy = false;
 
           // Enable only the essentials
           options.enableAutoSessionTracking = true;
           options.enableAutoPerformanceTracing = false; // manual tracing is better
-          options.enableUserInteractionTracing = true;
+          options.enableUserInteractionTracing = false;
 
           // Environment
           options.environment = EnvType.prod.name;
@@ -44,6 +44,7 @@ void main() async {
 
           // Disable verbose debug output
           options.diagnosticLevel = SentryLevel.error;
+          options.screenshotQuality = SentryScreenshotQuality.medium;
 
 // commeted by fawzy
           // options.dsn =
