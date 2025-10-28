@@ -31,7 +31,7 @@ class EtaShareExpired extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: BoxDecoration(
-          color: context.colors.backgroundSurface4,
+          color: context.colors.backgroundSurface2,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(RadiusBorder.xl),
             topRight: Radius.circular(RadiusBorder.xl),

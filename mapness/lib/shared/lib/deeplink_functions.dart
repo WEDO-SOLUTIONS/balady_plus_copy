@@ -30,6 +30,7 @@ class BaldayDeeplink {
 
   static const String fieldsValuePoints = 'items.point';
   static const String fieldsValueBounds = 'items.bounds';
+  static const String typeAdmDivCity = 'adm_div.city';
 
   // Momrah
   static String twinsUrl(String twinsApi) => '$twinsApi/twins/search/partners';

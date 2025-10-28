@@ -95,43 +95,44 @@ class NavigationHandler(
                         navigationManager.uiModel.betterRouteChannel.connect(::betterRouteListener)
         }
 
-        fun setupCamera(speedRangeZoom: SpeedRangeZoom) {
+        fun setupCamera(speedRangeZoom: List<SpeedRangeZoom>) {
                 prevCameraBehaviour = map.camera.behaviour.newBehaviour
                 map.camera.setBehaviour(
                         behaviour = navigationManager.mapFollowController.cameraBehaviour
                 )
 
                 navigationManager.mapFollowController.setFollow(true)
-                navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence =
-                        listOf(
-                                SpeedRangeToStyleZoom(
-                                        range =
-                                                SpeedRange(
-                                                        minSpeed = speedRangeZoom.minSpeedRange,
-                                                        maxSpeed = speedRangeZoom.maxSpeedRange
-                                                ),
-                                        minDistanceToManeuver =
-                                                RouteDistance(
-                                                        millimeters =
-                                                                speedRangeZoom
-                                                                        .routeDistanceMillimeters
-                                                                        .toLong()
-                                                ),
-                                        maxDistanceToManeuver =
-                                                RouteDistance(
-                                                        millimeters =
-                                                                speedRangeZoom
-                                                                        .routeDistanceMillimeters
-                                                                        .toLong()
-                                                ),
-                                        styleZoom =
-                                                StyleZoom(
-                                                        value =
-                                                                speedRangeZoom.styleZoomValue
-                                                                        .toFloat()
-                                                )
-                                )
+                val zooms = speedRangeZoom.map { speedRangeZoom ->
+                        SpeedRangeToStyleZoom(
+                                range =
+                                        SpeedRange(
+                                                minSpeed = speedRangeZoom.minSpeedRange,
+                                                maxSpeed = speedRangeZoom.maxSpeedRange
+                                        ),
+                                minDistanceToManeuver =
+                                        RouteDistance(
+                                                millimeters =
+                                                        speedRangeZoom
+                                                                .routeDistanceMillimeters
+                                                                .toLong()
+                                        ),
+                                maxDistanceToManeuver =
+                                        RouteDistance(
+                                                millimeters =
+                                                        speedRangeZoom
+                                                                .routeDistanceMillimeters
+                                                                .toLong()
+                                        ),
+                                styleZoom =
+                                        StyleZoom(
+                                                value =
+                                                        speedRangeZoom.styleZoomValue
+                                                                .toFloat()
+                                        )
                         )
+                }
+                navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = zooms
+                navigationManager.zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = zooms
         }
 
         fun followNavigation() {
@@ -213,7 +214,7 @@ class NavigationHandler(
 
         fun restoreNavigationState(
                 state: ByteArray,
-                speedRangeZoom: SpeedRangeZoom,
+                speedRangeZoom: List<SpeedRangeZoom>,
                 callback: (Result<Unit>) -> Unit
         ) {
                 try {
@@ -252,7 +253,7 @@ class NavigationHandler(
                 finishPoint: RouteSearchPoint?,
                 options: RouteSearchOptions?,
                 route: TrafficRoute?,
-                speedRangeZoom: SpeedRangeZoom,
+                speedRangeZoom: List<SpeedRangeZoom>,
                 callback: (Result<Unit>) -> Unit,
         ) {
                 if (finishPoint == null || options == null || route == null) {
@@ -306,7 +307,7 @@ class NavigationHandler(
                 finishPoint: RouteSearchPoint?,
                 options: RouteSearchOptions?,
                 route: TrafficRoute?,
-                speedRangeZoom: SpeedRangeZoom,
+                speedRangeZoom: List<SpeedRangeZoom>,
                 callback: (Result<Unit>) -> Unit,
         ) {
                 if (finishPoint == null || options == null || route == null) {
@@ -341,7 +342,7 @@ class NavigationHandler(
                 resetCamera()
         }
 
-        fun startFreeRoam(speedRangeZoom: SpeedRangeZoom) {
+        fun startFreeRoam(speedRangeZoom: List<SpeedRangeZoom>) {
                 setupCamera(speedRangeZoom = speedRangeZoom)
                 navigationManager.start()
         }

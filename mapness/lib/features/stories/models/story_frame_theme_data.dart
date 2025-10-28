@@ -74,7 +74,7 @@ class StoryFrameThemeData {
         backgroundColor: AppColor.white,
       ),
       titlePadding: const EdgeInsets.symmetric(
-        horizontal: Spacing.$12x,
+        horizontal: Spacing.$2x,
         vertical: Spacing.$8x,
       ),
     );

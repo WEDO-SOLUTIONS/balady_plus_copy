@@ -69,6 +69,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var startedTrip: CPTrip? = nil
     private var isRoutesShown = false
     private var everyMinuteTimer: Timer?
+    private var isAuthorized: Bool = false
 
     func dispose() {
         navigatorStateCancellable?.cancel()
@@ -122,10 +123,18 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     }
 
     private func buildLeadButtons() {
-        let factories = [
+        hostFlutterApi.isAuthorized(completion: { result in
+            switch result {
+            case .success(let isAuthorized):
+                self.isAuthorized = isAuthorized
+            case .failure(let error):
+                print(error)
+            }
+        })
+        let factories = (self.isAuthorized ? [
             makeFirstLeadButton(),
-            makeSecondLeadButton(),
-        ].compactMap { $0 }
+            makeSecondLeadButton()
+        ] : [makeFirstLeadButton()]).compactMap { $0 }
 
         mapTemplate.leadingNavigationBarButtons = factories.map {
             function in function()
@@ -238,6 +247,11 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     func toggleSounds(toggleType: SoundToggleType) {
         // Update sound settings in the current settings screen if it exists
         currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
+    }
+    
+    func onAuthorizationChanged(isAuthorized: Bool) {
+        self.isAuthorized = isAuthorized
+        buildLeadButtons()
     }
 
     private func closeSettingsScreen() {
@@ -670,6 +684,37 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         routeEditor.setActiveRouteIndex(index: RouteIndex(value: UInt64(index)))
     }
 
+    private func setupCamera() {
+        let styles = [
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 0.0, maxSpeed: 5.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 0),
+                maxDistanceToManeuver: RouteDistance(millimeters: 10_000),
+                styleZoom: StyleZoom(value: 16.5)
+            ),
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 5.0, maxSpeed: 20.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 10_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 50_000),
+                styleZoom: StyleZoom(value: 18.0)
+            ),
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 20.0, maxSpeed: 60.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 50_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 100_000),
+                styleZoom: StyleZoom(value: 20.0)
+            ),
+            SpeedRangeToStyleZoom(
+                range: SpeedRange(minSpeed: 60.0, maxSpeed: 200.0),
+                minDistanceToManeuver: RouteDistance(millimeters: 100_000),
+                maxDistanceToManeuver: RouteDistance(millimeters: 300_000),
+                styleZoom: StyleZoom(value: 22.0)
+            ),
+        ]
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = styles
+        navigationManager.zoomFollowSettings.speedRangeToStyleZoomFreeRoamSequence = styles
+    }
+
     func mapTemplate(
         _ mapTemplate: CPMapTemplate,
         startedTrip trip: CPTrip,
@@ -685,6 +730,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             routeSearchOptions: routeEditorRouteParams.routeSearchOptions
         )
 
+        setupCamera()
         try! navigationManager.start(
             routeBuildOptions: routeBuildOptions,
             trafficRoute: routeEditor.activeTrafficRoute

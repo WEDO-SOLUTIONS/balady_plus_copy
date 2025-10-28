@@ -136,12 +136,14 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: ButtonType.secondary,
+              colorScheme: ButtonColorScheme.accent,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],
@@ -201,7 +203,7 @@ class PoiCardFooter extends HookConsumerWidget {
           ref.read(parkingManageProvider.notifier).clearStore();
           ToastOverlay.of(context).show(
             title: context.l10n.parkingSpotDeleted,
-            iconAsset: iconAsset,
+            icon: const ToastIconAsset(iconAsset),
           );
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },

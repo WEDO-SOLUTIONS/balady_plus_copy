@@ -116,11 +116,8 @@ class Helpers {
       bool isHuawei = await CommonFunctions.isHuaweiDevice();
       if (isHuawei) {
         final latLng = await CommonFunctions.getCurrentLocationHuawei();
-        debugPrint(
-            'amr from getCurrentLocation with huawei location ${latLng?.latitude}, ${latLng?.longitude}');
         return latLng;
       }
-      debugPrint('amr from  getCurrentLocation but with geo locator');
       //  EasyLoading.show();
       geo_locator.Position position =
           await geo_locator.Geolocator.getCurrentPosition(
@@ -129,7 +126,7 @@ class Helpers {
             timeLimit: duration ?? const Duration(seconds: 13)),
       );
       //    EasyLoading.dismiss();
-      return LatLng(latitude:position.latitude,longitude: position.longitude);
+      return LatLng(latitude: position.latitude, longitude: position.longitude);
     } catch (error, stackTrace) {
       return CommonFunctions.handelLocationCatch(false, error, stackTrace);
     }
@@ -206,7 +203,6 @@ class Helpers {
       return ("mobile_number_err1").tr();
     }
   }
-
 
   static String? validateIBAN(String? iban) {
     RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');

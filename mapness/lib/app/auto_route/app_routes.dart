@@ -5,6 +5,8 @@ import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
 import 'package:mapness/app/auto_route/guards/saudi_day_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/features/stories/ui/stories_transition.dart';
 
 import 'app_routes.gr.dart';
 
@@ -40,6 +42,7 @@ class AppRouter extends RootStackRouter {
               path: 'kiblah',
               page: KiblahRoute.page,
               fullscreenDialog: true,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'service_available',
@@ -176,6 +179,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: ':categoryId',
               page: FeedbackRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'success',
@@ -184,6 +188,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'favourites',
               page: FavouritesRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
             ),
             CustomRoute(
               path: 'navi_search_favorites',
@@ -207,9 +212,18 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
             CustomRoute(
+              path: 'feedback_v2',
+              page: AppFeedbackSheetV2.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              opaque: false,
+              fullscreenDialog: true,
+              customRouteBuilder: RouteBuilders.customBarrierDismissibleBuilder,
+            ),
+            CustomRoute(
               path: 'feedback/edit',
               page: AppFeedbackInputSheet.page,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
+              opaque: false,
+              fullscreenDialog: true,
             ),
             CustomRoute(
               path: 'poi_favorite_dialog',
@@ -227,15 +241,116 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
-              path: 'contribute',
-              page: ContributeRoute.page,
-            ),
-            CustomRoute(
               path: 'quickFeedback',
               page: QuickFeedbackRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'stories',
+              page: StoriesRoute.page,
+              opaque: false,
+              transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+                type: StoryTypes.network,
+                child: child,
+              ),
+            ),
+            CustomRoute(
+              path: 'settings',
+              page: SettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'dark_map',
+              page: DarkMapRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'about_balady',
+              page: AboutBaladyRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'help_center',
+              page: HelpCenterRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'profile_info',
+              page: ProfileInfoRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'momra_website',
+              page: MomraWebsiteRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'image_editor',
+              page: ImageEditorRoute.page,
+            ),
+            CustomRoute(
+              path: 'navigator_settings',
+              page: NavigatorSettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'sound_settings',
+              page: SoundSettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'voice_settings',
+              page: VoiceSettingsRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'photo_viewer',
+              page: PhotoViewerRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'language_pick_sheet',
+              page: LanguagePickSheetRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'flips_continue',
+              page: FlipsContinueRoute.page,
+            ),
+            CustomRoute(
+              path: 'contribute',
+              page: ContributeRoute.page,
+              customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+            ),
+            CustomRoute(
+              path: 'addPhoto',
+              page: AddPhotoRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'feedback_address_suggester',
+              page: FeedbackAddressSuggester.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
           ],
         ),
-        ...Routes.upperRoutesMap,
+        CustomRoute(
+          page: OnboardRoute.page,
+          opaque: false,
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.onboarding,
+            child: child,
+          ),
+        ),
+        CustomRoute(
+          page: SaudiDaySplashRoute.page,
+          opaque: false,
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.saudiDay,
+            child: child,
+          ),
+        ),
       ];
 }

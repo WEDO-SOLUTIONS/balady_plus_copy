@@ -106,7 +106,6 @@ class MapSuggestList extends ConsumerWidget {
             child: uikit.AppButton(
               buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
               buttonType: uikit.ButtonType.secondary,
-              primaryIcon: uikit.SystemIcons.search,
               primaryLabel: context.l10n.showResults,
               onTap: () {
                 final scope = context.read<SearchScope>();
@@ -119,19 +118,19 @@ class MapSuggestList extends ConsumerWidget {
                 ref.read(urbiAnalyticsProvider).track(
                       '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
                     );
-                ref.read(bssServiceProvider.notifier).sendEvent(
-                      BssRequest(
-                        eventType: BSSEventType.action,
-                        actionType: BSSActionType.tap,
-                        uiElement: const BssUIElement(
-                          name: BssUIElementNames.searchMoreButton,
-                          ownerName: BssUIElementNames.suggestList,
-                        ),
-                        payload: BssPayload(
-                          searchRequest: BssSearchRequest(text: searchText),
-                        ),
-                      ),
-                    );
+                BssService.instance.sendEvent(
+                  BssRequest(
+                    eventType: BSSEventType.action,
+                    actionType: BSSActionType.tap,
+                    uiElement: const BssUIElement(
+                      name: BssUIElementNames.searchMoreButton,
+                      ownerName: BssUIElementNames.suggestList,
+                    ),
+                    payload: BssPayload(
+                      searchRequest: BssSearchRequest(text: searchText),
+                    ),
+                  ),
+                );
               },
             ),
           )

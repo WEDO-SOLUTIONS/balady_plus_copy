@@ -14,8 +14,13 @@ import 'package:sheetify/sheetify.dart';
 @RoutePage()
 class AppFeedbackInputSheet extends HookConsumerWidget {
   final String initialText;
+  final int maxCharsAllowed;
 
-  const AppFeedbackInputSheet({super.key, this.initialText = ''});
+  const AppFeedbackInputSheet({
+    super.key,
+    this.initialText = '',
+    this.maxCharsAllowed = 1000,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,43 +28,52 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
       onClose: (controller) {
         context.router.popForced();
       },
-      heightModel: ToggleSheetHeightModel.fraction(0.9),
+      heightModel: ToggleSheetHeightModel.fraction(.98),
     );
 
     final textEditingController = useTextEditingController(text: initialText);
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      behavior: HitTestBehavior.opaque,
-      child: ToggleSheet(
-        scrollController: scrollController,
-        backgroundColor: context.colors.backgroundSurface4,
-        safeAreaColor: context.colors.backgroundSurface4,
-        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
-        shouldPop: (_) => false,
-        header: AppFeedbackSheetHeader(
-          onBackTap: context.router.popForced,
-          title: context.l10n.appFeedbackInputTitle,
-        ),
-        content: [
-          AppFeedbackInput(
-            textController: textEditingController,
-            textInputAction: TextInputAction.go,
+    return Scaffold(
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.opaque,
+        child: ToggleSheet(
+          scrollController: scrollController,
+          backgroundColor: context.colors.backgroundSurface4,
+          safeAreaColor: context.colors.backgroundSurface4,
+          dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+          shouldPop: (_) => false,
+          header: AppFeedbackSheetHeader(
+            onBackTap: context.router.popForced,
+            title: context.l10n.appFeedbackInputTitle,
           ),
-        ],
-        // TODO: What this is temporally solution, and will be removed as the bottom sheet fixes be added
-        footer: Padding(
-          padding: const EdgeInsets.all(Spacing.$4x)
-              .copyWith(bottom: Spacing.$8x + MediaQuery.of(context).viewInsets.bottom),
-          child: SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              primaryLabel: context.l10n.appFeedbackAddNote,
-              buttonColorScheme: ButtonColorScheme.accentSecondary,
-              size: ButtonSize.large,
-              onTap: () {
-                context.router.popForced(textEditingController.text);
-              },
+          content: [
+            AppFeedbackInput(
+              textController: textEditingController,
+              textInputAction: TextInputAction.go,
+              maxCharsAllowed: maxCharsAllowed,
+            ),
+          ],
+          footer: Padding(
+            padding: const EdgeInsets.all(Spacing.$4x).copyWith(
+              bottom: Spacing.$8x,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ListenableBuilder(
+                listenable: textEditingController,
+                builder: (context, child) => AppButton(
+                  primaryLabel: context.l10n.appFeedbackAddNote,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonState: textEditingController.text.length > maxCharsAllowed
+                      ? ButtonState.disabled
+                      : ButtonState.defaultState,
+                  size: ButtonSize.large,
+                  onTap: () {
+                    context.router.popForced(textEditingController.text);
+                  },
+                ),
+              ),
             ),
           ),
         ),

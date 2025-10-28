@@ -65,6 +65,7 @@ class Search extends _$Search {
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
+
   bool get searchFromSuggest => _previousType == SearchType.searchByQuery;
 
   @override
@@ -341,7 +342,15 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
-
+      // todo: see how to add location here
+      // final location = ref.read(cityByLocationProvider.notifier);
+      // ref.read(appAnalyticsProvider).navigationSearch(
+      //   destinationCity: location,
+      //   keyword: query,
+      //   originCity: originCity,
+      //   isResultsFound: results.firstPage!=null || results.firstPage!.items.isNotEmpty,
+      //   resultCount: results.firstPage?.items.length??0,
+      // );
       _result = results;
       // -- Analytics
       if (state is SearchStateEmpty) {

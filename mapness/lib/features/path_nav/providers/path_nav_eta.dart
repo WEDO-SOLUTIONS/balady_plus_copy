@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/lib/number_formatters.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
@@ -42,7 +43,7 @@ class _PathNavEta extends _$PathNavEta {
       }
     });
 
-    final subscription = mapController.naviDashboardEvents.listen((event) {
+    final subscription = mapController.naviDashboardEvents.listen((event) async {
       final distance = event.distance.formatDistance();
       final duration = Duration(seconds: event.duration);
       fullDistance ??= event.distance;
@@ -52,7 +53,13 @@ class _PathNavEta extends _$PathNavEta {
         halfRouteEventSent = true;
         final route = ref.read(etaRouteInfoProvider);
         final currentLocation = ref.read(locationProvider);
+        final location = ref.read(cityByLocationProvider.notifier);
+        final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
+        final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
+
         ref.read(appAnalyticsProvider).navigationHalfWay(
+              originCity: originCity.name,
+              destinationCity: destinationCity.name,
               origin: switch (route.startPoint) {
                 final EtaRoutePoint point => point.label ?? '${point.lat},${point.lon}',
                 _ => '',

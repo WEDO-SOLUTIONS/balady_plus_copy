@@ -12,6 +12,53 @@ void main() {
     test('THEN is temporary closed', () => expect(workingHours.isTemporaryClosed, isTrue));
   });
 
+  group('GIVEN working hours every day 10:00-14:00 15:00-18:00', () {
+    late Iterable<Hours> dayHours;
+    late Iterable<Hours> dayBreaks;
+    setUp(() {
+      workingHours = WorkingHours({
+        for (int weekday = DateTime.monday; weekday <= DateTime.sunday; weekday++)
+          Duration(days: weekday, hours: 10): Duration(hours: 4),
+        for (int weekday = DateTime.monday; weekday <= DateTime.sunday; weekday++)
+          Duration(days: weekday, hours: 15): Duration(hours: 3),
+      });
+    });
+
+    test('THEN has same working hours', () => expect(workingHours.isSameEveryDay, isTrue));
+
+    group('WHEN monday', () {
+      setUp(() {
+        dayHours = workingHours.todayHours(DateTime.monday);
+        dayBreaks = workingHours.todayBreaks(DateTime.monday);
+      });
+      test(
+        'THEN works 10:00-14:00 15:00-18:00',
+        () => expect(dayHours, [
+          (from: Duration(hours: 10), till: Duration(hours: 14)),
+          (from: Duration(hours: 15), till: Duration(hours: 18)),
+        ]),
+      );
+      test(
+        'THEN breaks 14:00-15:00',
+        () => expect(dayBreaks, [
+          (from: Duration(hours: 14), till: Duration(hours: 15)),
+        ]),
+      );
+    });
+  });
+
+  group('GIVEN works 7 days 24 hours', () {
+    setUp(() {
+      workingHours = WorkingHours({
+        for (int weekday = DateTime.monday; weekday <= DateTime.sunday; weekday++)
+          Duration(days: weekday, hours: 0): Duration(hours: 24),
+      });
+    });
+
+    test('THEN same working hours every day', () => expect(workingHours.isSameEveryDay, isTrue));
+    test('THEN is open 24/7', () => expect(workingHours.isOpen24x7, isTrue));
+  });
+
   group('GIVEN working hours monday 10:00-14:00 15:00-18:00, tuesday 11:00-18:00', () {
     setUp(
       () => workingHours = WorkingHours({
@@ -22,6 +69,18 @@ void main() {
     );
 
     late DateTime now;
+
+    group('WHEN is tuesday', () {
+      late Iterable<Hours> periods;
+      setUp(() => periods = workingHours.todayHours(DateTime.tuesday));
+
+      test(
+        'THEN works 11:00-18:00',
+        () => expect(periods, [(from: Duration(hours: 11), till: Duration(hours: 18))]),
+      );
+      test('THEN NOT same working hours', () => expect(workingHours.isSameEveryDay, isFalse));
+      test('THEN NOT open 24/7', () => expect(workingHours.isOpen24x7, isFalse));
+    });
 
     group(' WHEN not yet worked this day (before intervals)', () {
       setUp(() => now = DateTime(2025, 9, 1, 09, 30));
