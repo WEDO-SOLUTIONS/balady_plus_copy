@@ -14,6 +14,7 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_locali
 import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_failure.dart';
+import 'package:mapness/widgets/routing/ui_kit/path_card/path_card_loading.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/path_public_card.dart';
 import 'package:mapness/widgets/routing/ui_kit/path_card/tools/path_card_size.dart';
 
@@ -46,57 +47,67 @@ class RoutesCarousel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {
-      final routes = publicTransportRoutes.asData?.valueOrNull;
+      return publicTransportRoutes.when(
+        loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
+        error: (err, st) {
+          if (err is NoInternetException ||
+              (publicTransportVisibility.hasError && publicTransportVisibility.error is NoInternetException)) {
+            return PathCardFailure.noInternet(
+              refresh: refresh,
+              text: context.l10n.noInternetConnection,
+            );
+          }
 
-      if (publicTransportVisibility.error is NoInternetException) {
-        return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
-      } else if (publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
-        return PathCardFailure.nearestMetroTooFar(
-          refresh: () {
-            ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
-          },
-          text: context.l10n.nearestMetroTooFar,
-          labelButton: context.l10n.goByCar,
-        );
-      }
+          if (publicTransportVisibility.hasError &&
+              publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
+            return PathCardFailure.nearestMetroTooFar(
+              refresh: () {
+                ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+              },
+              text: context.l10n.nearestMetroTooFar,
+              labelButton: context.l10n.goByCar,
+            );
+          }
 
-      if (routes == null || routes.isEmpty || publicTransportVisibility.hasError) {
-        return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
-      }
+          return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
+        },
+        data: (routesList) {
+          final shortest = shortestIsOnlyOnePublicTransport(routesList);
 
-      final shortest = shortestIsOnlyOnePublicTransport(routes);
-
-      return RouteCarouselWrapper(
-        pageController: pageController,
-        routesCount: routes.length,
-        height: navType.cardHeight,
-        onActiveChanged: onActiveChanged,
-        itemBuilder: (context, index) {
-          final route = routes[index];
-          final durationInSeconds = route.duration;
-          return Padding(
-            padding: padding(index: index, length: routes.length),
-            child: PathPublicCard(
-              route: route,
-              localizations: PathCardLocalization(
-                calories: context.l10n.calories,
-                steps: context.l10n.steps,
-                go: context.l10n.go,
-              ),
-              onStartNavigation: () => startNavigation(getRouteInfo(route)),
-              destination: destination,
-              startPoint: startPoint,
-              additionalInfo: shortest != null && shortest == durationInSeconds
-                  ? PathCardStatus.shortest(context.l10n.shortest)
-                  : null,
-              publicTransportRoutes: publicTransportRoutes.value,
-              activeIndex: index,
-              onActiveChanged: onActiveChanged,
-            ),
+          return RouteCarouselWrapper(
+            pageController: pageController,
+            routesCount: routesList.length,
+            height: navType.cardHeight,
+            onActiveChanged: onActiveChanged,
+            itemBuilder: (context, index) {
+              final route = routesList[index];
+              final durationInSeconds = route.duration;
+              return Padding(
+                padding: padding(index: index, length: routesList.length),
+                child: PathPublicCard(
+                  route: route,
+                  localizations: PathCardLocalization(
+                    calories: context.l10n.calories,
+                    steps: context.l10n.steps,
+                    go: context.l10n.go,
+                  ),
+                  onStartNavigation: () => startNavigation(getRouteInfo(route)),
+                  destination: destination,
+                  startPoint: startPoint,
+                  additionalInfo: shortest != null && shortest == durationInSeconds
+                      ? PathCardStatus.shortest(context.l10n.shortest)
+                      : null,
+                  publicTransportRoutes: routesList,
+                  activeIndex: index,
+                  onActiveChanged: onActiveChanged,
+                ),
+              );
+            },
           );
         },
       );
     }
+
     final shortest = shortestIsOnlyOne(routes);
     return RouteCarouselWrapper(
       pageController: pageController,
