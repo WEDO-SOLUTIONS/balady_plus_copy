@@ -23,37 +23,68 @@ void main() async {
       await setupMapness(EnvType.stg);
       await SentryFlutter.init(
         (options) {
+
+
           options.dsn = 'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
-          // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-          // We recommend adjusting this value in production.
-          options.tracesSampleRate = 1.0;
-          // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-          // We recommend adjusting this value in production.
-          options.profilesSampleRate = 1.0;
-          options.attachScreenshot = true;
-          options.enableUserInteractionTracing = true;
-          options.reportSilentFlutterErrors = true;
-          options.enableAppHangTracking = true;
-          options.enableAutoPerformanceTracing = true;
-          options.enableAutoNativeBreadcrumbs = true;
-          options.enableNativeCrashHandling = true;
-          options.enableTimeToFullDisplayTracing = true;
-          options.enableAppHangTracking = true;
-          options.enableAppLifecycleBreadcrumbs = true;
-          options.enableFramesTracking = true;
-          options.captureFailedRequests = true;
+
+          // Keep performance monitoring but lower sampling
+          options.tracesSampleRate = 0.1; // or even 0.05 in stable releases
+          options.profilesSampleRate = 0.0; // disable CPU profiling in prod
+
+          // Disable heavy features
+          options.enableAppHangTracking = false;
+          options.attachScreenshot = false;
+          options.attachViewHierarchy = false;
+
+          // Enable only the essentials
+          options.enableAutoSessionTracking = true;
+          options.enableAutoPerformanceTracing = false; // manual tracing is better
+          options.enableUserInteractionTracing = false;
+
+          // Environment
           options.environment = EnvType.stg.name;
-          // Note: replay feature is not available in sentry_flutter 8.14.2
-          // options.replay.onErrorSampleRate = 1.0;
-          // options.replay.sessionSampleRate = 1.0;
 
-          // Screenshots and Attachments
-          options.attachScreenshot = true;
+          // Keep breadcrumbs but limit count
+          options.maxBreadcrumbs = 50;
+
+          // Disable verbose debug output
+          options.diagnosticLevel = SentryLevel.error;
           options.screenshotQuality = SentryScreenshotQuality.medium;
-          options.attachViewHierarchy = true;
 
-          // Debug Options
-          options.diagnosticLevel = SentryLevel.debug;
+
+
+          //
+          // options.dsn = 'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
+          // // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+          // // We recommend adjusting this value in production.
+          // options.tracesSampleRate = 1.0;
+          // // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+          // // We recommend adjusting this value in production.
+          // options.profilesSampleRate = 1.0;
+          // options.attachScreenshot = true;
+          // options.enableUserInteractionTracing = true;
+          // options.reportSilentFlutterErrors = true;
+          // options.enableAppHangTracking = true;
+          // options.enableAutoPerformanceTracing = true;
+          // options.enableAutoNativeBreadcrumbs = true;
+          // options.enableNativeCrashHandling = true;
+          // options.enableTimeToFullDisplayTracing = true;
+          // options.enableAppHangTracking = true;
+          // options.enableAppLifecycleBreadcrumbs = true;
+          // options.enableFramesTracking = true;
+          // options.captureFailedRequests = true;
+          // options.environment = EnvType.stg.name;
+          // // Note: replay feature is not available in sentry_flutter 8.14.2
+          // // options.replay.onErrorSampleRate = 1.0;
+          // // options.replay.sessionSampleRate = 1.0;
+          //
+          // // Screenshots and Attachments
+          // options.attachScreenshot = true;
+          // options.screenshotQuality = SentryScreenshotQuality.medium;
+          // options.attachViewHierarchy = true;
+          //
+          // // Debug Options
+          // options.diagnosticLevel = SentryLevel.debug;
         },
         appRunner: () => runApp(
           SentryWidget(
