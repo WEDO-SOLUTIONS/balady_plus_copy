@@ -422,7 +422,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                   decoration: BoxDecoration(
                     // Debug visuals - remove for production
                     // color: Colors.red.withOpacity(0.2),
-                    border: Border.all(color: Colors.white.withOpacity( 0.15)),
+                    border: Border.all(color: Colors.white.withOpacity(0.15)),
                     borderRadius: BorderRadius.circular(currentBorderRadius),
                   ),
                   child: Container(
@@ -444,7 +444,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                         borderRadius: BorderRadius.all(Radius.circular(currentBorderRadius)),
                         side: BorderSide(
                           width: 2,
-                          color: Colors.white.withOpacity( 0.15),
+                          color: Colors.white.withOpacity(0.15),
                         ),
                       ),
                     ),
@@ -530,23 +530,7 @@ class _ContentState extends ConsumerState<Content> {
                   final audioProvider = ref.read(streamAudioProvider);
                   await audioProvider.togglePlayPause();
                 },
-                child: provider.isLoading
-                    ? const SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : SvgPicture.asset(
-                        provider.isPlaying
-                            ? Assets.icons.svg.audio.pause.keyName
-                            : Assets.icons.svg.audio.resume.keyName,
-                        width: 16,
-                        height: 16,
-                        colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                      ),
+                child: _buildPlayPauseIcon(provider),
               ),
               const SizedBox(width: 12),
               // Forward button
@@ -570,6 +554,30 @@ class _ContentState extends ConsumerState<Content> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPlayPauseIcon(StreamAudioProvider provider) {
+    if (provider.isLoading) {
+      return const SizedBox(
+        width: 16,
+        height: 16,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
+    // Show play icon if not playing OR if there's an error
+    // This ensures the UI correctly reflects when audio is paused by external factors
+    final shouldShowPlayIcon = !provider.isPlaying || provider.hasError;
+
+    return SvgPicture.asset(
+      shouldShowPlayIcon ? Assets.icons.svg.audio.resume.keyName : Assets.icons.svg.audio.pause.keyName,
+      width: 16,
+      height: 16,
+      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
     );
   }
 

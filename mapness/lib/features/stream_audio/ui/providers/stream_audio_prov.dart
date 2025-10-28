@@ -21,12 +21,22 @@ class StreamAudioProvider extends ChangeNotifier {
   Timer? _contextualMessageTimer;
   bool _isDragging = false;
   bool _isFloatingPlayerVisible = true;
+  bool _isLoadingChannels = false;
+
+  // Request deduplication
+  Future<void>? _currentChannelsRequest;
 
   // Callback to trigger panel toggle from external widgets
   VoidCallback? _togglePanelCallback;
 
+  // Background monitoring
+  Timer? _backgroundMonitorTimer;
+
   StreamAudioProvider() {
     _initializeService();
+    _startBackgroundMonitoring();
+    // Load channels automatically when provider is created
+    _loadChannelsOnInit();
   }
 
   // Set the ref to listen to language changes
@@ -45,6 +55,33 @@ class StreamAudioProvider extends ChangeNotifier {
     _audioService.addListener(_onAudioServiceChanged);
     _isInitialized = true;
     notifyListeners();
+  }
+
+  // Load channels automatically when provider is initialized
+  void _loadChannelsOnInit() {
+    // Use Future.microtask with a small delay to avoid race conditions
+    // with manual loading calls from UI components
+    Future.microtask(() async {
+      // Small delay to let the widget tree settle
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      try {
+        await getChannels();
+        debugPrint('StreamAudioProvider: Channels loaded automatically on initialization');
+      } catch (e) {
+        debugPrint('StreamAudioProvider: Failed to load channels on initialization: $e');
+      }
+    });
+  }
+
+  // Start background monitoring to detect and recover from audio issues
+  void _startBackgroundMonitoring() {
+    _backgroundMonitorTimer?.cancel();
+    _backgroundMonitorTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+      if (!_isExited && _selectedChannel != null) {
+        _audioService.monitorAndRecover();
+      }
+    });
   }
 
   void _onAudioServiceChanged() {
@@ -135,6 +172,10 @@ class StreamAudioProvider extends ChangeNotifier {
 
   bool get isFloatingPlayerVisible => _isFloatingPlayerVisible;
 
+  bool get isLoadingChannels => _isLoadingChannels;
+
+  bool get hasChannels => filteredChannels.isNotEmpty;
+
   void setDraggingState(bool isDragging) {
     debugPrint('StreamAudioProvider: setDraggingState called - old: $_isDragging, new: $isDragging');
     _isDragging = isDragging;
@@ -167,18 +208,49 @@ class StreamAudioProvider extends ChangeNotifier {
     }
   }
 
-  // Load channels data
+  // Load channels data with request deduplication
   Future<void> getChannels({bool forceRefresh = false}) async {
-    if (_channels.isEmpty || forceRefresh) {
-      try {
-        _channels = await ChannelsDataSource().getChannels();
-        filterChannels();
-        await _applySavedChannelOrder();
-        notifyListeners();
-        debugPrint('StreamAudioProvider: Loaded ${_channels.length} channels');
-      } catch (e) {
-        debugPrint('StreamAudioProvider: Failed to load channels: $e');
-      }
+    // If there's already a request in progress, wait for it
+    if (_currentChannelsRequest != null && !forceRefresh) {
+      debugPrint('StreamAudioProvider: Channels request already in progress, waiting...');
+      return _currentChannelsRequest!;
+    }
+
+    // If we already have channels and not forcing refresh, return early
+    if (_channels.isNotEmpty && !forceRefresh) {
+      debugPrint('StreamAudioProvider: Channels already loaded (${_channels.length} channels)');
+      return;
+    }
+
+    // Start new request
+    _currentChannelsRequest = _loadChannelsInternal(forceRefresh);
+
+    try {
+      await _currentChannelsRequest!;
+    } finally {
+      _currentChannelsRequest = null;
+    }
+  }
+
+  // Internal method to actually load channels
+  Future<void> _loadChannelsInternal(bool forceRefresh) async {
+    try {
+      debugPrint('StreamAudioProvider: Starting to load channels (forceRefresh: $forceRefresh)');
+      _isLoadingChannels = true;
+      notifyListeners();
+
+      _channels = await ChannelsDataSource().getChannels();
+      filterChannels();
+      await _applySavedChannelOrder();
+
+      _isLoadingChannels = false;
+      notifyListeners();
+      debugPrint('StreamAudioProvider: Successfully loaded ${_channels.length} channels');
+    } catch (e) {
+      _isLoadingChannels = false;
+      notifyListeners();
+      debugPrint('StreamAudioProvider: Failed to load channels: $e');
+      rethrow; // Re-throw to let callers handle the error
     }
   }
 
@@ -459,6 +531,37 @@ class StreamAudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Handle app lifecycle changes
+  void handleAppLifecycleChange(AppLifecycleState state) {
+    debugPrint('StreamAudioProvider: App lifecycle changed to $state');
+
+    switch (state) {
+      case AppLifecycleState.resumed:
+        // App came back to foreground - check if audio should be playing
+        if (_selectedChannel != null && !_isExited) {
+          // Give a small delay to allow system to settle
+          Future.delayed(const Duration(milliseconds: 500), () {
+            _audioService.monitorAndRecover();
+          });
+        }
+        break;
+      case AppLifecycleState.paused:
+        // App went to background - audio should continue playing
+        // No action needed as we want background playback
+        break;
+      case AppLifecycleState.inactive:
+        // App is inactive (e.g., during phone call)
+        // Audio will be automatically paused by system
+        break;
+      case AppLifecycleState.detached:
+        // App is detached - prepare for termination
+        break;
+      case AppLifecycleState.hidden:
+        // App is hidden
+        break;
+    }
+  }
+
   // Reset method - now properly handles reinitialization
   Future<void> reset() async {
     debugPrint('StreamAudioProvider: Resetting provider');
@@ -493,6 +596,12 @@ class StreamAudioProvider extends ChangeNotifier {
   void dispose() {
     // Cancel the contextual message timer if active
     _contextualMessageTimer?.cancel();
+
+    // Cancel background monitoring
+    _backgroundMonitorTimer?.cancel();
+
+    // Clear any pending channels request
+    _currentChannelsRequest = null;
 
     _audioService
       ..removeListener(_onAudioServiceChanged)

@@ -115,27 +115,27 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       ),
       child: !programUrl.contains('svg')
           ? ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                programUrl,
+                fit: BoxFit.fitWidth,
+                errorBuilder: (_, __, ___) => Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Assets.icons.svg.icMbcMood.svg(
+                    colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                  ),
+                ),
+              ),
+            )
+          : SvgPicture.network(
               programUrl,
-              fit: BoxFit.fitWidth,
-              errorBuilder: (_, __, ___) => Padding(
+              placeholderBuilder: (_) => Padding(
                 padding: const EdgeInsets.all(4),
                 child: Assets.icons.svg.icMbcMood.svg(
                   colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
                 ),
               ),
             ),
-          )
-          : SvgPicture.network(
-            programUrl,
-            placeholderBuilder: (_) => Padding(
-              padding: const EdgeInsets.all(4),
-              child: Assets.icons.svg.icMbcMood.svg(
-                colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
-              ),
-            ),
-          ),
     );
   }
 
@@ -264,8 +264,8 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
   }
 
   Widget _buildPlayPauseIcon(StreamAudioProvider provider) {
-    // Remove keys entirely to avoid conflicts - AnimatedSwitcher can work without them
-    // The widget type difference (SizedBox vs SvgPicture) is enough for Flutter to distinguish them
+    // Ensure UI reflects actual audio state, not just the playing flag
+    // This handles cases where audio is interrupted by phone calls, etc.
 
     if (provider.isLoading) {
       return SizedBox(
@@ -280,8 +280,12 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
       );
     }
 
+    // Show play icon if not playing OR if there's an error
+    // This ensures the UI correctly reflects when audio is paused by external factors
+    final shouldShowPlayIcon = !provider.isPlaying || provider.hasError;
+
     return SvgPicture.asset(
-      provider.isPlaying ? Assets.icons.svg.audio.pause.keyName : Assets.icons.svg.audio.resume.keyName,
+      shouldShowPlayIcon ? Assets.icons.svg.audio.resume.keyName : Assets.icons.svg.audio.pause.keyName,
       width: 20,
       height: 20,
       colorFilter: const ColorFilter.mode(
