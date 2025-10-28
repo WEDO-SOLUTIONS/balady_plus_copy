@@ -74,7 +74,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
         if (mounted) {
           setState(() => _showRemovalZone = false);
         }
-        _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+        _autoCloseTimer = Timer(const Duration(seconds: 8), () {
           if (mounted && _landscapeSheetWidth > 0) {
             setState(() => _landscapeSheetWidth = 0.0);
           }
@@ -98,7 +98,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
           if (mounted) {
             setState(() => _showRemovalZone = false);
           }
-          _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+          _autoCloseTimer = Timer(const Duration(seconds: 8), () {
             if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
               _sheetController.animateTo(
                 _minChildSize,
@@ -358,12 +358,8 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   border: sheetFromLeft
-                      ? const Border(
-                          right: BorderSide(color: Colors.white24, width: 1),
-                        )
-                      : const Border(
-                          left: BorderSide(color: Colors.white24, width: 1),
-                        ),
+                      ? const Border(right: BorderSide(color: Colors.white24))
+                      : const Border(left: BorderSide(color: Colors.white24)),
                 ),
                 child: _buildLandscapeSheetContent(provider),
               ),
@@ -430,7 +426,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                 needReset: () {
                   //reset the timer
                   _autoCloseTimer?.cancel();
-                  _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+                  _autoCloseTimer = Timer(const Duration(seconds: 8), () {
                     if (mounted && _landscapeSheetWidth > 0) {
                       setState(() => _landscapeSheetWidth = 0.0);
                     }
@@ -498,7 +494,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   needReset: () {
                     //reset the timer
                     _autoCloseTimer?.cancel();
-                    _autoCloseTimer = Timer(const Duration(seconds: 80), () {
+                    _autoCloseTimer = Timer(const Duration(seconds: 8), () {
                       if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
                         _sheetController.animateTo(
                           _minChildSize,
@@ -556,7 +552,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                   right: 0,
                   child: Center(
                     child: Container(
-                      width: 226,
+                      width: 240,
                       height: 40,
                       padding: const EdgeInsets.only(top: 8, left: 8, right: 16, bottom: 8),
                       decoration: ShapeDecoration(
@@ -570,9 +566,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Icon(Icons.close, color: Colors.white.withOpacity(0.80), size: 22),
-                          const Text(
-                            'Drag here to exit audio player',
-                            style: TextStyle(
+                          Text(
+                            Directionality.of(context) == TextDirection.rtl ? 'اسحب هنا للخروج من مشغل الصوت' : 'Drag here to exit audio player',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,
                               fontWeight: FontWeight.w500,

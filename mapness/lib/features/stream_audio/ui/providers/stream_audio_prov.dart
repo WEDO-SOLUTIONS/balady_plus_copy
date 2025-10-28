@@ -416,24 +416,28 @@ class StreamAudioProvider extends ChangeNotifier {
     return currentIndex >= 0 && currentIndex < filteredChannels.length - 1;
   }
 
-  Future<void> goToPreviousChannel() async {
+  void goToPreviousChannel() {
     if (!canGoToPreviousChannel) {
       return;
     }
-    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
-    if (currentIndex > 0) {
-      await selectChannel(filteredChannels[currentIndex - 1]);
-    }
+    Future.delayed(Duration(milliseconds: isLoading ? 10000 : 10)).then((value) async {
+      final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+      if (currentIndex > 0) {
+        await selectChannel(filteredChannels[currentIndex - 1]);
+      }
+    });
   }
 
-  Future<void> goToNextChannel() async {
+  void goToNextChannel() {
     if (!canGoToNextChannel) {
       return;
     }
-    final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
-    if (currentIndex >= 0 && currentIndex < filteredChannels.length - 1) {
-      await selectChannel(filteredChannels[currentIndex + 1]);
-    }
+    Future.delayed(Duration(milliseconds: isLoading ? 10000 : 10)).then((value) async {
+      final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+      if (currentIndex >= 0 && currentIndex < filteredChannels.length - 1) {
+        await selectChannel(filteredChannels[currentIndex + 1]);
+      }
+    });
   }
 
   // Exit and cleanup

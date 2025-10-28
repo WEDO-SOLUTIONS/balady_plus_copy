@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
@@ -14,7 +12,6 @@ import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
-import 'package:balady_plus/app/core/utils/dialog_on_web_view/native_overlay_controller.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
@@ -30,7 +27,6 @@ class MiniAppsMainScreen extends ConsumerStatefulWidget {
 class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   late MiniAppModel data;
   bool showTooltip = true;
-  bool _webViewDialogActive = false;
 
   @override
   void initState() {
@@ -40,57 +36,6 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(streamAudioProvider).setFloatingPlayerVisibility(false);
     });
-
-    // Listen to dragging state changes on iOS
-    if (Platform.isIOS) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        print('DEBUG: Setting up listener for dragging state');
-        ref.listen<StreamAudioProvider>(streamAudioProvider, (previous, next) {
-          print('DEBUG: Dragging state changed - Previous: ${previous?.isDragging}, Next: ${next.isDragging}');
-          if (previous?.isDragging != next.isDragging) {
-            if (next.isDragging && !_webViewDialogActive) {
-              print('DEBUG: Showing WebView protection dialog');
-              _showWebViewProtectionDialog();
-            } else if (!next.isDragging && _webViewDialogActive) {
-              print('DEBUG: Hiding WebView protection dialog');
-              _hideWebViewProtectionDialog();
-            }
-          }
-        });
-      });
-    }
-  }
-
-  Future<void> _showWebViewProtectionDialog() async {
-    if (_webViewDialogActive) return;
-
-    _webViewDialogActive = true;
-
-    await ShowDialogOnWebView.showAlertDialog<void>(
-      context: context,
-      title: const Text('Player Controls'),
-      content: const Text('You can now drag the player safely.'),
-      actions: (context) => [
-        TextButton(
-          onPressed: () {
-            _webViewDialogActive = false;
-            Navigator.of(context).pop();
-            // Also stop dragging state in provider
-            ref.read(streamAudioProvider).setDraggingState(false);
-          },
-          child: const Text('Done'),
-        ),
-      ],
-    );
-
-    _webViewDialogActive = false;
-  }
-
-  void _hideWebViewProtectionDialog() {
-    if (_webViewDialogActive && Navigator.of(context).canPop()) {
-      _webViewDialogActive = false;
-      Navigator.of(context).pop();
-    }
   }
 
   Future<bool> _showExitConfirmationDialog() async {
@@ -132,114 +77,9 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
     }
   }
 
-  // void _openAudioPlayerBottomSheet() {
-  //   final provider = ref.read(streamAudioProvider);
-  //   if (provider.selectedChannel == null) {
-  //     debugPrint('MiniApp: No selected channel, cannot open bottom sheet');
-  //     return;
-  //   }
-
-  //   debugPrint('MiniApp: Opening audio player bottom sheet');
-
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     backgroundColor: Colors.transparent,
-  //     builder: (context) => DraggableScrollableSheet(
-  //       initialChildSize: 0.34,
-  //       minChildSize: 0.0,
-  //       maxChildSize: 0.34,
-  //       builder: (context, scrollController) => Container(
-  //         decoration: const BoxDecoration(
-  //           color: Colors.black,
-  //           borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-  //         ),
-  //         child: SingleChildScrollView(
-  //           controller: scrollController,
-  //           padding: const EdgeInsets.all(0),
-  //           physics: const ClampingScrollPhysics(),
-  //           child: Column(
-  //             children: [
-  //               Container(
-  //                 width: 40,
-  //                 height: 3,
-  //                 margin: const EdgeInsets.symmetric(vertical: 16),
-  //                 decoration: BoxDecoration(
-  //                   color: Colors.grey,
-  //                   borderRadius: BorderRadius.circular(36),
-  //                 ),
-  //               ),
-  //               const SizedBox(height: 8),
-  //               const PlayingAudioTile(instanceId: 'mini_app_sheet'),
-  //               Consumer(
-  //                 builder: (context, ref, child) {
-  //                   final provider = ref.watch(streamAudioProvider);
-  //                   if (provider.hasError) {
-  //                     return Column(
-  //                       children: [
-  //                         const SizedBox(height: 16),
-  //                         Container(
-  //                           margin: const EdgeInsets.symmetric(horizontal: 16),
-  //                           padding: const EdgeInsets.all(12),
-  //                           decoration: BoxDecoration(
-  //                             color: Colors.red.withOpacity(0.1),
-  //                             border: Border.all(color: Colors.red.withOpacity(0.3)),
-  //                             borderRadius: BorderRadius.circular(8),
-  //                           ),
-  //                           child: Row(
-  //                             children: [
-  //                               const Icon(Icons.error_outline, color: Colors.red, size: 20),
-  //                               const SizedBox(width: 8),
-  //                               Expanded(
-  //                                 child: Text(
-  //                                   'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
-  //                                   style: const TextStyle(
-  //                                     color: Colors.red,
-  //                                     fontSize: 12,
-  //                                   ),
-  //                                 ),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     );
-  //                   }
-  //                   return const SizedBox.shrink();
-  //                 },
-  //               ),
-  //               const SizedBox(height: 8),
-  //               const MediaCatalogList(),
-  //               const SizedBox(height: 32),
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
-
-    // Listen to dragging state changes on iOS (alternative approach)
-    if (Platform.isIOS) {
-      ref.listen<StreamAudioProvider>(streamAudioProvider, (previous, next) {
-        print('DEBUG: Build method listener - Previous: ${previous?.isDragging}, Next: ${next.isDragging}');
-        if (previous?.isDragging != next.isDragging) {
-          if (next.isDragging && !_webViewDialogActive) {
-            print('DEBUG: Build method - Showing WebView protection dialog');
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _showWebViewProtectionDialog();
-            });
-          } else if (!next.isDragging && _webViewDialogActive) {
-            print('DEBUG: Build method - Hiding WebView protection dialog');
-            _hideWebViewProtectionDialog();
-          }
-        }
-      });
-    }
 
     // HomeMiniAppsListState state = context.read<HomeMiniAppsListCubit>().state;
     return BlocProvider<MiniAppsEngineBloc>(
@@ -375,8 +215,13 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   @override
   void dispose() {
     // Show floating player when mini app is closed
-    ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
-    NativeOverlayController.hideOverlay();
+    if (mounted) {
+      try {
+        ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+      } catch (e) {
+        // Ignore errors if ref is no longer available
+      }
+    }
     super.dispose();
   }
 }
