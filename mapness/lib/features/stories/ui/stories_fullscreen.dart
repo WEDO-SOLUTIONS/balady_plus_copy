@@ -168,6 +168,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
                       videoUrls: stories[index].videos.map((e) => e.url).toList(),
                       onNextStory: _nextStory,
                       onPreviousStory: _previousStory,
+                      storyId: stories[index].storyId,
                     )
                   : StoryFramesPlayer(
                       controller: _storyFrameController,

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/routing/providers/routes_update_tab.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/routing/ui/route_carusel_wrapper.dart';
@@ -41,25 +43,28 @@ class RoutesCarousel extends ConsumerWidget {
   final RouteParamsPointWithLabel? destination;
   final RouteParamsPointWithLabel? startPoint;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: Because public transport can't build navigation, we can improve experience
-    // for pedestrian routes that was found for public transport
-    // Add method that call [startNavigation] for the same pedestrian route (need to get data from pedestrian route tab)
     if (navType == RouteSearchOptionsMessage.publicTransport) {
-      if (publicTransportVisibility.isLoading || publicTransportRoutes.isLoading) {
-        return PathCardLoading(text: context.l10n.loading, currentType: navType);
+      final routes = publicTransportRoutes.asData?.valueOrNull;
+
+      if (publicTransportVisibility.error is NoInternetException) {
+        return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
+      } else if (publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
+        return PathCardFailure.nearestMetroTooFar(
+          refresh: () {
+            ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+          },
+          text: context.l10n.nearestMetroTooFar,
+          labelButton: context.l10n.goByCar,
+        );
       }
-      if (publicTransportVisibility.hasError || publicTransportRoutes.hasError) {
-        return PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound);
+
+      if (routes == null || routes.isEmpty || publicTransportVisibility.hasError) {
+        return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
       }
-      if (!publicTransportVisibility.value!.isPublicTransportAvailable) {
-        return PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound);
-      }
-      final routes = publicTransportRoutes.value;
-      if (routes == null || routes.isEmpty) {
-        return PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound);
-      }
+
       final shortest = shortestIsOnlyOnePublicTransport(routes);
 
       return RouteCarouselWrapper(
@@ -114,14 +119,14 @@ class RoutesCarousel extends ConsumerWidget {
             return Padding(
               padding: padding(index: index, length: routes.length),
               child: PathCard(
-                distance: distanceInMeters.formatDistance(context.l10n),
+                distance: distanceInMeters.formatDistanceShort(context.l10n),
                 isPedestrian: navType == RouteSearchOptionsMessage.pedestrian,
                 localizations: PathCardLocalization(
                   calories: context.l10n.calories,
                   steps: context.l10n.steps,
                   go: context.l10n.go,
                 ),
-                duration: durationInSeconds.formatDuration(context.l10n),
+                duration: durationInSeconds.formatDurationShort(context.l10n),
                 steps: steps,
                 calories: calories,
                 onStartTap: () => startNavigation(route),
@@ -133,7 +138,21 @@ class RoutesCarousel extends ConsumerWidget {
           },
         );
       },
-      error: (_, __) => PathCardFailure(refresh: refresh, text: context.l10n.routeNotFound),
+      error: (error, __) {
+        if (error is NoInternetException) {
+          return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
+        } else if (error is WalkingDistanceException) {
+          return PathCardFailure.walkingDistance(
+            refresh: () {
+              ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+            },
+            text: context.l10n.walkingDistanceTooLong,
+            labelButton: context.l10n.goByCar,
+          );
+        }
+
+        return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
+      },
       loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
       skipLoadingOnRefresh: false,
       skipLoadingOnReload: false,

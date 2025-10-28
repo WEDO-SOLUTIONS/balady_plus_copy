@@ -46,7 +46,7 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
         }
         
         let map = mapFactory.map
-        let dgisCarPlayMapView = DgisCarPlayMapView(map: map, mapView: mapFactory.mapView)
+        let dgisCarPlayMapView = DgisCarPlayMapView(map: map, mapView: mapFactory.mapView, cpWindow: window)
         let mainScreen = MainScreen(
             map: map,
             container: sdk,
@@ -88,6 +88,10 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
     
     static func toggleSounds(toggleType: SoundToggleType) {
         self.mainScreen?.toggleSounds(toggleType: toggleType)
+    }
+    
+    static func onAuthorizationChanged(isAuthorized: Bool) {
+        self.mainScreen?.onAuthorizationChanged(isAuthorized: isAuthorized)
     }
 }
 

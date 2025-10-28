@@ -116,11 +116,8 @@ class Helpers {
       bool isHuawei = await CommonFunctions.isHuaweiDevice();
       if (isHuawei) {
         final latLng = await CommonFunctions.getCurrentLocationHuawei();
-        debugPrint(
-            'amr from getCurrentLocation with huawei location ${latLng?.latitude}, ${latLng?.longitude}');
         return latLng;
       }
-      debugPrint('amr from  getCurrentLocation but with geo locator');
       //  EasyLoading.show();
       geo_locator.Position position =
           await geo_locator.Geolocator.getCurrentPosition(

@@ -112,10 +112,11 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       // may be mem overflow, but esimate as impossible
       ..keepAliveForAWhile();
 
-    context.router.replace(
+    context.router.pushAndPopUntil(
       FeedbackSentRoute(
         payloadId: payloadId,
       ),
+      predicate: (route) => route.settings.name == BottomMenuRoute.name,
     );
   }
 

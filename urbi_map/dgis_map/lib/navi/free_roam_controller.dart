@@ -13,7 +13,7 @@ class NaviFreeRoamController {
   final Stream<NavigationEvent> events;
 
   ///Starts free roam navigator mode
-  Future<void> Function(SpeedRangeZoom speedRangeZoom) start;
+  Future<void> Function(List<SpeedRangeZoom> speedRangeZoom) start;
 
   ///Stops free roam navigator mode
   Future<void> Function() stop;

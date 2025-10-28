@@ -189,7 +189,7 @@ class NavigationHandler {
         self.maneuverControlModel.cancel()
     }
     
-    func setupCamera(speedRangeZoom: SpeedRangeZoom) {
+    func setupCamera(speedRangeZoom: [SpeedRangeZoom]) {
         setupCamera(map: self.map, speedRangeZoom: speedRangeZoom)
 
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
@@ -199,7 +199,7 @@ class NavigationHandler {
     
     func setupCamera(
         map: Map,
-        speedRangeZoom: SpeedRangeZoom
+        speedRangeZoom: [SpeedRangeZoom]
     ) {
         map.graphicsPreset = .immersive
         
@@ -209,14 +209,12 @@ class NavigationHandler {
         )
         
         startFollowNavigation()
-        self.navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = [
-            SpeedRangeToStyleZoom(
-                range: SpeedRange(minSpeed: Double(truncating: speedRangeZoom.minSpeedRange as NSNumber), maxSpeed: speedRangeZoom.maxSpeedRange),
-                minDistanceToManeuver: RouteDistance(millimeters: Int64(speedRangeZoom.routeDistanceMillimeters)),
-                maxDistanceToManeuver: RouteDistance(millimeters: Int64(speedRangeZoom.routeDistanceMillimeters)),
-                styleZoom: StyleZoom(value: Float(speedRangeZoom.styleZoomValue))
-            ),
-        ]
+        self.navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = speedRangeZoom.map({ SpeedRangeToStyleZoom(
+            range: SpeedRange(minSpeed: Double(truncating: $0.minSpeedRange as NSNumber), maxSpeed: $0.maxSpeedRange),
+            minDistanceToManeuver: RouteDistance(millimeters: Int64($0.routeDistanceMillimeters)),
+            maxDistanceToManeuver: RouteDistance(millimeters: Int64($0.routeDistanceMillimeters)),
+            styleZoom: StyleZoom(value: Float($0.styleZoomValue))
+        )})
     }
     
     func resetCamera() {
@@ -265,7 +263,7 @@ class NavigationHandler {
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
-        speedRangeZoom: SpeedRangeZoom,
+        speedRangeZoom: [SpeedRangeZoom],
         completion: @escaping (Result<Void, any Error>) -> Void
     ) {
         guard let finishPoint = finishPoint, let options = options, let route = route else {
@@ -342,7 +340,7 @@ class NavigationHandler {
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
-        speedRangeZoom: SpeedRangeZoom,
+        speedRangeZoom: [SpeedRangeZoom],
         completion: @escaping (Result<Void, any Error>) -> Void
     ) {
         guard let finishPoint = finishPoint, let options = options, let route = route else {
@@ -399,7 +397,7 @@ class NavigationHandler {
     
     func restoreNavigationState(
         state bytes: FlutterStandardTypedData,
-        speedRangeZoom: SpeedRangeZoom,
+        speedRangeZoom: [SpeedRangeZoom],
         completion: @escaping (Result<Void, any Error>) -> Void
     ) {
         do {
@@ -439,7 +437,7 @@ class NavigationHandler {
         )
     }
 
-    func startFreeRoam(speedRangeZoom: SpeedRangeZoom, completion: (Result<Void, any Error>) -> Void) {
+    func startFreeRoam(speedRangeZoom: [SpeedRangeZoom], completion: (Result<Void, any Error>) -> Void) {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             try self.navigationManager.start()

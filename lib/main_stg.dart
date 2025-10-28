@@ -43,8 +43,9 @@ void main() async {
           options.enableFramesTracking = true;
           options.captureFailedRequests = true;
           options.environment = EnvType.stg.name;
-          options.replay.onErrorSampleRate = 1.0;
-          options.replay.sessionSampleRate = 1.0;
+          // Note: replay feature is not available in sentry_flutter 8.14.2
+          // options.replay.onErrorSampleRate = 1.0;
+          // options.replay.sessionSampleRate = 1.0;
 
           // Screenshots and Attachments
           options.attachScreenshot = true;

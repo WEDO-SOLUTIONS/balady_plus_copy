@@ -3,33 +3,20 @@ part of 'toast_overlay.dart';
 class _ToastWidget extends ConsumerWidget {
   final String title;
   final TextStyle? titleStyle;
-  final String? firstText;
-  final String? secondText;
-  final String? iconAsset;
-  final IconData? iconData;
-  final Color? iconColor;
+  final List<ToastAction> actions;
+  final ToastIcon? icon;
   final bool isFlipped;
-
-  final VoidCallback? onFirstTap;
-  final VoidCallback? onSecondTap;
 
   const _ToastWidget({
     required this.title,
+    required this.actions,
     this.titleStyle,
-    this.secondText,
-    this.firstText,
-    this.onFirstTap,
-    this.onSecondTap,
-    this.iconData,
-    this.iconColor,
-    this.iconAsset,
     this.isFlipped = false,
+    this.icon,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasFirstAction = firstText != null;
-    final hasSecondAction = secondText != null;
     final children = [
       Expanded(
         child: LayoutBuilder(
@@ -51,51 +38,37 @@ class _ToastWidget extends ConsumerWidget {
                         ),
                       ),
                       const SizedBox(width: Spacing.$2x),
-                      if (iconData != null)
-                        Icon(
-                          iconData,
-                          color: iconColor ?? context.colors.foregroundDefault,
-                        )
-                      else if (iconAsset != null)
-                        SvgPicture.asset(iconAsset!),
+                      switch (icon) {
+                        ToastIconAsset() => SvgPicture.asset((icon as ToastIconAsset).asset),
+                        ToastIconData() => Icon((icon as ToastIconData).data,
+                            color: (icon as ToastIconData).color ?? context.colors.foregroundDefault),
+                        null => const SizedBox.shrink(),
+                      },
                     ],
                   ),
                   Row(
-                    children: [
-                      if (hasFirstAction)
-                        GestureDetector(
-                          onTap: onFirstTap,
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.only(
-                              top: Spacing.$3x,
-                              bottom: Spacing.$3x,
-                            ),
-                            child: Text(
-                              firstText!,
-                              style: context.textStyles.bodySmallSemiBold.copyWith(
-                                color: context.colors.accentDefault,
+                    children: actions
+                        .mapIndexed<Widget>(
+                          (index, action) => CupertinoButton(
+                            onPressed: action.onTap,
+                            padding: EdgeInsets.zero,
+                            minSize: 0,
+                            child: Padding(
+                              padding: EdgeInsetsDirectional.only(
+                                top: Spacing.$3x,
+                                bottom: Spacing.$3x,
+                                start: index != 0 ? Spacing.$4x : 0,
+                              ),
+                              child: Text(
+                                action.title,
+                                style: context.textStyles.bodySmallSemiBold.copyWith(
+                                  color: context.colors.accentDefault,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      if (hasSecondAction)
-                        GestureDetector(
-                          onTap: onSecondTap,
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.only(
-                              top: Spacing.$3x,
-                              bottom: Spacing.$3x,
-                              start: Spacing.$4x,
-                            ),
-                            child: Text(
-                              secondText!,
-                              style: context.textStyles.bodySmallSemiBold.copyWith(
-                                color: context.colors.accentDefault,
-                              ),
-                            ),
-                          ),
-                        ),
-                    ],
+                        )
+                        .toList(),
                   ),
                 ],
               ),
@@ -112,23 +85,12 @@ class _ToastWidget extends ConsumerWidget {
           left: Spacing.$4x,
           right: Spacing.$4x,
           top: Spacing.$3x + Spacing.$0_5x,
-          bottom: hasFirstAction || hasSecondAction ? 0.0 : Spacing.$3x + Spacing.$0_5x,
+          bottom: actions.isNotEmpty ? 0.0 : Spacing.$3x + Spacing.$0_5x,
         ),
         decoration: BoxDecoration(
           color: context.colors.backgroundSurface1,
           borderRadius: BorderRadius.circular(RadiusBorder.l),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x11000000),
-              blurRadius: 56,
-              offset: Offset(18, 0),
-            ),
-            BoxShadow(
-              color: Color(0x0B000000),
-              blurRadius: 20,
-              offset: Offset(18, 0),
-            ),
-          ],
+          boxShadow: Shadows.m,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

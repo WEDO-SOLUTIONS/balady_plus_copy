@@ -109,8 +109,9 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
       context.router.popUntilRouteWithName(BottomMenuRoute.name);
     }
 
-    ToastOverlay.of(context)
-        .show(title: context.l10n.activateAutostartNavigator, iconAsset: Assets.icons.svg.icActionsContainer.keyName);
+    ToastOverlay.of(context).show(
+        title: context.l10n.activateAutostartNavigator,
+        icon: ToastIconAsset(Assets.icons.svg.icActionsContainer.keyName));
   }
 
   void continueAutorun() {

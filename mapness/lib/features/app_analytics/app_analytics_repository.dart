@@ -4,17 +4,32 @@ abstract interface class AppAnalyticsRepository {
   void onboardingFlowSkipped();
 
   void onboardingFlowCompleted();
+  void navigationSearch(
+      {required String destinationCity,
+      required String keyword,
+      required String originCity,
+      required bool isResultsFound,
+      required int resultCount});
 
   void navigationStarted({
     required String originLocation,
     required String destinationLocation,
+    required String destinationCity,
+    required String originCity,
     required int estimateTime,
     required double estimateDistance,
+  });
+
+  void userMovementDetected({
+    required String destinationCity,
+    required String originCity,
   });
 
   void navigationHalfWay({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
     required String midPoint,
   });
@@ -22,6 +37,8 @@ abstract interface class AppAnalyticsRepository {
   void navigationCompleted({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
   });
 
@@ -38,4 +55,12 @@ abstract interface class AppAnalyticsRepository {
   void serviceSectionVisited();
 
   void quickActionSelected(String action);
+
+  void carPlayConnected();
+
+  Future<void> deviceTypeDetected();
+
+  void networkConnectionType({required String type});
+
+  void transportModeSelected({required String type});
 }

@@ -50,7 +50,7 @@ void main() {
 
       test('THEN monday to sunday(every day) working 00:00-24:00', () {
         for (int day = DateTime.monday; day <= DateTime.sunday; day++) {
-          final opening = Duration(days: DateTime.monday, hours: 0);
+          final opening = Duration(days: day, hours: 0);
           expect(workingHours.map.containsKey(opening), isTrue);
           expect(workingHours.map[opening], Duration(hours: 24));
         }

@@ -18,6 +18,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
@@ -34,6 +35,7 @@ import 'package:mapness/pages/path_nav/path_nav_wrapper.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -194,12 +196,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       await dgisController.restoreNavigationState(
         state,
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
+        NavigationConstants.navigationSpeedRangeZooms,
       );
     } catch (e) {
       await clearNavigationState();
@@ -220,12 +217,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       await restoreNavigationState();
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
       await dgisController.startNavigation(
-        SpeedRangeZoom(
-          maxSpeedRange: 5,
-          minSpeedRange: 0,
-          routeDistanceMillimeters: 0,
-          styleZoomValue: 16.5,
-        ),
+        NavigationConstants.navigationSpeedRangeZooms,
       );
       await _moveCameraToUser();
       await saveNavigationState();
@@ -454,9 +446,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final route = ref.read(etaRouteInfoProvider);
     final pathInfo = ref.read(pathNavEtaProvider);
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final location = ref.read(cityByLocationProvider.notifier);
+    final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
+    final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
+
     ref.read(appAnalyticsProvider).navigationCompleted(
           origin: route.startPoint?.analyticsLabel ?? '',
           destination: route.endPoint?.analyticsLabel ?? '',
+          originCity: originCity.name,
+          destinationCity: destinationCity.name,
           spentTime: pathInfo?.spentTime ?? Duration.zero,
         );
     await _stopActiveSharing();
@@ -556,24 +554,30 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
     final position = ref.read(locationProvider);
 
-    ToastOverlay.of(context).show(
-      title: ctx.l10n.youWantSaveParking,
-      firstText: ctx.l10n.feedbackBreaksSheetClose,
-      secondText: ctx.l10n.save,
-      iconAsset: Assets.icons.svg.icParkingSpot.keyName,
-      onSecondTap: () {
-        rootNavigatorKey.currentContext?.router.push(
-          ParkingSpotRoute(
-            isEdit: !parkingManage,
-            markerPosition: GeoPointWithElevationMessage(
-              latitude: position?.latitude ?? 0,
-              longitude: position?.longitude ?? 0,
-              elevation: 1,
-            ),
+    if (widget.navType == RouteSearchOptionsMessage.car) {
+      ToastOverlay.of(context).show(
+        title: ctx.l10n.youWantSaveParking,
+        actions: [
+          ToastAction(title: ctx.l10n.feedbackBreaksSheetClose),
+          ToastAction(
+            title: ctx.l10n.save,
+            onTap: () {
+              rootNavigatorKey.currentContext?.router.push(
+                ParkingSpotRoute(
+                  isEdit: !parkingManage,
+                  markerPosition: GeoPointWithElevationMessage(
+                    latitude: position?.latitude ?? 0,
+                    longitude: position?.longitude ?? 0,
+                    elevation: 1,
+                  ),
+                ),
+              );
+            },
           ),
-        );
-      },
-    );
+        ],
+        icon: ToastIconAsset(Assets.icons.svg.icParkingSpot.keyName),
+      );
+    }
 
     if (!mounted) {
       return;

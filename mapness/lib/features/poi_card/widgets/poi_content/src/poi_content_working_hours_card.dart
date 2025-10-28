@@ -1,32 +1,51 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
+import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/search/ui/working_hours.dart';
+import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 
 class PoiContentWorkingHoursCard extends StatelessWidget {
-  final PoiContentWorkTimeModel? data;
+  final WorkingHours workingHours;
+  final WorkStatusMessage? workStatusMessage;
 
   const PoiContentWorkingHoursCard({
-    required this.data,
+    required this.workingHours,
+    this.workStatusMessage,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final data = this.data;
-    if (data == null) {
-      return const SizedBox.shrink();
+    final l10n = context.l10n;
+
+    String formatOpenClose(Iterable<Hours> hours) =>
+        hours.isNotEmpty ? '${hours.first.from.formatHHmm}-${hours.last.till.formatHHmm}' : '';
+
+    String formatBreaks(Iterable<Hours> breakHours) =>
+        breakHours.map((b) => '${b.from.formatHHmm}-${b.till.formatHHmm}').join(',');
+
+    String todayWorkingHours() {
+      final hours = workingHours.isOpen24x7
+          ? l10n.twentyFourSeven
+          : formatOpenClose(workingHours.todayHours(DateTime.now().weekday));
+      final todayOrDaily = workingHours.isSameEveryDay ? l10n.daily : l10n.today;
+      return '$todayOrDaily $hours';
     }
 
-    final workTimeDays = data.days?.map(
-      (e) => _WorkTimeItemWidget(
-        workTimeDay: e,
-        showDivider: data.days?.last != e,
-      ),
-    );
+    String? todayBreaks() {
+      final breaks = workingHours.todayBreaks(DateTime.now().weekday);
+      if (breaks.isNotEmpty) {
+        final hours = formatBreaks(breaks);
+        return l10n.breakHour(hours);
+      }
+      return null;
+    }
 
-    if (workTimeDays == null && data.additionalInfo == null) {
+    if (workingHours.isSameEveryDay) {
       return ContentWrapper(
         color: context.colors.backgroundSurface1,
         children: [
@@ -35,8 +54,8 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
               color: context.colors.accentDefault,
             ),
             text: ContentRowTextOptions(
-              title: data.workHours,
-              subtitle: data.breakHours,
+              title: todayWorkingHours(),
+              subtitle: todayBreaks(),
               subtitleOptions: ContentRowTextOption(
                 baseColor: context.colors.foregroundSoft,
               ),
@@ -45,6 +64,30 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
         ],
       );
     }
+
+    const weekDays = [
+      DateTime.sunday,
+      DateTime.monday,
+      DateTime.tuesday,
+      DateTime.wednesday,
+      DateTime.thursday,
+      DateTime.friday,
+      DateTime.saturday,
+    ];
+
+    final weekWorkingHoursWidgets = weekDays.map((weekday) {
+      final periods = workingHours.todayHours(weekday);
+      final workHours = periods.isEmpty ? l10n.weekend : formatOpenClose(periods);
+      final breakHours = formatBreaks(workingHours.todayBreaks(weekday));
+
+      return _WorkTimeItemWidget(
+        dayTitle: weekday.weekDayName(l10n).toCapitalized(),
+        workHours: workHours,
+        breakHours: breakHours.isNotEmpty ? breakHours : null,
+        showDivider: weekday != weekDays.last,
+      );
+    });
+
     return ContentWrapper(
       color: context.colors.backgroundSurface1,
       children: [
@@ -53,8 +96,8 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
           expandIconColor: context.colors.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
-            title: data.workHours,
-            subtitle: data.breakHours,
+            title: todayWorkingHours(),
+            subtitle: todayBreaks(),
             subtitleStyle: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
             leadingIcon: GeneralIcons.timeQuarter.icon(
               color: context.colors.accentDefault,
@@ -62,19 +105,20 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
           ),
           content: Column(
             children: <Widget>[
-              ...?workTimeDays,
-              ContentRow(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                leading: GeneralIcons.infoSquare.icon(
-                  color: context.colors.foregroundMuted,
+              ...weekWorkingHoursWidgets,
+              if (workStatusMessage != null)
+                ContentRow(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  leading: GeneralIcons.infoSquare.icon(
+                    color: context.colors.foregroundMuted,
+                  ),
+                  text: ContentRowTextOptions(
+                    title: context.l10n.extraInformation,
+                    titleOptions: const ContentRowTextOption(maxLines: 99),
+                    subtitle: workStatusMessage?.desc,
+                    subtitleOptions: const ContentRowTextOption(maxLines: 99),
+                  ),
                 ),
-                text: ContentRowTextOptions(
-                  title: context.l10n.extraInformation,
-                  titleOptions: const ContentRowTextOption(maxLines: 99),
-                  subtitle: data.additionalInfo,
-                  subtitleOptions: const ContentRowTextOption(maxLines: 99),
-                ),
-              ),
             ],
           ),
         ),
@@ -84,9 +128,13 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
 }
 
 class _WorkTimeItemWidget extends StatelessWidget {
-  final PoiContentWorkTimeDayModel workTimeDay;
+  final String dayTitle;
+  final String workHours;
+  final String? breakHours;
   final bool showDivider;
-  const _WorkTimeItemWidget({required this.workTimeDay, required this.showDivider});
+
+  const _WorkTimeItemWidget(
+      {required this.showDivider, required this.dayTitle, required this.workHours, this.breakHours});
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -106,15 +154,15 @@ class _WorkTimeItemWidget extends StatelessWidget {
                 children: [
                   TableRow(
                     children: [
-                      Text(workTimeDay.dayTitle, style: context.textStyles.bodyLargeRegular),
-                      Text(workTimeDay.workHours, style: context.textStyles.bodyLargeRegular),
+                      Text(dayTitle, style: context.textStyles.bodyLargeRegular),
+                      Text(workHours, style: context.textStyles.bodyLargeRegular),
                     ],
                   ),
-                  if (workTimeDay.breakHours != null)
+                  if (breakHours != null)
                     TableRow(children: [
                       const SizedBox(),
                       Text(
-                        workTimeDay.breakHours!,
+                        breakHours!,
                         style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                       ),
                     ]),

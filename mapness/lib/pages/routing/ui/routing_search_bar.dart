@@ -88,17 +88,17 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
               action: MetricAction.type.toString(),
               props: {'query': query},
             );
-            ref.read(bssServiceProvider.notifier).sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.action,
-                    actionType: BSSActionType.tap,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.searchStart,
-                      ownerName: BssUIElementNames.searchBar,
-                    ),
-                    payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
-                  ),
-                );
+            BssService.instance.sendEvent(
+              BssRequest(
+                eventType: BSSEventType.action,
+                actionType: BSSActionType.tap,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.searchStart,
+                  ownerName: BssUIElementNames.searchBar,
+                ),
+                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+              ),
+            );
             if (query.trim().isNotEmpty) {
               ref.read(searchProvider(scope.value).notifier).searchByText(query);
               ref.read(urbiAnalyticsProvider).track(

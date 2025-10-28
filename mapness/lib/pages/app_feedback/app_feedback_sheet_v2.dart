@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper_v2.dart';
-import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -22,9 +22,11 @@ import 'package:sheetify/sheetify.dart';
 @RoutePage()
 class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
   final int? rating;
+  final FeedbackSource source;
 
   const AppFeedbackSheetV2({
     required this.rating,
+    this.source = FeedbackSource.main,
     super.key,
   });
 
@@ -35,6 +37,7 @@ class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
 class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   late final ToggleSheetController scrollController = ToggleSheetController(
     onClose: (_) => context.router.popForced(),
+    heightModel: ToggleSheetHeightModel.fraction(.98),
   );
   final ValueNotifier<int> rating = ValueNotifier(0);
   Set<TagV2> selectedTags = Set.identity();
@@ -92,7 +95,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                   ),
                   const SizedBox(height: Spacing.$3x),
                   Text(
-                    context.l10n.shareFeedback,
+                    context.l10n.shareYourFeedback,
                     style: context.textStyles.h3SemiBold,
                   ),
                   const SizedBox(height: Spacing.$2x),
@@ -103,6 +106,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                       style: context.textStyles.bodySmallRegular.copyWith(
                         color: context.colors.foregroundSoft,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: Spacing.$8x),
@@ -136,7 +140,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                                   )
                                   .toList(),
                               text: feedbackText,
-                              source: FeedbackSourceProvider.of(context).source,
+                              source: widget.source,
                             );
                       },
                     ),
@@ -201,7 +205,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.rating > 3 ? context.l10n.appFeedbackRating5 : context.l10n.appFeedbackRating1,
+                widget.rating > 3 ? context.l10n.appFeedbackGoodRatingV2 : context.l10n.appFeedbackBadRatingV2,
                 style: context.textStyles.bodyLargeSemiBold,
               ),
               const SizedBox(height: Spacing.$5x),
@@ -250,11 +254,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                           ),
                       ],
                     ),
-                    if (index != tags.length - 1)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: Spacing.$4x),
-                        child: Divider(),
-                      ),
+                    if (index != tags.length - 1) const Divider(height: Spacing.$8x),
                   ],
                 ),
               const SizedBox(height: Spacing.$5x),

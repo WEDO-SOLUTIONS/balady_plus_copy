@@ -273,7 +273,7 @@ class CommonFunctions {
       try {
         await locationService.checkLocationSettings(settings);
       } catch (e) {
-        debugPrint('amr catch ${e.toString()}');
+        debugPrint('catch ${e.toString()}');
       }
 
       final location = await locationService.getLastLocation();
