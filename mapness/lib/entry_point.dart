@@ -178,11 +178,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then(
-          (RemoteMessage? message) {
+      (RemoteMessage? message) {
         if (message != null && message.data.containsKey('url')) {
-            final url = message.data['url'];
-            openAppLink(url);
-            return;
+          final url = message.data['url'];
+          openAppLink(url);
+          return;
         }
       },
     );
@@ -409,43 +409,36 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-
   // implement insider deep link for ios
 
   Future initInsider() async {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
-    await FlutterInsider.Instance.init(
-        "baladyapp", "group.movingViolations",
-            (int type, dynamic data) {
-          switch (type) {
-            case InsiderCallbackAction.NOTIFICATION_OPEN:
-             // if(Platform.isIOS) {
-                if (data != null && data.containsKey('url')) {
-                  final url = Uri.parse(data['url']);
-                  openAppLink(url);
-                  return;
-                }
-
-            //  }
-              break;
-            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
-              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
-              break;
-            default:
-              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
-              break;
+    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations", (int type, dynamic data) {
+      switch (type) {
+        case InsiderCallbackAction.NOTIFICATION_OPEN:
+          // if(Platform.isIOS) {
+          if (data != null && data.containsKey('url')) {
+            final url = Uri.parse(data['url']);
+            openAppLink(url);
+            return;
           }
-        });
+
+          //  }
+          break;
+        case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          break;
+        default:
+          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          break;
+      }
+    });
 
     // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
     await FlutterInsider.Instance.setActiveForegroundPushView();
     await FlutterInsider.Instance.registerWithQuietPermission(false);
-
   }
-
-
-
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
@@ -461,7 +454,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
     final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
-    final serviceKey = url.path;//queryParameters[BaldayDeeplink.serviceKey];
+    final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
 
@@ -515,24 +508,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (homeWidget != null) {
       await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty&& serviceKey !='/poi-map' && serviceKey.startsWith('/app')) {
-      MiniAppModel app= MiniAppModel();
+    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
+      MiniAppModel app = MiniAppModel();
       var subPath;
-      if(dtId!= null && path!= null)
-      {
+      if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
-      }
-      else if(path!= null)
-      {
+      } else if (path != null) {
         subPath = '#$path';
       }
 
-      app=app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''),path: subPath);
+      app = app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''), path: subPath);
 
       CommonFunctions.openMiniApp(app);
-    }
-
-    else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -610,21 +598,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path:  "#Quran_Show_All_Surahs_Page",
+      path: "#Quran_Show_All_Surahs_Page",
     );
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path:  "#Athkar_Page",
+      path: "#Athkar_Page",
     );
   }
 
@@ -794,7 +782,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   void _myLocationDeepLinkHandler(double latitude, double longitude) {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
-    ref.watch(appRouterProvider).push(DeeplinkRoute(closestPoint: latLng, cameraConfig: const PoiCameraConfig(zoom: 17)));
+    ref
+        .watch(appRouterProvider)
+        .push(DeeplinkRoute(closestPoint: latLng, cameraConfig: const PoiCameraConfig(zoom: 17)));
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
