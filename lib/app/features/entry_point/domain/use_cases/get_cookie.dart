@@ -9,14 +9,23 @@ import '../../../../core/utils/constants/remote_config.dart';
 import '../../entry_point_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-class GetCookie extends UseCase<String, NoParams> {
+class GetCookie extends UseCase<String, bool?> {
   final EntryPointRepository repository;
 
   GetCookie({required this.repository});
   @override
-  Future<Either<Failure, String>> call(NoParams params) async {
+  Future<Either<Failure, String>> call(bool? parseCookies) async {
     Either<Failure, String> res = await repository.getCookie();
-    return res.fold((l) => Left(l), (r) async => Right(await parseCookieValues(r)));
+    return res.fold((l) => Left(l), (r) async {
+      if(parseCookies==false)
+        {
+          return Right(r);
+        }
+      else {
+        await parseCookieValues(r);
+        return Right(r);
+      }
+    });
   }
 
   Future<String> parseCookieValues(String cookie) async {

@@ -72,6 +72,7 @@ class NavigationSessionManeuvers {
     }
 
     func disable() {
+        navigationSession?.cancelTrip()
         cancel()
     }
 

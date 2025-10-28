@@ -1,9 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_features/check_commercial_license/data/data_sources/check_commercial_license_data_source.dart';
 import 'package:flutter/material.dart';
-import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:smart_advisor/app/core/utils/constants/app_config.dart';
 
 class CheckCommercialLicenseField extends StatefulWidget {
   final CheckCommercialLicenseDataSource dataSource;

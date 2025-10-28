@@ -1,4 +1,4 @@
-import 'package:balady_plus/etmam_app/core/utils/extensions/str_conversion.dart';
+import 'package:balady_plus/app/core/utils/extensions/str_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -39,7 +39,8 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
     String? todayBreaks() {
       final breaks = workingHours.todayBreaks(DateTime.now().weekday);
       if (breaks.isNotEmpty) {
-        return formatBreaks(breaks);
+        final hours = formatBreaks(breaks);
+        return l10n.breakHour(hours);
       }
       return null;
     }

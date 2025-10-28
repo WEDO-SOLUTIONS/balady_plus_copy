@@ -8,12 +8,9 @@ import 'package:balady_plus/app/features/events/domain/usecase/get_search_events
 import 'package:balady_plus/app/features/events/domain/usecase/grt_event_details.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
-import 'package:balady_plus/etmam_app/features/search/search_exports.dart';
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
-import '../../../../core/services/local/use_case.dart';
 import '../../domain/entities/search_events/search_events_item.dart';
 import '../../domain/usecase/get_category_event.dart';
 

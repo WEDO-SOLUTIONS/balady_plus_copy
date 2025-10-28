@@ -1,79 +1,81 @@
-import 'dart:convert' show base64Decode, base64Encode, jsonDecode, utf8;
+import 'dart:convert' show base64, base64Decode, base64Encode, jsonDecode, utf8;
 import 'dart:io' show File, Platform;
-import 'dart:math' show asin, cos, sqrt;
 import 'dart:typed_data' show Uint8List;
-
-import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'dart:ui';
+import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart' as calendar;
-import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
-import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart' as events;
+import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
+import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:dgis_map/library.dart';
+import 'package:huawei_location/huawei_location.dart' as hms;
+import 'package:geolocator/geolocator.dart' as geo_locator;
+
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
-import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
-import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
-import 'package:balady_plus/app/features/vd/domain/entities/camera/camera_page_params.dart';
-import 'package:balady_plus/app/features/vd/domain/entities/categories/category_item.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
-import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
+
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
-// import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider, EventTransformer;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:hijri/hijri_calendar.dart';
-import 'package:http/http.dart' as http;
-import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/export/mapness_functions.dart';
+import 'package:mime/mime.dart' as mime;
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart' show getExternalStorageDirectory, getTemporaryDirectory;
+
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
-import 'package:url_launcher/url_launcher.dart' show LaunchMode, canLaunchUrl, launchUrl;
+import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
 
+import '../../../mini_apps_engine/data/models/mini_app_model.dart';
 import '../../app.dart';
-import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
-import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
-import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
+import '../../features/entry_point/domain/use_cases/get_cookie.dart';
+import '../../features/notifications/manager/notification_manager.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+
+import '../errors/exceptions.dart';
+import './utils_exports.dart' show AppColor, AppLanguage, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
+import '../../features/_shared_feature_/data/entities/device_details.dart';
+import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show AuthData, BottomSheetDialog, BottomSheetWithActions, BridgeParams, BuildingRequirementsDialog, FileInfo;
-import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/entities/sso_user_info.dart' show SsoUserInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart';
-import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
-import '../../features/notifications/manager/notification_manager.dart';
-import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../features/profile_features/delegators/delegators_exports.dart' show AgentEntity, DelegatorEntity;
-import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
-import '../../features/vd/domain/entities/gis/gis_params.dart';
-import '../../features/vd/domain/entities/gis/gis_response.dart';
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../errors/exceptions.dart';
-import './utils_exports.dart'
-    show AppColor, AppConfig, AppLanguage, BlocStatus, EnvType, GeneralKey, MimeType, RouteName, UIHelper, WithDelay;
+import '../services/services_exports.dart'
+    show AppInterceptors, EntryPointBridge, NavigationService, NoParams, WebService;
+import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
+
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -176,6 +178,17 @@ class CommonFunctions {
     manager.updateNotificationSettings(request);
   }
 
+  String? guessMimeTypeFromBase64(String base64String) {
+    // Compute the minimum length of the base64 string we need to decode
+    // [mime.defaultMagicNumbersMaxLength] bytes.  base64 encodes 3 bytes of
+    // binary data to 4 characters.
+    var minimumBase64Length = (mime.defaultMagicNumbersMaxLength / 3).ceil() * 4;
+    return mime.lookupMimeType(
+      '',
+      headerBytes: base64.decode(base64String.substring(0, minimumBase64Length)),
+    );
+  }
+
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
       (events, mapper) => events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
 
@@ -184,6 +197,12 @@ class CommonFunctions {
 
     final entryPointBridge = sl<EntryPointBridge>();
     entryPointBridge(params);
+  }
+
+  static void openVolunteerProfileScreen() {
+    NavigationService.navigatorKey.currentState!.pushNamed(
+      RouteName.VolunteerProfile,
+    );
   }
 
   static Future<bool> isHuaweiDevice() async {
@@ -234,6 +253,7 @@ class CommonFunctions {
       final location = await locationService.getLastLocation();
 
       if (location.latitude != null && location.longitude != null) {
+        debugPrint('amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
         return LatLng(latitude: location.latitude!, longitude: location.longitude!);
       } else {
         await locationService.requestLocationUpdates(request);
@@ -242,6 +262,12 @@ class CommonFunctions {
       return handelLocationCatch(true, error, stackTrace);
     }
     return null;
+  }
+
+  static void openMiniApp(MiniAppModel? miniApp) {
+    if (miniApp != null) {
+      sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: miniApp.serviceKey!, path: miniApp.path);
+    }
   }
 
   static Future<LatLng?> handelLocationCatch(bool isHuawei, error, stackTrace) async {
@@ -701,8 +727,11 @@ class CommonFunctions {
 
   // add isMunicipality to check if the user is access municipality services
   // or life style services, make teh default value is false for life style services
-  static Future<bool> onLogin({bool isMunicipality = false}) async =>
-      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
+  static Future<bool> onLogin({bool isMunicipality = false, String? mainPage}) async =>
+      await sl<EntryPointCubit>().onLogin(
+        isMunicipality: isMunicipality,
+        mainPage: mainPage,
+      );
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -910,20 +939,42 @@ class CommonFunctions {
     }
   }
 
-  static void openBaladyWebView(String? url, {bool isObjections = false}) async {
-    print(url);
-    EasyLoading.show();
-    GetCookie getCookie = GetCookie(repository: sl());
-    final failureOrSuccessForCookie = await getCookie(NoParams());
-    EasyLoading.dismiss();
-    failureOrSuccessForCookie.fold((l) {
-      CommonFunctions.showError("server_error_1".tr());
-    }, (r) async {
+  static void openBaladyWebView(String? url, {bool isObjections = false, bool needLogin = true}) async {
+    if (needLogin == false) {
       Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
         RouteName.inappWebview,
         arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections),
       );
-    });
+    } else {
+      if (CommonProperties.isLoggedIn) {
+        EasyLoading.show();
+        GetCookie getCookie = GetCookie(repository: sl());
+        final failureOrSuccessForCookie = await getCookie(true);
+        EasyLoading.dismiss();
+        failureOrSuccessForCookie.fold(
+          (l) {
+            CommonFunctions.showError("server_error_1".tr());
+          },
+          (r) async {
+            Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
+              RouteName.inappWebview,
+              arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections),
+            );
+          },
+        );
+      } else {
+        await showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) => NeedLoginDialog(
+            onSuccessLogin: (bool? isSuccess) async {
+              if (isSuccess ?? false) {
+                openBaladyWebView(url, isObjections: isObjections);
+              }
+            },
+          ),
+        );
+      }
+    }
   }
 
   static showError(String error, [bool? isHtml]) {
@@ -1167,7 +1218,7 @@ class CommonFunctions {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
-    final failureOrSuccessForCookie = await getCookie(NoParams());
+    final failureOrSuccessForCookie = await getCookie(true);
     EasyLoading.dismiss();
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());
@@ -1465,11 +1516,12 @@ class CommonFunctions {
 
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
-    sl<HomeServicesCubit>().loadServices();
-    sl<EventsBloc>().add(const events.GetSearchEvent());
-    sl<CalendarBloc>().add(const calendar.GetSearchEvent());
 
-    BlocProvider.of<DashboardBloc>(NavigationService.navigatorKey.currentContext!).add(DashboardEventInitial());
+    sl<HomeMiniAppsListCubit>().loadMiniApps();
+    // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
+    // BlocProvider.of<DashboardBloc>(
+    //         NavigationService.navigatorKey.currentContext!)
+    //     .add(DashboardEventInitial());
   }
 
   static void sendUXCamEvent(String event) {
@@ -1515,7 +1567,7 @@ class CommonFunctions {
 
   static String getIssueCrWarning1() {
     if (CommonFunctions.isAppAR) {
-      return '<blockquote >عزيزي المستفيد.. يرجى اختيار النشاط المطابق للنشاط الفعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستفيد... يمكنك الاستعلام عن تفاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>';
+      return '<blockquote >عزيزي المستٝيد.. يرجى اختيار النشاط المطابق للنشاط الٝعلي للمحل حيث أنه لا يمكن تعديل نشاط الرخصة بعد إصدارها</p><p >عزيزي المستٝيد... يمكنك الاستعلام عن تٝاصيل الأنشطة واشتراطاتها من خلال زيارتك للرابط التالي: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank">الأنشطة التجارية واشتراطاتها</a></p></blockquote>';
     } else {
       return '<blockquote >Dear beneficiary, please select the activity corresponding to the actual activity of the store, as the license activity cannot be modified after issuance.</p><p >Dear beneficiary, you can inquire about the details of the activities and their requirements by visiting the following link: <a href="https://apps.balady.gov.sa//LicenseStandard/Default" target="_blank"> Details </a></p></blockquote>';
     }
@@ -1523,7 +1575,7 @@ class CommonFunctions {
 
   static String getIssueCrWarning2() {
     if (CommonFunctions.isAppAR) {
-      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستفيد.. يمكنك معرفة الوسطاء العقاريون المعتمدين في شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
+      return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">عزيزي المستٝيد.. يمكنك معرٝة الوسطاء العقاريون المعتمدين ٝي شبكة ايجار من خلال الرابط <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> اضغط هنا</a> أو تحميل تطبيق وسطاء عقاريون <a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> أو <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
     } else {
       return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">Dear beneficiary, you can find out the accredited real estate brokers in the Ejar network through the following link <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> Click Here </a> Or download the Real Estate Brokers application<a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> Or <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
     }
@@ -1531,7 +1583,7 @@ class CommonFunctions {
 
   static String getIssueCrWarning3() {
     if (CommonFunctions.isAppAR) {
-      return '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>';
+      return '<p class="m-0 ng-star-inserted">عزيزي المستٝيد... يمكنك الاطلاع على لائحة استيٝاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيٝاء اشتراطات اللوحات التجارية</a></p>';
     } else {
       return '<p class="m-0 ng-star-inserted">Dear beneficiary, you can review the compliance requirements list for commercial signs by visiting the following link<a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218"> Compliance requirements list for commercial signs</a></p>';
     }
@@ -1541,22 +1593,44 @@ class CommonFunctions {
     return RemoteConfig.apigeeURL + "/v1/dms-mobile/files/$id";
   }
 
-  static bool changeSpalsh() {
-    DateTime today = DateTime.now();
+  // List of special dates or date ranges
+  static List<DateTimeRange> get _specialDateRanges {
+    final today = DateTime.now();
+    return [
+      // Single day - Example: National Day (September 23rd)
+      DateTimeRange(start: DateTime(today.year, 9, 18), end: DateTime(today.year, 9, 27, 23, 59, 59)),
 
-    int todayDay = today.day;
-    int todayMonth = today.month;
-    int todayYear = today.year;
-    var allowedDays = [22, 23, 24, 25];
-    if (allowedDays.contains(todayDay) && todayMonth == 9 && todayYear == 2024) return true;
+      /// Date range - Example: Festival (September 20th to September 30th)
+      // DateTimeRange(
+      //   start: DateTime(DateTime.now().year, 9, 20),
+      //   end: DateTime(DateTime.now().year, 9, 30),
+      // ),
+    ];
+  }
+
+  /// Returns true if [now] (default: today) is inside any of the given ranges.
+  static bool get isTodayInRanges {
+    final today = DateTime.now();
+
+    // Normalize `today` to midnight to ignore time of day
+    final normalized = DateTime(today.year, today.month, today.day);
+
+    for (final range in _specialDateRanges) {
+      if (normalized.isAfter(range.start.subtract(const Duration(seconds: 1))) &&
+          normalized.isBefore(range.end.add(const Duration(seconds: 1)))) {
+        return true;
+      }
+    }
     return false;
   }
 
   static void openMovingViolations(Uri? uri) {
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.vdCameraPage,
-        arguments: CameraParamsPage(
-          selectedCategory: CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey), /*isFromHome: true*/
-        ));
+    // NavigationService.navigatorKey.currentState!.pushNamed(
+    //     RouteName.vdCameraPage,
+    //     arguments: CameraParamsPage(
+    //         selectedCategory:
+    //             CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey),
+    //         /*isFromHome: true*/));
   }
 
   static bool isFoundationDay() {
@@ -1619,11 +1693,16 @@ class CommonProperties {
   static String? deviceOs;
   static String? sessionId;
   static String? fcmToken;
+  static String? currentLocalServerDirectory;
+
+  // static String? serverRootPath;
+
   static bool showEkramDriver = false;
 
   static Uuid uuidInstance = const Uuid();
   static List<String> allowedSHAFingerprints = [
-    "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15"
+    "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15",
+    "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
   ];
 
   //static String get token =>
@@ -1638,32 +1717,35 @@ class CommonProperties {
 
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
 
-  static DelegatorEntity? get selectedDelegator => sl<EntryPointCubit>().state.selectedDelegator;
+  // static DelegatorEntity? get selectedDelegator =>
+  //     sl<EntryPointCubit>().state.selectedDelegator;
+  //
+  // static AgentEntity? get selectedAgent =>
+  //     sl<EntryPointCubit>().state.selectedAgent;
 
-  static AgentEntity? get selectedAgent => sl<EntryPointCubit>().state.selectedAgent;
-
-  static UserProfileEntity? getCurrentUserProfile() {
-    if (selectedDelegator != null) {
-      return UserProfileEntity(
-          id: selectedDelegator?.crNumber,
-          type: selectedDelegator?.crType,
-          profileType: UserProfileType.Delegator,
-          roleId: selectedDelegator?.roleId,
-          roleName: selectedDelegator?.roleName,
-          name: selectedDelegator?.entityName);
-    } else if (selectedAgent != null) {
-      return UserProfileEntity(
-          id: selectedAgent?.requestId,
-          type: selectedAgent?.grantorTypeId,
-          profileType: UserProfileType.Agent,
-          agencyRequestKey: selectedAgent?.requestId,
-          roleName: selectedAgent?.agencyTypeName,
-          name: selectedAgent?.grantorName);
-    }
-    return null;
-  }
+  // static UserProfileEntity? getCurrentUserProfile() {
+  //   if (selectedDelegator != null) {
+  //     return UserProfileEntity(
+  //         id: selectedDelegator?.crNumber,
+  //         type: selectedDelegator?.crType,
+  //         profileType: UserProfileType.Delegator,
+  //         roleId: selectedDelegator?.roleId,
+  //         roleName: selectedDelegator?.roleName,
+  //         name: selectedDelegator?.entityName);
+  //   } else if (selectedAgent != null) {
+  //     return UserProfileEntity(
+  //         id: selectedAgent?.requestId,
+  //         type: selectedAgent?.grantorTypeId,
+  //         profileType: UserProfileType.Agent,
+  //         agencyRequestKey: selectedAgent?.requestId,
+  //         roleName: selectedAgent?.agencyTypeName,
+  //         name: selectedAgent?.grantorName);
+  //   }
+  //   return null;
+  // }
 
   static bool get isLoggedInMunicipality => sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
+
   static bool get isLoggedIn => sl<AuthenticationBloc>().state is AuthenticatedState;
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
@@ -1678,7 +1760,6 @@ class CommonProperties {
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODcwNjI0OTMsImlhdCI6MTY4NzA2MjQ5MywiZXhwIjoxNjg4MjcyMDkzLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiMWVjZDY2NTYtMzlhMC00YmFkLTg2OWQtNjIxZGFmNWY4YmYyIiwiYXV0aF90aW1lIjoxNjg3MDYyNDkyLCJpZHAiOiJsb2NhbCIsInJvbGUiOlsiUm9sZV9MaWNlbnNlQWdlbmN5IiwiSW5zdGl0dXRlcyIsIkJhbGFkeV9BZG1pbl9Nb2JpbGUiLCJCYWxhZHlfT3RoZXIiLCJMaWNlbnNlU3RhbmRhcmRBY3Rpdml0eUFkbWluIiwiQ0FOX1NLSVBfQ09PS0lFX1ZBTElEQVRPUiIsIkxpY2Vuc2VTdGFuZGFyZEFjdGl2aXR5RGF0YUVudHJ5Il0sImVtYWlsIjoic3Vwcml5YS5qb25uYWR1bEBpbm92YXIuY29tIiwicGhvbmVfbnVtYmVyIjoiNTU3NjA5NzIyIiwibmFtZSI6IjEwMDU4MzAwODYiLCJ0aWQiOiIyMTMiLCJ0bm0iOiLYo9mF2KfZhtipINin2YTZhdiv2YrZhtipINin2YTZhdmG2YjYsdipIiwibWFpbCI6InN1cHJpeWEuam9ubmFkdWxAaW5vdmFyLmNvbSIsInNleCI6IjEiLCJkb2IiOiIwNy8wOC8xOTc2IiwicGhvbmUiOiIwNTU3NjA5NzIyIiwiYXJfbmFtZSI6Iti52KjYr9in2YTZhNmHINi02KfZgdmKINi52YLZitmEINin2YTYudmG2LLZiiIsImVuX25hbWUiOiJBQkRVTExBSCBTSEFGSSBBIEFMQU5BWkkiLCJpZF9ubyI6IjEwMDU4MzAwODYiLCJuaWQiOiIxMTMiLCJuYXRpb25hbGl0eSI6Itiz2LnZiNiv2YoiLCJpZF90eXBlIjoiMSIsInNuYW1lIjoi2LnYqNiv2KfZhNmE2Ycs2LTYp9mB2Yos2LnZgtmK2YQs2KfZhNi52YbYstmKIiwidGVuYW50cyI6Ilt7XCJUZW5hbnROYW1lXCI6XCLYp9mE2YbYt9in2YIg2KfZhNij2YjZhFwiLFwiVGVuYW50SWRcIjo2NDksXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINin2YTYtNix2KfYpti5INin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE3OSxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi52YXYsdipINin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE4MCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi02YjZgtmK2Kkg2KfZhNmB2LHYudmK2KlcIixcIlRlbmFudElkXCI6MTg3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTZg9io2LHZiSDZiNin2YTYrdmD2YjZhdmK2KlcIixcIlRlbmFudElkXCI6NjQ3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTYqtis2KfYsdmK2Kkg2YjYp9mE2KfYs9iq2KvZhdin2LHZitipXCIsXCJUZW5hbnRJZFwiOjY0OCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItin2YTZhti32KfZgiDYp9mE2KvYp9mG2YpcIixcIlRlbmFudElkXCI6NjUwLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KfZhNmG2LfYp9mCINin2YTYq9in2YTYq1wiLFwiVGVuYW50SWRcIjo2NTEsXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLZiNiy2KfYsdipINin2YTYtNim2YjZhiDYp9mE2KjZhNiv2YrYqSDZiNin2YTZgtix2YjZitipINmI2KfZhNin2LPZg9in2YZcIixcIlRlbmFudElkXCI6MTIxMixcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItij2YXYp9mG2Kkg2KfZhNmF2K_ZitmG2Kkg2KfZhNmF2YbZiNix2KlcIixcIlRlbmFudElkXCI6MjEzLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjp0cnVlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINi62LHYqCDYudix2LnYsVwiLFwiVGVuYW50SWRcIjo1NTUsXCJUZW5hbnRUeXBlXCI6bnVsbCxcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfV0iLCJibWFpbCI6IiIsInNpZCI6IjQ2MkFENTM1Njc0NjREMzM0RkE0MkRENzBBMDhFQUJBIiwianRpIjoiRjQ3Mjc2Q0RCMTREREFGRUI5Rjc0RjAxQ0M3NkM2QzAifQ.OaiWru1BmWD_SbYYRNsmH7SWavSRrckOoMpBfVExBvUHWWgIh4vsUYPC2Xupw2z6F0s7Tuo2te27GVloPaVAQBJpMwZNYiu-rbPbEJ7x_EclxBXsXqIzL55ygqr8E0f332BDX6BDaNMDo_yt5oHfHE38FjHYP7E5tan0KA75bW9JI1psus9E2POoDKVea1MR3w_XNagHZsCyOY7QTJDrC9WFv3cRRTWDpHns9sxcliq7jgz28jeJnQ4Yv5wdgvKL5yUiPkVYzaVlCf5WTdt7N2xZckzR5a3PJ7ogmsosT19ZyQKlXhqAeZd1AEXUZCW4FNNGXdacfb1h6uocN92YnQ";
   static LatLng defaultLocation = const LatLng(latitude: 24.76836756001484, longitude: 46.720988751704304);
 }
-
 /*const _fakeUser = SsoUserInfo(
   name: "احمد بن خالد",
   phone: "05055032820",
