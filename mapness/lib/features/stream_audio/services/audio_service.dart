@@ -31,8 +31,7 @@ class AudioService extends ChangeNotifier {
   bool _isLoading = false;
   bool _hasError = false;
   String? _errorMessage;
-  bool _isInterrupted = false;
-  DateTime? _lastPlaybackTime;
+  // Simplified live-only playback: no interruption state or last-playback tracking
 
   // Getters
   bool get isInitialized => _isInitialized;
@@ -102,13 +101,22 @@ class AudioService extends ChangeNotifier {
 
   // Reinitialize after disposal
   Future<void> reinitialize() async {
-    // Cancel subscriptions
+    debugPrint('AudioService: Starting reinitialize');
+
+    // Cancel all subscriptions first
     await _playerStateSubscription?.cancel();
+    await _playbackEventSubscription?.cancel();
     _playerStateSubscription = null;
+    _playbackEventSubscription = null;
+
+    // Cancel any reconnection timers
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
 
     // Dispose old player if it exists
     if (_globalPlayer != null) {
       try {
+        await _globalPlayer!.stop();
         await _globalPlayer!.dispose();
       } catch (e) {
         debugPrint('AudioService: Error disposing during reinitialize: $e');
@@ -119,6 +127,7 @@ class AudioService extends ChangeNotifier {
     _isInitialized = false;
     _resetState();
     await init();
+    debugPrint('AudioService: Reinitialize completed');
   }
 
   Future<void> _setupPlayerListeners() async {
@@ -132,61 +141,29 @@ class AudioService extends ChangeNotifier {
 
     // Listen to player state changes
     _playerStateSubscription = _player!.playerStateStream.listen((state) {
-      final wasPlaying = _isPlaying;
-      final wasLoading = _isLoading;
+      final bool wasPlaying = _isPlaying;
+      final bool wasLoading = _isLoading;
 
       _isPlaying = state.playing;
-      _lastPlaybackTime = DateTime.now();
+      // No last-playback tracking for pure live playback
 
-      // Manage loading state based on processing state
       if (state.processingState == ProcessingState.loading || state.processingState == ProcessingState.buffering) {
         _isLoading = true;
-      } else if (state.processingState == ProcessingState.ready || state.processingState == ProcessingState.completed) {
+      } else if (state.processingState == ProcessingState.ready ||
+          state.processingState == ProcessingState.completed ||
+          state.processingState == ProcessingState.idle) {
         _isLoading = false;
-
-        // Clear any errors when playback is ready/completed successfully
         if (_hasError) {
           _clearError();
-          notifyListeners();
-          return; // Already notified
-        }
-      } else if (state.processingState == ProcessingState.idle) {
-        // Handle unexpected idle state - this might indicate an interruption
-        if (wasPlaying && !_isInterrupted) {
-          debugPrint('AudioService: Unexpected idle state detected, attempting recovery');
-          _handleUnexpectedStop();
         }
       }
 
-      // Detect audio interruptions (when playing stops unexpectedly)
-      if (wasPlaying && !_isPlaying && !_isInterrupted && state.processingState != ProcessingState.loading) {
-        debugPrint('AudioService: Audio interruption detected');
-        _isInterrupted = true;
-      } else if (!wasPlaying && _isPlaying && _isInterrupted) {
-        debugPrint('AudioService: Audio resumed after interruption');
-        _isInterrupted = false;
-      }
-
-      // Notify listeners if either playing or loading state changed
       if (wasPlaying != _isPlaying || wasLoading != _isLoading) {
-        debugPrint(
-            'AudioService: State changed - playing: $_isPlaying, loading: $_isLoading, interrupted: $_isInterrupted');
         notifyListeners();
       }
     }, onError: (error) {
       debugPrint('AudioService: Player state stream error: $error');
       _setError('Player error: $error');
-    });
-
-    // Listen to playback events for additional monitoring
-    _playbackEventSubscription = _player!.playbackEventStream.listen((event) {
-      // Monitor for unexpected stops or errors
-      if (event.processingState == ProcessingState.idle && _isPlaying) {
-        debugPrint('AudioService: Playback event shows idle while playing flag is true');
-        _handleUnexpectedStop();
-      }
-    }, onError: (error) {
-      debugPrint('AudioService: Playback event stream error: $error');
     });
 
     // Setup audio focus handling for Android
@@ -273,7 +250,8 @@ class AudioService extends ChangeNotifier {
   // Playback controls
   Future<void> pause() async {
     try {
-      await _player?.pause();
+      // Stop instead of pause to avoid buffering any past content
+      await _player?.stop();
       notifyListeners();
     } catch (e) {
       debugPrint('AudioService: Pause error: $e');
@@ -304,27 +282,10 @@ class AudioService extends ChangeNotifier {
   }
 
   // Handle unexpected audio stops
-  void _handleUnexpectedStop() {
-    if (_currentStreamUrl != null && !_isInterrupted) {
-      debugPrint('AudioService: Handling unexpected stop, scheduling reconnection');
-      _scheduleReconnection();
-    }
-  }
+  void _handleUnexpectedStop() {}
 
   // Schedule automatic reconnection
-  void _scheduleReconnection() {
-    _reconnectionTimer?.cancel();
-    _reconnectionTimer = Timer(const Duration(seconds: 2), () async {
-      if (_currentStreamUrl != null && !_isPlaying && !_isLoading) {
-        debugPrint('AudioService: Attempting automatic reconnection');
-        try {
-          await _playLiveStream();
-        } catch (e) {
-          debugPrint('AudioService: Reconnection failed: $e');
-        }
-      }
-    });
-  }
+  void _scheduleReconnection() {}
 
   // Setup audio focus handling for better interruption management
   void _setupAudioFocusHandling() {
@@ -333,22 +294,10 @@ class AudioService extends ChangeNotifier {
   }
 
   // Check if audio should be playing but isn't (for background monitoring)
-  bool get shouldBePlayingButIsnt {
-    final now = DateTime.now();
-    final timeSinceLastPlayback = _lastPlaybackTime != null ? now.difference(_lastPlaybackTime!).inSeconds : 0;
-
-    // If we have a stream URL, we're not interrupted, not loading,
-    // and it's been more than 30 seconds since last playback update
-    return _currentStreamUrl != null && !_isInterrupted && !_isLoading && !_isPlaying && timeSinceLastPlayback > 30;
-  }
+  bool get shouldBePlayingButIsnt => false;
 
   // Monitor and recover from background audio issues
-  void monitorAndRecover() {
-    if (shouldBePlayingButIsnt) {
-      debugPrint('AudioService: Detected background audio issue, attempting recovery');
-      _scheduleReconnection();
-    }
-  }
+  void monitorAndRecover() {}
 
   // Stop and cleanup
   Future<void> stop() async {
@@ -375,10 +324,8 @@ class AudioService extends ChangeNotifier {
   void _resetState() {
     _isPlaying = false;
     _isLoading = false;
-    _isInterrupted = false;
     _currentChannelId = null;
     _currentStreamUrl = null;
-    _lastPlaybackTime = null;
     _reconnectionTimer?.cancel();
     _reconnectionTimer = null;
     _clearError();
@@ -400,10 +347,27 @@ class AudioService extends ChangeNotifier {
 
   @override
   void dispose() {
+    debugPrint('AudioService: Starting dispose');
+
+    // Cancel all timers
     _reconnectionTimer?.cancel();
+    _reconnectionTimer = null;
+
+    // Cancel all subscriptions
     _playerStateSubscription?.cancel();
     _playbackEventSubscription?.cancel();
+    _playerStateSubscription = null;
+    _playbackEventSubscription = null;
+
+    // Dispose global player
     _globalPlayer?.dispose();
+    _globalPlayer = null;
+
+    // Reset state
+    _isInitialized = false;
+    _globalInitialized = false;
+
     super.dispose();
+    debugPrint('AudioService: Dispose completed');
   }
 }

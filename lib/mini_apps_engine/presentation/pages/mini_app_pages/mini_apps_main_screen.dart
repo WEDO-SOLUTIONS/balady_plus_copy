@@ -32,9 +32,11 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
   void initState() {
     super.initState();
 
-    // Hide floating player when mini app opens
+    // Hide floating player and prepare for mini app navigation
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(streamAudioProvider).setFloatingPlayerVisibility(false);
+      final audioProvider = ref.read(streamAudioProvider);
+      audioProvider.setFloatingPlayerVisibility(false);
+      audioProvider.prepareForMiniAppNavigation();
     });
   }
 
@@ -214,12 +216,14 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
 
   @override
   void dispose() {
-    // Show floating player when mini app is closed
+    debugPrint('MiniAppsMainScreen: Starting dispose');
+
+    // Restore audio provider and show floating player when mini app is closed
     if (mounted) {
       try {
         ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
       } catch (e) {
-        // Ignore errors if ref is no longer available
+        debugPrint('MiniAppsMainScreen: Error restoring audio provider: $e');
       }
     }
     super.dispose();

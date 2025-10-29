@@ -30,17 +30,17 @@ class StreamAudioProvider extends ChangeNotifier {
   VoidCallback? _togglePanelCallback;
 
   // Background monitoring
-  Timer? _backgroundMonitorTimer;
+  // Timer? _backgroundMonitorTimer;
 
   StreamAudioProvider() {
     _initializeService();
-    _startBackgroundMonitoring();
+    // _startBackgroundMonitoring();
     // Load channels automatically when provider is created
     _loadChannelsOnInit();
   }
 
   // Set the ref to listen to language changes
-  void setRef(ChangeNotifierProviderRef<StreamAudioProvider> ref) {
+  void setRef(Ref<StreamAudioProvider> ref) {
     // Listen to language changes
     ref.listen<Language>(appLanguageProvider, (previous, next) {
       if (previous != null && previous != next) {
@@ -75,14 +75,14 @@ class StreamAudioProvider extends ChangeNotifier {
   }
 
   // Start background monitoring to detect and recover from audio issues
-  void _startBackgroundMonitoring() {
-    _backgroundMonitorTimer?.cancel();
-    _backgroundMonitorTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
-      if (!_isExited && _selectedChannel != null) {
-        _audioService.monitorAndRecover();
-      }
-    });
-  }
+  // void _startBackgroundMonitoring() {
+  //   _backgroundMonitorTimer?.cancel();
+  //   _backgroundMonitorTimer = Timer.periodic(const Duration(seconds: 30), (timer) {
+  //     if (!_isExited && _selectedChannel != null) {
+  //       _audioService.monitorAndRecover();
+  //     }
+  //   });
+  // }
 
   void _onAudioServiceChanged() {
     try {
@@ -574,6 +574,49 @@ class StreamAudioProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Method to prepare for mini app navigation - reduces memory usage
+  Future<void> prepareForMiniAppNavigation() async {
+    debugPrint('StreamAudioProvider: Preparing for mini app navigation');
+
+    try {
+      // Cancel background monitoring temporarily to reduce memory usage
+      // _backgroundMonitorTimer?.cancel();
+      // _backgroundMonitorTimer = null;
+
+      // Cancel contextual message timer
+      _contextualMessageTimer?.cancel();
+      _contextualMessageTimer = null;
+
+      // Clear any pending channels request
+      _currentChannelsRequest = null;
+
+      // If audio is playing, keep it playing but reduce monitoring
+      if (_selectedChannel != null && isPlaying) {
+        debugPrint('StreamAudioProvider: Audio continues playing during mini app navigation');
+      }
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('StreamAudioProvider: Error preparing for mini app navigation: $e');
+    }
+  }
+
+  // Method to restore after mini app navigation
+  // Future<void> restoreAfterMiniAppNavigation() async {
+  //   debugPrint('StreamAudioProvider: Restoring after mini app navigation');
+  //
+  //   try {
+  //     // Restart background monitoring if we have a selected channel
+  //     if (_selectedChannel != null && !_isExited) {
+  //       _startBackgroundMonitoring();
+  //     }
+  //
+  //     notifyListeners();
+  //   } catch (e) {
+  //     debugPrint('StreamAudioProvider: Error restoring after mini app navigation: $e');
+  //   }
+  // }
+
   // Program reordering (for UI)
   // void reorderPrograms(int oldIndex, int passedNewIndex) {
   //   final ln = liveNow;
@@ -594,19 +637,35 @@ class StreamAudioProvider extends ChangeNotifier {
 
   @override
   void dispose() {
-    // Cancel the contextual message timer if active
-    _contextualMessageTimer?.cancel();
+    debugPrint('StreamAudioProvider: Starting dispose');
 
-    // Cancel background monitoring
-    _backgroundMonitorTimer?.cancel();
+    // Mark as exited to prevent further operations
+    _isExited = true;
+
+    // Cancel all timers
+    _contextualMessageTimer?.cancel();
+    _contextualMessageTimer = null;
+
+    // _backgroundMonitorTimer?.cancel();
+    // _backgroundMonitorTimer = null;
 
     // Clear any pending channels request
     _currentChannelsRequest = null;
 
-    _audioService
-      ..removeListener(_onAudioServiceChanged)
-      ..dispose();
+    // Clear callback references to prevent memory leaks
+    _togglePanelCallback = null;
+
+    // Remove listener and dispose audio service
+    _audioService.removeListener(_onAudioServiceChanged);
+    // _audioService.dispose();
+
+    // Clear collections
+    _channels.clear();
+    filteredChannels.clear();
+    _selectedChannel = null;
+
     super.dispose();
+    debugPrint('StreamAudioProvider: Dispose completed');
   }
 }
 
@@ -614,7 +673,7 @@ class StreamAudioProvider extends ChangeNotifier {
 final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
   (ref) {
     final provider = StreamAudioProvider();
-    provider.setRef(ref);
+    // provider.setRef(ref);
     return provider;
   },
 );
