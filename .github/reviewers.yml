@@ -15,23 +15,22 @@ reviewers:
       - ForesThule
       - DmitriiProshutinskii
       - smitsk
-    # devops-team:
-      # - r9odt
-      # - popov-ilya
+    devops-team:
+      - r9odt
     support-team:
       - AyatAliev
       - wultriel
       - anisovdev
 files:
   ".github/**":
-    # - devops-team
+    - devops-team
     - alexstrnik
   ".lefthook/**":
-    # - devops-team
+    - devops-team
     - scroollocker
     - AlexStrNik
   "justscripts/**":
-    # - devops-team
+    - devops-team
     - platform-team
     - DmitriiProshutinskii
     - AlexStrNik
@@ -40,7 +39,7 @@ files:
     - scroollocker
   "mapness/scripts/**":
     - platform-team
-    # - devops-team
+    - devops-team
     - AlexStrNik
     - DmitriiProshutinskii
   "tests/**":
