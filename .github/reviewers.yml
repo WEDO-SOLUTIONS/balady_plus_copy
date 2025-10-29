@@ -16,7 +16,7 @@ reviewers:
       - DmitriiProshutinskii
       - smitsk
     devops-team:
-      - r9odt
+      # - r9odt
       - popov-ilya
     support-team:
       - AyatAliev
