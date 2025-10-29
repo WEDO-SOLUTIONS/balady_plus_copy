@@ -46,7 +46,11 @@ files:
   "tests/**":
     - support-team
     - scroollocker
-  "mapness/features/**":
+  "mapness/lib/features/**":
+    - feature-team
+    - wultriel
+    - scroollocker
+  "mapness/lib/_features/**":
     - feature-team
     - wultriel
     - scroollocker
