@@ -522,21 +522,28 @@ class _OfferPreviewByBusiness extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasDiscount = discount != null;
+    String? path;
+    try {
+      path = offer.offerGroup.imagePath;
+    } catch (ex) {}
+
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: offer.offerGroup.color,
+            colors: path != null ? offer.offerGroup.color : OffersGroup.others.color,
             begin: AlignmentDirectional.topStart,
             end: AlignmentDirectional.bottomEnd,
           ),
-          image: DecorationImage(
-            alignment: AlignmentDirectional.centerEnd,
-            matchTextDirection: true,
-            image: AssetImage(
-              offer.offerGroup.imagePath,
-            ),
-            fit: BoxFit.contain,
-          )),
+          image: path != null
+              ? DecorationImage(
+                  alignment: AlignmentDirectional.centerEnd,
+                  matchTextDirection: true,
+                  image: AssetImage(
+                    offer.offerGroup.imagePath,
+                  ),
+                  fit: BoxFit.contain,
+                )
+              : null),
       padding: const EdgeInsets.all(Spacing.$4x),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

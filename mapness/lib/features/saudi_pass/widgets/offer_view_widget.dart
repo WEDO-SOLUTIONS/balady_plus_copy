@@ -52,14 +52,10 @@ class OfferViewWidget extends ConsumerWidget {
                   errorWidget: (context, url, error) => DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: offerView.offersGroup.color,
+                        colors: OffersGroup.others.color,
                         begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
                         end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                       ),
-                    ),
-                    child: Image.asset(
-                      offerView.offersGroup.imagePath,
-                      fit: boxFit,
                     ),
                   ),
                 ),
