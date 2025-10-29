@@ -551,10 +551,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    if (widget.navType == RouteSearchOptionsMessage.car) {
-      final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
-      final position = ref.read(locationProvider);
+    final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
+    final position = ref.read(locationProvider);
 
+    if (widget.navType == RouteSearchOptionsMessage.car) {
       ToastOverlay.of(context).show(
         title: ctx.l10n.youWantSaveParking,
         actions: [

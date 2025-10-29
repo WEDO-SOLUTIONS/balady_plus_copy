@@ -99,6 +99,7 @@ class EtaHeader extends HookConsumerWidget {
               height: 60,
               child: Padding(
                 padding: const EdgeInsets.only(
+                  top: Spacing.$1x,
                   right: Spacing.$3x,
                   left: Spacing.$3x,
                 ),

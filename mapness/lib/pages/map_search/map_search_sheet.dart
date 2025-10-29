@@ -84,7 +84,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     _multiStateSheetController = MultiStateSheetController(
       initialState: ThreeStateSheet.expanded,
       behavior: FractionSnappingBehavior(fractions: {
-        0.0,
+        0.1,
         if (Platform.isIOS) .3 else .38,
         .931,
       }),
@@ -170,7 +170,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: containerColor,
-              dragger: SheetDragger(backgroundColor: contentColor,),
+              dragger: SheetDragger(
+                backgroundColor: contentColor,
+              ),
               outsideOpacityDelegate: outsideOpacityDelegate,
               header: Container(
                 color: contentColor,
@@ -284,7 +286,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       return;
     }
 
-    _multiStateSheetController.setState(ThreeStateSheet.expanded);
+    _multiStateSheetController.open();
   }
 
   void onClose() {

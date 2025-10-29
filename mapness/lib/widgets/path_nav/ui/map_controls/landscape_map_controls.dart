@@ -29,7 +29,11 @@ class _LandscapeLayout extends StatelessWidget {
   Widget build(BuildContext context) => SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.all(uikit.Spacing.$4x).copyWith(top: uikit.Spacing.$3x),
+          padding: const EdgeInsetsDirectional.only(
+            top: uikit.Spacing.$3x,
+            bottom: uikit.Spacing.$4x,
+            end: uikit.Spacing.$4x,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

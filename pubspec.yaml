@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.3+433
+version: 3.30.3+434
 # version: 3.12.19+418
 
 environment:
@@ -202,9 +202,9 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 4.1.5
+    version: 4.1.6
 
-  sheetify: 1.0.1
+  sheetify: 1.0.2
 
   smooth_corner: ^1.0.0
 
@@ -253,7 +253,7 @@ dependencies:
   ############################################################
 
   syncfusion_localizations:
-  huawei_location: ^6.14.2+300
+  huawei_location: 6.14.2+300
 
   home_widget: ^0.7.0
 
@@ -304,6 +304,7 @@ flutter:
     - shaders/radar.frag
   assets:
     - assets/
+    - assets/services/
     - assets/icons/svg/
     - assets/icons/svg/jod/
     - assets/icons/svg/map/
@@ -329,6 +330,7 @@ flutter:
     - assets/icons/svg/weather/night/
     - assets/images/
     - assets/langs/
+    - assets/quran/
     - assets/maps/configs/
     - assets/maps/icons/
     - assets/maps/icons/card_icon/
@@ -344,12 +346,17 @@ flutter:
     - assets/icons/inq/
     - assets/icons/msr/
     - assets/icons/tsr/
+    - assets/compliance_pdf/images/
+    - assets/compliance_pdf/text/
+    - assets/athkar/
+    - assets/athkar_en/
     - assets/icons/services/
     - .env.stg
     - .env.dev
     - .env.prod
     - .env.pre
     - .env.urbiPre
+    - shorebird.yaml
 
 flutter_launcher_icons:
   android: true
