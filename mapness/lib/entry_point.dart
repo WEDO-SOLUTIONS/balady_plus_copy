@@ -698,7 +698,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   void _myLocationDeepLinkHandler(double latitude, double longitude) {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
-    ref.watch(appRouterProvider).push(DeeplinkRoute(closestPoint: latLng, cameraConfig: const PoiCameraConfig(zoom: 17)));
+    ref
+        .watch(appRouterProvider)
+        .push(DeeplinkRoute(closestPoint: latLng, cameraConfig: const PoiCameraConfig(zoom: 17)));
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
