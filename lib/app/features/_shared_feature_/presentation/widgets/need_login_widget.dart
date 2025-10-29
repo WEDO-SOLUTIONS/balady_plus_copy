@@ -5,23 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 class NeedLoginWidget extends StatefulWidget {
   final String? img;
   final String? title;
   final String? desc;
+  final String? mainPage;
   final Function(bool isSuccess)? onSuccessLogin;
+  final bool withoutActions;
 
   const NeedLoginWidget({
     Key? key,
     this.desc,
     this.img,
     this.title,
+    this.mainPage,
     this.onSuccessLogin,
+    this.withoutActions = false,
   }) : super(key: key);
 
   @override
-  _NeedLoginWidgetState createState() => _NeedLoginWidgetState();
+  State<NeedLoginWidget> createState() => _NeedLoginWidgetState();
 }
 
 class _NeedLoginWidgetState extends State<NeedLoginWidget> {
@@ -29,19 +32,17 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
   Widget build(BuildContext context) {
     return BlocListener<EntryPointCubit, EntryPointState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.authenticated) {
-          if (widget.onSuccessLogin != null) {
-            widget.onSuccessLogin!(true);
-          }
-        }
+        if (state.status == AuthStatus.authenticated && widget.onSuccessLogin != null) widget.onSuccessLogin!(true);
       },
-      child: Center(
-        child: SingleChildScrollView(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              /// Content
               const CustomSvgIconWidget(
                 IconPath.lock,
                 iconSize: 82,
@@ -65,32 +66,32 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                 height: 1.5,
               ),
               const SizedBox(height: 16),
-              EnhancedCustomElevatedButtonWidget(
-                btnPressed: () {
-                  CommonFunctions.onLogin(isMunicipality: true);
-                },
-                btnText: ("signInButton").tr(),
-                btnTextSize: 18,
-                btnTextWeight: AppFontWeight.bold,
-                btnTextColor: AppColor.white,
-                btnHeight: 56,
-                btnRadius: 8,
-              ),
-              const SizedBox(height: 12),
-              EnhancedCustomElevatedButtonWidget(
-                btnPressed: () {
-                  Navigator.of(context).pop();
-                },
-                btnText: ("notNow").tr(),
-                btnTextSize: 16,
-                btnTextWeight: AppFontWeight.bold,
-                btnTextColor: AppColor.primary900Light,
-                btnBorderWidth: 1,
-                btnColor: Colors.transparent,
-                btnBorderColor: AppColor.primary900Light,
-                btnHeight: 56,
-                btnRadius: 8,
-              ),
+
+              /// Actions Buttons
+              if (!widget.withoutActions) ...[
+                EnhancedCustomElevatedButtonWidget(
+                  btnPressed: () => CommonFunctions.onLogin(isMunicipality: true, mainPage: widget.mainPage),
+                  btnText: ("signInButton").tr(),
+                  btnTextSize: 18,
+                  btnTextWeight: AppFontWeight.bold,
+                  btnTextColor: AppColor.white,
+                  btnHeight: 56,
+                  btnRadius: 8,
+                ),
+                const SizedBox(height: 12),
+                EnhancedCustomElevatedButtonWidget(
+                  btnPressed: () => Navigator.of(context).pop(),
+                  btnText: ("notNow").tr(),
+                  btnTextSize: 16,
+                  btnTextWeight: AppFontWeight.bold,
+                  btnTextColor: AppColor.primary900Light,
+                  btnBorderWidth: 1,
+                  btnColor: Colors.transparent,
+                  btnBorderColor: AppColor.primary900Light,
+                  btnHeight: 56,
+                  btnRadius: 8,
+                ),
+              ]
             ],
           ),
         ),
@@ -103,21 +104,21 @@ class EmptyListWidget extends StatelessWidget {
   final String img;
   final String? title;
   final String? desc;
-  String btnText;
-  VoidCallback? btnPressed;
-  double imgHeight;
-  double imgWidth;
+  final String btnText;
+  final VoidCallback? btnPressed;
+  final double imgHeight;
+  final double imgWidth;
 
-  EmptyListWidget(
-      {Key? key,
-      this.desc,
-      this.img = ImagePath.emptyDoc,
-      this.title,
-      this.btnText = "",
-      this.btnPressed,
-      this.imgHeight = 161,
-      this.imgWidth = 190})
-      : super(key: key);
+  const EmptyListWidget({
+    Key? key,
+    this.desc,
+    this.img = ImagePath.emptyDoc,
+    this.title,
+    this.btnText = "",
+    this.btnPressed,
+    this.imgHeight = 161,
+    this.imgWidth = 190,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -128,18 +129,9 @@ class EmptyListWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset(
-              img,
-              width: imgWidth,
-              height: imgHeight,
-            ),
+            Image.asset(img, width: imgWidth, height: imgHeight),
             const CustomVerticalSpace(height: 48),
-            CustomTextWidget(
-              title ?? "",
-              fontSize: 17,
-              fontColor: AppColor.black800,
-              maxLines: 2,
-            ),
+            CustomTextWidget(title ?? "", fontSize: 17, fontColor: AppColor.black800, maxLines: 2),
             const CustomVerticalSpace(height: 13),
             CustomTextWidget(
               desc ?? "",
@@ -148,8 +140,7 @@ class EmptyListWidget extends StatelessWidget {
               fontColor: AppColor.black500,
               fontWeight: AppFontWeight.medium,
             ),
-            if (btnText.isNotEmpty && btnPressed != null)
-              const CustomVerticalSpace(height: 30),
+            if (btnText.isNotEmpty && btnPressed != null) const CustomVerticalSpace(height: 30),
             if (btnText.isNotEmpty && btnPressed != null)
               EnhancedCustomElevatedButtonWidget(
                 btnPressed: btnPressed,

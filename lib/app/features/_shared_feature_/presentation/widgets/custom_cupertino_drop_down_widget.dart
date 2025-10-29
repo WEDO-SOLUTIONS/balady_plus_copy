@@ -10,9 +10,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/enums/enums.dart';
-import '../../../daem/data/models/daem_item.dart';
-import '../../../daem/presentation/dialogs/str_type_with_search_dialog.dart';
-import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../data/entities/drop_down_item.dart';
 import '../dialogs/incident_type_with_search_dialog.dart';
 import '../dialogs/multi_selection_with_search_dialog.dart';
@@ -415,148 +412,148 @@ class _CustomTapWidgetForMultiLongDialog
   }
 }
 
-class TapWidgetForLongDialog extends StatefulWidget {
-  DaemItem? value;
-  Function(DaemItem? item) onChangeType;
-  List<DaemItem> items;
-  String label;
-  String? hint;
-  String? searchHint;
-  String? errorText;
-  final bool? showOptional;
-  final bool showHintAsTitle;
+// class TapWidgetForLongDialog extends StatefulWidget {
+//   DaemItem? value;
+//   Function(DaemItem? item) onChangeType;
+//   List<DaemItem> items;
+//   String label;
+//   String? hint;
+//   String? searchHint;
+//   String? errorText;
+//   final bool? showOptional;
+//   final bool showHintAsTitle;
+//
+//   TapWidgetForLongDialog(
+//       {Key? key,
+//       required this.onChangeType,
+//       this.value,
+//       required this.items,
+//       this.hint,
+//       required this.label,
+//       this.searchHint,
+//       this.errorText,
+//       this.showOptional = false,
+//       this.showHintAsTitle = true})
+//       : super(key: key);
+//
+//   @override
+//   State<TapWidgetForLongDialog> createState() => _TapWidgetForLongDialog();
+// }
+//
+// class _TapWidgetForLongDialog extends State<TapWidgetForLongDialog> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return CustomHeaderAndDescOnTapWidget(
+//       label: widget.label,
+//       hintText: widget.hint!,
+//       textValue: widget.value?.name,
+//       showOptional: widget.showOptional,
+//       onTap: widget.items.isNotEmpty
+//           ? () async {
+//               FocusManager.instance.primaryFocus?.unfocus();
+//               await CustomPopUpsWidgets.showBottomSheet(
+//                 NavigationService.navigatorKey.currentContext!,
+//                 child: DaemTypeWithSearchDialog(
+//                   onSelect: (DaemItem item) => widget.onChangeType(item),
+//                   items: widget.items,
+//                   selectedItem: widget.value,
+//                   title: widget.showHintAsTitle ? widget.hint : widget.label,
+//                   searchHint: widget.searchHint,
+//                 ),
+//               );
+//             }
+//           : () {
+//               FocusManager.instance.primaryFocus?.unfocus();
+//               CommonFunctions.showError(
+//                   widget.errorText ?? ('empty_list_error').tr());
+//             },
+//     );
+//   }
+// }
 
-  TapWidgetForLongDialog(
-      {Key? key,
-      required this.onChangeType,
-      this.value,
-      required this.items,
-      this.hint,
-      required this.label,
-      this.searchHint,
-      this.errorText,
-      this.showOptional = false,
-      this.showHintAsTitle = true})
-      : super(key: key);
-
-  @override
-  State<TapWidgetForLongDialog> createState() => _TapWidgetForLongDialog();
-}
-
-class _TapWidgetForLongDialog extends State<TapWidgetForLongDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return CustomHeaderAndDescOnTapWidget(
-      label: widget.label,
-      hintText: widget.hint!,
-      textValue: widget.value?.name,
-      showOptional: widget.showOptional,
-      onTap: widget.items.isNotEmpty
-          ? () async {
-              FocusManager.instance.primaryFocus?.unfocus();
-              await CustomPopUpsWidgets.showBottomSheet(
-                NavigationService.navigatorKey.currentContext!,
-                child: DaemTypeWithSearchDialog(
-                  onSelect: (DaemItem item) => widget.onChangeType(item),
-                  items: widget.items,
-                  selectedItem: widget.value,
-                  title: widget.showHintAsTitle ? widget.hint : widget.label,
-                  searchHint: widget.searchHint,
-                ),
-              );
-            }
-          : () {
-              FocusManager.instance.primaryFocus?.unfocus();
-              CommonFunctions.showError(
-                  widget.errorText ?? ('empty_list_error').tr());
-            },
-    );
-  }
-}
-
-class CustomLookUpLongDialog extends StatefulWidget {
-  LookUpItem? value;
-  Function(LookUpItem? item) onChangeType;
-  List<LookUpItem> items;
-  String label;
-  String? hint;
-  String? searchHint;
-  String? errorText;
-  final bool? showOptional;
-  final bool showHintAsTitle;
-  final Function? onEmptyList;
-  final bool isDisbaled;
-  final bool refreshList;
-
-  CustomLookUpLongDialog(
-      {Key? key,
-      required this.onChangeType,
-      this.value,
-      required this.items,
-      this.hint,
-      required this.label,
-      this.searchHint,
-      this.errorText,
-      this.showOptional = false,
-      this.showHintAsTitle = true,
-      this.isDisbaled = false,
-      this.refreshList = false,
-      this.onEmptyList})
-      : super(key: key);
-
-  @override
-  State<CustomLookUpLongDialog> createState() => _CustomLookUpLongDialog();
-}
-
-class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
-  @override
-  Widget build(BuildContext context) {
-    return CustomHeaderAndDescOnTapWidget(
-        label: widget.label,
-        hintText: widget.hint!,
-        textValue: widget.value?.name,
-        showOptional: widget.showOptional,
-        onTap: widget.isDisbaled == false
-            ? widget.items.isNotEmpty && !widget.refreshList
-                ? () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    await CustomPopUpsWidgets.showBottomSheet(
-                      NavigationService.navigatorKey.currentContext!,
-                      child: LookupTypeWithSearchDialog(
-                        onSelect: (LookUpItem item) =>
-                            widget.onChangeType(item),
-                        items: widget.items,
-                        selectedItem: widget.value,
-                        title:
-                            widget.showHintAsTitle ? widget.hint : widget.label,
-                        searchHint: widget.searchHint,
-                      ),
-                    );
-                  }
-                : () async {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                    if (widget.onEmptyList != null) {
-                      List<LookUpItem>? items = await widget.onEmptyList!();
-                      if (items != null) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        await CustomPopUpsWidgets.showBottomSheet(
-                          NavigationService.navigatorKey.currentContext!,
-                          child: LookupTypeWithSearchDialog(
-                            onSelect: (LookUpItem item) =>
-                                widget.onChangeType(item),
-                            items: items,
-                            selectedItem: widget.value,
-                            title: widget.showHintAsTitle
-                                ? widget.hint
-                                : widget.label,
-                            searchHint: widget.searchHint,
-                          ),
-                        );
-                      }
-                    } else
-                      CommonFunctions.showError(
-                          widget.errorText ?? ('empty_list_error').tr());
-                  }
-            : () {});
-  }
-}
+// class CustomLookUpLongDialog extends StatefulWidget {
+//   LookUpItem? value;
+//   Function(LookUpItem? item) onChangeType;
+//   List<LookUpItem> items;
+//   String label;
+//   String? hint;
+//   String? searchHint;
+//   String? errorText;
+//   final bool? showOptional;
+//   final bool showHintAsTitle;
+//   final Function? onEmptyList;
+//   final bool isDisbaled;
+//   final bool refreshList;
+//
+//   CustomLookUpLongDialog(
+//       {Key? key,
+//       required this.onChangeType,
+//       this.value,
+//       required this.items,
+//       this.hint,
+//       required this.label,
+//       this.searchHint,
+//       this.errorText,
+//       this.showOptional = false,
+//       this.showHintAsTitle = true,
+//       this.isDisbaled = false,
+//       this.refreshList = false,
+//       this.onEmptyList})
+//       : super(key: key);
+//
+//   @override
+//   State<CustomLookUpLongDialog> createState() => _CustomLookUpLongDialog();
+// }
+//
+// class _CustomLookUpLongDialog extends State<CustomLookUpLongDialog> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return CustomHeaderAndDescOnTapWidget(
+//         label: widget.label,
+//         hintText: widget.hint!,
+//         textValue: widget.value?.name,
+//         showOptional: widget.showOptional,
+//         onTap: widget.isDisbaled == false
+//             ? widget.items.isNotEmpty && !widget.refreshList
+//                 ? () async {
+//                     FocusManager.instance.primaryFocus?.unfocus();
+//                     await CustomPopUpsWidgets.showBottomSheet(
+//                       NavigationService.navigatorKey.currentContext!,
+//                       child: LookupTypeWithSearchDialog(
+//                         onSelect: (LookUpItem item) =>
+//                             widget.onChangeType(item),
+//                         items: widget.items,
+//                         selectedItem: widget.value,
+//                         title:
+//                             widget.showHintAsTitle ? widget.hint : widget.label,
+//                         searchHint: widget.searchHint,
+//                       ),
+//                     );
+//                   }
+//                 : () async {
+//                     FocusManager.instance.primaryFocus?.unfocus();
+//                     if (widget.onEmptyList != null) {
+//                       List<LookUpItem>? items = await widget.onEmptyList!();
+//                       if (items != null) {
+//                         FocusManager.instance.primaryFocus?.unfocus();
+//                         await CustomPopUpsWidgets.showBottomSheet(
+//                           NavigationService.navigatorKey.currentContext!,
+//                           child: LookupTypeWithSearchDialog(
+//                             onSelect: (LookUpItem item) =>
+//                                 widget.onChangeType(item),
+//                             items: items,
+//                             selectedItem: widget.value,
+//                             title: widget.showHintAsTitle
+//                                 ? widget.hint
+//                                 : widget.label,
+//                             searchHint: widget.searchHint,
+//                           ),
+//                         );
+//                       }
+//                     } else
+//                       CommonFunctions.showError(
+//                           widget.errorText ?? ('empty_list_error').tr());
+//                   }
+//             : () {});
+//   }
+// }
