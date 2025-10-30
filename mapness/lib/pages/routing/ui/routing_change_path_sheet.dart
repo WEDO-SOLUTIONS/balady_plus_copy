@@ -104,16 +104,20 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-              child: ABRoute(
-                items: pointsModels,
-                startPointSubtitle: context.l10n.startPosition,
-                arrivalPointSubtitle: context.l10n.placeOfArrival,
-                onReorder: _onReorder,
-                onTap: _onTap,
-                onDeletePressed: _onDeletePressed,
-                onAddPointPressed: _onAddPointPressed(context),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                child: SingleChildScrollView(
+                  child: ABRoute(
+                    items: pointsModels,
+                    startPointSubtitle: context.l10n.startPosition,
+                    arrivalPointSubtitle: context.l10n.placeOfArrival,
+                    onReorder: _onReorder,
+                    onTap: _onTap,
+                    onDeletePressed: _onDeletePressed,
+                    onAddPointPressed: _onAddPointPressed(context),
+                  ),
+                ),
               ),
             ),
             Padding(

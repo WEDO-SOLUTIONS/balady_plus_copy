@@ -10,7 +10,8 @@ on:
 
 jobs:
   lint:
-    runs-on: [misc]
+    runs-on: ubuntu-latest
+    # runs-on: [misc]
     permissions:
       statuses: write
     steps:

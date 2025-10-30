@@ -24,11 +24,15 @@ class RouteParamsPoint extends Equatable {
         entranceId,
         levelId,
       ];
+
+  String latLngToString() => '$latitude,$longitude';
 }
 
 extension RouteParamsPointListX on List<RouteParamsPoint?> {
   RouteParamsPointList? getIntermediatePoints() =>
       length > 2 ? RouteParamsPointList(sublist(1, length - 1).nonNulls.toList()) : null;
+
+  String latLngToString() => '[${map((e) => e?.latLngToString()).join(',')}]';
 }
 
 class RouteParamsPointList extends Equatable {
@@ -49,6 +53,18 @@ class RouteParamsPointWithLabel extends Equatable {
     required this.label,
   });
 
+  RouteParamsPointWithLabel.fromDirectoryObject(DirectoryObjectMessage object)
+      : this(
+          value: RouteParamsPoint(
+            latitude: object.markerPosition!.latitude,
+            longitude: object.markerPosition!.longitude,
+            objectId: object.id?.objectId,
+            entranceId: object.id?.entranceId,
+            levelId: object.levelId,
+          ),
+          label: object.title,
+        );
+
   @override
   List<Object?> get props => [
         label,
@@ -58,6 +74,8 @@ class RouteParamsPointWithLabel extends Equatable {
 
 extension RouteParamsPointWithLabelListX on List<RouteParamsPointWithLabel?> {
   RouteParamsPointList? getIntermediatePoints() => map((e) => e?.value).toList().getIntermediatePoints();
+
+  String latLngToString() => map((e) => e?.value).toList().latLngToString();
 }
 
 extension GeoPoint on RouteParamsPoint {

@@ -16,6 +16,7 @@ import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
+import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/providers/routes_update_tab.dart';
@@ -347,6 +348,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         'distance': route.distance,
       },
     ));
+
+    await ref.read(currentRouteProvider.notifier).setNavigationState(
+          CurrentRouteState(
+            points: widget.pointsWithLabel,
+            navType: navigatingType,
+            route: route,
+          ),
+        );
 
     await context.router.pushAndPopUntil(
         PathNavRoute(

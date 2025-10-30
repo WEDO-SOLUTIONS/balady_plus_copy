@@ -159,6 +159,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         }
       },
     );
+    final l10n = context.l10n;
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
@@ -267,6 +268,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               ref,
             );
           },
+          onAddPointToRoute: () => _onAddObjectPointToRoute(context, l10n, ref, widget.data),
+          onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, l10n, ref, widget.data),
           onTapFavorite: (item) {
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);

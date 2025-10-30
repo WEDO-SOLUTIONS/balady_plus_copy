@@ -201,6 +201,9 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
               ref,
             );
           },
+          onAddPointToRoute: () => _onAddEmptyPointToRoute(context, l10n, ref, widget.objectId, widget.closestPoint),
+          onRemovePointFromRoute: () =>
+              _onRemoveEmptyPointToRoute(context, l10n, ref, widget.objectId, widget.closestPoint),
           onTapFavorite: (item) {
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: customCityscapeData, favouriteItem: item);

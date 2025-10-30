@@ -904,7 +904,7 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void analyticsTrack(String event) {
-    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    analyticsClient.track(event, properties: {'app_run': isAppRun});
   }
 
   @override
