@@ -28,12 +28,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.FlutterProvider
 import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
 import com.dgis.map.FavouritesUpdateNotifier
-import com.dgis.map.UserAuthorizedNotifier
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
@@ -44,6 +44,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.dgis.sdk.DgisObjectId
@@ -53,6 +54,7 @@ import java.util.concurrent.CompletableFuture
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
+import kotlin.time.Duration
 
 class NavigationScreen(
     carContext: CarContext,
@@ -100,14 +102,10 @@ class NavigationScreen(
             }
         )
 
-        coroutineScope.launch {
-            UserAuthorizedNotifier.events.collect { isAuthorized ->
-                getFavourites(forceUpdate = true)
-            }
-        }
+        getFavourites()
 
         favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
-            FavouritesUpdateNotifier.events.collect { favouritesMessage ->
+            for (favouritesMessage in FavouritesUpdateNotifier.events) {
                 withContext(Dispatchers.Main) {
                     handleFavouritesMessage(favouritesMessage) {
                         favourites = it
@@ -329,15 +327,18 @@ class NavigationScreen(
             previousStep != null &&
                     (step?.road != previousStep.road ||
                             step?.maneuver?.type != previousStep.maneuver?.type)
-        carNotificationManager.notify(
-            NavigationCarAppService.notificationId,
-            getNavigationNotification(
-                "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
-                maneuver.roadName,
-                maneuver.iconId,
-                shouldNotify,
-            ),
-        )
+        if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+            carNotificationManager.notify(
+                NavigationCarAppService.notificationId,
+                getNavigationNotification(
+                    "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
+                    maneuver.roadName,
+                    maneuver.iconId,
+                    shouldNotify,
+                ),
+            )
+        }
+
         invalidate()
     }
 
@@ -392,6 +393,16 @@ class NavigationScreen(
         mapController.stopNavigation()
         if (!bySystem) {
             tryToShowFavourites()
+        } else {
+            CoroutineScope(Dispatchers.Default).launch {
+                // We should wait until the system completes the state changes
+                delay(800)
+                if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                    withContext(Dispatchers.Main) {
+                        tryToShowFavourites()
+                    }
+                }
+            }
         }
     }
 

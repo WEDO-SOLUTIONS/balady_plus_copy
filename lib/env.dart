@@ -1,40 +1,56 @@
 import 'dart:io';
 
 import 'package:adjust_sdk/adjust.dart';
+import 'package:adjust_sdk/adjust_attribution.dart';
 import 'package:adjust_sdk/adjust_config.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
-import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart' as diEtmam
-    show initialize;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' show BoxShadow, Color, Colors, WidgetsFlutterBinding;
+import 'package:flutter/material.dart'
+    show BoxShadow, Color, Colors, WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
-import 'package:localize_and_translate/localize_and_translate.dart' show LocalizationDefaultType, translator;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show LocalizationDefaultType, translator;
 
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
 import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
 import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
+import './app/core/dependency_injection/dependency_injection_exports.dart' as di
+    show initialize;
+import './app/core/dependency_injection/dependency_injection_exports.dart'
+    show sl;
+import './app/core/services/services_exports.dart'
+    show HiveManager, NotificationService;
+import './app/core/utils/utils_exports.dart' show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
 import 'app/core/services/local/notification_hawaii.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
     ///  await _deleteAppDir();
     // await _deleteCacheDir();
 
+    sl.registerLazySingleton<EnvType>(() => type);
+
     WidgetsFlutterBinding.ensureInitialized();
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
     AdjustConfig config = AdjustConfig(
-      'tung4x27vt34',
-      (type == EnvType.prod) ? AdjustEnvironment.production : AdjustEnvironment.sandbox,
+      await CommonFunctions.isHuaweiDevice()?'je5w29fx8y68':'tung4x27vt34',
+      (type == EnvType.prod)
+          ? AdjustEnvironment.production
+          : AdjustEnvironment.sandbox,
     );
+
+    config.logLevel = AdjustLogLevel.verbose;
+
     config.fbAppId = "1668346683733303";
     if (Platform.isIOS) {
       if (status == TrackingStatus.authorized) {
@@ -56,13 +72,11 @@ abstract class AppEnv {
       DeviceOrientation.portraitDown,
     ]);
 
-    //MapUtils.loadMarkers();
+   //MapUtils.loadMarkers();
 
-    sl.registerLazySingleton<EnvType>(() => type);
     sharedPrefs.init();
     // di: dependency injection
     di.initialize();
-    diEtmam.initialize();
     //! Please assign environment firstly
 
     String testName = ".env.${type.name}";
@@ -96,15 +110,15 @@ abstract class AppEnv {
     await Initializer.init();
     NotificationService.init(initScheduled: true);
 
-    final isGmsAvailable = await FlutterHmsGmsAvailability.isGmsAvailable;
-    if (isGmsAvailable) {
-      await NotificationService.configure();
-    }
 
-    final isHmsAvailable = await FlutterHmsGmsAvailability.isHmsAvailable;
-    if (isHmsAvailable) {
+    FlutterHmsGmsAvailability.isGmsAvailable.then((t) async{
+      await NotificationService.configure();
+    });
+    FlutterHmsGmsAvailability.isHmsAvailable.then((t) async{
+
       await HawaiiNotificationService().configure();
-    }
+    });
+
   }
 
   static void configLoading() {
@@ -122,37 +136,4 @@ abstract class AppEnv {
       ..dismissOnTap = false;
   }
 
-// static Future<void> _deleteCacheDir() async {
-//   try {
-//     final cacheDir = await getTemporaryDirectory();
-//     if (cacheDir.existsSync()) {
-//       cacheDir.deleteSync(recursive: true);
-//     }
-//   } catch (error, stackTrace) {
-//   LogsViewModel().sendEventFromModel(
-//     event: ErrorExceptionModel(
-//       nameEvent: EventsName.handledException,
-//       message: error.toString(),
-//       stackTrace: stackTrace.toString(),
-//     ),
-//   );
-// }
-// }
-//
-// static Future<void> _deleteAppDir() async {
-//   try {
-//     final appDir = await getApplicationSupportDirectory();
-//     if (appDir.existsSync()) {
-//       appDir.deleteSync(recursive: true);
-//     }
-//   } catch (error, stackTrace) {
-//   LogsViewModel().sendEventFromModel(
-//     event: ErrorExceptionModel(
-//       nameEvent: EventsName.handledException,
-//       message: error.toString(),
-//       stackTrace: stackTrace.toString(),
-//     ),
-//   );
-// }
-// }
 }

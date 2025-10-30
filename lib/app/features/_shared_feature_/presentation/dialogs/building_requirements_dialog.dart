@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/models/conditions_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/utils_exports.dart';
-import '../../../create_compliance/presentation/pdf/list/list_item/requir_item/conditions_model.dart';
 import '../../shared_feature_exports.dart';
 import 'dialog_header.dart';
 
