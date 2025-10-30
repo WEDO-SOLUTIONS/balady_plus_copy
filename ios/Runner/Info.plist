@@ -22,6 +22,10 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>speech</string>
+	<key>NSMotionUsageDescription</key>
+	<string>motion</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -43,16 +47,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>insiderbaladyapp</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>insider</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>insiderbaladyappuat</string>
 			</array>
 		</dict>
 	</array>
@@ -94,12 +88,8 @@
 	<string>This app needs access to your location to provide accurate prayer times for your area.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>By Acceing the mic, the app can register the sound for Reports</string>
-	<key>NSMotionUsageDescription</key>
-	<string>motion</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Photo Library is used to choose photos for Reports</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>speech</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Your data will be used to deliver personalized ads to you.</string>
 	<key>UIApplicationSceneManifest</key>

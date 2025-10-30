@@ -1,7 +1,6 @@
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart' show WidgetsFlutterBinding, runApp;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -19,51 +18,20 @@ void main() async {
     await setupMapness(EnvType.urbiPre);
 
     await SentryFlutter.init(
-          (options) {
-        options.dsn =
-        'https://c848141ab84678437eab2cc271b99a6f@sentry.momah.gov.sa/4';
+      (options) {
+        options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
         // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
         // We recommend adjusting this value in production.
         options.tracesSampleRate = 1.0;
         // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
         // We recommend adjusting this value in production.
         options.profilesSampleRate = 1.0;
-        // options.attachScreenshot = true;
-        options.enableUserInteractionTracing = true;
-        options.reportSilentFlutterErrors = true;
-        options.enableAppHangTracking = true;
-        options.enableAutoPerformanceTracing = true;
-        options.enableAutoNativeBreadcrumbs = true;
-        options.enableNativeCrashHandling = true;
-        options.enableTimeToFullDisplayTracing = true;
-        options.enableAppHangTracking = true;
-        options.enableAppLifecycleBreadcrumbs = true;
-        options.enableFramesTracking = true;
-        // options.captureFailedRequests = true;
-        options.environment = EnvType.urbiPre.name;
-        // Auto Performance Instrumentation
-        options.enableAutoPerformanceTracing = true;
-        options.enableUserInteractionTracing = true;
-        options.enableAppHangTracking = true;
-
-        // Session Tracking
-        options.enableAutoSessionTracking = true;
-        // Breadcrumbs
-        options.maxBreadcrumbs = 100;
-
-        // Screenshots and Attachments
         options.attachScreenshot = true;
-        options.screenshotQuality = SentryScreenshotQuality.high;
-        options.attachViewHierarchy = true;
-
-        // Debug Options
-        options.diagnosticLevel = SentryLevel.debug;
-
-        // Additional Performance Settings
-        options.enableTimeToFullDisplayTracing = true;
+        options.enableUserInteractionTracing = true;
+        options.captureFailedRequests = true;
+        options.environment = sl<EnvType>().name;
       },
-      appRunner: () =>
-          runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
+      appRunner: () => runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
     );
   });
 }

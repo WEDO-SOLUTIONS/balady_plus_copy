@@ -106,7 +106,6 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                       style: context.textStyles.bodySmallRegular.copyWith(
                         color: context.colors.foregroundSoft,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: Spacing.$8x),

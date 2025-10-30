@@ -493,7 +493,7 @@ class _RemoteConfig {
         "Key_name": "CommercialLicenseCancel",
       },
       "PostersLicenseService": {
-        "id": 11946,
+        "id": 11820,
         "Key_name": "PostersLicenseService",
       },
       "PermitsLicenseService24H": {

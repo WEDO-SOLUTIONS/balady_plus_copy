@@ -1,7 +1,5 @@
 package momra.balady.android
 
-import com.adjust.sdk.Adjust
-import com.adjust.sdk.oaid.AdjustOaid
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -15,13 +13,11 @@ import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
 
+
 class MainActivity : FlutterFragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Initialize Adjust OAID
-        AdjustOaid.readOaid(applicationContext)
-
         FlutterProvider.getHostFlutterApi(this).runMain { }
         MainAppScreenStateNotifier.setState(MainAppScreenState.CREATED)
     }

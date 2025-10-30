@@ -21,7 +21,7 @@ class WeatherPage extends ConsumerStatefulWidget {
 class _WeatherPageState extends ConsumerState<WeatherPage> {
   late final MultiStateSheetController<ThreeStateSheet> _bottomSheetController = MultiStateSheetController(
     initialState: ThreeStateSheet.open,
-    behavior: FractionSnappingBehavior(fractions: {.1, _computeMiddleFraction(), .931}),
+    behavior: FractionSnappingBehavior(fractions: {.1, .38, .931}),
     stateMapper: const ThreeStateMapper(),
   );
 
@@ -51,14 +51,5 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
         buttonLabel: context.l10n.tryAgain,
       );
     }
-  }
-
-  double _computeMiddleFraction() {
-    final mediaQuery = MediaQuery.of(context);
-    final bottomPadding = mediaQuery.padding.bottom;
-    final height = MediaQuery.of(context).size.height;
-    final bottomSafeAreaFraction = bottomPadding / height;
-    const targetVisibleFraction = .38;
-    return ((height - bottomPadding) * targetVisibleFraction / height) + bottomSafeAreaFraction;
   }
 }

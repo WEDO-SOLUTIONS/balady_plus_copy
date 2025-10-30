@@ -35,8 +35,8 @@ class EtaRouteLine extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
-                        Color(0xffFFFFFF),
-                        Color(0xff2AB3A9),
+                        Color(0xff1CA9A6),
+                        Color(0xff84BC47),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(RadiusBorder.full),

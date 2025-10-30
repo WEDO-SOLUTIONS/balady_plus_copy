@@ -24,6 +24,7 @@ export 'presentation/widgets/home_bottom_sheet/home_section_title.dart';
 export 'presentation/widgets/home_bottom_sheet/prayer_icon.dart';
 export 'presentation/widgets/home_bottom_sheet/prayer_times_card.dart';
 export 'presentation/widgets/home_bottom_sheet/share_with_us.dart';
+export '../map_page/presentation/pages/home_map.dart';
 export 'presentation/widgets/home_bottom_sheet/prayer_home_card.dart';
 export 'presentation/widgets/home_bottom_sheet/report_home_card.dart';
 export 'presentation/widgets/home_bottom_sheet/smart_advisor_card.dart';

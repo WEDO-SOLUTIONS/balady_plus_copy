@@ -22,6 +22,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
 import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../dependency_injection/injection_container.dart';
 import '../../utils/constants/remote_config.dart';
 
@@ -279,6 +280,42 @@ class Helpers {
     }
     return newStr.isEmpty ? value : newStr;
   }
+
+  static bool checkForExpectedVD(GisLocationResult? gis) {
+    if (gis != null) {
+      if (gis.adminMunicipalityId == "003" && gis.municipalityName == "العلا") {
+        try {
+          String error = ("ola_request_error").tr();
+
+          CommonFunctions.showError(error);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+
+        return true;
+      } else {
+        if (gis.isVDExcepted()) {
+          String error = ("req_vd_excepted").tr();
+          CommonFunctions.showError(error);
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /*static void showLock() {
+    Timer(const Duration(seconds: 3), () async {
+      showLockScreen = true;
+    });
+  }*/
 
   static void sendLog(
       {String? url,

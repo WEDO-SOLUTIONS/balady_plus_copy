@@ -1,0 +1,121 @@
+import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
+    hide DropDownItem;
+import 'package:balady_plus/etmam_app/features/dynamic_form/dynamic_forms_exports.dart';
+import 'package:balady_plus/etmam_app/features/dynamic_form/presentation/blocs/bidding_form/bidding_form_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
+import '../../../../../app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../core/utils/enums/dynamic_forms.dart';
+import '../../../submit_request/presentation/widgets/order_info/order_title_and_desc_widget.dart';
+import 'bidding_upload_widget.dart';
+import 'previous_next_buttons.dart';
+
+class FormItemWidget extends StatefulWidget {
+  final CreateFormItemResponse form;
+
+  const FormItemWidget({super.key, required this.form});
+
+  @override
+  State<FormItemWidget> createState() => _FormItemWidgetState();
+}
+
+class _FormItemWidgetState extends State<FormItemWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<BiddingFormBloc, BiddingFormState>(
+      builder: (context, state) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomVerticalSpace(height: 16),
+                CustomTextWidget(widget.form.serviceName ?? "",
+                    fontColor: AppColor.black,
+                    fontSize: 22,
+                    fontWeight: AppFontWeight.bold),
+                CustomVerticalSpace(height: 16),
+                ListView.builder(
+                    itemCount: widget.form.items?.length ?? 0,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (ctx, index) {
+                      if (widget.form.items?[index].getComponentType() ==
+                          DynamicFormComponentType.hidden) //return SizedBox();
+
+                        return EtmamCustomReadOnlyTextWidget(
+                            label: widget.form.items?[index].fieldLabel ?? "",
+                            text: CommonProperties.cityItem?.name ?? "");
+                      if (widget.form.items?[index].getComponentType() ==
+                          DynamicFormComponentType.text)
+                        return DynamicFormTextField(
+                          errors: widget.form.items?[index].errors?.errorsStr,
+                          key: ValueKey(widget.form.items?[index].field?.id),
+                          label: widget.form.items?[index].fieldLabel ?? "",
+                          isReadOnly:
+                              widget.form.items?[index].fieldReadOnly ?? false,
+                          isRequired:
+                              widget.form.items?[index].fieldRequired ?? false,
+                          type: widget.form.items?[index].getFieldDataType(),
+                          onChanged: (String? text) {
+                            context.read<BiddingFormBloc>().add(
+                                ChangeTextComponentEvent(
+                                    fieldId:
+                                        widget.form.items![index].field!.id!,
+                                    text: text));
+                          },
+                        );
+                      if (widget.form.items?[index].getComponentType() ==
+                          DynamicFormComponentType.dropDown)
+                        return DynamicFormDropDownField(
+                          label: widget.form.items?[index].fieldLabel ?? "",
+                          errors: widget.form.items?[index].errors?.errorsStr,
+                          isReadOnly:
+                              widget.form.items?[index].fieldReadOnly ?? false,
+                          isRequired:
+                              widget.form.items?[index].fieldRequired ?? false,
+                          items: widget.form.items?[index].dataItems ?? [],
+                          currentItem:
+                              widget.form.items?[index].selectedDataItem,
+                          onChanged: (DropDownItem? item) {
+                            if (item != null)
+                              context.read<BiddingFormBloc>().add(
+                                  SelectFormFieldDataEvent(
+                                      fieldId:
+                                          widget.form.items?[index].field?.id,
+                                      item: item));
+                          },
+                          onEmptyList: () async {
+                            return await context
+                                .read<BiddingFormBloc>()
+                                .getDataEventHandler(GetFormFieldDataEvent(
+                                    fieldId:
+                                        widget.form.items?[index].field?.id));
+                          },
+                        );
+                      return Container(child: Text("No Element"));
+                    }),
+                if (context.read<BiddingFormBloc>().isLastPage()) ...[
+                  LabelTextWithOptional(
+                    label: trans("required_service_details"),
+                    labelSize: 16,
+                    showOptional: true,
+                  ),
+                  const CustomVerticalSpace(height: 10),
+                  BidddingUploadWidget(),
+                  const CustomVerticalSpace(height: 32),
+                ],
+                PreviousNextButtons(),
+                CustomVerticalSpace(height: 80),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

@@ -70,10 +70,8 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
 
   // Don't show alternative search button if we are in google search
   bool _getShowAlternativeSearchButton() {
-    // TODO: amr hide the search more for now
-    // final scope = context.read<SearchScope>();
-    // return !ref.read(searchProvider(scope.value).notifier).isGoogleSearch;
-    return false;
+    final scope = context.read<SearchScope>();
+    return !ref.read(searchProvider(scope.value).notifier).isGoogleSearch;
   }
 
   @override

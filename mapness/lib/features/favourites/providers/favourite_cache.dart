@@ -389,14 +389,6 @@ class _FavouriteCache extends _$FavouriteCache {
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
-        final controller = await ref.read(dgisControllerProvider.future);
-        await controller.favouritesUpdateNotification(
-          FavouritesStateMessage(
-            home: apiData.home?.message,
-            work: apiData.work?.message,
-            items: apiData.items.map((item) => item.message).toList(),
-          ),
-        );
         return apiData;
       }
     } on Exception catch (e) {
@@ -404,13 +396,6 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     return getFavouritesStateFromHive();
-  }
-
-  Future<void> clear() async {
-    final favoritesBox = await ref.read(hiveProvider(_boxName).future);
-    await favoritesBox.clear();
-    const newState = FavouritesState(items: []);
-    await _updateState(newState);
   }
 }
 

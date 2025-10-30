@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../models/event_model.dart';
 import '../models/event_super_properties.dart';
@@ -39,18 +38,14 @@ class LogsViewModel {
 
   void sendEventFromModel({required EventModel event}) async {
 // UX Cam Events
-    FlutterUxcam.logEventWithProperties(
-      event.nameEvent,
-      event.toJson(),
-    );
-    Sentry.captureException(
-      SentryException(
-        type: event.nameEvent,
-        value: event.message,
-        unknown: event.toJson(),
-      ),
-    );
+    if (RemoteConfig.uxCamKey.isNotEmpty) {
+      FlutterUxcam.logEventWithProperties(
+        event.nameEvent,
+        event.toJson(),
+      );
+    }
   }
+
 
   void timeEventFromModel({required EventModel event}) async {
     mixpanel.timeEvent(event.nameEvent);

@@ -32,100 +32,84 @@ class RoutingHistory extends ConsumerWidget {
     final history = ref.watch(searchHistoryProvider(SearchScopeEnum.routes.value))
       ..retainWhere((e) => e.objectId != null);
 
-    if (history.isEmpty) {
-      return const RoutingHistoryEmpty();
-    }
+    return history.isEmpty
+        ? const RoutingHistoryEmpty()
+        : SearchHistoryCollapsible(
+            history: history,
+            onClear: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.searchClearButton,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+              );
+              ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).clear();
+            },
+            onDelete: (item) {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.searchOnDelete,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'item': item.objectId,
+                },
+              );
 
-    history.sort((a, b) {
-      final aCreated = a.createdAt;
-      final bCreated = b.createdAt;
-      if (aCreated != null && bCreated != null) {
-        return DateTime.parse(bCreated).compareTo(DateTime.parse(aCreated));
-      } else if (aCreated == null && bCreated == null) {
-        return 0;
-      } else if (aCreated != null && bCreated == null) {
-        return -1;
-      } else if (aCreated == null && bCreated != null) {
-        return 1;
-      }
-      return 0;
-    });
+              ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
+            },
+            onTap: (item, index, historyList) async {
+              Metrics.logEventAdvanced(
+                MetricsConstants.routesKeys.routeSelectionChangeNavType,
+                group: MetricsConstants.routesTag,
+                action: MetricAction.tap.toString(),
+                props: {
+                  'item': item.objectId,
+                },
+              );
+              final dgisController = await ref.read(dgisControllerProvider.future);
+              try {
+                final object = await dgisController.searchByObjectId(
+                  DgisObjectIdMessage(
+                    objectId: int.tryParse(item.objectId ?? '') ?? 0,
+                    entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
+                  ),
+                );
 
-    return SearchHistoryCollapsible(
-      history: history,
-      onClear: () {
-        Metrics.logEventAdvanced(
-          MetricsConstants.routesKeys.searchClearButton,
-          group: MetricsConstants.routesTag,
-          action: MetricAction.tap.toString(),
-        );
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).clear();
-      },
-      onDelete: (item) {
-        Metrics.logEventAdvanced(
-          MetricsConstants.routesKeys.searchOnDelete,
-          group: MetricsConstants.routesTag,
-          action: MetricAction.tap.toString(),
-          props: {
-            'item': item.objectId,
-          },
-        );
-
-        ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
-      },
-      onTap: (item, index, historyList) async {
-        Metrics.logEventAdvanced(
-          MetricsConstants.routesKeys.routeSelectionChangeNavType,
-          group: MetricsConstants.routesTag,
-          action: MetricAction.tap.toString(),
-          props: {
-            'item': item.objectId,
-          },
-        );
-        final dgisController = await ref.read(dgisControllerProvider.future);
-        try {
-          final object = await dgisController.searchByObjectId(
-            DgisObjectIdMessage(
-              objectId: int.tryParse(item.objectId ?? '') ?? 0,
-              entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
-            ),
+                final point = RoutePointDirectoryObject(object);
+                updatePoint(point);
+              } catch (e) {
+                final result = await context.router.push(
+                  ErrorSheetDialogRoute(
+                    buttonLabel: context.l10n.tryAgain,
+                    onRetry: () => context.router.popForced(true),
+                    onClose: (_) => context.router.popForced(true),
+                    onBarrierTap: () => context.router.popForced(true),
+                  ),
+                );
+                await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
+                if (result != null && result as bool) {
+                  searchByQuery(item.title);
+                }
+              }
+              final bssHistoryHandlingType = item.objectId != null
+                  ? BssHistoryHandlingType.openRecord
+                  : BssHistoryHandlingType.searchSuggestedText;
+              await BssService.instance.sendEvent(
+                BssRequest(
+                  eventType: BSSEventType.action,
+                  actionType: BSSActionType.tap,
+                  uiElement: BssUIElement(
+                    name: BssUIElementNames.historyItem,
+                    ownerName: BssUIElementNames.historyList,
+                    position: index + 1,
+                  ),
+                  payload: BssPayload(
+                    searchRequest: BssSearchRequest(text: item.title),
+                    historyItem: item.toBss(bssHistoryHandlingType),
+                    historyList: historyList,
+                  ),
+                ),
+              );
+            },
           );
-
-          final point = RoutePointDirectoryObject(object);
-          updatePoint(point);
-        } catch (e) {
-          final result = await context.router.push(
-            ErrorSheetDialogRoute(
-              buttonLabel: context.l10n.tryAgain,
-              onRetry: () => context.router.popForced(true),
-              onClose: (_) => context.router.popForced(true),
-              onBarrierTap: () => context.router.popForced(true),
-            ),
-          );
-          await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
-          if (result != null && result as bool) {
-            searchByQuery(item.title);
-          }
-        }
-        final bssHistoryHandlingType =
-            item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
-        await BssService.instance.sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: BssUIElement(
-              name: BssUIElementNames.historyItem,
-              ownerName: BssUIElementNames.historyList,
-              position: index + 1,
-            ),
-            payload: BssPayload(
-              searchRequest: BssSearchRequest(text: item.title),
-              historyItem: item.toBss(bssHistoryHandlingType),
-              historyList: historyList,
-            ),
-          ),
-        );
-      },
-    );
   }
 }

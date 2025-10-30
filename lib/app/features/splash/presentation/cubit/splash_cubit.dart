@@ -20,10 +20,10 @@ class SplashCubit extends Cubit<SplashState> {
 
   void fetchSplashData() async {
     try {
-      Map<String, dynamic>? dataOffline = null;//sharedPrefs.getDataOfSplash();
+      Map<String, dynamic>? dataOffline = sharedPrefs.getDataOfSplash();
       if (dataOffline == null) {
         emit(const OfflineSplashState());
-       // getNewOnlineSplashAndDownload();
+        getNewOnlineSplashAndDownload();
       } else {
         SplashModel splashData = SplashModel.fromJson(dataOffline);
         final currentDate = DateTime.now();

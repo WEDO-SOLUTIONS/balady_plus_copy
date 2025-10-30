@@ -90,7 +90,7 @@ class PoiContentSliver extends ConsumerWidget {
                 eventType: BSSEventType.action,
                 actionType: BSSActionType.tap,
                 uiElement: const BssUIElement(
-                  name: BssUIElementNames.contact,
+                  name: BssUIElementNames.contactTap,
                   ownerName: BssUIElementNames.cardInformation,
                 ),
                 payload: BssPayload(

@@ -3,26 +3,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 
 extension RouteSearchOptionsMessageIcon on RouteSearchOptionsMessage {
-  IconData icon(
-    BuildContext context, {
-    required bool isOffline,
-    required bool isPedestrianBlocked,
-    required bool hasPublicTransportData,
-  }) {
-    final ltr = Directionality.of(context) == TextDirection.ltr;
-
-    IconData pedestrian({required bool error}) => ltr
-        ? (error ? TransportIcons.pedestrianErrorLTR : TransportIcons.pedestrianLTR)
-        : (error ? TransportIcons.pedestrianErrorRTL : TransportIcons.pedestrianRTL);
-
-    if (this == RouteSearchOptionsMessage.pedestrian) {
-      return pedestrian(error: isOffline || isPedestrianBlocked);
-    } else if (this == RouteSearchOptionsMessage.car) {
-      return isOffline ? TransportIcons.carError : TransportIcons.car;
-    } else if (this == RouteSearchOptionsMessage.publicTransport) {
-      return (isOffline || hasPublicTransportData) ? TransportIcons.tramError : TransportIcons.tram;
-    }
-
-    return TransportIcons.car;
-  }
+  IconData icon(BuildContext context) => switch (this) {
+        RouteSearchOptionsMessage.pedestrian =>
+          Directionality.of(context) == TextDirection.ltr ? TransportIcons.pedestrianLTR : TransportIcons.pedestrianRTL,
+        RouteSearchOptionsMessage.car => TransportIcons.car,
+        RouteSearchOptionsMessage.publicTransport => TransportIcons.tram,
+        _ => TransportIcons.car,
+      };
 }

@@ -97,12 +97,9 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
-    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
-    final parkingManager = ref.read(parkingManageProvider.notifier);
-
     ref.onDispose(() {
-      selectedMarker.removeMarker(poiPinId);
-      parkingManager.restoreMarker();
+      ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+      ref.read(parkingManageProvider.notifier).restoreMarker();
     });
 
     state = const AsyncValue.loading();

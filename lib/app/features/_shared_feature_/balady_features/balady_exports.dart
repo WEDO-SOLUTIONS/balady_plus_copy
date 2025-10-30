@@ -1,6 +1,7 @@
 /** This Document is to provide the exports that Urbi will used inside Balady App */
 
 // Event Model
+export '../../events/domain/entities/search_events/search_events_item.dart';
 
 //! Home Cards
 
@@ -11,6 +12,7 @@ export 'widgets/home/pary_card/prayer_home_card.dart';
 //? PrayerHomeCard()
 
 // Calendar Home Card
+export 'widgets/home/calendar_card/calendar_home_item_card.dart';
 
 export 'widgets/home/calendar_card/calendar_home_card.dart';
 

@@ -138,6 +138,7 @@ enum BssUIElementNames {
   placeCardFull,
   buildRoute,
   actionBar,
+  contactTap,
   bookmark,
   contact,
   cardInformation,

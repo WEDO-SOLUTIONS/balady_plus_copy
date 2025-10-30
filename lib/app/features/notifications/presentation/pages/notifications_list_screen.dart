@@ -1,9 +1,9 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/notifications/data/model/notifications_list/search_notifications_params.dart';
 import 'package:balady_plus/app/features/notifications/data/repositories/notification_repository_implementation.dart';
+import 'package:balady_plus/app/features/notifications/domain/repositories/notification_repository.dart';
 import 'package:balady_plus/app/features/notifications/presentation/bloc/cubit_notification_filter/notifications_filter_cubit.dart';
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_list_cubit.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/actions_appbar/action_show_filter_widget.dart';
@@ -11,6 +11,8 @@ import 'package:balady_plus/app/features/notifications/presentation/widgets/acti
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notification_search_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_filters_types_widget/notifications_filters_types_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_items_widget/notifications_list_items_widget.dart';
+import 'package:balady_plus/app/features/notifications/presentation/widgets/notifications_types_widget/notifications_types_select_widget.dart';
+import 'package:balady_plus/app/features/profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -33,10 +35,33 @@ class NotificationsListScreen extends StatelessWidget {
           create: (_) {
             NotificationRepositoryImplementation listRepository = sl();
             EntryPointCubit auth = context.read<EntryPointCubit>();
-            // final selectedAgent = auth.state.selectedAgent;
-            // final selectedDelegator = auth.state.selectedDelegator;
+            final selectedAgent = auth.state.selectedAgent;
+            final selectedDelegator = auth.state.selectedDelegator;
             late Map<String, dynamic> persoana;
-            if (auth.state.userInfo != null) {
+            if (selectedAgent != null) {
+              persoana = {
+                "typeId": "person",
+                "ids": [
+                  {
+                    "typeId": "identity-number",
+                    "value": selectedAgent.ownerNumber,
+                    "sourceId": "moi",
+                    "attributes": {"type": selectedAgent.ownerTypeId}
+                  }
+                ]
+              };
+            } else if (selectedDelegator != null) {
+              persoana = {
+                "typeId": "cr",
+                "ids": [
+                  {
+                    "typeId": "national-number",
+                    "value": selectedDelegator.unifiedNationalNumber,
+                    "sourceId": "mci"
+                  }
+                ]
+              };
+            } else if (auth.state.userInfo != null) {
               persoana = {
                 "typeId": "person",
                 "ids": [
