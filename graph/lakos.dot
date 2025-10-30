@@ -4090,8 +4090,6 @@ digraph "" {
   "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/widgets/landing/quick_action_button.dart";
   "/lib/widgets/landing/dashboard/dashboard.dart" -> "/lib/widgets/stories/lib/stories_widget.dart";
   "/lib/widgets/landing/dashboard/cityescape_control.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/landing/events_home_card_wrapper.dart" -> "/lib/shared/constants/metrics_constants.dart";
-  "/lib/widgets/landing/events_home_card_wrapper.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/widgets/landing/qibla_card.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/widgets/landing/qibla_card.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/landing/qibla_card.dart" -> "/lib/shared/lib/urbi_metrics.dart";
@@ -5399,9 +5397,12 @@ digraph "" {
   "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/routing/providers/public_transport_arrived.dart" -> "/lib/shared/lib/common_functions.dart";
   "/lib/features/routing/providers/public_transport_arrived.dart" -> "/lib/shared/providers/location.dart";
+  "/lib/features/cityscape/cityscape.dart" -> "/lib/app/auto_route/app_routes.dart";
+  "/lib/features/cityscape/cityscape.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/features/cityscape/cityscape.dart" -> "/lib/features/cityscape/cityscape_debug.dart";
-  "/lib/features/cityscape/cityscape.dart" -> "/lib/shared/providers/map/camera_position.dart";
-  "/lib/features/cityscape/cityscape.dart" -> "/lib/shared/providers/map/point_of_interest.dart";
+  "/lib/features/cityscape/cityscape.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
+  "/lib/features/cityscape/cityscape.dart" -> "/lib/shared/providers/dgis_environment.dart";
+  "/lib/features/cityscape/cityscape.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/features/app_analytics/app_analytics.dart";
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/car_connection.dart";
