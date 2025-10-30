@@ -79,6 +79,17 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
 
+    final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
+
+    if (isCityscapeObject) {
+      return _CityscapePoiCardContent(
+        objectId: widget.objectId.objectId,
+        closestPoint: widget.closestPoint,
+        cameraConfig: widget.cameraConfig,
+        poiCardState: poiCardState,
+      );
+    }
+
     // We need to leave this block of code to specify the point where the route will be built. (BSA-2415)
     //
     // Example: The user put a point on the map in a field (or desert). If we don't change markerPosition to closestPoint,
