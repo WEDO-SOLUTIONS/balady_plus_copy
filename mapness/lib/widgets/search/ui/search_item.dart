@@ -133,24 +133,26 @@ class SearchItem extends ConsumerWidget {
                         style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                       ),
                       Spacing.$1x.heightBox,
-                      Text.rich(
-                        TextSpan(
-                          text: subtitle,
-                          children: [
-                            if (closedStatus.isNotEmpty)
-                              TextSpan(
-                                text: ' • ',
-                                style:
-                                    context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                              ),
-                            if (closedStatus.isNotEmpty)
-                              TextSpan(
-                                text: closedStatus,
-                                style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
-                              ),
-                          ],
-                        ),
-                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              subtitle,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+                            ),
+                          ),
+                          if (closedStatus.isNotEmpty)
+                            Text(
+                              ' • ',
+                              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                            ),
+                          if (closedStatus.isNotEmpty)
+                            Text(closedStatus,
+                                style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text))
+                        ],
                       ),
                       Spacing.$1x.heightBox,
                       Row(
