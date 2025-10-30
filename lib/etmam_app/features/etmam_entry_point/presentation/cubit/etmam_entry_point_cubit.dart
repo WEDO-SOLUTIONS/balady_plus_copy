@@ -188,9 +188,9 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
     final failureOrSuccessForProfile = await _getForceVersion(NoParams());
     await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
       print("SUCCCCCCCCESSSSSS ${success}");
-      if (success)
-        showUpdateAppPopUpWidget(
-            NavigationService.navigatorKey.currentContext!);
+      // if (success)
+      //   showUpdateAppPopUpWidget(
+      //       NavigationService.navigatorKey.currentContext!);
     });
   }
 }

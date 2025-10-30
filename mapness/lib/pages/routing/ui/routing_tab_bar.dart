@@ -18,7 +18,6 @@ class RouteTabBar extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   final AsyncValue<List<RouteInfo>> routes;
-  final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
 
   const RouteTabBar({
     required this.onChanged,
@@ -26,7 +25,6 @@ class RouteTabBar extends ConsumerStatefulWidget {
     required this.points,
     required this.publicTransportVisibility,
     required this.routes,
-    required this.publicTransportRoutes,
     super.key,
   });
 
@@ -37,6 +35,14 @@ class RouteTabBar extends ConsumerStatefulWidget {
 class _RouteTabBarState extends ConsumerState<RouteTabBar> {
   @override
   Widget build(BuildContext context) {
+    final publicTransportRoutes = ref.watch(
+      publicTransportRoutesProvider(
+        startPoint: widget.points[0],
+        finishPoint: widget.points[1],
+        navType: RouteSearchOptionsMessage.publicTransport,
+      ),
+    );
+
     final carConnected = ref.watch(carConnectionProvider).maybeWhen(
           data: (connected) => connected,
           orElse: () => false,
@@ -55,14 +61,15 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
               primaryIcon: SystemIcons.tuning,
             ),
             // when car connected, choice of route search options shouldn't be available to user
-            if (!carConnected) _getRouteSearchOptionsWidgets(context),
+            if (!carConnected) _getRouteSearchOptionsWidgets(context, publicTransportRoutes),
           ].insertBetween(Spacing.$2x.widthBox).toList(),
         ),
       ),
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(BuildContext context) {
+  Widget _getRouteSearchOptionsWidgets(
+      BuildContext context, AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes) {
     final chips = [
       RouteSearchOptionsMessage.car,
       RouteSearchOptionsMessage.publicTransport,
@@ -82,7 +89,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
                 leadingIcon: TabsV2IconData(
                   chip.icon(
                     context,
-                    hasPublicTransportData: (widget.publicTransportRoutes.asData?.valueOrNull ?? []).isEmpty,
+                    hasPublicTransportData: (publicTransportRoutes.asData?.valueOrNull ?? []).isEmpty,
                     isPedestrianBlocked: errorPedestrian,
                     isOffline: noInternetException,
                   ),

@@ -31,6 +31,7 @@ class Routes extends _$Routes {
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
   }) async {
+    final online = ref.watch(networkStatusProvider);
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
       finishPoint != null ? [finishPoint.latitude, finishPoint.longitude] : null,
@@ -64,8 +65,6 @@ class Routes extends _$Routes {
       subscription?.cancel();
       cancelableCompleter.operation.cancel();
     });
-
-    final online = ref.watch(networkStatusProvider);
 
     if (!online && !cancelableCompleter.isCompleted) {
       cancelableCompleter.completeError(const NoInternetException());

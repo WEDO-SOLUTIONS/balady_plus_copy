@@ -54,7 +54,25 @@ class RoutesCarousel extends ConsumerWidget {
 
       return routesAsync.when(
         loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
-        error: (err, st) => PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound),
+        error: (err, st) {
+          if (err is NoInternetException ||
+              (publicTransportVisibility.hasError && publicTransportVisibility.error is NoInternetException)) {
+            return PathCardFailure.noInternet(
+              refresh: refresh,
+              text: context.l10n.noInternetConnection,
+            );
+          } else if (publicTransportVisibility.value?.reason == PublicTransportVisibilityReason.findRouteError) {
+            return PathCardFailure.nearestMetroTooFar(
+              refresh: () {
+                ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+              },
+              text: context.l10n.nearestMetroTooFar,
+              labelButton: context.l10n.goByCar,
+            );
+          }
+
+          return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
+        },
         data: (routes) {
           if (routes.isEmpty) {
             return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
@@ -191,8 +209,6 @@ class RoutesCarousel extends ConsumerWidget {
         return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
       },
       loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
-      skipLoadingOnRefresh: false,
-      skipLoadingOnReload: false,
     );
   }
 

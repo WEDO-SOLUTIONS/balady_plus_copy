@@ -64,7 +64,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
   }) async {
-    final online = ref.read(networkStatusProvider);
+    final online = ref.watch(networkStatusProvider);
     try {
       if (!online) {
         throw const NoInternetException();
@@ -101,6 +101,12 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
         reason: e.reason,
+      );
+    } on PublicTransportVisibilityIsTooFarException catch (_) {
+      return const PublicTransportVisibilityResult(
+        isBothInRiyadh: false,
+        hasPublicTransportRoutes: false,
+        reason: PublicTransportVisibilityReason.findRouteError,
       );
     } catch (error) {
       if (!online) {
@@ -150,19 +156,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         finishPoint: finishPoint.routeSearchPointMessage,
       );
 
-      if (initialRoutes.routes.isNotEmpty) {
-        return true;
-      }
-
-      await Future.delayed(PublicTransportVisibilityConfig.retryDelay);
-
-      final retryRoutes = await dgisController.findRoute(
-        options: RouteSearchOptionsMessage.publicTransport,
-        startPoint: startPoint.routeSearchPointMessage,
-        finishPoint: finishPoint.routeSearchPointMessage,
-      );
-
-      return retryRoutes.routes.isNotEmpty;
+      return initialRoutes.routes.isNotEmpty;
     } catch (e) {
       if (!online) {
         throw const NoInternetException();
