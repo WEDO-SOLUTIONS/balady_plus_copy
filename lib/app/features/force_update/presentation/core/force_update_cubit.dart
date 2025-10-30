@@ -55,14 +55,14 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
     if (currentVersionNo != null &&
         latestVersionNo != null &&
         forceUpdate != null) {
-      // if (forceUpdate) {
-      //   Version currentVersion = Version.parse(currentVersionNo);
-      //   Version latestVersion = Version.parse(latestVersionNo);
-      //   if (currentVersion < latestVersion) {
-      //     emit(const HaveForceUpdateState());
-      //     return true;
-      //   }
-      // }
+      if (forceUpdate) {
+        Version currentVersion = Version.parse(currentVersionNo);
+        Version latestVersion = Version.parse(latestVersionNo);
+        if (currentVersion < latestVersion) {
+          emit(const HaveForceUpdateState());
+          return true;
+        }
+      }
     }
     emit(const NotHaveForceUpdateState());
     return false;
