@@ -42,6 +42,8 @@
   <string name="meter">m</string>
   <string name="kilometer">km</string>
   <string name="back">Back</string>
+  <string name="hoursShort">h</string>
+  <string name="minutesShort">min</string>
 
   <!-- Settings -->
   <string name="settings_title">Settings</string>

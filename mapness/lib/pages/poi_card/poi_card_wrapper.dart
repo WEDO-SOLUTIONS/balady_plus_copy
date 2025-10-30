@@ -32,8 +32,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final routes = context.router.stack;
-      prevRouteNavi = routes.length >= 2 &&
-          routes[routes.length - 2].name == PathNavRoute.name;
+      prevRouteNavi = routes.length >= 2 && routes[routes.length - 2].name == PathNavRoute.name;
     });
   }
 
@@ -66,29 +65,21 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     final state = ref.watch(viewModelProvider);
     ref.listen(poiCardClosingProvider, (_, shouldClose) {
       if (shouldClose) {
-        context.router
-            .removeWhere((route) => route.name == PoiCardWidgetRoute.name);
+        context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
       }
     });
 
     final poiCardState = state.valueOrNull;
     final storeParking = ref.read(parkingManageProvider.notifier);
-    final storeParkingData = ref
-        .read(parkingManageProvider)
-        .valueOrNull
-        ?.convertToDirectoryObject(context);
+    final storeParkingData = ref.read(parkingManageProvider).valueOrNull?.convertToDirectoryObject(context);
     final isParkingPoi = widget.objectId.objectId == parkingObjectId;
-    final data =
-        isParkingPoi ? storeParkingData : poiCardState?.gisObjectIdMessage;
+    final data = isParkingPoi ? storeParkingData : poiCardState?.gisObjectIdMessage;
 
     if (isParkingPoi) {
-      storeParking.addPinParking(
-          storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
+      storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
 
-    final isCityscapeObject = ref
-        .read(cityscapeProvider.notifier)
-        .showCustomPin(widget.objectId.objectId);
+    final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
 
     if (isCityscapeObject) {
       return _CityscapePoiCardContent(
@@ -120,14 +111,11 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       if (state.isLoading && widget.objectId.objectId != parkingObjectId) {
         return const PoiLoading();
       }
-      if ((state.hasError && widget.objectId.objectId != parkingObjectId) ||
-          objectId == null) {
+      if ((state.hasError && widget.objectId.objectId != parkingObjectId) || objectId == null) {
         // sometimes error code is in message and sometimes in code, idk, probably changed in releases
         final isPlatformException = state.error is PlatformException &&
-            ((state.error! as PlatformException).code ==
-                    PoiError.platformExceptionCode ||
-                (state.error! as PlatformException).message ==
-                    'NotFoundException');
+            ((state.error! as PlatformException).code == PoiError.platformExceptionCode ||
+                (state.error! as PlatformException).message == 'NotFoundException');
 
         if (isPlatformException) {
           return PoiError(
@@ -135,12 +123,8 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
             errorContent: context.l10n.saudiPassSomethingWentWrongHint,
             buttonLabel: context.l10n.complete,
             onClose: () async {
-              await ref
-                  .read(selectedMarkerProvider.notifier)
-                  .removeMarker(poiPinId);
-              await ref
-                  .read(highlightProvider.notifier)
-                  .removeHighlight(widget.objectId);
+              await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
               context.router.popForced();
             },
             onRetry: () {
@@ -196,10 +180,7 @@ void _onDirectionsTap(
   Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
       group: MetricsConstants.poiTag,
       action: MetricAction.tap.toString(),
-      props: {
-        'object_id': objectId,
-        'finish_point': '${finishPoint.latitude},${finishPoint.longitude}'
-      });
+      props: {'object_id': objectId, 'finish_point': '${finishPoint.latitude},${finishPoint.longitude}'});
 
   openRoutingRoutes(context, objectId, title, finishPoint, ref);
 }
@@ -222,8 +203,7 @@ Future<void> _onFavoriteTap({
         },
       );
 
-      toggleFavoriteDirectoryObject(
-          context: context, ref: ref, data: data, favouriteItem: favouriteItem);
+      toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);
     },
   );
 }

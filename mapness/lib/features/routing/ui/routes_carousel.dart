@@ -2,7 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
-import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
@@ -22,6 +21,7 @@ class RoutesCarousel extends StatelessWidget {
     required this.points,
     required this.navType,
     required this.publicTransportVisibility,
+    required this.routes,
     super.key,
   });
 
@@ -30,6 +30,7 @@ class RoutesCarousel extends StatelessWidget {
   final List<RouteParamsPointWithLabel?> points;
   final Function(RouteInfo) startNavigation;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
+  final AsyncValue<List<RouteInfo>> routes;
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
@@ -39,6 +40,7 @@ class RoutesCarousel extends StatelessWidget {
           biggestWidth: constraints.biggest.width,
           navType: navType,
           publicTransportVisibility: publicTransportVisibility,
+          routes: routes,
         ),
       );
 }
@@ -50,6 +52,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
     required this.startNavigation,
     required this.biggestWidth,
     required this.publicTransportVisibility,
+    required this.routes,
   });
 
   final RouteSearchOptionsMessage navType;
@@ -57,6 +60,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
   final Function(RouteInfo) startNavigation;
   final List<RouteParamsPointWithLabel?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
+  final AsyncValue<List<RouteInfo>> routes;
 
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();
@@ -71,7 +75,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: widget.navType.cardWidthWithPadding / widget.biggestWidth,
+      viewportFraction:
+          widget.navType.cardWidthWithPadding / widget.biggestWidth,
     );
   }
 
@@ -81,15 +86,6 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
     final finishPoint = widget.points.last?.value;
     final intermediatePoints = widget.points.getIntermediatePoints();
 
-    final routes = ref.watch(
-      routesProvider(
-        startPoint: startPoint,
-        finishPoint: finishPoint,
-        navType: widget.navType,
-        intermediatePoints: intermediatePoints,
-      ),
-    );
-
     final publicTransportRoutes = ref.watch(
       publicTransportRoutesProvider(
         startPoint: startPoint,
@@ -98,12 +94,11 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
         intermediatePoints: intermediatePoints,
       ),
     );
-    ref.watch(activePublicTransportRouteProvider);
 
     return widgets.RoutesCarousel(
       navType: widget.navType,
       pageController: _pageController,
-      routes: routes,
+      routes: widget.routes,
       publicTransportRoutes: publicTransportRoutes,
       onActiveChanged: _onActiveChanged,
       refresh: _refresh,
@@ -121,7 +116,10 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
     _activeRoute = index;
 
-    ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
+    ref
+        .read(dgisControllerProvider)
+        .value
+        ?.setPublicTransportActiveRoute(index);
   }
 
   void _refresh() {
@@ -152,7 +150,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       ..setLatitude(finishLocation.latitude)
       ..setLongitude(finishLocation.longitude);
 
-    final startPointExists = startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
+    final startPointExists =
+        startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
     final startPointEta = startPointExists
         ? startPoint!.etaPoint
         : EtaRoutePoint(
@@ -160,7 +159,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
             lon: location.longitude,
             label: startPoint?.label,
           );
-    final finishPointExists = finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
+    final finishPointExists =
+        finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
     final finishPointEta = finishPointExists
         ? finishPoint!.etaPoint
         : EtaRoutePoint(

@@ -33,44 +33,46 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
 
     final textEditingController = useTextEditingController(text: initialText);
 
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      behavior: HitTestBehavior.opaque,
-      child: ToggleSheet(
-        scrollController: scrollController,
-        backgroundColor: context.colors.backgroundSurface4,
-        safeAreaColor: context.colors.backgroundSurface4,
-        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
-        shouldPop: (_) => false,
-        header: AppFeedbackSheetHeader(
-          onBackTap: context.router.popForced,
-          title: context.l10n.appFeedbackInputTitle,
-        ),
-        content: [
-          AppFeedbackInput(
-            textController: textEditingController,
-            textInputAction: TextInputAction.go,
-            maxCharsAllowed: maxCharsAllowed,
+    return Scaffold(
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        behavior: HitTestBehavior.opaque,
+        child: ToggleSheet(
+          scrollController: scrollController,
+          backgroundColor: context.colors.backgroundSurface4,
+          safeAreaColor: context.colors.backgroundSurface4,
+          dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+          shouldPop: (_) => false,
+          header: AppFeedbackSheetHeader(
+            onBackTap: context.router.popForced,
+            title: context.l10n.appFeedbackInputTitle,
           ),
-        ],
-        footer: Padding(
-          padding: const EdgeInsets.all(Spacing.$4x).copyWith(
-            bottom: Spacing.$8x,
-          ),
-          child: SizedBox(
-            width: double.infinity,
-            child: ListenableBuilder(
-              listenable: textEditingController,
-              builder: (context, child) => AppButton(
-                primaryLabel: context.l10n.appFeedbackAddNote,
-                buttonColorScheme: ButtonColorScheme.accentSecondary,
-                buttonState: textEditingController.text.length > maxCharsAllowed
-                    ? ButtonState.disabled
-                    : ButtonState.defaultState,
-                size: ButtonSize.large,
-                onTap: () {
-                  context.router.popForced(textEditingController.text);
-                },
+          content: [
+            AppFeedbackInput(
+              textController: textEditingController,
+              textInputAction: TextInputAction.go,
+              maxCharsAllowed: maxCharsAllowed,
+            ),
+          ],
+          footer: Padding(
+            padding: const EdgeInsets.all(Spacing.$4x).copyWith(
+              bottom: Spacing.$8x,
+            ),
+            child: SizedBox(
+              width: double.infinity,
+              child: ListenableBuilder(
+                listenable: textEditingController,
+                builder: (context, child) => AppButton(
+                  primaryLabel: context.l10n.appFeedbackAddNote,
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonState: textEditingController.text.length > maxCharsAllowed
+                      ? ButtonState.disabled
+                      : ButtonState.defaultState,
+                  size: ButtonSize.large,
+                  onTap: () {
+                    context.router.popForced(textEditingController.text);
+                  },
+                ),
               ),
             ),
           ),

@@ -1,7 +1,9 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/search/models/search_region_bound.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/search/providers/search_region_bound_provider.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -35,6 +37,10 @@ class PublicTransportVisibilityException implements Exception {
   });
 }
 
+class PublicTransportVisibilityIsTooFarException implements Exception {
+  const PublicTransportVisibilityIsTooFarException();
+}
+
 /// Result of public transport visibility check
 class PublicTransportVisibilityResult {
   final bool isBothInRiyadh;
@@ -59,7 +65,12 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     required RouteParamsPoint? finishPoint,
     RouteParamsPointList? intermediatePoints,
   }) async {
+    final online = ref.read(networkStatusProvider);
     try {
+      if (!online) {
+        throw const NoInternetException();
+      }
+
       final normalizedStartPoint = _normalizePoint(startPoint);
       final normalizedFinishPoint = _normalizePoint(finishPoint);
 
@@ -94,6 +105,10 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         reason: e.reason,
       );
     } catch (error) {
+      if (!online) {
+        throw const NoInternetException();
+      }
+
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
@@ -128,6 +143,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
     RouteParamsPoint finishPoint,
     List<RouteParamsPoint>? intermediatePoints,
   ) async {
+    final online = ref.watch(networkStatusProvider);
     final dgisController = await ref.read(dgisControllerProvider.future);
     final intermediateSearchPoints = intermediatePoints?.map((e) => e.routeSearchPointMessage).toList();
     try {
@@ -142,14 +158,9 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       if (initialRoutes.routes.isNotEmpty) {
         return true;
       }
-    } catch (e) {
-      debugPrint('Error checking public transport routes: ${e.toString()}');
-    }
 
-    // Retry with delay if no routes found
-    await Future.delayed(PublicTransportVisibilityConfig.retryDelay);
+      await Future.delayed(PublicTransportVisibilityConfig.retryDelay);
 
-    try {
       final retryRoutes = await dgisController.findRoute(
         options: RouteSearchOptionsMessage.publicTransport,
         startPoint: startPoint.routeSearchPointMessage,
@@ -159,10 +170,11 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
 
       return retryRoutes.routes.isNotEmpty;
     } catch (e) {
-      throw PublicTransportVisibilityException(
-        message: 'Error checking public transport routes: ${e.toString()}',
-        reason: PublicTransportVisibilityReason.findRouteError,
-      );
+      if (!online) {
+        throw const NoInternetException();
+      }
+
+      throw const PublicTransportVisibilityIsTooFarException();
     }
   }
 

@@ -29,6 +29,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final rubrics = Set<int>.from(cleanupRubrics);
   final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerPath(rubrics, objectId.objectId);
   final bigIconPath = mapMarkerMapper.$2;
+
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
 
   final position = LatLng(
