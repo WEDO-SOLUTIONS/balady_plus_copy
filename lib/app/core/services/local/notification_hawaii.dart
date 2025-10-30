@@ -119,8 +119,7 @@ class HawaiiNotificationService {
       }
       return;
     }
-    // Open notifications List Screen  if user is login and have the idNo
-    if(CommonProperties.userInfo?.idNo != null) {
+    if(CommonProperties.isLoggedIn==true) {
       Future.delayed(const Duration(seconds: 2), () {
         NavigationService.pushNamed(
             routeName: RouteName.notificationsListScreen);

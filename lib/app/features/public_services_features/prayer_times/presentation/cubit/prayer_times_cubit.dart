@@ -1,9 +1,6 @@
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
-import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
-import 'package:balady_plus/app/features/location/domain/use_cases/get_gis_data.dart';
 import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus, CommonFunctions, Prayers;
+import '../../../../vd/vd_exports.dart' show GISParams, GISResponse, GetGISData;
 import '../../prayer_times_exports.dart'
     show
         GetPrayerTimes,

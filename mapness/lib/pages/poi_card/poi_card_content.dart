@@ -30,7 +30,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
       models: [
-        FractionSnappingModel({0.1, .931}),
+        FractionSnappingModel({0.0, .931}),
         OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
@@ -393,7 +393,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
         uiElement: const BssUIElement(
-          name: BssUIElementNames.contact,
+          name: BssUIElementNames.contactTap,
           ownerName: BssUIElementNames.actionBar,
         ),
         payload: BssPayload(

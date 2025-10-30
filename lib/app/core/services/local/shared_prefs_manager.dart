@@ -1,10 +1,14 @@
 import 'dart:convert';
 
 // ignore: depend_on_referenced_packages
-import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
-import 'package:balady_plus/app/features/location/gis_response_model.dart';
+import 'package:balady_plus/app/features/map_page/data/model/suggest_history.dart';
+import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_item_model.dart';
+import 'package:balady_plus/app/features/quran/data/models/quran_book_mark_model.dart';
+import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../../etmam_app/features/_shared_feature_/shared/data/entities/city/city_item.dart';
+import '../../../../etmam_app/features/_shared_feature_/shared/data/models/city/city_item_model.dart';
 import '../../utils/utils_exports.dart' show LocalStorageKey;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -106,7 +110,46 @@ class SharedPrefs {
     return _sharedPreferences?.getString('guestMobile');
   }
 
+  Future<bool> saveQuranBookMark(QuranBookMarkItemModel item) async {
+    String? bookMarks = _sharedPreferences?.getString('quran_book_marks');
+    QuranBookMarkModel model = bookMarks != null
+        ? QuranBookMarkModel.fromJson(
+            _sharedPreferences?.getString('quran_book_marks') ?? "")
+        : QuranBookMarkModel(items: []);
 
+    bool isAdded = false;
+    if (model.items?.contains(item) ?? false) {
+      model.items?.remove(item);
+      isAdded = false;
+    } else {
+      model.items?.add(item);
+      isAdded = true;
+    }
+    await _sharedPreferences?.setString("quran_book_marks", model.toJson());
+    return Future.value(isAdded);
+  }
+
+  Future<bool> checkBookMark(QuranBookMarkItemModel item) async {
+    String? bookMarks = _sharedPreferences?.getString('quran_book_marks');
+    QuranBookMarkModel model = bookMarks != null
+        ? QuranBookMarkModel.fromJson(
+            _sharedPreferences?.getString('quran_book_marks') ?? "")
+        : QuranBookMarkModel(items: []);
+
+    if (model.items?.contains(item) ?? false) {
+      return Future.value(true);
+    } else {
+      return Future.value(false);
+    }
+  }
+
+  Future<QuranBookMarkModel> getQuranBookMark() async {
+    print(_sharedPreferences?.getString('quran_book_marks'));
+    QuranBookMarkModel model = QuranBookMarkModel.fromJson(
+        _sharedPreferences?.getString('quran_book_marks') ?? "");
+
+    return Future.value(model);
+  }
 
   setPrayerSettings(List<String> settings) async =>
       await _sharedPreferences?.setStringList('prayer_settings', settings);
@@ -122,7 +165,111 @@ class SharedPrefs {
         "0",
       ];
 
+  /** Etmam   */
+
+  setCitiesList(List<CityItemModel>? items) async {
+    if (items != null) {
+      await _sharedPreferences?.setString('cities_list',
+          json.encode(List<dynamic>.from(items.map((x) => x.toJson()))));
+    } else {
+      _sharedPreferences?.remove("cities_list");
+    }
+  }
+
+  List<CityItem>? getCitiesList() {
+    var text = _sharedPreferences?.getString('cities_list');
+    var data;
+    if (text != null) data = json.decode(text);
+
+    if (data != null) {
+      List<CityItem>? cities =
+          data.map<CityItemModel>((x) => CityItemModel.fromMap(x)).toList();
+      return cities;
+    }
+    return null;
+  }
+
+  setCurrentCity(CityItemModel? item) async {
+    if (item != null) {
+      await _sharedPreferences?.setString(
+          'current_city', json.encode(item.toJson()));
+    } else {
+      _sharedPreferences?.remove("current_city");
+    }
+  }
+
+  CityItemModel? getCity() {
+    if (_sharedPreferences?.getString('current_city') != null) {
+      CityItemModel token = CityItemModel.fromMap(
+          json.decode(_sharedPreferences?.getString('current_city') ?? ""));
+      return token;
+    }
+    return null;
+  }
+
+  setUserLocation(GISParams? item) async {
+    if (item != null) {
+      await _sharedPreferences?.setString(
+          'gis_user_location', json.encode(item.toMap()));
+    } else {
+      _sharedPreferences?.remove("gis_user_location");
+    }
+  }
+
+  Future<GISParams?> getUserLocation() async {
+    String? bookMarks = _sharedPreferences?.getString('gis_user_location');
+    GISParams? model = bookMarks != null
+        ? GISParams.fromMap(json
+            .decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
+        : null;
+
+    return model;
+  }
+
+  setUserGISLoaction(GISResponseModel? item) async {
+    if (item != null) {
+      await _sharedPreferences?.setString(
+          'gis_user_data', json.encode(item.toMap()));
+    } else {
+      _sharedPreferences?.remove("gis_user_data");
+    }
+  }
+
+  Future<GISResponseModel?> getUserGISData() async {
+    String? bookMarks = _sharedPreferences?.getString('gis_user_data');
+    GISResponseModel? model = bookMarks != null
+        ? GISResponseModel.fromMap(
+            json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
+        : null;
+
+    return model;
+  }
+
   /////////////////////////////////////////////////////////////
+  setSuggestResultHistory(Map<int, SuggestHistory> data) async {
+    Map<String, Map<String, dynamic>> dataMap = {};
+    for (var element in data.keys) {
+      dataMap[element.toString()] = data[element]!.toJson();
+    }
+    await _sharedPreferences?.setString(
+      'SuggestHistory',
+      json.encode(dataMap),
+    );
+  }
+
+  Future<Map<int, SuggestHistory>> getSuggestResultHistory() async {
+    String? data = _sharedPreferences?.getString('SuggestHistory');
+
+    Map<int, SuggestHistory> dataS = {};
+    if (data != null) {
+      Map<String, dynamic> dataMap = json.decode(data);
+      for (var element in dataMap.keys) {
+        dataS[int.parse(element)] = SuggestHistory.fromJson(dataMap[element]!);
+      }
+    }
+
+    return dataS;
+  }
 
   setIsEkramDriver(bool? isEkramDriver) async {
     if (isEkramDriver != null) {
@@ -183,49 +330,6 @@ class SharedPrefs {
     } else {
       return null;
     }
-  }
-
-
-
-
-
-
-  setUserLocation(GISParams? item) async {
-    if (item != null) {
-      await _sharedPreferences?.setString(
-          'gis_user_location', json.encode(item.toMap()));
-    } else {
-      _sharedPreferences?.remove("gis_user_location");
-    }
-  }
-
-  Future<GISParams?> getUserLocation() async {
-    String? bookMarks = _sharedPreferences?.getString('gis_user_location');
-    GISParams? model = bookMarks != null
-        ? GISParams.fromMap(json
-        .decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
-        : null;
-
-    return model;
-  }
-
-  setUserGISLoaction(GISResponseModel? item) async {
-    if (item != null) {
-      await _sharedPreferences?.setString(
-          'gis_user_data', json.encode(item.toMap()));
-    } else {
-      _sharedPreferences?.remove("gis_user_data");
-    }
-  }
-
-  Future<GISResponseModel?> getUserGISData() async {
-    String? bookMarks = _sharedPreferences?.getString('gis_user_data');
-    GISResponseModel? model = bookMarks != null
-        ? GISResponseModel.fromMap(
-        json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
-        : null;
-
-    return model;
   }
 }
 

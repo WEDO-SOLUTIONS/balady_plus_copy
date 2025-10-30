@@ -29,6 +29,7 @@ class RouteName {
   static const locationPage = 'Smart_Assistant_Location_Page';
 
   //! Setting
+  static const personalInformation = '/personalInformation';
   static const dashboard = 'Dashboard_Page';
   static const notificationPage = '/notificationPage';
   static const requests = 'My_Requests_Page';
@@ -141,9 +142,9 @@ class RouteName {
   static const weatherMainPage = '/weather_main_page';
   // -------  Map ---------
   static const MapDetailsPage = '/mapDetailsPage';
-  // static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
-  // static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
-  // static const ResturantDetailsPage = "/ResturantDetailsPage";
+  static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
+  static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
+  static const ResturantDetailsPage = "/ResturantDetailsPage";
 
   // -------  CRM Details ---------
 
@@ -167,7 +168,7 @@ class RouteName {
   static const mainAthkarPage = 'Athkar_Page';
   static const athkarEntitesPage = 'Athkar_Category_Page';
   static const athkarEntityContentPage = 'Athkat_Details_Page';
-  // static const boardingPage = '/boardingPage';
+  static const boardingPage = '/boardingPage';
 
   static const investmentPage = '/investmentPage';
   static const tempRentalPage = '/tempRentalPage';
@@ -292,8 +293,8 @@ class RouteName {
   static const ekramSelectRequestTypeScreen = 'ekramSelectRequestTypeScreen';
   static const ekramRequestTransportationScreen =
       'RequestsTransportingAndPreparingDeceased_Create_Details_Page';
-  static const IdenticalListPage =
-      'IdenticalListPage';
+  static const ekramTransportationDetailsScreen =
+      'RequestsTransportingAndPreparingDeceased_Details_Page';
   static const driverEkramTransportationDetailsScreen =
       'FuneralDriver_Details_Page';
 
@@ -345,7 +346,7 @@ class RouteName {
   static const commercialLicenseQueryDetails =
       'QueryCommercialLicense_query_details_Screen';
 
-  // static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
+  static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
   static const surveyReportInquery = 'SurveyReportInquery_Screen';
   static const surveyReportInqueryDetails = 'SurveyReportInqueryDetails_Screen';
 
@@ -392,13 +393,6 @@ class RouteName {
 
   static String trainingScreen = "trainingScreen";
   static String municipalServicesScreen = "municipalServicesScreen";
-
-
-
-  static String miniAppsMainScreen = "miniAppsMainScreen";
-  static String VolunteerProfile = "VolunteerProfile";
-  static String VolunteerEditProfile="VolunteerEditProfile";
-
 
 }
 

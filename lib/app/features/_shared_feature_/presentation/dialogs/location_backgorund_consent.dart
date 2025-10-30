@@ -1,10 +1,15 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/shared_prefs_manager.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import '../widgets/buttons/custom_buttons_widgets.dart';
 import '../widgets/custom_svg_icon_widget.dart';
 import '../widgets/texts/custom_text_widget.dart';

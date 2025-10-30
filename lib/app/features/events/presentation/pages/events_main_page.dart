@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -12,9 +13,11 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../_shared_feature_/presentation/icons/filter_icon.dart';
+import '../../../profile_features/violations/presentation/widgets/violations_filters_actions.dart';
 import '../../domain/entities/search_events/search_events_params.dart';
 import '../bloc/events_event.dart';
 import '../bloc/events_state.dart';
+import '../widgets/events_main_page_widgets/events_filters_actions.dart';
 
 class EventsMainPage extends StatefulWidget {
   const EventsMainPage({super.key});

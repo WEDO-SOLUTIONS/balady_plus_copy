@@ -16,7 +16,7 @@ class EtaArrivalCard extends HookConsumerWidget {
   const EtaArrivalCard({super.key});
 
   static const minSheetHeight = 176.0;
-  static const imgSize = 21.33;
+  static const imgSize = 32.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -82,19 +82,12 @@ class EtaArrivalCard extends HookConsumerWidget {
               progress: _getProgress(streamData, startDistance),
               image: ClipOval(
                 child: ColoredBox(
-                  color: context.colors.staticWhite.withOpacity(.1),
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.33),
-                    child: Center(
-                      child: CircleAvatar(
-                        radius: imgSize,
-                        backgroundColor: context.colors.staticWhite,
-                        child: SizedBox(
-                          width: imgSize,
-                          height: imgSize,
-                          child: UserPinControl(user: metaInfo?.payload?.user),
-                        ),
-                      ),
+                  color: context.colors.staticWhite,
+                  child: Center(
+                    child: SizedBox(
+                      width: imgSize,
+                      height: imgSize,
+                      child: UserPinControl(user: metaInfo?.payload?.user),
                     ),
                   ),
                 ),
@@ -105,9 +98,9 @@ class EtaArrivalCard extends HookConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: AppButton(
-              buttonColorScheme: ButtonColorScheme.accent,
+              buttonColorScheme: ButtonColorScheme.onColor,
               primaryLabel: context.l10n.back,
-              textColor: context.colors.accentOnAccent,
+              textColor: context.colors.foregroundDefault,
               onTap: () => _cancelEta(context, ref),
             ),
           ),

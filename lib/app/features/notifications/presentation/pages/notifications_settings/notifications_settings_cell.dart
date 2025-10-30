@@ -1,10 +1,11 @@
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_settings/notifications_list_settings_cubit.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+import '../../../../../../etmam_app/core/dependency_injection/injection_container.dart';
+import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/reload_widget.dart';
 import '../../../../../core/utils/constants/app_style.dart';
 import '../../../data/model/notifications_settings_list/category.dart';
 import '../../../data/repositories/notification_repository_implementation.dart';

@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -13,14 +12,6 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';
-
-class NoInternetException implements Exception {
-  const NoInternetException();
-}
-
-class WalkingDistanceException implements Exception {
-  const WalkingDistanceException();
-}
 
 @riverpod
 class Routes extends _$Routes {
@@ -65,33 +56,13 @@ class Routes extends _$Routes {
       cancelableCompleter.operation.cancel();
     });
 
-    final online = ref.watch(networkStatusProvider);
-
-    if (!online && !cancelableCompleter.isCompleted) {
-      cancelableCompleter.completeError(const NoInternetException());
-    }
-
     await dgisController.value?.setRouteParams(params);
     try {
       return await cancelableCompleter.operation.value.timeout(
         const Duration(seconds: 30),
-        onTimeout: () {
-          if (!online) {
-            throw const NoInternetException();
-          }
-
-          throw TimeoutException('Timeout while waiting for routes');
-        },
+        onTimeout: () => throw TimeoutException('Timeout while waiting for routes'),
       );
     } catch (e) {
-      if (navType == RouteSearchOptionsMessage.pedestrian) {
-        throw const WalkingDistanceException();
-      }
-
-      if (!online) {
-        throw const NoInternetException();
-      }
-
       throw TimeoutException('Timeout while waiting for routes');
     }
   }
@@ -107,7 +78,6 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     bool? showOnlyActiveRoute,
     Duration? timeout,
   }) async {
-    final online = ref.watch(networkStatusProvider);
     await AdvancedMetrics.instance.startRouteCalculation(
       startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
       finishPoint != null ? [finishPoint.latitude, finishPoint.longitude] : null,
@@ -139,20 +109,10 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
       cancelableCompleter.operation.cancel();
     });
 
-    if (!online && !cancelableCompleter.isCompleted) {
-      cancelableCompleter.completeError(const NoInternetException());
-    }
-
     await dgisController.value?.setRouteParams(params);
     return cancelableCompleter.operation.value.timeout(
       timeout ?? const Duration(seconds: 30),
-      onTimeout: () {
-        if (!online) {
-          throw const NoInternetException();
-        }
-
-        throw TimeoutException('Timeout while waiting for public transport routes');
-      },
+      onTimeout: () => throw TimeoutException('Timeout while waiting for public transport routes'),
     );
   }
 }

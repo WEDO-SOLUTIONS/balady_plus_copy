@@ -140,64 +140,61 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
           _scrollController,
           widget.state == PoiCardBottomSheetState.open ? const NeverScrollableScrollPhysics() : null,
         ),
-        IgnorePointer(
-          ignoring: widget.state==PoiCardBottomSheetState.halfOpen,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                child: GestureDetector(
-                  onTapDown: (details) {
-                    setState(() {
-                      opacityOfPreviousButton = 1;
-                    });
-                  },
-                  onTapUp: (details) {
-                    setState(() {
-                      opacityOfPreviousButton = 0;
-                    });
-                  },
-                  onTap: _onPrevious,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInOut,
-                    opacity: opacityOfPreviousButton,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            context.colors.neutralDefault.withOpacity(0.9),
-                            context.colors.neutralDefault.withOpacity(0.3),
-                            context.colors.neutralDefault.withOpacity(0),
-                          ],
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft,
-                        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              child: GestureDetector(
+                onTapDown: (details) {
+                  setState(() {
+                    opacityOfPreviousButton = 1;
+                  });
+                },
+                onTapUp: (details) {
+                  setState(() {
+                    opacityOfPreviousButton = 0;
+                  });
+                },
+                onTap: _onPrevious,
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 100),
+                  curve: Curves.easeInOut,
+                  opacity: opacityOfPreviousButton,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          context.colors.neutralDefault.withOpacity(0.9),
+                          context.colors.neutralDefault.withOpacity(0.3),
+                          context.colors.neutralDefault.withOpacity(0),
+                        ],
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
                       ),
                     ),
                   ),
                 ),
               ),
-              const Flexible(flex: 2, child: SizedBox()),
-              Flexible(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTapDown: (details) {
-                    setState(() {
-                      opacityOfNextButton = 1;
-                    });
-                  },
-                  onTapUp: (details) {
-                    setState(() {
-                      opacityOfNextButton = 0;
-                    });
-                  },
-                  onTap: _onNext,
-                  child: const SizedBox.expand(),
-                ),
+            ),
+            const Flexible(flex: 2, child: SizedBox()),
+            Flexible(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTapDown: (details) {
+                  setState(() {
+                    opacityOfNextButton = 1;
+                  });
+                },
+                onTapUp: (details) {
+                  setState(() {
+                    opacityOfNextButton = 0;
+                  });
+                },
+                onTap: _onNext,
+                child: const SizedBox.expand(),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         Opacity(
           opacity: opacity ?? 1,

@@ -222,8 +222,10 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'feedback/edit',
               page: AppFeedbackInputSheet.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
               opaque: false,
               fullscreenDialog: true,
+              customRouteBuilder: RouteBuilders.customBarrierDismissibleBuilder,
             ),
             CustomRoute(
               path: 'poi_favorite_dialog',

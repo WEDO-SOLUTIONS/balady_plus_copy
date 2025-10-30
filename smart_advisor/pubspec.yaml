@@ -1,0 +1,150 @@
+name: smart_advisor
+description: "A new Flutter package project."
+version: 0.0.1
+publish_to: "none"
+
+environment:
+  sdk: ">=3.4.3 <4.0.0"
+  flutter: ">=1.17.0"
+
+dependencies:
+  cupertino_icons: ^1.0.2
+  flutter:
+    sdk: flutter
+  balady_plus:
+    path: ..
+    # Localization app to support multiple languages
+  localize_and_translate:
+    git:
+      url: https://github.com/Demezy/localize_and_translate
+      ref: 4.1.2-dev-fixes
+  ##! Logic
+  # To manage state and separate business logic from UI
+  flutter_bloc: ^8.1.1
+  # Extension methods on Stream adding common transform operators
+  stream_transform: ^2.0.0
+  # Functional programming in Dart e.g. Either<Left,Right>
+  dartz: ^0.10.1
+  # Equality Comparisons among objects
+  equatable: ^2.0.5
+  # Dependency Injection Service Locator
+  get_it: ^7.2.0
+  ##! Internet
+  # Checks for an Active Internet connection
+  internet_connection_checker: ^1.0.0+1
+  # Http client for Dart, which supports Interceptors, Global configuration and others
+  dio: ^5.1.1
+  ##! Actions
+  # for getting commonly used locations on host platform file
+  path_provider: ^2.0.11
+  # Launching a URL, Open contacts and others.
+  url_launcher: ^6.1.5
+  ##! UI
+  # Automatically resizes text to fit perfectly within its bounds
+  auto_size_text: ^3.0.0
+  # To deal with svg icons
+  flutter_svg: ^2.0.5
+  # A Flutter widget that can be expanded or collapsed by the user.
+  expandable: ^5.0.1
+  # Shimmer effect, useful for loading
+  shimmer: ^3.0.0
+  # flutter toast
+  bot_toast:
+  # Date and number formatting
+  intl: ^0.19.0
+  # network image
+  cached_network_image: ^3.2.3
+  google_fonts: ^6.2.1
+  flutter_spinkit: 5.2.1
+  flutter_html:
+    # Location
+  geolocator: ^13.0.1
+  qr_code_scanner: ^1.0.1
+  # Permissions
+  permission_handler: 12.0.0+1
+  webview_flutter:
+  search_highlight_text: ^1.0.0+2
+  scrollable_positioned_list: ^0.3.5
+
+  photo_view: ^0.15.0
+  curl_logger_dio_interceptor: ^1.0.0
+  # easy_stepper:
+  enhance_stepper: ^1.0.1
+  cupertino_stepper:
+  flutter_riverpod: ^2.4.1
+  syncfusion_flutter_pdfviewer: 26.2.14
+
+dev_dependencies:
+  flutter_lints: ^2.0.1
+  flutter_test:
+    sdk: flutter
+
+dependency_overrides:
+  intl: 0.19.0
+  cached_network_image:
+  dio_cache_interceptor: ^3.5.0
+  open_file_plus: ^3.4.1+1
+  archive: ^3.6.1
+  dio: ^5.0.0
+  json_serializable: ^6.7.1
+  flutter_pdfview: 1.4.0
+  device_info_plus: ^10.1.0
+  collection: 1.18.0
+  # curl_logger_dio_interceptor: ^1.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+# The following section is specific to Flutter packages.
+flutter:
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - smart_advisor_assets/
+    - smart_advisor_assets/icons/svg/
+    - smart_advisor_assets/icons/png/
+    - smart_advisor_assets/langs/
+    - smart_advisor_assets/images/
+    - smart_advisor_assets/images/png_icon/
+    - smart_advisor_assets/images/svg_icon/
+    - smart_advisor_assets/maps/configs/
+    - smart_advisor_assets/maps/styles/
+    - smart_advisor_assets/maps/icons/
+    - smart_advisor_assets/maps/icons/card_icon/
+    - smart_advisor_assets/maps/icons/gis_layers_icons/
+    - smart_advisor_assets/files/
+    - smart_advisor_assets/files/qa/
+    - smart_advisor_assets/files/compliance_pdf/text/
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: Frutiger
+      fonts:
+        - asset: smart_advisor_assets/fonts/FrutigerLTArabic65Bold.ttf
+          weight: 700
+        - asset: smart_advisor_assets/fonts/FrutigerLTArabic55Roman.ttf
+          weight: 500
+    - family: SomarSans
+      fonts:
+        - asset: smart_advisor_assets/fonts/SomarSans-Bold.ttf
+          weight: 700
+        - asset: smart_advisor_assets/fonts/SomarSans-Medium.ttf
+          weight: 500
+        - asset: smart_advisor_assets/fonts/SomarSans-Regular.ttf
+          weight: 400
+        - asset: smart_advisor_assets/fonts/SomarSans-SemiBold.ttf
+          weight: 600
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages

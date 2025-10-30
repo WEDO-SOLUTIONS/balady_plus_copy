@@ -41,8 +41,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                 ),
                 width: double.infinity,
                 child: Padding(
-                  padding: const EdgeInsetsDirectional.only(
-                      start: slideSize + Spacing.$6x),
+                  padding: const EdgeInsetsDirectional.only(start: slideSize + Spacing.$6x),
                   child: Text(
                     widget.buttonText,
                     style: context.textStyles.buttonL.copyWith(
@@ -67,9 +66,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                   onHorizontalDragUpdate: (details) {
                     setState(() {
                       final factor = isRTL ? -1 : 1;
-                      _dragPosition =
-                          (_dragPosition + factor * details.delta.dx)
-                              .clamp(0, maxWidth);
+                      _dragPosition = (_dragPosition + factor * details.delta.dx).clamp(0, maxWidth);
                     });
                   },
                   onHorizontalDragEnd: (details) {
@@ -90,7 +87,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                       borderRadius: radius,
                     ),
                     child: Icon(
-                      SystemIcons.arrowRight,
+                      isRTL ? SystemIcons.arrowLeft : SystemIcons.arrowRight,
                       size: 24,
                       color: context.colors.staticWhite,
                     ),

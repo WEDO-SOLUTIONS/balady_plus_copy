@@ -1,10 +1,7 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/model/investment_details_response.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/model/rental_details_response.dart';
 import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
-import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_params.dart';
-import 'package:balady_plus/app/features/events/domain/usecase/get_search_events.dart';
+import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -12,9 +9,19 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/services/global/web_service.dart';
 import '../../../../core/utils/constants/apis/env_types.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
+import '../../../events/domain/entities/search_events/search_events_params.dart';
+import '../../../events/domain/usecase/get_search_events.dart';
+import '../../../map_page/data/model/investment_details_response.dart';
+import '../../../map_page/data/model/rental_details_response.dart';
+import '../../../municipal_services/municipal_advisor/domain/entities/building_compliance_entity.dart';
+import '../../../municipal_services/municipal_advisor/domain/use_cases/get_building_complince.dart';
+import '../../../vd/domain/entities/gis/gis_params.dart';
+import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import '../../presentation/dialogs/need_login_dialog.dart';
@@ -160,15 +167,15 @@ class BaladyServices {
           .replaceAll("{}", CommonProperties.userLocationGIS!.cityName!)
       : "search_map_text".tr();
 
-  // static enableLocationTracking(bool check) {
-  //   sharedPrefs.setLocationConsent(check);
-  //
-  //   if (check == true) {
-  //     sl<WeatherAlertsCubit>().startTracking();
-  //   } else {
-  //     sl<WeatherAlertsCubit>().stopTracking();
-  //   }
-  // }
+  static enableLocationTracking(bool check) {
+    sharedPrefs.setLocationConsent(check);
+
+    if (check == true) {
+      sl<WeatherAlertsCubit>().startTracking();
+    } else {
+      sl<WeatherAlertsCubit>().stopTracking();
+    }
+  }
 
   static bool getLocationTrackingStatus() {
     return sharedPrefs.getLocationConsent() ?? false;
@@ -236,21 +243,25 @@ class BaladyServices {
     return null;
   }
 
+  static void openObjections() {
+    NavigationService.navigatorKey.currentState
+        ?.pushNamed(RouteName.objectableTransactions);
+  }
 
   static Future<bool> checkLocationSettings(BuildContext context) {
     return CommonFunctions.checkLocationSettings(context);
   }
 
-  // static Future<String> getBuildingCompliance(
-  //     BuildContext context, double lat, double lon) async {
-  //   try {
-  //     var r = await GetBuildingCompliance(sl()).call(GISParams(x: lon, y: lat));
-  //
-  //     return r.getRight?.first.stageno ?? "";
-  //   } catch (ex) {
-  //     return "";
-  //   }
-  // }
+  static Future<String> getBuildingCompliance(
+      BuildContext context, double lat, double lon) async {
+    try {
+      var r = await GetBuildingCompliance(sl()).call(GISParams(x: lon, y: lat));
+
+      return r.getRight?.first.stageno ?? "";
+    } catch (ex) {
+      return "";
+    }
+  }
 
   ////
   ///

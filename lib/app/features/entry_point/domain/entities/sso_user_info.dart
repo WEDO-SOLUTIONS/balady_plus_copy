@@ -4,7 +4,6 @@ import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 // Enum to indicate the type of SSO login
 // (e.g., national ID or OTP)
 enum SsoLoginType { nationalId, otp }
@@ -66,13 +65,12 @@ class SsoUserInfo extends Equatable {
   }
 
   String getFirstName() {
-    List<String> names = arName?.split(' ') ?? [""];
-
-    return names.first;
+    // List<String> names = sname?.split(',') ?? [""];
+    return name ?? "";
   }
 
   String getLastName() {
-    List<String> names = arName?.split(' ') ?? [""];
+    List<String> names = sname?.split(',') ?? [""];
 
     return names.last;
   }
@@ -239,16 +237,6 @@ class SsoUserInfo extends Equatable {
 
   String? getFullName() {
     return CommonFunctions.isAppAR ? arName : enName;
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['email'] = mail;
-    data['name'] = name;
-    data['phone'] = phone;
-    data['nameAr'] = arName;
-    data['token'] = CommonProperties.token;
-    return data;
   }
 
   @override

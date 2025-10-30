@@ -1,0 +1,79 @@
+[
+    {
+        "desc": "Modify the use of the building basement parking lots approved in accordance with the license issued to it by the Municipality/ SubMunicipality",
+        "photo": "compliance/building/4.png"
+    },
+    {
+        "desc": "Non-implementation of a ramp for people with disabilities in accordance with “The Simplified Guide for Universal Accessibility Standards to Facilities", 
+        "photo": "compliance/building/1.png"
+    },
+    {
+        "desc": "Non-provision of a side access corridor in front of the special ramp for people with disabilities in accordance with (The Simplified Guide for Universal Accessibility Standards to Facilities) for commercial buildings.",
+        "photo":"compliance/building/2.png"
+    },
+    {
+        "desc":"Non-coverage of septic tanks with protective and proper covers in accordance with municipal requirements",
+        "photo": "compliance/building/8.png"
+    },
+    {
+        "desc": "The existence of dilapidated or incomplete sidewalks constructed by the owner of the building or the owner of the usufruct right, - in the area towards the commercial street -”", 
+        "photo": "compliance/building/9.png"
+    },
+    {
+        "desc": "The existence of dilapidated or incomplete fences",
+        "photo": "compliance/building/13.png"
+    },
+    {
+        "desc": "The existence of distorted barriers (with iron foils/ corrugated galvanized iron) on the setback fence or roof",
+        "photo":"compliance/building/7.png"
+    },
+    {
+        "desc": "There are separate air conditioning units throughout the entire facade of the building overlooking the commercial street.",
+        "photo": "compliance/building/3.png"
+    },
+    {
+        "desc": "The existence of (electrical, plumbing, and mechanical) extensions visible on the building's whole façade that overlooks the commercial street",
+        "photo": "compliance/building/5.png"
+    },
+    {
+        "desc": "The existence of cracks, damage (paints, cladding) or rust on the metal materials on the entire façade of the building, with a total area more than one square meter (1 m2).",
+        "photo": "compliance/building/12.png"
+    },
+    {
+        "desc": "The existence of satellite dishes on the balconies or the entire façade of the building that overlooks the commercial street",
+        "photo": "compliance/building/14.png"
+    },
+    {
+        "desc": "The existence of canopies or hangars outside the property boundaries",
+        "photo": "compliance/building/15.png"
+    },
+    {
+        "desc": "Cover balconies without obtaining the proper licenses from the Municipality/ SubMunicipality",
+        "photo": "compliance/building/6.png"
+    },
+    {
+        "desc": "There are illegal phrases on the entire frontal façades of the building overlooking the commercial street.",
+        "photo": "compliance/building/11.png"
+    },
+    {
+        "desc": "Install the chimneys on the façade of the building not on the side of the building, or their height on the side of the building exceeding the building height by more than (2) meters",
+        "photo": "compliance/building/16.png"
+    },
+    {
+        "desc": "Shops boards do not comply with municipal requirements",
+        "photo": "compliance/building/17.png"
+    },
+    {
+        "desc":"The existence of boards for closed shops with invalid or expired licenses, or the presence of iron structures to install the removed boards",
+        "photo": "compliance/building/19.png"
+    },
+    {
+        "desc": "The existence of old or dilapidated advertising posters on the façade of the building",
+        "photo": "compliance/building/10.png"
+    },
+    {
+        "desc": "The existence of waste and building materials that impede movement on the building’s sidewalk.",
+        "photo": "compliance/building/18.png"
+    }
+    
+]
