@@ -243,6 +243,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       backgroundColor: context.colors.backgroundSurface4,
       shape: shape,
       context: context,
+      scrollControlDisabledMaxHeightRatio: 0.9,
       builder: (context) => ChangePathSheet(
         onConfirm: _onConfirm,
         myLocation:
