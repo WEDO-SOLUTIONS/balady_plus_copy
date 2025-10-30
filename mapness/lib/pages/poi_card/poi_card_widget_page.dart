@@ -14,6 +14,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -36,6 +37,8 @@ import 'package:mapness/features/poi_card/widgets/photos_header/header_component
 import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_contacts_card.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
@@ -66,6 +69,7 @@ import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+part 'cityscape_card_content.dart';
 part 'poi_card_content.dart';
 part 'poi_card_no_info.dart';
 part 'poi_card_wrapper.dart';
