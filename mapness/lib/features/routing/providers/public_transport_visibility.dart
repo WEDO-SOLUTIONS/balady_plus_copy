@@ -156,6 +156,10 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         finishPoint: finishPoint.routeSearchPointMessage,
       );
 
+      if (initialRoutes.routes.isEmpty) {
+        throw const PublicTransportVisibilityIsTooFarException();
+      }
+
       return initialRoutes.routes.isNotEmpty;
     } catch (e) {
       if (!online) {

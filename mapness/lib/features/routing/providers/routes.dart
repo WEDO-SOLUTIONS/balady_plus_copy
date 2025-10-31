@@ -73,7 +73,7 @@ class Routes extends _$Routes {
     await dgisController.value?.setRouteParams(params);
     try {
       return await cancelableCompleter.operation.value.timeout(
-        const Duration(seconds: 30),
+        const Duration(seconds: 10),
         onTimeout: () {
           if (!online) {
             throw const NoInternetException();
@@ -144,7 +144,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
 
     await dgisController.value?.setRouteParams(params);
     return cancelableCompleter.operation.value.timeout(
-      timeout ?? const Duration(seconds: 30),
+      timeout ?? const Duration(seconds: 10),
       onTimeout: () {
         if (!online) {
           throw const NoInternetException();
