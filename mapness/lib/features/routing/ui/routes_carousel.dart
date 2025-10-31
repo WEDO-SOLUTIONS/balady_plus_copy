@@ -34,15 +34,15 @@ class RoutesCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-    builder: (context, constraints) => _RoutesCarousel(
-      points: points,
-      startNavigation: startNavigation,
-      biggestWidth: constraints.biggest.width,
-      navType: navType,
-      publicTransportVisibility: publicTransportVisibility,
-      routes: routes,
-    ),
-  );
+        builder: (context, constraints) => _RoutesCarousel(
+          points: points,
+          startNavigation: startNavigation,
+          biggestWidth: constraints.biggest.width,
+          navType: navType,
+          publicTransportVisibility: publicTransportVisibility,
+          routes: routes,
+        ),
+      );
 }
 
 class _RoutesCarousel extends ConsumerStatefulWidget {
@@ -75,22 +75,21 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction:
-      widget.navType.cardWidthWithPadding / widget.biggestWidth,
+      viewportFraction: widget.navType.cardWidthWithPadding / widget.biggestWidth,
     );
   }
 
   @override
   Widget build(BuildContext context) => widgets.RoutesCarousel(
-      navType: widget.navType,
-      pageController: _pageController,
-      routes: widget.routes,
-      onActiveChanged: _onActiveChanged,
-      refresh: _refresh,
-      points: widget.points,
-      startNavigation: _startNavigation,
-      publicTransportVisibility: widget.publicTransportVisibility,
-    );
+        navType: widget.navType,
+        pageController: _pageController,
+        routes: widget.routes,
+        onActiveChanged: _onActiveChanged,
+        refresh: _refresh,
+        points: widget.points,
+        startNavigation: _startNavigation,
+        publicTransportVisibility: widget.publicTransportVisibility,
+      );
 
   void _onActiveChanged(int index) {
     if (_animating) {
@@ -99,10 +98,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
     _activeRoute = index;
 
-    ref
-        .read(dgisControllerProvider)
-        .value
-        ?.setPublicTransportActiveRoute(index);
+    ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
   }
 
   void _refresh() {
@@ -134,34 +130,32 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       ..setLatitude(finishLocation.latitude)
       ..setLongitude(finishLocation.longitude);
 
-    final startPointExists =
-        startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
+    final startPointExists = startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
     final startPointEta = startPointExists
         ? startPoint!.etaPoint
         : EtaRoutePoint(
-      lat: location!.latitude,
-      lon: location.longitude,
-      label: startPoint?.label,
-    );
-    final finishPointExists =
-        finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
+            lat: location!.latitude,
+            lon: location.longitude,
+            label: startPoint?.label,
+          );
+    final finishPointExists = finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
     final finishPointEta = finishPointExists
         ? finishPoint!.etaPoint
         : EtaRoutePoint(
-      lat: finishLocation.latitude,
-      lon: finishLocation.longitude,
-      label: finishPoint?.label,
-    );
+            lat: finishLocation.latitude,
+            lon: finishLocation.longitude,
+            label: finishPoint?.label,
+          );
 
     ref.read(etaRouteInfoProvider.notifier).setRoute(
-      eta.EtaRoute(
-        startPoint: startPointEta,
-        endPoint: finishPointEta,
-        type: _routeType,
-        routeIndex: _activeRoute,
-        createdAt: DateTime.now().toUtc().toIso8601String(),
-      ),
-    );
+          eta.EtaRoute(
+            startPoint: startPointEta,
+            endPoint: finishPointEta,
+            type: _routeType,
+            routeIndex: _activeRoute,
+            createdAt: DateTime.now().toUtc().toIso8601String(),
+          ),
+        );
     widget.startNavigation(info);
   }
 }
