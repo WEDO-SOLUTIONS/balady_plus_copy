@@ -1992,6 +1992,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.0"
+  keyboard_insets:
+    dependency: transitive
+    description:
+      name: keyboard_insets
+      sha256: "9703806366f2ba21816b0195f0418dc7f27b3e91ea6fc04859daa24d5041b921"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
+  keyboard_insets_mobile:
+    dependency: transitive
+    description:
+      name: keyboard_insets_mobile
+      sha256: "1dbd857a39d26f980d3bdd20ef390141e7971d73bd94738c4c2748e564f9882c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
+  keyboard_insets_platform_interface:
+    dependency: transitive
+    description:
+      name: keyboard_insets_platform_interface
+      sha256: "8b4d6c4afe0ff5d15480505d44ecc8a24d166d08f08c20994c7a59b12872e3d6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  keyboard_insets_web:
+    dependency: transitive
+    description:
+      name: keyboard_insets_web
+      sha256: ec5647cea258ff468ffc44086ef9d3a378c781fb9a8b74fc29b3b88ed3e05692
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   launch_review:
     dependency: transitive
     description:
@@ -2822,10 +2854,10 @@ packages:
     dependency: "direct main"
     description:
       name: sheetify
-      sha256: d1ae36828e357e14e3bfa9f9cc11069d271e575a58c255b2120b15b177804be3
+      sha256: "49775e246c412c163875c64c20cbc76ff6af9caaeb79eed074e2af2e3c1ec531"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.2"
+    version: "1.1.1"
   sheetify_lint:
     dependency: "direct dev"
     description:
