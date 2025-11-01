@@ -60,8 +60,6 @@ extension InterestingPlaceX on InterestingPlace {
   String titleOrFallback({required AppLocalizations locale}) {
     final intId = int.tryParse(entity.id);
 
-    // print('FLAG: intID $intId');
-
     if (intId != null) {
       final mock = nameMock(
         intId,
@@ -70,7 +68,6 @@ extension InterestingPlaceX on InterestingPlace {
           _ => Language.english,
         },
       );
-      // print('FLAG: mock $mock');
       if (mock != null) {
         return mock;
       }

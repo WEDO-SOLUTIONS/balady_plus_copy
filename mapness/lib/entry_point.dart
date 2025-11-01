@@ -81,6 +81,7 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:sheetify/sheetify.dart';
 
 import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
@@ -156,6 +157,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initDeepLinks();
     listenNavigationEvents();
     checkConnection();
+    PersistentSafeAreaBottom.startObserving();
     ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
@@ -201,6 +203,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   void dispose() {
+    PersistentSafeAreaBottom.stopObserving();
     _linkSubscription?.cancel();
     _locationListener?.close();
     _navigationEventsListener?.cancel();
