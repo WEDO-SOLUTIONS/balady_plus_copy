@@ -194,7 +194,7 @@ dependencies:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: 4.1.6
 
-  sheetify: 1.0.2
+  sheetify: 1.1.1
 
   smooth_corner: ^1.0.0
 
