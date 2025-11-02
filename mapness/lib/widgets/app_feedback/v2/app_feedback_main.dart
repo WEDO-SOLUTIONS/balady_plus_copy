@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
@@ -190,6 +191,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                                   selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
                               text: text.isEmpty ? null : feedbackTextController.text,
                             );
+                            openInAppReviewRating(ratingValue);
                           },
                     primaryLabel: context.l10n.appFeedbackSubmitButton,
                   ),
@@ -203,6 +205,22 @@ class AppFeedbackMain extends HookConsumerWidget {
 
   String _feedbackSubtitleText(AppLocalizations l10n, int rating, FeedbackSource source) =>
       source is FeedbackSourceOffer ? l10n.offerFeedbackMessage : _ratingText(l10n, rating);
+
+  void openInAppReviewRating (ratingValue) async {
+    if(ratingValue > 3) {
+      final InAppReview inAppReview = InAppReview.instance;
+      try {
+        final available = await inAppReview.isAvailable();
+        if (available) {
+          await inAppReview.requestReview();
+        } else {
+          // await inAppReview.openStoreListing();
+        }
+      } catch (e) {
+        // await inAppReview.openStoreListing();
+      }
+    }
+  }
 
   String _ratingText(AppLocalizations l10n, int rating) => switch (rating) {
         1 => l10n.appFeedbackRating1,

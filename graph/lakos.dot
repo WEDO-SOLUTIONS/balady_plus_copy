@@ -572,6 +572,7 @@ digraph "" {
   "/lib/shared/providers/analytic/models/bss_request.dart" [label="bss_request"];
   "/lib/shared/providers/analytic/models/bss_common.dart" [label="bss_common"];
   "/lib/shared/providers/analytic/bss_dio.dart" [label="bss_dio"];
+  "/lib/shared/providers/analytic/extension/bss_ext.dart" [label="bss_ext"];
   "/lib/shared/providers/analytic/bss_service.dart" [label="bss_service"];
   "/lib/shared/providers/analytic/bss_common.dart" [label="bss_common"];
   "/lib/shared/providers/vendor_config.dart" [label="vendor_config"];
@@ -804,6 +805,7 @@ digraph "" {
   "/lib/features/routing/ui/brief_route_widgets.dart" [label="brief_route_widgets"];
   "/lib/features/routing/providers/routes_helper.dart" [label="routes_helper"];
   "/lib/features/routing/providers/routes.dart" [label="routes"];
+  "/lib/features/routing/providers/routes_update_tab.dart" [label="routes_update_tab"];
   "/lib/features/routing/providers/nearest_object.dart" [label="nearest_object"];
   "/lib/features/routing/providers/public_transport_visibility.dart" [label="public_transport_visibility"];
   "/lib/features/routing/providers/public_transport_arrived.dart" [label="public_transport_arrived"];
@@ -2074,6 +2076,10 @@ digraph "" {
                 "/lib/shared/providers/analytic/models/payload/bss_suggest_list.dart";
               }
             }
+            subgraph "cluster~/lib/shared/providers/analytic/extension" {
+              label="extension";
+              "/lib/shared/providers/analytic/extension/bss_ext.dart";
+            }
           }
           subgraph "cluster~/lib/shared/providers/map" {
             label="map";
@@ -2445,6 +2451,7 @@ digraph "" {
             label="providers";
             "/lib/features/routing/providers/routes_helper.dart";
             "/lib/features/routing/providers/routes.dart";
+            "/lib/features/routing/providers/routes_update_tab.dart";
             "/lib/features/routing/providers/nearest_object.dart";
             "/lib/features/routing/providers/public_transport_visibility.dart";
             "/lib/features/routing/providers/public_transport_arrived.dart";
@@ -3156,6 +3163,7 @@ digraph "" {
   "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/pages/routing/ui/routing_favourites.dart";
   "/lib/pages/routing/ui/routing_tab_bar.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/pages/routing/ui/routing_tab_bar.dart" -> "/lib/features/routing/providers/public_transport_visibility.dart";
+  "/lib/pages/routing/ui/routing_tab_bar.dart" -> "/lib/features/routing/providers/routes.dart";
   "/lib/pages/routing/ui/routing_tab_bar.dart" -> "/lib/pages/routing/lib/route_search_options_extension.dart";
   "/lib/pages/routing/ui/routing_tab_bar.dart" -> "/lib/shared/providers/car_connection.dart";
   "/lib/pages/routing/ui/routing_search_content.dart" -> "/lib/features/search/models/search_scope.dart";
@@ -3188,7 +3196,10 @@ digraph "" {
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/city_by_location/city_by_location.dart";
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/lifestyle_layers/providers/layers_state.dart";
+  "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/path_nav/providers/active_public_transport_route.dart";
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/routing/providers/public_transport_visibility.dart";
+  "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/routing/providers/routes.dart";
+  "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/routing/providers/routes_update_tab.dart";
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/features/routing/ui/routes_carousel.dart";
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/pages/path_nav/path_nav_page.dart";
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/pages/routing/lib/route_point_extension.dart";
@@ -3739,6 +3750,7 @@ digraph "" {
   "/lib/entry_point.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/entry_point.dart" -> "/lib/features/path_nav/lib/extensions.dart";
   "/lib/entry_point.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
+  "/lib/entry_point.dart" -> "/lib/features/search/providers/search_region.dart";
   "/lib/entry_point.dart" -> "/lib/features/share_eta/helpers/utils.dart";
   "/lib/entry_point.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/entry_point.dart" -> "/lib/features/stories/providers/stories_open_state.dart";
@@ -4168,6 +4180,8 @@ digraph "" {
   "/lib/widgets/routing/ui_kit/path_card/path_public_card.dart" -> "/lib/widgets/routing/ui_kit/path_card/tools/public_transport_colors.dart";
   "/lib/widgets/routing/ui/routes_carousel.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/widgets/routing/ui/routes_carousel.dart" -> "/lib/features/routing/providers/public_transport_visibility.dart";
+  "/lib/widgets/routing/ui/routes_carousel.dart" -> "/lib/features/routing/providers/routes.dart";
+  "/lib/widgets/routing/ui/routes_carousel.dart" -> "/lib/features/routing/providers/routes_update_tab.dart";
   "/lib/widgets/routing/ui/routes_carousel.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/routing/ui/routes_carousel.dart" -> "/lib/widgets/routing/lib/duration_distance_fmt.dart";
   "/lib/widgets/routing/ui/routes_carousel.dart" -> "/lib/widgets/routing/ui/route_carusel_wrapper.dart";
@@ -4259,6 +4273,9 @@ digraph "" {
   "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/pages/poi_card/poi_card_widget_page.dart";
   "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/shared/providers/analytic/bss_service.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/shared/providers/analytic/extension/bss_ext.dart";
+  "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/shared/providers/analytic/models/payload/bss_payload.dart";
   "/lib/widgets/search/ui/search_item_quick_actions.dart" -> "/lib/widgets/helpers/throttled_callback_widget.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/domain/dto/dgis_photos_dto.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
@@ -4571,6 +4588,11 @@ digraph "" {
   "/lib/shared/providers/analytic/bss_dio.dart" -> "/lib/shared/providers/dgis_environment.dart";
   "/lib/shared/providers/analytic/bss_dio.dart" -> "/lib/shared/utils/logger/logger.dart";
   "/lib/shared/providers/analytic/bss_dio.dart" -> "/lib/shared/utils/logger/talker_logger.dart";
+  "/lib/shared/providers/analytic/extension/bss_ext.dart" -> "/lib/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart";
+  "/lib/shared/providers/analytic/extension/bss_ext.dart" -> "/lib/shared/providers/analytic/bss_service.dart";
+  "/lib/shared/providers/analytic/extension/bss_ext.dart" -> "/lib/shared/providers/analytic/models/bss_request.dart";
+  "/lib/shared/providers/analytic/extension/bss_ext.dart" -> "/lib/shared/providers/analytic/models/extensions/directory_obj_ext.dart";
+  "/lib/shared/providers/analytic/extension/bss_ext.dart" -> "/lib/shared/providers/analytic/models/payload/bss_payload.dart";
   "/lib/shared/providers/analytic/bss_service.dart" -> "/lib/features/search/providers/search_region.dart";
   "/lib/shared/providers/analytic/bss_service.dart" -> "/lib/shared/providers/analytic/models/bss_common.dart";
   "/lib/shared/providers/analytic/bss_service.dart" -> "/lib/shared/providers/analytic/models/bss_request.dart";
@@ -5203,7 +5225,6 @@ digraph "" {
   "/lib/features/free_roam/free_roam_manager.dart" -> "/lib/shared/providers/navigator_voice.dart";
   "/lib/features/free_roam/free_roam_manager.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/features/routing/ui/routes_carousel.dart" -> "/lib/entities/routing/route_params_point.dart";
-  "/lib/features/routing/ui/routes_carousel.dart" -> "/lib/features/path_nav/providers/active_public_transport_route.dart";
   "/lib/features/routing/ui/routes_carousel.dart" -> "/lib/features/routing/providers/public_transport_visibility.dart";
   "/lib/features/routing/ui/routes_carousel.dart" -> "/lib/features/routing/providers/routes.dart";
   "/lib/features/routing/ui/routes_carousel.dart" -> "/lib/features/share_eta/entities/route_params_point_mapper.dart";
@@ -5222,6 +5243,7 @@ digraph "" {
   "/lib/features/routing/ui/brief_route_widgets.dart" -> "/lib/shared/providers/app_features.dart";
   "/lib/features/routing/ui/brief_route_widgets.dart" -> "/lib/shared/providers/map/find_brief_route_info.dart";
   "/lib/features/routing/providers/routes_helper.dart" -> "/lib/shared/providers/map/camera_padding.dart";
+  "/lib/features/routing/providers/routes.dart" -> "/lib/_features/common/providers/network_status.dart";
   "/lib/features/routing/providers/routes.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/features/routing/providers/routes.dart" -> "/lib/entities/path_nav/models/path_nav_better_route.dart";
   "/lib/features/routing/providers/routes.dart" -> "/lib/entities/routing/route_params_point.dart";
@@ -5233,8 +5255,10 @@ digraph "" {
   "/lib/features/routing/providers/nearest_object.dart" -> "/lib/shared/providers/map/camera_position.dart";
   "/lib/features/routing/providers/nearest_object.dart" -> "/lib/shared/providers/map/camera_state.dart";
   "/lib/features/routing/providers/nearest_object.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/_features/common/providers/network_status.dart";
   "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/entities/search/models/search_region_bound.dart";
+  "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/features/routing/providers/routes.dart";
   "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/features/search/providers/search_region_bound_provider.dart";
   "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/pages/routing/lib/route_point_extension.dart";
   "/lib/features/routing/providers/public_transport_visibility.dart" -> "/lib/shared/providers/location.dart";

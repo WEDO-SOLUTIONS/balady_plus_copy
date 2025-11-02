@@ -1,4 +1,4 @@
-import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/utils/common_function.dart';
 
@@ -31,7 +31,7 @@ class WeatherParams {
 
     final url = '$hashedUrl$weatherServices$query';
 
-    final hasToken = CommonProperties.token != null;
+    final hasToken = CommonProperties.token.isNotEmpty;
 
     return hashRequest(url, 'GET', authorization: hasToken);
   }

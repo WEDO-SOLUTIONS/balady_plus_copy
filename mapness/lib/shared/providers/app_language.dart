@@ -15,6 +15,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_language.g.dart';
 
 const _prefsKey = 'settings.language';
+const _cachedMiniAppsLangKey= 'cached.miniapps.language';
 
 enum Language {
   english,
@@ -104,4 +105,10 @@ class AppLanguage extends _$AppLanguage {
 
     state = value;
   }
+
+  Future<void> updateCachedMiniAppsLanguage(String value) async {
+    await ref.read(sharedPrefsProvider).setString(_cachedMiniAppsLangKey, value);
+  }
+
+  String? getCachedMiniAppsLanguage() => ref.read(sharedPrefsProvider).getString(_cachedMiniAppsLangKey);
 }

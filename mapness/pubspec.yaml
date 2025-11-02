@@ -40,10 +40,9 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 4.1.5
+    version: 4.1.6
 
-  sheetify: 1.0.2
-
+  sheetify: 1.1.1
   smooth_corner: ^1.0.0
 
   urbi_analytics:
@@ -159,6 +158,9 @@ dependencies:
   flutter_hms_gms_availability: ^3.10.0
   visibility_detector: ^0.4.0+2
   thermal: 1.1.11
+
+  flutter_spinkit: 5.2.1
+
 
 dependency_overrides:
   # for dio_http_cache
