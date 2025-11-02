@@ -13,6 +13,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+// ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -36,6 +37,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
+import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -81,6 +83,7 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:sheetify/sheetify.dart';
 
 import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
@@ -112,7 +115,10 @@ class MapnessProviderScope extends StatelessWidget {
               final language = ref.watch(appLanguageProvider);
               final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
               // Initialize Saudi National Day provider to start the timer
-              ref.watch(saudiNationalDayProvider);
+              ref
+                ..watch(saudiNationalDayProvider)
+                // Initialize Cityscape provider to listen remote config
+                ..watch(cityscapeProvider);
 
               return provider.MultiProvider(
                 providers: [
@@ -156,6 +162,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initDeepLinks();
     listenNavigationEvents();
     checkConnection();
+    PersistentSafeAreaBottom.startObserving();
     ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
@@ -174,6 +181,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
+      await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
     });
 
     // call the openAppLink when user click on notification have deep link
@@ -201,6 +209,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   void dispose() {
+    PersistentSafeAreaBottom.stopObserving();
     _linkSubscription?.cancel();
     _locationListener?.close();
     _navigationEventsListener?.cancel();
@@ -252,11 +261,30 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _updateGlobalMarker(WidgetRef ref) async {
+    final cityscapeEnabled = ref.read(cityscapeProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(cityscapeProvider.notifier);
+
+    if (cityscapeEnabled && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+    ref.listen<bool>(cityscapeProvider, (prev, next) {
+      _updateGlobalMarker(ref);
+    });
+
+    ref.listen<dynamic>(selectedMarkerProvider, (prev, next) {
+      _updateGlobalMarker(ref);
+    });
 
     ref
       // listen for changes in car connection state. But do not rebuild widget
