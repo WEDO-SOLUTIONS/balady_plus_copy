@@ -1,4 +1,6 @@
+import 'package:dgis_map/library.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 
 part 'organization_item.g.dart';
 
@@ -29,6 +31,8 @@ class OrganizationItem {
   final String? cityAlias;
   final bool? hasDiscount;
   final String? id;
+  @JsonKey(name: 'trade_license', fromJson: TradeLicenseMessageExt.fromJson, toJson: _tradeLicenceToJson)
+  final TradeLicenseMessage? tradeLicense;
 
   const OrganizationItem({
     this.timezoneOffset,
@@ -56,12 +60,15 @@ class OrganizationItem {
     this.cityAlias,
     this.hasDiscount,
     this.id,
+    this.tradeLicense,
   });
 
   factory OrganizationItem.fromJson(Map<String, dynamic> json) => _$OrganizationItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$OrganizationItemToJson(this);
 }
+
+Map<String, dynamic>? _tradeLicenceToJson(TradeLicenseMessage? tradeLicence) => tradeLicence?.toJson();
 
 @JsonSerializable()
 class Flags {

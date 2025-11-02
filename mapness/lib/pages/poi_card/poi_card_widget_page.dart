@@ -43,6 +43,7 @@ import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_fe
 import 'package:mapness/features/poi_card/widgets/poi_content_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/parking_content.dart';

@@ -1,0 +1,78 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:flutter/foundation.dart' hide Category;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/saudi_pass/offers_group.dart';
+import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
+import 'package:mapness/features/saudi_pass/async_iterable/cached_async_iterable.dart';
+import 'package:mapness/features/saudi_pass/async_iterable/flat_chunked_async_iterable.dart';
+import 'package:mapness/features/saudi_pass/async_iterable/mapped_async_iterable.dart';
+import 'package:mapness/features/saudi_pass/async_iterable/offers_chunked_async_iterable.dart';
+import 'package:mapness/features/saudi_pass/notifiers/category_selection_dialog_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/offers_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/recommended_type_selection_dialog_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/settings_screen_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/sorting_selection_dialog_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/providers/offer_favorites_provider.dart';
+import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
+import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
+import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
+import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+
+part 'offers_filters_view_notifier.dart';
+part 'prefs_offers_view_notifier.dart';
+
+class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScreenView {
+  OffersScreenViewNotifier({
+    required super.saudiPassRepository,
+    required super.cityIdByLocation,
+    required super.ref,
+    this.offersGroup,
+  });
+
+  @override
+  final OffersGroup? offersGroup;
+
+  @override
+  late Future<PrefsOffersViewNotifier> prefsOffersViewFuture = createPrefsOffersViewNotifier();
+
+  @override
+  bool get isFavoritesOnly => false;
+
+  @override
+  bool isByPreferencesElseAll = false;
+
+  @override
+  void tapBack() => ref.read(appRouterProvider).popForced();
+
+  @override
+  void tapByPreferences() {
+    isByPreferencesElseAll = true;
+    notifyListeners();
+  }
+
+  @override
+  void tapAll() {
+    isByPreferencesElseAll = false;
+    notifyListeners();
+  }
+
+  @override
+  void tapRetryPrefs() {
+    prefsOffersViewFuture = createPrefsOffersViewNotifier();
+    notifyListeners();
+  }
+
+  Future<PrefsOffersViewNotifier> createPrefsOffersViewNotifier() async {
+    final saudiPassRepository = await this.saudiPassRepository;
+    final preferences = await saudiPassRepository.getPreferences();
+    final cityByLocation = await this.cityByLocation();
+    return PrefsOffersViewNotifier(saudiPassRepository, cityByLocation, ref, preferences);
+  }
+}

@@ -16,6 +16,7 @@ class FullscreenLoadingIndicator extends StatelessWidget {
   /// The color of the loading indicator.
   final Color? color;
 
+  /// The background color
   final Color backgroundColor;
 
   const FullscreenLoadingIndicator({

@@ -22,13 +22,13 @@ class FlutterClusterRenderer(
 ): SimpleClusterRenderer {
     private val iconCache = mutableMapOf<String, Image>()
 
-    suspend fun apiRenderCluster(manager: MapObjectManagerMessage, objectCount: Int) = suspendCoroutine<SimpleClusterOptionsMessage> { cont ->
+    suspend fun apiRenderCluster(manager: MapObjectManagerMessage, objectCount: Int) = suspendCoroutine { cont ->
         Handler(Looper.getMainLooper()).post {
             api.renderCluster(
                 manager,
                 objectCount.toLong()
             ) {
-                var options = it.getOrNull() ?: SimpleClusterOptionsMessage()
+                val options = it.getOrNull() ?: SimpleClusterOptionsMessage()
 
                 cont.resume(options)
             }
