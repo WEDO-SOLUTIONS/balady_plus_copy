@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
 
 class FeedbackSourceProvider extends InheritedWidget {
   final FeedbackSource source;

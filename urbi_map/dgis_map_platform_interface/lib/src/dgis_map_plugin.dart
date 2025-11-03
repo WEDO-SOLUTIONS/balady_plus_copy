@@ -169,7 +169,7 @@ class DgisMapPlugin extends FlutterMapApi {
     _locationEventHandler = LocationEventHandler(_api);
     _indoorEventHandler = IndoorEventHandler(_api);
 
-    FlutterMapApi.setUp(this, binaryMessenger: messenger);
+    FlutterMapApi.setUp(this);
 
     return response;
   }
