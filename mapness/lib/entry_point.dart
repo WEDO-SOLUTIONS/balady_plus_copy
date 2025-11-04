@@ -276,17 +276,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
-    final cityscapeEnabled = ref.watch(cityscapeProvider);
-    final selectedMarker = ref.watch(selectedMarkerProvider);
 
     ref.listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
       if (next == null) return;
       if (prev?.zoom == next.zoom) return;
-
-      if (cityscapeEnabled && selectedMarker == null) {
-        final notifier = ref.read(cityscapeProvider.notifier);
-        notifier.showGlobalMarker();
-      }
+      _updateGlobalMarker(ref);
     });
 
     // listen cityscapeProvider and selectedMarkerProvider for other updates

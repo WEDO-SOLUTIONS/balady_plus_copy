@@ -6,9 +6,11 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'cityscape.g.dart';
@@ -108,6 +110,11 @@ class Cityscape extends _$Cityscape {
       svgPath = customMarker;
       width = 32;
     }
+
+    final isArabic = ref.read(appLanguageProvider) == Language.arabic;
+    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
+    final title =
+        isArabic ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات' : 'Riyadh International\nExhibition\n& Convention Center';
     final globalMarker = sdk.Marker(
       id: cityscapeGlobalMarkerId,
       options: sdk.MarkerOptionsMessage(
@@ -118,13 +125,13 @@ class Cityscape extends _$Cityscape {
         ),
         icon: sdk.MarkerIconMessage(svgPath: svgPath, width: width),
         anchor: sdk.MarkerAnchorMessage(x: 0, y: 0),
-        text: 'Riyadh international\nExhibition \n& Convenion center',
+        text: title,
         textStyle: sdk.MarkerTextStyleMessage(
           fontSize: 13,
           color: color,
           strokeWidth: 1,
           strokeColor: 0xFFFFFFFF,
-          fontName: 'SemiBold',
+          fontName: fontName,
           suppressOnOverlap: true,
         ),
         isVisible: false,
@@ -152,6 +159,11 @@ class Cityscape extends _$Cityscape {
       svgPath = customMarker;
       width = 32;
     }
+
+    final isArabic = ref.read(appLanguageProvider) == Language.arabic;
+    final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
+    final title =
+        isArabic ? 'الرياض الدولي\nالمعرض\nو مركز المؤتمرات' : 'Riyadh International\nExhibition\n& Convention Center';
     await mapManager?.setMarkerOptions(
       cityscapeGlobalMarkerId,
       sdk.ChangeMarkerOptionsMessage(
@@ -162,13 +174,13 @@ class Cityscape extends _$Cityscape {
         ),
         icon: sdk.MarkerIconMessage(svgPath: svgPath, width: width),
         anchor: sdk.MarkerAnchorMessage(x: 0, y: 0),
-        text: 'Riyadh international\nExhibition \n& Convenion center',
+        text: title,
         textStyle: sdk.MarkerTextStyleMessage(
           fontSize: 13,
           color: color,
           strokeWidth: 1,
           strokeColor: 0xFFFFFFFF,
-          fontName: 'SemiBold',
+          fontName: fontName,
           suppressOnOverlap: true,
         ),
         animatedAppearance: true,
