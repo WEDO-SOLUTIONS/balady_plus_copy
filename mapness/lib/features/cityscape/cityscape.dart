@@ -39,7 +39,7 @@ class Cityscape extends _$Cityscape {
 
   String get customMarker => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
-  String get customDefaultMarker => Assets.icons.svg.cityscapeUniqueDefaultMarker.keyName;
+  String get cityscapeDefaultMarker => Assets.icons.svg.cityscapeUniqueDefaultMarker.keyName;
 
   String get globalImg => Assets.images.cityscapeGlobal.keyName;
 
@@ -103,7 +103,7 @@ class Cityscape extends _$Cityscape {
     String svgPath;
     if (zoom > 16) {
       color = 0xFF2AB3A9;
-      svgPath = customDefaultMarker;
+      svgPath = cityscapeDefaultMarker;
       width = 20;
     } else {
       color = 0xFF1B1B1B;
@@ -152,7 +152,7 @@ class Cityscape extends _$Cityscape {
     String svgPath;
     if (zoom > 16) {
       color = 0xFF2AB3A9;
-      svgPath = customDefaultMarker;
+      svgPath = cityscapeDefaultMarker;
       width = 20;
     } else {
       color = 0xFF1B1B1B;
