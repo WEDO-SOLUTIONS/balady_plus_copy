@@ -19,8 +19,7 @@ import '../../server/CustomInAppLocalhostServer.dart';
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
-class MiniAppsEngineBloc
-    extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
+class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniAppModel miniApp;
 
   CustomInAppLocalhostServer? localhostServer;
@@ -40,8 +39,7 @@ class MiniAppsEngineBloc
     add(CheckMiniAppsEngineEvent(miniApp: miniApp));
   }
 
-  void _checkMiniAppsEngine(
-      CheckMiniAppsEngineEvent event, Emitter emit) async {
+  void _checkMiniAppsEngine(CheckMiniAppsEngineEvent event, Emitter emit) async {
     // await prepareServerPath();
 
     if (event.miniApp.latestVersion?.serviceUrl != null) {
@@ -52,10 +50,8 @@ class MiniAppsEngineBloc
         ),
       );
     } else {
-      basePathService =
-          "${(await getApplicationDocumentsDirectory()).path}/www/";
-      String dir =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
+      String dir = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
       File file = File('$dir/index.html');
       bool exists = await file.exists();
       if (exists) {
@@ -99,8 +95,7 @@ class MiniAppsEngineBloc
   //   } catch (e) {}
   // }
 
-  void _downloadMiniAppsEngine(
-      DownloadMiniAppsEngineEvent event, Emitter emit) async {
+  void _downloadMiniAppsEngine(DownloadMiniAppsEngineEvent event, Emitter emit) async {
     emit(const MiniAppsEngineLoadingState(progress: '0'));
 
     serviceDownloadPath = "$basePathService${event.miniApp.serviceKey}";
@@ -109,13 +104,11 @@ class MiniAppsEngineBloc
     // chick if have old version of the app delete it
     if (exists) {
       await directoryApp.delete(recursive: true);
-      serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     } else {
-      serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     }
@@ -141,19 +134,18 @@ class MiniAppsEngineBloc
     try {
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
       if (state is MiniAppsEngineLoadingState) {
-        MiniAppsEngineLoadingState tempState =
-            state as MiniAppsEngineLoadingState;
+        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
         if (!tempState.progress.contains("100")) {
           return;
         }
       }
-      String pathService =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      String pathService = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
       CommonProperties.currentLocalServerDirectory = pathService;
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: event.miniApp.portNumber ??  generateRandomPort(portNumber, event.miniApp.serviceName ?? "",event.miniApp.serviceKey??""),
+          port: event.miniApp.portNumber ??
+              generateRandomPort(portNumber, event.miniApp.serviceName ?? "", event.miniApp.serviceKey ?? ""),
           shared: true,
         ),
       );
@@ -170,8 +162,7 @@ class MiniAppsEngineBloc
         "http://localhost:${localhostServer!.port}",
       );
 
-      emit(MiniAppsEngineLoadedState(
-          servicePath: servicePath, path: event.miniApp.path ?? ""));
+      emit(MiniAppsEngineLoadedState(servicePath: servicePath, path: event.miniApp.path ?? ""));
     } catch (e) {
       print(e.toString());
     }
@@ -283,8 +274,8 @@ class MiniAppsEngineBloc
   //   return indexFilePath;
   // }
 
-  int generateRandomPort(int oldPort, String serviceName,  String serviceKey ) {
-    if (serviceKey=="islamicservice") {
+  int generateRandomPort(int oldPort, String serviceName, String serviceKey) {
+    if (serviceKey == "islamicservice") {
       return 1245;
     }
     final random = Random();
@@ -293,7 +284,7 @@ class MiniAppsEngineBloc
     if (newPort != oldPort && newPort != 1245) {
       return newPort;
     } else {
-      return generateRandomPort(oldPort, serviceName,serviceKey);
+      return generateRandomPort(oldPort, serviceName, serviceKey);
     }
   }
 

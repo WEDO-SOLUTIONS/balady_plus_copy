@@ -492,8 +492,16 @@ class StreamAudioProvider extends ChangeNotifier {
     if (!canGoToPreviousChannel) {
       return;
     }
-    Future.delayed(Duration(milliseconds: isLoading ? 10000 : 10)).then((value) async {
-      final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    // Capture current selection to avoid null access after delay
+    final selectedId = _selectedChannel?.id;
+    if (selectedId == null) {
+      return;
+    }
+    final delay = Duration(milliseconds: isLoading ? 10000 : 10);
+    Future.delayed(delay).then((_) async {
+      // Re-validate state at execution time
+      if (_isExited) return;
+      final currentIndex = filteredChannels.indexWhere((c) => c.id == selectedId);
       if (currentIndex > 0) {
         await selectChannel(filteredChannels[currentIndex - 1]);
       }
@@ -504,8 +512,16 @@ class StreamAudioProvider extends ChangeNotifier {
     if (!canGoToNextChannel) {
       return;
     }
-    Future.delayed(Duration(milliseconds: isLoading ? 10000 : 10)).then((value) async {
-      final currentIndex = filteredChannels.indexWhere((c) => c.id == _selectedChannel!.id);
+    // Capture current selection to avoid null access after delay
+    final selectedId = _selectedChannel?.id;
+    if (selectedId == null) {
+      return;
+    }
+    final delay = Duration(milliseconds: isLoading ? 10000 : 10);
+    Future.delayed(delay).then((_) async {
+      // Re-validate state at execution time
+      if (_isExited) return;
+      final currentIndex = filteredChannels.indexWhere((c) => c.id == selectedId);
       if (currentIndex >= 0 && currentIndex < filteredChannels.length - 1) {
         await selectChannel(filteredChannels[currentIndex + 1]);
       }

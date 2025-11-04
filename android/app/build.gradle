@@ -141,7 +141,7 @@ dependencies {
     implementation 'com.android.installreferrer:installreferrer:2.2'
     implementation 'com.adjust.sdk:adjust-android-meta-referrer:5.0.1'
     implementation 'androidx.glance:glance-appwidget:1.0.0'
-    implementation 'com.huawei.agconnect:agconnect-core:1.6.5.300'
+    implementation 'com.huawei.agconnect:agconnect-core:1.9.1.301'  // Updated version
 
     // AndroidX Media support for MediaSessionCompat, PlaybackStateCompat, MediaMetadataCompat
     implementation 'androidx.media:media:1.7.0'
@@ -150,5 +150,6 @@ dependencies {
     implementation 'com.adjust.sdk:adjust-android-oaid:5.4.0'
     implementation 'com.huawei.hms:ads-identifier:3.4.62.300'
 }
+
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
