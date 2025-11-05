@@ -55,8 +55,8 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
     final customCityscapeData = DirectoryObjectMessage(
       types: [],
       title: l10n.cityscape_title,
-      titleAddition: '',
-      subtitle: l10n.cityscape_subtitle,
+      titleAddition: l10n.cityscape_subtitle,
+      subtitle: l10n.commercialBuilding,
       about: l10n.cityscape_about,
       id: DgisObjectIdMessage(
         objectId: widget.objectId,
@@ -254,7 +254,7 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
                                     Text(customCityscapeData.title, style: context.textStyles.bodyLargeSemiBold),
                                     const SizedBox(height: Spacing.$1_5x),
                                     Text(
-                                      customCityscapeData.subtitle,
+                                      customCityscapeData.titleAddition,
                                       style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
                                     ),
                                   ],
