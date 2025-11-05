@@ -210,9 +210,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       ),
     );
 
-    final publicTransportVisibility = ref.watch(publicTransportVisibilityProvider(
-      startPoint: widget.points[0],
-      finishPoint: widget.points[1],
+    final publicTransportVisibility = ref.watch(
+      publicTransportVisibilityProvider(
+        startPoint: widget.points[0],
+        finishPoint: widget.points[1],
       ),
     );
 

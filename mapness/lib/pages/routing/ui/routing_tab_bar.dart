@@ -60,8 +60,10 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(BuildContext context,
-      AsyncValue<PublicTransportVisibilityResult> publicTransportRoutes,) {
+  Widget _getRouteSearchOptionsWidgets(
+    BuildContext context,
+    AsyncValue<PublicTransportVisibilityResult> publicTransportRoutes,
+  ) {
     final chips = [
       RouteSearchOptionsMessage.car,
       RouteSearchOptionsMessage.publicTransport,
