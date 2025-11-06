@@ -84,7 +84,7 @@ class Gender extends NameId {
 }
 
 class Category extends NameId {
-  static const food = 'food';
+  static const food = 'eat';
   static const shopping = 'shopping';
   static const entertainment = 'entertainment';
   static const beautyAndHealth = 'beautyAndHealth';
