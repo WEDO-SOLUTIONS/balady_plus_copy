@@ -58,8 +58,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     useEffect(() {
       void updateCameraPadding() {
         final sheetHeight = scrollController.sheetHeight.isNegative ? 0 : scrollController.sheetHeight;
-        final initPadding = (sheetHeight + mediaQueryTop + (mediaQuery?.padding.bottom ?? 0)) *
-            (mediaQuery?.devicePixelRatio ?? 1);
+        final initPadding =
+            (sheetHeight + mediaQueryTop + (mediaQuery?.padding.bottom ?? 0)) * (mediaQuery?.devicePixelRatio ?? 1);
 
         ref
             .read(cameraPaddingProvider.notifier)
