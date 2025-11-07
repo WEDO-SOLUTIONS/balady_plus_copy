@@ -27,6 +27,7 @@ class EnvironmentConfig {
   final String appFeedbackApi;
   final String baladyBusinessUrl;
   final String bssApi;
+  final String saudiPassApi;
   final CityscapeDateTimeRange cityscapeDateTimeRange;
 
   EnvironmentConfig({
@@ -43,6 +44,7 @@ class EnvironmentConfig {
     required this.appFeedbackApi,
     required this.baladyBusinessUrl,
     required this.bssApi,
+    required this.saudiPassApi,
     required this.cityscapeDateTimeRange,
   });
 
@@ -68,6 +70,7 @@ class EnvironmentConfig {
         appFeedbackApi: json['appFeedbackApi'] as String,
         baladyBusinessUrl: json['baladyBusinessUrl'] as String,
         bssApi: json['bssApi'] as String,
+        saudiPassApi: json['saudiPassApi'] as String,
         cityscapeDateTimeRange: CityscapeDateTimeRange.fromJson(json['cityscapeDateTimeRange'] as Map<String, dynamic>),
       );
 
@@ -84,6 +87,7 @@ class EnvironmentConfig {
         'appFeedbackEnable': appFeedbackEnable,
         'appFeedbackApi': appFeedbackApi,
         'baladyBusinessUrl': baladyBusinessUrl,
+        'saudiPassApi': saudiPassApi,
       };
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
@@ -102,27 +106,29 @@ class EnvironmentConfig {
         appFeedbackEnable: true,
         bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
         cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
+       );
+  
+   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
+      url: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/1.0/',
+      meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+      weatherApi: 'https://apiservicesstg.balady.gov.sa/',
+      jobsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1/recruitment-services',
+      twinsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1',
+      baseApiDomain: 'urbi.ae',
+      shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
+      feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
+      appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
+      appFeedbackEnable: true,
+      proxy: null,
+      bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
+      baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+      saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+      cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
       );
-
-  factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
-        url: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/1.0/',
-        meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://apiservicesstg.balady.gov.sa/',
-        jobsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1/recruitment-services',
-        twinsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1',
-        baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
-        feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
-        appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
-        appFeedbackEnable: true,
-        proxy: null,
-        bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
-        baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
-        cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
-      );
-
-  factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
+  
+   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
         url: 'https://urbi-lifestyle.momrah.gov.sa/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservices.balady.gov.sa/',
@@ -136,6 +142,7 @@ class EnvironmentConfig {
         proxy: null,
         bssApi: 'https://s1.bss.2gis.com',
         baladyBusinessUrl: 'https://business.balady.gov.sa',
+        saudiPassApi: 'https://apiservices.balady.gov.sa/',
         cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
       );
 
@@ -155,6 +162,7 @@ class EnvironmentConfig {
         appFeedbackEnable: true,
         bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
         cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
       );
 }

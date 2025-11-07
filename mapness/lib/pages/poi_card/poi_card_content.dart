@@ -30,8 +30,11 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
       models: [
-        FractionSnappingModel({0.1, .931}),
-        OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
+        FractionSnappingModel({0.0}),
+        OffsetSnappingModel({
+          HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius,
+          Spacing.$4x,
+        }),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
             a: const SnapComponent.size(component: Components.header),
@@ -197,6 +200,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
 
+    final offers = ref.watch(poiOffersProvider);
+    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
+
     return Directionality(
       textDirection: Directionality.of(context),
       child: MultiStateSheet(
@@ -253,21 +259,21 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           ),
           onTapCar: () {
             _bssOnRouteTap();
-            _onDirectionsTap(
-              context,
-              widget.data.id!.objectId,
-              widget.data.title,
-              RouteParamsPoint(
-                latitude: widget.data.markerPosition!.latitude,
-                longitude: widget.data.markerPosition!.longitude,
-                objectId: widget.data.id?.objectId,
-                entranceId: widget.data.id?.entranceId,
-                levelId: widget.data.levelId,
-              ),
-              ref,
-            );
-          },
-          onTapFavorite: (item) {
+
+              _onDirectionsTap(
+                context,
+                widget.data.id!.objectId,
+                widget.data.title,
+                RouteParamsPoint(
+                  latitude: widget.data.markerPosition!.latitude,
+                  longitude: widget.data.markerPosition!.longitude,
+                  objectId: widget.data.id?.objectId,
+                  entranceId: widget.data.id?.entranceId,
+                  levelId: widget.data.levelId,
+                ),ref,
+              );
+            },
+            onTapFavorite: (item) {
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
           },
@@ -297,6 +303,19 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               baseline: TextBaseline.ideographic,
               alignment: PlaceholderAlignment.middle,
             ),
+            if (hasOffers) ...[
+              const TextSpan(text: ' • '),
+              WidgetSpan(
+                child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+              ),
+              TextSpan(
+                text: ' ${context.l10n.offer}',
+                style:
+                context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
+              ),
+            ]
           ],
           parkingInfo: widget.data.parkingInfo,
           poiCardState: poiCardState,
