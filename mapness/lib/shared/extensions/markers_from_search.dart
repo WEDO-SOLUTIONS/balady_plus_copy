@@ -350,6 +350,10 @@ extension BigIconPath on String {
       'ic_stairs.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icStairs.keyName
           : Assets.icons.svg.placesBigNew.icStairs.keyName,
+      'ic_offer_marker.svg': Assets.icons.svg.icOffersPin.keyName,
+      'ic_offers_clustering_marker.svg': Assets.icons.svg.icOffersPin.keyName,
+      'ic_offers_clustering_marker_dark.svg': Assets.icons.svg.icOffersPin.keyName,
+      'ic_offer_marker_dark.svg': Assets.icons.svg.icOffersPin.keyName,
     };
 
     return bigIcons[iconName] ?? (isSaudiPath ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew);

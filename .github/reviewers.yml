@@ -2,54 +2,60 @@ reviewers:
   defaults:
     - platform-team
     - feature-team
-    - doldrums # Arina Kharlamova (Tech Lead)
+    # - doldrums # Arina Kharlamova (Tech Lead)
+    - scroollocker # Alex Haylov (Team Lead)
     - support-team
   groups:
     platform-team:
-      - AlexStrNik
-      - wultriel
+      - cutzmf
+      - anisovdev
+      - smitsk
     feature-team:
-      - scroollocker
+      - wultriel
       - ForesThule
       - DmitriiProshutinskii
       - smitsk
     devops-team:
       - r9odt
-      - popov-ilya
     support-team:
-      - Demezy
       - AyatAliev
-      - RomanSurjan
+      - wultriel
+      - anisovdev
 files:
   ".github/**":
-    - doldrums
     - devops-team
     - alexstrnik
   ".lefthook/**":
-    - doldrums
     - devops-team
-    - demezy
+    - scroollocker
+    - AlexStrNik
   "justscripts/**":
-    - doldrums
     - devops-team
     - platform-team
+    - DmitriiProshutinskii
+    - AlexStrNik
   "urbi_map/**":
     - platform-team
-    - doldrums
+    - scroollocker
   "mapness/scripts/**":
     - platform-team
-    - doldrums
     - devops-team
+    - AlexStrNik
+    - DmitriiProshutinskii
   "tests/**":
-    - doldrums
     - support-team
-  "mapness/features/**":
+    - scroollocker
+  "mapness/lib/features/**":
     - feature-team
-    - doldrums
+    - wultriel
+    - scroollocker
+  "mapness/lib/_features/**":
+    - feature-team
+    - wultriel
+    - scroollocker
   "mapness/**":
     - support-team
-    - doldrums
+  "urbi_map/dgis_map/ios/**":
+    - AlexStrNik
   "**":
-    - doldrums
-    - alexstrnik
-    - demezy
+    - scroollocker

@@ -13,7 +13,7 @@ import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -587,7 +587,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     // We don't show the feedback page in landscape mode
     if (MediaQuery.of(context).orientation != Orientation.landscape) {
-      await ctx.router.push(AppFeedbackSheet(source: FeedbackSource.navi));
+      await ctx.router.push(AppFeedbackSheet(source: const FeedbackSource.navi()));
     }
   }
 
