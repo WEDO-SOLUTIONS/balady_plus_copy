@@ -58,13 +58,12 @@ class _HajjRcmc extends _$HajjRcmc {
 
   Future<List<PoiMarkerRcmc>> _fetchMarkers() async {
     try {
-      final env = await ref.read(dgisEnvironmentProvider.future);
-      final String url = env.url.replaceFirst('/api', '') + _rcmcUrl;
-      final appLanguage = ref.watch(appLanguageProvider);
-      final camera = ref.watch(cameraPositionProvider);
+      final camera = ref.read(cameraPositionProvider);
       if (camera != null && camera.zoom < _zoomInVisibleMarkers) {
         return [];
       }
+
+      final appLanguage = ref.read(appLanguageProvider);
 
       if (_cached != null && _cacheLanguage == appLanguage) {
         return _cached ?? [];
@@ -73,6 +72,9 @@ class _HajjRcmc extends _$HajjRcmc {
       if (_cacheLanguage != appLanguage) {
         await _objectManager.removeAllMarkers();
       }
+
+      final env = await ref.read(dgisEnvironmentProvider.future);
+      final String url = env.url.replaceFirst('/api', '') + _rcmcUrl;
 
       _cached = [];
       _cacheLanguage = appLanguage;

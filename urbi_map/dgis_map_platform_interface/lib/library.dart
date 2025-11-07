@@ -28,3 +28,4 @@ export 'src/events/visible_rect_events.dart' show VisibleRectEvent, VisibleRect;
 export 'src/events/zoom_control_events.dart' show ZoomControlType, ZoomControlEnabledEvent;
 export 'src/models.dart';
 export 'src/pigeons/messages.g.dart';
+export 'src/events/models/simple_map_object_model.dart';

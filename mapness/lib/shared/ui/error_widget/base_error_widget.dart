@@ -27,6 +27,9 @@ class BaseErrorWidget extends StatelessWidget {
   /// The padding for the image.
   final EdgeInsetsGeometry paddingForImage;
 
+  /// The background color
+  final Color backgroundColor;
+
   /// Add a close button to the widget. If [null] it will be not displayed.
   final VoidCallback? onClose;
 
@@ -39,6 +42,7 @@ class BaseErrorWidget extends StatelessWidget {
     this.errorTitle,
     this.onClose,
     this.paddingForImage = EdgeInsets.zero,
+    this.backgroundColor = Colors.white,
     super.key,
   });
 

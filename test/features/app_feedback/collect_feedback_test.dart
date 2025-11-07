@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mocktail/mocktail.dart';
@@ -36,7 +37,7 @@ void main() {
             stars: 5,
             text: 'Good app!',
             tags: ['fast', 'friendly'],
-            source: FeedbackSource.main,
+            source: const FeedbackSource.main(),
           );
 
       final state = container.read(collectFeedbackProvider);
@@ -49,7 +50,7 @@ void main() {
       expect(state?.context?.appVersion, '1.0.0');
       expect(state?.context?.mobileOS, AppFeedbackMobileOs.android);
       expect(state?.context?.deviceId, 'android::serial123::id123::Pixel 4');
-      expect(state?.context?.feedbackSource, FeedbackSource.main);
+      expect(state?.context?.feedbackSource, const FeedbackSource.main());
       expect(state?.context?.authId, '123');
     });
   });

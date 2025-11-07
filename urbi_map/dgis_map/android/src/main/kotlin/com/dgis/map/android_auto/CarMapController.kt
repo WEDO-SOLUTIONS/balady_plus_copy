@@ -432,6 +432,11 @@ class CarMapController(
     private fun onRoutesInfoChanged(routesInfo: RouteEditorRoutesInfo) {
         if (routesInfo.routes.isNotEmpty()) {
             map?.let {
+                val navigationState = getCurrentNavigationState()
+                // When navigation is active, Android Auto blocks the route list in RoutePreviewNavigationTemplate,
+                // we show only one route to the user to ensure that navigation starts functioning
+                val showOnlyActiveRoute = navigationState == NavigationState.NAVIGATION;
+                routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute)
                 routeEditorSource.setRoutesVisible(true)
                 val geometries = routesInfo.routes.map { route ->
                     route.route.geometry.entries.map { entry ->
@@ -532,7 +537,7 @@ class CarMapController(
             ),
         ).apply {
             onResult {
-                val route =  it.firstOrNull()
+                val route = it.firstOrNull()
                 val duration = route?.route?.geometry?.first?.let {
                     route.traffic.durations.calculateDuration(it.point)
                 }
