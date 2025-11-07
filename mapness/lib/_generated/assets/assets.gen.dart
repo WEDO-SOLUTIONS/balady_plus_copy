@@ -43,6 +43,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/city_expert_saudi_day.png
   AssetGenImage get cityExpertSaudiDay => const AssetGenImage('assets/images/city_expert_saudi_day.png');
 
+  /// File path: assets/images/cityscape_global.png
+  AssetGenImage get cityscapeGlobal => const AssetGenImage('assets/images/cityscape_global.png');
+
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
 
@@ -154,6 +157,7 @@ class $AssetsImagesGen {
         calendarCard,
         cityExpert,
         cityExpertSaudiDay,
+        cityscapeGlobal,
         darkMapPreview,
         driveHomeArrow,
         driveHomeArrowSaudiday,
@@ -306,6 +310,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/car_active_saudi.svg
   SvgGenImage get carActiveSaudi => const SvgGenImage('assets/icons/svg/car_active_saudi.svg');
 
+  /// File path: assets/icons/svg/cityscape_unique_marker.svg
+  SvgGenImage get cityscapeUniqueMarker => const SvgGenImage('assets/icons/svg/cityscape_unique_marker.svg');
+
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
 
@@ -335,6 +342,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/ic_chevron_down.svg
   SvgGenImage get icChevronDown => const SvgGenImage('assets/icons/svg/ic_chevron_down.svg');
+
+  /// File path: assets/icons/svg/ic_cityscape_pin.svg
+  SvgGenImage get icCityscapePin => const SvgGenImage('assets/icons/svg/ic_cityscape_pin.svg');
 
   /// File path: assets/icons/svg/ic_close.svg
   SvgGenImage get icClose => const SvgGenImage('assets/icons/svg/ic_close.svg');
@@ -525,6 +535,7 @@ class $AssetsIconsSvgGen {
         car,
         carActive,
         carActiveSaudi,
+        cityscapeUniqueMarker,
         currentLocationIcon,
         ic2d,
         ic3d,
@@ -535,6 +546,7 @@ class $AssetsIconsSvgGen {
         icCar,
         icCarPoi,
         icChevronDown,
+        icCityscapePin,
         icClose,
         icComplete,
         icControlCompass,

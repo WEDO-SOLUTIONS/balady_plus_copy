@@ -85,7 +85,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
     return FeedbackSourceProvider(
       source: source,
       child: ToggleSheet(
-        startConfig: ToggleSheetStart.instant,
+        resizeToAvoidBottomPadding: false,
         scrollController: scrollController,
         backgroundColor: context.colors.backgroundSurface4,
         safeAreaColor: context.colors.backgroundSurface4,

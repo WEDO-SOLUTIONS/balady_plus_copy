@@ -58,6 +58,8 @@ String _breakLineInTwo(String inputString) {
   return '$firstLine\n$secondLine';
 }
 
+typedef AdvancedIconResolver = Future<(String? smallIcon, String? bigIcon)> Function(Set<int> rubricIds, int objectId);
+
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
   static const _propertyKey = 'objectId';
@@ -68,6 +70,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     required AppRouter router,
     required Future<MapMarkersType?> Function(Set<int>) iconResolver,
     required bool isDark,
+    AdvancedIconResolver? advancedIconResolver,
     bool withLabel = true,
     bool isRtl = true,
     Future<void> Function(ItemMarkerInfoMessage? data, int index)? onTapAnalytic,
@@ -94,7 +97,14 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
       final objectId = markerInfo.objectId?.objectId;
       final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
       final rubrics = Set<int>.from(cleanupRubrics);
-      final icon = (await iconResolver(rubrics))?.iconPath.markerIcon(size: 32);
+
+      MarkerIconMessage? icon;
+
+      if (advancedIconResolver != null) {
+        icon = (await advancedIconResolver(rubrics, objectId!)).$1?.markerIcon(size: 32);
+      } else {
+        icon = (await iconResolver(rubrics))?.iconPath.markerIcon(size: 32);
+      }
 
       final text = withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null;
       markers.add(

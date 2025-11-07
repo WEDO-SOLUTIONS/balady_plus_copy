@@ -74,7 +74,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     required bool isRtl,
     required bool isDark,
   }) {
-    final text = item.name.breakMarkerLabel(maxCharsPerLine: 20);
+    final text = item.provider.name.breakMarkerLabel(maxCharsPerLine: 20);
     final hasArabic = text.containsArabic() || isRtl;
 
     final options = MarkerOptionsMessage(

@@ -173,7 +173,10 @@ class RoutePreviewScreen(
     private fun handleInfoChanged(routesInfo: RouteEditorRoutesInfo) {
         if (routesInfo.routes.isEmpty()) return
 
-        if (routesInfo.routes.size == 1) {
+        val currentNavigationState = mapController.getCurrentNavigationState()
+        // When navigation is active, Android Auto blocks the route list in RoutePreviewNavigationTemplate,
+        // we show only one route to the user to ensure that navigation starts functioning
+        if (routesInfo.routes.size == 1 || currentNavigationState == NavigationState.NAVIGATION) {
             val route = routesInfo.routes.first().route
             val distanceInMeters = route.geometry.last?.point?.distance?.meters ?: 0.0
             val distanceSpan = DistanceSpan.create(

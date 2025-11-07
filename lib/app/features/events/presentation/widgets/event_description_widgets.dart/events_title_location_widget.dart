@@ -13,7 +13,6 @@ import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../calendar/presentation/widgets/old_calendar_card.dart';
 import '../../bloc/events_bloc.dart';
 import '../../bloc/events_state.dart';
 
