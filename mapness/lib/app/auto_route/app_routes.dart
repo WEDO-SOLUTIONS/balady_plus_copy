@@ -230,12 +230,6 @@ class AppRouter extends RootStackRouter {
               page: PoiFavoriteDialogRoute.page,
             ),
             CustomRoute(
-              page: CitySelectionDialogViewRoute.page,
-              path: 'saudi_pass_city_selection_dialog',
-              opaque: false,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
-            ),
-            CustomRoute(
               path: 'error_sheet_dialog',
               page: ErrorSheetDialogRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
@@ -244,52 +238,6 @@ class AppRouter extends RootStackRouter {
               path: 'delete_parking',
               page: ParkingDialogRoute.page,
               opaque: false,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
-            ),
-            CustomRoute(
-              path: 'saudi_pass_offers_screen',
-              page: OffersScreenViewRoute.page,
-            ),
-            AppRoute(
-              path: 'saudi_pass_favourite_offers_screen',
-              page: FavouriteOffersScreenViewRoute.page,
-            ),
-            AppRoute(
-              path: 'saudi_pass_offers_on_map_screen',
-              page: OffersOnMapRoute.page,
-            ),
-            CustomRoute(
-              path: 'saudi_pass_type_selection_dialog',
-              page: TypeSelectionDialogViewRoute.page,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
-            ),
-            CustomRoute(
-              path: 'saudi_pass_category_selection_dialog',
-              page: CategorySelectionDialogViewRoute.page,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
-            ),
-            CustomRoute(
-              path: 'saudi_pass_sorting_selection_dialog',
-              page: SortingSelectionDialogRoute.page,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
-            ),
-            AppRoute(
-              path: 'saudi_pass_settings_screen',
-              page: SettingsScreenViewRoute.page,
-            ),
-            CustomRoute(
-              path: 'saudi_pass_offer_page',
-              page: OfferRoute.page,
-            ),
-            CustomRoute(
-              path: 'saudi_pass_offer_feedback',
-              page: AppFeedbackSheet.page,
-              opaque: false,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
-            ),
-            CustomRoute(
-              path: 'saudi_pass_offer_favorites_removing_sheet',
-              page: OfferFavoritesRemovingSheetRoute.page,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(

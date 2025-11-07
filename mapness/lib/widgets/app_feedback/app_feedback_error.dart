@@ -6,7 +6,6 @@ import 'package:mapness/shared/ui/error_widget/fullscreen_error_widget.dart';
 
 class AppFeedbackError extends StatelessWidget {
   final VoidCallback? onRetry;
-
   const AppFeedbackError({super.key, this.onRetry});
 
   @override

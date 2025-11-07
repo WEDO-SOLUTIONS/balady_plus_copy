@@ -49,7 +49,7 @@ class _PoiDataService implements PoiDataService {
           'items.reply_rate,items.purpose,items.purpose_code,items.route_logo,items.has_goods,'
           'items.has_apartments_info,items.has_pinned_goods,items.has_realty,items.has_payments,items.is_promoted,'
           'items.delivery,items.order_with_cart,search_type,items.has_discount,items.metarubrics,items.detailed_subtype,'
-          'items.temporary_unavailable_atm_services,items.poi_category,items.trade_license';
+          'items.temporary_unavailable_atm_services,items.poi_category';
       response = await dio.get(
         request,
         queryParameters: {

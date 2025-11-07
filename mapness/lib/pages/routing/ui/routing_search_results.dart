@@ -80,9 +80,8 @@ class RoutingSearchResults extends ConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, item, index, offers) => SearchItem(
+      itemBuilder: (context, item, index) => SearchItem(
         result: item,
-        offers: offers,
         language: language,
         myLocation:
             myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),

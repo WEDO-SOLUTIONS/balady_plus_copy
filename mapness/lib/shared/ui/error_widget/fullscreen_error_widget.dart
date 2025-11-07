@@ -51,7 +51,6 @@ class FullscreenErrorWidget extends StatelessWidget {
             errorLabel: errorLabel ?? context.l10n.pleaseTryAgainLater,
             errorTitle: errorTitle ?? context.l10n.somethingWentWrong,
             withRetryButton: withRetryButton,
-            backgroundColor: backgroundColor,
           ),
         ),
       );

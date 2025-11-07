@@ -6,11 +6,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -37,8 +35,9 @@ class ProfilePage extends HookConsumerWidget {
           size: 24,
         );
     final userData = ref.watch(authProvider);
-    final isAuth = userData.valueOrNull != null;
-    final backgroundColor = isAuth ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
+    final backgroundColor = userData.valueOrNull != null
+        ? context.colorsV3.staticWhite
+        : context.colorsV3.staticDarkblue;
 
     final overlay =
         switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
@@ -142,34 +141,6 @@ class ProfilePage extends HookConsumerWidget {
                                     ],
                                   ),
                                 ),
-                                if (isAuth)
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: Spacing.$4x),
-                                    child: ContentWrapper(
-                                      color: context.colorsV3.backgroundSurface1,
-                                      children: [
-                                        ContentRowV2(
-                                          isDividerEnabled: true,
-                                          onTap: () => context.router.push(const ProfilePreferencesRoute()),
-                                          trailing: trailing,
-                                          leading: SvgPicture.asset(
-                                            Assets.icons.svg.percent.keyName,
-                                          ),
-                                          text: ContentRowTextOptions(
-                                            title: context.l10n.preferences,
-                                          ),
-                                        ),
-                                        ContentRowV2(
-                                          onTap: () => context.router.push(const FavouriteOffersScreenViewRoute()),
-                                          trailing: trailing,
-                                          leading: leadingIconBuilder(GeneralIcons.heart),
-                                          text: ContentRowTextOptions(
-                                            title: context.l10n.favoriteOffers,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
                                 const SizedBox(height: Spacing.$4x),
                                 ContentWrapper(
                                   color: context.colors.backgroundSurface1,

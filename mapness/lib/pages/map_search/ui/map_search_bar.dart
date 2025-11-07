@@ -6,13 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart'
-    as metric_const;
+import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -70,27 +68,21 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
 
-    ref
-      ..watch(poiOffersProvider.select((_) => null))
-      ..listen(searchProvider(scope.value), (previous, next) {
-        final isSearchInRectRequest = ref
-            .read(searchInRectProvider(scope.value))
-            .isSearchInThisAreaRequest;
-        if (next.searchText.isEmpty) {
-          ref.read(searchInRectProvider(scope.value).notifier).update();
-        }
+    ref.listen(searchProvider(scope.value), (previous, next) {
+      final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
+      if (next.searchText.isEmpty) {
+        ref.read(searchInRectProvider(scope.value).notifier).update();
+      }
 
-        _updateText(next.searchText);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (next is SearchStateLoading) {
-            _focusNode.unfocus();
-          } else if (next is SearchStateResults &&
-              !isSearchInRectRequest &&
-              previous is SearchStateLoading) {
-            _focusNode.requestFocus();
-          }
-        });
+      _updateText(next.searchText);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (next is SearchStateLoading) {
+          _focusNode.unfocus();
+        } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
+          _focusNode.requestFocus();
+        }
       });
+    });
 
     return BaladySearchWithBackButtonV2(
       searchInput: BaladyTextInput.search(
@@ -99,9 +91,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
-            ref
-                .read(searchProvider(scope.value).notifier)
-                .searchQueryChanged(query);
+            ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
@@ -125,9 +115,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onTap: () {
-            ref
-                .read(advertMetricsProvider.notifier)
-                .sendEvent(AdvertMetricsKeys.journeySearch);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             BssService.instance.sendEvent(
               const BssRequest(
                 eventType: BSSEventType.action,

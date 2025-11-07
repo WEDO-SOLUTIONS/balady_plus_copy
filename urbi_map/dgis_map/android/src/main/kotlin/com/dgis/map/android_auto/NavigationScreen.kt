@@ -196,17 +196,11 @@ class NavigationScreen(
             }
 
             NavigationState.FINISHED -> {
-                CoroutineScope(Dispatchers.Main).launch {
-                    mapController.showMyLocation()
-                }
                 customRenderer.clear()
                 showEndTrip()
             }
 
             NavigationState.DISABLED -> {
-                CoroutineScope(Dispatchers.Main).launch {
-                    mapController.showMyLocation()
-                }
                 customRenderer.clear()
                 if (prevState != NavigationState.DISABLED && !isEndTripShown) {
                     stopNavigation()

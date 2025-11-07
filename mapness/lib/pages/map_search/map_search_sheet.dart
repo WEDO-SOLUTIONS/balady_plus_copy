@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate, MultiSnappingBehavior, OffsetSnappingModel;
+import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -83,13 +83,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
     _multiStateSheetController = MultiStateSheetController(
       initialState: ThreeStateSheet.expanded,
-      behavior: MultiSnappingBehavior(models: [
-        FractionSnappingModel({
-          0.0,
-          if (Platform.isIOS) .3 else .38,
-        }),
-        OffsetSnappingModel({Spacing.$4x}),
-      ]),
+      behavior: FractionSnappingBehavior(fractions: {
+        0.1,
+        if (Platform.isIOS) .3 else .38,
+        .931,
+      }),
       stateMapper: const LandingStateMapper(),
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
@@ -172,7 +170,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: containerColor,
-              dragger: SheetDragger(backgroundColor: contentColor),
+              dragger: SheetDragger(
+                backgroundColor: contentColor,
+              ),
               outsideOpacityDelegate: outsideOpacityDelegate,
               header: Container(
                 color: contentColor,
@@ -287,7 +287,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       return;
     }
 
-    _multiStateSheetController.setState(ThreeStateSheet.expanded);
+    _multiStateSheetController.open();
   }
 
   void onClose() {

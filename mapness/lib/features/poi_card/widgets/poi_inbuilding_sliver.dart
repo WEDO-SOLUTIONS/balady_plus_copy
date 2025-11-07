@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -16,8 +14,6 @@ import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_conte
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
-import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class PoiOrganizationsSliver extends ConsumerStatefulWidget {
@@ -138,11 +134,6 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
             page: pageKey,
           );
 
-      final licenseIds = newItems?.items.map((e) => e.tradeLicense?.license).nonNulls.toSet();
-      if (licenseIds != null && licenseIds.isNotEmpty) {
-        unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
-      }
-
       final length = pagingController.itemList?.length ?? 0;
       final total = newItems?.count ?? 0;
       if (length >= total) {
@@ -160,12 +151,10 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
 
 class OrganizationWidget extends StatelessWidget {
   final OrganizationItem item;
-  final bool hasOffers;
   final void Function(int id)? onTap;
 
   const OrganizationWidget({
     required this.item,
-    this.hasOffers = false,
     this.onTap,
     super.key,
   });
@@ -175,37 +164,26 @@ class OrganizationWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: smoothBorder(RadiusBorder.xl),
         color: context.colors.backgroundSurface1,
-        child: Stack(
-          children: [
-            ContentRow(
-              onTap: () {
-                final itemId = item.id;
+        child: ContentRow(
+          onTap: () {
+            final itemId = item.id;
 
-                if (itemId == null) {
-                  return;
-                }
+            if (itemId == null) {
+              return;
+            }
 
-                final id = int.tryParse(itemId);
-                if (id == null) {
-                  return;
-                }
-                onTap?.call(id);
-              },
-              options: ContentRowOptions(
-                title: item.title,
-                subtitle: item.rubricsNames,
-                subtitleExtra: item.addressComment,
-                titleStyle: context.textStyles.bodyLargeSemiBold,
-              ),
-            ),
-            if (hasOffers)
-              Positioned.directional(
-                textDirection: Directionality.of(context),
-                top: Spacing.$3x,
-                end: Spacing.$3x,
-                child: const OffersBadge(),
-              )
-          ],
+            final id = int.tryParse(itemId);
+            if (id == null) {
+              return;
+            }
+            onTap?.call(id);
+          },
+          options: ContentRowOptions(
+            title: item.title,
+            subtitle: item.rubricsNames,
+            subtitleExtra: item.addressComment,
+            titleStyle: context.textStyles.bodyLargeSemiBold,
+          ),
         ),
       );
 }

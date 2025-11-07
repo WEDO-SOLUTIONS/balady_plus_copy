@@ -3,8 +3,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
-import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
-import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_pagination.dart';
@@ -17,7 +15,7 @@ class SearchResults extends ConsumerStatefulWidget {
   final SearchResultMessage results;
   final ScrollController bottomSheetContentScrollController;
   final Widget Function(BuildContext) loaderBuilder;
-  final Widget Function(BuildContext, DirectoryObjectMessage, int, List<Offer>) itemBuilder;
+  final Widget Function(BuildContext, DirectoryObjectMessage, int) itemBuilder;
   final bool? isShowAddPlace;
 
   const SearchResults({
@@ -86,7 +84,6 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     }
 
     final results = ref.watch(searchPaginationProvider(widget.results));
-    final offers = ref.watch(poiOffersProvider);
     if (results.isEmpty) {
       return MapSearchEmpty(isShowAddPlaceButton: _isShowAddPlace);
     }
@@ -144,7 +141,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
           return const SizedBox.shrink();
         }
 
-        return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex, offers[results[actualResultIndex].tradeLicense?.license.trim()] ?? []);
+        return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex);
       },
       itemCount: _calculateTotalItemCount(results.length),
       separatorBuilder: (context, index) => const SizedBox(height: 12),

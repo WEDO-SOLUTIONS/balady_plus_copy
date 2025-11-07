@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
-import 'package:dgis_map_platform_interface/src/events/models/simple_map_object_model.dart';
 
 typedef OnObjectTap = void Function();
 typedef ClusterRenderer = SimpleClusterOptionsMessage Function(int objectCount);
@@ -37,8 +36,8 @@ class ObjectTapEventHandler {
     clusterHandlers.remove(id);
   }
 
-  void addClusterRenderer(String id, ClusterRenderer render) {
-    clusterRenderers[id] = render;
+  void addClusterRenderer(String id, ClusterRenderer onTap) {
+    clusterRenderers[id] = onTap;
   }
 
   void removeClusterRenderer(String id) {
@@ -52,12 +51,6 @@ class ObjectTapEventHandler {
     final textStyle = cluster["textStyle"];
     final position = cluster["position"];
 
-    final List<SimpleMapObjectModel> objects = ((cluster['objects'] as List?) ?? const [])
-        .map((e) => SimpleMapObjectModel.fromJson(
-              (e as Map).cast<String, dynamic>(),
-            ))
-        .toList();
-
     final clusterObject = SimpleClusterObject(
       api,
       cluster["id"],
@@ -67,7 +60,7 @@ class ObjectTapEventHandler {
         elevation: position["elevation"],
       ),
       cluster["objectCount"],
-      objects,
+      (cluster["objects"] as List<Object?>).map((x) => x as String).toList(),
       MarkerAnchorMessage(
         x: cluster["anchor"]["x"],
         y: cluster["anchor"]["y"],

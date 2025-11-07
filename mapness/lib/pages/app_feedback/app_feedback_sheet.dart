@@ -1,11 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/entities/app_feedback/feedback_source.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
@@ -24,7 +23,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
   const AppFeedbackSheet({
     this.initialRating,
-    this.source = const FeedbackSource.main(),
+    this.source = FeedbackSource.main,
     super.key,
   });
 
@@ -78,25 +77,21 @@ class AppFeedbackSheet extends HookConsumerWidget {
     }
 
     final scrollController = useToggleSheetController(onClose: onCloseBottomSheet);
-    final backgroundColorDelegate = ToggleSheetDelegateFunction<Color?>(
-      function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
-    );
 
     return FeedbackSourceProvider(
       source: source,
       child: ToggleSheet(
-        resizeToAvoidBottomPadding: false,
+        startConfig: ToggleSheetStart.instant,
         scrollController: scrollController,
         backgroundColor: context.colors.backgroundSurface4,
         safeAreaColor: context.colors.backgroundSurface4,
         dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
-        shouldPop: (_) => source is FeedbackSourceOffer,
-        barrierColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,
+        shouldPop: (_) => false,
         content: [
           switch (sendFeedbackState) {
             AppFeedbackState.initial => AppFeedbackMain(
                 initialRating: initialRating,
-                onNeedPopConfirm: () => source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
+                onNeedPopConfirm: () => _showConfirmDialog(context),
               ),
             AppFeedbackState.loading => const AppFeedbackLoading(),
             AppFeedbackState.success => const Padding(

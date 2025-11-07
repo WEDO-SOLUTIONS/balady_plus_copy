@@ -103,7 +103,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
         ShareMyLocationRoute.page,
         PoiCardWidgetRoute.page,
         RoutingRoutesRoute.page,
-        HajjPoiCardRoute.page,
+        HajjPoiCardRoute.page
       ],
     );
   }

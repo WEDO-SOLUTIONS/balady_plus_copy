@@ -127,7 +127,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
             onNotification: _onNotification,
             child: MultiStateSheet<ThreeStateSheet>(
               keepContentBehindFooter: true,
-              resizeToAvoidBottomPadding: true,
+              resizeToAvoidViewPadding: true,
               scrollController: _multiStateSheetController,
               backgroundColor: context.colors.backgroundSurface1,
               safeAreaColor: context.colors.backgroundSurface1,

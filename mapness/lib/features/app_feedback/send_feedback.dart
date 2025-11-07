@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
-import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_dio.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
-import 'package:mapness/features/saudi_pass/providers/send_offer_feedback_provider.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -15,8 +14,11 @@ enum AppFeedbackState { initial, loading, success, error }
 
 @riverpod
 class SendFeedback extends _$SendFeedback {
+  Dio? _feedbackDio;
+
   @override
   AppFeedbackState build() {
+    _feedbackDio = ref.watch(appFeedbackDioProvider).valueOrNull;
     final collectFeedbackRef = ref.read(collectFeedbackProvider.notifier);
 
     ref
@@ -43,15 +45,17 @@ class SendFeedback extends _$SendFeedback {
   }
 
   Future<void> sendFeedback(AppFeedbackPayload payload) async {
-    final source = payload.context?.feedbackSource;
     try {
+      if (_feedbackDio == null) {
+        throw Exception('Feedback payload is null or Dio not initialized');
+      }
+
       state = AppFeedbackState.loading;
 
-      if (source is FeedbackSourceOffer) {
-        await _sendOfferFeedback(source.id, payload.review.stars, payload.review.text);
-      } else {
-        await _sendAppFeedback(payload);
-      }
+      await _feedbackDio?.post(
+        '/1.0/feedbacks',
+        data: payload.toJson(),
+      );
 
       state = AppFeedbackState.success;
     } catch (e, st) {
@@ -59,18 +63,5 @@ class SendFeedback extends _$SendFeedback {
       logger.log('Failed to send feedback ${e.toString()}');
       Metrics.logException(e, st);
     }
-  }
-
-  Future<void> _sendAppFeedback(AppFeedbackPayload payload) async {
-    final _feedbackDio = await ref.watch(appFeedbackDioProvider.future);
-    await _feedbackDio.post(
-      '/1.0/feedbacks',
-      data: payload.toJson(),
-    );
-  }
-
-  Future<void> _sendOfferFeedback(String offerId, int rating, String? text) async {
-    final sendOfferFeedback = ref.watch(sendOfferFeedbackProvider(offerId).notifier);
-    await sendOfferFeedback.send(rating, text);
   }
 }
