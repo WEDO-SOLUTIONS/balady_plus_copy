@@ -523,14 +523,16 @@ class _OfferPreviewByBusiness extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasDiscount = discount != null;
     String? path;
+    List<Color>? gradientColors;
     try {
       path = offer.offerGroup.imagePath;
+      gradientColors = offer.offerGroup.color;
     } catch (ex) {}
 
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: path != null ? offer.offerGroup.color : OffersGroup.others.color,
+            colors: gradientColors ?? OffersGroup.others.color,
             begin: AlignmentDirectional.topStart,
             end: AlignmentDirectional.bottomEnd,
           ),

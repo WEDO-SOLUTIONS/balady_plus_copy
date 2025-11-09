@@ -84,7 +84,7 @@ class Gender extends NameId {
 }
 
 class Category extends NameId {
-  static const food = 'food';
+  static const food = 'eat';
   static const shopping = 'shopping';
   static const entertainment = 'entertainment';
   static const beautyAndHealth = 'beautyAndHealth';
@@ -102,7 +102,7 @@ class OfferType extends NameId {
 class OfferProvider extends NameId {
   final String logo;
 
-  const OfferProvider({required this.logo, required super.id, required super.name});
+  const OfferProvider({this.logo='', required super.id, required super.name});
 
   factory OfferProvider.fromJson(Map<String, dynamic> json) => _$OfferProviderFromJson(json);
 }
