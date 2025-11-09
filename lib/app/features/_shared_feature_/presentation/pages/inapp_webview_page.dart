@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -57,6 +58,10 @@ class _InAppWebViewPageState extends State<InAppWebViewPage> {
             initialUrlRequest: URLRequest(
               // url: Uri.parse('https://flutter.dev/'),
               url: WebUri(url),
+              headers: {
+                "Authorization": CommonProperties.token,
+                "authToken": CommonProperties.token,
+              },
             ),
             initialOptions: InAppWebViewGroupOptions(
               android: AndroidInAppWebViewOptions(
