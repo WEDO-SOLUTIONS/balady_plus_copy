@@ -65,21 +65,21 @@ class NaviSearchResults extends ConsumerWidget {
       if (item.markerPosition == null) {
         debugPrint('GeoPosition for this object is null');
       }
-      await ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.placeCardMini,
-                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                placeItem: item.toBss(index),
-                searchResultList: results.toBss(),
-              ),
-            ),
-          );
+      await BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.placeCardMini,
+            ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+            position: index + 1,
+          ),
+          payload: BssPayload(
+            placeItem: item.toBss(index),
+            searchResultList: results.toBss(),
+          ),
+        ),
+      );
     }
 
     return SearchResults(
@@ -94,9 +94,10 @@ class NaviSearchResults extends ConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, item, index) => SearchItem(
+      itemBuilder: (context, item, index, offers) => SearchItem(
         contentColor: context.colors.backgroundSurface1,
         result: item,
+        offers: offers,
         language: language,
         myLocation:
             myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),

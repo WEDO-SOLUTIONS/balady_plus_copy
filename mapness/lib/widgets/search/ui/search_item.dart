@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
+import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -18,6 +20,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
 import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
+import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -43,6 +46,7 @@ class SearchItem extends ConsumerWidget {
   final Language language;
   final GeoPointMessage? myLocation;
   final DirectoryObjectMessage result;
+  final List<Offer> offers;
   final Color? contentColor;
   final int index;
   final BssSearchResultList? searchResultList;
@@ -53,6 +57,7 @@ class SearchItem extends ConsumerWidget {
     required this.result,
     required this.onTap,
     required this.language,
+    required this.offers,
     this.myLocation,
     this.contentColor,
     this.index = 0,
@@ -81,27 +86,30 @@ class SearchItem extends ConsumerWidget {
       };
     }
 
-    final closedStatus = result.openingHours?.toWorkingHours().closedStatus(DateTime.now(), context.l10n) ?? '';
+    final workingHours = result.openingHours?.toWorkingHours();
+    final now = DateTime.now();
+    final closedStatus = workingHours?.closedStatus(now, context.l10n) ?? '';
+    final closedStatusColors = workingHours?.colors(now, context.colors);
 
     return VisibilityDetector(
       key: Key('searchResult: ${result.id?.objectId}'),
       onVisibilityChanged: (visibilityInfo) {
         final visiblePercentage = visibilityInfo.visibleFraction * 100;
         if (visiblePercentage > 50) {
-          ref.read(bssServiceProvider.notifier).sendEvent(
-                BssRequest(
-                  eventType: BSSEventType.view,
-                  uiElement: BssUIElement(
-                    name: BssUIElementNames.placeCardMini,
-                    ownerName: BssUIElementNames.searchResultList,
-                    position: index + 1,
-                  ),
-                  payload: BssPayload(
-                    placeItem: result.toBss(index),
-                    searchResultList: searchResultList,
-                  ),
-                ),
-              );
+          BssService.instance.sendEvent(
+            BssRequest(
+              eventType: BSSEventType.view,
+              uiElement: BssUIElement(
+                name: BssUIElementNames.placeCardMini,
+                ownerName: BssUIElementNames.searchResultList,
+                position: index + 1,
+              ),
+              payload: BssPayload(
+                placeItem: result.toBss(index),
+                searchResultList: searchResultList,
+              ),
+            ),
+          );
         }
       },
       child: Material(
@@ -142,8 +150,7 @@ class SearchItem extends ConsumerWidget {
                             if (closedStatus.isNotEmpty)
                               TextSpan(
                                 text: closedStatus,
-                                style: context.textStyles.bodySmallRegular
-                                    .copyWith(color: context.colors.errorOnContainer),
+                                style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
                               ),
                           ],
                         ),
@@ -154,10 +161,20 @@ class SearchItem extends ConsumerWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                            child: Text(
-                              result.makeAddress(),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  result.makeAddress(),
+                                  maxLines: 1,
+                                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                                ),
+                                if (offers.isNotEmpty)
+                                  const Padding(
+                                    padding: EdgeInsets.only(top: Spacing.$2x),
+                                    child: OffersBadge(),
+                                  ),
+                              ],
                             ),
                           ),
                           DirectoryObjectCarEstimate(result),

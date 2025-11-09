@@ -30,6 +30,65 @@ class MapSearchContent extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<MapSearchContent> createState() => _MapSearchContentState();
+
+  static void scrollSendEvent({
+    required SearchState searchState,
+    required int historyListSize,
+    required void Function(BssRequest) sendEvent,
+  }) {
+    final BssRequest? request = switch (searchState) {
+      SearchStateHistory() => BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.scroll,
+          uiElement: const BssUIElement(
+            name: BssUIElementNames.historyList,
+            ownerName: BssUIElementNames.directorySearchScreen,
+          ),
+          payload: BssPayload(
+            searchRequest: BssSearchRequest(text: searchState.searchText),
+            historyList: BssHistoryList(
+              size: historyListSize,
+            ),
+          ),
+        ),
+      SearchStateError() => null,
+      SearchStateEmpty() => null,
+      SearchStateLoading() => null,
+      SearchStateSuggest() => BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.scroll,
+          uiElement: const BssUIElement(
+            name: BssUIElementNames.suggestList,
+            ownerName: BssUIElementNames.directorySearchScreen,
+          ),
+          payload: BssPayload(
+            searchRequest: BssSearchRequest(text: searchState.searchText),
+            suggestList: BssSuggestList(
+              size: searchState.suggest.suggests.length,
+            ),
+          ),
+        ),
+      SearchStateResults() => BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.scroll,
+          uiElement: const BssUIElement(
+            name: BssUIElementNames.searchResultList,
+            ownerName: BssUIElementNames.directorySearchScreen,
+          ),
+          payload: BssPayload(
+            searchRequest: BssSearchRequest(text: searchState.searchText),
+            searchResultList: BssSearchResultList(
+              size: searchState.results.itemMarkerInfos?.length ?? 0,
+              searchType: searchState.results.searchResultType.toBss(),
+              firstResultClass: searchState.results.searchResultType.toBss(),
+            ),
+          ),
+        ),
+    };
+    if (request != null) {
+      sendEvent(request);
+    }
+  }
 }
 
 class _MapSearchContentState extends ConsumerState<MapSearchContent> {
@@ -39,76 +98,16 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
   @override
   void initState() {
     super.initState();
-    widget.bottomSheetContentScrollController.position.isScrollingNotifier.addListener(() {
-      final value = widget.bottomSheetContentScrollController.position.isScrollingNotifier.value;
-      if (value) {
-        final scope = context.read<SearchScope>();
-        final searchState = ref.watch(searchProvider(scope.value));
-        final BssRequest? request = switch (searchState) {
-          SearchStateHistory() => BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.scroll,
-              uiElement: const BssUIElement(
-                name: BssUIElementNames.historyList,
-                ownerName: BssUIElementNames.directorySearchScreen,
-              ),
-              payload: BssPayload(
-                searchRequest: BssSearchRequest(text: searchState.searchText),
-                historyList: BssHistoryList(
-                  size: ref.read(searchHistoryProvider(scope.value)).length,
-                ),
-              ),
-            ),
-          SearchStateError() => null,
-          SearchStateEmpty() => null,
-          SearchStateLoading() => null,
-          SearchStateSuggest() => BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.scroll,
-              uiElement: const BssUIElement(
-                name: BssUIElementNames.suggestList,
-                ownerName: BssUIElementNames.directorySearchScreen,
-              ),
-              payload: BssPayload(
-                searchRequest: BssSearchRequest(text: searchState.searchText),
-                suggestList: BssSuggestList(
-                  size: searchState.suggest.suggests.length,
-                ),
-              ),
-            ),
-          SearchStateResults() => BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.scroll,
-              uiElement: const BssUIElement(
-                name: BssUIElementNames.searchResultList,
-                ownerName: BssUIElementNames.directorySearchScreen,
-              ),
-              payload: BssPayload(
-                searchRequest: BssSearchRequest(text: searchState.searchText),
-                searchResultList: BssSearchResultList(
-                  size: searchState.results.itemMarkerInfos?.length ?? 0,
-                  searchType: searchState.results.searchResultType.toBss(),
-                  firstResultClass: searchState.results.searchResultType.toBss(),
-                ),
-              ),
-            ),
-        };
-        if (request != null) {
-          ref.read(bssServiceProvider.notifier).sendEvent(request);
-        }
-      }
-    });
-
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        ref.read(bssServiceProvider.notifier).sendEvent(
-              const BssRequest(
-                eventType: BSSEventType.view,
-                uiElement: BssUIElement(
-                  name: BssUIElementNames.directorySearchScreen,
-                ),
-              ),
-            );
+        BssService.instance.sendEvent(
+          const BssRequest(
+            eventType: BSSEventType.view,
+            uiElement: BssUIElement(
+              name: BssUIElementNames.directorySearchScreen,
+            ),
+          ),
+        );
       },
     );
   }
@@ -149,36 +148,36 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       ..listen(searchProvider(scope.value), (_oldState, newState) {
         if (newState.runtimeType != _oldState.runtimeType) {
           if (newState is SearchStateResults) {
-            ref.read(bssServiceProvider.notifier).sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.view,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.searchResultList,
-                      ownerName: BssUIElementNames.directorySearchScreen,
-                    ),
-                    payload: BssPayload(
-                      searchRequest: BssSearchRequest(text: newState.searchText),
-                      searchResultList: BssSearchResultList(
-                        size: newState.results.itemMarkerInfos?.length ?? newState.results.firstPage?.items.length ?? 0,
-                        searchType: newState.results.searchResultType.toBss(),
-                        firstResultClass: newState.results.searchResultType.toBss(),
-                      ),
-                    ),
+            BssService.instance.sendEvent(
+              BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.searchResultList,
+                  ownerName: BssUIElementNames.directorySearchScreen,
+                ),
+                payload: BssPayload(
+                  searchRequest: BssSearchRequest(text: newState.searchText),
+                  searchResultList: BssSearchResultList(
+                    size: newState.results.itemMarkerInfos?.length ?? newState.results.firstPage?.items.length ?? 0,
+                    searchType: newState.results.searchResultType.toBss(),
+                    firstResultClass: newState.results.searchResultType.toBss(),
                   ),
-                );
+                ),
+              ),
+            );
           } else if (newState is SearchStateEmpty) {
-            ref.read(bssServiceProvider.notifier).sendEvent(
-                  const BssRequest(
-                    eventType: BSSEventType.view,
-                    uiElement: BssUIElement(
-                      name: BssUIElementNames.searchResultList,
-                      ownerName: BssUIElementNames.directorySearchScreen,
-                    ),
-                    payload: BssPayload(
-                      searchResultList: BssSearchResultList(size: 0),
-                    ),
-                  ),
-                );
+            BssService.instance.sendEvent(
+              const BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: BssUIElement(
+                  name: BssUIElementNames.searchResultList,
+                  ownerName: BssUIElementNames.directorySearchScreen,
+                ),
+                payload: BssPayload(
+                  searchResultList: BssSearchResultList(size: 0),
+                ),
+              ),
+            );
             ref.read(urbiAnalyticsProvider).track(
               'searchFailed',
               properties: {
@@ -187,32 +186,32 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
             );
           } else if (newState is SearchStateHistory) {
             final history = ref.read(searchHistoryProvider(scope.value));
-            ref.read(bssServiceProvider.notifier).sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.view,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.historyList,
-                      ownerName: BssUIElementNames.directorySearchScreen,
-                    ),
-                    payload: BssPayload(
-                      historyList: BssHistoryList(size: history.length),
-                    ),
-                  ),
-                );
+            BssService.instance.sendEvent(
+              BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.historyList,
+                  ownerName: BssUIElementNames.directorySearchScreen,
+                ),
+                payload: BssPayload(
+                  historyList: BssHistoryList(size: history.length),
+                ),
+              ),
+            );
           } else if (newState is SearchStateSuggest) {
-            ref.read(bssServiceProvider.notifier).sendEvent(
-                  BssRequest(
-                    eventType: BSSEventType.view,
-                    uiElement: const BssUIElement(
-                      name: BssUIElementNames.suggestList,
-                      ownerName: BssUIElementNames.directorySearchScreen,
-                    ),
-                    payload: BssPayload(
-                      searchRequest: BssSearchRequest(text: newState.searchText),
-                      suggestList: BssSuggestList(size: newState.suggest.suggests.length),
-                    ),
-                  ),
-                );
+            BssService.instance.sendEvent(
+              BssRequest(
+                eventType: BSSEventType.view,
+                uiElement: const BssUIElement(
+                  name: BssUIElementNames.suggestList,
+                  ownerName: BssUIElementNames.directorySearchScreen,
+                ),
+                payload: BssPayload(
+                  searchRequest: BssSearchRequest(text: newState.searchText),
+                  suggestList: BssSuggestList(size: newState.suggest.suggests.length),
+                ),
+              ),
+            );
           }
         }
       })

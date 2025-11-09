@@ -1,4 +1,7 @@
+import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_insider/flutter_insider.dart';
+
 // ignore: implementation_imports
 import 'package:flutter_insider/src/identifiers.dart';
 import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
@@ -23,12 +26,16 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   void navigationStarted({
     required String originLocation,
     required String destinationLocation,
+    required String destinationCity,
+    required String originCity,
     required int estimateTime,
     required double estimateDistance,
   }) {
     FlutterInsider.Instance.tagEvent('navigation_started')
         .addParameterWithString('origin', originLocation)
         .addParameterWithString('destination', destinationLocation)
+        .addParameterWithString('origin_city', originCity)
+        .addParameterWithString('destination_city', destinationCity)
         .addParameterWithDouble('estimated_time', estimateTime.toDouble())
         .addParameterWithDouble('estimated_distance', estimateDistance)
         .build();
@@ -38,12 +45,16 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   void navigationHalfWay({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
     required String midPoint,
   }) {
     FlutterInsider.Instance.tagEvent('navigation_half_way')
         .addParameterWithString('origin', origin)
         .addParameterWithString('destination', destination)
+        .addParameterWithString('origin_city', originCity)
+        .addParameterWithString('destination_city', destinationCity)
         .addParameterWithInt('time_to_midway', spentTime.inSeconds)
         .addParameterWithString('midway_point', midPoint)
         .build();
@@ -101,19 +112,106 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   void quickActionSelected(String action) {
-    FlutterInsider.Instance.tagEvent('quick_action_used').addParameterWithString('action', action).build();
+    FlutterInsider.Instance.tagEvent('quick_action_used')
+        .addParameterWithString('action', action)
+        .build();
   }
 
   @override
   void navigationCompleted({
     required String origin,
     required String destination,
+    required String destinationCity,
+    required String originCity,
     required Duration spentTime,
   }) {
     FlutterInsider.Instance.tagEvent('navigation_completed')
         .addParameterWithString('origin', origin)
         .addParameterWithString('destination', destination)
+        .addParameterWithString('origin_city', originCity)
+        .addParameterWithString('destination_city', destinationCity)
         .addParameterWithInt('time_to_reach', spentTime.inSeconds)
+        .build();
+  }
+
+  @override
+  void carPlayConnected() {
+    FlutterInsider.Instance.tagEvent('carplay_connected')
+        .addParameterWithString('event_name', 'carplay_connected')
+        .addParameterWithString('status', 'connected')
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  String get now {
+    final now = DateTime.now().toUtc();
+    final formatted = now.toIso8601String().replaceFirst(RegExp(r'\.\d+'), '');
+    return formatted;
+  }
+
+  @override
+  void networkConnectionType({required String type}) {
+    FlutterInsider.Instance.tagEvent('network_type_detected')
+        .addParameterWithString('event_name', 'network_type_detected')
+        .addParameterWithString('connection_type', type)
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  @override
+  Future<void> deviceTypeDetected() async {
+    final androidInfo = await DeviceInfoPlugin().androidInfo;
+    final iOSInfo = await DeviceInfoPlugin().iosInfo;
+
+    final androidModel = androidInfo.data['model'];
+    final iosModel = iOSInfo.data['machine'];
+
+    await FlutterInsider.Instance.tagEvent('device_type_detected')
+        .addParameterWithString('event_name', 'device_type_detected')
+        .addParameterWithString(
+            'device_type', Platform.isAndroid ? androidModel : iosModel)
+        .addParameterWithString('platform', Platform.operatingSystem)
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  @override
+  void transportModeSelected({required String type}) {
+    FlutterInsider.Instance.tagEvent('transport_mode_selected')
+        .addParameterWithString('event_name', 'transport_mode_selected')
+        .addParameterWithString('mode', type)
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  @override
+  void userMovementDetected(
+      {required String destinationCity, required String originCity}) {
+    FlutterInsider.Instance.tagEvent('user_movement_detected')
+        .addParameterWithString('event_name', 'user_movement_detected')
+        .addParameterWithString('origin', originCity)
+        .addParameterWithString('destination', destinationCity)
+        .addParameterWithString(
+            'value', originCity == destinationCity ? 'Yes' : 'No')
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
+
+  @override
+  void navigationSearch(
+      {required String destinationCity,
+      required String keyword,
+      required String originCity,
+      required bool isResultsFound,
+      required int resultCount}) {
+    FlutterInsider.Instance.tagEvent('navigation_search')
+        .addParameterWithString('event_name', 'navigation_search')
+        .addParameterWithString('keyword', keyword)
+        .addParameterWithString('origin', originCity)
+        .addParameterWithString('destination', destinationCity)
+        .addParameterWithString('timestamp', now)
+        .addParameterWithBoolean('results_found', isResultsFound)
+        .addParameterWithInt('result_count', resultCount)
         .build();
   }
 }

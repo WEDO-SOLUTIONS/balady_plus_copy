@@ -7,6 +7,8 @@ import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/utils/logger/talker_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:talker_dio_logger/talker_dio_logger_settings.dart';
@@ -30,6 +32,7 @@ class _HajjRcmc extends _$HajjRcmc {
     ..interceptors.clear()
     ..interceptors.add(
       TalkerDioLogger(
+        talker: logger is TalkerMapnessLogger ? (logger as TalkerMapnessLogger).talker : null,
         settings: const TalkerDioLoggerSettings(
           printResponseData: false,
         ),
@@ -55,13 +58,12 @@ class _HajjRcmc extends _$HajjRcmc {
 
   Future<List<PoiMarkerRcmc>> _fetchMarkers() async {
     try {
-      final env = await ref.read(dgisEnvironmentProvider.future);
-      final String url = env.url.replaceFirst('/api', '') + _rcmcUrl;
-      final appLanguage = ref.watch(appLanguageProvider);
-      final camera = ref.watch(cameraPositionProvider);
+      final camera = ref.read(cameraPositionProvider);
       if (camera != null && camera.zoom < _zoomInVisibleMarkers) {
         return [];
       }
+
+      final appLanguage = ref.read(appLanguageProvider);
 
       if (_cached != null && _cacheLanguage == appLanguage) {
         return _cached ?? [];
@@ -70,6 +72,9 @@ class _HajjRcmc extends _$HajjRcmc {
       if (_cacheLanguage != appLanguage) {
         await _objectManager.removeAllMarkers();
       }
+
+      final env = await ref.read(dgisEnvironmentProvider.future);
+      final String url = env.url.replaceFirst('/api', '') + _rcmcUrl;
 
       _cached = [];
       _cacheLanguage = appLanguage;

@@ -5,6 +5,7 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -65,6 +66,7 @@ class Search extends _$Search {
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
+
   bool get searchFromSuggest => _previousType == SearchType.searchByQuery;
 
   @override
@@ -275,11 +277,7 @@ class Search extends _$Search {
 
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: searchQuery)
-          : SearchStateResults(
-              results: results,
-              searchText: searchQuery,
-              markerType: quickSearch.markerType,
-            );
+          : await _handleResults(results, searchQuery, markerType: quickSearch.markerType);
       _result = results;
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
@@ -337,10 +335,7 @@ class Search extends _$Search {
 
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: query)
-          : SearchStateResults(
-              results: results,
-              searchText: query,
-            );
+          : await _handleResults(results, query);
 
       _result = results;
       // -- Analytics
@@ -410,10 +405,7 @@ class Search extends _$Search {
 
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: text)
-          : SearchStateResults(
-              results: results,
-              searchText: text,
-            );
+          : await _handleResults(results, text);
       _result = results;
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
@@ -563,5 +555,22 @@ class Search extends _$Search {
     if (localeOfRequest != _currentQueryLocale) {
       _currentQueryLocale = localeOfRequest;
     }
+  }
+
+  Future<SearchStateResults> _handleResults(
+    SearchResultMessage results,
+    String searchQuery, {
+    MapMarkersType? markerType,
+  }) async {
+    final licenseIds = results.firstPage?.items.map((e) => e.tradeLicense?.license.trim()).nonNulls.toSet();
+
+    if (licenseIds != null && licenseIds.isNotEmpty) {
+      unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
+    }
+    return SearchStateResults(
+      results: results,
+      searchText: searchQuery,
+      markerType: markerType,
+    );
   }
 }

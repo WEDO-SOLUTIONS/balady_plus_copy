@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate;
+import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate, MultiSnappingBehavior, OffsetSnappingModel;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
@@ -82,11 +83,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
     _multiStateSheetController = MultiStateSheetController(
       initialState: ThreeStateSheet.expanded,
-      behavior: FractionSnappingBehavior(fractions: {
-        0.0,
-        if (Platform.isIOS) .3 else .38,
-        .931,
-      }),
+      behavior: MultiSnappingBehavior(models: [
+        FractionSnappingModel({
+          0.0,
+          if (Platform.isIOS) .3 else .38,
+        }),
+        OffsetSnappingModel({Spacing.$4x}),
+      ]),
       stateMapper: const LandingStateMapper(),
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
@@ -169,7 +172,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
               safeAreaColor: containerColor,
-              dragger: const SheetDragger(),
+              dragger: SheetDragger(backgroundColor: contentColor),
               outsideOpacityDelegate: outsideOpacityDelegate,
               header: Container(
                 color: contentColor,
@@ -207,27 +210,28 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       final markers = await searchState.results.getMarkers(
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
+        advancedIconResolver: mapMarkerMapper.getMarkerPath,
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
-          await ref.read(bssServiceProvider.notifier).sendEvent(
-                BssRequest(
-                  eventType: BSSEventType.action,
-                  actionType: BSSActionType.tap,
-                  uiElement: const BssUIElement(
-                    name: BssUIElementNames.mapMarker,
-                    ownerName: BssUIElementNames.searchResultList,
-                  ),
-                  payload: BssPayload(
-                    mapMarker: const BssMapMarker(
-                      scale: BssMarkerSize.small,
-                      adsHighlight: false,
-                    ),
-                    searchResultList: searchState.results.toBss(),
-                    placeItem: markerInfo?.toBss(index),
-                  ),
+          await BssService.instance.sendEvent(
+            BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: const BssUIElement(
+                name: BssUIElementNames.mapMarker,
+                ownerName: BssUIElementNames.searchResultList,
+              ),
+              payload: BssPayload(
+                mapMarker: const BssMapMarker(
+                  scale: BssMarkerSize.small,
+                  adsHighlight: false,
                 ),
-              );
+                searchResultList: searchState.results.toBss(),
+                placeItem: markerInfo?.toBss(index),
+              ),
+            ),
+          );
         },
       );
       if (!ref.read(searchInRectProvider(_scope)).isSearchInThisAreaRequest) {
@@ -262,6 +266,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       // when the user is typing a long text and the TextField is scrolling to show it
       if (notification.dragDetails != null) {
         _unfocusSearchField();
+        MapSearchContent.scrollSendEvent(
+          searchState: ref.read(searchProvider(_scope)),
+          historyListSize: ref.read(searchHistoryProvider(_scope)).length,
+          sendEvent: BssService.instance.sendEvent,
+        );
       }
     }
     return true;

@@ -205,7 +205,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     final value = await context.router.push(
       RoutingSearchSheetRoute(
         placeholder: index == 0 ? context.l10n.from : context.l10n.to,
-        showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
+        showMyLocation: points[index] is! RoutePointMyLocation,
       ),
     );
 

@@ -18,7 +18,7 @@ void main() {
     when(() => appLocalizations.closedUntill).thenReturn('Closed until');
     when(() => appLocalizations.closesIn).thenReturn('Closes in ');
     when(() => appLocalizations.minutes).thenReturn('minutes');
-    when(() => appLocalizations.weekdayNameMonday).thenReturn('Monday');
+    when(() => appLocalizations.weekdayNameShortMonday).thenReturn('Monday');
     when(() => appLocalizations.tomorrow).thenReturn('tomorrow');
   });
 

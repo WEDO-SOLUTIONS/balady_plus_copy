@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'Requirement_enum.dart';
 import 'package:archive/archive.dart';
@@ -878,41 +879,47 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       message: "Invalid event data",
       data: null,
     );
+    if (kDebugMode) print("Errors :  $msg");
     if (msg != null && msg is String && msg.isNotEmpty) {
       try {
-        Map<String, dynamic>? data = jsonDecode(msg);
+        Map<String, dynamic> data = jsonDecode(msg);
         response = BaseResponse(
           code: 200,
           eventName: "trackLogs",
           message: "Event tracked successfully",
           data: null,
         );
-        CommonFunctions.sendUXCamEvent(data!['event_name']);
-        data['MiniAppKey'] = miniAppsEngineBloc.miniApp.serviceKey;
-        data['MiniAppVersion'] =
-            miniAppsEngineBloc.miniApp.latestVersion?.versionNumber;
-        if (data['type'] == "exception") {
-          Sentry.captureException(
-            SentryException(
-              type: data['event_name'],
-              value: data['errors_model'],
-              module: miniAppsEngineBloc.miniApp.serviceKey,
-              unknown: data,
+        Map<String, dynamic> miniAppData = {
+          'MiniAppKey': miniAppsEngineBloc.miniApp.serviceKey,
+          'MiniAppVersion':
+              miniAppsEngineBloc.miniApp.latestVersion?.versionNumber,
+        };
+        if (data['type'] == "marketing") {
+          FlutterUxcam.logEventWithProperties(data['event_name'], miniAppData);
+          Sentry.addBreadcrumb(
+            Breadcrumb(
+              message: data['event_name'],
+              data: miniAppData,
             ),
           );
-        } else {
+        } else if (data['type'] == "exception") {
+          data.addAll(miniAppData);
+          FlutterUxcam.logEventWithProperties(data['event_name'], data);
           Sentry.captureEvent(
             SentryEvent(
               message: SentryMessage(data['event_name']),
-              contexts: Contexts()..['event_data'] = data,
-              tags: {
-                "MiniAppKey": miniAppsEngineBloc.miniApp.serviceKey ?? "",
-              },
-              // serverName: miniAppsEngineBloc.miniApp.serviceKey,
+              transaction: data['errors_model']?['error']?.toString() ?? "",
+              // value: data['errors_model']?['error']?.toString() ?? "",
+              // module: miniAppsEngineBloc.miniApp.serviceKey,
+              serverName: miniAppsEngineBloc.miniApp.serviceKey,
+              contexts: Contexts()..['MiniAppDataErrors'] = data,
             ),
+            stackTrace: data['errors_model']?['stackTrace'],
           );
-        }
-      } catch (_) {}
+        } else {}
+      } catch (e) {
+        print(e);
+      }
     }
     handler.complete(response.jsonEncodeModel());
   }

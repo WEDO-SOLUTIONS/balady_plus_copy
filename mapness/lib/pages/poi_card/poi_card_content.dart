@@ -30,8 +30,11 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController = MultiStateSheetController(
     behavior: MultiSnappingBehavior(
       models: [
-        FractionSnappingModel({0.0, .931}),
-        OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
+        FractionSnappingModel({0.0}),
+        OffsetSnappingModel({
+          HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius,
+          Spacing.$4x,
+        }),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
             a: const SnapComponent.size(component: Components.header),
@@ -87,46 +90,49 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     // Initialize BssService event
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(bssServiceProvider.notifier).sendEvent(
-            const BssRequest(
-              eventType: BSSEventType.view,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.directoryObjectCardScreen,
-              ),
-            ),
-          );
+      await BssService.instance.sendEvent(
+        const BssRequest(
+          eventType: BSSEventType.view,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.directoryObjectCardScreen,
+          ),
+        ),
+      );
     });
 
     _bottomSheetController.addListener(() {
+      final isInitial = _bottomSheetPreviousState == null;
       final state = _bottomSheetController.state;
       if (state == _bottomSheetPreviousState) {
         return;
       }
       _bottomSheetPreviousState = state;
-      BssUIElementNames? uiElementName;
-      switch (state) {
-        case PoiCardBottomSheetState.hidden:
-          uiElementName = BssUIElementNames.placeCardHidden;
-        case PoiCardBottomSheetState.open:
-          uiElementName = BssUIElementNames.placeCardOneThird;
-        case PoiCardBottomSheetState.expanded:
-          uiElementName = BssUIElementNames.placeCardFull;
-        case PoiCardBottomSheetState.halfOpen:
-          uiElementName = BssUIElementNames.placeCardTwoThird;
-      }
+      if (!isInitial) {
+        BssUIElementNames? uiElementName;
+        switch (state) {
+          case PoiCardBottomSheetState.hidden:
+            uiElementName = BssUIElementNames.placeCardHidden;
+          case PoiCardBottomSheetState.open:
+            uiElementName = BssUIElementNames.placeCardTwoThird;
+          case PoiCardBottomSheetState.expanded:
+            uiElementName = BssUIElementNames.placeCardFull;
+          case PoiCardBottomSheetState.halfOpen:
+            uiElementName = BssUIElementNames.placeCardOneThird;
+        }
 
-      ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.view,
-              uiElement: BssUIElement(
-                name: uiElementName,
-                ownerName: BssUIElementNames.directoryObjectCardScreen,
-              ),
-              payload: BssPayload(
-                placeItem: widget.data.toBss(),
-              ),
+        BssService.instance.sendEvent(
+          BssRequest(
+            eventType: BSSEventType.view,
+            uiElement: BssUIElement(
+              name: uiElementName,
+              ownerName: BssUIElementNames.directoryObjectCardScreen,
             ),
-          );
+            payload: BssPayload(
+              placeItem: widget.data.toBss(),
+            ),
+          ),
+        );
+      }
     });
 
     Future.delayed(const Duration(milliseconds: 250), () {
@@ -194,6 +200,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
     final poiHeaderSubTitle = createPoiHeaderSubTitle();
 
+    final offers = ref.watch(poiOffersProvider);
+    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
+
     return Directionality(
       textDirection: Directionality.of(context),
       child: MultiStateSheet(
@@ -250,21 +259,21 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           ),
           onTapCar: () {
             _bssOnRouteTap();
-            _onDirectionsTap(
-              context,
-              widget.data.id!.objectId,
-              widget.data.title,
-              RouteParamsPoint(
-                latitude: widget.data.markerPosition!.latitude,
-                longitude: widget.data.markerPosition!.longitude,
-                objectId: widget.data.id?.objectId,
-                entranceId: widget.data.id?.entranceId,
-                levelId: widget.data.levelId,
-              ),
-              ref,
-            );
-          },
-          onTapFavorite: (item) {
+
+              _onDirectionsTap(
+                context,
+                widget.data.id!.objectId,
+                widget.data.title,
+                RouteParamsPoint(
+                  latitude: widget.data.markerPosition!.latitude,
+                  longitude: widget.data.markerPosition!.longitude,
+                  objectId: widget.data.id?.objectId,
+                  entranceId: widget.data.id?.entranceId,
+                  levelId: widget.data.levelId,
+                ),ref,
+              );
+            },
+            onTapFavorite: (item) {
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
           },
@@ -284,7 +293,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             ],
             WidgetSpan(
               child: Padding(
-                padding:  const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
                 child: Icon(
                   (widget.data.parkingInfo?.isPaid ?? false) ? GeneralIcons.money : GeneralIcons.checkmarkCircle,
                   size: 16,
@@ -294,6 +303,19 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               baseline: TextBaseline.ideographic,
               alignment: PlaceholderAlignment.middle,
             ),
+            if (hasOffers) ...[
+              const TextSpan(text: ' • '),
+              WidgetSpan(
+                child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+              ),
+              TextSpan(
+                text: ' ${context.l10n.offer}',
+                style:
+                context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
+              ),
+            ]
           ],
           parkingInfo: widget.data.parkingInfo,
           poiCardState: poiCardState,
@@ -369,50 +391,50 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
   // BSS
   void _bssOnRouteTap() {
-    ref.read(bssServiceProvider.notifier).sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.buildRoute,
-              ownerName: BssUIElementNames.actionBar,
-            ),
-            payload: BssPayload(
-              placeItem: widget.data.toBss(),
-            ),
-          ),
-        );
+    BssService.instance.sendEvent(
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.buildRoute,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
   }
 
   void _bssOnCallTap() {
-    ref.read(bssServiceProvider.notifier).sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.contactTap,
-              ownerName: BssUIElementNames.actionBar,
-            ),
-            payload: BssPayload(
-              placeItem: widget.data.toBss(),
-            ),
-          ),
-        );
+    BssService.instance.sendEvent(
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.contact,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
   }
 
   void _bssOnFavouritesTap() {
-    ref.read(bssServiceProvider.notifier).sendEvent(
-          BssRequest(
-            eventType: BSSEventType.action,
-            actionType: BSSActionType.tap,
-            uiElement: const BssUIElement(
-              name: BssUIElementNames.bookmark,
-              ownerName: BssUIElementNames.actionBar,
-            ),
-            payload: BssPayload(
-              placeItem: widget.data.toBss(),
-            ),
-          ),
-        );
+    BssService.instance.sendEvent(
+      BssRequest(
+        eventType: BSSEventType.action,
+        actionType: BSSActionType.tap,
+        uiElement: const BssUIElement(
+          name: BssUIElementNames.bookmark,
+          ownerName: BssUIElementNames.actionBar,
+        ),
+        payload: BssPayload(
+          placeItem: widget.data.toBss(),
+        ),
+      ),
+    );
   }
 }

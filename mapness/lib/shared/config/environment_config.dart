@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum DgisEnv { urbiDev, momrahStaging, momrahProd, urbiPreprod }
 
 extension DgisEnvExt on DgisEnv {
@@ -25,6 +27,8 @@ class EnvironmentConfig {
   final String appFeedbackApi;
   final String baladyBusinessUrl;
   final String bssApi;
+  final String saudiPassApi;
+  final CityscapeDateTimeRange cityscapeDateTimeRange;
 
   EnvironmentConfig({
     required this.url,
@@ -40,6 +44,8 @@ class EnvironmentConfig {
     required this.appFeedbackApi,
     required this.baladyBusinessUrl,
     required this.bssApi,
+    required this.saudiPassApi,
+    required this.cityscapeDateTimeRange,
   });
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
@@ -64,6 +70,8 @@ class EnvironmentConfig {
         appFeedbackApi: json['appFeedbackApi'] as String,
         baladyBusinessUrl: json['baladyBusinessUrl'] as String,
         bssApi: json['bssApi'] as String,
+        saudiPassApi: json['saudiPassApi'] as String,
+        cityscapeDateTimeRange: CityscapeDateTimeRange.fromJson(json['cityscapeDateTimeRange'] as Map<String, dynamic>),
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,6 +87,7 @@ class EnvironmentConfig {
         'appFeedbackEnable': appFeedbackEnable,
         'appFeedbackApi': appFeedbackApi,
         'baladyBusinessUrl': baladyBusinessUrl,
+        'saudiPassApi': saudiPassApi,
       };
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
@@ -97,25 +106,29 @@ class EnvironmentConfig {
         appFeedbackEnable: true,
         bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+        cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
+       );
+  
+   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
+      url: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/1.0/',
+      meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+      weatherApi: 'https://apiservicesstg.balady.gov.sa/',
+      jobsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1/recruitment-services',
+      twinsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1',
+      baseApiDomain: 'urbi.ae',
+      shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
+      feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
+      appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
+      appFeedbackEnable: true,
+      proxy: null,
+      bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
+      baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+      saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+      cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
       );
-
-  factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
-        url: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/1.0/',
-        meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://apiservicesstg.balady.gov.sa/',
-        jobsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1/recruitment-services',
-        twinsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1',
-        baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
-        feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
-        appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
-        appFeedbackEnable: true,
-        proxy: null,
-        bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
-        baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
-      );
-
-  factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
+  
+   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
         url: 'https://urbi-lifestyle.momrah.gov.sa/api/1.0/',
         meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
         weatherApi: 'https://apiservices.balady.gov.sa/',
@@ -129,6 +142,8 @@ class EnvironmentConfig {
         proxy: null,
         bssApi: 'https://s1.bss.2gis.com',
         baladyBusinessUrl: 'https://business.balady.gov.sa',
+        saudiPassApi: 'https://apiservices.balady.gov.sa/',
+        cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -147,5 +162,29 @@ class EnvironmentConfig {
         appFeedbackEnable: true,
         bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+        cityscapeDateTimeRange: CityscapeDateTimeRange.defaults(),
       );
+}
+
+class CityscapeDateTimeRange {
+  final DateTime from;
+  final DateTime to;
+  const CityscapeDateTimeRange(this.from, this.to);
+
+  factory CityscapeDateTimeRange.defaults() =>
+      CityscapeDateTimeRange(DateTime(DateTime.now().year, 11, 17), DateTime(DateTime.now().year, 11, 25));
+
+  factory CityscapeDateTimeRange.fromJson(Map<String, dynamic>? json) {
+    if (json?['from'] == null || json?['to'] == null) {
+      return CityscapeDateTimeRange.defaults();
+    }
+
+    DateTime? tryParse(String date) => DateFormat('dd-MM-yy').tryParse(date);
+
+    final from = tryParse(json!['from'] as String) ?? CityscapeDateTimeRange.defaults().from;
+    final to = tryParse(json['to'] as String) ?? CityscapeDateTimeRange.defaults().to;
+
+    return CityscapeDateTimeRange(from, to);
+  }
 }

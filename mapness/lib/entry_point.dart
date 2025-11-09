@@ -6,12 +6,15 @@ import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+// ignore: depend_on_referenced_packages
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -34,6 +37,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
+import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -41,7 +45,6 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -80,7 +83,9 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:sheetify/sheetify.dart';
 
+import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
 
@@ -110,7 +115,10 @@ class MapnessProviderScope extends StatelessWidget {
               final language = ref.watch(appLanguageProvider);
               final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
               // Initialize Saudi National Day provider to start the timer
-              ref.watch(saudiNationalDayProvider);
+              ref
+                ..watch(saudiNationalDayProvider)
+                // Initialize Cityscape provider to listen remote config
+                ..watch(cityscapeProvider);
 
               return provider.MultiProvider(
                 providers: [
@@ -153,7 +161,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initMixpanel();
     initDeepLinks();
     listenNavigationEvents();
-
+    checkConnection();
+    PersistentSafeAreaBottom.startObserving();
+    ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
       ref.read(mediaQueryInfoProvider.notifier).update(MediaQuery.of(context));
@@ -165,21 +175,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // TODO(wultriel): Disable this feature. Because need to research fail restore cases
       // checkNavigationState();
       // Initialization of BSS and Search Region singleton services
-      _initBssService();
+      await _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
+      await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
     });
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then(
-          (RemoteMessage? message) {
+      (RemoteMessage? message) {
         if (message != null && message.data.containsKey('url')) {
-            final url = message.data['url'];
-            openAppLink(url);
-            return;
+          final url = message.data['url'];
+          openAppLink(url);
+          return;
         }
       },
     );
@@ -187,8 +198,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initInsider();
   }
 
+  Future<void> checkConnection() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult.contains(ConnectivityResult.mobile)) {
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.mobile.name);
+    } else if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      ref.read(appAnalyticsProvider).networkConnectionType(type: ConnectivityResult.wifi.name);
+    }
+  }
+
   @override
   void dispose() {
+    PersistentSafeAreaBottom.stopObserving();
     _linkSubscription?.cancel();
     _locationListener?.close();
     _navigationEventsListener?.cancel();
@@ -196,10 +217,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     super.dispose();
   }
 
-  void _initBssService() {
-    ref
-      ..watch(bssDioProvider)
-      ..watch(bssCommonProvider);
+  Future<void> _initBssService() async {
+    // Initialize BSS service with required dependencies
+    final dio = await ref.read(bssDioProvider.future);
+    final common = await ref.read(bssCommonProvider.future);
+    final dgisControllerNotifier = ref.read(dgisControllerProvider.notifier);
+
+    BssService.instance.init(
+      dio: dio,
+      common: common,
+      visibleRectStream: dgisControllerNotifier.visibleRectSubject,
+    );
   }
 
   Future<void> restoreState() async {
@@ -233,11 +261,30 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _updateGlobalMarker(WidgetRef ref) async {
+    final cityscapeEnabled = ref.read(cityscapeProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(cityscapeProvider.notifier);
+
+    if (cityscapeEnabled && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+    ref.listen<bool>(cityscapeProvider, (prev, next) {
+      _updateGlobalMarker(ref);
+    });
+
+    ref.listen<dynamic>(selectedMarkerProvider, (prev, next) {
+      _updateGlobalMarker(ref);
+    });
 
     ref
       // listen for changes in car connection state. But do not rebuild widget
@@ -390,43 +437,36 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-
   // implement insider deep link for ios
 
   Future initInsider() async {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
-    await FlutterInsider.Instance.init(
-        "baladyapp", "group.movingViolations",
-            (int type, dynamic data) {
-          switch (type) {
-            case InsiderCallbackAction.NOTIFICATION_OPEN:
-             // if(Platform.isIOS) {
-                if (data != null && data.containsKey('url')) {
-                  final url = Uri.parse(data['url']);
-                  openAppLink(url);
-                  return;
-                }
-
-            //  }
-              break;
-            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
-              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
-              break;
-            default:
-              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
-              break;
+    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations", (int type, dynamic data) {
+      switch (type) {
+        case InsiderCallbackAction.NOTIFICATION_OPEN:
+          // if(Platform.isIOS) {
+          if (data != null && data.containsKey('url')) {
+            final url = Uri.parse(data['url']);
+            openAppLink(url);
+            return;
           }
-        });
+
+          //  }
+          break;
+        case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          break;
+        default:
+          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          break;
+      }
+    });
 
     // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
     await FlutterInsider.Instance.setActiveForegroundPushView();
     await FlutterInsider.Instance.registerWithQuietPermission(false);
-
   }
-
-
-
 
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
@@ -442,7 +482,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
     final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
-    final serviceKey = url.path;//queryParameters[BaldayDeeplink.serviceKey];
+    final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
 
@@ -496,24 +536,19 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (homeWidget != null) {
       await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty&& serviceKey !='/poi-map' && serviceKey.startsWith('/app')) {
-      MiniAppModel app= MiniAppModel();
+    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
+      MiniAppModel app = MiniAppModel();
       var subPath;
-      if(dtId!= null && path!= null)
-      {
+      if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
-      }
-      else if(path!= null)
-      {
+      } else if (path != null) {
         subPath = '#$path';
       }
 
-      app=app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''),path: subPath);
+      app = app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''), path: subPath);
 
       CommonFunctions.openMiniApp(app);
-    }
-
-    else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -539,13 +574,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openSnapSend();
       } else if (url.path == '/parking') {
         _openParking();
-      } else {
+      }else if (url.path == '/register') {
+        await _openRegisterPage();
+      }
+
+      else {
         await router.pushNamed(url.toString());
       }
     }
   }
 
-  void _openParking() {
+
+
+  Future<void> _openRegisterPage() async {
+    await CommonFunctions.onLogin();
+  }
+    void _openParking() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ref.read(appAnalyticsProvider).quickActionSelected('parking');
       await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
@@ -582,23 +626,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path:  "#Quran_Show_All_Surahs_Page",
+      path: "#Quran_Show_All_Surahs_Page",
     );
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-   // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
       serviceKey: "islamicservice",
-      path:  "#Athkar_Page",
+      path: "#Athkar_Page",
     );
   }
+
+
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
@@ -630,17 +676,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final query = quickFilter.query[language];
     if (query != null) {
       unawaited(
-        ref.read(bssServiceProvider.notifier).sendEvent(
-              BssRequest(
-                eventType: BSSEventType.action,
-                actionType: BSSActionType.deeplink,
-                uiElement: const BssUIElement(
-                  name: BssUIElementNames.searchStart,
-                  ownerName: BssUIElementNames.searchBar,
-                ),
-                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
-              ),
+        BssService.instance.sendEvent(
+          BssRequest(
+            eventType: BSSEventType.action,
+            actionType: BSSActionType.deeplink,
+            uiElement: const BssUIElement(
+              name: BssUIElementNames.searchStart,
+              ownerName: BssUIElementNames.searchBar,
             ),
+            payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
+          ),
+        ),
       );
     }
     unawaited(router.push(SearchRoute(requestFocus: false)));
@@ -764,7 +810,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   void _myLocationDeepLinkHandler(double latitude, double longitude) {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
-    ref.watch(appRouterProvider).push(DeeplinkRoute(closestPoint: latLng));
+    ref
+        .watch(appRouterProvider)
+        .push(DeeplinkRoute(closestPoint: latLng, cameraConfig: const PoiCameraConfig(zoom: 17)));
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
@@ -898,5 +946,15 @@ class _HostFlutterApi extends HostFlutterApi {
       work: favouritesState.work?.message,
       items: favouritesState.items.map((item) => item.message).toList(),
     );
+  }
+
+  @override
+  Future<bool> isAuthorized() async {
+    try {
+      return sl<EntryPointCubit>().state.token != null;
+    } catch (e) {
+      logger.log('Cant get isAuthorized, $e');
+      return false;
+    }
   }
 }

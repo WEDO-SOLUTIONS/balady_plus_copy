@@ -43,7 +43,8 @@ class MapSearchResults extends ConsumerWidget {
 
     void _sendSuggestionPressed() {
       final scope = context.read<SearchScope>();
-      final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
+      final isFromSuggest =
+          ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
       if (isFromSuggest) {
         ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
@@ -69,21 +70,21 @@ class MapSearchResults extends ConsumerWidget {
       if (item.markerPosition == null) {
         debugPrint('GeoPosition for this object is null');
       }
-      await ref.read(bssServiceProvider.notifier).sendEvent(
-            BssRequest(
-              eventType: BSSEventType.action,
-              actionType: BSSActionType.tap,
-              uiElement: BssUIElement(
-                name: BssUIElementNames.placeCardMini,
-                ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
-                position: index + 1,
-              ),
-              payload: BssPayload(
-                placeItem: item.toBss(index),
-                searchResultList: results.toBss(),
-              ),
-            ),
-          );
+      await BssService.instance.sendEvent(
+        BssRequest(
+          eventType: BSSEventType.action,
+          actionType: BSSActionType.tap,
+          uiElement: BssUIElement(
+            name: BssUIElementNames.placeCardMini,
+            ownerName: isFromSuggest ? BssUIElementNames.suggestList : BssUIElementNames.searchResultList,
+            position: index + 1,
+          ),
+          payload: BssPayload(
+            placeItem: item.toBss(index),
+            searchResultList: results.toBss(),
+          ),
+        ),
+      );
     }
 
     return Padding(
@@ -96,12 +97,15 @@ class MapSearchResults extends ConsumerWidget {
             color: context.colors.accentDefault,
           ),
         ),
-        itemBuilder: (context, item, index) => SearchItem(
+        itemBuilder: (context, item, index, offers) => SearchItem(
           result: item,
+          offers: offers,
           language: language,
           myLocation: myLocation == null
               ? null
-              : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+              : GeoPointMessage(
+                  latitude: myLocation.latitude,
+                  longitude: myLocation.longitude),
           onTap: () {
             _bssAnalyticRequest(results: results, item: item);
             _onResultTap(context, item, _sendSuggestionPressed, isGoogleSearch);
@@ -113,10 +117,8 @@ class MapSearchResults extends ConsumerWidget {
     );
   }
 
-  void _onResultTap(
-    BuildContext context,
-    DirectoryObjectMessage item,
-    void Function() sendSuggestionPressed,
+  void _onResultTap(BuildContext context, DirectoryObjectMessage item,
+      void Function() sendSuggestionPressed,
     bool isGoogleSearch,
   ) {
     if (item.id == null) {

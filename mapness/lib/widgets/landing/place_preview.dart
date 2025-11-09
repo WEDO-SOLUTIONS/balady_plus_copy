@@ -11,6 +11,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/landing/interesting_places.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -47,6 +48,7 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
               separationWidth: Spacing.$2x,
               viewportWidth: MediaQuery.sizeOf(context).width,
               contentSize: kPlaceCardSize,
+              activeDotColor: SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
               onTap: (item) {
                 final objectId = int.tryParse(item.entity.id) ?? 0;
                 Metrics.logEventAdvanced(

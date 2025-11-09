@@ -7,16 +7,17 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
-import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
-import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
-import 'package:mapness/features/poi_card/extensions/week_day_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/subtitle.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/tab.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/title.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
+import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
+import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
+import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 
 class PoiHeader extends ConsumerWidget {
   static const poiHeaderHeight = 210.0;
@@ -65,17 +66,16 @@ class PoiHeader extends ConsumerWidget {
     final _parkingObjectId = _data?.id?.objectId == parkingObjectId;
 
     // Header info
-    final workingHours = data?.getOpeningHoursHeader(context);
-    final showInfo = !(workingHours == null) &&
-        (workingHours.workTimeType == WorkTimeType.closed || workingHours.workTimeType == WorkTimeType.almostClosed);
-    final backgroundColor = workingHours?.workTimeType.backgroundColor(context);
-    final textColor = workingHours?.workTimeType.foregroundColor(context);
+    final workingHours = data?.openingHours?.toWorkingHours();
+    final now = DateTime.now();
+    final closedStatus = workingHours?.closedStatus(now, context.l10n) ?? '';
+    final closedStatusColors = workingHours?.colors(now, context.colors);
 
     return HeaderInfoWrapper(
-      text: workingHours?.poiContentWorkTime.workHours ?? '',
-      backgroundColor: backgroundColor,
-      textColor: textColor,
-      isVisible: showInfo,
+      text: closedStatus,
+      backgroundColor: closedStatusColors?.background,
+      textColor: closedStatusColors?.text,
+      isVisible: closedStatus.isNotEmpty,
       child: ColoredBox(
         color: context.colors.backgroundSurface2,
         child: Padding(

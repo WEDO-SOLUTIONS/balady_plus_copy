@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -24,7 +25,7 @@ class CarEnableFreeRoam extends _$CarEnableFreeRoam {
     if (!carConnection) {
       return;
     }
-
+    ref.read(appAnalyticsProvider).carPlayConnected();
     final routes = router.stack;
     final isNavigationActive = routes.any((e) => e.name == PathNavRoute.name || e.name == FreeRoamRoute.name);
 

@@ -124,8 +124,8 @@ class RoutePreviewScreen(
             override fun onStart(owner: LifecycleOwner) {
                 params.coordinates?.let {
                     mapController.setRouteParams(
-                        it.latitude,
-                        it.longitude,
+                        it.latitude.value,
+                        it.longitude.value,
                         params.id
                     )
                 }
@@ -173,7 +173,10 @@ class RoutePreviewScreen(
     private fun handleInfoChanged(routesInfo: RouteEditorRoutesInfo) {
         if (routesInfo.routes.isEmpty()) return
 
-        if (routesInfo.routes.size == 1) {
+        val currentNavigationState = mapController.getCurrentNavigationState()
+        // When navigation is active, Android Auto blocks the route list in RoutePreviewNavigationTemplate,
+        // we show only one route to the user to ensure that navigation starts functioning
+        if (routesInfo.routes.size == 1 || currentNavigationState == NavigationState.NAVIGATION) {
             val route = routesInfo.routes.first().route
             val distanceInMeters = route.geometry.last?.point?.distance?.meters ?: 0.0
             val distanceSpan = DistanceSpan.create(
@@ -188,9 +191,9 @@ class RoutePreviewScreen(
                 .getMarkerType(rubricIds.map { it.value }) { markerTypeResult ->
                     val pane = Pane.Builder()
                     val row = Row.Builder().setTitle(params.name).addText(text)
-                    val icon = getPoiIcon(markerTypeResult.getOrNull())
-                    if (icon != null) {
-                        row.setImage(icon)
+                    val iconResId = AndroidAutoUtils.getPoiIcon(markerTypeResult.getOrNull())
+                    if (iconResId != null) {
+                        row.setImage(buildCarIcon(iconResId))
                     }
                     pane.addRow(row.build())
                     val phone =
@@ -258,16 +261,6 @@ class RoutePreviewScreen(
                 carContext.startCarApp(intent)
             }
             .build()
-    }
-
-    private fun getPoiIcon(type: MapMarkersType?): CarIcon? {
-        if (type == null) return null
-
-        val resId = when (type) {
-            MapMarkersType.RESTAURANTS -> R.drawable.eat_36
-            else -> null
-        }
-        return if (resId != null) buildCarIcon(resId) else null
     }
 }
 

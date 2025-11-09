@@ -28,28 +28,47 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.FlutterProvider
+import com.dgis.map.map_api.HostFlutterApi
 import com.dgis.map.R
+import com.dgis.map.FavouritesUpdateNotifier
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
+import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import com.dgis.map.map_api.FavouriteItemMessage
 import com.dgis.map.map_api.FavouritesStateMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
-import ru.dgis.sdk.routing.BriefRouteInfoSearchPoints
-import ru.dgis.sdk.routing.RouteSearchPoint
+import ru.dgis.sdk.platform.Locale as SdkLocale
+import java.util.concurrent.CompletableFuture
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
+import kotlin.time.Duration
 
 class NavigationScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
     private val customRenderer: CustomRenderer,
-) : CarMapScreen(carContext, mapController), CarNavigationHandler.NavigationListener {
+) : CarMapScreen(carContext, mapController), CarNavigationHandler.NavigationListener,
+    LocaleChangeListener {
 
     private val navigationManager: NavigationManager
     private val carNotificationManager: CarNotificationManager
     private val appManager: AppManager
+    private val hostFlutterApi: HostFlutterApi
+    private var favouritesUpdateJob: Job? = null
+    private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     init {
         navigationManager =
@@ -64,6 +83,7 @@ class NavigationScreen(
             }
         carNotificationManager = CarNotificationManager.from(carContext)
         appManager = carContext.getCarService(AppManager::class.java)
+        hostFlutterApi = FlutterProvider.getHostFlutterApi(carContext)
         lifecycle.addObserver(
             object : DefaultLifecycleObserver {
                 override fun onCreate(owner: LifecycleOwner) {
@@ -71,16 +91,29 @@ class NavigationScreen(
                 }
 
                 override fun onResume(owner: LifecycleOwner) {
-                    showFavourites()
+                    tryToShowFavourites()
                 }
 
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
+                    favouritesUpdateJob?.cancel()
+                    coroutineScope.cancel()
                 }
             }
         )
 
         getFavourites()
+
+        favouritesUpdateJob = CoroutineScope(Dispatchers.Default).launch {
+            for (favouritesMessage in FavouritesUpdateNotifier.events) {
+                withContext(Dispatchers.Main) {
+                    handleFavouritesMessage(favouritesMessage) {
+                        favourites = it
+                        tryToShowFavourites(forceUpdate = true)
+                    }
+                }
+            }
+        }
     }
 
     private var isEndTripShown: Boolean = false
@@ -96,7 +129,7 @@ class NavigationScreen(
     private var destinationTravelEstimate: TravelEstimate? = null
     private var speedInfo = SpeedInfoModel()
 
-    private var favourites: FavouritesStateMessage? = null
+    private var favourites: FavouritesParams? = null
 
     private val isNavigation: Boolean
         get() = navigationState == NavigationState.NAVIGATION
@@ -163,11 +196,17 @@ class NavigationScreen(
             }
 
             NavigationState.FINISHED -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    mapController.showMyLocation()
+                }
                 customRenderer.clear()
                 showEndTrip()
             }
 
             NavigationState.DISABLED -> {
+                CoroutineScope(Dispatchers.Main).launch {
+                    mapController.showMyLocation()
+                }
                 customRenderer.clear()
                 if (prevState != NavigationState.DISABLED && !isEndTripShown) {
                     stopNavigation()
@@ -294,15 +333,18 @@ class NavigationScreen(
             previousStep != null &&
                     (step?.road != previousStep.road ||
                             step?.maneuver?.type != previousStep.maneuver?.type)
-        carNotificationManager.notify(
-            NavigationCarAppService.notificationId,
-            getNavigationNotification(
-                "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
-                maneuver.roadName,
-                maneuver.iconId,
-                shouldNotify,
-            ),
-        )
+        if (lifecycle.currentState != Lifecycle.State.RESUMED) {
+            carNotificationManager.notify(
+                NavigationCarAppService.notificationId,
+                getNavigationNotification(
+                    "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
+                    maneuver.roadName,
+                    maneuver.iconId,
+                    shouldNotify,
+                ),
+            )
+        }
+
         invalidate()
     }
 
@@ -335,7 +377,7 @@ class NavigationScreen(
     }
 
     fun onMapReady() {
-        showFavourites()
+        tryToShowFavourites()
     }
 
     private fun renderSpeedInfo() {
@@ -356,7 +398,17 @@ class NavigationScreen(
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
         if (!bySystem) {
-            showFavourites()
+            tryToShowFavourites()
+        } else {
+            CoroutineScope(Dispatchers.Default).launch {
+                // We should wait until the system completes the state changes
+                delay(800)
+                if (lifecycle.currentState == Lifecycle.State.RESUMED) {
+                    withContext(Dispatchers.Main) {
+                        tryToShowFavourites()
+                    }
+                }
+            }
         }
     }
 
@@ -437,7 +489,8 @@ class NavigationScreen(
                 Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW,
                 Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW,
                 Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW_WITH_ANGLE,
-                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE -> true
+                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE,
+                    -> true
 
                 else -> false
             }
@@ -447,64 +500,102 @@ class NavigationScreen(
         return maneuver.build()
     }
 
-    private fun getFavourites() {
-        FlutterProvider.getHostFlutterApi(carContext).getFavourites {
-            favourites = it.getOrNull()
-            if (mapController.isMapReady) {
-                showFavourites()
+    private fun getFavourites(forceUpdate: Boolean = false) {
+        FlutterProvider.getHostFlutterApi(carContext).getFavourites { result ->
+            handleFavouritesMessage(result.getOrNull()) {
+                favourites = it
+                if (mapController.isMapReady) {
+                    tryToShowFavourites(forceUpdate)
+                }
             }
         }
     }
 
-    private fun showFavourites() {
-        val favourites = this.favourites
-        if (favourites == null) return
-
-        val myLocation = mapController.getMyLocation() ?: return
-        val home = favourites.home
-        val work = favourites.work
-        val startPoint = RouteSearchPoint(GeoPoint(myLocation.latitude, myLocation.longitude))
-        val points = mutableListOf<BriefRouteInfoSearchPoints>()
-        if (home != null) {
-            val coordinates = home.coordinates
-            val finishPoint =
-                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
-            points.add(BriefRouteInfoSearchPoints(startPoint, finishPoint))
-        }
-        if (work != null) {
-            val coordinates = work.coordinates
-            val finishPoint =
-                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
-            points.add(BriefRouteInfoSearchPoints(startPoint, finishPoint))
-        }
-
-        if (points.isEmpty()) {
-            screenManager.push(FavouritesPreviewScreen(carContext, mapController, favourites))
+    private fun handleFavouritesMessage(
+        favourites: FavouritesStateMessage?,
+        onResult: (FavouritesParams?) -> Unit,
+    ) {
+        if (favourites == null) {
+            onResult(null)
             return
         }
 
-        mapController.getBriefRouteInfos(points) {
-            val homeWorkEstimates = when (it?.size) {
-                2 -> HomeWorkEstimates(
-                    home = it[0]!!.duration,
-                    work = it[1]!!.duration
-                )
+        val items = favourites.items
+        val home = favourites.home
+        val work = favourites.work
+        if (items.isEmpty() && home == null && work == null) {
+            onResult(FavouritesParams())
+            return
+        }
 
-                1 -> if (home != null) HomeWorkEstimates(home = it[0]!!.duration) else
-                    HomeWorkEstimates(work = it[0]!!.duration)
-
-                else -> null
+        val futures = items.mapIndexed { index, item ->
+            CompletableFuture<Pair<Int, FavouriteItem>>().also { future ->
+                handleFavouriteItem(item) { result ->
+                    future.complete(index to result)
+                }
             }
+        }
 
-            if (screenManager.top !is NavigationScreen || isNavigation) return@getBriefRouteInfos
-
-            screenManager.push(
-                FavouritesPreviewScreen(
-                    carContext,
-                    mapController,
-                    favourites,
-                    homeWorkEstimates
+        CompletableFuture.allOf(*futures.toTypedArray())
+            .thenApply {
+                futures.map { it.get() }
+                    .sortedBy { it.first }
+                    .map { it.second }
+            }
+            .thenAccept { results ->
+                onResult(
+                    FavouritesParams(
+                        home = home?.toFavouriteItem(),
+                        work = work?.toFavouriteItem(),
+                        items = results
+                    )
                 )
+            }
+    }
+
+
+    fun handleFavouriteItem(item: FavouriteItemMessage, onResult: (FavouriteItem) -> Unit) {
+        val locale = mapController.getLocale()
+        mapController.searchByDirectoryObjectIdWithLocale(
+            DgisObjectId(objectId = item.id.toLong()),
+            SdkLocale(locale.language, "SA"),
+            resultCallback = { directoryObject ->
+                if (directoryObject == null) {
+                    onResult(item.toFavouriteItem())
+                    return@searchByDirectoryObjectIdWithLocale
+                }
+
+                hostFlutterApi.getMarkerType(directoryObject.rubricIds.map { it.value }) { markerTypeResult ->
+                    onResult(
+                        FavouriteItem(
+                            id = item.id,
+                            title = directoryObject.title,
+                            subtitle = directoryObject.makeAddressString(),
+                            coordinates = GeoPoint(
+                                latitude = item.coordinates.latitude,
+                                longitude = item.coordinates.longitude
+                            ),
+                            iconResId = AndroidAutoUtils.getPoiIcon(markerTypeResult.getOrNull())
+                        )
+                    )
+                }
+            })
+    }
+
+    private fun tryToShowFavourites(forceUpdate: Boolean = false) {
+        val favourites = this.favourites
+        if (favourites == null) return
+
+        if (screenManager.top is NavigationScreen && !isNavigation) {
+            screenManager.push(
+                FavouritesPreviewScreen(carContext, mapController, favourites)
+            )
+        } else if (screenManager.top is FavouritesPreviewScreen && forceUpdate) {
+            screenManager.pop()
+        } else if (screenManager.top is FavouritesScreen) {
+            screenManager.pop()
+            screenManager.push(
+                FavouritesScreen(carContext, mapController, favourites.items)
             )
         }
     }
@@ -597,5 +688,9 @@ class NavigationScreen(
             val distanceM = floor(tensOfMeters * 10)
             return Pair(distanceM, Distance.UNIT_METERS)
         }
+    }
+
+    override fun onLocaleChanged() {
+        getFavourites(forceUpdate = true)
     }
 }

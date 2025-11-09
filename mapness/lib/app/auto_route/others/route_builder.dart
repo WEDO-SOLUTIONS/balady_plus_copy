@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/others/transparent_barrier.dart';
 
@@ -98,4 +99,42 @@ class RouteBuilders {
     AutoRoutePage<T> page,
   ) =>
       CustomModalRoute(page: page);
+
+  static Route<T> customBarrierDismissibleBuilder<T>(
+    BuildContext context,
+    Widget child,
+    AutoRoutePage<T> page,
+  ) =>
+      RawDialogRoute(
+        settings: page,
+        pageBuilder: (context, animation, secondaryAnimation) => child,
+        barrierColor: context.colors.screenOverlayDimming40,
+      );
+
+  /// Builds a Cupertino-style [Route] compatible with auto_route's page-based API.
+  ///
+  /// This builder is intended to be used as `customRouteBuilder` inside an
+  /// `@AutoRoute`/`CustomRoute` definition. Since auto_route is page-based,
+  /// the returned [Route.settings] **must** be the provided [page] (an
+  /// [AutoRoutePage]); otherwise Flutter will assert with:
+  /// `!pageBased || route.settings is Page`.
+  ///
+  /// It also preserves native iOS behaviors like the interactive "swipe back"
+  /// gesture when the route can pop.
+  ///
+  /// - [context] — Build context from auto_route.
+  /// - [child]   — The screen widget to display.
+  /// - [page]    — The generated page descriptor; forwarded to `settings`
+  ///               (and can be used for `fullscreenDialog`, etc.).
+  ///
+  /// Usage:
+  /// ```dart
+  /// CustomRoute(
+  ///   path: 'profile_info',
+  ///   page: ProfileInfoRoute.page,
+  ///   customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+  /// )
+  /// ```
+  static Route<T> cupertinoRouteBuilder<T>(BuildContext context, Widget child, AutoRoutePage<T> page) =>
+      CupertinoPageRoute<T>(builder: (_) => child, settings: page);
 }

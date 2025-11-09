@@ -2,12 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper_v2.dart';
-import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -20,6 +18,7 @@ import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// V2 because v1 will be replaced with it in future
+@RoutePage()
 class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
   final int? rating;
 
@@ -28,42 +27,6 @@ class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
     super.key,
   });
 
-  static Future<void> show({
-    required BuildContext context,
-    required int? rating,
-  }) =>
-      context.router.pushNativeRoute(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => FeedbackSourceProvider(
-            source: FeedbackSource.main,
-            child: AppFeedbackSheetV2(rating: rating),
-          ),
-          opaque: false,
-          barrierDismissible: true,
-          fullscreenDialog: true,
-          barrierColor: context.colors.screenOverlayDimming40,
-          transitionsBuilder: (context, animation, _, child) {
-            const begin = Offset(0.0, 1.0);
-            const end = Offset.zero;
-            const curve = Curves.easeInOutCubic;
-
-            final tween = Tween(
-              begin: begin,
-              end: end,
-            ).chain(CurveTween(curve: curve));
-            final offsetAnimation = animation.drive(tween);
-
-            return SlideTransition(
-              position: offsetAnimation,
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-        ),
-      );
-
   @override
   ConsumerState<AppFeedbackSheetV2> createState() => _AppFeedbackSheetV2State();
 }
@@ -71,6 +34,7 @@ class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
 class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   late final ToggleSheetController scrollController = ToggleSheetController(
     onClose: (_) => context.router.popForced(),
+    heightModel: ToggleSheetHeightModel.fraction(.98),
   );
   final ValueNotifier<int> rating = ValueNotifier(0);
   Set<TagV2> selectedTags = Set.identity();
@@ -128,7 +92,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                   ),
                   const SizedBox(height: Spacing.$3x),
                   Text(
-                    context.l10n.shareFeedback,
+                    context.l10n.shareYourFeedback,
                     style: context.textStyles.h3SemiBold,
                   ),
                   const SizedBox(height: Spacing.$2x),
@@ -139,6 +103,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                       style: context.textStyles.bodySmallRegular.copyWith(
                         color: context.colors.foregroundSoft,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                   const SizedBox(height: Spacing.$8x),
@@ -172,7 +137,6 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
                                   )
                                   .toList(),
                               text: feedbackText,
-                              source: FeedbackSourceProvider.of(context).source,
                             );
                       },
                     ),
@@ -216,7 +180,6 @@ class _FeedbackInput extends ConsumerStatefulWidget {
 class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
   final feedbackTextController = TextEditingController();
   final Set<TagV2> selectedTags = Set.identity();
-  static const _maxCharsAllowed = 500;
 
   @override
   void didUpdateWidget(covariant _FeedbackInput oldWidget) {
@@ -224,12 +187,6 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
       selectedTags.clear();
     }
     super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void dispose() {
-    feedbackTextController.dispose();
-    super.dispose();
   }
 
   @override
@@ -244,7 +201,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.rating > 3 ? context.l10n.appFeedbackRating5 : context.l10n.appFeedbackRating1,
+                widget.rating > 3 ? context.l10n.appFeedbackGoodRatingV2 : context.l10n.appFeedbackBadRatingV2,
                 style: context.textStyles.bodyLargeSemiBold,
               ),
               const SizedBox(height: Spacing.$5x),
@@ -256,7 +213,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                       children: [
                         if (tagGroup.type.icon != null)
                           Padding(
-                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                            padding: const EdgeInsetsDirectional.only(end: Spacing.$2x, start: Spacing.$1x),
                             child: Icon(tagGroup.type.icon, color: context.colors.foregroundSoft),
                           ),
                         Text(
@@ -293,29 +250,36 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                           ),
                       ],
                     ),
-                    if (index != tags.length - 1)
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: Spacing.$4x),
-                        child: Divider(),
-                      ),
+                    if (index != tags.length - 1) const Divider(height: Spacing.$8x),
                   ],
                 ),
               const SizedBox(height: Spacing.$5x),
               ConstrainedBox(
                 constraints: const BoxConstraints(minHeight: 85),
-                child: BaladyTextInput(
-                  inputStyle: BaladyInputStyle.multiline,
-                  supportingText: const BaladySupportingText(
-                    maxLength: _maxCharsAllowed
-                  ),
-                  config: BaladyInputConfig(
-                    onChanged: widget.onTextChanged,
-                    maxLines: 4,
-                    textInputAction: TextInputAction.newline,
-                    hintText: context.l10n.appFeedbackHintText,
-                    inputFormatters: [
-                      LengthLimitingTextInputFormatter(_maxCharsAllowed),
-                    ]
+                child: GestureDetector(
+                  onTap: () async {
+                    final result = await context.router.push(
+                      AppFeedbackInputSheet(
+                        initialText: feedbackTextController.text,
+                        maxCharsAllowed: 500,
+                      ),
+                    );
+
+                    if (result is String) {
+                      widget.onTextChanged(result);
+                      feedbackTextController.text = result;
+                    }
+                  },
+                  behavior: HitTestBehavior.opaque,
+                  child: IgnorePointer(
+                    child: BaladyTextInput(
+                      inputStyle: BaladyInputStyle.multiline,
+                      controller: feedbackTextController,
+                      config: BaladyInputConfig(
+                        maxLines: 4,
+                        hintText: context.l10n.appFeedbackHintText,
+                      ),
+                    ),
                   ),
                 ),
               ),

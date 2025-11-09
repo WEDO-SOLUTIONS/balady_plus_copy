@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/pages/routing/route_details_sheet.dart';
 import 'package:mapness/pages/routing/ui/models/routing_details_ui_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -46,7 +47,7 @@ class PathPublicCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final duration = route.duration.formatDuration(context.l10n);
+    final duration = route.duration.formatDurationShort(context.l10n);
     final transfers = ArPlurals.transfers(route.transferCount, context.l10n);
 
     return PathCardWrapper(
@@ -101,7 +102,7 @@ class PathPublicCard extends ConsumerWidget {
           ],
           AppButton(
             buttonColorScheme: ButtonColorScheme.accentSecondary,
-            buttonType: ButtonType.secondary,
+            buttonType: SaudiNationalDay.isNow() ? ButtonType.primary : ButtonType.secondary,
             innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
             onTap: () {
               context.router.push(

@@ -7,11 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/landing/dashboard/cityescape_control.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -74,6 +76,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
   Widget build(BuildContext context) {
     final uiDirection = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+    final isCityscapeDay = ref.watch(cityscapeProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
       if (widget.controller.state == ThreeStateSheet.expanded) {
@@ -92,45 +95,57 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AnimatedCrossFade(
-          crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-          firstChild: const FreeRoamBar(),
-          secondChild: QuickSearchBar(
-            direction: uiDirection,
-            quickScrollController: quickScrollController,
-            showLaunchingFreeRoam: showLaunchingFreeRoam,
-          ),
-          duration: const Duration(milliseconds: 300),
-        ),
-        if (isNationalDay)
-          Stack(
-            alignment: Alignment.bottomCenter,
-            children: [
-              GestureDetector(
-                onTap: () => widget.controller.setState(ThreeStateSheet.open),
-                child: SizedBox(
-                  height: Spacing.$12x,
-                  width: double.infinity,
-                  child: DecoratedBox(
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
-                      color: Color(0xFF00343A),
+        Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: isNationalDay ? Spacing.$4x : 0.0),
+              child: AnimatedCrossFade(
+                crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                firstChild: const FreeRoamBar(),
+                secondChild: QuickSearchBar(
+                  direction: uiDirection,
+                  quickScrollController: quickScrollController,
+                  showLaunchingFreeRoam: showLaunchingFreeRoam,
+                ),
+                duration: const Duration(milliseconds: 300),
+              ),
+            ),
+            if (isNationalDay)
+              MultiStateSheetBuilder(
+                defaultState: ThreeStateSheet.hidden,
+                builder: (context, state, interpolation, child) => Padding(
+                  padding:
+                      EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0),
+                  child: GestureDetector(
+                    onTap: () => widget.controller.setState(ThreeStateSheet.open),
+                    child: SizedBox(
+                      height:
+                          Spacing.$12x * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
+                      width: double.infinity,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
+                          color: Color(0xFF00343A),
+                        ),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
+                              child: Text(
+                                context.l10n.happy95thYears,
+                                style: context.textStyles.bodySmallSemiBold.copyWith(
+                                  color: context.colors.successOnSuccess,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            )),
+                      ),
                     ),
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
-                          child: Text(
-                            context.l10n.happy95thYears,
-                            style: context.textStyles.bodySmallSemiBold.copyWith(
-                              color: context.colors.successOnSuccess,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        )),
                   ),
                 ),
               ),
+            if (isNationalDay)
               NationalFlag(
                 onTap: () => widget.fireworksController
                   ..value = 0
@@ -140,8 +155,15 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                     duration: widget.fireworksController.duration,
                   ),
               ),
-            ],
-          )
+            if (isCityscapeDay)
+              CityscapeGlobal(
+                controller: widget.controller,
+                onTap: () {
+                  ref.read(cityscapeProvider.notifier).openThePlace();
+                },
+              )
+          ],
+        )
       ],
     );
   }

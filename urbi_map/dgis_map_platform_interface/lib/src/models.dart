@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
+import 'package:dgis_map_platform_interface/src/events/models/simple_map_object_model.dart';
 
 /// Model corresponds render object on map
 class Marker {
@@ -81,7 +82,7 @@ class SimpleClusterObject {
   final int objectCount;
 
   /// List of markers in the cluster
-  final List<String> markers;
+  final List<SimpleMapObjectModel> markers;
 
   /// Anchor of the cluster
   final MarkerAnchorMessage anchor;

@@ -8,34 +8,60 @@ import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.DistanceSpan
-import androidx.car.app.model.DurationSpan
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.model.MapWithContentTemplate
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
 import com.dgis.map.android_auto.settings.SettingsScreen
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
-import com.dgis.map.map_api.FavouriteItemMessage
-import com.dgis.map.map_api.FavouritesStateMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.distance
+import ru.dgis.sdk.routing.RouteSearchPoint
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlin.math.min
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class FavouritesPreviewScreen(
     carContext: CarContext,
     private val mapController: CarMapController,
-    favourites: FavouritesStateMessage,
-    homeWorkEstimates: HomeWorkEstimates? = null,
+    private val favourites: FavouritesParams,
 ) : CarMapScreen(carContext, mapController) {
 
     private val itemsLimit = carContext.getCarService(ConstraintManager::class.java)
         .getContentLimit(ConstraintManager.CONTENT_LIMIT_TYPE_LIST)
 
-    private val itemList: ItemList
+    private var homeWorkEstimates: HomeWorkEstimates? = null
+    private var estimatesJob: Job? = null
+    private var getEstimatesTimestamp: Long? = null
+
+    init {
+        lifecycle.addObserver(
+            object : DefaultLifecycleObserver {
+                override fun onStart(owner: LifecycleOwner) {
+                    getEstimates()
+                }
+
+                override fun onDestroy(owner: LifecycleOwner) {
+                    estimatesJob?.cancel()
+                }
+            }
+        )
+    }
 
     private val actionStrip by lazy {
         val favouritesAction =
@@ -51,31 +77,51 @@ class FavouritesPreviewScreen(
             .addAction(settingsAction).build()
     }
 
-    private val itemSearch by lazy {
-        Row.Builder().setImage(buildCarIcon(R.drawable.search))
-            .setTitle(getString(R.string.search_title))
-            .setOnClickListener {
-                screenManager.push(SearchScreen(carContext, mapController))
-            }.build()
+    private val itemSearch: Row
+        get() {
+            return Row.Builder().setImage(buildCarIcon(R.drawable.search))
+                .setTitle(getString(R.string.search_title))
+                .setOnClickListener {
+                    screenManager.push(SearchScreen(carContext, mapController))
+                }.build()
+        }
+
+    private val itemFavourites: Row
+        get() {
+            return Row.Builder().setImage(buildCarIcon(R.drawable.bookmark))
+                .setTitle(getString(R.string.favourites_title))
+                .setOnClickListener {
+                    screenManager.push(
+                        FavouritesScreen(
+                            carContext,
+                            mapController,
+                            favourites.items
+                        )
+                    )
+                }.build()
+        }
+
+    private val itemSettings: Row
+        get() {
+            return Row.Builder().setImage(buildCarIcon(R.drawable.settings))
+                .setTitle(getString(R.string.settings_title))
+                .setOnClickListener {
+                    screenManager.push(SettingsScreen(carContext, mapController))
+                }.build()
+        }
+
+    @ExperimentalCarApi
+    override fun onGetTemplate(): Template {
+        val template = MapWithContentTemplate.Builder()
+        val contentTemplate = ListTemplate.Builder()
+            .setSingleList(buildItemList()).setHeaderAction(Action.APP_ICON)
+            .setTitle(getString(R.string.app)).build()
+        template.setActionStrip(actionStrip).setContentTemplate(contentTemplate)
+        template.setMapController(buildMapController())
+        return template.build()
     }
 
-    private val itemFavourites by lazy {
-        Row.Builder().setImage(buildCarIcon(R.drawable.bookmark))
-            .setTitle(getString(R.string.favourites_title))
-            .setOnClickListener {
-                screenManager.push(FavouritesScreen(carContext, mapController, favourites.items))
-            }.build()
-    }
-
-    private val itemSettings by lazy {
-        Row.Builder().setImage(buildCarIcon(R.drawable.settings))
-            .setTitle(getString(R.string.settings_title))
-            .setOnClickListener {
-                screenManager.push(SettingsScreen(carContext, mapController))
-            }.build()
-    }
-
-    init {
+    private fun buildItemList(): ItemList {
         val itemList = ItemList.Builder()
 
         val home = favourites.home
@@ -126,30 +172,23 @@ class FavouritesPreviewScreen(
                 val text = SpannableString("  \n${item.subtitle}")
                 text.setSpan(distanceSpan, 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
-                itemList.addItem(
-                    Row.Builder().setTitle(item.title).addText(text)
-                        .setOnClickListener { onFavouriteTap(item) }.build()
-                )
+                val row = Row.Builder()
+                if (item.iconResId != null) {
+                    row.setImage(buildCarIcon(item.iconResId))
+                }
+                row.setTitle(item.title).addText(text)
+                    .setOnClickListener { onFavouriteTap(item) }
+
+                itemList.addItem(row.build())
             }
         } else {
             itemList.addItem(itemSearch).addItem(itemFavourites).addItem(itemSettings)
         }
 
-        this.itemList = itemList.build()
+        return itemList.build()
     }
 
-    @ExperimentalCarApi
-    override fun onGetTemplate(): Template {
-        val template = MapWithContentTemplate.Builder()
-        template.setActionStrip(actionStrip).setContentTemplate(
-            ListTemplate.Builder().setSingleList(itemList).setHeaderAction(Action.APP_ICON)
-                .setTitle(getString(R.string.app)).build()
-        )
-        template.setMapController(buildMapController())
-        return template.build()
-    }
-
-    private fun onFavouriteTap(item: FavouriteItemMessage) {
+    private fun onFavouriteTap(item: FavouriteItem) {
         screenManager.push(
             RoutePreviewScreen(carContext, mapController, item.toRoutePreviewParams())
         )
@@ -157,16 +196,94 @@ class FavouritesPreviewScreen(
 
     private fun buildTitleWithEstimate(title: String, estimate: Duration?): CharSequence {
         if (estimate == null) return title
+        return "$title • ${getDurationString(estimate.inSeconds)}"
+    }
 
-        val result = SpannableString("$title •  ")
-        val spanStart = result.length
-        result.setSpan(
-            DurationSpan.create(TimeUnit.SECONDS.toSeconds(estimate.inSeconds)),
-            spanStart - 1,
-            spanStart,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        return result
+    private fun getEstimates() {
+        val home = favourites.home
+        val work = favourites.work
+        if (home == null && work == null) return
+
+        val myLocation = mapController.getMyLocation() ?: return
+        val currentTime = System.currentTimeMillis()
+        if (getEstimatesTimestamp != null
+            && currentTime - getEstimatesTimestamp!! < TimeUnit.MINUTES.toMillis(5)
+        ) {
+            return
+        }
+        getEstimatesTimestamp = currentTime
+
+        val startPoint = RouteSearchPoint(GeoPoint(myLocation.latitude, myLocation.longitude))
+        val points = mutableListOf<RouteSearchPoint>()
+        if (home != null) {
+            val coordinates = home.coordinates
+            val finishPoint =
+                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
+            points.add(finishPoint)
+        }
+        if (work != null) {
+            val coordinates = work.coordinates
+            val finishPoint =
+                RouteSearchPoint(GeoPoint(coordinates.latitude, coordinates.longitude))
+            points.add(finishPoint)
+        }
+
+        estimatesJob?.cancel()
+        estimatesJob = CoroutineScope(Dispatchers.IO).launch {
+            val durations = points.map {
+                async {
+                    suspendCoroutine { continuation ->
+                        mapController.getRouteDuration(startPoint, it) { duration ->
+                            continuation.resume(duration)
+                        }
+                    }
+                }
+            }.awaitAll()
+
+            val homeWorkEstimates = when (durations.size) {
+                2 -> HomeWorkEstimates(
+                    home = durations[0],
+                    work = durations[1]
+                )
+
+                1 -> if (home != null) HomeWorkEstimates(home = durations[0]) else
+                    HomeWorkEstimates(work = durations[0])
+
+                else -> null
+            }
+            if (homeWorkEstimates == null) return@launch
+
+            withContext(Dispatchers.Main) {
+                this@FavouritesPreviewScreen.homeWorkEstimates = homeWorkEstimates
+                invalidate()
+            }
+        }
+    }
+
+    fun getDurationString(seconds: Long): String {
+        val duration = seconds.toDuration(DurationUnit.SECONDS)
+        val hours = duration.inWholeHours
+        val minutes = duration.inWholeMinutes
+        val remainingMinutes = minutes % 60
+
+        val hoursString = getString(R.string.hoursShort)
+        val minutesString = getString(R.string.minutesShort)
+
+        return when {
+            hours > 0 -> {
+                var time = "$hours $hoursString"
+                if (remainingMinutes > 0) {
+                    time += " $remainingMinutes $minutesString"
+                }
+                time
+            }
+            minutes <= 1 -> {
+                "1 $minutesString"
+            }
+            else -> {
+                "$remainingMinutes $minutesString"
+            }
+        }
     }
 }
 
