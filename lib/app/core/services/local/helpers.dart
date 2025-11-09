@@ -107,7 +107,7 @@ class Helpers {
   static Future<LatLng?> getMapLocation() async {
     return await getCurrentLocation(
         accuracy: geo_locator.LocationAccuracy.medium,
-        duration: const Duration(seconds: 5));
+        duration: const Duration(seconds: 1));
   }
 
   static Future<LatLng?> getCurrentLocation(
@@ -126,7 +126,7 @@ class Helpers {
           await geo_locator.Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
             accuracy: accuracy ?? geo_locator.LocationAccuracy.high,
-            timeLimit: duration ?? const Duration(seconds: 13)),
+            timeLimit: duration ?? const Duration(seconds: 1)),
       );
       //    EasyLoading.dismiss();
       return LatLng(latitude:position.latitude,longitude: position.longitude);
