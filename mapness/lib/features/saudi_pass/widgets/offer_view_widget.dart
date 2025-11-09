@@ -36,6 +36,14 @@ class OfferViewWidget extends ConsumerWidget {
     );
 
     const boxFit = BoxFit.cover;
+    String? path;
+    List<Color>? gradientColors;
+
+    try {
+      path = offerView.offersGroup.imagePath;
+      gradientColors = offerView.offersGroup.color;
+    } catch (ex) {}
+
     return InkWell(
       onTap: offerView.onTap,
       child: OfferViewDecorationWidget(
@@ -52,10 +60,16 @@ class OfferViewWidget extends ConsumerWidget {
                   errorWidget: (context, url, error) => DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: OffersGroup.others.color,
+                        colors: gradientColors ?? OffersGroup.others.color,
                         begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
                         end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                       ),
+                    ),
+                    child: Image.asset(
+                      path ?? OffersGroup.others.imagePath,
+                      fit: boxFit,
+                      alignment: AlignmentDirectional.centerEnd,
+                      matchTextDirection: true,
                     ),
                   ),
                 ),

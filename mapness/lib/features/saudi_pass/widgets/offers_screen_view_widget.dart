@@ -40,7 +40,11 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                             ),
                           )
                       : null,
-                  onBackButton: () => context.router.popForced(_hasChangeFavorites),
+                  onBackButton: () {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      context.router.popForced(_hasChangeFavorites);
+                    });
+                  },
                   title: context.l10n.saudiPassOffersPageTitle,
                   body: ListenableBuilder(
                     listenable: widget.offersScreenView,
