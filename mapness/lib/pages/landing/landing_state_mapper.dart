@@ -17,7 +17,7 @@ final class LandingStateMapper implements SheetStateMapper<ThreeStateSheet> {
   bool shouldPopOn(MultiStateSheetController<ThreeStateSheet> controller) {
     switch (controller.closestState) {
       case ThreeStateSheet.hidden:
-        return true;
+        return false;
 
       case ThreeStateSheet.open:
         controller.setState(ThreeStateSheet.hidden);

@@ -18,7 +18,6 @@ class RouteTabBar extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   final AsyncValue<List<RouteInfo>> routes;
-  final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
 
   const RouteTabBar({
     required this.onChanged,
@@ -26,7 +25,6 @@ class RouteTabBar extends ConsumerStatefulWidget {
     required this.points,
     required this.publicTransportVisibility,
     required this.routes,
-    required this.publicTransportRoutes,
     super.key,
   });
 
@@ -55,14 +53,17 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
               primaryIcon: SystemIcons.tuning,
             ),
             // when car connected, choice of route search options shouldn't be available to user
-            if (!carConnected) _getRouteSearchOptionsWidgets(context),
+            if (!carConnected) _getRouteSearchOptionsWidgets(context, widget.publicTransportVisibility),
           ].insertBetween(Spacing.$2x.widthBox).toList(),
         ),
       ),
     );
   }
 
-  Widget _getRouteSearchOptionsWidgets(BuildContext context) {
+  Widget _getRouteSearchOptionsWidgets(
+    BuildContext context,
+    AsyncValue<PublicTransportVisibilityResult> publicTransportRoutes,
+  ) {
     final chips = [
       RouteSearchOptionsMessage.car,
       RouteSearchOptionsMessage.publicTransport,
@@ -82,7 +83,7 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
                 leadingIcon: TabsV2IconData(
                   chip.icon(
                     context,
-                    hasPublicTransportData: (widget.publicTransportRoutes.asData?.valueOrNull ?? []).isEmpty,
+                    hasPublicTransportData: !(publicTransportRoutes.asData?.value.hasPublicTransportRoutes ?? false),
                     isPedestrianBlocked: errorPedestrian,
                     isOffline: noInternetException,
                   ),
