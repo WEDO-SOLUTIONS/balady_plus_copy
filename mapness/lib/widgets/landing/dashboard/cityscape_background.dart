@@ -38,7 +38,6 @@ class CityscapeBackground extends StatelessWidget {
                   formattedDate: formatDateRange(
                     DateTime(2025, 11, 17),
                     DateTime(2025, 11, 20),
-                    context.l10n.localeName,
                   ),
                 ),
               ),
@@ -59,20 +58,39 @@ class _CityescapeBackground extends StatelessWidget {
           color: Color(0xFF6B57E0),
         ),
         child: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                right: Spacing.$4x,
-                bottom: Spacing.$4x,
-                top: Spacing.$1_5x,
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              right: Spacing.$4x,
+              bottom: Spacing.$4x,
+              top: Spacing.$1_5x,
+            ),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: context.l10n.visualCityScape),
+                  const TextSpan(text: ' · '),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.baseline,
+                    baseline: TextBaseline.alphabetic,
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Text(
+                        formattedDate,
+                        style: context.textStyles.captionLargeSemiBold.copyWith(
+                          color: context.colors.successOnSuccess,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: Text(
-                '${context.l10n.visualCityScape} · $formattedDate',
-                style: context.textStyles.captionLargeSemiBold.copyWith(
-                  color: context.colors.successOnSuccess,
-                ),
-                textAlign: TextAlign.end,
+              style: context.textStyles.captionLargeSemiBold.copyWith(
+                color: context.colors.successOnSuccess,
               ),
-            )),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ),
       );
 }
