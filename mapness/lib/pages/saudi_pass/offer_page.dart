@@ -230,6 +230,7 @@ class _Content extends HookConsumerWidget {
                           ),
                           if (showCode.value) _OfferCode(code: offer.code!),
                           Spacing.$3x.heightBox,
+                          if(offer.location.longitude!='0.0' && offer.location.latitude!='0.0')
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                             child: Row(
