@@ -103,7 +103,17 @@ class Offer {
     required this.typeDetails,
   });
 
-  factory Offer.fromJson(Map<String, dynamic> json) => _$OfferFromJson(json);
+  factory Offer.fromJson(Map<String, dynamic> json) {
+    final emptyLocation = {
+      'latitude': '0.0',
+      'longitude': '0.0',
+    };
+    json.putIfAbsent('location', () => emptyLocation);
+    if (json['location'] == null) {
+      json.update('location', (value) => emptyLocation);
+    }
+    return _$OfferFromJson(json);
+  }
 
   String? get code => switch (type.id) {
         TypeDetails.vouchers => typeDetails.number,
