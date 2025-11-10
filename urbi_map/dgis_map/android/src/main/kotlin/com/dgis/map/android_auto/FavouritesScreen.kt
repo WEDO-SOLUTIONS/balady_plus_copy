@@ -26,18 +26,26 @@ class FavouritesScreen(
 
     private val itemList: ItemList
 
-    private val actionStrip by lazy {
-        val closeAction = Action.Builder().setIcon(buildCarIcon(R.drawable.close_36))
-            .setOnClickListener { carContext.getCarService(ScreenManager::class.java).pop() }
-            .build()
-        ActionStrip.Builder().addAction(closeAction).build()
-    }
+    private val actionStrip: ActionStrip
+        get() {
+            val closeAction = Action.Builder().setIcon(buildCarIcon(R.drawable.close_36))
+                .setOnClickListener { carContext.getCarService(ScreenManager::class.java).pop() }
+                .build()
+            return ActionStrip.Builder().addAction(closeAction).build()
+        }
 
-    private val noFavourites by lazy {
-        Row.Builder().setTitle(getString(R.string.no_favourites_title))
-            .addText(getString(R.string.no_favourites_subtitle))
-            .build()
-    }
+    private val noFavourites: Row
+        get() {
+            val language = mapController.getLanguage()
+            val row = Row.Builder()
+            if (language == Language.ENGLISH) {
+                row.setTitle(getString(R.string.no_favourites_title))
+                    .addText(getString(R.string.no_favourites_subtitle))
+            } else {
+                row.setTitle(getString(R.string.no_favourites_title))
+            }
+            return row.build()
+        }
 
     init {
         val itemList = ItemList.Builder()

@@ -92,6 +92,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     );
 
     return ToggleSheet(
+      shouldPop: (_) => false,
       backgroundColor: context.colors.backgroundSurface4,
       safeAreaColor: context.colors.backgroundSurface4,
       dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
