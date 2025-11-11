@@ -95,21 +95,9 @@ class Cityscape extends _$Cityscape {
     );
     await mapManager?.removeMarkerById(cityscapeGlobalMarkerId);
 
-    final cameraPosition = ref.read(cameraPositionProvider);
-    final zoom = cameraPosition?.zoom ?? 0.0;
-
-    int color;
-    double width;
-    String svgPath;
-    if (zoom > 16) {
-      color = 0xFF2AB3A9;
-      svgPath = cityscapeDefaultMarker;
-      width = 20;
-    } else {
-      color = 0xFF1B1B1B;
-      svgPath = customMarker;
-      width = 32;
-    }
+    const int color = 0xFF2AB3A9;
+    const double width = 20;
+    final String svgPath = cityscapeDefaultMarker;
 
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
     final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
@@ -150,14 +138,16 @@ class Cityscape extends _$Cityscape {
     int color;
     double width;
     String svgPath;
-    if (zoom > 16) {
+    if (zoom > 12) {
       color = 0xFF2AB3A9;
       svgPath = cityscapeDefaultMarker;
       width = 20;
     } else {
-      color = 0xFF1B1B1B;
-      svgPath = customMarker;
-      width = 32;
+      // color = 0xFF1B1B1B;
+      // svgPath = customMarker;
+      // width = 32;
+      await hideGlobalMarker();
+      return;
     }
 
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
