@@ -68,8 +68,8 @@ class _OfferCard extends HookConsumerWidget {
     return createAmountOrRatioTextSpan(
       language: language,
       locale: locale,
-      amount: offer.typeDetails.amount,
-      ratio: offer.typeDetails.ratio,
+      amount: offer.typeDetails?.amount,
+      ratio: offer.typeDetails?.ratio,
       iconSize: 22,
     );
   }

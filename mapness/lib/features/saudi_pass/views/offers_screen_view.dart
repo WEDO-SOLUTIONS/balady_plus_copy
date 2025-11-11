@@ -85,6 +85,8 @@ abstract class OfferView implements Listenable {
 
   String get branchName;
 
+  String? get distance;
+
   ({String url, Map<String, String> headers}) get logo;
 
   OffersGroup get offersGroup;

@@ -42,4 +42,11 @@ class VisibleRect {
       ),
     );
   }
+
+  GeoPointMessage center() {
+    return GeoPointMessage(
+      latitude: (northEastLat + southWestLat) / 2,
+      longitude: (northEastLon + southWestLon) / 2,
+    );
+  }
 }

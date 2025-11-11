@@ -78,7 +78,8 @@ class Offer {
   final String crNumber;
   final bool favorite;
   final bool redeemed;
-  final TypeDetails typeDetails;
+  final TypeDetails? typeDetails;
+  final String? distance;
 
   Offer({
     required this.id,
@@ -100,20 +101,21 @@ class Offer {
     required this.crNumber,
     required this.favorite,
     required this.redeemed,
-    required this.typeDetails,
+    this.typeDetails,
+    this.distance,
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) => _$OfferFromJson(json);
 
   String? get code => switch (type.id) {
-        TypeDetails.vouchers => typeDetails.number,
-        TypeDetails.coupons => typeDetails.code,
+        TypeDetails.vouchers => typeDetails?.number,
+        TypeDetails.coupons => typeDetails?.code,
         _ => null,
       };
 
   num? get discount => switch (type.id) {
-        TypeDetails.vouchers => typeDetails.amount,
-        TypeDetails.coupons => typeDetails.ratio,
+        TypeDetails.vouchers => typeDetails?.amount,
+        TypeDetails.coupons => typeDetails?.ratio,
         _ => null,
       };
 

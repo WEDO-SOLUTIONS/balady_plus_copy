@@ -6,6 +6,7 @@ import 'package:mapness/features/saudi_pass/notifiers/offers_screen_view_notifie
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
 import 'package:mapness/features/saudi_pass/views/offers_view.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 
 abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
   Future<String> cityIdByLocation;
@@ -42,6 +43,8 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
   Future<OffersFiltersViewNotifier> createFiltersAndOffersView() async {
     final saudiPassRepository = await this.saudiPassRepository;
     final lookups = await futureLookups;
+    final controller = await ref.read(dgisControllerProvider.future);
+    final cameraPosition = await controller.getCameraPosition();
 
     return OffersFiltersViewNotifier(
       ref: ref,
@@ -50,6 +53,7 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
       lookups: lookups,
       isFavoritesOnly: isFavoritesOnly,
       categoriesSelected: mapPreSelected(lookups.categories).toSet(),
+      point: cameraPosition.point,
     );
   }
 

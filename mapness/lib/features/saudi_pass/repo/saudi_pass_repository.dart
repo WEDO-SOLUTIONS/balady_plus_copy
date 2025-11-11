@@ -1,3 +1,5 @@
+import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/saudi_pass/offer_feedback.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
@@ -19,6 +21,8 @@ class SaudiPassRepository {
 
   Future<Promotions> getPromotions({
     required Set<String> cityIds,
+    GeoPointMessage? mapPoint,
+    int range = 10000,
     int pageNumber = 0,
     int? pageSize = 10,
     Set<String> licenseIds = const {},
@@ -36,6 +40,16 @@ class SaudiPassRepository {
       throw Exception('Cities MUST NOT be empty');
     }
 
+    LatLng? userPoint;
+    if (mapPoint != null) {
+      userPoint = LatLng(
+        latitude: mapPoint.latitude,
+        longitude: mapPoint.longitude,
+      );
+    } else {
+      userPoint = await Helpers.getCurrentLocation();
+    }
+
     final queryParameters = <String, Object?>{
       'city-id': [...cityIds],
       'page-no': pageNumber + 1,
@@ -50,10 +64,14 @@ class SaudiPassRepository {
       'rating': ratingSort?.name,
       'discount': discountSort?.name,
       'favorites': favorites,
+      'range': range,
+      if (userPoint != null) 'user-longitude': userPoint.longitude,
+      if (userPoint != null) 'user-latitude': userPoint.latitude,
     }..removeWhere((_, value) => value == null);
 
+    _dio.options.baseUrl = 'https://apiservicesstg.balady.gov.sa/v2/balady-business-saudi-pass-services/user';
     final response = await _dio.get('/promotions', queryParameters: queryParameters);
-
+    _dio.options.baseUrl = 'https://apiservicesstg.balady.gov.sa/v1/balady-business-saudi-pass-services/user';
     return PromotionsBody.fromJson(response.data).dataOrThrow();
   }
 

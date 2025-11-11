@@ -1,11 +1,12 @@
 part of 'offers_screen_view_notifier.dart';
 
 class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView {
-  PrefsOffersViewNotifier(this.saudiPassRepository, this.cityByLocation, this.ref, this.preferences);
+  PrefsOffersViewNotifier(this.saudiPassRepository, this.point, this.cityByLocation, this.ref, this.preferences);
 
   final SaudiPassRepository saudiPassRepository;
   final City cityByLocation;
   final Ref ref;
+  final GeoPointMessage point;
   Preferences preferences;
 
   @override
@@ -38,6 +39,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
       saudiPassRepository: saudiPassRepository,
       preferences: preferences,
       cityByLocation: cityByLocation,
+      mapPoint: point,
     );
 
     OfferView createOfferCardView(Offer offer) => OfferViewImpl(offer, ref, saudiPassRepository);
