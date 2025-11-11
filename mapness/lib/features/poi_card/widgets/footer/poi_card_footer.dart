@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/balady_uikit/core/icons/stop_numbers_icons.dart';
 import 'package:mapness/balady_uikit/core/icons/transport_icons.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -108,7 +107,7 @@ class PoiCardFooter extends HookConsumerWidget {
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
               ItemActionBar(
-                icon: StopNumbersIcons.$01,
+                icon: TransportIcons.addStop,
                 buttonType: ButtonType.secondary,
                 label: context.l10n.addStop,
                 innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
