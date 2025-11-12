@@ -95,10 +95,6 @@ class Cityscape extends _$Cityscape {
     );
     await mapManager?.removeMarkerById(cityscapeGlobalMarkerId);
 
-    const int color = 0xFF2AB3A9;
-    const double width = 20;
-    final String svgPath = cityscapeDefaultMarker;
-
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
     final fontName = isArabic ? poiMapFontAr : poiMapFontEn;
     final title =
@@ -111,12 +107,12 @@ class Cityscape extends _$Cityscape {
           longitude: 46.38741921633482,
           elevation: 1,
         ),
-        icon: sdk.MarkerIconMessage(svgPath: svgPath, width: width),
+        icon: sdk.MarkerIconMessage(svgPath: cityscapeDefaultMarker, width: 20),
         anchor: sdk.MarkerAnchorMessage(x: 0, y: 0),
         text: title,
         textStyle: sdk.MarkerTextStyleMessage(
           fontSize: 13,
-          color: color,
+          color: 0xFF2AB3A9,
           strokeWidth: 1,
           strokeColor: 0xFFFFFFFF,
           fontName: fontName,
@@ -135,17 +131,7 @@ class Cityscape extends _$Cityscape {
     final cameraPosition = ref.read(cameraPositionProvider);
     final zoom = cameraPosition?.zoom ?? 0.0;
 
-    int color;
-    double width;
-    String svgPath;
-    if (zoom > 12) {
-      color = 0xFF2AB3A9;
-      svgPath = cityscapeDefaultMarker;
-      width = 20;
-    } else {
-      // color = 0xFF1B1B1B;
-      // svgPath = customMarker;
-      // width = 32;
+    if (zoom < 12) {
       await hideGlobalMarker();
       return;
     }
@@ -162,12 +148,12 @@ class Cityscape extends _$Cityscape {
           longitude: 46.38741921633482,
           elevation: 1,
         ),
-        icon: sdk.MarkerIconMessage(svgPath: svgPath, width: width),
+        icon: sdk.MarkerIconMessage(svgPath: cityscapeDefaultMarker, width: 20),
         anchor: sdk.MarkerAnchorMessage(x: 0, y: 0),
         text: title,
         textStyle: sdk.MarkerTextStyleMessage(
           fontSize: 13,
-          color: color,
+          color: 0xFF2AB3A9,
           strokeWidth: 1,
           strokeColor: 0xFFFFFFFF,
           fontName: fontName,
