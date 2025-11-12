@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
@@ -95,20 +94,6 @@ class ShowMapOffers extends _$ShowMapOffers {
     );
   }
 
-  double distanceMeters(double lat1, double lon1, double lat2, double lon2) {
-    const R = 6371000; // радиус Земли в метрах
-    final phi1 = lat1 * pi / 180;
-    final phi2 = lat2 * pi / 180;
-    final deltaPhi = (lat2 - lat1) * pi / 180;
-    final deltaLambda = (lon2 - lon1) * pi / 180;
-
-    final a =
-        sin(deltaPhi / 2) * sin(deltaPhi / 2) + cos(phi1) * cos(phi2) * sin(deltaLambda / 2) * sin(deltaLambda / 2);
-    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
-
-    return R * c; // расстояние в метрах
-  }
-
   Future<void> switchOffersVisibility({
     required bool enabled,
     required String cityId,
@@ -150,36 +135,17 @@ class ShowMapOffers extends _$ShowMapOffers {
       Promotions promotions;
       if (visibleRect != null) {
         final rect = visibleRect;
-
-        final neLat = rect.northEastLat;
-        final neLon = rect.northEastLon;
-
-        final swLat = rect.southWestLat;
-        final swLon = rect.southWestLon;
-
-        final centerLat = (neLat + swLat) / 2;
-        final centerLon = (neLon + swLon) / 2;
-
         final center = rect.center();
-        final northWestLat = rect.northEastLat;
-        final northWestLon = rect.southWestLon;
-
-        final distanceToNW = distanceMeters(
-          center.latitude,
-          center.longitude,
-          northWestLat,
-          northWestLon,
-        );
         promotions = await saudiPassRepository.getPromotions(
           cityIds: cities,
           categories: categories,
           recommendedTypes: recommendedTypes,
           pageSize: null,
           mapPoint: GeoPointMessage(
-            latitude: centerLat,
-            longitude: centerLon,
+            latitude: center.latitude,
+            longitude: center.longitude,
           ),
-          range: distanceToNW.toInt(),
+          range: rect.distanceToNW().toInt(),
         );
       } else {
         final controller = await ref.read(dgisControllerProvider.future);
