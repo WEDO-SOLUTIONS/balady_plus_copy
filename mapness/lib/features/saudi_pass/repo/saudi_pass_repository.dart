@@ -69,6 +69,7 @@ class SaudiPassRepository {
       if (userPoint != null) 'user-latitude': userPoint.latitude,
     }..removeWhere((_, value) => value == null);
 
+    // It will be fixed as soon as the entire second version is ready.
     _dio.options.baseUrl = 'https://apiservicesstg.balady.gov.sa/v2/balady-business-saudi-pass-services/user';
     final response = await _dio.get('/promotions', queryParameters: queryParameters);
     _dio.options.baseUrl = 'https://apiservicesstg.balady.gov.sa/v1/balady-business-saudi-pass-services/user';
