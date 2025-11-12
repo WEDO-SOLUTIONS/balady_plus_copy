@@ -3059,6 +3059,7 @@ digraph "" {
   "/lib/pages/routing/routing_points.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/features/search/ui/search_scope.dart";
+  "/lib/pages/routing/routing_points.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/pages/routing/ui/routing_header_delegate.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/pages/routing/ui/routing_history.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/pages/routing/ui/routing_map_controls.dart";
