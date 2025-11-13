@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:dgis_map/library.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/chunked_async_iterable.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
@@ -14,10 +15,12 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
   final Preferences? preferences;
   final bool? favorites;
   final Sorting? sorting;
+  final GeoPointMessage mapPoint;
 
   OffersChunkedAsyncIterable({
     required this.saudiPassRepository,
     required this.cities,
+    required this.mapPoint,
     this.recommendedTypes = const {},
     this.categories = const {},
     this.favorites,
@@ -28,6 +31,7 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
     required this.saudiPassRepository,
     required City cityByLocation,
     required Preferences this.preferences,
+    required this.mapPoint,
   })  : recommendedTypes = preferences.recommendedTypes.toSet(),
         categories = preferences.categories.toSet(),
         favorites = null,

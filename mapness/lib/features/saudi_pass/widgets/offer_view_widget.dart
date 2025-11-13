@@ -17,6 +17,22 @@ class OfferViewWidget extends ConsumerWidget {
 
   const OfferViewWidget(this.offerView, {super.key});
 
+  String formatDistance({
+    required String? metersString,
+    required BuildContext context,
+  }) {
+    if (metersString == null) return '—';
+    final meters = double.tryParse(metersString);
+    if (meters == null) return '—';
+
+    if (meters >= 1000) {
+      final km = meters / 1000;
+      return '${km.toStringAsFixed(2)} ${context.l10n.km}';
+    } else {
+      return '${meters.toInt()} ${context.l10n.meter}';
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colorsV2;
@@ -107,7 +123,21 @@ class OfferViewWidget extends ConsumerWidget {
             const SizedBox(width: Spacing.$3x),
             Align(
               alignment: Alignment.topRight,
-              child: _HeartIconWidget(offerView),
+              child: Column(
+                children: [
+                  _HeartIconWidget(offerView),
+                  const SizedBox(height: Spacing.$3x),
+                  Text(
+                    formatDistance(
+                      metersString: offerView.distance,
+                      context: context,
+                    ),
+                    style: textStyles.captionMediumRegular.copyWith(color: colors.neutralMuted),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

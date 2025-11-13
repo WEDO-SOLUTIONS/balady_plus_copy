@@ -59,8 +59,8 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
     );
 
     final amountOrRatioTextSpan = createAmountOrRatioTextSpan(
-      amount: offerDetails.typeDetails.amount,
-      ratio: offerDetails.typeDetails.ratio,
+      amount: offerDetails.typeDetails?.amount,
+      ratio: offerDetails.typeDetails?.ratio,
       language: ref.watch(appLanguageProvider),
       locale: Localizations.localeOf(context),
       iconSize: 12,
@@ -74,13 +74,13 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
         child: Row(
           children: [
             if (offerImage != null)
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-              child: SizedBox.square(
-                dimension: Spacing.$12x,
-                child:  SaudiPassImage(imageId: offerDetails.provider.logo),
+              ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                child: SizedBox.square(
+                  dimension: Spacing.$12x,
+                  child: SaudiPassImage(imageId: offerDetails.provider.logo),
+                ),
               ),
-            ),
             const SizedBox(width: Spacing.$3x),
             Expanded(
               child: Column(

@@ -8,6 +8,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
   final SaudiPassRepository saudiPassRepository;
   final Lookups lookups;
   final bool isFavoritesOnly;
+  final GeoPointMessage point;
 
   OffersFiltersViewNotifier({
     required this.ref,
@@ -16,6 +17,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
     required this.lookups,
     required this.isFavoritesOnly,
     required this.categoriesSelected,
+    required this.point,
   });
 
   late City citySelected = defaultCity;
@@ -43,6 +45,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
       categories: categoriesSelected,
       favorites: isFavoritesOnly ? true : null,
       sorting: sortingSelected.firstOrNull,
+      mapPoint: point,
     );
 
     OfferView createOfferCardView(Offer offer) =>
@@ -237,19 +240,22 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
   bool get isByDateRed => offer.willExpiredSoon;
 
   @override
-  num? get amount => offer.typeDetails.amount;
+  num? get amount => offer.typeDetails?.amount;
 
   @override
   String get branchName => offer.branchName;
 
   @override
-  num? get ratio => offer.typeDetails.ratio;
+  num? get ratio => offer.typeDetails?.ratio;
 
   @override
   OffersGroup get offersGroup => offer.offerGroup;
 
   @override
   String get offerId => offer.id;
+
+  @override
+  String? get distance => offer.distance;
 
   @override
   Future<void> onHeartTap() async {

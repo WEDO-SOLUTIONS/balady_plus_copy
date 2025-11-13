@@ -98,6 +98,7 @@ class ShowMapOffers extends _$ShowMapOffers {
     required bool enabled,
     required String cityId,
     required bool isAll,
+    VisibleRect? visibleRect,
     Set<Category>? category,
     Set<RecommendedType>? promotionsType,
   }) async {
@@ -131,13 +132,32 @@ class ShowMapOffers extends _$ShowMapOffers {
               if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
             };
       final updatedState = List<Offer>.from([]);
-
-      final promotions = await saudiPassRepository.getPromotions(
-        cityIds: cities,
-        categories: categories,
-        recommendedTypes: recommendedTypes,
-        pageSize: null,
-      );
+      final Promotions promotions;
+      if (visibleRect != null) {
+        final rect = visibleRect;
+        final center = rect.center();
+        promotions = await saudiPassRepository.getPromotions(
+          cityIds: cities,
+          categories: categories,
+          recommendedTypes: recommendedTypes,
+          pageSize: null,
+          mapPoint: GeoPointMessage(
+            latitude: center.latitude,
+            longitude: center.longitude,
+          ),
+          range: rect.distanceToNW().toInt(),
+        );
+      } else {
+        final controller = await ref.read(dgisControllerProvider.future);
+        final cameraPosition = await controller.getCameraPosition();
+        promotions = await saudiPassRepository.getPromotions(
+          cityIds: cities,
+          categories: categories,
+          recommendedTypes: recommendedTypes,
+          pageSize: null,
+          mapPoint: cameraPosition.point,
+        );
+      }
 
       for (final offer in promotions.records) {
         updatedState.add(offer);

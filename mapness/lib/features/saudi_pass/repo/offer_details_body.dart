@@ -55,6 +55,7 @@ class OfferDetails extends Offer {
     required super.typeDetails,
     required this.terms,
     required this.briefDurationTo,
+    required super.distance,
   });
 
   OfferDetails copyWith({
@@ -80,6 +81,7 @@ class OfferDetails extends Offer {
     TypeDetails? typeDetails,
     String? terms,
     double? briefDurationTo,
+    String? distance,
   }) =>
       OfferDetails(
         id: id ?? this.id,
@@ -104,6 +106,7 @@ class OfferDetails extends Offer {
         typeDetails: typeDetails ?? this.typeDetails,
         terms: terms ?? this.terms,
         briefDurationTo: briefDurationTo ?? this.briefDurationTo,
+        distance: distance ?? this.distance,
       );
 
   factory OfferDetails.fromJson(Map<String, dynamic> json) => _$OfferDetailsFromJson(json);
