@@ -52,6 +52,7 @@ class VisibleRect {
     );
   }
 
+  // Need to refactor to use sdk GeoPoint.distance
   double distanceMeters({
     required GeoPointMessage point1,
     required GeoPointMessage point2,
