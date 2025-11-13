@@ -52,12 +52,15 @@ class VisibleRect {
     );
   }
 
-  double distanceMeters(double lat1, double lon1, double lat2, double lon2) {
+  double distanceMeters({
+    required GeoPointMessage point1,
+    required GeoPointMessage point2,
+  }) {
     const R = 6371000; // radius of Earth in meters
-    final phi1 = lat1 * pi / 180;
-    final phi2 = lat2 * pi / 180;
-    final deltaPhi = (lat2 - lat1) * pi / 180;
-    final deltaLambda = (lon2 - lon1) * pi / 180;
+    final phi1 = point1.latitude * pi / 180;
+    final phi2 = point2.latitude * pi / 180;
+    final deltaPhi = (point2.latitude - point1.latitude) * pi / 180;
+    final deltaLambda = (point2.longitude - point1.longitude) * pi / 180;
 
     final a =
         sin(deltaPhi / 2) * sin(deltaPhi / 2) + cos(phi1) * cos(phi2) * sin(deltaLambda / 2) * sin(deltaLambda / 2);
@@ -66,14 +69,11 @@ class VisibleRect {
     return R * c; // distance in meters
   }
 
-  double distanceToNW() {
-    final center = this.center();
-
-    return distanceMeters(
-      center.latitude,
-      center.longitude,
-      northEastLat,
-      southWestLon,
-    );
-  }
+  double distanceToNW() => distanceMeters(
+        point1: this.center(),
+        point2: GeoPointMessage(
+          latitude: northEastLat,
+          longitude: southWestLon,
+        ),
+      );
 }

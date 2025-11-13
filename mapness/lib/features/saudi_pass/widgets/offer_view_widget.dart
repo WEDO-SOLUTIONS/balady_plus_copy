@@ -17,16 +17,19 @@ class OfferViewWidget extends ConsumerWidget {
 
   const OfferViewWidget(this.offerView, {super.key});
 
-  String formatDistance(String? metersString) {
+  String formatDistance({
+    required String? metersString,
+    required BuildContext context,
+  }) {
     if (metersString == null) return '—';
     final meters = double.tryParse(metersString);
     if (meters == null) return '—';
 
     if (meters >= 1000) {
       final km = meters / 1000;
-      return '${km.toStringAsFixed(2)} km';
+      return '${km.toStringAsFixed(2)} ${context.l10n.km}';
     } else {
-      return '${meters.toInt()} m';
+      return '${meters.toInt()} ${context.l10n.meter}';
     }
   }
 
@@ -125,7 +128,10 @@ class OfferViewWidget extends ConsumerWidget {
                   _HeartIconWidget(offerView),
                   const SizedBox(height: Spacing.$3x),
                   Text(
-                    formatDistance(offerView.distance),
+                    formatDistance(
+                      metersString: offerView.distance,
+                      context: context,
+                    ),
                     style: textStyles.captionMediumRegular.copyWith(color: colors.neutralMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

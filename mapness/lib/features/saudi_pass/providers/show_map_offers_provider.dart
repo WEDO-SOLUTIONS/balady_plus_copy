@@ -132,7 +132,7 @@ class ShowMapOffers extends _$ShowMapOffers {
               if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
             };
       final updatedState = List<Offer>.from([]);
-      Promotions promotions;
+      final Promotions promotions;
       if (visibleRect != null) {
         final rect = visibleRect;
         final center = rect.center();
