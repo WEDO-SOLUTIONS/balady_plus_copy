@@ -22,36 +22,41 @@ class RoutesCarousel extends ConsumerWidget {
   const RoutesCarousel({
     required this.pageController,
     required this.routes,
-    required this.publicTransportRoutes,
     required this.onActiveChanged,
     required this.startNavigation,
     required this.refresh,
     required this.navType,
     required this.publicTransportVisibility,
-    this.destination,
-    this.startPoint,
+    required this.points,
     super.key,
   });
 
   final RouteSearchOptionsMessage navType;
   final PageController pageController;
   final AsyncValue<List<RouteInfo>> routes;
-  final AsyncValue<List<BriefPublicTransportModel>> publicTransportRoutes;
   final ValueChanged<int> onActiveChanged;
   final Function(RouteInfo) startNavigation;
   final Function() refresh;
-  final RouteParamsPointWithLabel? destination;
-  final RouteParamsPointWithLabel? startPoint;
+  final List<RouteParamsPointWithLabel?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {
-      final routes = publicTransportRoutes.asData?.valueOrNull;
+      final startPoint = points.firstOrNull?.value;
+      final finishPoint = points.lastOrNull?.value;
 
-      if (publicTransportVisibility.error is NoInternetException) {
-        return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
-      } else if (publicTransportVisibility.error is PublicTransportVisibilityIsTooFarException) {
+      final publicTransportRoutes = ref.watch(
+        publicTransportRoutesProvider(
+          startPoint: startPoint,
+          finishPoint: finishPoint,
+          navType: navType,
+        ),
+      );
+
+      final publicTransport = publicTransportVisibility.asData?.value;
+
+      if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
         return PathCardFailure.nearestMetroTooFar(
           refresh: () {
             ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
@@ -61,43 +66,70 @@ class RoutesCarousel extends ConsumerWidget {
         );
       }
 
-      if (routes == null || routes.isEmpty || publicTransportVisibility.hasError) {
-        return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
-      }
+      return publicTransportRoutes.when(
+        loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
+        error: (err, st) {
+          if (err is NoInternetException ||
+              (publicTransportVisibility.hasError && publicTransportVisibility.error is NoInternetException)) {
+            return PathCardFailure.noInternet(
+              refresh: refresh,
+              text: context.l10n.noInternetConnection,
+            );
+          }
 
-      final shortest = shortestIsOnlyOnePublicTransport(routes);
+          if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
+            return PathCardFailure.nearestMetroTooFar(
+                  refresh: () {
+                    ref.read(routesUpdateTabProvider.notifier).update = RouteSearchOptionsMessage.car;
+                  },
+                  text: context.l10n.nearestMetroTooFar,
+                  labelButton: context.l10n.goByCar,
+                );
+              }
 
-      return RouteCarouselWrapper(
-        pageController: pageController,
-        routesCount: routes.length,
-        height: navType.cardHeight,
-        onActiveChanged: onActiveChanged,
-        itemBuilder: (context, index) {
-          final route = routes[index];
-          final durationInSeconds = route.duration;
-          return Padding(
-            padding: padding(index: index, length: routes.length),
-            child: PathPublicCard(
-              route: route,
-              localizations: PathCardLocalization(
-                calories: context.l10n.calories,
-                steps: context.l10n.steps,
-                go: context.l10n.go,
-              ),
-              onStartNavigation: () => startNavigation(getRouteInfo(route)),
-              destination: destination,
-              startPoint: startPoint,
-              additionalInfo: shortest != null && shortest == durationInSeconds
-                  ? PathCardStatus.shortest(context.l10n.shortest)
-                  : null,
-              publicTransportRoutes: publicTransportRoutes.value,
-              activeIndex: index,
-              onActiveChanged: onActiveChanged,
-            ),
+          return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
+        },
+        data: (ptRoutes) {
+          if (ptRoutes.isEmpty || publicTransportVisibility.hasError) {
+            return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
+          }
+
+          final shortest = shortestIsOnlyOnePublicTransport(ptRoutes);
+
+          return RouteCarouselWrapper(
+            pageController: pageController,
+            routesCount: ptRoutes.length,
+            height: navType.cardHeight,
+            onActiveChanged: onActiveChanged,
+            itemBuilder: (context, index) {
+              final route = ptRoutes[index];
+              final durationInSeconds = route.duration;
+              return Padding(
+                padding: padding(index: index, length: ptRoutes.length),
+                child: PathPublicCard(
+                  route: route,
+                  localizations: PathCardLocalization(
+                    calories: context.l10n.calories,
+                    steps: context.l10n.steps,
+                    go: context.l10n.go,
+                  ),
+                  onStartNavigation: () => startNavigation(getRouteInfo(route)),
+                  destination: points.lastOrNull,
+                  startPoint: points.firstOrNull,
+                  additionalInfo: shortest != null && shortest == durationInSeconds
+                      ? PathCardStatus.shortest(context.l10n.shortest)
+                      : null,
+                  publicTransportRoutes: ptRoutes,
+                  activeIndex: index,
+                  onActiveChanged: onActiveChanged,
+                ),
+              );
+            },
           );
         },
       );
     }
+
     return routes.when(
       data: (routes) {
         final shortest = shortestIsOnlyOne(routes);
@@ -154,8 +186,6 @@ class RoutesCarousel extends ConsumerWidget {
         return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
       },
       loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
-      skipLoadingOnRefresh: false,
-      skipLoadingOnReload: false,
     );
   }
 

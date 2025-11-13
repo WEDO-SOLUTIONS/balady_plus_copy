@@ -136,7 +136,7 @@ class ShowMapOffers extends _$ShowMapOffers {
         cityIds: cities,
         categories: categories,
         recommendedTypes: recommendedTypes,
-        pageSize: null,
+        pageSize: 100,
       );
 
       for (final offer in promotions.records) {
