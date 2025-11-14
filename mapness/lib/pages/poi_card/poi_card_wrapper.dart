@@ -117,9 +117,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
               context.router.popForced();
             },
             onRetry: () {
-              if (!state.isRefreshing) {
-                ref.invalidate(viewModelProvider);
-              }
+              context.router.popForced();
             },
           );
         }
