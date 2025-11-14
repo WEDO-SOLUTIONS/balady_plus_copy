@@ -32,8 +32,7 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
 
     final dio = Dio(
       BaseOptions(
-        // TODO: add to env before release !!!
-        baseUrl: 'https://apiservicesstg.balady.gov.sa/v1/balady-business-saudi-pass-services/user',
+        baseUrl: '${env.saudiPassApi}v1/balady-business-saudi-pass-services/user/',
         sendTimeout: timeout,
         receiveTimeout: timeout,
         connectTimeout: timeout,
