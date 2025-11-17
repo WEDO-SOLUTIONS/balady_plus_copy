@@ -70,7 +70,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
           onSend: () => _collectForm(objectId: widget.objectId, categoryId: category.id),
           child: child!,
         ),
-        child: FeedbackFormWidget(fields: category.fields),
+        child: FeedbackFormWidget(fields: category.fields, objectId: widget.objectId),
       ),
     );
   }

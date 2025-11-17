@@ -14,7 +14,7 @@ export 'src/events/navi_message_events.dart';
 export 'src/events/navi_speed_event.dart';
 export 'src/events/navigation_event.dart' show NavigationEvent;
 export 'src/events/object_tap_events.dart'
-    show ObjectTapEvent, MyLocationTapEvent, TapEvent, IdleTapEvent, IoTapEvent, DgisObjectId, RoadEventTapEvent;
+    show ObjectTapEvent, MyLocationTapEvent, TapEvent, IdleTapEvent, IoTapEvent, DgisObjectId, DgisObjectIdMessageExt, RoadEventTapEvent;
 export 'src/events/package_events.dart';
 export 'src/events/parking_state_event.dart' show ParkingStateEvent, ParkingFilter;
 export 'src/events/public_transport_events.dart';

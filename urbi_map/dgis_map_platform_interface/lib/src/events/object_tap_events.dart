@@ -1,4 +1,5 @@
 import 'package:dgis_map_platform_interface/library.dart';
+import 'package:flutter/material.dart';
 
 abstract class TapEvent {
   const TapEvent();
@@ -85,6 +86,7 @@ class RoadEventTapEvent extends TapEvent {
   final LatLng latLng;
 }
 
+@immutable
 class DgisObjectId {
   const DgisObjectId({
     required this.objectId,
@@ -97,6 +99,22 @@ class DgisObjectId {
   DgisObjectIdMessage toMessage() {
     return DgisObjectIdMessage(objectId: objectId, entranceId: entranceId);
   }
+
+  @override
+  int get hashCode => objectId.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+
+    return other is DgisObjectId && other.objectId == objectId;
+  }
+}
+
+extension DgisObjectIdMessageExt on DgisObjectIdMessage {
+  DgisObjectId toObjectId() => DgisObjectId(objectId: objectId, entranceId: entranceId);
 }
 
 /// Tap on IO layer
