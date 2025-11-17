@@ -160,9 +160,9 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
             ),
           AppFeedbackState.loading => const AppFeedbackLoading(),
           AppFeedbackState.success => const Padding(
-            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: AppFeedbackSuccess(),
-          ),
+              padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              child: AppFeedbackSuccess(),
+            ),
           AppFeedbackState.error => Padding(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: AppFeedbackError(
