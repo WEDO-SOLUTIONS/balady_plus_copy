@@ -3805,6 +3805,7 @@ digraph "" {
   "/lib/widgets/feedback/feedback_schedule_widget.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
   "/lib/widgets/feedback/feedback_schedule_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/feedback/feedback_schedule_widget.dart" -> "/lib/shared/lib/weekday_entity.dart";
+  "/lib/widgets/feedback/feedback_schedule_widget.dart" -> "/lib/shared/providers/map/directory_object_from_dgis_id.dart";
   "/lib/widgets/feedback/feedback_schedule_widget.dart" -> "/lib/widgets/feedback/schedule/drum_picker_widget.dart";
   "/lib/widgets/feedback/feedback_schedule_widget.dart" -> "/lib/widgets/feedback/schedule/feedback_schedule_interval_widget.dart";
   "/lib/widgets/feedback/feedback_schedule_widget.dart" -> "/lib/widgets/feedback/schedule/feedback_select_days_sheet.dart";
