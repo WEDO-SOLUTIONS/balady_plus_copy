@@ -24,7 +24,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectIdMessage objectId,
   LatLng? closestPoint,
 ) async {
-  final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
+  final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId.toObjectId()).future);
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
