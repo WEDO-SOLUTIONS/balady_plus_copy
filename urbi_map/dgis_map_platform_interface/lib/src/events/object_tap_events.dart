@@ -86,16 +86,21 @@ class RoadEventTapEvent extends TapEvent {
   final LatLng latLng;
 }
 
+/// DgisObjectId model
 @immutable
 class DgisObjectId {
+  /// Constructor
   const DgisObjectId({
     required this.objectId,
     required this.entranceId,
   });
 
+  /// Dgis object id
   final int objectId;
+  /// Entrance id
   final int entranceId;
 
+  /// Convert DgisObjectId to DgisObjectIdMessage
   DgisObjectIdMessage toMessage() {
     return DgisObjectIdMessage(objectId: objectId, entranceId: entranceId);
   }
@@ -113,7 +118,9 @@ class DgisObjectId {
   }
 }
 
+/// Extension for DgisObjectIdMessage
 extension DgisObjectIdMessageExt on DgisObjectIdMessage {
+  /// Convert DgisObjectIdMessage to DgisObjectId
   DgisObjectId toObjectId() => DgisObjectId(objectId: objectId, entranceId: entranceId);
 }
 
