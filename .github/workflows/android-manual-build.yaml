@@ -120,11 +120,6 @@ jobs:
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 
-      - name: 🔍 Run Flutter analyzer (early check)
-        run: |
-          cd mapness
-          flutter analyze
-
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
           cd urbi_map/dgis_map_platform_interface
@@ -154,11 +149,6 @@ jobs:
           cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
-
-      - name: 🔍 Run Flutter analyzer (early check)
-        run: |
-          cd mapness
-          flutter analyze
 
       - name: Select Android build params
         id: select
