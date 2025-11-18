@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart' as sdk;
 import 'package:dgis_map/library.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -22,6 +23,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'wrc.g.dart';
 part 'wrc_points.dart';
+part 'wrc_search_queries.dart';
 
 const _currentDateCheckInterval = Duration(minutes: 15);
 
@@ -40,6 +42,12 @@ class WRC extends _$WRC {
 
   @override
   bool build() {
+    mapManager = ref.watch(
+      mapObjectManagerProvider(
+        named: const MapObjectManagerSettings.wrcEvent().name,
+        layerId: const MapObjectManagerSettings.wrcEvent().layerId,
+      ).notifier,
+    );
     Future.delayed(Duration.zero, initializeGlobalMarkers);
 
     // start timer to rebuild this state over time
@@ -53,6 +61,7 @@ class WRC extends _$WRC {
     }
 
     final wrcEventDateRange = ref.watch(dgisEnvironmentProvider.select((value) => value.value?.wrcEventDateRange));
+    debugPrint('wrcEventDateRange($wrcEventDateRange) isNow(${wrcEventDateRange?.isNow})');
     if (wrcEventDateRange != null) {
       return wrcEventDateRange.isNow;
     }
@@ -61,9 +70,10 @@ class WRC extends _$WRC {
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
-  bool isWRCEventObject(int objectId) => _points.any((point) => point.objectId == objectId) && state;
+  bool isWRCEventObject(int objectId) => wrcEventPoints.any((point) => point.objectId == objectId) && state;
 
-  WRCEventPoint? getWRCEventPoint(int objectId) => _points.firstWhereOrNull((point) => point.objectId == objectId);
+  WRCEventPoint? getWRCEventPoint(int objectId) =>
+      wrcEventPoints.firstWhereOrNull((point) => point.objectId == objectId);
 
   /// Manually triggers an update of the state
   void refresh() {
@@ -78,39 +88,37 @@ class WRC extends _$WRC {
     if (!state) {
       return;
     }
-    mapManager = ref.read(
-      mapObjectManagerProvider(
-        named: MapObjectManagerSettings.myLocation().name,
-        layerId: MapObjectManagerSettings.myLocation().layerId,
-      ).notifier,
-    );
 
-    for (final point in _points) {
-      await mapManager?.removeMarkerById(point.globalMarkerId);
+    for (final point in wrcEventPoints) {
+      try {
+        await mapManager?.removeMarkerById(point.globalMarkerId);
 
-      final globalMarker = sdk.Marker(
-        id: point.globalMarkerId,
-        options: sdk.MarkerOptionsMessage(
-          position: _getMarkerPosition(point),
-          icon: _getIcon(point),
-          anchor: _markerAnchor,
-          text: _getTitle(point),
-          textStyle: _markerAnchorTextStyle,
-          animatedAppearance: true,
-          isVisible: false,
-          zIndex: _zIndex,
-        ),
-        onTap: () => openThePlace(point),
-      );
+        final globalMarker = sdk.Marker(
+          id: point.globalMarkerId,
+          options: sdk.MarkerOptionsMessage(
+            position: _getMarkerPosition(point),
+            icon: _getIcon(point),
+            anchor: _markerAnchor,
+            text: _getTitle(point),
+            textStyle: _markerAnchorTextStyle,
+            animatedAppearance: true,
+            isVisible: false,
+            zIndex: _zIndex,
+          ),
+          onTap: () => openThePlace(point),
+        );
 
-      await mapManager?.addMarker(globalMarker);
+        await mapManager?.addMarker(globalMarker);
+      } on Object catch (e) {
+        debugPrint('failed to initialize WRC map marker: $e');
+      }
     }
 
     await showAllMarkers();
   }
 
   Future<void> showAllMarkers() async {
-    for (final point in _points) {
+    for (final point in wrcEventPoints) {
       unawaited(_showPointMarker(point));
     }
   }
@@ -139,7 +147,7 @@ class WRC extends _$WRC {
   }
 
   Future<void> hideAllMarkers() async {
-    for (final point in _points) {
+    for (final point in wrcEventPoints) {
       unawaited(mapManager?.setMarkerOptions(point.globalMarkerId, sdk.ChangeMarkerOptionsMessage(isVisible: false)));
     }
   }
@@ -158,7 +166,6 @@ class WRC extends _$WRC {
           objectId: point.objectId,
           entranceId: 0,
         ),
-        closestPoint: sdk.LatLng(latitude: point.center.latitude, longitude: point.center.longitude),
         cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
       toCompareRoutes: [PoiCardWidgetRoute.page],
@@ -216,24 +223,24 @@ class WRC extends _$WRC {
   String getMapMarkerPath(int objectId) =>
       _getPointById(objectId)?.type.mapMarkerPath ?? Assets.icons.svg.icWrcMapMarkerRallyStage.keyName;
 
-  WRCEventPoint? _getPointById(int objectId) => _points.firstWhereOrNull(
+  WRCEventPoint? _getPointById(int objectId) => wrcEventPoints.firstWhereOrNull(
         (e) => e.objectId == objectId,
       );
 
-  WRCEventPoint? _getPointByMarker(sdk.Marker marker) => _points.firstWhereOrNull(
+  WRCEventPoint? _getPointByMarker(sdk.Marker marker) => wrcEventPoints.firstWhereOrNull(
         (e) => e.center.isNearPoint(marker.options.position.toGeoPointMessage()),
       );
 
   sdk.GeoPointWithElevationMessage _getMarkerPosition(WRCEventPoint point) => sdk.GeoPointWithElevationMessage(
         latitude: point.center.latitude,
         longitude: point.center.longitude,
-        elevation: 1,
+        elevation: 0,
       );
 
   sdk.MarkerIconMessage _getIcon(WRCEventPoint point) =>
       sdk.MarkerIconMessage(svgPath: point.type.mapMarkerPath, width: 20);
 
-  sdk.MarkerAnchorMessage get _markerAnchor => sdk.MarkerAnchorMessage(x: 0, y: 0);
+  sdk.MarkerAnchorMessage get _markerAnchor => sdk.MarkerAnchorMessage(x: 0.5, y: 0.5);
 
   sdk.MarkerTextStyleMessage get _markerAnchorTextStyle {
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;

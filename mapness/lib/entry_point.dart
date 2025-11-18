@@ -286,12 +286,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final notifier = ref.read(wRCProvider.notifier);
     // hide previous marker if there was one
     if (previousMarker != null) {
-      await notifier.hideSpecificMarker(previousMarker);
+      await notifier.showSpecificMarker(previousMarker);
     }
 
     // show new marker if there is one
     if (marker != null) {
-      await notifier.showSpecificMarker(marker);
+      await notifier.hideSpecificMarker(marker);
     }
   }
 
