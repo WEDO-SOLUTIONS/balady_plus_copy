@@ -1,7 +1,7 @@
 part of 'wrc.dart';
 
 // TODO(WRC):add valid objectId's when uploaded by 2gis
-final _points = [
+final wrcEventPoints = [
   ..._specialPoints,
   ..._rallyStagePoints,
 ];
@@ -22,7 +22,7 @@ Iterable<WRCEventPoint> get _initialViewPortPoints {
 final _specialPoints = [
   WRCEventPoint(
     type: WRCEventType.parking,
-    objectId: 70030076563163172,
+    objectId: 70000001106125252,
     center: sdk.GeoPointMessage(
       latitude: 21.645725,
       longitude: 39.109056,
@@ -32,7 +32,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.parking,
-    objectId: 000000000000002,
+    objectId: 70000001106125396,
     center: sdk.GeoPointMessage(
       latitude: 21.645450,
       longitude: 39.106956,
@@ -42,7 +42,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.fanZone,
-    objectId: 000000000000003,
+    objectId: 70000001106125500,
     center: sdk.GeoPointMessage(
       latitude: 21.644022,
       longitude: 39.110067,
@@ -52,7 +52,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.fanZone,
-    objectId: 000000000000004,
+    objectId: 70000001106125589,
     center: sdk.GeoPointMessage(
       latitude: 21.643475,
       longitude: 39.108008,
@@ -62,7 +62,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.servicePark,
-    objectId: 000000000000005,
+    objectId: 70000001106125695,
     center: sdk.GeoPointMessage(
       latitude: 21.643547,
       longitude: 39.109658,
@@ -72,7 +72,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.jeddahCornicheParade,
-    objectId: 000000000000006,
+    objectId: 70000001106125770,
     center: sdk.GeoPointMessage(
       latitude: 21.610433,
       longitude: 39.107817,
@@ -82,7 +82,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.shakedownStage,
-    objectId: 000000000000007,
+    objectId: 70000001106125860,
     center: sdk.GeoPointMessage(
       latitude: 21.873492,
       longitude: 39.149547,
@@ -92,7 +92,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.specialSuperStage,
-    objectId: 000000000000008,
+    objectId: 70000001106125901,
     center: sdk.GeoPointMessage(
       latitude: 21.641053,
       longitude: 39.109172,
@@ -102,7 +102,7 @@ final _specialPoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.awardCeremony,
-    objectId: 000000000000009,
+    objectId: 70000001106126716,
     center: sdk.GeoPointMessage(
       latitude: 21.867500,
       longitude: 39.150000,
@@ -115,7 +115,7 @@ final _specialPoints = [
 final _rallyStagePoints = [
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000010,
+    objectId: 70000001106126006,
     center: sdk.GeoPointMessage(
       latitude: 22.178333,
       longitude: 39.289167,
@@ -125,7 +125,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000011,
+    objectId: 70000001106126038,
     center: sdk.GeoPointMessage(
       latitude: 22.163889,
       longitude: 39.353333,
@@ -135,7 +135,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000012,
+    objectId: 70030076486430509,
     center: sdk.GeoPointMessage(
       latitude: 22.208611,
       longitude: 39.527222,
@@ -145,7 +145,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000013,
+    objectId: 70000001106126115,
     center: sdk.GeoPointMessage(
       latitude: 22.179167,
       longitude: 39.288889,
@@ -155,7 +155,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000014,
+    objectId: 70000001106126241,
     center: sdk.GeoPointMessage(
       latitude: 22.163333,
       longitude: 39.351389,
@@ -165,7 +165,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000015,
+    objectId: 70000001106126259,
     center: sdk.GeoPointMessage(
       latitude: 22.209722,
       longitude: 39.526389,
@@ -175,7 +175,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000016,
+    objectId: 70000001106126295,
     center: sdk.GeoPointMessage(
       latitude: 21.880000,
       longitude: 39.243056,
@@ -185,7 +185,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000017,
+    objectId: 70000001106126334,
     center: sdk.GeoPointMessage(
       latitude: 21.955833,
       longitude: 39.418333,
@@ -195,7 +195,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000018,
+    objectId: 70000001106126366,
     center: sdk.GeoPointMessage(
       latitude: 21.906944,
       longitude: 39.341667,
@@ -205,7 +205,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000019,
+    objectId: 70000001106126403,
     center: sdk.GeoPointMessage(
       latitude: 21.879444,
       longitude: 39.244167,
@@ -215,7 +215,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000020,
+    objectId: 70000001106126520,
     center: sdk.GeoPointMessage(
       latitude: 21.956111,
       longitude: 39.416944,
@@ -225,7 +225,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000021,
+    objectId: 70000001106126542,
     center: sdk.GeoPointMessage(
       latitude: 21.910833,
       longitude: 39.342500,
@@ -235,7 +235,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000022,
+    objectId: 70000001106126583,
     center: sdk.GeoPointMessage(
       latitude: 21.849722,
       longitude: 39.178056,
@@ -245,7 +245,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000023,
+    objectId: 70000001106126626,
     center: sdk.GeoPointMessage(
       latitude: 21.968056,
       longitude: 39.250556,
@@ -255,7 +255,7 @@ final _rallyStagePoints = [
   ),
   WRCEventPoint(
     type: WRCEventType.rallyStage,
-    objectId: 0000000000000024,
+    objectId: 70000001106126677,
     center: sdk.GeoPointMessage(
       latitude: 21.853889,
       longitude: 39.175000,

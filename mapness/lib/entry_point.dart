@@ -286,12 +286,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final notifier = ref.read(wRCProvider.notifier);
     // hide previous marker if there was one
     if (previousMarker != null) {
-      await notifier.hideSpecificMarker(previousMarker);
+      await notifier.showSpecificMarker(previousMarker);
     }
 
     // show new marker if there is one
     if (marker != null) {
-      await notifier.showSpecificMarker(marker);
+      await notifier.hideSpecificMarker(marker);
     }
   }
 
@@ -520,6 +520,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
+    final cityEventName = url.queryParameters[BaldayDeeplink.cityEvent];
 
     double? latitude;
     double? longitude;
@@ -583,6 +584,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       app = app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''), path: subPath);
 
       CommonFunctions.openMiniApp(app);
+    } else if (cityEventName != null) {
+      // check here for other city events if they come up in the future
+      switch (cityEventName) {
+        case WRC.deeplinkEventValue:
+          await ref.read(wRCProvider.notifier).moveCameraToEventArea();
+      }
     } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 

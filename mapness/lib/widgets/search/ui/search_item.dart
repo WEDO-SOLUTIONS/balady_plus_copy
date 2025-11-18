@@ -169,7 +169,8 @@ class SearchItem extends ConsumerWidget {
                                 Text(
                                   result.makeAddress(),
                                   maxLines: 1,
-                                  style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                                  style: context.textStyles.bodySmallRegular
+                                      .copyWith(color: context.colors.foregroundSoft),
                                 ),
                                 if (offers.isNotEmpty)
                                   const Padding(

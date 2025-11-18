@@ -57,37 +57,8 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final title = widget.wrcEventPoint.titleBuilder(l10n);
-
-    final wrcDirectoryObject = DirectoryObjectMessage(
-      types: [],
-      title: title,
-      titleAddition: '',
-      subtitle: l10n.wrcPOISubtitle,
-      about: widget.wrcEventPoint.descriptionBuilder(l10n),
-      id: DgisObjectIdMessage(
-        objectId: _objectId,
-        entranceId: 0,
-      ),
-      markerPosition: GeoPointWithElevationMessage(
-        latitude: _pointCenter.latitude,
-        longitude: _pointCenter.longitude,
-        elevation: 0,
-      ),
-      attributes: [],
-      contextAttributes: [],
-      contactInfos: [],
-      entrances: [],
-      buildingInfo: BuildingInfoMessage(
-        buildingName: title,
-        purposeName: title,
-        purposeCode: 501,
-      ),
-      rubricIds: [],
-      group: [],
-      routeInfos: [],
-      platformIds: [],
-    );
+    final wrcDirectoryObject =
+        widget.wrcEventPoint.mergeDirectoryObjectMessage(l10n, widget.poiCardState?.gisObjectIdMessage);
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
     final poiCardState = widget.poiCardState?.copyWith(
@@ -110,6 +81,34 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
         ),
       );
     }
+
+    final parkingPoi = widget.wrcEventPoint.objectId == parkingObjectId;
+
+    final finishPoint = RouteSearchPoint(
+      coordinates: widget.wrcEventPoint.center,
+      dgisObjectId: DgisObjectIdMessage(objectId: widget.wrcEventPoint.objectId, entranceId: 0),
+    );
+
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        finishPoint: finishPoint,
+        navType: RouteSearchOptionsMessage.car,
+      ),
+    );
+
+    final brief = briefInfo?.firstOrNull;
+
+    String? createPoiHeaderSubTitle() {
+      final carParkingLabel = [
+        brief?.getBriefRouteDescription(context.l10n),
+        brief?.getBriefRouteDistanceDescription(context.l10n),
+      ].where((e) => e != null && e.trim().isNotEmpty).join(' ');
+
+      return parkingPoi ? carParkingLabel : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n);
+    }
+
+    final poiHeaderSubTitle = createPoiHeaderSubTitle();
+    final address = wrcDirectoryObject.makeFullAddress();
 
     return Directionality(
       textDirection: Directionality.of(context),
@@ -150,7 +149,7 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
             _onDirectionsTap(
               context,
               _objectId,
-              '',
+              wrcDirectoryObject.title,
               RouteParamsPoint(
                 latitude: _pointCenter.latitude,
                 longitude: _pointCenter.longitude,
@@ -176,6 +175,17 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
             ref.read(highlightProvider.notifier).removeHighlight(wrcDirectoryObject.id!);
             context.router.popForced();
           },
+          subTitleExtraInlineSpans: [
+            if (poiHeaderSubTitle != null) ...[
+              const TextSpan(text: ' • '),
+              WidgetSpan(
+                child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
+                baseline: TextBaseline.ideographic,
+                alignment: PlaceholderAlignment.middle,
+              ),
+              TextSpan(text: ' $poiHeaderSubTitle'),
+            ],
+          ],
         ),
         sliver: DecoratedSliver(
           decoration: BoxDecoration(
@@ -203,16 +213,21 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(wrcDirectoryObject.title, style: context.textStyles.bodyLargeSemiBold),
+                              if (address != null) ...[
+                                Text(
+                                  address,
+                                  style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
+                                ),
+                              ],
                               const SizedBox(height: Spacing.$1_5x),
-                              Text(
-                                wrcDirectoryObject.subtitle,
-                                style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
-                              ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 16),
-                        PoiContentAboutCard(data: wrcDirectoryObject.getAbout(context.l10n)!),
+                        PoiContentAboutCard(
+                          data: wrcDirectoryObject.getAbout(l10n)!,
+                          isExpandable: false,
+                        ),
                       ],
                     ),
                   ),
