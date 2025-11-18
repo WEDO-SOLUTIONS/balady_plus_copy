@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:sheetify/sheetify.dart';
-import 'package:shimmer/shimmer.dart';
 
 class WRCLogo extends StatefulWidget {
   final VoidCallback? onTap;
@@ -20,34 +17,10 @@ class WRCLogo extends StatefulWidget {
 }
 
 class _WRCLogoState extends State<WRCLogo> with SingleTickerProviderStateMixin {
-  final _durationFlag = const Duration(seconds: 20);
-  bool _showShimmer = false;
-  Timer? _timer;
-
   late final AnimationController scaleController = AnimationController(
     vsync: this,
     duration: Durations.medium1,
   );
-
-  @override
-  void initState() {
-    _timer = Timer.periodic(_durationFlag, (_) {
-      setState(() => _showShimmer = true);
-
-      Future.delayed(Durations.extralong4, () {
-        if (mounted) {
-          setState(() => _showShimmer = false);
-        }
-      });
-    });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,29 +61,7 @@ class _WRCLogoState extends State<WRCLogo> with SingleTickerProviderStateMixin {
           alignment: Alignment.bottomLeft,
           child: ScaleTransition(
             scale: Tween<double>(begin: .9, end: 1.0).animate(scaleController),
-            child: Stack(
-              children: [
-                cityscapeLogo,
-                if (_showShimmer)
-                  Opacity(
-                    opacity: 0.6,
-                    child: Shimmer(
-                      period: Durations.extralong4,
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0x00C5FFD6),
-                          Color(0x00C5FFD6),
-                          Color(0xffC5FFD6),
-                          Color(0x00C5FFD6),
-                          Color(0x00C5FFD6),
-                        ],
-                        stops: [0.0, 0.4, 0.5, 0.6, 1.0],
-                      ),
-                      child: cityscapeLogo,
-                    ),
-                  ),
-              ],
-            ),
+            child: cityscapeLogo,
           ),
         ),
       ),
