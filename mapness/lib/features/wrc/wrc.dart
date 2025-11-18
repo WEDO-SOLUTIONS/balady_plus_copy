@@ -34,6 +34,7 @@ const _currentDateCheckInterval = Duration(minutes: 15);
 @riverpod
 class WRC extends _$WRC {
   static String get dashboardImagePath => Assets.images.wrcDashboard.keyName;
+  static const deeplinkEventValue = 'wrc2025';
 
   // we need to check if current date comes in or goes out of event date range as the time goes by
   late Timer _timer;
@@ -118,12 +119,18 @@ class WRC extends _$WRC {
   }
 
   Future<void> showAllMarkers() async {
+    if (!state) {
+      return;
+    }
     for (final point in wrcEventPoints) {
       unawaited(_showPointMarker(point));
     }
   }
 
   Future<void> showSpecificMarker(sdk.Marker marker) async {
+    if (!state) {
+      return;
+    }
     final point = _getPointByMarker(marker);
     if (point != null) {
       await _showPointMarker(point);
@@ -131,6 +138,9 @@ class WRC extends _$WRC {
   }
 
   Future<void> _showPointMarker(WRCEventPoint point) async {
+    if (!state) {
+      return;
+    }
     await mapManager?.setMarkerOptions(
       point.globalMarkerId,
       sdk.ChangeMarkerOptionsMessage(
@@ -173,6 +183,9 @@ class WRC extends _$WRC {
   }
 
   Future<void> moveCameraToEventArea() async {
+    if (!state) {
+      return;
+    }
     await ref.read(cameraPositionProvider.notifier).animateToGeoPoints(
           _initialViewPortPoints
               .map(
@@ -204,17 +217,6 @@ class WRC extends _$WRC {
       // as the bottom sheet takes about one third of screen we add more padding
       bottomPadding: (physicalPixelsHeight / 2).round(),
     );
-  }
-
-  /// Simple provider that returns the current status without periodic updates
-  /// Use this if you only need a one-time check
-  bool isNow() {
-    // Check if debug override is enabled
-    if (wrcDebugOverride) {
-      return true;
-    }
-
-    return state;
   }
 
   String getPinPath(int objectId) =>
