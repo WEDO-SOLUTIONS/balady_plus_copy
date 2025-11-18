@@ -28,7 +28,7 @@ extension WorkingHoursStrings on WorkingHours {
     final closesIn = this.closesIn(now);
 
     if (closesIn <= const Duration(minutes: 30)) {
-      if (closesIn.inMinutes > 2) {
+      if (closesIn.inMinutes > 1) {
         return '${appLocalizations.closesIn}${closesIn.inMinutes} ${appLocalizations.minutes}';
       } else {
         return appLocalizations.closed;
