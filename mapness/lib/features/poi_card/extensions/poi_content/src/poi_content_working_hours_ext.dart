@@ -143,7 +143,8 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
 
     /// Parse the opening and closing hours into DateTime objects.
     final openTime = _parseTime(currentDateTime, openHours.openHour!);
-    var closeTime = _parseTime(currentDateTime, openHours.closeHour!);
+    var closeTime = DateTime.now().add(const Duration(minutes: 1));
+    // _parseTime(currentDateTime, openHours.closeHour!);
 
     /// Handle case when closing time is after midnight (next day)
     if (closeTime.isBefore(openTime)) {
@@ -168,8 +169,14 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
     else {
       final remainingMinutes = closeTime.difference(currentDateTime).inMinutes;
       if (remainingMinutes <= 45) {
+        var title = '';
+        if (remainingMinutes > 2) {
+          title = '${context.l10n.closesIn.trim()} $remainingMinutes ${context.l10n.minutes}';
+        } else {
+          title = context.l10n.closed;
+        }
         return _buildWorkTimeModel(
-          title: '${context.l10n.closesIn.trim()} $remainingMinutes ${context.l10n.minutes}',
+          title: title,
           workTimeType: WorkTimeType.almostClosed,
           days: days,
         );
