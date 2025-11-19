@@ -37,7 +37,7 @@ echo "minor=${MINOR_VERSION}" >>.release_version
 echo "patch=${PATCH_VERSION}" >>.release_version
 echo "candidate=${CANDIDATE_VERSION}" >>.release_version
 
-BRANCH_NAME="urbi-release-${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-rc${CANDIDATE_VERSION}"
+BRANCH_NAME="urbi-service/release-${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}-rc${CANDIDATE_VERSION}"
 
 git checkout -b ${BRANCH_NAME}
 git add .release_version
