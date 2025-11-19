@@ -1,10 +1,11 @@
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide StopNumbersIcons;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:mapness/balady_uikit/animations/animated_decorated_box.dart';
+import 'package:mapness/balady_uikit/core/icons/stop_numbers_icons.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -174,11 +175,19 @@ class _ABElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLTR = Directionality.of(context) == TextDirection.ltr;
-    final icon = item.isMyLocation
-        ? (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL)
-        : GeneralIcons.bulletCircleSolid;
-    final color = isLast ? context.colors.extra01Default : context.colors.accentDefault;
+    final Widget iconWidget;
+
+    if (index == 0 || isLast) {
+      final color = isLast ? context.colors.extra01Default : context.colors.accentDefault;
+      final isLTR = Directionality.of(context) == TextDirection.ltr;
+      final icon = item.isMyLocation
+          ? (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL)
+          : GeneralIcons.bulletCircleSolid;
+
+      iconWidget = Icon(icon, color: color, size: 24);
+    } else {
+      iconWidget = Icon(StopNumbersIcons.fromIndex(index), color: context.colors.extra01Default, size: 24);
+    }
 
     return AnimatedSize(
       duration: Durations.short3,
@@ -195,7 +204,7 @@ class _ABElement extends StatelessWidget {
             child: AnimatedSwitcher(
               key: ValueKey(item.title),
               duration: Durations.medium1,
-              child: Icon(key: ValueKey(color), icon, color: color, size: 24),
+              child: iconWidget,
             ),
           ),
           title: item.title,
