@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_plus/app/core/utils/balady_route_observer.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/widgets.dart';
@@ -13,6 +14,19 @@ part 'auth_methods.g.dart';
 @riverpod
 class AuthMethods extends _$AuthMethods {
   static StreamSubscription<EntryPointState>? _authSubscription;
+
+  Timer? _loginScreenPoppedSubscription;
+  void _initializeLoginScreenPoppedSubscription() {
+    _loginScreenPoppedSubscription?.cancel();
+    _loginScreenPoppedSubscription = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (BaladyRouteObserver.loginScreenPopped) {
+        _authSubscription?.cancel();
+        _authSubscription = null;
+        _loginScreenPoppedSubscription?.cancel();
+        _loginScreenPoppedSubscription = null;
+      }
+    });
+  }
 
   @override
   bool build() => CommonProperties.isLoggedIn;
@@ -38,6 +52,7 @@ class AuthMethods extends _$AuthMethods {
     VoidCallback? callback,
   }) async {
     await _authSubscription?.cancel();
+    _loginScreenPoppedSubscription?.cancel();
     if (!state) {
       if (context.mounted) {
         Metrics.logEventAdvanced(
@@ -59,13 +74,7 @@ class AuthMethods extends _$AuthMethods {
           _authSubscription?.cancel();
         }
       });
-
-      await _authSubscription?.asFuture().timeout(
-        const Duration(seconds: 100),
-        onTimeout: () {
-          _authSubscription?.cancel();
-        },
-      );
+      _initializeLoginScreenPoppedSubscription();
     } else {
       callback?.call();
     }
