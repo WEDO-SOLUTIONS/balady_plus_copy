@@ -110,7 +110,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     final result = await ref
         .watch(
       pointOfInterestProvider(
-        DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+        DgisObjectId(objectId: objectId, entranceId: 0),
         closestPoint,
       ).future,
     )

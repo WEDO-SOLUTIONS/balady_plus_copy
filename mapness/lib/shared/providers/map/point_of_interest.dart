@@ -21,10 +21,10 @@ const poiMapFontEn = 'GolosText_SemiBold';
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
   Ref ref,
-  DgisObjectIdMessage objectId,
+  DgisObjectId objectId,
   LatLng? closestPoint,
 ) async {
-  final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId.toObjectId()).future);
+  final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
@@ -70,7 +70,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
-  await highlightController.addHighlight(objectId);
+  await highlightController.addHighlight(objectId.toMessage());
 
   if (directoryObject != null) {
     for (final entrance in directoryObject.entrances) {
