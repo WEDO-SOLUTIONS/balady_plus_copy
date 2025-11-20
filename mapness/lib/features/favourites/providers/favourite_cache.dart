@@ -231,14 +231,23 @@ class _FavouriteCache extends _$FavouriteCache {
   Future<void> _updateState(FavouritesState data) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     state = AsyncValue.data(data);
-    final controller = await ref.read(dgisControllerProvider.future);
-    await controller.favouritesUpdateNotification(
-      FavouritesStateMessage(
-        home: data.home?.message,
-        work: data.work?.message,
-        items: data.items.map((item) => item.message).toList(),
-      ),
-    );
+
+    try {
+      final controller = await ref.read(dgisControllerProvider.future).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () => throw TimeoutException('DgisController initialization timeout'),
+      );
+      await controller.favouritesUpdateNotification(
+        FavouritesStateMessage(
+          home: data.home?.message,
+          work: data.work?.message,
+          items: data.items.map((item) => item.message).toList(),
+        ),
+      );
+    } on Exception catch (e) {
+      logger.log('Failed to notify map about favourites update: $e', logLevel: MapnessLogLevel.warning);
+    }
+
     return favoritesBox.put(_keyCache, data.toHive());
   }
 
@@ -369,41 +378,59 @@ class _FavouriteCache extends _$FavouriteCache {
 
   @override
   Future<FavouritesState> build() async {
-    final authState = await ref.watch(authProvider.future);
+    final authState = await ref.watch(authProvider.future).timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        logger.log('Auth provider timeout in favourites', logLevel: MapnessLogLevel.warning);
+        return null;
+      },
+    );
     if (authState == null) {
       return const FavouritesState(items: []);
     }
-
-    final link = ref.keepAlive();
-    final timer = Timer(_cacheFor, link.close);
-
-    ref.onDispose(() => timer.cancel);
 
     // sync uncommitted changes
     await _sync();
 
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
 
+    FavouritesState result;
     try {
       if (_isForceRefresh || !isCacheValid) {
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
-        final controller = await ref.read(dgisControllerProvider.future);
-        await controller.favouritesUpdateNotification(
-          FavouritesStateMessage(
-            home: apiData.home?.message,
-            work: apiData.work?.message,
-            items: apiData.items.map((item) => item.message).toList(),
-          ),
-        );
-        return apiData;
+
+        try {
+          final controller = await ref.read(dgisControllerProvider.future).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('DgisController initialization timeout'),
+          );
+          await controller.favouritesUpdateNotification(
+            FavouritesStateMessage(
+              home: apiData.home?.message,
+              work: apiData.work?.message,
+              items: apiData.items.map((item) => item.message).toList(),
+            ),
+          );
+        } on Exception catch (e) {
+          logger.log('Failed to notify map about favourites: $e', logLevel: MapnessLogLevel.warning);
+        }
+
+        result = apiData;
+      } else {
+        result = await getFavouritesStateFromHive();
       }
     } on Exception catch (e) {
       logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
+      result = await getFavouritesStateFromHive();
     }
 
-    return getFavouritesStateFromHive();
+    final link = ref.keepAlive();
+    final timer = Timer(_cacheFor, link.close);
+    ref.onDispose(() => timer.cancel);
+
+    return result;
   }
 
   Future<void> clear() async {
