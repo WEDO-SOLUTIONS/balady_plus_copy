@@ -7,16 +7,7 @@ final wrcEventPoints = [
 
 /// These points are used to navigate user on map when tapped on dashboard.
 /// They are chosen so as to fit the screen nicely for user
-Iterable<WRCEventPoint> get _initialViewPortPoints {
-  const filterEventTypes = {
-    WRCEventType.parking,
-    WRCEventType.servicePark,
-    WRCEventType.fanZone,
-    WRCEventType.specialSuperStage,
-    WRCEventType.jeddahCornicheParade,
-  };
-  return _specialPoints.where((e) => filterEventTypes.contains(e.type));
-}
+Iterable<WRCEventPoint> get _initialViewPortPoints => wrcEventPoints.where((e) => e.includeInInitialZoom);
 
 final _specialPoints = [
   WRCEventPoint(
@@ -28,6 +19,7 @@ final _specialPoints = [
     ),
     titleBuilder: (l10n) => l10n.wrcPointCarParkingName,
     descriptionBuilder: (l10n) => l10n.wrcPointCarParkingDescription,
+    includeInInitialZoom: true,
   ),
   WRCEventPoint(
     type: WRCEventType.parking,
@@ -38,6 +30,7 @@ final _specialPoints = [
     ),
     titleBuilder: (l10n) => l10n.wrcPointVipCarParkingName,
     descriptionBuilder: (l10n) => l10n.wrcPointVipCarParkingDescription,
+    includeInInitialZoom: true,
   ),
   WRCEventPoint(
     type: WRCEventType.fanZone,
@@ -48,6 +41,7 @@ final _specialPoints = [
     ),
     titleBuilder: (l10n) => l10n.wrcPointFanZoneName,
     descriptionBuilder: (l10n) => l10n.wrcPointFanZoneDescription,
+    includeInInitialZoom: true,
   ),
   WRCEventPoint(
     type: WRCEventType.fanZone,
@@ -58,6 +52,7 @@ final _specialPoints = [
     ),
     titleBuilder: (l10n) => l10n.wrcPointFanZoneName,
     descriptionBuilder: (l10n) => l10n.wrcPointFanZoneDescription,
+    includeInInitialZoom: true,
   ),
   WRCEventPoint(
     type: WRCEventType.servicePark,
@@ -98,6 +93,7 @@ final _specialPoints = [
     ),
     titleBuilder: (l10n) => l10n.wrcPointJameelMotorsportSuperSpecialName,
     descriptionBuilder: (l10n) => l10n.wrcPointJameelMotorsportSuperSpecialDescription,
+    includeInInitialZoom: true,
   ),
   WRCEventPoint(
     type: WRCEventType.awardCeremony,

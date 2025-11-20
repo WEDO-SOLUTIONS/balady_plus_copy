@@ -10,6 +10,7 @@ class WRCEventPoint extends Equatable {
   final String Function(AppLocalizations l10n) descriptionBuilder;
   final int objectId;
   final sdk.GeoPointMessage center;
+  final bool includeInInitialZoom;
 
   const WRCEventPoint({
     required this.type,
@@ -17,6 +18,7 @@ class WRCEventPoint extends Equatable {
     required this.descriptionBuilder,
     required this.objectId,
     required this.center,
+    this.includeInInitialZoom = false,
   });
 
   String get globalMarkerId => 'wrc-event-$objectId';
@@ -28,6 +30,7 @@ class WRCEventPoint extends Equatable {
         descriptionBuilder,
         objectId,
         center,
+        includeInInitialZoom,
       ];
 
   // remove line breaks to see all text
