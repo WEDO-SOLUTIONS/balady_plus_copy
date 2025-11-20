@@ -225,6 +225,9 @@ class WRC extends _$WRC {
   String getMapMarkerPath(int objectId) =>
       _getPointById(objectId)?.type.mapMarkerPath ?? Assets.icons.svg.icWrcMapMarkerRallyStage.keyName;
 
+  String getSearchMarkerPath(int objectId) =>
+      _getPointById(objectId)?.type.searchMarkerImagePath ?? Assets.icons.svg.icWrcSearchMarkerRallyStage.keyName;
+
   WRCEventPoint? _getPointById(int objectId) => wrcEventPoints.firstWhereOrNull(
         (e) => e.objectId == objectId,
       );

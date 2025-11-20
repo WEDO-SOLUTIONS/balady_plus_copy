@@ -88,7 +88,7 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
     }
     final wrcNotifier = ref.watch(wRCProvider.notifier);
     if (wrcNotifier.isWRCEventObject(objectId)) {
-      return (wrcNotifier.getMapMarkerPath(objectId), wrcNotifier.getPinPath(objectId));
+      return (wrcNotifier.getSearchMarkerPath(objectId), wrcNotifier.getPinPath(objectId));
     }
     final markerType = await getMarkerType(rubricIds);
     return (markerType?.iconPath, markerType?.iconPath.bigIconPath);

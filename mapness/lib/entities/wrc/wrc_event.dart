@@ -139,7 +139,7 @@ enum WRCEventType {
         WRCEventType.awardCeremony => Assets.icons.svg.icWrcMapMarkerAwardCeremony.keyName,
       };
 
-  String get dashboardImagePath => switch (this) {
+  String get searchMarkerImagePath => switch (this) {
         WRCEventType.rallyStage => Assets.icons.svg.icWrcSearchMarkerRallyStage.keyName,
         WRCEventType.parking => Assets.icons.svg.icWrcSearchMarkerParking.keyName,
         WRCEventType.servicePark => Assets.icons.svg.icWrcSearchMarkerServicePark.keyName,
