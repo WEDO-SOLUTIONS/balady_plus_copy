@@ -54,6 +54,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
+import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -585,11 +586,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
       CommonFunctions.openMiniApp(app);
     } else if (cityEventName != null) {
-      // check here for other city events if they come up in the future
-      switch (cityEventName) {
-        case WRC.deeplinkEventValue:
-          await ref.read(wRCProvider.notifier).moveCameraToEventArea();
-      }
+      await _handleCityEvent(cityEventName);
     } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
@@ -619,6 +616,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else {
         await router.pushNamed(url.toString());
       }
+    }
+  }
+
+  Future<void> _handleCityEvent(String cityEventName) async {
+    var eventHandled = true;
+    // check here for other city events if they come up in the future
+    switch (cityEventName) {
+      case WRC.deeplinkEventValue:
+        await ref.read(wRCProvider.notifier).moveCameraToEventArea();
+      default:
+        eventHandled = false;
+    }
+
+    final AppRouter router = await ref.read(appRouterProvider);
+    final areStoriesOpen = ref.read(storiesOpenStateProvider);
+    // if we come from stories we must close them for nice user experience
+    if (eventHandled && areStoriesOpen && router.canPop()) {
+      await router.topMostRouter().maybePop();
+      ref.read(landingPageBottomSheetControllerProvider)?.setState(ThreeStateSheet.hidden);
     }
   }
 

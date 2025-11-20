@@ -1,7 +1,7 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -56,13 +56,13 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> with AutomaticKee
     );
 
     ref.read(storiesOpenStateProvider.notifier).open();
-    context.pushRoute(
-      StoriesRoute(
-        type: StoryTypes.network,
-        initialStoryId: id,
-        onClose: ref.read(storiesOpenStateProvider.notifier).close,
-      ),
-    );
+    ref.read(appRouterProvider).push(
+          StoriesRoute(
+            type: StoryTypes.network,
+            initialStoryId: id,
+            onClose: ref.read(storiesOpenStateProvider.notifier).close,
+          ),
+        );
   }
 
   @override
