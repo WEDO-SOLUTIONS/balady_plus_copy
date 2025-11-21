@@ -45,6 +45,40 @@ class _FavouriteCache extends _$FavouriteCache {
 
   bool get isCacheValid => _lastUpdate?.isAfter(DateTime.now().subtract(_cacheFor)) ?? false;
 
+  List<FavouriteItem?> _getAllItems(FavouritesState favouriteState) => [
+        ...favouriteState.items,
+        favouriteState.home,
+        favouriteState.work,
+      ];
+
+  FavouriteItemMarkerType _getItemType(String itemId, String? workId, String? homeId) {
+    if (itemId == workId) {
+      return FavouriteItemMarkerType.work;
+    } else if (itemId == homeId) {
+      return FavouriteItemMarkerType.home;
+    } else {
+      return FavouriteItemMarkerType.place;
+    }
+  }
+
+  Future<void> _notifyMapAboutFavourites(FavouritesState data) async {
+    try {
+      final controller = await ref.read(dgisControllerProvider.future).timeout(
+            const Duration(seconds: 5),
+            onTimeout: () => throw TimeoutException('DgisController initialization timeout'),
+          );
+      await controller.favouritesUpdateNotification(
+        FavouritesStateMessage(
+          home: data.home?.message,
+          work: data.work?.message,
+          items: data.items.map((item) => item.message).toList(),
+        ),
+      );
+    } on Exception catch (e) {
+      logger.log('Failed to notify map about favourites update: $e', logLevel: MapnessLogLevel.warning);
+    }
+  }
+
   Future<void> deleteAll() async {
     if (!state.hasValue) {
       return;
@@ -184,12 +218,7 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     final favouriteState = state.requireValue;
-
-    final items = [
-      ...favouriteState.items,
-      favouriteState.home,
-      favouriteState.work,
-    ];
+    final items = _getAllItems(favouriteState);
 
     return items.firstWhereOrNull((element) => element?.entity?.id == objectId.toString());
   }
@@ -200,12 +229,7 @@ class _FavouriteCache extends _$FavouriteCache {
     }
 
     final favouriteState = state.requireValue;
-
-    final items = [
-      ...favouriteState.items,
-      favouriteState.home,
-      favouriteState.work,
-    ];
+    final items = _getAllItems(favouriteState);
 
     return items.any((element) => element?.entity?.id == objectId.toString());
   }
@@ -231,23 +255,7 @@ class _FavouriteCache extends _$FavouriteCache {
   Future<void> _updateState(FavouritesState data) async {
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     state = AsyncValue.data(data);
-
-    try {
-      final controller = await ref.read(dgisControllerProvider.future).timeout(
-        const Duration(seconds: 5),
-        onTimeout: () => throw TimeoutException('DgisController initialization timeout'),
-      );
-      await controller.favouritesUpdateNotification(
-        FavouritesStateMessage(
-          home: data.home?.message,
-          work: data.work?.message,
-          items: data.items.map((item) => item.message).toList(),
-        ),
-      );
-    } on Exception catch (e) {
-      logger.log('Failed to notify map about favourites update: $e', logLevel: MapnessLogLevel.warning);
-    }
-
+    await _notifyMapAboutFavourites(data);
     return favoritesBox.put(_keyCache, data.toHive());
   }
 
@@ -299,14 +307,7 @@ class _FavouriteCache extends _$FavouriteCache {
     final request = proto.DeleteFavouriteItemsRequest(
       items: items.map(
         (e) {
-          final FavouriteItemMarkerType itemType;
-          if (e.id == workId) {
-            itemType = FavouriteItemMarkerType.work;
-          } else if (e.id == homeId) {
-            itemType = FavouriteItemMarkerType.home;
-          } else {
-            itemType = FavouriteItemMarkerType.place;
-          }
+          final itemType = _getItemType(e.id, workId, homeId);
           return DeleteFavouriteItemsRequestItemMapper.fromDomain(e, itemType);
         },
       ),
@@ -337,14 +338,7 @@ class _FavouriteCache extends _$FavouriteCache {
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.AddFavouriteItemsRequest(
       items: items.map((e) {
-        final FavouriteItemMarkerType itemType;
-        if (e.id == workId) {
-          itemType = FavouriteItemMarkerType.work;
-        } else if (e.id == homeId) {
-          itemType = FavouriteItemMarkerType.home;
-        } else {
-          itemType = FavouriteItemMarkerType.place;
-        }
+        final itemType = _getItemType(e.id, workId, homeId);
         return AddRequestItemMapper.fromDomain(e, itemType);
       }),
     );
@@ -400,23 +394,7 @@ class _FavouriteCache extends _$FavouriteCache {
         final apiData = await _fetchFavourites();
         await favoritesBox.put(_keyCache, apiData.toHive());
         _lastUpdate = DateTime.now();
-
-        try {
-          final controller = await ref.read(dgisControllerProvider.future).timeout(
-            const Duration(seconds: 5),
-            onTimeout: () => throw TimeoutException('DgisController initialization timeout'),
-          );
-          await controller.favouritesUpdateNotification(
-            FavouritesStateMessage(
-              home: apiData.home?.message,
-              work: apiData.work?.message,
-              items: apiData.items.map((item) => item.message).toList(),
-            ),
-          );
-        } on Exception catch (e) {
-          logger.log('Failed to notify map about favourites: $e', logLevel: MapnessLogLevel.warning);
-        }
-
+        await _notifyMapAboutFavourites(apiData);
         result = apiData;
       } else {
         result = await getFavouritesStateFromHive();
