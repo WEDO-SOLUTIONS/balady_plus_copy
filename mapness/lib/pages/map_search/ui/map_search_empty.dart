@@ -15,11 +15,11 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchEmpty extends ConsumerWidget {
-  final bool isShowAddPlaceButton;
+  final bool showAddPlaceButton;
 
   const MapSearchEmpty({
     super.key,
-    this.isShowAddPlaceButton = true,
+    this.showAddPlaceButton = true,
   });
 
   @override
@@ -75,7 +75,7 @@ class MapSearchEmpty extends ConsumerWidget {
             primaryIcon: SystemIcons.search,
           ),
           const SizedBox(height: Spacing.$2x),
-          if (isShowAddPlaceButton)
+          if (showAddPlaceButton)
             AppButton(
               buttonColorScheme: ButtonColorScheme.accentSecondary,
               buttonType: ButtonType.secondary,

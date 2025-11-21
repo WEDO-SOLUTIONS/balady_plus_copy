@@ -97,20 +97,12 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
-    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
-    final parkingManager = ref.read(parkingManageProvider.notifier);
-
-    ref.onDispose(() {
-      selectedMarker.removeMarker(poiPinId);
-      parkingManager.restoreMarker();
-    });
-
     state = const AsyncValue.loading();
 
     final result = await ref
         .watch(
       pointOfInterestProvider(
-        DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+        DgisObjectId(objectId: objectId, entranceId: 0),
         closestPoint,
       ).future,
     )

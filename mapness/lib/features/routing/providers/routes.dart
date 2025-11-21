@@ -79,19 +79,34 @@ class Routes extends _$Routes {
             throw const NoInternetException();
           }
 
+          if (navType == RouteSearchOptionsMessage.pedestrian) {
+            throw const WalkingDistanceException();
+          }
+
           throw TimeoutException('Timeout while waiting for routes');
         },
       );
     } catch (e) {
-      if (navType == RouteSearchOptionsMessage.pedestrian) {
-        throw const WalkingDistanceException();
-      }
-
+      // Re-check network status
       if (!online) {
         throw const NoInternetException();
       }
 
-      throw TimeoutException('Timeout while waiting for routes');
+      // Handle specific exception types
+      if (e is NoInternetException) {
+        rethrow;
+      }
+
+      if (e is WalkingDistanceException) {
+        rethrow;
+      }
+
+      if (navType == RouteSearchOptionsMessage.pedestrian) {
+        throw const WalkingDistanceException();
+      }
+
+      // Re-throw timeout or other exceptions
+      rethrow;
     }
   }
 }
@@ -143,16 +158,31 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     }
 
     await dgisController.value?.setRouteParams(params);
-    return cancelableCompleter.operation.value.timeout(
-      timeout ?? const Duration(seconds: 10),
-      onTimeout: () {
-        if (!online) {
-          throw const NoInternetException();
-        }
+    try {
+      return await cancelableCompleter.operation.value.timeout(
+        timeout ?? const Duration(seconds: 10),
+        onTimeout: () {
+          if (!online) {
+            throw const NoInternetException();
+          }
 
-        throw TimeoutException('Timeout while waiting for public transport routes');
-      },
-    );
+          throw TimeoutException('Timeout while waiting for public transport routes');
+        },
+      );
+    } catch (e) {
+      // Re-check network status
+      if (!online) {
+        throw const NoInternetException();
+      }
+
+      // Handle specific exception types
+      if (e is NoInternetException) {
+        rethrow;
+      }
+
+      // Re-throw timeout or other exceptions
+      rethrow;
+    }
   }
 }
 
