@@ -112,7 +112,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
             errorContent: context.l10n.saudiPassSomethingWentWrongHint,
             buttonLabel: context.l10n.complete,
             onClose: () async {
-              await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
               await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
               context.router.popForced();
             },
