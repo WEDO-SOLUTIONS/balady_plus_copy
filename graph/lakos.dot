@@ -2943,6 +2943,7 @@ digraph "" {
   "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/features/poi_card/domain/model/loading_or_failure_model.dart";
   "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/shared/hooks/toggle_sheet_controller_hook.dart";
+  "/lib/pages/poi_card/poi_card_error_or_loading.dart" -> "/lib/shared/providers/map/selected_marker.dart";
   "/lib/pages/poi_card/parking_content.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/pages/poi_card/parking_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/poi_card/parking_content.dart" -> "/lib/shared/extensions/date_time_ext.dart";
@@ -4661,6 +4662,7 @@ digraph "" {
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/rubric_marker_type_mapper.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/selected_marker.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/ui/markers/markers.dart";
+  "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/shared/providers/map/visible_rect.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/shared/providers/map/indoor_levels.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/shared/providers/map/camera_state.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
