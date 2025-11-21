@@ -23,7 +23,7 @@ import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
-import './core/utils/utils_exports.dart' show AppColor, AppConfig, RouteName;
+import './core/utils/utils_exports.dart' show AppColor, AppConfig, BaladyRouteObserver, RouteName;
 import '../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
@@ -238,6 +238,7 @@ class AppWidgetState extends State<AppWidget> {
               BotToastNavigatorObserver(),
               FlutterUxcamNavigatorObserver(),
               MapnessRouteObserver(),
+              BaladyRouteObserver(),
             ],
             localizationsDelegates: translator.delegates.toList()
               ..add(CountryLocalizations.delegate),

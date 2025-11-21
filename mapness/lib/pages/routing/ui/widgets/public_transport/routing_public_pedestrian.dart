@@ -33,7 +33,7 @@ class RoutingPublicPedestrian extends StatelessWidget {
                 size: 16,
               ),
               Text(
-                context.l10n.toPass,
+                context.l10n.toSwitch,
                 style: textStyle.copyWith(color: context.colors.foregroundSoft),
               ),
               Text(' · ', style: textStyle.copyWith(color: context.colors.foregroundSoft)),

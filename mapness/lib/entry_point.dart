@@ -171,6 +171,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // Initialization of BSS and Search Region singleton services
       await _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
+      unawaited(checkNavigationState());
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
@@ -233,6 +234,37 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               ref.read(appRouterProvider).push(
                     PathNavRoute(
                       navType: RouteSearchOptionsMessageExt.fromString(type),
+                      initAction: null,
+                    ),
+                  );
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> checkNavigationState() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+    final navStateMessage = await controller.getCurrentNavigationState();
+
+    if (navStateMessage.state == NavigationState.navigation) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                  initAction: null,
+                ),
+              );
+        } else {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
+            if (next != null) {
+              _locationListener?.close();
+              ref.read(appRouterProvider).push(
+                    PathNavRoute(
+                      navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
                       initAction: null,
                     ),
                   );
@@ -327,8 +359,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> clearCache() async {
-    final controller = await ref.read(dgisControllerProvider.future);
-    await controller.stopNavigation();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
