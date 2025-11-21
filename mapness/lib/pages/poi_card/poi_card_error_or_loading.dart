@@ -12,6 +12,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
 
+import '../../shared/providers/map/selected_marker.dart';
+
 /// Sheet for loading or error states. We combine loading and error states in one sheet to avoid code duplication and
 /// additional call of the same sheet. We prevent "jumps" of the sheet when we switch between loading and error states.
 class PoiLoadingOrErrorSheet extends HookConsumerWidget {
@@ -37,6 +39,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
       if (data is PoiError && (data as PoiError).onClose != null) {
         (data as PoiError).onClose!.call();
       } else {
+        ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
         context.router.popForced();
       }
     };
