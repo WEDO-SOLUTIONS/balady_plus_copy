@@ -71,7 +71,15 @@ class WRC extends _$WRC {
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
-  bool isWRCEventObject(int objectId) => wrcEventPoints.any((point) => point.objectId == objectId) && state;
+  bool isWRCEventObject(
+    int objectId,
+    GeoPointMessage? closestPoint,
+  ) =>
+      wrcEventPoints.any((point) {
+        final isNearPoint = closestPoint?.isNearPoint(point.center) ?? false;
+        return isNearPoint || point.objectId == objectId;
+      }) &&
+      state;
 
   WRCEventPoint? getWRCEventPoint(int objectId) =>
       wrcEventPoints.firstWhereOrNull((point) => point.objectId == objectId);

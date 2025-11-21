@@ -81,13 +81,17 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
   /// Returns the most relevant marker type based on the provided set of rubric IDs.
   ///
   /// Replaces the default marker with custom marker
-  Future<(String? smallIcon, String? bigIcon)> getMarkerPath(Set<int> rubricIds, int objectId) async {
+  Future<(String? smallIcon, String? bigIcon)> getMarkerPath(
+    Set<int> rubricIds,
+    int objectId, {
+    GeoPointMessage? closestPoint,
+  }) async {
     final cityscapeNotifier = ref.watch(cityscapeProvider.notifier);
     if (cityscapeNotifier.showCustomPin(objectId)) {
       return (cityscapeNotifier.customMarker, cityscapeNotifier.customPinPath);
     }
     final wrcNotifier = ref.watch(wRCProvider.notifier);
-    if (wrcNotifier.isWRCEventObject(objectId)) {
+    if (wrcNotifier.isWRCEventObject(objectId, closestPoint)) {
       return (wrcNotifier.getSearchMarkerPath(objectId), wrcNotifier.getPinPath(objectId));
     }
     final markerType = await getMarkerType(rubricIds);
