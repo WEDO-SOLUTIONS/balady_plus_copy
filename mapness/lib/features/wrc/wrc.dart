@@ -183,9 +183,6 @@ class WRC extends _$WRC {
   }
 
   Future<void> moveCameraToEventArea() async {
-    if (!state) {
-      return;
-    }
     await ref.read(cameraPositionProvider.notifier).animateToGeoPoints(
           _initialViewPortPoints
               .map(
