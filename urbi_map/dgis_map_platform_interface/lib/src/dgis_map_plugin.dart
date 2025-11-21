@@ -425,6 +425,11 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.calcPositionForPolylines(polylines, options);
   }
 
+  /// Calculate [CameraPositionMessage] for the specified points.
+  Future<CameraPositionMessage> calcPositionForGeoPoints(List<GeoPointMessage> points, CalcPositionOptionsMessage options) {
+    return _api.calcPositionForGeoPoints(points, options);
+  }
+
   /// Animation of the camera to the representative area (or out view port) of the search.
   /// Search returns a Geometry that represents the best area to show.
   Future<void> animateToRepresentativeArea(

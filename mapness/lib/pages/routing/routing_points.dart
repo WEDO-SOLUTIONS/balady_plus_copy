@@ -19,6 +19,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
@@ -79,7 +80,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           ),
         ],
       ),
-      stateMapper: const ThreeStateMapper(),
+      stateMapper: const LandingStateMapper(),
       initialState: ThreeStateSheet.open,
     );
     _setupTapListener();

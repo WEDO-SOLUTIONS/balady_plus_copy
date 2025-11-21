@@ -88,6 +88,20 @@ jobs:
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
 
+      # Example: if you need SSH deploy keys for internal dependencies, uncomment this block
+      # - name: Setup requirements
+      #   env: # Use secrets as environment variables
+      #     BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
+      #     BALADY_AUTHORIZATION_DEPLOY_KEY: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY }}
+      #   run: |
+      #     # Decode and save UIKIT deploy key
+      #     echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
+      #     chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
+      #
+      #     # Decode and save AUTHORIZATION deploy key
+      #     echo "${BALADY_AUTHORIZATION_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-authorization.key
+      #     chmod 600 ${GITHUB_WORKSPACE}/.balady-authorization.key
+
       - name: ⚙️ Setup Flutter
         uses: subosito/flutter-action@v2
         with:

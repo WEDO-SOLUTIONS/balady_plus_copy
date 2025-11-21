@@ -75,39 +75,21 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction:
-          widget.navType.cardWidthWithPadding / widget.biggestWidth,
+      viewportFraction: widget.navType.cardWidthWithPadding / widget.biggestWidth,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
-    final startPoint = widget.points.first?.value;
-    final finishPoint = widget.points.last?.value;
-    final intermediatePoints = widget.points.getIntermediatePoints();
-
-    final publicTransportRoutes = ref.watch(
-      publicTransportRoutesProvider(
-        startPoint: startPoint,
-        finishPoint: finishPoint,
+  Widget build(BuildContext context) => widgets.RoutesCarousel(
         navType: widget.navType,
-        intermediatePoints: intermediatePoints,
-      ),
-    );
-
-    return widgets.RoutesCarousel(
-      navType: widget.navType,
-      pageController: _pageController,
-      routes: widget.routes,
-      publicTransportRoutes: publicTransportRoutes,
-      onActiveChanged: _onActiveChanged,
-      refresh: _refresh,
-      destination: widget.points.lastOrNull,
-      startPoint: widget.points.firstOrNull,
-      startNavigation: _startNavigation,
-      publicTransportVisibility: widget.publicTransportVisibility,
-    );
-  }
+        pageController: _pageController,
+        routes: widget.routes,
+        onActiveChanged: _onActiveChanged,
+        refresh: _refresh,
+        points: widget.points,
+        startNavigation: _startNavigation,
+        publicTransportVisibility: widget.publicTransportVisibility,
+      );
 
   void _onActiveChanged(int index) {
     if (_animating) {
@@ -116,16 +98,14 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
 
     _activeRoute = index;
 
-    ref
-        .read(dgisControllerProvider)
-        .value
-        ?.setPublicTransportActiveRoute(index);
+    ref.read(dgisControllerProvider).value?.setPublicTransportActiveRoute(index);
   }
 
   void _refresh() {
     ref
       ..invalidate(routesProvider)
-      ..invalidate(publicTransportRoutesProvider);
+      ..invalidate(publicTransportRoutesProvider)
+      ..invalidate(publicTransportVisibilityProvider);
   }
 
   void _startNavigation(RouteInfo info) {
@@ -150,8 +130,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
       ..setLatitude(finishLocation.latitude)
       ..setLongitude(finishLocation.longitude);
 
-    final startPointExists =
-        startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
+    final startPointExists = startPoint?.etaPoint.lat != null && startPoint?.etaPoint.lon != null;
     final startPointEta = startPointExists
         ? startPoint!.etaPoint
         : EtaRoutePoint(
@@ -159,8 +138,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
             lon: location.longitude,
             label: startPoint?.label,
           );
-    final finishPointExists =
-        finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
+    final finishPointExists = finishPoint?.etaPoint.lat != null && finishPoint?.etaPoint.lon != null;
     final finishPointEta = finishPointExists
         ? finishPoint!.etaPoint
         : EtaRoutePoint(

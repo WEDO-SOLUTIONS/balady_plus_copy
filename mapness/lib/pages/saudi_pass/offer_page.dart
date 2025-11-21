@@ -230,6 +230,7 @@ class _Content extends HookConsumerWidget {
                           ),
                           if (showCode.value) _OfferCode(code: offer.code!),
                           Spacing.$3x.heightBox,
+                          if(offer.location.longitude!='0.0' && offer.location.latitude!='0.0')
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                             child: Row(
@@ -523,14 +524,16 @@ class _OfferPreviewByBusiness extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasDiscount = discount != null;
     String? path;
+    List<Color>? gradientColors;
     try {
       path = offer.offerGroup.imagePath;
+      gradientColors = offer.offerGroup.color;
     } catch (ex) {}
 
     return Container(
       decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: path != null ? offer.offerGroup.color : OffersGroup.others.color,
+            colors: gradientColors ?? OffersGroup.others.color,
             begin: AlignmentDirectional.topStart,
             end: AlignmentDirectional.bottomEnd,
           ),

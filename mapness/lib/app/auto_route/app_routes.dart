@@ -255,6 +255,10 @@ class AppRouter extends RootStackRouter {
               page: FavouriteOffersScreenViewRoute.page,
             ),
             AppRoute(
+              path: 'saudi_pass_profile_preferences_screen',
+              page: ProfilePreferencesRoute.page,
+            ),
+            AppRoute(
               path: 'saudi_pass_offers_on_map_screen',
               page: OffersOnMapRoute.page,
             ),

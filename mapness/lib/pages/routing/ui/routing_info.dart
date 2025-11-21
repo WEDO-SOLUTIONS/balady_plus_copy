@@ -235,20 +235,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       ),
     );
 
-    final publicTransportRoutes = ref.watch(
-      publicTransportRoutesProvider(
+    final publicTransportVisibility = ref.watch(
+      publicTransportVisibilityProvider(
         startPoint: widget.points.first,
         finishPoint: widget.points.last,
-        navType: RouteSearchOptionsMessage.publicTransport,
         intermediatePoints: intermediatePoints,
       ),
     );
 
-    final publicTransportVisibility = ref.watch(publicTransportVisibilityProvider(
-      startPoint: widget.points.first,
-      finishPoint: widget.points.last,
-      intermediatePoints: intermediatePoints,
-    ));
     ref
       ..listen(carConnectionProvider, (_, next) {
         final connected = next.valueOrNull ?? false;
@@ -261,6 +255,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         (previous, next) {
           if (previous != next) {
             _navType.value = next;
+            ref
+              ..invalidate(routesProvider)
+              ..invalidate(publicTransportRoutesProvider)
+              ..invalidate(publicTransportVisibilityProvider);
           }
         },
       );
@@ -285,7 +283,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             points: widget.points,
             publicTransportVisibility: publicTransportVisibility,
             routes: routes,
-            publicTransportRoutes: publicTransportRoutes,
           ),
         ],
       ),

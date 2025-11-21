@@ -40,7 +40,6 @@ class CitySelectionDialogViewWidget extends HookWidget {
         ),
         backgroundColor: context.colors.backgroundSurface2,
         safeAreaColor: context.colors.backgroundSurface2,
-        startConfig: ToggleSheetStart.instant,
         scrollController: scrollController,
         header: Padding(
           padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
@@ -48,7 +47,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyles.h2SemiBold),
-              CustomCloseButton(onClose: context.router.popForced),
+               CustomCloseButton(onClose: () => scrollController.close(),),
             ],
           ),
         ),
