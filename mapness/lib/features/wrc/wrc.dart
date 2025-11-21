@@ -206,11 +206,10 @@ class WRC extends _$WRC {
     final devicePixelRatio = mediaQuery.devicePixelRatio;
     final physicalPixelsPadding = (logicalPixelPadding * devicePixelRatio).round();
     final physicalPixelsHeight = mediaQuery.size.height * devicePixelRatio;
-    final fifthOfHeight = physicalPixelsHeight / 5;
 
     return CameraSetPaddingMessage(
       leftPadding: physicalPixelsPadding,
-      topPadding: fifthOfHeight.toInt(),
+      topPadding: physicalPixelsPadding,
       rightPadding: physicalPixelsPadding,
       // as the bottom sheet takes about one third of screen we add more padding
       bottomPadding: (physicalPixelsHeight / 2).round(),
