@@ -72,7 +72,10 @@ class _ToggleSheetControllerHookState extends HookState<ToggleSheetController, _
   ToggleSheetController build(BuildContext context) => controller;
 
   @override
-  void dispose() => controller.dispose();
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   String get debugLabel => 'useToggleSheetController';

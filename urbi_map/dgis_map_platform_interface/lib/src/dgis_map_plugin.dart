@@ -169,7 +169,7 @@ class DgisMapPlugin extends FlutterMapApi {
     _locationEventHandler = LocationEventHandler(_api);
     _indoorEventHandler = IndoorEventHandler(_api);
 
-    FlutterMapApi.setUp(this, binaryMessenger: messenger);
+    FlutterMapApi.setUp(this);
 
     return response;
   }
@@ -383,6 +383,11 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Calculate [CameraPositionMessage] for the specified polylines.
   Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options) {
     return _api.calcPositionForPolylines(polylines, options);
+  }
+
+  /// Calculate [CameraPositionMessage] for the specified points.
+  Future<CameraPositionMessage> calcPositionForGeoPoints(List<GeoPointMessage> points, CalcPositionOptionsMessage options) {
+    return _api.calcPositionForGeoPoints(points, options);
   }
 
   /// Animation of the camera to the representative area (or out view port) of the search.

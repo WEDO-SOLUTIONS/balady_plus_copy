@@ -1,3 +1,5 @@
+import 'package:mapness/entities/city_event/city_event.dart';
+
 enum DgisEnv { urbiDev, momrahStaging, momrahProd, urbiPreprod }
 
 extension DgisEnvExt on DgisEnv {
@@ -25,6 +27,9 @@ class EnvironmentConfig {
   final String appFeedbackApi;
   final String baladyBusinessUrl;
   final String bssApi;
+  final String saudiPassApi;
+  final CityEventDateRange cityscapeDateTimeRange;
+  final CityEventDateRange wrcEventDateRange;
 
   EnvironmentConfig({
     required this.url,
@@ -40,6 +45,9 @@ class EnvironmentConfig {
     required this.appFeedbackApi,
     required this.baladyBusinessUrl,
     required this.bssApi,
+    required this.saudiPassApi,
+    required this.cityscapeDateTimeRange,
+    required this.wrcEventDateRange,
   });
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
@@ -64,6 +72,15 @@ class EnvironmentConfig {
         appFeedbackApi: json['appFeedbackApi'] as String,
         baladyBusinessUrl: json['baladyBusinessUrl'] as String,
         bssApi: json['bssApi'] as String,
+        saudiPassApi: json['saudiPassApi'] as String,
+        cityscapeDateTimeRange: CityEventDateRange.fromJson(
+          json['cityscapeDateTimeRange'] as Map<String, dynamic>,
+          CityEventDateRange.cityscapeDefault(),
+        ),
+        wrcEventDateRange: CityEventDateRange.fromJson(
+          json['wrcEventDateRange'] as Map<String, dynamic>,
+          CityEventDateRange.wrcDefault(),
+        ),
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,6 +96,7 @@ class EnvironmentConfig {
         'appFeedbackEnable': appFeedbackEnable,
         'appFeedbackApi': appFeedbackApi,
         'baladyBusinessUrl': baladyBusinessUrl,
+        'saudiPassApi': saudiPassApi,
       };
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
@@ -97,6 +115,9 @@ class EnvironmentConfig {
         appFeedbackEnable: true,
         bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+        cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
+        wrcEventDateRange: CityEventDateRange.wrcDefault(),
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -113,6 +134,9 @@ class EnvironmentConfig {
         proxy: null,
         bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+        cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
+        wrcEventDateRange: CityEventDateRange.wrcDefault(),
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -129,6 +153,9 @@ class EnvironmentConfig {
         proxy: null,
         bssApi: 'https://s1.bss.2gis.com',
         baladyBusinessUrl: 'https://business.balady.gov.sa',
+        saudiPassApi: 'https://apiservices.balady.gov.sa/',
+        cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
+        wrcEventDateRange: CityEventDateRange.wrcDefault(),
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -147,5 +174,8 @@ class EnvironmentConfig {
         appFeedbackEnable: true,
         bssApi: 'https://casino-bss-receiver-api-qa.k8s.2gis.dev',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
+        cityscapeDateTimeRange: CityEventDateRange.cityscapeDefault(),
+        wrcEventDateRange: CityEventDateRange.wrcDefault(),
       );
 }

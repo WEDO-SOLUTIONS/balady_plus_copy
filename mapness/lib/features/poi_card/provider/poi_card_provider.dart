@@ -5,20 +5,19 @@ import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/organizations_response.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -132,6 +131,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     final cachedData = await loadCacheData(poiBox, poiCardStateKey);
 
     if (cachedData != null) {
+      await _loadOffers(cachedData.gisObjectIdMessage, cachedData.organizations);
       return cachedData;
     } else {
       final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
@@ -146,6 +146,8 @@ class PoiCardProvider extends _$PoiCardProvider {
           qrLicense = await qrLicenseRepository.getLicenseInfo(license);
         }
       }
+
+      await _loadOffers(result, organizationsResponse);
 
       final poiCardState = PoiCardState(
         organizations: organizationsResponse,
@@ -192,6 +194,16 @@ class PoiCardProvider extends _$PoiCardProvider {
       logger.log('Error fetching organizations data', logLevel: MapnessLogLevel.critical);
       return null;
     }
+  }
+
+  Future<void> _loadOffers(DirectoryObjectMessage? poi, OrganizationsMessage? organizations) async {
+    final tradeLicense = poi?.tradeLicense;
+    final organizationsLicenses = organizations?.items.map((e) => e.tradeLicense?.license).nonNulls;
+    final allLicenses = {
+      if (tradeLicense != null) tradeLicense.license,
+      if (organizationsLicenses != null) ...organizationsLicenses
+    };
+    await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
   }
 
   Future<PoiCardState?> loadCacheData(Box<dynamic> box, String key) async {

@@ -63,11 +63,13 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       closestPoint: widget.closestPoint,
     );
     final state = ref.watch(viewModelProvider);
-    ref.listen(poiCardClosingProvider, (_, shouldClose) {
-      if (shouldClose) {
-        context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
-      }
-    });
+    ref
+      ..watch(poiOffersProvider.select((_) => null))
+      ..listen(poiCardClosingProvider, (_, shouldClose) {
+        if (shouldClose) {
+          context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
+        }
+      });
 
     final poiCardState = state.valueOrNull;
     final storeParking = ref.read(parkingManageProvider.notifier);
@@ -77,6 +79,26 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
 
     if (isParkingPoi) {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
+    }
+
+    final isCityscapeObject = ref.read(cityscapeProvider.notifier).showCustomPin(widget.objectId.objectId);
+
+    if (isCityscapeObject) {
+      return _CityscapePoiCardContent(
+        objectId: widget.objectId.objectId,
+        closestPoint: widget.closestPoint,
+        cameraConfig: widget.cameraConfig,
+        poiCardState: poiCardState,
+      );
+    }
+
+    final wrcEventPoint = ref.read(wRCProvider.notifier).getWRCEventPoint(widget.objectId.objectId);
+
+    if (wrcEventPoint != null) {
+      return _WrcCardContent(
+        wrcEventPoint: wrcEventPoint,
+        poiCardState: poiCardState,
+      );
     }
 
     // We need to leave this block of code to specify the point where the route will be built. (BSA-2415)
