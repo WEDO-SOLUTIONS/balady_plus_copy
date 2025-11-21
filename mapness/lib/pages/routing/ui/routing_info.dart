@@ -60,6 +60,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
       if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
         unawaited(_calculateNavigationType(null));
       } else {
