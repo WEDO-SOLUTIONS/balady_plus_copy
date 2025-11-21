@@ -98,9 +98,13 @@ class DgisController extends _$DgisController {
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
 
-    // at this point, geolocation is either activated,
-    // or the user has definitively denied it (the helper will timeout
-    // if you add it inside _LocationSetupHelper).
+    ///Through trial and error, I found a version where the user marker is displayed.
+    ///Even if the user doesn’t grant permission, calling these functions won’t break anything.
+    await controller.onLocationPermissionGranted(
+      desiredAccuracy: DesiredAccuracyMessage.high,
+    );
+    await controller.toggleFollowState();
+
   }
 
   /// Moves camera on Riyadh Tower
