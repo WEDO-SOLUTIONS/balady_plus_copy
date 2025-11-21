@@ -61,7 +61,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _bottomSheetController.addListener(_calculatePadding);
 
     _setupTapListener();
-    ref.read(_bottomSheetControllerProvider)._controller = _bottomSheetController;
+    ref.read(_bottomSheetControllerProvider).controller = _bottomSheetController;
   }
 
   Future<void> _setupTapListener() async {
@@ -84,7 +84,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void dispose() {
     _bottomSheetController.removeListener(_calculatePadding);
-    ref.read(_bottomSheetControllerProvider)._controller = null;
+    ref.read(_bottomSheetControllerProvider).controller = null;
 
     WidgetsBinding.instance.removeObserver(this);
 
