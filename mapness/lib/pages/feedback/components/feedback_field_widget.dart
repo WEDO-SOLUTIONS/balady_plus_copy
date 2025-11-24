@@ -14,9 +14,11 @@ import 'package:mapness/widgets/feedback/images/feedback_images.dart';
 /// Dont forget to implement [valueTransformer] for fields with some custom type
 class FeedbackFieldWidget extends StatefulWidget {
   final FeedbackBaseEntity field;
+  final int? objectId;
 
   const FeedbackFieldWidget({
     required this.field,
+    this.objectId,
     super.key,
   });
 
@@ -66,6 +68,7 @@ class _FeedbackFieldWidgetState extends State<FeedbackFieldWidget> with Automati
       FeedbackScheduleEntity() => FeedbackScheduleWidget(
           key: ValueKey(widget.field.id),
           field: widget.field as FeedbackScheduleEntity,
+          objectId: widget.objectId,
         ),
       FeedbackSubChipsEntity() => FeedbackSubChips(
           key: ValueKey(widget.field.id),
