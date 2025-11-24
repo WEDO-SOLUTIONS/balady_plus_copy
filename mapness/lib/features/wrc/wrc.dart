@@ -71,7 +71,15 @@ class WRC extends _$WRC {
   }
 
   /// Checks if the custom pin should be shown, based on the object ID
-  bool isWRCEventObject(int objectId) => wrcEventPoints.any((point) => point.objectId == objectId) && state;
+  bool isWRCEventObject(
+    int objectId,
+    GeoPointMessage? closestPoint,
+  ) =>
+      wrcEventPoints.any((point) {
+        final isNearPoint = closestPoint?.isNearPoint(point.center) ?? false;
+        return isNearPoint || point.objectId == objectId;
+      }) &&
+      state;
 
   WRCEventPoint? getWRCEventPoint(int objectId) =>
       wrcEventPoints.firstWhereOrNull((point) => point.objectId == objectId);
@@ -183,9 +191,6 @@ class WRC extends _$WRC {
   }
 
   Future<void> moveCameraToEventArea() async {
-    if (!state) {
-      return;
-    }
     await ref.read(cameraPositionProvider.notifier).animateToGeoPoints(
           _initialViewPortPoints
               .map(
@@ -224,6 +229,9 @@ class WRC extends _$WRC {
 
   String getMapMarkerPath(int objectId) =>
       _getPointById(objectId)?.type.mapMarkerPath ?? Assets.icons.svg.icWrcMapMarkerRallyStage.keyName;
+
+  String getSearchMarkerPath(int objectId) =>
+      _getPointById(objectId)?.type.searchMarkerImagePath ?? Assets.icons.svg.icWrcSearchMarkerRallyStage.keyName;
 
   WRCEventPoint? _getPointById(int objectId) => wrcEventPoints.firstWhereOrNull(
         (e) => e.objectId == objectId,

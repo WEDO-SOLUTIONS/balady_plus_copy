@@ -28,7 +28,11 @@ extension WorkingHoursStrings on WorkingHours {
     final closesIn = this.closesIn(now);
 
     if (closesIn <= const Duration(minutes: 30)) {
-      return '${appLocalizations.closesIn}${closesIn.inMinutes} ${appLocalizations.minutes}';
+      if (closesIn.inMinutes > 1) {
+        return '${appLocalizations.closesIn}${closesIn.inMinutes} ${appLocalizations.minutes}';
+      } else {
+        return appLocalizations.closed;
+      }
     }
 
     // Mean Working now, but this function is only for closed status

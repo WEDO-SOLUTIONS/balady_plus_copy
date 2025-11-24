@@ -328,7 +328,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               action: MetricAction.tap.toString(),
             );
 
-            ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+            ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
             ref.read(parkingManageProvider.notifier).restoreMarker();
             ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
             context.router.popForced();

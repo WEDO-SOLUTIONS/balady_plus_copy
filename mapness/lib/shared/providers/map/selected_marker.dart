@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -40,7 +39,6 @@ class SelectedMarker extends _$SelectedMarker {
     );
     final currentSearchMarker = searchObjectManager.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
       _hideMarker(currentSearchMarker);
     }
 

@@ -125,7 +125,7 @@ ios-debug-revert:
     git apply -R mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not unapply sdk key patch'
     git apply -R mapness/scripts/icon.patch || print_style '' 'red' 'could not unapply ios icon patch'    
 
-apk-release version: apply-patches prebuild (_apk-urbi_pre-prod version) (_apk-momrah-prod version) (_apk-momrah-stage version) unapply-patches open_built 
+apk-release version: apply-patches prebuild (_apk-urbi_pre-prod version) (apk-momrah-prod version) (apk-momrah-stage version) unapply-patches open_built
 
 _apk-urbi_pre-prod version:
     print_style '' 'yellow' 'build urbi pre'
@@ -134,7 +134,7 @@ _apk-urbi_pre-prod version:
     mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/urbi-pre-{{ version }}.apk
     print_style '' 'cyan' 'urbi pre ready!'
 
-_apk-momrah-prod version:
+apk-momrah-prod version:
     print_style '' 'yellow' 'build momrah prod'
     VENDOR_CONFIG="momrah-prod"
     fvm flutter build apk --flavor prod --target lib/main_prod.dart {{ dart_define }}
@@ -148,7 +148,7 @@ _apk-momrah-pre version:
     mv build/app/outputs/flutter-apk/app-pre-release.apk build/app/outputs/flutter-apk/momrah-prod-{{ version }}.apk
     print_style '' 'cyan' 'momrah pre ready!'
 
-_apk-momrah-stage version:
+apk-momrah-stage version:
     print_style '' 'yellow' 'build momrah stage'
     VENDOR_CONFIG="momrah-stage"
     fvm flutter build apk --flavor stg --target lib/main_stg.dart {{ dart_define }}

@@ -1,6 +1,5 @@
 part of 'wrc.dart';
 
-// TODO(WRC):add valid objectId's when uploaded by 2gis
 final wrcEventPoints = [
   ..._specialPoints,
   ..._rallyStagePoints,
