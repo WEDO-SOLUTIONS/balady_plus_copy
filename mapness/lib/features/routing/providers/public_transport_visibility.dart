@@ -98,23 +98,30 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         hasPublicTransportRoutes: true,
         reason: isBothInRiyadh ? null : PublicTransportVisibilityReason.notInRiyadh,
       );
+    } on NoInternetException {
+      // Re-throw NoInternetException to be handled by UI
+      rethrow;
     } on PublicTransportVisibilityException catch (e) {
+      // Handle specific visibility exceptions
       return PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
         reason: e.reason,
       );
-    } on PublicTransportVisibilityIsTooFarException catch (_) {
+    } on PublicTransportVisibilityIsTooFarException {
+      // Handle route distance exception
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
         reason: PublicTransportVisibilityReason.findRouteError,
       );
     } catch (error) {
+      // Re-check network status before returning unknown error
       if (!online) {
         throw const NoInternetException();
       }
 
+      // Return unknown error as result (not exception)
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,

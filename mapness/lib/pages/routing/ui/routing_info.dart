@@ -71,6 +71,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _initNavigationTypeCalculation() async {
+    await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
     if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
       unawaited(_calculateNavigationType(null));
     } else {

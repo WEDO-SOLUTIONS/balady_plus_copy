@@ -57,7 +57,10 @@ class RoutesCarousel extends ConsumerWidget {
       );
 
       final publicTransport = publicTransportVisibility.asData?.value;
+      final hasVisibilityError = publicTransportVisibility.hasError;
+      final visibilityError = publicTransportVisibility.error;
 
+      // Check for specific visibility errors first
       if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
         return PathCardFailure.nearestMetroTooFar(
           refresh: () {
@@ -71,14 +74,16 @@ class RoutesCarousel extends ConsumerWidget {
       return publicTransportRoutes.when(
         loading: () => PathCardLoading(text: context.l10n.loading, currentType: navType),
         error: (err, st) {
-          if (err is NoInternetException ||
-              (publicTransportVisibility.hasError && publicTransportVisibility.error is NoInternetException)) {
+          // Check for NoInternetException from either provider
+          if (err is NoInternetException || (hasVisibilityError && visibilityError is NoInternetException)) {
             return PathCardFailure.noInternet(
               refresh: refresh,
               text: context.l10n.noInternetConnection,
             );
           }
 
+          // If visibility check returned findRouteError reason, show that error
+          // This ensures the error message doesn't change after timeout
           if (publicTransport?.reason == PublicTransportVisibilityReason.findRouteError) {
             return PathCardFailure.nearestMetroTooFar(
               refresh: () {
@@ -89,6 +94,7 @@ class RoutesCarousel extends ConsumerWidget {
             );
           }
 
+          // Default to route not found for any other error
           return PathCardFailure.routeNotFound(refresh: refresh, text: context.l10n.routeNotFound);
         },
         data: (ptRoutes) {

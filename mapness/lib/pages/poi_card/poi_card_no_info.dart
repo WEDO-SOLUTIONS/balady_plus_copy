@@ -38,7 +38,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
             action: MetricAction.tap.toString(),
           );
 
-          ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+          ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
           context.router.popForced();
         },
       ),

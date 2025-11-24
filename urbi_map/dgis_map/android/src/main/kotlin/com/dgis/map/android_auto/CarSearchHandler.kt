@@ -56,7 +56,7 @@ class CarSearchHandler(
     ) {
         val map = this.map ?: return
         val query =
-            SearchQueryBuilder.fromQueryText(queryText).setSortingType(SortingType.BY_DISTANCE)
+            SearchQueryBuilder.fromQueryText(queryText).setSortingType(SortingType.BY_RELEVANCE)
                 .setPageSize(pageSize).setAreaOfInterest(map.camera.visibleRect)
                 .setSpatialRestriction(saRestrictions).build()
 

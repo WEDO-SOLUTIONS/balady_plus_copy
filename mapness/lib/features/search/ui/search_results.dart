@@ -17,15 +17,17 @@ class SearchResults extends ConsumerStatefulWidget {
   final SearchResultMessage results;
   final ScrollController bottomSheetContentScrollController;
   final Widget Function(BuildContext) loaderBuilder;
+  final bool showAddPlace;
+  final bool showSearchMore;
   final Widget Function(BuildContext, DirectoryObjectMessage, int, List<Offer>) itemBuilder;
-  final bool? isShowAddPlace;
 
   const SearchResults({
     required this.results,
     required this.bottomSheetContentScrollController,
     required this.loaderBuilder,
     required this.itemBuilder,
-    this.isShowAddPlace,
+    this.showAddPlace = true,
+    this.showSearchMore = false,
     super.key,
   });
 
@@ -36,7 +38,6 @@ class SearchResults extends ConsumerStatefulWidget {
 class _SearchResultsState extends ConsumerState<SearchResults> {
   bool _hasNext = true;
   bool _isLoading = false;
-  late final bool _isShowAddPlace = widget.isShowAddPlace ?? true;
 
   @override
   void initState() {
@@ -71,24 +72,15 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   }
 
   // Don't show alternative search button if we are in google search
-  bool _getShowAlternativeSearchButton() {
-    // TODO: amr hide the search more for now
-    // final scope = context.read<SearchScope>();
-    // return !ref.read(searchProvider(scope.value).notifier).isGoogleSearch;
-    return false;
-  }
+  bool get _showSearchMore =>
+      widget.showSearchMore && !ref.read(searchProvider(context.read<SearchScope>().value).notifier).isGoogleSearch;
 
   @override
   Widget build(BuildContext context) {
-    void _onAlternativeSearchPressed() {
-      final scope = context.read<SearchScope>();
-      ref.read(searchProvider(scope.value).notifier).alternativeSearch();
-    }
-
     final results = ref.watch(searchPaginationProvider(widget.results));
     final offers = ref.watch(poiOffersProvider);
     if (results.isEmpty) {
-      return MapSearchEmpty(isShowAddPlaceButton: _isShowAddPlace);
+      return MapSearchEmpty(showAddPlaceButton: widget.showAddPlace);
     }
 
     return ListView.separated(
@@ -99,56 +91,69 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
         bottom: Spacing.$4x,
       ),
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) {
-        // Calculate how many "Show Results" buttons we've inserted so far
-        final buttonsInserted = index ~/ 11; // Every 11th position (after every 10 results)
-
-        // Calculate the actual result index
-        final actualResultIndex = index - buttonsInserted;
-
-        // Check if this position should show a "Show Results" button (every 11th position)
-        if (index > 0 && index % 11 == 0 && _getShowAlternativeSearchButton()) {
-          return AppButton(
-            onTap: _onAlternativeSearchPressed,
-            buttonColorScheme: ButtonColorScheme.accentSecondary,
-            buttonType: ButtonType.secondary,
-            primaryLabel: context.l10n.searchMore,
-            primaryIcon: SystemIcons.search,
-          );
-        }
-
-        // Check if we've reached the end and should show loader or AddPlaceItem
-        if (actualResultIndex >= results.length) {
-          // If we have less than 10 items and haven't shown the button yet, show it here
-          if (results.length < 10 && index == results.length && _getShowAlternativeSearchButton()) {
-            return AppButton(
-              onTap: _onAlternativeSearchPressed,
-              buttonColorScheme: ButtonColorScheme.accentSecondary,
-              buttonType: ButtonType.secondary,
-              primaryLabel: context.l10n.showMore,
-              primaryIcon: SystemIcons.search,
-            );
-          }
-
-          if (_isShowAddPlace) {
-            if (_hasNext) {
-              return widget.loaderBuilder(context);
-            }
-            return AddPlaceItem(
-              onTapMetrics: () {
-                ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
-              },
-              googleSearchOnTap: _onAlternativeSearchPressed,
-            );
-          }
-          return const SizedBox.shrink();
-        }
-
-        return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex, offers[results[actualResultIndex].tradeLicense?.license.trim()] ?? []);
-      },
+      itemBuilder: (context, index) => _itemBuilder(context: context, index: index, results: results, offers: offers)!,
       itemCount: _calculateTotalItemCount(results.length),
       separatorBuilder: (context, index) => const SizedBox(height: 12),
     );
+  }
+
+  Widget? _itemBuilder({
+    required BuildContext context,
+    required int index,
+    required List<DirectoryObjectMessage> results,
+    required Map<String, List<Offer>> offers,
+  }) {
+    void _onAlternativeSearchPressed() {
+      final scope = context.read<SearchScope>();
+      ref.read(searchProvider(scope.value).notifier).alternativeSearch();
+    }
+
+    // Calculate how many "Search more" buttons we've inserted so far
+    final buttonsInserted = index ~/ 11; // Every 11th position (after every 10 results)
+
+    // Calculate the actual result index
+    final actualResultIndex = _showSearchMore ? index - buttonsInserted : index;
+
+    // Check if this position should show a "Search more" button (every 11th position)
+    if (_showSearchMore && index > 0 && index % 11 == 0) {
+      return AppButton(
+        onTap: _onAlternativeSearchPressed,
+        buttonColorScheme: ButtonColorScheme.accentSecondary,
+        buttonType: ButtonType.secondary,
+        primaryLabel: context.l10n.searchMore,
+        primaryIcon: SystemIcons.search,
+      );
+    }
+
+    // Check if we've reached the end and should show loader or AddPlaceItem
+    if (actualResultIndex >= results.length) {
+      // If we have less than 10 items and haven't shown the button yet, show it here
+      if (_showSearchMore && results.length < 10 && index == results.length) {
+        return AppButton(
+          onTap: _onAlternativeSearchPressed,
+          buttonColorScheme: ButtonColorScheme.accentSecondary,
+          buttonType: ButtonType.secondary,
+          primaryLabel: context.l10n.showMore,
+          primaryIcon: SystemIcons.search,
+        );
+      }
+
+      if (widget.showAddPlace) {
+        if (_hasNext) {
+          return widget.loaderBuilder(context);
+        }
+        return AddPlaceItem(
+          onTapMetrics: () {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
+          },
+          googleSearchOnTap: _onAlternativeSearchPressed,
+        );
+      }
+      return const SizedBox.shrink();
+    }
+
+    return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex,
+        offers[results[actualResultIndex].tradeLicense?.license.trim()] ?? []);
   }
 
   int _calculateTotalItemCount(int resultsLength) {
@@ -157,10 +162,10 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     }
 
     // Base count: results + 1 (loader/AddPlaceItem)
-    final baseCount = resultsLength + (_isShowAddPlace ? 1 : 0);
+    final baseCount = resultsLength + (widget.showAddPlace ? 1 : 0);
 
     // Only add buttons if not in Google search
-    if (_getShowAlternativeSearchButton()) {
+    if (_showSearchMore) {
       // Add "Show Results" buttons every 11th position
       int buttonsToAdd = (resultsLength - 1) ~/ 10;
 

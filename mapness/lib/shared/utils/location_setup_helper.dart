@@ -13,7 +13,6 @@ class LocationSetupHelper with WidgetsBindingObserver {
 
   final _log = (String m) => logger.log('🛰️ [LOCATION] $m');
 
-  final _completer = Completer<void>();
   bool _requestInProgress = false;
 
   Future<void> run() async {
@@ -21,7 +20,6 @@ class LocationSetupHelper with WidgetsBindingObserver {
     try {
       await _tryActivate();
       // wait until activate() says "done"
-      await _completer.future;
     } catch (e) {
       _log('$e');
     }
@@ -54,9 +52,6 @@ class LocationSetupHelper with WidgetsBindingObserver {
 
     if (status.isGranted) {
       await _activateLocation();
-    }
-    if (!_completer.isCompleted) {
-      _completer.complete();
     }
   }
 

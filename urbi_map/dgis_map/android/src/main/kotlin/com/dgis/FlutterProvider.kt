@@ -12,7 +12,9 @@ object FlutterProvider {
 
     fun getFlutterEngine(context: Context): FlutterEngine {
         if (flutterEngine == null) {
-            flutterEngine = FlutterEngine(context)
+            val dartVmArgs = null
+            val automaticallyRegisterPlugins = false
+            flutterEngine = FlutterEngine(context, dartVmArgs, automaticallyRegisterPlugins)
             flutterEngine!!.navigationChannel.setInitialRoute("/")
             flutterEngine!!.dartExecutor.executeDartEntrypoint(
                 DartExecutor.DartEntrypoint.createDefault()

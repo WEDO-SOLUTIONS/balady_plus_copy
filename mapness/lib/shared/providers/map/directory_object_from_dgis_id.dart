@@ -7,9 +7,9 @@ part 'directory_object_from_dgis_id.g.dart';
 @riverpod
 Future<DirectoryObjectMessage?> directoryObjectFromDgisId(
   DirectoryObjectFromDgisIdRef ref,
-  DgisObjectIdMessage objectId,
+  DgisObjectId objectId,
 ) async {
   final dgisController = ref.watch(dgisControllerProvider);
-  final result = await dgisController.value?.searchByObjectId(objectId);
+  final result = await dgisController.value?.searchByObjectId(objectId.toMessage());
   return result;
 }

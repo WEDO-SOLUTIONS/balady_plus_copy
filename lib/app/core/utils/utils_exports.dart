@@ -2,6 +2,7 @@ export 'common_functions.dart';
 export 'size_config.dart';
 export 'debouncer.dart';
 export 'nullable.dart';
+export 'balady_route_observer.dart';
 
 //! Animators
 export 'animators/route_animator.dart';

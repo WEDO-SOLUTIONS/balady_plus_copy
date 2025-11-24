@@ -5,7 +5,6 @@ import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/organizations_response.dart';
@@ -19,7 +18,6 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
@@ -98,20 +96,12 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
-    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
-    final parkingManager = ref.read(parkingManageProvider.notifier);
-
-    ref.onDispose(() {
-      selectedMarker.removeMarker(poiPinId);
-      parkingManager.restoreMarker();
-    });
-
     state = const AsyncValue.loading();
 
     final result = await ref
         .watch(
       pointOfInterestProvider(
-        DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+        DgisObjectId(objectId: objectId, entranceId: 0),
         closestPoint,
       ).future,
     )
