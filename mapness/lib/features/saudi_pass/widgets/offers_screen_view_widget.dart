@@ -19,8 +19,10 @@ class OffersScreenViewWidget extends ConsumerStatefulWidget {
   OffersScreenViewWidgetState createState() => OffersScreenViewWidgetState();
 }
 
-class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> {
-  int get _filtersIndex => widget.offersScreenView.isByPreferencesElseAll ? 0 : 1;
+class OffersScreenViewWidgetState
+    extends ConsumerState<OffersScreenViewWidget> {
+  int get _filtersIndex =>
+      widget.offersScreenView.isByPreferencesElseAll ? 0 : 1;
   bool _hasChangeFavorites = false;
 
   @override
@@ -35,7 +37,7 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                             OffersOnMapRoute(
                               city: s.data!.city,
                               categories: s.data!.categories,
-                              isAll: _filtersIndex==1,
+                              isAll: _filtersIndex == 1,
                               recommendedTypes: s.data!.recommendedTypes,
                             ),
                           )
@@ -51,12 +53,14 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                     builder: (context, _) => Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
+                          padding: const EdgeInsets.all(Spacing.$4x)
+                              .copyWith(bottom: 0),
                           child: SegmentTabsButton(
                             initialIndex: _filtersIndex,
                             tabsContent: [
                               TabsRowV2Content(
-                                title: context.l10n.saudiPassOffersPageByPreferences,
+                                title: context
+                                    .l10n.saudiPassOffersPageByPreferences,
                                 onTap: widget.offersScreenView.tapByPreferences,
                               ),
                               TabsRowV2Content(
@@ -72,12 +76,15 @@ class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> 
                             index: _filtersIndex,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                                child: PrefsContentWidget(widget.offersScreenView),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: Spacing.$4x),
+                                child:
+                                    PrefsContentWidget(widget.offersScreenView),
                               ),
                               OffersViewWidget(
                                 widget.offersScreenView,
-                                onChangeOffers: () => _hasChangeFavorites = true,
+                                onChangeOffers: () =>
+                                    _hasChangeFavorites = true,
                               ),
                             ],
                           ),

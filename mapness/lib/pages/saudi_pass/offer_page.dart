@@ -328,8 +328,8 @@ class _Content extends HookConsumerWidget {
     return createAmountOrRatioTextSpan(
       language: language,
       locale: locale,
-      amount: offer.typeDetails.amount,
-      ratio: offer.typeDetails.ratio,
+      amount: offer.typeDetails?.amount,
+      ratio: offer.typeDetails?.ratio,
       iconSize: 22,
     );
   }
@@ -516,8 +516,8 @@ class _OfferPreviewByBusiness extends StatelessWidget {
   const _OfferPreviewByBusiness({
     required this.imageId,
     required this.title,
-    this.discount,
     required this.offer,
+    this.discount,
   });
 
   @override

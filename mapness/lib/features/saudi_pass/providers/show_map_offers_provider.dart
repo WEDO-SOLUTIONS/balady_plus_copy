@@ -55,7 +55,8 @@ class ShowMapOffers extends _$ShowMapOffers {
 
     final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
+      marker.options.icon?.svgPath =
+          currentSearchMarker.options.icon?.svgPath?.bigIconPath;
       _hideMarker(currentSearchMarker);
     }
 
@@ -87,10 +88,12 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> _setMarkerIsVisible(Marker marker, {required bool isVisible}) async {
+  Future<void> _setMarkerIsVisible(Marker marker,
+      {required bool isVisible}) async {
     await mapObjectManager?.setMarkerOptions(
       marker.id,
-      ChangeMarkerOptionsMessage(isVisible: marker.options.isVisible = isVisible),
+      ChangeMarkerOptionsMessage(
+          isVisible: marker.options.isVisible = isVisible),
     );
   }
 
@@ -98,6 +101,7 @@ class ShowMapOffers extends _$ShowMapOffers {
     required bool enabled,
     required String cityId,
     required bool isAll,
+    VisibleRect? visibleRect,
     Set<Category>? category,
     Set<RecommendedType>? promotionsType,
   }) async {
@@ -111,7 +115,8 @@ class ShowMapOffers extends _$ShowMapOffers {
       return;
     }
 
-    final saudiPassRepository = await ref.read(saudiPassRepositoryProvider.future);
+    final saudiPassRepository =
+        await ref.read(saudiPassRepositoryProvider.future);
     Preferences? preferences;
     try {
       preferences = await saudiPassRepository.getPreferences();
@@ -120,24 +125,45 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
 
     try {
-      final recommendedTypes = preferences?.recommendedTypes.toSet() ?? promotionsType ?? {};
+      final recommendedTypes =
+          preferences?.recommendedTypes.toSet() ?? promotionsType ?? {};
       final categories = preferences?.categories.toSet() ?? category ?? {};
 
       final cities = isAll
           ? {
-        cityId,
-      }
+              cityId,
+            }
           : {
-        if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
-      };
+              if (preferences?.cities.isNotEmpty ?? false)
+                ...preferences!.cities.map((city) => city.id),
+            };
       final updatedState = List<Offer>.from([]);
-
-      final promotions = await saudiPassRepository.getPromotions(
-        cityIds: cities,
-        categories: categories,
-        recommendedTypes: recommendedTypes,
-        pageSize: 100,
-      );
+      final Promotions promotions;
+      if (visibleRect != null) {
+        final rect = visibleRect;
+        final center = rect.center();
+        promotions = await saudiPassRepository.getPromotions(
+          cityIds: cities,
+          categories: categories,
+          recommendedTypes: recommendedTypes,
+          pageSize: null,
+          mapPoint: GeoPointMessage(
+            latitude: center.latitude,
+            longitude: center.longitude,
+          ),
+          range: rect.distanceToNW().toInt(),
+        );
+      } else {
+        final controller = await ref.read(dgisControllerProvider.future);
+        final cameraPosition = await controller.getCameraPosition();
+        promotions = await saudiPassRepository.getPromotions(
+          cityIds: cities,
+          categories: categories,
+          recommendedTypes: recommendedTypes,
+          pageSize: null,
+          mapPoint: cameraPosition.point,
+        );
+      }
 
       for (final offer in promotions.records) {
         updatedState.add(offer);
@@ -149,11 +175,10 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> toggleOffersOnMap(String cityId, {
-    required bool isAll
-  }) async {
+  Future<void> toggleOffersOnMap(String cityId, {required bool isAll}) async {
     toggleShowMap = !toggleShowMap;
 
-    await switchOffersVisibility(enabled: toggleShowMap, isAll: isAll, cityId: cityId);
+    await switchOffersVisibility(
+        enabled: toggleShowMap, isAll: isAll, cityId: cityId);
   }
 }
