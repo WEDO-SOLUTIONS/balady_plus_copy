@@ -52,7 +52,9 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final rubrics = Set<int>.from(cleanupRubrics);
   final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerType(rubrics);
 
-  final isMarkerPositionIsNull = directoryObject.markerPosition == null;
+  if (directoryObject.markerPosition == null) {
+    return null;
+  }
 
   final position = LatLng(
     latitude: directoryObject.markerPosition!.latitude,
@@ -100,10 +102,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   ref.onDispose(() async {
     await highlightController.removeAll();
   });
-
-  if (isMarkerPositionIsNull) {
-    return null;
-  }
 
   return directoryObject;
 }
