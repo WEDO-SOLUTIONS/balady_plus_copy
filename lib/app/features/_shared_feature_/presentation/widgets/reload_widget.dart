@@ -51,9 +51,18 @@ class ReloadWidget extends StatelessWidget {
             ),
           ),
           const CustomVerticalSpace(height: 16),
-          CustomTextButtonWidget(
+          CustomElevatedIconButtonWidget(
             onPressed: onTab,
-            text: ('reload').tr(),
+            text: CustomTextWidget(
+              'reload'.tr(),
+              fontSize: 16,
+              fontColor: AppColor.white5,
+              fontWeight: AppFontWeight.medium,
+              textAlign: TextAlign.center,
+            ),
+            btnWidth: 150,
+            btnHeight: 45,
+            icon: const Icon(Icons.replay, color: AppColor.white5),
           )
         ],
       ),
