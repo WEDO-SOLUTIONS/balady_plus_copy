@@ -26,8 +26,16 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectId objectId,
   LatLng? closestPoint,
 ) async {
+  final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+  final parkingManager = ref.read(parkingManageProvider.notifier);
+
+  ref.onDispose(() {
+    selectedMarker.removeMarker(poiPinId);
+    parkingManager.restoreMarker();
+  });
+
   final dgisController = await ref.read(dgisControllerProvider.future);
-  final directoryObject = await dgisController.searchByObjectId(objectId);
+  final directoryObject = await dgisController.searchByObjectId(objectId.toMessage());
 
   if (directoryObject.levelId == null) {
     final nearestObjects = await dgisController.getNearestObjects();
