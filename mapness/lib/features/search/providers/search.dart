@@ -7,6 +7,8 @@ import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
+import 'package:mapness/features/wrc/wrc.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -152,6 +154,11 @@ class Search extends _$Search {
   Future<void> fetchSuggest(String query) async {
     try {
       await _searchOperation?.cancel();
+      // mocking wrc event related queries to show hardcoded points
+      if (ref.read(wRCProvider) && isWrcQuery(query)) {
+        state = _wrcMockResults(query);
+        return;
+      }
       if (query.isEmpty) {
         state = const SearchStateHistory();
         return;
@@ -289,6 +296,11 @@ class Search extends _$Search {
   Future<void> searchByText(String query, {bool isGoogle = false}) async {
     try {
       await _searchOperation?.cancel();
+      // mocking wrc event related queries to show hardcoded points
+      if (ref.read(wRCProvider) && isWrcQuery(query)) {
+        state = _wrcMockResults(query);
+        return;
+      }
       if (state is! SearchStateSuggest) {
         state = SearchStateLoading(searchText: query);
       }
@@ -569,6 +581,31 @@ class Search extends _$Search {
     }
     return SearchStateResults(
       results: results,
+      searchText: searchQuery,
+      markerType: markerType,
+    );
+  }
+
+  SearchState _wrcMockResults(
+    String searchQuery, {
+    MapMarkersType? markerType,
+  }) {
+    final l10n = lookupAppLocalizations(ref.read(appLanguageProvider).locale);
+
+    return SearchStateResults(
+      results: SearchResultMessage(
+        autoUseFirstResult: false,
+        dynamicFilters: [],
+        // SearchResultTypeMessage.recovery means a concrete object on map
+        searchResultType: SearchResultTypeMessage.recovery,
+        firstPage: PageMessage(
+            id: PageIdMessage(id: 'wrc-mock-events'),
+            items: wrcEventPoints
+                .map(
+                  (e) => e.toDirectoryObjectMessage(l10n),
+                )
+                .toList()),
+      ),
       searchText: searchQuery,
       markerType: markerType,
     );

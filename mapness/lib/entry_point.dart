@@ -89,6 +89,7 @@ import 'package:sheetify/sheetify.dart';
 import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
+import 'features/wrc/wrc.dart';
 
 Mixpanel? mixpanel;
 
@@ -119,7 +120,9 @@ class MapnessProviderScope extends StatelessWidget {
               ref
                 ..watch(saudiNationalDayProvider)
                 // Initialize Cityscape provider to listen remote config
-                ..watch(cityscapeProvider);
+                ..watch(cityscapeProvider)
+                // Initialize WRC provider to listen remote config
+                ..watch(wRCProvider);
 
               return provider.MultiProvider(
                 providers: [
@@ -185,6 +188,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
       await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
+      await ref.read(wRCProvider.notifier).initializeGlobalMarkers();
     });
 
     // call the openAppLink when user click on notification have deep link
@@ -266,7 +270,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> _updateGlobalMarker(WidgetRef ref) async {
+  Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -278,17 +282,43 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _updateSpecificMarkerWRC(WidgetRef ref, Marker? previousMarker, Marker? marker) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    // hide previous marker if there was one
+    if (previousMarker != null) {
+      await notifier.showSpecificMarker(previousMarker);
+    }
+
+    // show new marker if there is one
+    if (marker != null) {
+      await notifier.hideSpecificMarker(marker);
+    }
+  }
+
+  Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    if (wrcEnabled) {
+      await notifier.showAllMarkers();
+    } else {
+      await notifier.hideAllMarkers();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
     ref.listen<bool>(cityscapeProvider, (prev, next) {
-      _updateGlobalMarker(ref);
+      _updateGlobalMarkerCityscape(ref);
+    });
+    ref.listen<bool>(wRCProvider, (prev, next) {
+      _updateAllMarkersWRC(ref, next);
     });
 
-    ref.listen<dynamic>(selectedMarkerProvider, (prev, next) {
-      _updateGlobalMarker(ref);
+    ref.listen<Marker?>(selectedMarkerProvider, (prev, next) {
+      _updateGlobalMarkerCityscape(ref);
+      _updateSpecificMarkerWRC(ref, prev, next);
     });
 
     ref
@@ -490,6 +520,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
     final path = url.queryParameters[BaldayDeeplink.miniAppPath];
     final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
+    final cityEventName = url.queryParameters[BaldayDeeplink.cityEvent];
 
     double? latitude;
     double? longitude;
@@ -553,6 +584,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       app = app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''), path: subPath);
 
       CommonFunctions.openMiniApp(app);
+    } else if (cityEventName != null) {
+      // check here for other city events if they come up in the future
+      switch (cityEventName) {
+        case WRC.deeplinkEventValue:
+          await ref.read(wRCProvider.notifier).moveCameraToEventArea();
+      }
     } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 

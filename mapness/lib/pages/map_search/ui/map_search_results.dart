@@ -43,8 +43,7 @@ class MapSearchResults extends ConsumerWidget {
 
     void _sendSuggestionPressed() {
       final scope = context.read<SearchScope>();
-      final isFromSuggest =
-          ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
+      final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
       if (isFromSuggest) {
         ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
@@ -103,9 +102,7 @@ class MapSearchResults extends ConsumerWidget {
           language: language,
           myLocation: myLocation == null
               ? null
-              : GeoPointMessage(
-                  latitude: myLocation.latitude,
-                  longitude: myLocation.longitude),
+              : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
           onTap: () {
             _bssAnalyticRequest(results: results, item: item);
             _onResultTap(context, item, _sendSuggestionPressed, isGoogleSearch);
@@ -117,8 +114,10 @@ class MapSearchResults extends ConsumerWidget {
     );
   }
 
-  void _onResultTap(BuildContext context, DirectoryObjectMessage item,
-      void Function() sendSuggestionPressed,
+  void _onResultTap(
+    BuildContext context,
+    DirectoryObjectMessage item,
+    void Function() sendSuggestionPressed,
     bool isGoogleSearch,
   ) {
     if (item.id == null) {
@@ -138,12 +137,13 @@ class MapSearchResults extends ConsumerWidget {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).unfocus();
+      final markerPosition = item.markerPosition;
       context.router.replaceOrPush(
         route: PoiCardWidgetRoute(
-          objectId: DgisObjectIdMessage(
-            objectId: item.id!.objectId,
-            entranceId: 0,
-          ),
+          objectId: item.id,
+          closestPoint: markerPosition != null
+              ? LatLng(latitude: markerPosition.latitude, longitude: markerPosition.longitude)
+              : null,
           cameraConfig: const PoiCameraConfig(zoom: 18),
           poiCardDataFromGoogle: isGoogleSearch
               ? PoiCardDataFromGoogle(

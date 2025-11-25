@@ -17,6 +17,7 @@ import 'package:mapness/widgets/debug_overlay/saudi_national_day_debug_switcher.
 import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
 import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
 import 'package:mapness/widgets/debug_overlay/voice_picker.dart';
+import 'package:mapness/widgets/debug_overlay/wrc_debug_switcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {
@@ -215,6 +216,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const SizedBox(height: 12),
                   const SsoCredentialView(),
                   const CityscapeDebugSwitcher(),
+                  const WRCDebugSwitcher(),
                   const SaudiNationalDayDebugSwitcher(),
                   const VoicePicker(),
                   const BetterRouteSettingsWidget(),
