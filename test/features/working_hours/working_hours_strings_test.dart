@@ -16,6 +16,7 @@ void main() {
     when(() => appLocalizations.temporarilyClosed).thenReturn('Temporarily closed');
     when(() => appLocalizations.breakUntil).thenReturn('Break until');
     when(() => appLocalizations.closedUntill).thenReturn('Closed until');
+    when(() => appLocalizations.closed).thenReturn('Closed');
     when(() => appLocalizations.closesIn).thenReturn('Closes in ');
     when(() => appLocalizations.minutes).thenReturn('minutes');
     when(() => appLocalizations.weekdayNameShortMonday).thenReturn('Monday');
@@ -63,6 +64,11 @@ void main() {
     group(' WHEN less than 30min before close', () {
       setUp(() => createStatusFor(DateTime(2025, 9, 1, 17, 42)));
       test('THEN Closes in 18 minutes', () => expect(closedStatus, 'Closes in 18 minutes'));
+    });
+
+    group(' WHEN less than 2min before close', () {
+      setUp(() => createStatusFor(DateTime(2025, 9, 1, 17, 59)));
+      test('THEN Closed', () => expect(closedStatus, 'Closed'));
     });
 
     group(' WHEN tuesday already closed', () {

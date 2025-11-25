@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_expression_function_bodies
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
@@ -153,7 +154,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     initDeepLinks();
     listenNavigationEvents();
     checkConnection();
-    PersistentSafeAreaBottom.startObserving();
+    if (!Platform.isIOS) {
+      PersistentSafeAreaBottom.startObserving();
+    }
     ref.read(appAnalyticsProvider).deviceTypeDetected();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Update MediaQueryInfoProvider with the initial MediaQuery
@@ -168,6 +171,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // Initialization of BSS and Search Region singleton services
       await _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
+      unawaited(checkNavigationState());
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
@@ -186,7 +190,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   void dispose() {
-    PersistentSafeAreaBottom.stopObserving();
+    if (!Platform.isIOS) {
+      PersistentSafeAreaBottom.stopObserving();
+    }
     _linkSubscription?.cancel();
     _locationListener?.close();
     _navigationEventsListener?.cancel();
@@ -228,6 +234,37 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               ref.read(appRouterProvider).push(
                     PathNavRoute(
                       navType: RouteSearchOptionsMessageExt.fromString(type),
+                      initAction: null,
+                    ),
+                  );
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> checkNavigationState() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+    final navStateMessage = await controller.getCurrentNavigationState();
+
+    if (navStateMessage.state == NavigationState.navigation) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                  initAction: null,
+                ),
+              );
+        } else {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
+            if (next != null) {
+              _locationListener?.close();
+              ref.read(appRouterProvider).push(
+                    PathNavRoute(
+                      navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
                       initAction: null,
                     ),
                   );
@@ -322,8 +359,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> clearCache() async {
-    final controller = await ref.read(dgisControllerProvider.future);
-    await controller.stopNavigation();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);

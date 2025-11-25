@@ -20,7 +20,7 @@ class PoiSearchByObject extends _$PoiSearchByObject {
     final results = <DirectoryObjectMessage>[];
     for (final transition in transitions) {
       final object = await ref.watch(
-        directoryObjectFromDgisIdProvider(transition.routeId).future,
+        directoryObjectFromDgisIdProvider(transition.routeId.toObjectId()).future,
       );
 
       if (object != null) {
@@ -33,7 +33,7 @@ class PoiSearchByObject extends _$PoiSearchByObject {
     for (final entrance in entrances) {
       try {
         final object = await ref.watch(directoryObjectFromDgisIdProvider(
-          DgisObjectIdMessage(objectId: entrance.id.entranceId, entranceId: 0),
+          DgisObjectId(objectId: entrance.id.entranceId, entranceId: 0),
         ).future);
         if (object != null) {
           resultsEntrances.add(object);

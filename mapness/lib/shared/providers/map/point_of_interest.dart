@@ -12,6 +12,8 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../features/parking_spot/parking_manage.dart';
+
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
@@ -21,7 +23,7 @@ const poiMapFontEn = 'GolosText_SemiBold';
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
   Ref ref,
-  DgisObjectIdMessage objectId,
+  DgisObjectId objectId,
   LatLng? closestPoint,
 ) async {
   final dgisController = await ref.read(dgisControllerProvider.future);
@@ -49,7 +51,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     longitude: directoryObject.markerPosition!.longitude,
   );
 
-  final selectedMarker = ref.read(selectedMarkerProvider.notifier);
   final dark = await ref.watch(darkModeProvider.future);
   final isRtl = ref.read(appLanguageProvider) == Language.arabic;
 
@@ -82,7 +83,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
-  await highlightController.addHighlight(objectId);
+  await highlightController.addHighlight(objectId.toMessage());
 
   for (final entrance in directoryObject.entrances) {
     await highlightController.addHighlight(entrance.id);
