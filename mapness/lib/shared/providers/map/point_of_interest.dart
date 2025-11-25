@@ -5,7 +5,7 @@ import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -24,24 +24,36 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectIdMessage objectId,
   LatLng? closestPoint,
 ) async {
-  final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
+  final dgisController = await ref.read(dgisControllerProvider.future);
+  final directoryObject = await dgisController.searchByObjectId(objectId);
 
-  final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
+  if (directoryObject.levelId == null) {
+    final nearestObjects = await dgisController.getNearestObjects();
+    final renderedObject = nearestObjects
+        .where((e) => e.objectId.objectId == objectId.objectId)
+        .firstOrNull;
+
+    if (renderedObject?.levelId != null) {
+      directoryObject.levelId = renderedObject!.levelId;
+    }
+  }
+
+  final cleanupRubrics = directoryObject.rubricIds.nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
   final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerType(rubrics);
 
-  final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
+  final isMarkerPositionIsNull = directoryObject.markerPosition == null;
 
   final position = LatLng(
-    latitude: directoryObject?.markerPosition!.latitude ?? 0,
-    longitude: directoryObject?.markerPosition!.longitude ?? 0,
+    latitude: directoryObject.markerPosition!.latitude,
+    longitude: directoryObject.markerPosition!.longitude,
   );
 
   final selectedMarker = ref.read(selectedMarkerProvider.notifier);
   final dark = await ref.watch(darkModeProvider.future);
   final isRtl = ref.read(appLanguageProvider) == Language.arabic;
 
-  final title = directoryObject?.title;
+  final title = directoryObject.title;
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
     textOffset: 4,
@@ -72,10 +84,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   await highlightController.removeAll();
   await highlightController.addHighlight(objectId);
 
-  if (directoryObject != null) {
-    for (final entrance in directoryObject.entrances) {
-      await highlightController.addHighlight(entrance.id);
-    }
+  for (final entrance in directoryObject.entrances) {
+    await highlightController.addHighlight(entrance.id);
   }
 
   ref.onDispose(() async {
