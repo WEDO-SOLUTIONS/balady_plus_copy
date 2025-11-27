@@ -133,7 +133,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
                   onTap: () {
                     widget.onConfirm(points);
                   },
-                  primaryLabel: widget.externalContext.l10n.set,
+                  primaryLabel: widget.externalContext.l10n.setRoute,
                 ),
               ),
             ),

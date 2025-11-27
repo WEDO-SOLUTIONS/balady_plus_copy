@@ -3,8 +3,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:mapness/balady_uikit/animations/animated_decorated_box.dart';
+import 'package:mapness/balady_uikit/components/ab_route/ab_dottet_container.dart';
 import 'package:mapness/balady_uikit/core/icons/stop_numbers_icons.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -14,8 +14,6 @@ part 'ab_route_add_point.dart';
 part 'ab_route_model.dart';
 
 part 'ab_route_row_decoration.dart';
-
-// TODO(Loskutov): dots between rows work like sht
 
 /// A widget for displaying a list of items with drag-and-drop reordering functionality.
 ///
@@ -89,11 +87,16 @@ class _ABRouteState extends State<ABRoute> {
         child: AnimatedDecoratedBox(
           duration: Durations.medium1,
           decoration: BoxDecoration(color: color),
-          child: _ABDottedPathContainer(
+          child: ABDottedPathContainer(
             color: context.colors.foregroundDisabled,
-            hasFirstSubtitle: widget.startPointSubtitle != null,
-            hasLastSubtitle: widget.arrivalPointSubtitle != null,
-            points: widget.items.length,
+            // +1 for AddPoint button
+            itemCount: widget.items.length + 1,
+            itemExtent: 44,
+            relativeOffsets: const [
+              0.13, // between top and badge
+              0.80, // between badge and bottom
+              .96, // bottom border
+            ],
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -179,10 +182,7 @@ class _ABElement extends StatelessWidget {
 
     if (index == 0 || isLast) {
       final color = isLast ? context.colors.extra01Default : context.colors.accentDefault;
-      final isLTR = Directionality.of(context) == TextDirection.ltr;
-      final icon = item.isMyLocation
-          ? (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL)
-          : GeneralIcons.bulletCircleSolid;
+      final icon = item.isMyLocation ? TransportIcons.locationFullLTR : GeneralIcons.bulletCircleSolid;
 
       iconWidget = Icon(icon, color: color, size: 24);
     } else {
@@ -213,75 +213,5 @@ class _ABElement extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class _ABDottedPathContainer extends SingleChildRenderObjectWidget {
-  final Color color;
-  final bool hasFirstSubtitle;
-  final bool hasLastSubtitle;
-  final int points;
-
-  const _ABDottedPathContainer({
-    required Widget child,
-    required this.color,
-    this.hasFirstSubtitle = true,
-    this.hasLastSubtitle = true,
-    this.points = 2,
-    Key? key,
-  }) : super(child: child, key: key);
-
-  @override
-  RenderObject createRenderObject(BuildContext context) => _RenderABDottedPathContainer(
-        color,
-        hasFirstSubtitle: hasFirstSubtitle,
-        hasLastSubtitle: hasLastSubtitle,
-        points: points,
-      );
-
-  @override
-  void updateRenderObject(BuildContext context, covariant _RenderABDottedPathContainer renderObject) {
-    renderObject
-      ..color = color
-      ..hasFirstSubtitle = hasFirstSubtitle
-      ..hasLastSubtitle = hasLastSubtitle
-      ..points = points
-      ..markNeedsPaint();
-    super.updateRenderObject(context, renderObject);
-  }
-}
-
-class _RenderABDottedPathContainer extends RenderProxyBox {
-  Color color;
-  bool hasFirstSubtitle;
-  bool hasLastSubtitle;
-  int points;
-
-  _RenderABDottedPathContainer(
-    this.color, {
-    this.hasFirstSubtitle = true,
-    this.hasLastSubtitle = true,
-    this.points = 2,
-  });
-
-  @override
-  void paint(PaintingContext context, Offset offset) {
-    final canvas = context.canvas;
-
-    final paint = Paint()
-      ..color = color
-      ..style = PaintingStyle.fill;
-
-    const double dotSpacing = 6;
-    const double dotRadius = 1;
-
-    for (double y = 52 - (hasFirstSubtitle ? 0 : 12);
-        y <= size.height - 48 + (hasLastSubtitle ? 0 : 12);
-        y += dotSpacing + dotRadius * 2) {
-      if (points == 2 || (y <= size.height / 2 - 14 || y >= size.height / 2 + 14)) {
-        canvas.drawCircle(Offset(28 + offset.dx, y + offset.dy), dotRadius, paint);
-      }
-    }
-    super.paint(context, offset);
   }
 }

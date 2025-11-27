@@ -23,53 +23,59 @@ class _ABRouteRowDecoration extends StatelessWidget {
     final actionColor = context.colors.foregroundMuted;
     return Material(
       color: Colors.transparent,
-      child: CupertinoButton(
-        padding: EdgeInsets.zero,
-        minSize: 0,
-        onPressed: onTap,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: 10),
-              child: Row(
-                children: [
-                  leading,
-                  Expanded(
-                    child: Text(
-                      title,
-                      style: context.textStyles.bodyLargeRegular,
+      child: SizedBox(
+        height: 44,
+        child: CupertinoButton(
+          padding: EdgeInsets.zero,
+          minSize: 0,
+          onPressed: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: 9),
+                child: Row(
+                  children: [
+                    leading,
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: context.textStyles.bodyLargeRegular,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
-                  ),
-                  _ActionsContainer(
-                    [
-                      if (onDeletePressed != null)
-                        GestureDetector(
-                          onTap: onDeletePressed,
+                    _ActionsContainer(
+                      [
+                        if (onDeletePressed != null)
+                          GestureDetector(
+                            onTap: onDeletePressed,
+                            child: Icon(
+                              SystemIcons.closeSmall,
+                              color: actionColor,
+                            ),
+                          ),
+                        ReorderableDragStartListener(
+                          index: index,
                           child: Icon(
-                            SystemIcons.closeSmall,
+                            SystemIcons.dragMenu,
                             color: actionColor,
                           ),
-                        ),
-                      ReorderableDragStartListener(
-                        index: index,
-                        child: Icon(
-                          SystemIcons.dragMenu,
-                          color: actionColor,
-                        ),
-                      )
-                    ],
-                  ),
-                ].insertBetween(Spacing.$3x.widthBox).toList(),
+                        )
+                      ],
+                    ),
+                  ].insertBetween(Spacing.$3x.widthBox).toList(),
+                ),
               ),
-            ),
-            if (isDividerEnabled)
-              Divider(
-                color: context.colors.borderSoft,
-                height: 0.5,
-                thickness: 0.5,
-              ),
-          ],
+              if (isDividerEnabled)
+                Divider(
+                  color: context.colors.borderSoft,
+                  height: 0.5,
+                  thickness: 0.5,
+                  indent: Spacing.$12x.toDouble(),
+                ),
+            ],
+          ),
         ),
       ),
     );
