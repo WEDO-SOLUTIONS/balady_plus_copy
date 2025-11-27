@@ -8,6 +8,7 @@ class NewMiniAppLogicState {
   final bool isEntryPointsLoading;
   final bool isAppsGroupLoading;
   //! Result
+  final Map<String, MiniApp> parentMiniApp;
   final List<CategoryGroup> appGroups;
   final List<MiniApp> favoriteApps;
   final List<MiniApp> unFavoriteApps;
@@ -25,6 +26,7 @@ class NewMiniAppLogicState {
     required this.isUnFavLoading,
     required this.unFavError,
     required this.favoriteApps,
+    required this.parentMiniApp,
     required this.unFavoriteApps,
     required this.isAppsGroupLoading,
     required this.appGroups,
@@ -44,6 +46,7 @@ class NewMiniAppLogicState {
       unFavError: null,
       favoriteApps: const [],
       unFavoriteApps: const [],
+      parentMiniApp: const {},
       isAppsGroupLoading: false,
       appGroups: const [],
       searchResults: const [],
@@ -65,6 +68,7 @@ class NewMiniAppLogicState {
     bool? isAppsGroupLoading,
     List<CategoryGroup>? appGroups,
     List<MiniApp>? searchResults,
+    Map<String, MiniApp>? parentMiniApp,
     bool? isSearching,
     String? searchError,
     bool? isEntryPointsLoading,
@@ -73,6 +77,7 @@ class NewMiniAppLogicState {
   }) {
     return NewMiniAppLogicState(
       isFavLoading: isFavLoading ?? this.isFavLoading,
+      parentMiniApp: parentMiniApp ?? this.parentMiniApp,
       favError: favError ?? this.favError,
       favoriteApps: favoriteApps ?? this.favoriteApps,
       unFavoriteApps: unFavoriteApps ?? this.unFavoriteApps,
