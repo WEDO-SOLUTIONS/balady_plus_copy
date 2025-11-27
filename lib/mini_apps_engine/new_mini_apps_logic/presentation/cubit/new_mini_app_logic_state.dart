@@ -74,6 +74,7 @@ class NewMiniAppLogicState {
     bool? isEntryPointsLoading,
     String? entryPointsError,
     List<EntryPoints>? entryPoints,
+    MiniApp? miniApp,
   }) {
     return NewMiniAppLogicState(
       isFavLoading: isFavLoading ?? this.isFavLoading,

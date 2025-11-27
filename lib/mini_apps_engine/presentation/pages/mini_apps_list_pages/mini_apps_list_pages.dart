@@ -9,10 +9,8 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/n
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/apps_group_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_fav_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_most_used_section_shimmer_widget.dart';
@@ -24,7 +22,6 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mock_mini_apps_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -545,14 +542,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     apps: appGroup.apps,
                                     totalAppCount: appGroup.appCount,
                                     onTap: () {
-
                                       print("object");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) => AppsGroupPage(
                                               appGroup: appGroup,
                                               onTap: () {
-
                                                 print("object");
                                                 _handleTap(context,
                                                     appGroup.apps[index]);
@@ -610,11 +605,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
         }
       } else {
         if (miniApp.childDeepLinkUrl != null) {
+          NewMiniAppLogicState state =
+              context.read<NewMiniAppLogicCubit>().state;
+          MiniApp? parentMAiniApp =
+              state.parentMiniApp[miniApp.parentServiceKey];
 
-          NewMiniAppLogicState state = context.read<NewMiniAppLogicCubit>().state;
-          MiniApp? parentMAiniApp = state.parentMiniApp[miniApp.parentServiceKey];
-
-          if(parentMAiniApp != null) {
+          if (parentMAiniApp != null) {
             NavigationService.pushNamed(
               routeName: RouteName.miniAppsMainScreen,
               args: miniApp.copyWith(
@@ -626,7 +622,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
             );
           } else {
             /// TODO : Show errors Not Fund The Parent Maini App
-            CommonFunctions.showError('Show errors Not Fund The Parent Maini App'.tr());
+            CommonFunctions.showError(
+                'Show errors Not Fund The Parent Maini App'.tr());
           }
         } else {
           NavigationService.pushNamed(
