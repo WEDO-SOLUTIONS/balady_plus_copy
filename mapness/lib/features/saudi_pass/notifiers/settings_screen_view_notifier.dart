@@ -37,7 +37,7 @@ class SettingsScreenViewNotifier extends ChangeNotifier
         .map((id) => categories.where((cat) => cat.id == id).firstOrNull)
         .whereType<Category>();
 
-    return sortedCategories.map((category) {
+    final result = sortedCategories.map((category) {
       final subcategoriesForCategory =
           parent.allSubCategories.where((sub) => sub.categoryId == category.id);
       final selectedCount = categoriesSelected
@@ -49,7 +49,21 @@ class SettingsScreenViewNotifier extends ChangeNotifier
         selectedCount: selectedCount,
         totalCount: subcategoriesForCategory.length,
       );
-    });
+    }).toList();
+
+    // Sort: selected categories first, then unselected
+    return result
+      ..sort((a, b) {
+        final aSelected = a.selectedCount > 0;
+        final bSelected = b.selectedCount > 0;
+        if (aSelected && !bSelected) {
+          return -1;
+        }
+        if (!aSelected && bSelected) {
+          return 1;
+        }
+        return 0;
+      });
   }
 
   @override

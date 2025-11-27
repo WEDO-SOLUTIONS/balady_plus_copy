@@ -318,7 +318,18 @@ class _SelectCategories extends ConsumerWidget {
         name: category.name,
         selectedCount: selectedCount,
       );
-    });
+    }).toList()
+      ..sort((a, b) {
+        final aSelected = a.selectedCount > 0;
+        final bSelected = b.selectedCount > 0;
+        if (aSelected && !bSelected) {
+          return -1;
+        }
+        if (!aSelected && bSelected) {
+          return 1;
+        }
+        return 0;
+      });
 
     return SettingsCategoryCardWidget(
       title: context.l10n.saudiPassOffersPageFilterCategory,
