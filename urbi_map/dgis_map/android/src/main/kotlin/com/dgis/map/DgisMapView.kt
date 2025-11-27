@@ -77,6 +77,13 @@ class DgisMapView(
 
     private val closables = mutableListOf<AutoCloseable>()
 
+    private fun getCurrentLevelId(): ru.dgis.sdk.LevelId? {
+        val building = map?.indoorManager?.focusedBuilding ?: return null
+        if (building.levels.isEmpty()) return null
+        // Find first floor (level with name "1"), fallback to first level in list
+        return building.levels.find { it.name == "1" }?.id ?: building.levels[0].id
+    }
+
     init {
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
         MapApi.setUp(messenger, this)
@@ -1129,7 +1136,8 @@ class DgisMapView(
                         ?: locationSource.lastLocation.let {
                             return@let RouteSearchPoint(
                                     coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
-                                    objectId = DgisObjectId(objectId = 0, entranceId = 0)
+                                    objectId = DgisObjectId(objectId = 0, entranceId = 0),
+                                    levelId = getCurrentLevelId()
                             )
                         }
         val finishSearchPoint =
@@ -1137,7 +1145,8 @@ class DgisMapView(
                         ?: locationSource.lastLocation.let {
                             return@let RouteSearchPoint(
                                     coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
-                                    objectId = DgisObjectId(objectId = 0, entranceId = 0)
+                                    objectId = DgisObjectId(objectId = 0, entranceId = 0),
+                                    levelId = getCurrentLevelId()
                             )
                         }
         val briefRouteInfoSearchPoints =

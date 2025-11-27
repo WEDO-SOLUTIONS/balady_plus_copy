@@ -87,11 +87,21 @@ class RouteHandler(
         closeables.clear()
     }
 
+    private fun getCurrentLevelId(): LevelId? {
+        val building = map.indoorManager.focusedBuilding ?: return null
+        if (building.levels.isEmpty()) return null
+        // Find first floor (level with name "1"), fallback to first level in list
+        return building.levels.find { it.name == "1" }?.id ?: building.levels[0].id
+    }
+
     fun setRouteParams(params: RouteEditorRouteParamsMessage) {
         val startPoint =
                 if (params.startPoint == null) {
                     locationSource.lastLocation?.let {
-                        RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+                        RouteSearchPoint(
+                            coordinates = GeoPoint(it.latitude, it.longitude),
+                            levelId = getCurrentLevelId()
+                        )
                     }
                 } else {
                     RouteSearchPoint(
@@ -112,7 +122,10 @@ class RouteHandler(
         val finishPoint =
                 if (params.finishPoint == null) {
                     locationSource.lastLocation?.let {
-                        RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+                        RouteSearchPoint(
+                            coordinates = GeoPoint(it.latitude, it.longitude),
+                            levelId = getCurrentLevelId()
+                        )
                     }
                 } else {
                     RouteSearchPoint(

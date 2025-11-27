@@ -68,9 +68,17 @@ class RouteHandler {
         })
         
         self.map.addSource(source: routeEditorSource)
-        
+
     }
-    
+
+    private func getCurrentLevelId() -> LevelId? {
+        guard let building = map.indoorManager.focusedBuilding else {
+            return nil
+        }
+        let index = Int(building.defaultLevelIndex)
+        return building.levels.indices.contains(index) ? building.levels[index].id : nil
+    }
+
     func cancel() {
         cancelable.forEach { $0.cancel() }
         moveCameraCancellable?.cancel()
@@ -114,15 +122,18 @@ class RouteHandler {
                     }
                 )
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.value.latitude,
-                    longitude: lastLocation.value.longitude
-                ))
+                return RouteSearchPoint(
+                    coordinates: GeoPoint(
+                        latitude: lastLocation.value.latitude,
+                        longitude: lastLocation.value.longitude
+                    ),
+                    levelId: getCurrentLevelId()
+                )
             }
-            
+
             return nil
         }()
-        
+
         let finishPoint: RouteSearchPoint? = {
             if let pFinishPoint = params.finishPoint {
                 return RouteSearchPoint(
@@ -139,15 +150,18 @@ class RouteHandler {
                     }
                 )
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.value.latitude,
-                    longitude: lastLocation.value.longitude
-                ))
+                return RouteSearchPoint(
+                    coordinates: GeoPoint(
+                        latitude: lastLocation.value.latitude,
+                        longitude: lastLocation.value.longitude
+                    ),
+                    levelId: getCurrentLevelId()
+                )
             }
-            
+
             return nil
         }()
-        
+
         guard let startPoint = startPoint, let finishPoint = finishPoint else {
             return
         }
@@ -312,10 +326,13 @@ class RouteHandler {
         if let startPoint {
             startSearchPoint = startPoint
         } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-            startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.value.latitude,
-                longitude: lastLocation.value.longitude
-            ))
+            startSearchPoint = RouteSearchPoint(
+                coordinates: GeoPoint(
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
+                ),
+                levelId: getCurrentLevelId()
+            )
         } else {
             completion(
                 Result.failure(
@@ -331,10 +348,13 @@ class RouteHandler {
         if let finishPoint {
             finishSearchPoint = finishPoint
         } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-            finishSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.value.latitude,
-                longitude: lastLocation.value.longitude
-            ))
+            finishSearchPoint = RouteSearchPoint(
+                coordinates: GeoPoint(
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
+                ),
+                levelId: getCurrentLevelId()
+            )
         } else {
             completion(
                 Result.failure(
