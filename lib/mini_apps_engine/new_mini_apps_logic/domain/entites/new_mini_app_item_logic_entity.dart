@@ -39,14 +39,14 @@ class CategoryGroup {
 
 //! Get the entry point parent and add list of miniAppItem to it ...
 class EntryPoints {
-  final String id;
+  // final String id;
   final String entryPointKey;
   final String arName;
   final String enName;
   final bool isActive;
   final List<MiniApp> apps;
   const EntryPoints({
-    required this.id,
+    // required this.id,
     required this.entryPointKey,
     required this.arName,
     required this.enName,
@@ -57,11 +57,13 @@ class EntryPoints {
 
 class NewMiniAppsLogicEntity {
   final List<MiniApp> miniApps;
+  final Map<String, MiniApp> parentMiniApp;
   final List<CategoryGroup> appGroups;
   final List<EntryPoints> entryPoints;
 
   NewMiniAppsLogicEntity({
     required this.miniApps,
+    required this.parentMiniApp,
     required this.appGroups,
     required this.entryPoints,
   });

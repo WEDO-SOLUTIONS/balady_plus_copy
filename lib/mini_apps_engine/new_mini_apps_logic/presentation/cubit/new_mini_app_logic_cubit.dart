@@ -65,6 +65,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             isEntryPointsLoading: false,
             favoriteApps: favoriteApps,
             unFavoriteApps: unFavoriteApps,
+            parentMiniApp: data.parentMiniApp,
             appGroups: data.appGroups,
             entryPoints: data.entryPoints,
           ),
