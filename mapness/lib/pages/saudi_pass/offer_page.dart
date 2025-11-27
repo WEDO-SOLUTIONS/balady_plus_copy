@@ -142,11 +142,13 @@ class _Content extends HookConsumerWidget {
         Expanded(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
+              padding:
+                  const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
               child: Column(
                 children: [
                   ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+                    borderRadius: const BorderRadius.all(
+                        Radius.circular(RadiusBorder.xl)),
                     child: ColoredBox(
                       color: colors.backgroundSurface1,
                       child: Column(
@@ -177,7 +179,8 @@ class _Content extends HookConsumerWidget {
                               children: [
                                 _OfferInfoRow(
                                   title: Text(l10n.brand, style: titleStyle),
-                                  subtitle: Text(offer.provider.name, style: subtitleStyle),
+                                  subtitle: Text(offer.provider.name,
+                                      style: subtitleStyle),
                                 ),
                                 Spacing.$1_5x.heightBox,
                                 _OfferInfoRow(
@@ -189,17 +192,20 @@ class _Content extends HookConsumerWidget {
                                 ),
                                 Spacing.$1_5x.heightBox,
                                 _OfferInfoRow(
-                                  title: Text(l10n.periodOfValidity, style: titleStyle),
+                                  title: Text(l10n.periodOfValidity,
+                                      style: titleStyle),
                                   subtitle: Text(
                                     _getByDate(offer, context),
                                     style: offer.willExpiredSoon
-                                        ? subtitleStyle.copyWith(color: colors.errorDefault)
+                                        ? subtitleStyle.copyWith(
+                                            color: colors.errorDefault)
                                         : subtitleStyle,
                                   ),
                                 ),
                                 Spacing.$1_5x.heightBox,
                                 _OfferInfoRow(
-                                  title: Text(l10n.offerDescription, style: titleStyle),
+                                  title: Text(l10n.offerDescription,
+                                      style: titleStyle),
                                   subtitle: Text(
                                     offer.description.length > 500
                                         ? '${offer.description.substring(0, 500)}...'
@@ -214,12 +220,14 @@ class _Content extends HookConsumerWidget {
                                     children: [
                                       Text(
                                         l10n.termAndConditions,
-                                        style: textStyle.bodySmallMedium.copyWith(
+                                        style:
+                                            textStyle.bodySmallMedium.copyWith(
                                           color: colors.accentDefault,
                                         ),
                                       ),
                                       AppIcons(
-                                        iconData: SystemIcons.arrowCornerRightSmall,
+                                        iconData:
+                                            SystemIcons.arrowCornerRightSmall,
                                         color: colors.accentDefault,
                                       )
                                     ],
@@ -232,18 +240,25 @@ class _Content extends HookConsumerWidget {
                           Spacing.$3x.heightBox,
                           if(offer.location.longitude!='0.0' && offer.location.latitude!='0.0')
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: Spacing.$4x),
                             child: Row(
                               children: [
                                 Expanded(
                                   child: AppButton(
-                                    primaryIcon: TransportIcons.locationDirectionNavigator,
-                                    iconColor: colors.accentSecondaryOnContainer,
-                                    primaryLabel: '${l10n.poiCardDirections} $durationString',
-                                    color: colors.accentSecondaryContainerDefault,
-                                    textColor: colors.accentSecondaryOnContainer,
+                                    primaryIcon: TransportIcons
+                                        .locationDirectionNavigator,
+                                    iconColor:
+                                        colors.accentSecondaryOnContainer,
+                                    primaryLabel:
+                                        '${l10n.poiCardDirections} $durationString',
+                                    color:
+                                        colors.accentSecondaryContainerDefault,
+                                    textColor:
+                                        colors.accentSecondaryOnContainer,
                                     buttonColorScheme: ButtonColorScheme.accent,
-                                    onTap: () => _openNavigationPage(context, l10n, offer),
+                                    onTap: () => _openNavigationPage(
+                                        context, l10n, offer),
                                   ),
                                 ),
                               ],
@@ -276,7 +291,8 @@ class _Content extends HookConsumerWidget {
                     Expanded(
                       child: AppButton(
                         buttonColorScheme: ButtonColorScheme.accentSecondary,
-                        onTap: () => _useCode(context, ref, offer.id, code, showCode),
+                        onTap: () =>
+                            _useCode(context, ref, offer.id, code, showCode),
                         primaryIcon: SystemIcons.code,
                         primaryLabel: l10n.useCode,
                       ),
@@ -284,20 +300,23 @@ class _Content extends HookConsumerWidget {
                     Spacing.$2x.widthBox,
                     _FavoriteIconButton(
                       offer: offer,
-                      changeFavorite: ({required favorite}) => changeFavorite(context, ref, favorite, offerId),
+                      changeFavorite: ({required favorite}) =>
+                          changeFavorite(context, ref, favorite, offerId),
                     ),
                   ],
                 )
               : _FavoriteButton(
                   offer: offer,
-                  changeFavorite: ({required favorite}) => changeFavorite(context, ref, favorite, offerId),
+                  changeFavorite: ({required favorite}) =>
+                      changeFavorite(context, ref, favorite, offerId),
                 ),
         ),
       ],
     );
   }
 
-  void _openNavigationPage(BuildContext context, AppLocalizations l10n, OfferDetails offer) {
+  void _openNavigationPage(
+      BuildContext context, AppLocalizations l10n, OfferDetails offer) {
     context.router.push(
       RoutingRoutesRoute(
         points: [
@@ -322,7 +341,8 @@ class _Content extends HookConsumerWidget {
     return '${context.l10n.saudiPassOfferBy} $value';
   }
 
-  TextSpan? _getDiscount(OfferDetails offer, Language language, BuildContext context) {
+  TextSpan? _getDiscount(
+      OfferDetails offer, Language language, BuildContext context) {
     final locale = Localizations.localeOf(context);
 
     return createAmountOrRatioTextSpan(
@@ -386,11 +406,13 @@ class _Content extends HookConsumerWidget {
     required BuildContext context,
     required int rating,
   }) {
-    context.router.push(AppFeedbackSheet(initialRating: rating, source: FeedbackSource.offer(offerId)));
+    context.router.push(AppFeedbackSheet(
+        initialRating: rating, source: FeedbackSource.offer(offerId)));
   }
 }
 
-void changeFavorite(BuildContext context, WidgetRef ref, bool favorite, String offerId) {
+void changeFavorite(
+    BuildContext context, WidgetRef ref, bool favorite, String offerId) {
   ref.read(authMethodsProvider.notifier).authOrOpen(context, callback: () {
     favorite
         ? ref.read(offerFavoritesProvider(offerId).notifier).addToFavorites()
@@ -398,7 +420,8 @@ void changeFavorite(BuildContext context, WidgetRef ref, bool favorite, String o
   });
 }
 
-Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, String offerId) async {
+Future<void> _showFavoritesRemovingDialog(
+    BuildContext context, WidgetRef ref, String offerId) async {
   await showDialog(
     context: context,
     useSafeArea: false,
@@ -408,7 +431,9 @@ Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, S
       cancel: context.l10n.cancel,
       remove: context.l10n.remove,
       onRemove: () {
-        ref.read(offerFavoritesProvider(offerId).notifier).removeFromFavorites();
+        ref
+            .read(offerFavoritesProvider(offerId).notifier)
+            .removeFromFavorites();
       },
     ),
   );
@@ -450,7 +475,9 @@ class _OfferPreviewByGroup extends StatelessWidget {
                 height: 141,
                 child: Transform(
                   alignment: Alignment.center,
-                  transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                  transform: context.isLTR
+                      ? Matrix4.identity()
+                      : Matrix4.rotationY(pi),
                   child: Image.asset(
                     offersGroup.imagePath,
                     fit: BoxFit.contain,
@@ -469,8 +496,11 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title.length > 250 ? '${title.substring(0, 250)}...' : title,
-                          style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
+                          title.length > 250
+                              ? '${title.substring(0, 250)}...'
+                              : title,
+                          style: context.textStyles.captionLargeRegular
+                              .copyWith(color: context.colors.staticWhite),
                         ),
                         if (hasDiscount)
                           Padding(
@@ -478,7 +508,8 @@ class _OfferPreviewByGroup extends StatelessWidget {
                             child: Text.rich(
                               discount!,
                               maxLines: 1,
-                              style: context.textStyles.h1SemiBold.copyWith(color: context.colors.staticWhite),
+                              style: context.textStyles.h1SemiBold
+                                  .copyWith(color: context.colors.staticWhite),
                             ),
                           ),
                       ],
@@ -490,7 +521,8 @@ class _OfferPreviewByGroup extends StatelessWidget {
                       child: SizedBox(
                         height: 100,
                         child: ClipRRect(
-                          borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                          borderRadius: const BorderRadius.all(
+                              Radius.circular(RadiusBorder.m)),
                           child: SaudiPassImage(imageId: companyLogoId!),
                         ),
                       ),
@@ -558,7 +590,8 @@ class _OfferPreviewByBusiness extends StatelessWidget {
               children: [
                 Text(
                   title.length > 250 ? '${title.substring(0, 250)}...' : title,
-                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
+                  style: context.textStyles.captionLargeRegular
+                      .copyWith(color: context.colors.staticWhite),
                 ),
                 if (hasDiscount)
                   Padding(
@@ -566,7 +599,8 @@ class _OfferPreviewByBusiness extends StatelessWidget {
                     child: Text.rich(
                       discount!,
                       maxLines: 1,
-                      style: context.textStyleV3.h1SemiBold.copyWith(color: context.colorsV3.staticWhite),
+                      style: context.textStyleV3.h1SemiBold
+                          .copyWith(color: context.colorsV3.staticWhite),
                     ),
                   ),
               ],
@@ -577,8 +611,11 @@ class _OfferPreviewByBusiness extends StatelessWidget {
             child: SizedBox(
               height: 100,
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-                child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                child: imageId != null
+                    ? SaudiPassImage(imageId: imageId!)
+                    : const SizedBox.shrink(),
               ),
             ),
           ),
@@ -598,11 +635,13 @@ class _OfferCode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
+        padding: const EdgeInsets.only(
+            left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
         child: Container(
           decoration: BoxDecoration(
             color: context.colorsV3.neutralContainerDefault,
-            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+            borderRadius:
+                const BorderRadius.all(Radius.circular(RadiusBorder.l)),
           ),
           height: 69,
           width: double.infinity,
@@ -611,12 +650,14 @@ class _OfferCode extends StatelessWidget {
             children: [
               Text(
                 code,
-                style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.neutralOnContainer),
+                style: context.textStyleV3.h3SemiBold
+                    .copyWith(color: context.colorsV3.neutralOnContainer),
               ),
               Spacing.$0_5x.heightBox,
               Text(
                 context.l10n.codeWasUsed,
-                style: context.textStyleV3.captionSmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                style: context.textStyleV3.captionSmallRegular
+                    .copyWith(color: context.colorsV3.foregroundSoft),
               ),
             ],
           ),
@@ -628,7 +669,8 @@ class _OfferInfoRow extends StatelessWidget {
   final Widget title;
   final Widget subtitle;
 
-  const _OfferInfoRow({required this.title, required this.subtitle, Key? key}) : super(key: key);
+  const _OfferInfoRow({required this.title, required this.subtitle, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) => Column(
@@ -679,7 +721,8 @@ class _FavoriteIconButton extends StatelessWidget {
   final OfferDetails offer;
   final void Function({required bool favorite}) changeFavorite;
 
-  const _FavoriteIconButton({required this.offer, required this.changeFavorite});
+  const _FavoriteIconButton(
+      {required this.offer, required this.changeFavorite});
 
   @override
   Widget build(BuildContext context) => !offer.favorite
@@ -727,7 +770,11 @@ class _ButtonContainer extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         width: double.infinity,
         decoration: BoxDecoration(color: context.colorsV3.backgroundSurface4),
-        padding: const EdgeInsets.only(left: Spacing.$4x, top: Spacing.$3x, right: Spacing.$4x, bottom: Spacing.$4x),
+        padding: const EdgeInsets.only(
+            left: Spacing.$4x,
+            top: Spacing.$3x,
+            right: Spacing.$4x,
+            bottom: Spacing.$4x),
         child: child,
       );
 }

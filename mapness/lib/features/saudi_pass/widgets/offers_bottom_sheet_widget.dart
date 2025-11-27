@@ -53,7 +53,8 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
     final colors = context.colors;
     final textStyles = context.textStyles;
     final locale = Localizations.localeOf(context);
-    final byDate = DateFormat('d MMMM', locale.languageCode).format(offerDetails.publishEndDate);
+    final byDate = DateFormat('d MMMM', locale.languageCode)
+        .format(offerDetails.publishEndDate);
     final byDateStyle = textStyles.captionMediumRegular.copyWith(
       color: offerDetails.willExpiredSoon ? colors.errorDefault : null,
     );
@@ -75,7 +76,8 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
           children: [
             if (offerImage != null)
               ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(RadiusBorder.m)),
                 child: SizedBox.square(
                   dimension: Spacing.$12x,
                   child: SaudiPassImage(imageId: offerDetails.provider.logo),
@@ -89,13 +91,23 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
                   Text.rich(
                     TextSpan(
                       children: [
-                        if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
-                        TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
+                        if (amountOrRatioTextSpan != null)
+                          amountOrRatioTextSpan,
+                        TextSpan(
+                          text: ' • ',
+                          style: TextStyle(color: colors.neutralMuted),
+                        ),
                         TextSpan(text: offerDetails.name),
                         WidgetSpan(
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-                            child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
+                            padding: const EdgeInsetsDirectional.only(
+                              start: Spacing.$1x,
+                            ),
+                            child: Icon(
+                              PlacesIcons.markets,
+                              size: 16,
+                              color: colors.neutralMuted,
+                            ),
                           ),
                         ),
                       ],

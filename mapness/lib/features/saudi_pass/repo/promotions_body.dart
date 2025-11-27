@@ -12,7 +12,8 @@ part 'promotions_body.g.dart';
 class PromotionsBody extends MomraBody<Promotions, PromotionsData> {
   PromotionsBody({required super.statusDetails, super.data});
 
-  factory PromotionsBody.fromJson(Map<String, dynamic> json) => _$PromotionsBodyFromJson(json);
+  factory PromotionsBody.fromJson(Map<String, dynamic> json) =>
+      _$PromotionsBodyFromJson(json);
 }
 
 @noRenameNoToJson
@@ -24,7 +25,8 @@ class PromotionsData extends Data<Promotions> {
     required super.result,
   });
 
-  factory PromotionsData.fromJson(Map<String, dynamic> json) => _$PromotionsDataFromJson(json);
+  factory PromotionsData.fromJson(Map<String, dynamic> json) =>
+      _$PromotionsDataFromJson(json);
 }
 
 @noRenameNoToJson
@@ -43,7 +45,8 @@ class PagingStatus {
     required this.recordsCount,
   });
 
-  factory PagingStatus.fromJson(Map<String, dynamic> json) => _$PagingStatusFromJson(json);
+  factory PagingStatus.fromJson(Map<String, dynamic> json) =>
+      _$PagingStatusFromJson(json);
 }
 
 @noRenameNoToJson
@@ -54,7 +57,8 @@ class Promotions {
 
   const Promotions({required this.pagingStatus, required this.records});
 
-  factory Promotions.fromJson(Map<String, dynamic> json) => _$PromotionsFromJson(json);
+  factory Promotions.fromJson(Map<String, dynamic> json) =>
+      _$PromotionsFromJson(json);
 }
 
 @noRenameNoToJson
@@ -65,7 +69,7 @@ class Offer {
   final String description;
   final OfferType type;
   final OfferProvider provider;
-  final Iterable<OfferCategory> categories;
+  final Iterable<CategoryWithSubCategories> categories;
   final Iterable<String> images;
   final DateTime publishStartDate;
   final DateTime publishEndDate;
@@ -129,12 +133,14 @@ class Offer {
         _ => null,
       };
 
-  bool get willExpiredSoon => publishEndDate.difference(DateTime.now()).inDays < 7;
+  bool get willExpiredSoon =>
+      publishEndDate.difference(DateTime.now()).inDays < 7;
 
-  String byDate(String languageCode) => DateFormat('d MMMM', languageCode).format(publishEndDate);
+  String byDate(String languageCode) =>
+      DateFormat('d MMMM', languageCode).format(publishEndDate);
 
   OffersGroup get offerGroup {
-    final categoryIds = categories.map((e) => e.category?.id).nonNulls.toList();
+    final categoryIds = categories.map((e) => e.category.id).toList();
     return OffersGroupMapper.fromCategoryIds(categoryIds);
   }
 }
@@ -168,16 +174,6 @@ class TypeDetails {
     this.code,
   });
 
-  factory TypeDetails.fromJson(Map<String, dynamic> json) => _$TypeDetailsFromJson(json);
-}
-
-@noRenameNoToJson
-class OfferCategory {
-  final Category? category;
-
-  OfferCategory({
-    this.category,
-  });
-
-  factory OfferCategory.fromJson(Map<String, dynamic> json) => _$OfferCategoryFromJson(json);
+  factory TypeDetails.fromJson(Map<String, dynamic> json) =>
+      _$TypeDetailsFromJson(json);
 }

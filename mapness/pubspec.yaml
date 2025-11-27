@@ -215,6 +215,7 @@ flutter:
     - assets/images/
     - assets/images/saudi_pass/
     - assets/images_svg/
+    - assets/images_svg/saudi_pass/
     - assets/maps/configs/
     - packages/map_styles/src/styles.2gis
     - packages/map_styles/src/styles_saudi_day.2gis

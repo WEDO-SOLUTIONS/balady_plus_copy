@@ -88,8 +88,10 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> _setMarkerIsVisible(Marker marker,
-      {required bool isVisible}) async {
+  Future<void> _setMarkerIsVisible(
+    Marker marker, {
+    required bool isVisible,
+  }) async {
     await mapObjectManager?.setMarkerOptions(
       marker.id,
       ChangeMarkerOptionsMessage(
@@ -103,6 +105,7 @@ class ShowMapOffers extends _$ShowMapOffers {
     required bool isAll,
     VisibleRect? visibleRect,
     Set<Category>? category,
+    Set<SubCategory>? subCategory,
     Set<RecommendedType>? promotionsType,
   }) async {
     toggleShowMap = enabled;
@@ -127,7 +130,9 @@ class ShowMapOffers extends _$ShowMapOffers {
     try {
       final recommendedTypes =
           preferences?.recommendedTypes.toSet() ?? promotionsType ?? {};
-      final categories = preferences?.categories.toSet() ?? category ?? {};
+      final categories = preferences?.categoriesOnly.toSet() ?? category ?? {};
+      final subCategories =
+          preferences?.subCategoriesOnly.toSet() ?? subCategory ?? {};
 
       final cities = isAll
           ? {
@@ -159,6 +164,7 @@ class ShowMapOffers extends _$ShowMapOffers {
         promotions = await saudiPassRepository.getPromotions(
           cityIds: cities,
           categories: categories,
+          subCategories: subCategories,
           recommendedTypes: recommendedTypes,
           pageSize: null,
           mapPoint: cameraPosition.point,
@@ -179,6 +185,9 @@ class ShowMapOffers extends _$ShowMapOffers {
     toggleShowMap = !toggleShowMap;
 
     await switchOffersVisibility(
-        enabled: toggleShowMap, isAll: isAll, cityId: cityId);
+      enabled: toggleShowMap,
+      isAll: isAll,
+      cityId: cityId,
+    );
   }
 }

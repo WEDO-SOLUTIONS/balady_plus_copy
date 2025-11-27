@@ -24,7 +24,8 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
   OffersGroup? get offersGroup => null;
 
   @override
-  late Future<OffersFiltersViewNotifier> offersFiltersFuture = createFiltersAndOffersView();
+  late Future<OffersFiltersViewNotifier> offersFiltersFuture =
+      createFiltersAndOffersView();
 
   @override
   void tapRetryAll() {
@@ -32,12 +33,20 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
     notifyListeners();
   }
 
-  late Future<Lookups> futureLookups = saudiPassRepository.then((it) => it.getAllLookups());
+  late Future<Lookups> futureLookups =
+      saudiPassRepository.then((it) => it.getAllLookups());
+
+  Future<Iterable<SubCategory>> getSubcategories(String categoryId) =>
+      saudiPassRepository
+          .then((it) => it.getSubcategories(categoryId: categoryId));
 
   Future<City> cityByLocation() async {
     final lookups = await futureLookups;
     final cityIdByLocation = await this.cityIdByLocation;
-    return lookups.cities.where((city) => city.id == cityIdByLocation).firstOrNull ?? lookups.cities.first;
+    return lookups.cities
+            .where((city) => city.id == cityIdByLocation)
+            .firstOrNull ??
+        lookups.cities.first;
   }
 
   Future<OffersFiltersViewNotifier> createFiltersAndOffersView() async {
@@ -46,17 +55,31 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
     final controller = await ref.read(dgisControllerProvider.future);
     final cameraPosition = await controller.getCameraPosition();
 
+    final subcategoriesFutures = lookups.categories.map((category) async {
+      final subs = await getSubcategories(category.id);
+      return subs
+          .map((sub) =>
+              SubCategory(id: sub.id, name: sub.name, categoryId: category.id))
+          .toList();
+    }).toList();
+
+    final results = await Future.wait(subcategoriesFutures);
+
+    final subcategories = results.expand((it) => it).toList();
+
     return OffersFiltersViewNotifier(
       ref: ref,
       saudiPassRepository: saudiPassRepository,
       defaultCity: await cityByLocation(),
       lookups: lookups,
       isFavoritesOnly: isFavoritesOnly,
-      categoriesSelected: mapPreSelected(lookups.categories).toSet(),
+      subCategoriesSelected: mapPreSelected(subcategories).toSet(),
+      allSubCategories: subcategories,
       point: cameraPosition.point,
     );
   }
 
-  Iterable<Category> mapPreSelected(Iterable<Category> categories) =>
-      categories.where((category) => category.id == offersGroup?.toCategoryId());
+  Iterable<SubCategory> mapPreSelected(Iterable<SubCategory> subCategories) =>
+      subCategories.where((subCategory) =>
+          subCategory.categoryId == offersGroup?.toCategoryId());
 }

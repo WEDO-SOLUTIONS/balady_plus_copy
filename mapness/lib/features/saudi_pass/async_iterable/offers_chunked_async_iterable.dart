@@ -12,6 +12,7 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
   final Set<City> cities;
   final Set<RecommendedType> recommendedTypes;
   final Set<Category> categories;
+  final Set<SubCategory> subCategories;
   final Preferences? preferences;
   final bool? favorites;
   final Sorting? sorting;
@@ -23,6 +24,7 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
     required this.mapPoint,
     this.recommendedTypes = const {},
     this.categories = const {},
+    this.subCategories = const {},
     this.favorites,
     this.sorting,
   }) : preferences = null;
@@ -33,7 +35,8 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
     required Preferences this.preferences,
     required this.mapPoint,
   })  : recommendedTypes = preferences.recommendedTypes.toSet(),
-        categories = preferences.categories.toSet(),
+        categories = preferences.categoriesOnly.toSet(),
+        subCategories = preferences.subCategoriesOnly.toSet(),
         favorites = null,
         sorting = null,
         cities = {
@@ -51,7 +54,8 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
       pageSize: chunkSize,
       cityIds: cities.map((city) => city.id).toSet(),
       recommendedTypes: recommendedTypes,
-      categories: categories,
+      categories: categories.toSet(),
+      subCategories: subCategories.toSet(),
       applyPreference: preferences != null ? true : null,
       favorites: favorites,
       recencySort: sorting == Sorting.byRecency ? Sort.desc : null,

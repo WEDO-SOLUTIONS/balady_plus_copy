@@ -22,11 +22,15 @@ class OffersScreenViewRiverpod extends _$OffersScreenViewRiverpod {
 
     // Show offers by preferences if user is logged in
     if (CommonProperties.isLoggedIn) {
-      unawaited(notifier.prefsOffersViewFuture.then((value) {
-        if (value.preferences.isNotPopulated) {
-          notifier.isByPreferencesElseAll = false;
-        }
-      }));
+      unawaited(
+        notifier.prefsOffersViewFuture.then(
+          (value) {
+            if (value.preferences.isNotPopulated) {
+              notifier.isByPreferencesElseAll = false;
+            }
+          },
+        ),
+      );
       notifier.isByPreferencesElseAll = true;
     }
 

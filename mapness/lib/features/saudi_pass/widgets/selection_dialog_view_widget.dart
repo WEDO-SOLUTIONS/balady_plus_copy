@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
+import 'package:mapness/features/saudi_pass/widgets/reset_save_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/small_chip_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -27,14 +28,15 @@ class SelectionDialogViewWidget<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useToggleSheetController(onClose: (_) => selectionDialogView.tapCross(context));
+    final scrollController = useToggleSheetController(
+        onClose: (_) => selectionDialogView.tapCross(context));
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: backgroundColor ?? context.colors.backgroundSurface2,
-      safeAreaColor: context.colors.backgroundSurface2,
+      safeAreaColor: backgroundColor ?? context.colors.backgroundSurface2,
       outside: GestureDetector(
         onTap: context.router.popForced,
       ),
@@ -43,8 +45,10 @@ class SelectionDialogViewWidget<T> extends HookWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: context.textStyleV3.h2SemiBold),
-            CustomCloseButton(onClose: () => selectionDialogView.tapCross(context)),
+            Text(title, style: context.textStyles.h2SemiBold),
+            CustomCloseButton(
+              onClose: () => selectionDialogView.tapCross(context),
+            ),
           ],
         ),
       ),
@@ -53,7 +57,8 @@ class SelectionDialogViewWidget<T> extends HookWidget {
           padding: horizontalPadding,
           child: ListenableBuilder(
             listenable: selectionDialogView,
-            builder: (context, _) => layoutBuilder(selectionDialogView.selectionViews),
+            builder: (context, _) =>
+                layoutBuilder(selectionDialogView.selectionViews),
           ),
         ),
         Padding(
@@ -63,38 +68,6 @@ class SelectionDialogViewWidget<T> extends HookWidget {
           ),
           child: ResetSaveWidget(selectionDialogView),
         ),
-      ],
-    );
-  }
-}
-
-class ResetSaveWidget extends StatelessWidget {
-  final ResetSaveView resetSaveView;
-
-  const ResetSaveWidget(this.resetSaveView, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final resetButton = BaladyAppButton(
-      primaryLabel: context.l10n.saudiPassDialogReset,
-      onTap: resetSaveView.tapReset,
-      size: BaladyButtonSize.large,
-      buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-      buttonType: BaladyButtonType.secondary,
-    );
-
-    final saveButton = BaladyAppButton(
-      primaryLabel: context.l10n.saudiPassDialogSave,
-      onTap: () => resetSaveView.tapSave(context),
-      size: BaladyButtonSize.large,
-      buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-    );
-
-    return Row(
-      children: [
-        Expanded(child: resetButton),
-        const SizedBox(width: Spacing.$2x),
-        Expanded(child: saveButton),
       ],
     );
   }
@@ -126,7 +99,10 @@ class ContentRowLayout extends StatelessWidget {
               .mapIndexed(
                 (index, view) => ListenableBuilder(
                   listenable: Listenable.merge(selectionViews),
-                  builder: (_, __) => SortingItemViewWidget(view, hasDivider: index < selectionViews.length - 1),
+                  builder: (_, __) => SortingItemViewWidget(
+                    view,
+                    hasDivider: index < selectionViews.length - 1,
+                  ),
                 ),
               )
               .toList(),
@@ -164,7 +140,7 @@ class SortingItemViewWidget extends StatelessWidget {
       listenable: view,
       builder: (context, _) => SizedBox(
         height: AppSizes.l,
-        child: ContentRowV2(
+        child: ContentRow(
           leading: nothing,
           text: ContentRowTextOptions(
             title: switch (view.title) {
@@ -175,7 +151,7 @@ class SortingItemViewWidget extends StatelessWidget {
           onTap: () => view.onTap(context),
           isDividerEnabled: hasDivider,
           supportTitleRTL: true,
-          backgroundColor: context.colorsV3.backgroundSurface1,
+          backgroundColor: context.colors.backgroundSurface1,
           trailing: ContentRowCustomTrailingOptions(
             builder: (context) => view.isHighlighted
                 ? const Padding(

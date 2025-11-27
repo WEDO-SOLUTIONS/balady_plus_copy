@@ -7,16 +7,28 @@ import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/saudi_pass/repo/set_preferences_request.dart';
+import 'package:mapness/features/saudi_pass/repo/subcategories_body.dart';
 
 class SaudiPassRepository {
-  final Dio _dio;
+  final Dio _dioV1;
+  final Dio _dioV2;
 
-  SaudiPassRepository(this._dio);
+  SaudiPassRepository(this._dioV1, this._dioV2);
 
   Future<Lookups> getAllLookups() async {
-    final response = await _dio.get('/lookups');
+    final response = await _dioV1.get('/lookups');
 
     return LookupsBody.fromJson(response.data).dataOrThrow();
+  }
+
+  Future<Iterable<SubCategory>> getSubcategories({
+    required String categoryId,
+  }) async {
+    final response = await _dioV1.get(
+      '/lookups/categories/$categoryId/subcategories',
+    );
+
+    return SubcategoriesBody.fromJson(response.data).dataOrThrow();
   }
 
   Future<Promotions> getPromotions({
@@ -31,6 +43,7 @@ class SaudiPassRepository {
     Set<RecommendedType> recommendedTypes = const {},
     Sort? sort,
     Set<Category> categories = const {},
+    Set<SubCategory> subCategories = const {},
     Sort? recencySort,
     Sort? ratingSort,
     Sort? discountSort,
@@ -57,9 +70,14 @@ class SaudiPassRepository {
       'license-id': [...licenseIds],
       'apply-pref': applyPreference,
       'rubric-id': rubricId,
-      'recommended-type': [for (final recommendedType in recommendedTypes) recommendedType.id],
+      'recommended-type': [
+        for (final recommendedType in recommendedTypes) recommendedType.id
+      ],
       'sort': sort?.name,
       'category-id': [for (final category in categories) category.id],
+      'sub-category-id': [
+        for (final subCategory in subCategories) subCategory.id
+      ],
       'recency': recencySort?.name,
       'rating': ratingSort?.name,
       'discount': discountSort?.name,
@@ -69,40 +87,47 @@ class SaudiPassRepository {
       if (userPoint != null) 'user-latitude': userPoint.latitude,
     }..removeWhere((_, value) => value == null);
 
-    // It will be fixed as soon as the entire second version is ready.
-    _dio.options.baseUrl = 'https://apiservicesstg.balady.gov.sa/v2/balady-business-saudi-pass-services/user';
-    final response = await _dio.get('/promotions', queryParameters: queryParameters);
-    _dio.options.baseUrl = 'https://apiservicesstg.balady.gov.sa/v1/balady-business-saudi-pass-services/user';
+    final response = await _dioV2.get(
+      '/promotions',
+      queryParameters: queryParameters,
+    );
+
     return PromotionsBody.fromJson(response.data).dataOrThrow();
   }
 
   Future<OfferDetails> getOfferDetails({required String offerId}) async {
-    final response = await _dio.get('/promotions/$offerId');
+    final response = await _dioV2.get('/promotions/$offerId');
 
     return OfferDetailsBody.fromJson(response.data).dataOrThrow();
   }
 
-  ({String url, Map<String, String> headers}) getPromotionsImagesUri({required String imageId}) {
+  ({String url, Map<String, String> headers}) getPromotionsImagesUri(
+      {required String imageId}) {
     final options = Options();
 
     final requestOptions = options.compose(
-      _dio.options,
+      _dioV1.options,
       '/promotions/images/$imageId',
       sourceStackTrace: StackTrace.current,
     );
 
-    final requestOptionsIntercepted = _RequestInterceptorHandler(_dio).combine(requestOptions);
+    final requestOptionsIntercepted =
+        _RequestInterceptorHandler(_dioV1).combine(requestOptions);
 
-    final requestHeaders = requestOptionsIntercepted.headers..removeWhere((key, value) => value is! String);
+    final requestHeaders = requestOptionsIntercepted.headers
+      ..removeWhere((key, value) => value is! String);
 
-    return (url: requestOptionsIntercepted.uri.toString(), headers: requestHeaders.cast());
+    return (
+      url: requestOptionsIntercepted.uri.toString(),
+      headers: requestHeaders.cast()
+    );
   }
 
   Future<Response> sendFeedback({
     required String offerId,
     required OfferFeedback feedbackModel,
   }) async {
-    final response = await _dio.post(
+    final response = await _dioV1.post(
       '/promotions/$offerId/feedback',
       data: feedbackModel.toJson(),
     );
@@ -110,13 +135,13 @@ class SaudiPassRepository {
   }
 
   Future<Preferences> getPreferences() async {
-    final response = await _dio.get('/preferences');
+    final response = await _dioV2.get('/preferences');
 
     return GetPreferencesBody.fromJson(response.data).dataOrThrow();
   }
 
   Future<void> setPreferences(SetPreferencesRequest requestModel) async {
-    await _dio.put(
+    await _dioV2.put(
       '/preferences',
       data: requestModel.toJson(),
     );
@@ -133,7 +158,8 @@ class _RequestInterceptorHandler extends RequestInterceptorHandler {
   late RequestOptions effectiveRequestOptions;
 
   @override
-  void next(RequestOptions requestOptions) => effectiveRequestOptions = requestOptions;
+  void next(RequestOptions requestOptions) =>
+      effectiveRequestOptions = requestOptions;
 
   RequestOptions combine(RequestOptions requestOptions) {
     effectiveRequestOptions = requestOptions;

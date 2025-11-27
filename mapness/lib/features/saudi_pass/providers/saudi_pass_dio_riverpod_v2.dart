@@ -13,9 +13,9 @@ import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'saudi_pass_dio_riverpod.g.dart';
+part 'saudi_pass_dio_riverpod_v2.g.dart';
 
-final saudiPassDioProvider = _saudiPassDioRiverpodProvider;
+final saudiPassDioProviderV2 = _saudiPassDioRiverpodProvider;
 
 @riverpod
 class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
@@ -32,7 +32,9 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
 
     final dio = Dio(
       BaseOptions(
-        baseUrl: '${env.saudiPassApi}v1/balady-business-saudi-pass-services/user/',
+        // TODO: add to env before release !!!
+        baseUrl:
+            'https://apiservicesstg.balady.gov.sa/v2/balady-business-saudi-pass-services/user',
         sendTimeout: timeout,
         receiveTimeout: timeout,
         connectTimeout: timeout,

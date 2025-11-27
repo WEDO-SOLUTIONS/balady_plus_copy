@@ -21,13 +21,21 @@ class PoiContentOffersCard extends StatelessWidget {
   final List<Offer> offers;
   final EdgeInsets contentPadding;
 
-  const PoiContentOffersCard({required this.offers, required this.contentPadding, super.key});
+  const PoiContentOffersCard({
+    required this.offers,
+    required this.contentPadding,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => offers.length == 1
       ? Padding(
           padding: contentPadding,
-          child: _OfferCard(offer: offers.first, height: offerCardHeight, width: double.infinity),
+          child: _OfferCard(
+            offer: offers.first,
+            height: offerCardHeight,
+            width: double.infinity,
+          ),
         )
       : SizedBox(
           height: offerCardHeight,
@@ -88,8 +96,11 @@ class _OfferCard extends HookConsumerWidget {
         width: width,
         child: DecoratedBox(
           decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-              color: context.colorsV3.backgroundSurface1),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(RadiusBorder.xl),
+            ),
+            color: context.colorsV3.backgroundSurface1,
+          ),
           child: Padding(
             padding: const EdgeInsets.all(Spacing.$1_5x),
             child: Row(
@@ -97,8 +108,11 @@ class _OfferCard extends HookConsumerWidget {
               children: [
                 Expanded(
                   child: Padding(
-                    padding:
-                        const EdgeInsetsDirectional.only(start: Spacing.$2x, top: Spacing.$2x, bottom: Spacing.$2x),
+                    padding: const EdgeInsetsDirectional.only(
+                      start: Spacing.$2x,
+                      top: Spacing.$2x,
+                      bottom: Spacing.$2x,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -108,14 +122,18 @@ class _OfferCard extends HookConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                             maxLines: hasDiscount ? 2 : 5,
                             style: context.textStyleV3.captionLargeRegular
-                                .copyWith(color: context.colorsV3.foregroundDefault),
+                                .copyWith(
+                              color: context.colorsV3.foregroundDefault,
+                            ),
                           ),
                         ),
                         if (offer.discount != null)
                           Text.rich(
                             discount!,
                             maxLines: 1,
-                            style: context.textStyleV3.h1SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+                            style: context.textStyleV3.h1SemiBold.copyWith(
+                              color: context.colorsV3.foregroundDefault,
+                            ),
                           ),
                       ],
                     ),
@@ -123,20 +141,28 @@ class _OfferCard extends HookConsumerWidget {
                 ),
                 const SizedBox(width: Spacing.$4x),
                 ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(RadiusBorder.l),
+                  ),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: offer.offerGroup.color,
-                        begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-                        end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
+                        begin: context.isLTR
+                            ? Alignment.topLeft
+                            : Alignment.topRight,
+                        end: context.isLTR
+                            ? Alignment.bottomRight
+                            : Alignment.bottomLeft,
                       ),
                     ),
                     child: SizedBox(
                       height: 103,
                       child: Transform(
                         alignment: Alignment.center,
-                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                        transform: context.isLTR
+                            ? Matrix4.identity()
+                            : Matrix4.rotationY(pi),
                         child: Image.asset(
                           offer.offerGroup.imagePath,
                           fit: BoxFit.contain,
