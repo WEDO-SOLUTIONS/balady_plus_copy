@@ -26,24 +26,17 @@ class AddPhotoPage extends ConsumerWidget {
       ..listen(feedbackImageTypeProvider, (_, next) {})
       ..listen(feedbackImageSelectorProvider, (_, next) {});
 
-    return Scaffold(
-      body: SafeArea(
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: FeedbackImageSelectorSheet(
-            onSelect: (type) async {
-              switch (type) {
-                case FeedbackImageSelectorType.camera:
-                case FeedbackImageSelectorType.gallery:
-                  await _handleCategories(ref, type!, context);
-                case null:
-                  context.router.popForced();
-                  return;
-              }
-            },
-          ),
-        ),
-      ),
+    return FeedbackImageSelectorSheet(
+      onSelect: (type) async {
+        switch (type) {
+          case FeedbackImageSelectorType.camera:
+          case FeedbackImageSelectorType.gallery:
+            await _handleCategories(ref, type!, context);
+          case null:
+            context.router.popForced();
+            return;
+        }
+      },
     );
   }
 
