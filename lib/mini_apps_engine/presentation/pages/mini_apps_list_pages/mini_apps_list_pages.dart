@@ -545,11 +545,15 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     apps: appGroup.apps,
                                     totalAppCount: appGroup.appCount,
                                     onTap: () {
+
+                                      print("object");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) => AppsGroupPage(
                                               appGroup: appGroup,
                                               onTap: () {
+
+                                                print("object");
                                                 _handleTap(context,
                                                     appGroup.apps[index]);
                                               }),
@@ -606,11 +610,24 @@ class HomeMiniAppsListPages extends StatelessWidget {
         }
       } else {
         if (miniApp.childDeepLinkUrl != null) {
-          // CommonFunctions.showError("Is child");
-          NavigationService.pushNamed(
-            routeName: RouteName.miniAppsMainScreen,
-            args: miniApp.childServices![2].childDeepLinkUrl,
-          );
+
+          NewMiniAppLogicState state = context.read<NewMiniAppLogicCubit>().state;
+          MiniApp? parentMAiniApp = state.parentMiniApp[miniApp.parentServiceKey];
+
+          if(parentMAiniApp != null) {
+            NavigationService.pushNamed(
+              routeName: RouteName.miniAppsMainScreen,
+              args: miniApp.copyWith(
+                // get this from parent
+                latestVersion: parentMAiniApp.latestVersion,
+                serviceKey: miniApp.parentServiceKey,
+                path: miniApp.childDeepLinkUrl,
+              ),
+            );
+          } else {
+            /// TODO : Show errors Not Fund The Parent Maini App
+            CommonFunctions.showError('Show errors Not Fund The Parent Maini App'.tr());
+          }
         } else {
           NavigationService.pushNamed(
             routeName: RouteName.miniAppsMainScreen,

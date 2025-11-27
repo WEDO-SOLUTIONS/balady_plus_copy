@@ -107,7 +107,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     if (!_initialized) {
       _controller
-        ..loadRequest(Uri.parse(state.servicePath + (state.path)))
+        ..loadRequest(Uri.parse(state.servicePath + state.path))
         ..addJavaScriptObject(
           JsBridgeListener(
             miniAppsEngineBloc: miniAppsEngineBloc,
