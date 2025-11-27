@@ -8,7 +8,6 @@ class HomeMiniAppsListLoadingState extends HomeMiniAppsListState {
   const HomeMiniAppsListLoadingState();
 
   @override
-  // TODO: implement props
   List<Object?> get props => throw UnimplementedError();
 }
 
@@ -23,8 +22,10 @@ class HomeMiniAppsListSuccessState extends HomeMiniAppsListState {
   });
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [miniAppsList, municipalAppBloc,];//serverPath
+  List<Object?> get props => [
+        miniAppsList,
+        municipalAppBloc,
+      ]; //serverPath
 }
 
 class HomeMiniAppsListFiledState extends HomeMiniAppsListState {
@@ -33,6 +34,5 @@ class HomeMiniAppsListFiledState extends HomeMiniAppsListState {
   const HomeMiniAppsListFiledState({required this.errors});
 
   @override
-  // TODO: implement props
   List<Object?> get props => throw UnimplementedError();
 }

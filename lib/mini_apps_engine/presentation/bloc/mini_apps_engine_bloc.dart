@@ -7,6 +7,7 @@ import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
 import 'package:bloc/bloc.dart';
@@ -21,7 +22,7 @@ int portNumber = 8080;
 
 class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
-  final MiniAppModel miniApp;
+  final MiniApp miniApp;
 
   CustomInAppLocalhostServer? localhostServer;
   String? serviceDownloadPath;
@@ -55,7 +56,7 @@ class MiniAppsEngineBloc
       basePathService =
           "${(await getApplicationDocumentsDirectory()).path}/www/";
       String dir =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       File file = File('$dir/index.html');
       bool exists = await file.exists();
       if (exists) {
@@ -110,19 +111,19 @@ class MiniAppsEngineBloc
     if (exists) {
       await directoryApp.delete(recursive: true);
       serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     } else {
       serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     }
     var zippedFile = await _downloadFile(
       event.miniApp.latestVersion?.packageMetaDataDto?.id ?? "",
       serviceDownloadPath!,
-      event.miniApp.serviceKey!,
+      event.miniApp.serviceKey,
       emit,
     );
     if (zippedFile != null) {
@@ -148,12 +149,17 @@ class MiniAppsEngineBloc
         }
       }
       String pathService =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       CommonProperties.currentLocalServerDirectory = pathService;
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: event.miniApp.portNumber ??  generateRandomPort(portNumber, event.miniApp.serviceName ?? "",event.miniApp.serviceKey??""),
+          port: event.miniApp.portNumber ??
+              generateRandomPort(
+                portNumber,
+                event.miniApp.name,
+                event.miniApp.serviceKey,
+              ),
           shared: true,
         ),
       );
@@ -283,8 +289,8 @@ class MiniAppsEngineBloc
   //   return indexFilePath;
   // }
 
-  int generateRandomPort(int oldPort, String serviceName,  String serviceKey ) {
-    if (serviceKey=="islamicservice") {
+  int generateRandomPort(int oldPort, String serviceName, String serviceKey) {
+    if (serviceKey == "islamicservice") {
       return 1245;
     }
     final random = Random();
@@ -293,7 +299,7 @@ class MiniAppsEngineBloc
     if (newPort != oldPort && newPort != 1245) {
       return newPort;
     } else {
-      return generateRandomPort(oldPort, serviceName,serviceKey);
+      return generateRandomPort(oldPort, serviceName, serviceKey);
     }
   }
 

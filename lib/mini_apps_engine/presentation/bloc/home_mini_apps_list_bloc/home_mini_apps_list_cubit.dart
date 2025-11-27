@@ -4,12 +4,8 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
-import 'package:balady_plus/mini_apps_engine/server/CustomInAppLocalhostServer.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../../../app/core/utils/common_functions.dart';
 import '../../../../super_app_js_bridge/model/access_token_model.dart';
@@ -43,11 +39,11 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
             HomeMiniAppsListState state = HomeMiniAppsListSuccessState(
               miniAppsList: listMiniApps,
             );
-            for (var element in listMiniApps) {
-              if (element.serviceKey == "municipalservice" && bloc == null) {
-                bloc = MiniAppsEngineBloc(miniApp: element);
-              }
-            }
+            // for (var element in listMiniApps) {
+            //   if (element.serviceKey == "municipalservice" && bloc == null) {
+            //     bloc = MiniAppsEngineBloc(miniApp: element);
+            //   }
+            // }
             state = HomeMiniAppsListSuccessState(
               miniAppsList: listMiniApps,
               municipalAppBloc: bloc,
@@ -61,7 +57,6 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
 
   Future<void> openMiniApp({required String serviceKey, String? path}) async {
     try {
-
       // if(state is HomeMiniAppsListLoadingState) {
       //   await Future.delayed(const Duration(seconds: 8));
       // }
@@ -70,15 +65,13 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
 
       // If not loaded yet, wait until success
       final HomeMiniAppsListSuccessState successState =
-      currentState is HomeMiniAppsListSuccessState
-          ? currentState
-          : await stream.firstWhere(
-            (s) => s is HomeMiniAppsListSuccessState,
-      ) as HomeMiniAppsListSuccessState;
+          currentState is HomeMiniAppsListSuccessState
+              ? currentState
+              : await stream.firstWhere(
+                  (s) => s is HomeMiniAppsListSuccessState,
+                ) as HomeMiniAppsListSuccessState;
 
-
-
-      if(state is HomeMiniAppsListSuccessState) {
+      if (state is HomeMiniAppsListSuccessState) {
         MiniAppModel miniApp = (state as HomeMiniAppsListSuccessState)
             .miniAppsList
             .firstWhere((service) => service.serviceKey == serviceKey)
@@ -90,16 +83,13 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
           args: miniApp,
         );
       }
-
-
     } catch (e) {
-
-     // CommonFunctions.showSuccess(e.toString());
+      // CommonFunctions.showSuccess(e.toString());
     }
   }
 
   Future<BaseResponse?> getMiniAppAcessToken(String serviceKey) async {
-    if (serviceKey == "municipalservice" || serviceKey == 'volunteerapp' ) {
+    if (serviceKey == "municipalservice" || serviceKey == 'volunteerapp') {
       return BaseResponse(
         code: 200,
         message: "success",
@@ -159,6 +149,7 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
         }
       }
     }
+    return null;
   }
 
 // int index=(state as HomeMiniAppsListSuccessState).miniAppsList.indexWhere((it) => it.serviceKey == serviceKey);

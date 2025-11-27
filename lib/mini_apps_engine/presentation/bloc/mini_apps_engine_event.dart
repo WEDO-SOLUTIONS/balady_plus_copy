@@ -1,4 +1,5 @@
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class MiniAppsEngineEvent extends Equatable {
@@ -8,10 +9,8 @@ abstract class MiniAppsEngineEvent extends Equatable {
   List<Object> get props => [];
 }
 
-
 class CheckMiniAppsEngineEvent extends MiniAppsEngineEvent {
-
-  final MiniAppModel miniApp;
+  final MiniApp miniApp;
 
   const CheckMiniAppsEngineEvent({required this.miniApp});
 
@@ -20,7 +19,7 @@ class CheckMiniAppsEngineEvent extends MiniAppsEngineEvent {
 }
 
 class DownloadMiniAppsEngineEvent extends MiniAppsEngineEvent {
-  final MiniAppModel miniApp;
+  final MiniApp miniApp;
 
   const DownloadMiniAppsEngineEvent({required this.miniApp});
 
@@ -28,14 +27,11 @@ class DownloadMiniAppsEngineEvent extends MiniAppsEngineEvent {
   List<Object> get props => [];
 }
 
-
-
 class OpenServerEngineEvent extends MiniAppsEngineEvent {
-  final MiniAppModel miniApp;
+  final MiniApp miniApp;
 
   const OpenServerEngineEvent({required this.miniApp});
 
   @override
   List<Object> get props => [];
 }
-
