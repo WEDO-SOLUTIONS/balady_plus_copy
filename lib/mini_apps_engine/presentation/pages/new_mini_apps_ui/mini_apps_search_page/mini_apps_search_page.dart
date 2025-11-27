@@ -1,14 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mock_mini_apps_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -23,7 +28,6 @@ class MiniAppsSearchPage extends StatelessWidget {
 
     return BlocProvider<NewMiniAppLogicCubit>.value(
       value: sl<NewMiniAppLogicCubit>(),
-      // create: (_) => sl<NewMiniAppLogicCubit>()..loadMiniApps(),
       child: Scaffold(
         backgroundColor: const Color(0xffffffff),
         resizeToAvoidBottomInset: true,
@@ -145,13 +149,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                         title: miniApp.name,
                                         iconPath: miniApp.iconPath,
                                         onTap: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (_) => MockMiniAppsPage(
-                                                miniAppTitle: miniApp.name,
-                                              ),
-                                            ),
-                                          );
+                                          _handleTap(context, miniApp);
                                         },
                                       );
                                     },
@@ -242,5 +240,67 @@ class MiniAppsSearchPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _handleTap(BuildContext context, MiniApp miniApp) async {
+    if (miniApp.latestVersion?.nafathLogin == true &&
+        !CommonProperties.isLoggedInMunicipality &&
+        miniApp.latestVersion?.deepLinkDto == null) {
+      showDialog(
+        context: context,
+        builder: (ctx) => NeedLoginDialog(
+          onSuccessLogin: (bool? isSuccess) async {
+            if (isSuccess ?? false) {
+              NavigationService.pushNamed(
+                routeName: RouteName.miniAppsMainScreen,
+                args: miniApp,
+              );
+            }
+          },
+        ),
+      );
+    } else if (miniApp.latestVersion?.otpLogin == true &&
+        miniApp.latestVersion?.deepLinkDto == null) {
+      CommonFunctions.onLogin();
+    } else {
+      if (miniApp.latestVersion?.deepLinkDto != null) {
+        try {
+          await AppLaunchService.launchApp(
+            deepLinkInfo: miniApp.latestVersion!.deepLinkDto!,
+            //deepLink: deeplink,
+          );
+        } catch (e) {
+          CommonFunctions.showError('launch_failed'.tr());
+        }
+      } else {
+        if (miniApp.childDeepLinkUrl != null) {
+          NewMiniAppLogicState state =
+              context.read<NewMiniAppLogicCubit>().state;
+          MiniApp? parentMAiniApp =
+              state.parentMiniApp[miniApp.parentServiceKey];
+
+          if (parentMAiniApp != null) {
+            NavigationService.pushNamed(
+              routeName: RouteName.miniAppsMainScreen,
+              args: miniApp.copyWith(
+                // get this from parent
+                latestVersion: parentMAiniApp.latestVersion,
+                serviceKey: miniApp.parentServiceKey,
+                path: miniApp.childDeepLinkUrl,
+              ),
+            );
+          } else {
+            /// TODO : Show errors Not Fund The Parent Maini App
+            CommonFunctions.showError(
+                'Show errors Not Fund The Parent Maini App'.tr());
+          }
+        } else {
+          NavigationService.pushNamed(
+            routeName: RouteName.miniAppsMainScreen,
+            args: miniApp,
+          );
+        }
+      }
+    }
   }
 }

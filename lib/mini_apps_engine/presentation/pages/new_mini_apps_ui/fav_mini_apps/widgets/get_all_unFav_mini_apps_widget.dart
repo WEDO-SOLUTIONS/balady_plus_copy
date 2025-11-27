@@ -9,13 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GetAllUnFavMiniAppsWidget extends StatelessWidget {
-  const GetAllUnFavMiniAppsWidget({super.key});
+  final double? width;
+  final double? height;
+  const GetAllUnFavMiniAppsWidget({super.key, this.width, this.height});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: context.screenHeight * 0.30,
-      width: context.screenWidth,
+      height: height ?? context.screenHeight * 0.30,
+      width: width ?? context.screenWidth,
       child: Stack(
         children: [
           BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
