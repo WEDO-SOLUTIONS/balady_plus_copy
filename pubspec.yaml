@@ -192,7 +192,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 4.1.6
+    version: 4.2.1
 
   sheetify: 1.1.1
 

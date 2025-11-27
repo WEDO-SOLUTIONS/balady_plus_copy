@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -74,13 +74,13 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
       return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
     },
   );
-  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
+  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateSheet>(function: (controller) {
     final state = controller.state;
 
-    if (state == ThreeStateBottomSheet.expanded) {
+    if (state == ThreeStateSheet.expanded) {
       return Colors.black.withOpacity(.4);
     }
-    if (state == ThreeStateBottomSheet.open) {
+    if (state == ThreeStateSheet.open) {
       return Colors.black.withOpacity(.4 * controller.interpolation);
     }
     return null;
