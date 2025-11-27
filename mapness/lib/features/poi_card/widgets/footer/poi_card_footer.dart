@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -8,8 +9,14 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
+import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
+import 'package:mapness/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart';
+import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
@@ -82,6 +89,14 @@ class PoiCardFooter extends HookConsumerWidget {
         type == ObjectTypeMessage.stationPlatform ||
         type == ObjectTypeMessage.stationEntrance;
 
+    final website = data?.getContactsInfoModels
+        .firstWhereOrNull(
+          (element) => element.type == ContactsInfoType.website,
+        )
+        ?.value;
+
+    final poiActions = ref.read(poiCardActionsProvider.notifier);
+
     final parkingPoi = objectId == parkingObjectId;
 
     return ThrottledCallbackWidget(
@@ -111,6 +126,16 @@ class PoiCardFooter extends HookConsumerWidget {
               buttonType: ButtonType.secondary,
               colorScheme: ButtonColorScheme.accent,
               onPressed: onEntranceTap,
+            ),
+          if (website != null && data != null)
+            ItemActionBar(
+              icon: GeneralIcons.web,
+              colorScheme: ButtonColorScheme.accent,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                BssService.instance.trackLinkTap(data!, BssContactType.website, website);
+                poiActions.launch(website);
+              },
             ),
           if (!parkingPoi)
             ItemActionBar(
