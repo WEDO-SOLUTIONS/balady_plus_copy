@@ -266,6 +266,10 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
           label: value.title(l10n) ?? label,
         );
 
+        // SDK doesn't allow to add the same point twice
+        // ignore: always_put_control_body_on_new_line
+        if (points.contains(newPoint)) return;
+
         if (index != null) {
           points[index] = newPoint;
         } else {
