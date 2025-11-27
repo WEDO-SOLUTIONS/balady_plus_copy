@@ -57,8 +57,8 @@ class RoutingMapControls extends ConsumerWidget {
                       Row(
                         children: [
                           uikit.AppButton(
-                            color: context.colors.backgroundSurface4,
-                            iconColor: context.colors.foregroundMuted,
+                            color: context.colors.backgroundSurface1,
+                            iconColor: context.colors.foregroundSoft,
                             innerPadding: const EdgeInsets.symmetric(
                               horizontal: uikit.Spacing.$3x,
                             ),
@@ -69,16 +69,15 @@ class RoutingMapControls extends ConsumerWidget {
                           if (onAddStop != null) ...[
                             const SizedBox(width: uikit.Spacing.$2x),
                             uikit.AppButton(
-                              color: context.colors.backgroundSurface4,
-                              iconColor: context.colors.foregroundMuted,
+                              color: context.colors.backgroundSurface1,
+                              iconColor: context.colors.foregroundSoft,
                               innerPadding: const EdgeInsets.symmetric(
                                 horizontal: uikit.Spacing.$3x,
                               ),
                               primaryLabel: context.l10n.addStop,
                               onTap: onAddStop,
                               buttonColorScheme: uikit.ButtonColorScheme.neutral,
-                              //TODO: set correct icon
-                              primaryIcon: Icons.add_location,
+                              primaryIcon: Icons.add_location_rounded,
                               textColor: context.colors.foregroundDefault,
                             ),
                           ],
