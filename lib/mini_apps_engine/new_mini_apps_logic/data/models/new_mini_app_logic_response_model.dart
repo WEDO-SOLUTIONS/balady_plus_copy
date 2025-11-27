@@ -253,6 +253,7 @@ class MiniApp {
   final String entity;
   final String iconPath;
   final String serviceKey;
+  final String? parentServiceKey;
   final String cdnLogoRef;
   final String attachmentConfiguration;
   final int? serviceOrder;
@@ -278,6 +279,7 @@ class MiniApp {
     required this.entity,
     required this.iconPath,
     required this.serviceKey,
+    required this.parentServiceKey,
     required this.cdnLogoRef,
     required this.attachmentConfiguration,
     required this.serviceOrder,
@@ -304,6 +306,7 @@ class MiniApp {
       entity: json['entity'] as String,
       iconPath: json['logoKey'] as String,
       serviceKey: json['serviceKey'] as String,
+      parentServiceKey: json['parentServiceKey'] as String?,
       cdnLogoRef: json['cdnLogoRef'] as String,
       attachmentConfiguration: json['attachmentConfiguration'] as String,
       serviceOrder: json['serviceOrder'] as int?,
@@ -346,6 +349,7 @@ class MiniApp {
       'entity': entity,
       'logoKey': iconPath,
       'serviceKey': serviceKey,
+      'parentServiceKey': parentServiceKey,
       'cdnLogoRef': cdnLogoRef,
       'attachmentConfiguration': attachmentConfiguration,
       'serviceOrder': serviceOrder,
@@ -363,6 +367,65 @@ class MiniApp {
       'serviceEntryPointOrder': serviceEntryPointOrder,
     };
   }
+
+
+
+  MiniApp copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? entity,
+    String? iconPath,
+    String? serviceKey,
+    String? parentServiceKey,
+    String? cdnLogoRef,
+    String? attachmentConfiguration,
+    int? serviceOrder,
+    int? portNumber,
+    bool? haveChilds,
+    bool? isChild,
+    List<Requirement>? requirements,
+    List<MiniAppEntryPoint>? entryPoints,
+    List<MiniAppCategory>? categories,
+    String? childDeepLinkUrl,
+    LatestVersion? latestVersion,
+    List<MiniApp>? childServices,
+    dynamic parentService,
+    int? serviceCategoryOrder,
+    int? serviceEntryPointOrder,
+    String? path,
+  }) {
+    return MiniApp(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      entity: entity ?? this.entity,
+      iconPath: iconPath ?? this.iconPath,
+      serviceKey: serviceKey ?? this.serviceKey,
+      parentServiceKey: parentServiceKey ?? this.parentServiceKey,
+      cdnLogoRef: cdnLogoRef ?? this.cdnLogoRef,
+      attachmentConfiguration:
+      attachmentConfiguration ?? this.attachmentConfiguration,
+      serviceOrder: serviceOrder ?? this.serviceOrder,
+      portNumber: portNumber ?? this.portNumber,
+      haveChilds: haveChilds ?? this.haveChilds,
+      isChild: isChild ?? this.isChild,
+      requirements: requirements ?? this.requirements,
+      entryPoints: entryPoints ?? this.entryPoints,
+      categories: categories ?? this.categories,
+      childDeepLinkUrl: childDeepLinkUrl ?? this.childDeepLinkUrl,
+      latestVersion: latestVersion ?? this.latestVersion,
+      childServices: childServices ?? this.childServices,
+      parentService: parentService ?? this.parentService,
+      serviceCategoryOrder:
+      serviceCategoryOrder ?? this.serviceCategoryOrder,
+      serviceEntryPointOrder:
+      serviceEntryPointOrder ?? this.serviceEntryPointOrder,
+      path: path ?? this.path,
+    );
+  }
+
+
 }
 
 class MiniAppCategory {

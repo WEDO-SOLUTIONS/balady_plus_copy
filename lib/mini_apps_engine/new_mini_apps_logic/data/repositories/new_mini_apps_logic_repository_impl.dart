@@ -20,8 +20,9 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
       (success) {
         //! Get mini apps
         final resultData = success.data.result;
+        List<MiniApp> allMiniAppsUI = [];
+
         Map<String, MiniApp> parentMiniApp = {};
-        List<MiniApp> allMiniApps = [];
         Map<String, CategoryGroup> mapAppCategoryGroup = {};
         Map<String, EntryPoints> mapEntryPoints = {};
 
@@ -89,24 +90,26 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
               parentMiniApp[item.serviceKey] = item;
               if (item.childServices?.isNotEmpty ?? false) {
                 for (final child in item.childServices!) {
-                  allMiniApps.add(child);
-                  mapOnMiniAppEntryPoint(mapEntryPoints,item);
-                  mapOnAppCategoryGroup(mapAppCategoryGroup,item);
+                  MiniApp typeChild = child.copyWith(
+                    parentServiceKey: item.serviceKey,
+                  );
+                  allMiniAppsUI.add(typeChild);
+                  mapOnMiniAppEntryPoint(mapEntryPoints, typeChild);
+                  mapOnAppCategoryGroup(mapAppCategoryGroup, typeChild);
                 }
               }
-
             }
           } else {
-            allMiniApps.add(item);
-            mapOnMiniAppEntryPoint(mapEntryPoints,item);
-            mapOnAppCategoryGroup(mapAppCategoryGroup,item);
+            allMiniAppsUI.add(item);
+            mapOnMiniAppEntryPoint(mapEntryPoints, item);
+            mapOnAppCategoryGroup(mapAppCategoryGroup, item);
           }
         }
 
         return Right(
           NewMiniAppsLogicEntity(
             parentMiniApp: parentMiniApp,
-            miniApps: allMiniApps,
+            miniApps: allMiniAppsUI, // Mini Apps With Out Parent Have chiled
             appGroups: mapAppCategoryGroup.values.toList(),
             entryPoints: mapEntryPoints.values.toList(),
           ),
@@ -115,7 +118,8 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     );
   }
 
-  Map<String,EntryPoints> mapOnMiniAppEntryPoint (Map<String, EntryPoints> mapEntryPoints,MiniApp item ) {
+  Map<String, EntryPoints> mapOnMiniAppEntryPoint(
+      Map<String, EntryPoints> mapEntryPoints, MiniApp item) {
     for (var entryPoints in item.entryPoints) {
       if (mapEntryPoints[entryPoints.entryPointKey] == null) {
         mapEntryPoints[entryPoints.entryPointKey] = EntryPoints(
@@ -132,7 +136,9 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
 
     return mapEntryPoints;
   }
-  Map<String,CategoryGroup> mapOnAppCategoryGroup (Map<String, CategoryGroup> mapAppCategoryGroup,MiniApp item ) {
+
+  Map<String, CategoryGroup> mapOnAppCategoryGroup(
+      Map<String, CategoryGroup> mapAppCategoryGroup, MiniApp item) {
     for (var category in item.categories) {
       if (mapAppCategoryGroup[category.id] == null) {
         mapAppCategoryGroup[category.id] = CategoryGroup(
@@ -148,23 +154,23 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     return mapAppCategoryGroup;
   }
 
-  // List<MiniApp> _realMiniApps(Data data) {
-  //   final result = <MiniApp>[];
-  //
-  //   for (final item in data.miniApps) {
-  //     if (!item.haveChilds) {
-  //       result.add(item);
-  //     } else {
-  //       if (item.childServices != null) {
-  //         for (final child in item.childServices!) {
-  //           if (!child.haveChilds) {
-  //             result.add(child);
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  //
-  //   return result;
-  // }
+// List<MiniApp> _realMiniApps(Data data) {
+//   final result = <MiniApp>[];
+//
+//   for (final item in data.miniApps) {
+//     if (!item.haveChilds) {
+//       result.add(item);
+//     } else {
+//       if (item.childServices != null) {
+//         for (final child in item.childServices!) {
+//           if (!child.haveChilds) {
+//             result.add(child);
+//           }
+//         }
+//       }
+//     }
+//   }
+//
+//   return result;
+// }
 }

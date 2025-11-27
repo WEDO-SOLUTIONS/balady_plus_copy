@@ -27,6 +27,7 @@ class MiniAppsEngineBloc
   CustomInAppLocalhostServer? localhostServer;
   String? serviceDownloadPath;
   late String basePathService;
+
   // String serverPath;
 
   MiniAppsEngineBloc({
@@ -171,13 +172,14 @@ class MiniAppsEngineBloc
         await localhostServer!.start();
       }
 
-      String servicePath = '$pathService/index.html'.replaceAll(
-        pathService,
-        "http://localhost:${localhostServer!.port}",
-      );
+      String servicePath = "http://localhost:${localhostServer!.port}/";
 
-      emit(MiniAppsEngineLoadedState(
-          servicePath: servicePath, path: event.miniApp.path ?? ""));
+      emit(
+        MiniAppsEngineLoadedState(
+          servicePath: servicePath,
+          path: event.miniApp.path ?? "",
+        ),
+      );
     } catch (e) {
       print(e.toString());
     }
