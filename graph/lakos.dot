@@ -494,8 +494,6 @@ digraph "" {
   "/lib/shared/ui/buttons/app_close_button.dart" [label="app_close_button"];
   "/lib/shared/ui/buttons/refresh_button.dart" [label="refresh_button"];
   "/lib/shared/ui/safe_area_padding.dart" [label="safe_area_padding"];
-  "/lib/shared/ui/picture/custom_memory_image_provider.dart" [label="custom_memory_image_provider"];
-  "/lib/shared/ui/picture/picture.dart" [label="picture"];
   "/lib/shared/ui/toast/app_locale.dart" [label="app_locale"];
   "/lib/shared/ui/toast/models/toast_action.dart" [label="toast_action"];
   "/lib/shared/ui/toast/models/toast_icon.dart" [label="toast_icon"];
@@ -1891,11 +1889,6 @@ digraph "" {
             "/lib/shared/ui/buttons/map_button.dart";
             "/lib/shared/ui/buttons/app_close_button.dart";
             "/lib/shared/ui/buttons/refresh_button.dart";
-          }
-          subgraph "cluster~/lib/shared/ui/picture" {
-            label="picture";
-            "/lib/shared/ui/picture/custom_memory_image_provider.dart";
-            "/lib/shared/ui/picture/picture.dart";
           }
           subgraph "cluster~/lib/shared/ui/toast" {
             label="toast";
@@ -4228,7 +4221,6 @@ digraph "" {
   "/lib/widgets/profile/contact_info.dart" -> "/lib/shared/lib/common_functions.dart";
   "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/features/profile/profile_image_provider.dart";
   "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
-  "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/shared/ui/picture/picture.dart";
   "/lib/widgets/profile/authorized_widget.dart" -> "/lib/widgets/profile/profile_edited_photo.dart";
   "/lib/widgets/profile/personal_data.dart" -> "/lib/entities/profile/user_profile_data.dart";
   "/lib/widgets/profile/personal_data.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -4502,7 +4494,6 @@ digraph "" {
   "/lib/shared/routing/add_photo_page.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/shared/routing/add_photo_page.dart" -> "/lib/shared/utils/logger/logger.dart";
   "/lib/shared/routing/add_photo_page.dart" -> "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart";
-  "/lib/shared/ui/picture/picture.dart" -> "/lib/shared/ui/picture/custom_memory_image_provider.dart";
   "/lib/shared/ui/toast/app_locale.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/shared/ui/toast/toast_overlay.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/ui/toast/toast_overlay.dart" -> "/lib/shared/ui/toast/app_locale.dart";
@@ -4963,7 +4954,6 @@ digraph "" {
   "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/features/profile/profile_image_provider.dart";
   "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
   "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/shared/providers/app_language.dart";
-  "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/shared/ui/picture/picture.dart";
   "/lib/features/poi_card/provider/poi_card_actions_provider.dart" -> "/lib/features/landing/map_controls.dart";
   "/lib/features/poi_card/provider/poi_card_actions_provider.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/features/poi_card/provider/poi_card_actions_provider.dart" -> "/lib/shared/lib/common_functions.dart";
