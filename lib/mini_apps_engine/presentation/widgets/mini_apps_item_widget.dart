@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/base/base_view.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
@@ -57,7 +56,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             fontSize: 17,
                             fontFamily: 'packages/balady_uikit/Frutiger',
-                            color: Color(0xFF003449)),
+                            color: const Color(0xFF003449)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

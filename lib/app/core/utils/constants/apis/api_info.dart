@@ -8,6 +8,8 @@ class ApiUrl {
   static const forceUpdate = '/v1/force-update-apps/version';
   static const uploadFile = '/v1/dms-mobile/upload';
   static const uploadFileV2 = '/v2/dms-mobile/upload';
+  //! New mini apps logic
+  // static const getNewMiniApps = '/v2/balady-mini-apps/services';
 
   //! Services
   //! Public Services
@@ -133,8 +135,7 @@ class ApiUrl {
   static const transactionsRequests =
       '/v1/balady-dashboard/objectable-requests';
 
-  static const ServiceQuestionList =
-      'v1/portal-services/faq';
+  static const ServiceQuestionList = 'v1/portal-services/faq';
 
   static const postObjection =
       '/v2/objection-services/submit-objection-requests';
@@ -282,7 +283,7 @@ class ApiUrl {
       '/v1/gis-services/compliance-certificates/point-data';
 
   static String complianceAttachment(String requestId, String fileTypeId) =>
-      '/v1/compliance-certificate-mobile-services/${requestId}/upload-attahchment/${fileTypeId}';
+      '/v1/compliance-certificate-mobile-services/$requestId/upload-attahchment/$fileTypeId';
 
   static String downLoadBuildingLicense(String id) =>
       '/v1/compliance-certificate-mobile-services/download-request-files/$id';
@@ -336,8 +337,10 @@ class ApiUrl {
   // Ekram
   static const ekramRules =
       '/v1/iam-services/user-configuration/أنظمة بلدي/نظام إكرام الموتى';
-  static const deathCities = 'v1/superapp-ekram-services/lookup/DEATH_CITY/transport-cities';
-  static const burialCities = 'v1/superapp-ekram-services/lookup/BURIAL_CITY/transport-cities';
+  static const deathCities =
+      'v1/superapp-ekram-services/lookup/DEATH_CITY/transport-cities';
+  static const burialCities =
+      'v1/superapp-ekram-services/lookup/BURIAL_CITY/transport-cities';
   static const ekramOrgnizations =
       'v2/ekram-mobile-services/organizations-info';
 
@@ -418,8 +421,6 @@ class ApiUrl {
 
   static String transportCompanies(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/charities";
-
-
 
   static String saveDeathBurialInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-death-burial-info";
@@ -535,52 +536,55 @@ class ApiUrl {
 
 //CRM APIgee
 
-  static const String crmRequestsList ='/v1/crm-services/mobile/incidents';
+  static const String crmRequestsList = '/v1/crm-services/mobile/incidents';
   // '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
 
-
-  static const String IncidentRequestDetails =  '/v1/crm-services/mobile/fetch-incidents';
+  static const String IncidentRequestDetails =
+      '/v1/crm-services/mobile/fetch-incidents';
   //'/prweb/PRRestService/FrontUserBalady/V1/FetchIncidentRequest';
 
-
-  static const String FetchMuncipalServiceRequest = '/v1/crm-services/mobile/fetch-municipalities';
+  static const String FetchMuncipalServiceRequest =
+      '/v1/crm-services/mobile/fetch-municipalities';
 // '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
 
-
-  static const String FetchInquiryRequest = '/v1/crm-services/mobile/fetch-inquiry';
+  static const String FetchInquiryRequest =
+      '/v1/crm-services/mobile/fetch-inquiry';
 // '/prweb/PRRestService/FrontUserBalady/V1/FetchInquiryRequest';
 
+  static const String DaemRetrieveData =
+      '/v1/crm-services/mobile/retrieve-tsr-data';
+  // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
 
-  static const String DaemRetrieveData = '/v1/crm-services/mobile/retrieve-tsr-data';
-     // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
+  static const String DaemCreateTikcet =
+      '/v1/crm-services/mobile/create-daem-ticket';
+  //  '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
 
+  static const String MSRRetrieveMSRData =
+      '/v1/crm-services/mobile/retrieve-msr-data';
+  // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
 
-  static const String DaemCreateTikcet = '/v1/crm-services/mobile/create-daem-ticket';
-    //  '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
+  static const String MSRCreate =
+      '/v1/crm-services/mobile/create-muncipal-service';
+  //'/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
 
-  static const String MSRRetrieveMSRData = '/v1/crm-services/mobile/retrieve-msr-data';
-     // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
+  static const String INQMainAndSubClassifications =
+      '/v1/crm-services/mobile/main-and-sub-for-special-classification';
+  //  '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
 
-
-  static const String MSRCreate = '/v1/crm-services/mobile/create-muncipal-service';
-      //'/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
-
-  static const String INQMainAndSubClassifications = '/v1/crm-services/mobile/main-and-sub-for-special-classification';
-    //  '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
-
-  static const String INQAllSPLClassifications = '/v1/crm-services/mobile/special-classifications-by-type';
-      //'/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
+  static const String INQAllSPLClassifications =
+      '/v1/crm-services/mobile/special-classifications-by-type';
+  //'/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
 
   static const String INQCreate = '/v1/crm-services/mobile/create-inquiry';
-     // '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
+  // '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
 
+  static const String IncidentDaemUploadFile =
+      '/v1/crm-services/mobile/stream/upload';
+  // '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
 
-  static const String IncidentDaemUploadFile = '/v1/crm-services/mobile/stream/upload';
-     // '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
-
-
-  static const String IncidentDownloadFile = '/v1/crm-services/mobile/download-file';
-    //  '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
+  static const String IncidentDownloadFile =
+      '/v1/crm-services/mobile/download-file';
+  //  '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
 
   ///////////// not used apis
   // static const String INQMainClassifications =
@@ -594,21 +598,26 @@ class ApiUrl {
   static String checkCommercialLicense(String licenseId) =>
       'v1/balady-commercial-mobile-services/license/exists/$licenseId';
 
-  static const sendMessagechatBotFeedback = '/v1/chatbot-services/assign-feedback';
+  static const sendMessagechatBotFeedback =
+      '/v1/chatbot-services/assign-feedback';
   static const getChatgptOldSession = '/v1/chatbot-services/old-sessions';
   static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
   static const promptQuestions = '/v1/chatbot-services/prompt-questions';
-  static const promptQuestionsFollowUp = '/v1/chatbot-services/prompt-questions/follow-up';
+  static const promptQuestionsFollowUp =
+      '/v1/chatbot-services/prompt-questions/follow-up';
 
 //splash
   static const String splash = '/v1/portal-services/splash/images';
 
+  static String getObserverStatus(String identityNumber) =>
+      'v1/cis-certified-observers-services/registered-certified-observer-data/$identityNumber';
+  static String getMuncipalitList =
+      'v1/cis-certified-observers-services/municipalities';
+  static String checkMuncipalityAcceptance(String id) =>
+      'v1/cis-certified-observers-services/municipalities/$id/verifications';
 
-  static  String getObserverStatus(String identityNumber) => 'v1/cis-certified-observers-services/registered-certified-observer-data/$identityNumber';
-  static  String getMuncipalitList = 'v1/cis-certified-observers-services/municipalities';
-  static  String checkMuncipalityAcceptance(String id) => 'v1/cis-certified-observers-services/municipalities/$id/verifications';
   ///new EKRAM
   static getIdenticalDeseasedList(String id) =>
       '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
@@ -619,16 +628,22 @@ class ApiUrl {
   static EditTrip(int requestId, int tripId) =>
       'v1/superapp-ekram-services/trips/$requestId/$tripId/edit-trip';
 
-  static  String getMuncipalityCites(String municipalityId) => 'v1/cis-certified-observers-services/cities/$municipalityId';
-  static  String urlDistrictsList = 'v1/cis-certified-observers-services/districts';
+  static String getMuncipalityCites(String municipalityId) =>
+      'v1/cis-certified-observers-services/cities/$municipalityId';
+  static String urlDistrictsList =
+      'v1/cis-certified-observers-services/districts';
 
-
-  static  String registerObserver = 'v2/cis-certified-observers-services/external-inspector/registration';
-  static  String registerNewFreelancer = 'v1/freelancer-services/register';
-  static  String createNewFreelancerCertificate = 'v1/freelancer-services/certificate';
-  static  String freelancerCertificateStatus = 'v1/freelancer-services/certificate-status';
-  static  String updateFreelancerCertificate = 'v1/freelancer-services/update-certificate';
-  static  String getFreelancerCertificate = 'v1/freelancer-services/user-certificates';
+  static String registerObserver =
+      'v2/cis-certified-observers-services/external-inspector/registration';
+  static String registerNewFreelancer = 'v1/freelancer-services/register';
+  static String createNewFreelancerCertificate =
+      'v1/freelancer-services/certificate';
+  static String freelancerCertificateStatus =
+      'v1/freelancer-services/certificate-status';
+  static String updateFreelancerCertificate =
+      'v1/freelancer-services/update-certificate';
+  static String getFreelancerCertificate =
+      'v1/freelancer-services/user-certificates';
   static addNewPath(int requestId) =>
       'v1/superapp-ekram-services/trips/$requestId/add-trip';
   static ekramGetTrips(int requestId) =>
@@ -657,9 +672,11 @@ class ApiUrl {
       "v1/superapp-ekram-services/request/$requestId/request-details";
   static String saveDeceasdInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
-static String ekramTransportValidateSubmit(int requestId) => "v1/superapp-ekram-services/transport/$requestId/validate-and-submit";
-static String madinahEmirateApprovalStatus(int cemetryId , int id , int idType) => "v1/superapp-ekram-services/cemetery/deceased-burial-cemetery-approval/$cemetryId/$id/$idType";
-
+  static String ekramTransportValidateSubmit(int requestId) =>
+      "v1/superapp-ekram-services/transport/$requestId/validate-and-submit";
+  static String madinahEmirateApprovalStatus(
+          int cemetryId, int id, int idType) =>
+      "v1/superapp-ekram-services/cemetery/deceased-burial-cemetery-approval/$cemetryId/$id/$idType";
 
   static const getVolunteerProfile = 'v1/volunteer-platform-services/profiles';
   static const getSpecializations =
@@ -686,9 +703,6 @@ static String madinahEmirateApprovalStatus(int cemetryId , int id , int idType) 
   static submitVolunteerProfile(String profileId) =>
       'v1/volunteer-platform-services/profiles/$profileId';
 
-
   static const getRegions = 'v1/volunteer-platform-services/lookups/region';
   static const getcities = 'v1/volunteer-platform-services/lookups/city';
-
-
 }

@@ -204,7 +204,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+430"
+    version: "3.30.3+446"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -654,6 +654,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.10.1"
+  dashed_rect:
+    dependency: transitive
+    description:
+      name: dashed_rect
+      sha256: af85245671a270231f4368a9ddfcc6906bc56776da3a7a19d907081d73ae2216
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.4"
   dbus:
     dependency: transitive
     description:

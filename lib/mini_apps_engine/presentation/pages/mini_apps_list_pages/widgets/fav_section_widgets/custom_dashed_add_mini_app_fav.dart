@@ -1,0 +1,83 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/fav_mini_apps/add_fav_mini_apps.dart';
+import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+
+class CustomDashedAddMiniAppFav extends StatelessWidget {
+  final double? width;
+  final double? height;
+  final Color? backgroundColor;
+  final BorderRadiusGeometry? borderRadius;
+  final Widget? child;
+  final String? text;
+  const CustomDashedAddMiniAppFav({
+    super.key,
+    this.width,
+    this.height,
+    this.backgroundColor,
+    this.borderRadius,
+    this.child,
+    this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: context.read<NewMiniAppLogicCubit>(),
+                  child: const AddFavMiniApps(),
+                ),
+              ),
+            );
+          },
+          child: SizedBox(
+            width: width ?? context.w(53.95),
+            height: height ?? context.h(53.95),
+            child: DottedBorder(
+              radius: const Radius.circular(16),
+              borderType: BorderType.RRect,
+              color: const Color(0XFF809AA4),
+              strokeWidth: 2,
+              dashPattern: const [2.2084856033325195, 2.2084856033325195],
+              child: const Center(
+                child: Icon(
+                  Icons.add,
+                  color: Color(0XFF1B153D),
+                  size: 30,
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: context.screenWidth * 0.15,
+          height: context.screenHeight * 0.04,
+          child: Center(
+            child: AutoSizeText(
+              text ?? "add2".tr(),
+              maxLines: 2,
+              maxFontSize: 20,
+              minFontSize: 13,
+              overflow: TextOverflow.visible,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Color(0XFF1E2A36),
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

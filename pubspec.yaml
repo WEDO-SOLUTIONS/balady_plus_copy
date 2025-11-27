@@ -130,6 +130,7 @@ dependencies:
   adjust_sdk: 5.1.1
   flutter_appauth: ^9.0.0
 
+
   webview_flutter: 4.10.0
   flutter_inappwebview: ^6.1.5
 
@@ -178,7 +179,7 @@ dependencies:
   add_2_calendar: ^3.0.1
   flutter_svg_provider:
   app_settings: 5.1.1
-  dotted_border: ^2.0.0+3
+  dotted_border: ^2.1.0
   linkable: ^3.0.0
   flutter_hms_gms_availability: ^3.10.0
   huawei_push: ^6.12.0+303
@@ -263,6 +264,7 @@ dependencies:
   in_app_review: ^2.0.10
   external_app_launcher: ^4.0.3
   store_redirect: ^2.0.4
+  dotted_line: ^3.2.3
 
 dependency_overrides:
   # for dio_http_cache
@@ -297,6 +299,7 @@ flutter:
   shaders:
     - shaders/radar.frag
   assets:
+    - assets/mock/mini_apps_response.json
     - assets/
     - assets/icons/svg/
     - assets/icons/svg/jod/

@@ -1,0 +1,91 @@
+part of 'new_mini_app_logic_cubit.dart';
+
+class NewMiniAppLogicState {
+  //! Loading
+  final bool isFavLoading;
+  final bool isUnFavLoading;
+  final bool isSearching;
+  final bool isEntryPointsLoading;
+  final bool isAppsGroupLoading;
+  //! Result
+  final List<CategoryGroup> appGroups;
+  final List<MiniApp> favoriteApps;
+  final List<MiniApp> unFavoriteApps;
+  final List<MiniApp> searchResults;
+  final List<EntryPoints> entryPoints;
+  //! Error
+  final String? favError;
+  final String? unFavError;
+  final String? searchError;
+  final String? entryPointsError;
+
+  NewMiniAppLogicState({
+    required this.isFavLoading,
+    required this.favError,
+    required this.isUnFavLoading,
+    required this.unFavError,
+    required this.favoriteApps,
+    required this.unFavoriteApps,
+    required this.isAppsGroupLoading,
+    required this.appGroups,
+    required this.searchResults,
+    required this.isSearching,
+    required this.searchError,
+    required this.isEntryPointsLoading,
+    required this.entryPointsError,
+    required this.entryPoints,
+  });
+
+  factory NewMiniAppLogicState.initial() {
+    return NewMiniAppLogicState(
+      isFavLoading: false,
+      favError: null,
+      isUnFavLoading: false,
+      unFavError: null,
+      favoriteApps: const [],
+      unFavoriteApps: const [],
+      isAppsGroupLoading: false,
+      appGroups: const [],
+      searchResults: const [],
+      isSearching: false,
+      searchError: null,
+      isEntryPointsLoading: false,
+      entryPointsError: null,
+      entryPoints: const [],
+    );
+  }
+
+  NewMiniAppLogicState copyWith({
+    bool? isFavLoading,
+    String? favError,
+    bool? isUnFavLoading,
+    String? unFavError,
+    List<MiniApp>? favoriteApps,
+    List<MiniApp>? unFavoriteApps,
+    bool? isAppsGroupLoading,
+    List<CategoryGroup>? appGroups,
+    List<MiniApp>? searchResults,
+    bool? isSearching,
+    String? searchError,
+    bool? isEntryPointsLoading,
+    String? entryPointsError,
+    List<EntryPoints>? entryPoints,
+  }) {
+    return NewMiniAppLogicState(
+      isFavLoading: isFavLoading ?? this.isFavLoading,
+      favError: favError ?? this.favError,
+      favoriteApps: favoriteApps ?? this.favoriteApps,
+      unFavoriteApps: unFavoriteApps ?? this.unFavoriteApps,
+      isUnFavLoading: isUnFavLoading ?? this.isUnFavLoading,
+      unFavError: unFavError ?? this.unFavError,
+      isAppsGroupLoading: isAppsGroupLoading ?? this.isAppsGroupLoading,
+      appGroups: appGroups ?? this.appGroups,
+      searchResults: searchResults ?? this.searchResults,
+      isSearching: isSearching ?? this.isSearching,
+      searchError: searchError ?? this.searchError,
+      isEntryPointsLoading: isEntryPointsLoading ?? this.isEntryPointsLoading,
+      entryPointsError: entryPointsError ?? this.entryPointsError,
+      entryPoints: entryPoints ?? this.entryPoints,
+    );
+  }
+}
