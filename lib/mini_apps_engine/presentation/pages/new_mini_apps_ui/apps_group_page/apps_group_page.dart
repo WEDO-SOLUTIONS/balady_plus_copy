@@ -302,239 +302,237 @@ class AppsGroupPage extends StatelessWidget {
 */
 class AppsGroupPage extends StatelessWidget {
   final CategoryGroup appGroup;
-  final void Function()? onTap;
 
   const AppsGroupPage({
     super.key,
     required this.appGroup,
-    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final controller = TextEditingController();
 
-    return BlocProvider<NewMiniAppLogicCubit>.value(
-      value: sl<NewMiniAppLogicCubit>(),
-      // create: (context) => sl<NewMiniAppLogicCubit>(),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-              child: Container(
-                color: const Color(0xD9FFFFFF),
-              ),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+            child: Container(
+              color: const Color(0xD9FFFFFF),
             ),
-            SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.screenWidth * 0.04,
-                  ),
-                  child: Column(
-                    children: [
-                      StaggeredAppear(
-                        initialDelay: const Duration(milliseconds: 120),
-                        itemDuration: const Duration(milliseconds: 320),
-                        itemDelay: const Duration(milliseconds: 90),
-                        children: [
-                          CustomSubHeadingText(
-                            isTextCenter: true,
-                            width: context.screenWidth,
-                            height: context.h(35),
-                            text: CommonFunctions.isAppAR
-                                ? appGroup.nameAr
-                                : appGroup.nameEn,
-                            fontColor: const Color(0XFF242424),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: context.screenHeight * 0.02),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: context.w(49),
-                            height: context.h(49),
-                            child: DecoratedBox(
-                              decoration: BoxDecoration(
-                                color: const Color(0XFFFFFFFF),
-                                borderRadius: BorderRadius.circular(100),
-                                border: Border.all(
-                                  color: const Color(0xFFEDEDED),
-                                  width: 1,
-                                ),
-                              ),
-                              child: IconButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                icon: const Icon(Icons.close),
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.screenWidth * 0.04,
+                ),
+                child: Column(
+                  children: [
+                    StaggeredAppear(
+                      initialDelay: const Duration(milliseconds: 120),
+                      itemDuration: const Duration(milliseconds: 320),
+                      itemDelay: const Duration(milliseconds: 90),
+                      children: [
+                        CustomSubHeadingText(
+                          isTextCenter: true,
+                          width: context.screenWidth,
+                          height: context.h(35),
+                          text: CommonFunctions.isAppAR
+                              ? appGroup.nameAr
+                              : appGroup.nameEn,
+                          fontColor: const Color(0XFF242424),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: context.screenHeight * 0.02),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: context.w(49),
+                          height: context.h(49),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: const Color(0XFFFFFFFF),
+                              borderRadius: BorderRadius.circular(100),
+                              border: Border.all(
+                                color: const Color(0xFFEDEDED),
+                                width: 1,
                               ),
                             ),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: const Icon(Icons.close),
+                            ),
                           ),
-                          ValueListenableBuilder<TextEditingValue>(
-                            valueListenable: controller,
-                            builder: (context, value, child) {
-                              return MiniAppsCustomTextField(
-                                height: context.h(48),
-                                width: context.screenWidth * 0.75,
-                                suffixPadding: value.text.isNotEmpty
-                                    ? EdgeInsets.symmetric(
-                                        horizontal: context.screenWidth * 0.02)
-                                    : EdgeInsets.symmetric(
-                                        horizontal: context.screenWidth * 0.04),
-                                autoFocus: false,
-                                autofocus: false,
-                                controller: controller,
-                                onTap: () {},
-                                keyboardType: TextInputType.text,
-                                isReadOnly: false,
-                                suffixString: value.text.isEmpty
-                                    ? Text(
-                                        "search2".tr(),
-                                        style: const TextStyle(
-                                            color: Colors.black),
-                                      )
-                                    : const SizedBox(),
-                                suffixIcon: value.text.isEmpty
-                                    ? SvgPicture.asset(IconPath.searchSVG)
-                                    : IconButton(
-                                        onPressed: () {
-                                          controller.clear();
+                        ),
+                        ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: controller,
+                          builder: (context, value, child) {
+                            return MiniAppsCustomTextField(
+                              height: context.h(48),
+                              width: context.screenWidth * 0.75,
+                              suffixPadding: value.text.isNotEmpty
+                                  ? EdgeInsets.symmetric(
+                                      horizontal: context.screenWidth * 0.02)
+                                  : EdgeInsets.symmetric(
+                                      horizontal: context.screenWidth * 0.04),
+                              autoFocus: false,
+                              autofocus: false,
+                              controller: controller,
+                              onTap: () {},
+                              keyboardType: TextInputType.text,
+                              isReadOnly: false,
+                              suffixString: value.text.isEmpty
+                                  ? Text(
+                                      "search2".tr(),
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    )
+                                  : const SizedBox(),
+                              suffixIcon: value.text.isEmpty
+                                  ? SvgPicture.asset(IconPath.searchSVG)
+                                  : IconButton(
+                                      onPressed: () {
+                                        controller.clear();
+                                        context
+                                            .read<NewMiniAppLogicCubit>()
+                                            .searchMiniApp('');
+                                      },
+                                      icon: const Icon(
+                                        Icons.close_rounded,
+                                        color: Color(0XFFB2B2B2),
+                                      ),
+                                    ),
+                              onChanged: (query) {
+                                context
+                                    .read<NewMiniAppLogicCubit>()
+                                    .searchMiniApp(
+                                      query,
+                                      source: appGroup.apps,
+                                    );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: context.screenHeight * 0.04),
+                    BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+                      builder: (context, state) {
+                        if (controller.text.isEmpty &&
+                            state.searchResults.isEmpty &&
+                            !state.isSearching) {
+                          return StaggeredAppear(
+                            initialDelay: const Duration(milliseconds: 200),
+                            itemDuration: const Duration(milliseconds: 450),
+                            itemDelay: const Duration(milliseconds: 130),
+                            children: [
+                              SizedBox(
+                                width: context.screenWidth,
+                                // height: context.screenHeight * 0.70,
+                                child: SingleChildScrollView(
+                                  child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16,
+                                      childAspectRatio: 0.8,
+                                    ),
+                                    itemCount: appGroup.apps.length,
+                                    itemBuilder: (context, index) {
+                                      final miniApp = appGroup.apps[index];
+                                      return AppsGroupMiniAppsCardWidgets(
+                                        title: miniApp.name,
+                                        iconPath: miniApp.iconPath,
+                                        onTap: () {
                                           context
                                               .read<NewMiniAppLogicCubit>()
-                                              .searchMiniApp('');
+                                              .openMiniApp(
+                                                context,
+                                                miniApp,
+                                              );
                                         },
-                                        icon: const Icon(
-                                          Icons.close_rounded,
-                                          color: Color(0XFFB2B2B2),
-                                        ),
-                                      ),
-                                onChanged: (query) {
-                                  context
-                                      .read<NewMiniAppLogicCubit>()
-                                      .searchMiniApp(
-                                        query,
-                                        source: appGroup.apps,
                                       );
-                                },
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: context.screenHeight * 0.04),
-                      BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-                        builder: (context, state) {
-                          if (controller.text.isEmpty &&
-                              state.searchResults.isEmpty &&
-                              !state.isSearching) {
-                            return StaggeredAppear(
-                              initialDelay: const Duration(milliseconds: 200),
-                              itemDuration: const Duration(milliseconds: 450),
-                              itemDelay: const Duration(milliseconds: 130),
-                              children: [
-                                SizedBox(
-                                  width: context.screenWidth,
-                                  // height: context.screenHeight * 0.70,
-                                  child: SingleChildScrollView(
-                                    child: GridView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 16,
-                                        mainAxisSpacing: 16,
-                                        childAspectRatio: 0.8,
-                                      ),
-                                      itemCount: appGroup.apps.length,
-                                      itemBuilder: (context, index) {
-                                        final miniApp = appGroup.apps[index];
-                                        return AppsGroupMiniAppsCardWidgets(
-                                          title: miniApp.name,
-                                          iconPath: miniApp.iconPath,
-                                          onTap: onTap,
-                                          // onTap: () {
-                                          //   Navigator.of(context).push(
-                                          //     MaterialPageRoute(
-                                          //       builder: (_) =>
-                                          //           MockMiniAppsPage(
-                                          //         miniAppTitle: miniApp.name,
-                                          //       ),
-                                          //     ),
-                                          //   );
-                                          // },
-                                        );
-                                      },
-                                    ),
+                                    },
                                   ),
                                 ),
-                              ],
-                            );
-                          } else if (state.isSearching) {
-                            return const MiniAppsShimmerLoadingWidget();
-                          } else {
-                            final results = state.searchResults;
+                              ),
+                            ],
+                          );
+                        } else if (state.isSearching) {
+                          return const MiniAppsShimmerLoadingWidget();
+                        } else {
+                          final results = state.searchResults;
 
-                            if (results.isEmpty) {
-                              return Text(
-                                "no_results_found".tr(),
-                                style: const TextStyle(
-                                  color: Color(0xFF242424),
-                                  fontSize: 25,
-                                  fontFamily: "packages/balady_uikit/Frutiger",
-                                ),
-                              );
-                            }
-
-                            return StaggeredAppear(
-                              initialDelay: const Duration(milliseconds: 200),
-                              itemDuration: const Duration(milliseconds: 450),
-                              itemDelay: const Duration(milliseconds: 130),
-                              children: [
-                                SizedBox(
-                                  width: context.screenWidth,
-                                  height: context.screenHeight * 0.70,
-                                  child: SingleChildScrollView(
-                                    child: GridView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        crossAxisSpacing: 16,
-                                        mainAxisSpacing: 16,
-                                        childAspectRatio: 0.8,
-                                      ),
-                                      itemCount: results.length,
-                                      itemBuilder: (context, index) {
-                                        final miniApp = results[index];
-                                        return AppsGroupMiniAppsCardWidgets(
-                                          title: miniApp.name,
-                                          iconPath: miniApp.iconPath,
-                                          onTap: onTap,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          if (results.isEmpty) {
+                            return Text(
+                              "no_results_found".tr(),
+                              style: const TextStyle(
+                                color: Color(0xFF242424),
+                                fontSize: 25,
+                                fontFamily: "packages/balady_uikit/Frutiger",
+                              ),
                             );
                           }
-                        },
-                      ),
-                    ],
-                  ),
+
+                          return StaggeredAppear(
+                            initialDelay: const Duration(milliseconds: 200),
+                            itemDuration: const Duration(milliseconds: 450),
+                            itemDelay: const Duration(milliseconds: 130),
+                            children: [
+                              SizedBox(
+                                width: context.screenWidth,
+                                height: context.screenHeight * 0.70,
+                                child: SingleChildScrollView(
+                                  child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16,
+                                      childAspectRatio: 0.8,
+                                    ),
+                                    itemCount: results.length,
+                                    itemBuilder: (context, index) {
+                                      final miniApp = results[index];
+                                      return AppsGroupMiniAppsCardWidgets(
+                                        title: miniApp.name,
+                                        iconPath: miniApp.iconPath,
+                                        onTap: () {
+                                          context
+                                              .read<NewMiniAppLogicCubit>()
+                                              .openMiniApp(
+                                            context,
+                                            miniApp,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

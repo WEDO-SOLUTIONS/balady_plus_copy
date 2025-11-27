@@ -371,10 +371,15 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                               horizontal:
                                                   context.screenWidth * 0.01),
                                           child: CustomMiniAppsCard(
-                                            key: Key(favMiniApp
-                                                .id), //key for reordering
+                                            key: Key(favMiniApp.id),
+                                            //key for reordering
                                             onTap: () {
-                                              _handleTap(context, favMiniApp);
+                                              context
+                                                  .read<NewMiniAppLogicCubit>()
+                                                  .openMiniApp(
+                                                context,
+                                                favMiniApp,
+                                              );
                                               // Navigator.of(context).push(
                                               //   MaterialPageRoute(
                                               //     builder: (_) =>
@@ -466,7 +471,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                           ),
                                           itemCount: apps.length,
                                           itemBuilder: (context, appIndex) {
-                                            final app = apps[appIndex];
+                                            final miniApp = apps[appIndex];
 
                                             return CustomMiniAppsCard(
                                               width: context.w(104),
@@ -476,18 +481,15 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                               titlesHeight: context.h(17),
                                               titlesWidth: context.w(66),
                                               withCardEffect: true,
-                                              text: app.name,
-                                              miniAppIcon: app.iconPath,
+                                              text: miniApp.name,
+                                              miniAppIcon: miniApp.iconPath,
                                               onTap: () {
-                                                _handleTap(context, app);
-                                                // Navigator.of(context).push(
-                                                //   MaterialPageRoute(
-                                                //     builder: (_) =>
-                                                //         MockMiniAppsPage(
-                                                //       miniAppTitle: app.name,
-                                                //     ),
-                                                //   ),
-                                                // );
+                                                context
+                                                    .read<NewMiniAppLogicCubit>()
+                                                    .openMiniApp(
+                                                  context,
+                                                  miniApp,
+                                                );
                                               },
                                             );
                                           },
@@ -546,12 +548,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) => AppsGroupPage(
-                                              appGroup: appGroup,
-                                              onTap: () {
-                                                print("object");
-                                                _handleTap(context,
-                                                    appGroup.apps[index]);
-                                              }),
+                                            appGroup: appGroup,
+                                          ),
                                         ),
                                       );
                                     },
@@ -573,65 +571,5 @@ class HomeMiniAppsListPages extends StatelessWidget {
     );
   }
 
-  void _handleTap(BuildContext context, MiniApp miniApp) async {
-    if (miniApp.latestVersion?.nafathLogin == true &&
-        !CommonProperties.isLoggedInMunicipality &&
-        miniApp.latestVersion?.deepLinkDto == null) {
-      showDialog(
-        context: context,
-        builder: (ctx) => NeedLoginDialog(
-          onSuccessLogin: (bool? isSuccess) async {
-            if (isSuccess ?? false) {
-              NavigationService.pushNamed(
-                routeName: RouteName.miniAppsMainScreen,
-                args: miniApp,
-              );
-            }
-          },
-        ),
-      );
-    } else if (miniApp.latestVersion?.otpLogin == true &&
-        miniApp.latestVersion?.deepLinkDto == null) {
-      CommonFunctions.onLogin();
-    } else {
-      if (miniApp.latestVersion?.deepLinkDto != null) {
-        try {
-          await AppLaunchService.launchApp(
-            deepLinkInfo: miniApp.latestVersion!.deepLinkDto!,
-            //deepLink: deeplink,
-          );
-        } catch (e) {
-          CommonFunctions.showError('launch_failed'.tr());
-        }
-      } else {
-        if (miniApp.childDeepLinkUrl != null) {
-          NewMiniAppLogicState state =
-              context.read<NewMiniAppLogicCubit>().state;
-          MiniApp? parentMAiniApp =
-              state.parentMiniApp[miniApp.parentServiceKey];
 
-          if (parentMAiniApp != null) {
-            NavigationService.pushNamed(
-              routeName: RouteName.miniAppsMainScreen,
-              args: miniApp.copyWith(
-                // get this from parent
-                latestVersion: parentMAiniApp.latestVersion,
-                serviceKey: miniApp.parentServiceKey,
-                path: miniApp.childDeepLinkUrl,
-              ),
-            );
-          } else {
-            /// TODO : Show errors Not Fund The Parent Maini App
-            CommonFunctions.showError(
-                'Show errors Not Fund The Parent Maini App'.tr());
-          }
-        } else {
-          NavigationService.pushNamed(
-            routeName: RouteName.miniAppsMainScreen,
-            args: miniApp,
-          );
-        }
-      }
-    }
-  }
 }
