@@ -39,9 +39,7 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
   void initState() {
     super.initState();
     _dgisSheetController = ToggleSheetController(
-        heightModel: ToggleSheetHeightModel.fraction(
-          .98,
-        ),
+        heightModel: ToggleSheetHeightModel.offset(Spacing.$4x),
         onClose: (_) {
           ref.read(appRouterProvider).back();
         });
@@ -67,7 +65,9 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
             scrollController: _dgisSheetController,
             backgroundColor: context.colors.backgroundSurface4,
             safeAreaColor: context.colors.backgroundSurface4,
-            dragger: const SheetDragger(),
+            dragger: SheetDragger(
+              backgroundColor: context.colors.backgroundSurface1,
+            ),
             header: ColoredBox(
               color: context.colors.backgroundSurface1,
               child: const Column(
