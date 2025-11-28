@@ -93,6 +93,11 @@ class CarMapController(
 
     private val parkingAttrName = "parkingOn"
 
+    private fun getCurrentLevelId(): ru.dgis.sdk.LevelId? {
+        val building = map?.indoorManager?.focusedBuilding ?: return null
+        return building.levels.getOrNull(building.defaultLevelIndex.toInt())?.id
+    }
+
     init {
         closeables.add(
             routeEditor.routesInfoChannel.connect(::onRoutesInfoChanged)
@@ -408,7 +413,10 @@ class CarMapController(
 
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
         val startPoint = locationSource.lastLocation?.let {
-            RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+            RouteSearchPoint(
+                coordinates = GeoPoint(it.latitude, it.longitude),
+                levelId = getCurrentLevelId()
+            )
         } ?: return
 
         val finishPoint = if (objectId != null) RouteSearchPoint(

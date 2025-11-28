@@ -11,10 +11,11 @@ part 'nearest_object.g.dart';
 sealed class NearestObject {}
 
 class DGisNearestObject extends NearestObject {
-  DGisNearestObject(this.nearestPoint, this.object);
+  DGisNearestObject(this.nearestPoint, this.object, this.levelId);
 
   final GeoPointWithElevationMessage nearestPoint;
   final DirectoryObjectMessage object;
+  final int? levelId;
 }
 
 class CooridnatesNearestObject extends NearestObject {
@@ -84,7 +85,7 @@ class _NearestObject extends _$NearestObject {
     final nearest = filteredObjects.first;
 
     return AsyncValue.data(
-      DGisNearestObject(nearest.$1.closestMapPoint, nearest.$2),
+      DGisNearestObject(nearest.$1.closestMapPoint, nearest.$2, nearest.$1.levelId),
     );
   }
 }
