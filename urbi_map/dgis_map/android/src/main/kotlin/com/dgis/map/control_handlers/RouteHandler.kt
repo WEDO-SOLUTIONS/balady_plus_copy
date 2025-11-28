@@ -89,9 +89,7 @@ class RouteHandler(
 
     private fun getCurrentLevelId(): LevelId? {
         val building = map.indoorManager.focusedBuilding ?: return null
-        if (building.levels.isEmpty()) return null
-        // Find first floor (level with name "1"), fallback to first level in list
-        return building.levels.find { it.name == "1" }?.id ?: building.levels[0].id
+        return building.levels.getOrNull(building.defaultLevelIndex.toInt())?.id
     }
 
     fun setRouteParams(params: RouteEditorRouteParamsMessage) {
@@ -107,13 +105,13 @@ class RouteHandler(
                     RouteSearchPoint(
                             coordinates =
                                     GeoPoint(
-                                            params.startPoint!!.point.latitude,
-                                            params.startPoint!!.point.longitude
+                                            params.startPoint.point.latitude,
+                                            params.startPoint.point.longitude
                                     ),
                             objectId =
                                     DgisObjectId(
-                                            objectId = params.startPoint!!.objectId?.objectId ?: 0,
-                                            entranceId = params.startPoint!!.objectId?.entranceId
+                                            objectId = params.startPoint.objectId?.objectId ?: 0,
+                                            entranceId = params.startPoint.objectId?.entranceId
                                                             ?: 0,
                                     ),
                             levelId = params.startPoint!!.levelId?.let { LevelId(it) }
@@ -131,16 +129,16 @@ class RouteHandler(
                     RouteSearchPoint(
                             coordinates =
                                     GeoPoint(
-                                            params.finishPoint!!.point.latitude,
-                                            params.finishPoint!!.point.longitude
+                                            params.finishPoint.point.latitude,
+                                            params.finishPoint.point.longitude
                                     ),
                             objectId =
                                     DgisObjectId(
-                                            objectId = params.finishPoint!!.objectId?.objectId ?: 0,
-                                            entranceId = params.finishPoint!!.objectId?.entranceId
+                                            objectId = params.finishPoint.objectId?.objectId ?: 0,
+                                            entranceId = params.finishPoint.objectId?.entranceId
                                                             ?: 0,
                                     ),
-                            levelId = params.finishPoint!!.levelId?.let { LevelId(it) }
+                            levelId = params.finishPoint.levelId?.let { LevelId(it) }
                     )
                 }
 

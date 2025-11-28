@@ -39,9 +39,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   if (directoryObject.levelId == null) {
     final nearestObjects = await dgisController.getNearestObjects();
-    final renderedObject = nearestObjects
-        .where((e) => e.objectId.objectId == objectId.objectId)
-        .firstOrNull;
+    final renderedObject = nearestObjects.where((e) => e.objectId.objectId == objectId.objectId).firstOrNull;
 
     if (renderedObject?.levelId != null) {
       directoryObject.levelId = renderedObject!.levelId;
