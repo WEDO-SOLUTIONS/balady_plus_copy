@@ -75,7 +75,7 @@ class AppFeedbackTagMapper {
             ? {
                 Tag.arrivalTime,
                 Tag.goodNavigation,
-                Tag.niceDesign,
+                Tag.greatDesign,
                 Tag.easyToUse,
                 Tag.parking,
               }
