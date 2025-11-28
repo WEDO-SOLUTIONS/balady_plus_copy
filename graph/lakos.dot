@@ -4648,7 +4648,7 @@ digraph "" {
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/extensions/string_ext.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/dark_mode.dart";
-  "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/directory_object_from_dgis_id.dart";
+  "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/highlight.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/rubric_marker_type_mapper.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/selected_marker.dart";
