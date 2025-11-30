@@ -73,7 +73,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
             color: AppColor.black,
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.normal,
-            fontSize: 15.0,
+            fontSize: 14.0,
           ),
           textAlign: TextAlign.right,
         ),

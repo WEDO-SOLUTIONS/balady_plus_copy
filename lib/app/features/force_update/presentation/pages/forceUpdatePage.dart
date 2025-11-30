@@ -51,14 +51,14 @@ class _ForceUpdatePageState extends State<ForceUpdatePage> {
             const SizedBox(height: 24),
             CustomTextWidget(
               "force_update_title".tr(),
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: AppFontWeight.bold,
               fontColor: AppColor.blackModern600Light,
             ),
             const SizedBox(height: 8),
             CustomTextWidget(
               "force_update_desc".tr(),
-              fontSize: 18,
+              fontSize: 16,
               maxLines: null,
               textAlign: TextAlign.center,
               height: 1.2,

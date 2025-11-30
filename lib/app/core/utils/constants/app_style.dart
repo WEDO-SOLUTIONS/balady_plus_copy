@@ -16,26 +16,26 @@ class AppStyle {
     fontFamily: fontFamily,
   );
   static final athkarTimeStyle = TextStyle(
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: fontFamily,
     color: AppColor.primary800Light,
     fontWeight: AppFontWeight.bold.fontWeight,
   );
   static final timerStyle = TextStyle(
-    fontSize: 23,
+    fontSize: 16,
     color: AppColor.black,
     fontWeight: AppFontWeight.regular.fontWeight,
     fontFamily: fontFamily,
   );
   static final athkarNameStyle = TextStyle(
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
     color: AppColor.black,
   );
   static final timePickerStyle = TextStyle(
     color: AppColor.blueSkyLight800,
-    fontSize: 20.879,
+    fontSize: 16,
     fontWeight: AppFontWeight.regular.fontWeight,
     fontFamily: fontFamily,
   );
@@ -60,7 +60,7 @@ class AppStyle {
     height: 1.0,
   );
   static final elevatedButtonStyle = TextStyle(
-    fontSize: 18.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.medium.fontWeight,
     color: AppColor.white,
     fontFamily: fontFamily,
@@ -90,7 +90,7 @@ class AppStyle {
   );
 
   static final sectionTitleStyle = TextStyle(
-    fontSize: 18.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern800Light,
     fontFamily: fontFamily,
@@ -98,7 +98,7 @@ class AppStyle {
   );
 
   static final tagStyle = TextStyle(
-    fontSize: 11.0,
+    fontSize: 12.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern50Light,
     fontFamily: fontFamily,
@@ -106,7 +106,7 @@ class AppStyle {
   );
 
   static final serviceTitleStyle = TextStyle(
-    fontSize: 14.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern900Light,
     fontFamily: fontFamily,
@@ -114,7 +114,7 @@ class AppStyle {
   );
 
   static final serviceDescriptionStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern900Light.withOpacity(0.6),
     fontFamily: fontFamily,
@@ -122,7 +122,7 @@ class AppStyle {
   );
 
   static final semiBoldTextStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern900Light,
     fontFamily: fontFamily,
@@ -138,7 +138,7 @@ class AppStyle {
   );
 
   static final prayerTimeStyle = TextStyle(
-    fontSize: 8.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.light.fontWeight,
     color: AppColor.black54,
     fontFamily: fontFamily,
@@ -146,7 +146,7 @@ class AppStyle {
   );
 
   static final serviceIconTextStyle = TextStyle(
-    fontSize: 9.0,
+    fontSize: 14.0,
     color: AppColor.blackModern700Light,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
@@ -156,13 +156,13 @@ class AppStyle {
   static final serviceListTitleTextStyle = TextStyle(
     color: AppColor.blackModern500Light,
     fontWeight: AppFontWeight.bold.fontWeight,
-    fontSize: 15.0,
+    fontSize: 16.0,
     fontFamily: fontFamily,
     height: 1.0,
   );
 
   static final appBarTitleTextStyle = TextStyle(
-    fontSize: 20.0,
+    fontSize: 28.0,
     color: AppColor.blackModern700Light,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
@@ -170,14 +170,14 @@ class AppStyle {
   );
 
   static final listTitleTextStyle = TextStyle(
-    fontSize: 14.0,
+    fontSize: 16.0,
     color: AppColor.blackModern600Light,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
     height: 1.0,
   );
   static final profileSectionTitleTextStyle = TextStyle(
-    fontSize: 18.0,
+    fontSize: 16.0,
     color: AppColor.blackModern500Light,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
@@ -193,7 +193,7 @@ class AppStyle {
   );
 
   static final profileTypeTextStyle = TextStyle(
-    fontSize: 16.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern50Light.withOpacity(0.6),
     fontFamily: fontFamily,
@@ -201,7 +201,7 @@ class AppStyle {
   );
 
   static final nearbyItemTitleTextStyle = TextStyle(
-    fontSize: 13.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern700Light,
     fontFamily: fontFamily,
@@ -209,7 +209,7 @@ class AppStyle {
   );
 
   static final nearbyItemSubTitleTextStyle = TextStyle(
-    fontSize: 9.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.black42,
     fontFamily: fontFamily,
@@ -217,7 +217,7 @@ class AppStyle {
   );
 
   static final profileListBetaTextStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blue600Light,
     fontFamily: fontFamily,
@@ -225,7 +225,7 @@ class AppStyle {
   );
 
   static final cardTitleTextStle = TextStyle(
-    fontSize: 18.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern600Light,
     fontFamily: fontFamily,
@@ -233,14 +233,14 @@ class AppStyle {
   );
 
   static final dashboardStatisticsCountTextStle = TextStyle(
-    fontSize: 18.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.black.fontWeight,
     fontFamily: fontFamily,
     height: 1.0,
   );
 
   static final dashboardStatisticsTitleTextStle = TextStyle(
-    fontSize: 14.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern600Light,
     fontFamily: fontFamily,
@@ -248,7 +248,7 @@ class AppStyle {
   );
 
   static final dashboardNoteTextStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.secondary900Light,
     fontFamily: fontFamily,
@@ -256,7 +256,7 @@ class AppStyle {
   );
 
   static final requestNumberTextStle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
@@ -264,7 +264,7 @@ class AppStyle {
   );
 
   static final requestParamterTitleTextStle = TextStyle(
-    fontSize: 10.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.primary700Light,
     fontFamily: fontFamily,
@@ -278,7 +278,7 @@ class AppStyle {
   );
 
   static final requestParamterValueTextStle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
@@ -286,7 +286,7 @@ class AppStyle {
   );
 
   static final subMessageTextStle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
@@ -294,7 +294,7 @@ class AppStyle {
   );
 
   static final dropDownTitleTextStyle = TextStyle(
-    fontSize: 15.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern700Light,
     fontFamily: fontFamily,
@@ -310,7 +310,7 @@ class AppStyle {
   );
 
   static final personalInfoParameterTitleTextStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.primary700Light,
     fontFamily: fontFamily,
@@ -318,7 +318,7 @@ class AppStyle {
   );
 
   static final personalInfoParameterValueTextStyle = TextStyle(
-    fontSize: 16.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern600Light,
     fontFamily: fontFamily,
@@ -340,14 +340,14 @@ class AppStyle {
   );
 
   static final serviceCardParameterTitleTextStyle = TextStyle(
-    fontSize: 13.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern600Light,
     fontFamily: fontFamily,
   );
 
   static final serviceCardWarningTitleTextStyle = TextStyle(
-    fontSize: 15.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.primary900Light,
     fontFamily: fontFamily,
@@ -374,14 +374,14 @@ class AppStyle {
       color: AppColor.grey1000);
 
   static final countAthkarStyle = TextStyle(
-    fontSize: 22.05,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
     color: AppColor.blackModern50Light,
   );
   static final boardingTitle = TextStyle(
     color: AppColor.grey1000,
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -410,14 +410,14 @@ class AppStyle {
   );
   static final countTextAthkarStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   // Violation page styling
   static final violationSelectGuideTitlePageStyle = TextStyle(
     color: AppColor.white,
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -435,7 +435,7 @@ class AppStyle {
   );
   static final violationSelectOptionSubtitleStyle = TextStyle(
     color: AppColor.grayOpacity,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -447,7 +447,7 @@ class AppStyle {
   );
   static final violationCreateTitle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -465,7 +465,7 @@ class AppStyle {
   );
   static final violationLocationAdressStyle = TextStyle(
     color: AppColor.blackModern800Light,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -483,25 +483,25 @@ class AppStyle {
   );
   static final violationLocationCategoryMapStyle = TextStyle(
     color: AppColor.blueSkyLight800,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final violationResultsHeaderStyle = TextStyle(
     color: AppColor.primary50Light,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final violationStyle = TextStyle(
     color: AppColor.primary50Light,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final violationNumberStyle = TextStyle(
     color: AppColor.secondary100Light,
-    fontSize: 36,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -513,13 +513,13 @@ class AppStyle {
   );
   static final violationResultSelectedOptionStyle = TextStyle(
     color: AppColor.primary50Light,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final violationResultUnSelectedOptionStyle = TextStyle(
     color: AppColor.blackModern700Light,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -531,25 +531,25 @@ class AppStyle {
   );
   static final violationListTitleStyle = TextStyle(
     color: AppColor.blackModern700Light,
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final violationStartFromStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 9,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final violationNumberStyle1 = TextStyle(
     color: AppColor.blueSkyLight800,
-    fontSize: 13.5,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final violationRiyalPerWorkerStyle = TextStyle(
     color: AppColor.blueSkyLight800,
-    fontSize: 9,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -585,19 +585,19 @@ class AppStyle {
   );
   static final createComplianceRiyadhTitle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final createComplianceRiyadhRadioStyle = TextStyle(
     color: AppColor.blackModern700Light,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final complianceTitleStyle = TextStyle(
     color: AppColor.blackModern700Light,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -615,19 +615,19 @@ class AppStyle {
   );
   static final complianceFirstSubmitSubtitleStyle = TextStyle(
     color: AppColor.blackModern500Light,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final complianceFeesStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 9,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final complianceFeesStatusStyle = TextStyle(
     color: AppColor.blueSkyLight800,
-    fontSize: 13.5,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -651,7 +651,7 @@ class AppStyle {
   );
   static final comlianceDocumentMessageStyle = TextStyle(
     color: AppColor.blueSkyLight800,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -663,7 +663,7 @@ class AppStyle {
   );
   static final complianceClausesOptionStyle = TextStyle(
     color: AppColor.blackModern700Light,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.medium.fontWeight,
     fontFamily: fontFamily,
   );
@@ -675,7 +675,7 @@ class AppStyle {
   );
   static final complianceTitleLabelLicenseStyle = TextStyle(
     color: AppColor.blueSkyLight800,
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -688,37 +688,37 @@ class AppStyle {
   // Events Styles
   static final eventsMainPageStyle = TextStyle(
     color: AppColor.blackModern700Light,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsOptionsStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsMonthStyle = TextStyle(
     color: AppColor.blackOpacity,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: AppFontWeight.regular.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsMonthStyle1 = TextStyle(
     color: AppColor.white,
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: AppFontWeight.regular.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsDayStyle = TextStyle(
     color: AppColor.black,
-    fontSize: 26,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsDayStyle1 = TextStyle(
     color: AppColor.white,
-    fontSize: 26,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -730,73 +730,73 @@ class AppStyle {
   );
   static final eventsLocationTextStyle = TextStyle(
     color: AppColor.blackModern300Light,
-    fontSize: 9,
+    fontSize: 14,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     fontFamily: fontFamily,
   );
   static final moneyStyleEvents = TextStyle(
     color: AppColor.white,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final riyalEventStyle = TextStyle(
     color: AppColor.white,
-    fontSize: 9,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventMainTitleStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsMainSubtitleStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsTitleSectionStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsDetailsTitleStyle = TextStyle(
     color: AppColor.blackModern600Light,
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsDetailsSubtitleStyle = TextStyle(
     color: AppColor.blackModern500Light,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsDescriptionTextStyle = TextStyle(
     color: AppColor.blackModern500Light,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventsCategory = TextStyle(
     color: AppColor.greenOpacity,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     fontFamily: fontFamily,
   );
   static final eventNotFoundTextStyle = TextStyle(
     color: AppColor.grey1000,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
   static final selfRatingTitleStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
@@ -814,35 +814,35 @@ class AppStyle {
   );
 
   static final dateTextStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
   );
 
   static final tagTextStyle = TextStyle(
-    fontSize: 11.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.primary900Light,
     fontFamily: fontFamily,
   );
 
   static final chatMessageTextStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern50Light,
     fontFamily: fontFamily,
   );
 
   static final locationCardTitleTextStyle = TextStyle(
-    fontSize: 15.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.primary900Light,
     fontFamily: fontFamily,
   );
 
   static final locationCardAddressTextStyle = TextStyle(
-    fontSize: 12.0,
+    fontSize: 14.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
@@ -850,20 +850,20 @@ class AppStyle {
 
   static const textFieldSuffixTextStyle = TextStyle(
     color: Color(0x7F1A1A1A),
-    fontSize: 12,
+    fontSize: 14,
     fontFamily: 'packages/balady_uikit/Frutiger',
     fontWeight: FontWeight.w600,
   );
 
   static final compassOffsetTextStyle = TextStyle(
-    fontSize: 52.0,
+    fontSize: 16.0,
     fontWeight: AppFontWeight.medium.fontWeight,
     color: AppColor.riverBed,
     fontFamily: fontFamily,
   );
 
   static final compassDirectionTextStyle = TextStyle(
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: AppFontWeight.medium.fontWeight,
     color: AppColor.riverBed,
     fontFamily: fontFamily,
@@ -884,21 +884,21 @@ class AppStyle {
   );
 
   static final textFieldTitleTextStyle = TextStyle(
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern700Light,
     fontFamily: fontFamily,
   );
 
   static final lightTitleTextStyle = TextStyle(
-    fontSize: 10,
+    fontSize: 16,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.primary900Light,
     fontFamily: fontFamily,
   );
 
   static final lightTextStyle = TextStyle(
-    fontSize: 10,
+    fontSize: 14,
     fontWeight: AppFontWeight.semiBold.fontWeight,
     color: AppColor.blackModern500Light,
     fontFamily: fontFamily,
@@ -913,7 +913,7 @@ class AppStyle {
   );
   static final eventsStateMonthStyle = TextStyle(
     color: AppColor.blackModern900Light,
-    fontSize: 9,
+    fontSize: 14,
     fontWeight: AppFontWeight.bold.fontWeight,
     fontFamily: fontFamily,
   );
