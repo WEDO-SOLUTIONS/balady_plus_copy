@@ -1,14 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/apps_group_section_shimmer_widget.dart';
@@ -27,211 +22,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-/*
-class HomeMiniAppsListPages extends StatefulWidget {
-  const HomeMiniAppsListPages({
-    super.key,
-  });
-
-  @override
-  State<HomeMiniAppsListPages> createState() => _HomeMiniAppsListPagesState();
-}
-
-class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
-  @override
-  void initState() {
-    super.initState();
-    // Load mini apps when the widget is initialized
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<HomeMiniAppsListCubit>().loadMiniApps();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar:
-          CommonFunctions.isTodayInRanges ? null : _buildDefaultAppBar(context),
-      body: CommonFunctions.isTodayInRanges
-          ? Column(children: [Expanded(child: _buildCustomAppBarLayout())])
-          : _buildDefaultLayout(),
-    );
-  }
-
-  Widget _buildDefaultLayout() {
-    return Column(
-      children: [
-        Expanded(
-          child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-            child: Container(
-              color: Colors.grey.shade100,
-              child: BlocBuilder<HomeMiniAppsListCubit, HomeMiniAppsListState>(
-                builder: (context, state) {
-                  return _buildContent(state);
-                },
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCustomAppBarLayout() {
-    return Stack(
-      children: [
-        // Custom AppBar
-        _buildCustomAppBar(context),
-
-        Positioned(
-          top: 130,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: _buildDefaultLayout(),
-        )
-      ],
-    );
-  }
-
-  Widget _buildContent(HomeMiniAppsListState state) {
-    if (state is HomeMiniAppsListFiledState) {
-      return _buildErrorState(context, state.errors);
-    }
-
-    if (state is HomeMiniAppsListSuccessState) {
-      return _buildSuccessState(state);
-    }
-
-    if (state is HomeMiniAppsListLoadingState) {
-      return _buildLoadingState();
-    }
-
-    return _buildLoadingState();
-  }
-
-  Widget _buildSuccessState(HomeMiniAppsListSuccessState state) {
-    return RefreshIndicator(
-      onRefresh: () async {
-        context.read<HomeMiniAppsListCubit>().loadMiniApps();
-      },
-      child: ListView.separated(
-        padding: const EdgeInsets.only(
-          top: 20,
-          left: 12,
-          right: 12,
-        ),
-        itemCount: state.miniAppsList.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
-        itemBuilder: (context, index) {
-          return MiniAppsItemWidget(
-            miniApp: state.miniAppsList[index],
-            isEvent: CommonFunctions.isTodayInRanges,
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildLoadingState() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  //! App bar widget ....
-  PreferredSizeWidget _buildDefaultAppBar(BuildContext context) {
-    return AppBar(
-      title: Text(
-        "AppsTitle".tr(),
-        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
-              color: const Color(0xFF003449),
-              fontFamily: 'packages/balady_uikit/Frutiger',
-            ),
-      ),
-      centerTitle: true,
-      backgroundColor: Colors.white,
-      elevation: 0,
-    );
-  }
-
-  // Widget _buildCustomAppBar(BuildContext context) {
-  //   return Container(
-  //     height: 210,
-  //     width: double.infinity,
-  //     decoration: const BoxDecoration(
-  //       image: DecorationImage(
-  //         image: AssetImage("assets/images/national.png"),
-  //         fit: BoxFit.fill,
-  //       ),
-  //     ),
-  //     child: Center(
-  //       child: Text(
-  //         "AppsTitle".tr(),
-  //         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-  //               fontWeight: FontWeight.w700,
-  //               color: Colors.white,
-  //               fontSize: 20,
-  //               fontFamily: 'packages/balady_uikit/Frutiger',
-  //             ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  Widget _buildErrorState(BuildContext context, String error) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.shade700),
-            const SizedBox(height: 16),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  context.read<HomeMiniAppsListCubit>().loadMiniApps();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colors.accentDefault,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  "refresh".tr(),
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-*/
 
 class HomeMiniAppsListPages extends StatelessWidget {
   const HomeMiniAppsListPages({super.key});
@@ -258,11 +48,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
-                            // mainAxisAlignment: MainAxisAlignment.start,
-                            // crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                // color: Colors.red,
                                 width: context.w(170),
                                 height: context.h(30),
                                 child: AutoSizeText(
@@ -280,7 +67,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                // color: Colors.blueGrey,
                                 width: context.w(170),
                                 height: context.h(30),
                                 child: AutoSizeText(
@@ -351,7 +137,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     height: context.screenHeight * 0.13,
                                     width: context.screenWidth * 0.70,
                                     child: ReorderableListView.builder(
-                                      // Changed to ReorderableListView
                                       scrollDirection: Axis.horizontal,
                                       itemCount: state.favoriteApps.length,
                                       onReorder: (oldIndex, newIndex) {
@@ -377,18 +162,9 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                               context
                                                   .read<NewMiniAppLogicCubit>()
                                                   .openMiniApp(
-                                                context,
-                                                favMiniApp,
-                                              );
-                                              // Navigator.of(context).push(
-                                              //   MaterialPageRoute(
-                                              //     builder: (_) =>
-                                              //         MockMiniAppsPage(
-                                              //       miniAppTitle:
-                                              //           favMiniApp.name,
-                                              //     ),
-                                              //   ),
-                                              // );
+                                                    context,
+                                                    favMiniApp,
+                                                  );
                                             },
                                             text: favMiniApp.name,
                                             titlesHeight:
@@ -485,11 +261,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                               miniAppIcon: miniApp.iconPath,
                                               onTap: () {
                                                 context
-                                                    .read<NewMiniAppLogicCubit>()
+                                                    .read<
+                                                        NewMiniAppLogicCubit>()
                                                     .openMiniApp(
-                                                  context,
-                                                  miniApp,
-                                                );
+                                                      context,
+                                                      miniApp,
+                                                    );
                                               },
                                             );
                                           },
@@ -544,7 +321,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     apps: appGroup.apps,
                                     totalAppCount: appGroup.appCount,
                                     onTap: () {
-                                      print("object");
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) => AppsGroupPage(
@@ -570,6 +346,4 @@ class HomeMiniAppsListPages extends StatelessWidget {
       ),
     );
   }
-
-
 }

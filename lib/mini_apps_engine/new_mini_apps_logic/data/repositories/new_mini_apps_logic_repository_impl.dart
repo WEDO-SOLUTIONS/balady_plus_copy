@@ -26,63 +26,6 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
         Map<String, CategoryGroup> mapAppCategoryGroup = {};
         Map<String, EntryPoints> mapEntryPoints = {};
 
-        // final appGroups = <CategoryGroup>[];
-        // final entryPoints = <EntryPoints>[];
-
-        // final realApps = _realMiniApps(resultData);
-        //
-        // final miniAppItems = realApps.toList();
-        //
-        // final appGroups = <CategoryGroup>[];
-        // final entryPoints = <EntryPoints>[];
-        //
-        // for (final category in resultData.categories) {
-        //   final appsInCategory = <MiniApp>[];
-        //
-        //   for (final app in realApps) {
-        //     final belongs =
-        //         app.categories.any((miniCat) => miniCat.id == category.id);
-        //
-        //     if (belongs) {
-        //       appsInCategory.add(app);
-        //     }
-        //   }
-        //
-        //   if (appsInCategory.isNotEmpty && category.isActive == true) {
-        //     appGroups.add(
-        //       CategoryGroup(
-        //         id: category.id,
-        //         nameAr: category.arName,
-        //         nameEn: category.enName,
-        //         apps: appsInCategory,
-        //       ),
-        //     );
-        //   }
-        // }
-        //
-        // for (final ep in resultData.entryPoints) {
-        //   final appsForEntryPoint = miniAppItems
-        //       .where(
-        //         (app) => app.entryPoints.any(
-        //           (entry) => entry.entryPointKey == ep.entryPointKey,
-        //         ),
-        //       )
-        //       .toList();
-        //
-        //   if (appsForEntryPoint.isNotEmpty && ep.isActive == true) {
-        //     entryPoints.add(
-        //       EntryPoints(
-        //         id: ep.id,
-        //         entryPointKey: ep.entryPointKey,
-        //         arName: ep.arName,
-        //         enName: ep.enName,
-        //         isActive: ep.isActive,
-        //         apps: appsForEntryPoint,
-        //       ),
-        //     );
-        //   }
-        // }
-
         for (final item in resultData.miniApps) {
           if (item.haveChilds) {
             if (item.childServices != null) {
@@ -153,24 +96,4 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     }
     return mapAppCategoryGroup;
   }
-
-// List<MiniApp> _realMiniApps(Data data) {
-//   final result = <MiniApp>[];
-//
-//   for (final item in data.miniApps) {
-//     if (!item.haveChilds) {
-//       result.add(item);
-//     } else {
-//       if (item.childServices != null) {
-//         for (final child in item.childServices!) {
-//           if (!child.haveChilds) {
-//             result.add(child);
-//           }
-//         }
-//       }
-//     }
-//   }
-//
-//   return result;
-// }
 }
