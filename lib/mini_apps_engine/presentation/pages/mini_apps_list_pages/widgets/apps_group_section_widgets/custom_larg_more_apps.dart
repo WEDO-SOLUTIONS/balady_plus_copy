@@ -11,6 +11,8 @@ class CustomLargMoreApps extends StatelessWidget {
   final double? height;
   final double? iconWidth;
   final double? iconHeight;
+  final double? textWidth;
+  final double? textHeight;
   final Color? backgroundColor;
   final BorderRadiusGeometry? borderRadius;
   final Widget? child;
@@ -25,6 +27,8 @@ class CustomLargMoreApps extends StatelessWidget {
     super.key,
     this.width,
     this.height,
+    this.textWidth,
+    this.textHeight,
     this.iconHeight,
     this.iconWidth,
     this.backgroundColor,
@@ -103,9 +107,11 @@ class CustomLargMoreApps extends StatelessWidget {
                                 iconPath: displayApps[2].iconPath,
                               )
                             : const EmptyCardWidget(),
-                        CustomNumberOfAppsSubCard(
-                          count: remainingCount > 0 ? remainingCount : 0,
-                        ),
+                        remainingCount > 0
+                            ? CustomNumberOfAppsSubCard(
+                                count: remainingCount > 0 ? remainingCount : 0,
+                              )
+                            : const SizedBox(),
                       ],
                     )
                   ],
@@ -115,14 +121,14 @@ class CustomLargMoreApps extends StatelessWidget {
           ),
           SizedBox(height: context.screenHeight * 0.01),
           SizedBox(
-            width: context.screenWidth * 0.40,
-            height: context.screenHeight * 0.03,
+            width: textWidth ?? context.screenWidth * 0.40,
+            height: textHeight ?? context.screenHeight * 0.03,
             child: Center(
               child: AutoSizeText(
                 text ?? "example",
                 maxLines: 2,
                 maxFontSize: 20,
-                minFontSize: 14,
+                minFontSize: 10,
                 overflow: TextOverflow.visible,
                 textAlign: TextAlign.center,
                 style: const TextStyle(

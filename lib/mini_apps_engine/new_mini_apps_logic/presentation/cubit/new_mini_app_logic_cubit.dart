@@ -204,9 +204,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     await secureStorage.write(key: _favoritesKey, value: jsonString);
   }
 
-
-
-
   void openMiniApp(BuildContext context, MiniApp miniApp) async {
     if (miniApp.latestVersion?.nafathLogin == true &&
         !CommonProperties.isLoggedInMunicipality &&
@@ -240,7 +237,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       } else {
         if (miniApp.childDeepLinkUrl != null) {
           MiniApp? parentMAiniApp =
-          state.parentMiniApp[miniApp.parentServiceKey];
+              state.parentMiniApp[miniApp.parentServiceKey];
 
           if (parentMAiniApp != null) {
             NavigationService.pushNamed(
@@ -267,6 +264,13 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     }
   }
 
+  void clearSearch() {
+    emit(state.copyWith(
+      searchResults: [],
+      isSearching: false,
+      searchError: null,
+    ));
+  }
 
   @override
   Future<void> close() {

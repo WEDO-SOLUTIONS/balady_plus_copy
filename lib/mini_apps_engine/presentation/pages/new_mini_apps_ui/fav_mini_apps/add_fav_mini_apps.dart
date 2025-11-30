@@ -162,15 +162,16 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                 child: IconButton(
                                   onPressed: () {
                                     if (_searchController.text.isNotEmpty) {
-                                      _searchController.clear();
-                                      context
-                                          .read<NewMiniAppLogicCubit>()
-                                          .searchMiniApp('');
+                                      // _searchController.clear();
+                                      // context
+                                      //     .read<NewMiniAppLogicCubit>()
+                                      //     .searchMiniApp('');
+                                      _stopSearch(context);
                                     } else {
                                       _stopSearch(context);
                                     }
                                   },
-                                  icon: const Icon(Icons.arrow_back),
+                                  icon: const Icon(Icons.close),
                                 ),
                               ),
                             ),
@@ -304,5 +305,87 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
         );
       },
     );
+  }
+}
+
+class FavSearchSectionShimmerLoadingWidget extends StatelessWidget {
+  const FavSearchSectionShimmerLoadingWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const Color placeholderColor = Color(0xFFE0E0E0);
+
+    // Height mimics the target item height: context.h(64)
+    final double itemHeight = context.h(64);
+
+    // Padding mimics the target horizontal padding
+    final double horizontalPadding = context.screenWidth * 0.02;
+    // In a real app, use: Shimmer.fromColors(baseColor: Colors.grey[300]!, highlightColor: Colors.grey[100]!, child: child)
+    // For this example, we just return the child structure wrapped in a color.
+    return ListView.separated(
+        // We use the same separator logic as the original list
+        separatorBuilder: (context, index) =>
+            SizedBox(height: context.screenHeight * 0.02),
+        scrollDirection: Axis.vertical,
+        // Fixed count ensures the loading screen is consistent
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return SizedBox(
+            width: context.screenWidth,
+            height: itemHeight,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.white, // Background color of the container
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0XFFEFEEEE),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        // 1. Icon Placeholder (Mimics 48x48 icon)
+                        Container(
+                          width: context.w(48),
+                          height: context.h(48),
+                          decoration: BoxDecoration(
+                            color: placeholderColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        SizedBox(width: context.screenWidth * 0.02),
+
+                        // 2. Text Placeholder (Mimics miniApp.name, 192 wide)
+                        Container(
+                          width: context.w(192),
+                          height:
+                              context.h(15), // Placeholder height for text line
+                          decoration: BoxDecoration(
+                            color: placeholderColor,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // 3. Switch Placeholder (Small indicator on the right)
+                    Container(
+                      width: context.w(40),
+                      height: context.h(25),
+                      decoration: BoxDecoration(
+                        color: placeholderColor,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
