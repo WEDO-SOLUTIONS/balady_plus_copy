@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -37,12 +38,17 @@ class CustomSubHeadingText extends StatelessWidget {
                 textAlign: TextAlign.start,
               ),
             )
-          : Text(
+          : AutoSizeText(
               text,
+              maxFontSize: 18,
+              minFontSize: 15,
+              overflow: TextOverflow.visible,
+              maxLines: 1,
               style: TextStyle(
                 color: fontColor ?? Colors.black,
                 fontWeight: fontWeight ?? FontWeight.w700,
-                fontSize: fontSize ?? 18,
+                // fontSize: fontSize ?? 18,
+
                 fontFamily: "packages/balady_uikit/Frutiger",
               ),
               textAlign: TextAlign.start,

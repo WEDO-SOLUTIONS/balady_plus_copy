@@ -210,7 +210,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                       SizedBox(height: context.screenHeight * 0.02),
                       const CustomDashedLineWidget(),
                       SizedBox(height: context.screenHeight * 0.02),
-                      //! Most common apps section
+                      //! Most used apps section
                       BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                         builder: (context, state) {
                           if (state.isEntryPointsLoading) {
