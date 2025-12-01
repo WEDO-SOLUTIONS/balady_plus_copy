@@ -251,9 +251,13 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                           children: [
                             //! Fav apps
                             state.favoriteApps.isNotEmpty
-                                ? const StaggeredAppear(
+                                ? StaggeredAppear(
                                     children: [
-                                      GetAllFavMiniAppsWidget(),
+                                      GetAllFavMiniAppsWidget(
+                                        height: state.unFavoriteApps.isNotEmpty
+                                            ? context.screenHeight * 0.40
+                                            : context.screenHeight * 0.73,
+                                      ),
                                     ],
                                   )
                                 : const SizedBox(),
@@ -261,21 +265,26 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                             SizedBox(height: context.screenHeight * 0.02),
 
                             //! All apps (unFavorite)
-                            StaggeredAppear(
-                              initialDelay: const Duration(milliseconds: 220),
-                              itemDuration: const Duration(milliseconds: 120),
-                              itemDelay: const Duration(milliseconds: 100),
-                              children: [
-                                CustomSubHeadingText(
-                                  width: context.w(144),
-                                  height: context.h(28),
-                                  text: 'all_apps'.tr(),
-                                  fontColor: const Color(0XFF242424),
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                ),
-                              ],
-                            ),
+                            state.unFavoriteApps.isNotEmpty
+                                ? StaggeredAppear(
+                                    initialDelay:
+                                        const Duration(milliseconds: 220),
+                                    itemDuration:
+                                        const Duration(milliseconds: 120),
+                                    itemDelay:
+                                        const Duration(milliseconds: 100),
+                                    children: [
+                                      CustomSubHeadingText(
+                                        width: context.w(144),
+                                        height: context.h(28),
+                                        text: 'all_apps'.tr(),
+                                        fontColor: const Color(0XFF242424),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18,
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox(),
                             SizedBox(height: context.screenHeight * 0.01),
                             state.unFavoriteApps.isNotEmpty
                                 ? StaggeredAppear(
