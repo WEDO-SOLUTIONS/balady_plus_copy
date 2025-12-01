@@ -307,7 +307,7 @@ void _onUpdateRouteState(
     throw Exception('The route must already exist to add point to it');
   }
 
-  final finishPoint = currentRouteState.finishPoint?.value;
+  final finishPoint = currentRouteState.finishPoint;
   if (finishPoint == null) {
     return;
   }
@@ -315,17 +315,10 @@ void _onUpdateRouteState(
   _onDirectionsTap(
     context,
     objectId,
-    title,
-    finishPoint,
+    finishPoint.label,
+    finishPoint.value!,
     ref,
-    intermediatePoints: currentRouteState.intermediatePoints?.points
-        .mapIndexed(
-          (i, e) => RouteParamsPointWithLabel(
-            value: e,
-            label: l10n.intermediatePointNumberedName(i + 1),
-          ),
-        )
-        .toList(),
+    intermediatePoints: currentRouteState.intermediatePointsWithLabels?.points,
   );
 }
 

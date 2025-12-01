@@ -29,14 +29,17 @@ class RouteParamsPoint extends Equatable {
 }
 
 extension RouteParamsPointListX on List<RouteParamsPoint?> {
-  RouteParamsPointList? getIntermediatePoints() =>
-      length > 2 ? RouteParamsPointList(sublist(1, length - 1).nonNulls.toList()) : null;
+  RouteParamsPointList? getIntermediatePoints() => length > 2
+      ? RouteParamsPointList(
+          sublist(1, length - 1).nonNulls.map((e) => RouteParamsPointWithLabel(value: e, label: '')).toList(),
+        )
+      : null;
 
   String latLngToString() => '[${map((e) => e?.latLngToString()).join(',')}]';
 }
 
 class RouteParamsPointList extends Equatable {
-  final List<RouteParamsPoint> points;
+  final List<RouteParamsPointWithLabel> points;
 
   const RouteParamsPointList(this.points);
 
@@ -73,7 +76,11 @@ class RouteParamsPointWithLabel extends Equatable {
 }
 
 extension RouteParamsPointWithLabelListX on List<RouteParamsPointWithLabel?> {
-  RouteParamsPointList? getIntermediatePoints() => map((e) => e?.value).toList().getIntermediatePoints();
+  RouteParamsPointList? getIntermediatePointsWithLabels() => length > 2
+      ? RouteParamsPointList(
+          sublist(1, length - 1).nonNulls.toList(),
+        )
+      : null;
 
   String latLngToString() => map((e) => e?.value).toList().latLngToString();
 }

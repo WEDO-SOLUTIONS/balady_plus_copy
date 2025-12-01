@@ -41,7 +41,7 @@ class Routes extends _$Routes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
-    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.pointMessage).toList();
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
 
     unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
@@ -135,7 +135,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
-    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.pointMessage).toList();
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
 
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
