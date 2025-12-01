@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class GetAllUnFavMiniAppsWidget extends StatelessWidget {
   final double? width;
   final double? height;
+
   const GetAllUnFavMiniAppsWidget({super.key, this.width, this.height});
 
   @override
@@ -32,12 +33,6 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                     state.unFavError!,
                     style: const TextStyle(color: Colors.red),
                   ),
-                );
-              }
-
-              if (state.unFavoriteApps.isEmpty) {
-                return const Center(
-                  child: Text('لا توجد تطبيقات أخرى'),
                 );
               }
 

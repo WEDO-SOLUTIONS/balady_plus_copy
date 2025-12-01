@@ -35,7 +35,11 @@ class SearchMiniAppsResultsList extends StatelessWidget {
           return Center(
             child: Text(
               'no_results_found'.tr(),
-              style: const TextStyle(color: Color(0xFF777777)),
+              style: const TextStyle(
+                color: Color(0xFF777777),
+                fontFamily: "packages/balady_uikit/Frutiger",
+                fontSize: 30,
+              ),
             ),
           );
         }
