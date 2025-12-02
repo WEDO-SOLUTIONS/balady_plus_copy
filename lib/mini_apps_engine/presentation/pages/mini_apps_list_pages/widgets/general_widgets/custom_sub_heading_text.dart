@@ -10,15 +10,18 @@ class CustomSubHeadingText extends StatelessWidget {
   final FontWeight? fontWeight;
   final double? fontSize;
   final bool? isTextCenter;
-  const CustomSubHeadingText(
-      {super.key,
-      required this.text,
-      this.width,
-      this.height,
-      this.fontColor,
-      this.fontSize,
-      this.isTextCenter,
-      this.fontWeight});
+  final int? maxLines;
+  const CustomSubHeadingText({
+    super.key,
+    required this.text,
+    this.width,
+    this.height,
+    this.fontColor,
+    this.fontSize,
+    this.isTextCenter,
+    this.fontWeight,
+    this.maxLines,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class CustomSubHeadingText extends StatelessWidget {
               maxFontSize: 18,
               minFontSize: 15,
               overflow: TextOverflow.visible,
-              maxLines: 1,
+              maxLines: maxLines ?? 1,
               style: TextStyle(
                 color: fontColor ?? Colors.black,
                 fontWeight: fontWeight ?? FontWeight.w700,

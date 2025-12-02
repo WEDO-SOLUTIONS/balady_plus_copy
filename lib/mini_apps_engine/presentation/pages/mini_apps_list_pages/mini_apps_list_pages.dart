@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/general_error_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/apps_group_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_fav_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_most_used_section_shimmer_widget.dart';
@@ -36,7 +37,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
         body: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
           builder: (context, state) {
             final hasError =
-                state.entryPointsError != null || state.favError != null;
+                state.entryPointsError != null && state.favError != null;
             if (hasError) {
               return GeneralErrorWidget(
                 error: state.favError ?? state.entryPointsError!,
@@ -60,8 +61,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                               Column(
                                 children: [
                                   SizedBox(
-                                    width: context.w(170),
-                                    height: context.h(30),
+                                    width: context.w(175),
+                                    height: context.h(40),
                                     child: AutoSizeText(
                                       "quick_apps".tr(),
                                       maxLines: 1,
@@ -77,8 +78,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     ),
                                   ),
                                   SizedBox(
-                                    width: context.w(170),
-                                    height: context.h(30),
+                                    width: context.w(175),
+                                    height: context.h(40),
                                     child: AutoSizeText(
                                       "one_place".tr(),
                                       maxLines: 1,
@@ -121,7 +122,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                         ],
                       ),
                       //!
-                      SizedBox(height: context.screenHeight * 0.04),
+                      SizedBox(height: context.screenHeight * 0.02),
                       //! Fav apps section (Fav title & show and add fav apps) ....
                       BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                         builder: (context, state) {
@@ -370,59 +371,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
               ),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class GeneralErrorWidget extends StatelessWidget {
-  final String error;
-  const GeneralErrorWidget({
-    super.key,
-    required this.error,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.shade700),
-            const SizedBox(height: 16),
-            Text(
-              error,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: 200,
-              child: ElevatedButton(
-                onPressed: () {
-                  context.read<NewMiniAppLogicCubit>().loadMiniApps();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: context.colors.accentDefault,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  "refresh".tr(),
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );
