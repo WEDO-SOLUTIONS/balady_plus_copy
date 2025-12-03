@@ -1,6 +1,12 @@
 package com.dgis.map.android_auto
 
+import android.content.pm.PackageManager
+import android.database.ContentObserver
 import android.graphics.Color
+import android.location.LocationManager
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.model.Action
@@ -69,6 +75,60 @@ class NavigationScreen(
     private val hostFlutterApi: HostFlutterApi
     private var favouritesUpdateJob: Job? = null
     private val coroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val locationManager: LocationManager =
+        carContext.getSystemService(android.content.Context.LOCATION_SERVICE) as LocationManager
+
+    private val locationSettingsObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
+        override fun onChange(selfChange: Boolean) {
+            val newState = if (isLocationEnabled()) LocationState.AVAILABLE else LocationState.NOT_AVAILABLE
+            if (newState != locationState) {
+                locationState = newState
+                invalidate()
+            }
+        }
+    }
+
+    private fun hasLocationPermission(): Boolean {
+        return carContext.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        return locationManager.isLocationEnabled
+    }
+
+    private fun checkLocationPermissionAndState() {
+        if (!hasLocationPermission()) {
+            if (screenManager.top !is RequestPermissionScreen) {
+                screenManager.push(
+                    RequestPermissionScreen(carContext) {
+                        mapController.onLocationOPermissionGranted()
+                    }
+                )
+            }
+        } else if (!isLocationEnabled()) {
+            if (locationState != LocationState.NOT_AVAILABLE) {
+                locationState = LocationState.NOT_AVAILABLE
+                invalidate()
+            }
+        } else {
+            if (locationState != LocationState.AVAILABLE) {
+                locationState = LocationState.AVAILABLE
+                invalidate()
+            }
+        }
+    }
+
+    private fun registerLocationSettingsObserver() {
+        carContext.contentResolver.registerContentObserver(
+            Settings.Secure.getUriFor(Settings.Secure.LOCATION_MODE),
+            false,
+            locationSettingsObserver
+        )
+    }
+
+    private fun unregisterLocationSettingsObserver() {
+        carContext.contentResolver.unregisterContentObserver(locationSettingsObserver)
+    }
 
     init {
         navigationManager =
@@ -88,15 +148,23 @@ class NavigationScreen(
             object : DefaultLifecycleObserver {
                 override fun onCreate(owner: LifecycleOwner) {
                     mapController.setNavigationListener(this@NavigationScreen)
+                    checkLocationPermissionAndState()
                 }
 
                 override fun onResume(owner: LifecycleOwner) {
+                    checkLocationPermissionAndState()
+                    registerLocationSettingsObserver()
                     tryToShowFavourites()
+                }
+
+                override fun onPause(owner: LifecycleOwner) {
+                    unregisterLocationSettingsObserver()
                 }
 
                 override fun onDestroy(owner: LifecycleOwner) {
                     mapController.resetNavigationListener()
                     favouritesUpdateJob?.cancel()
+                    unregisterLocationSettingsObserver()
                     coroutineScope.cancel()
                 }
             }
@@ -114,6 +182,7 @@ class NavigationScreen(
                 }
             }
         }
+
     }
 
     private var isEndTripShown: Boolean = false
