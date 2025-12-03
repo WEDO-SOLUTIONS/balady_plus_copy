@@ -189,7 +189,6 @@ class NavigationScreen(
 
     private var navigationState = NavigationState.DISABLED
     private var locationState = LocationState.AVAILABLE
-    private var wasNavigating = false
 
     private var step: Step? = null
     private var nextStep: Step? = null
@@ -226,7 +225,7 @@ class NavigationScreen(
         navigationTemplate.setMapActionStrip(mapActionStrip)
         navigationTemplate.setPanModeListener(panModeListener)
 
-        if (wasNavigating && locationState == LocationState.NOT_AVAILABLE) {
+        if (locationState == LocationState.NOT_AVAILABLE) {
             navigationTemplate.setNavigationInfo(
                 MessageInfo.Builder(getString(R.string.location_signal_lost_message))
                     .build()
@@ -260,13 +259,6 @@ class NavigationScreen(
         val prevState = navigationState
         navigationState = state
 
-        if (state == NavigationState.NAVIGATION ||
-            state == NavigationState.REROUTING ||
-            state == NavigationState.FREE_ROAM
-        ) {
-            wasNavigating = true
-        }
-
         when (state) {
             NavigationState.NAVIGATION -> {
                 tryPopFavouritesPreview()
@@ -274,7 +266,6 @@ class NavigationScreen(
             }
 
             NavigationState.FINISHED -> {
-                wasNavigating = false
                 CoroutineScope(Dispatchers.Main).launch {
                     mapController.showMyLocation()
                 }
@@ -466,7 +457,6 @@ class NavigationScreen(
 
     private fun stopNavigation(bySystem: Boolean = false) {
         navigationState = NavigationState.DISABLED
-        wasNavigating = false
         speedInfo = SpeedInfoModel()
         step = null
         nextStep = null
