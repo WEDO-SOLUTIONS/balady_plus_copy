@@ -2843,7 +2843,7 @@
   "gyroscope_error": "Sorry, you cannot benefit from the service because your device does not support the Gyroscope feature.",
   "cancelText": "Cancel",
   "not_registered": "You are not logged in",
-  "not_register_desc": "You must log in to access municipal services",
+  "not_register_desc": "Municipal services require a separate login process.",
   "24Hour": "24 hours",
   "limited": "Limited period",
   "releaseText": "Issuing a tobacco activity permit",

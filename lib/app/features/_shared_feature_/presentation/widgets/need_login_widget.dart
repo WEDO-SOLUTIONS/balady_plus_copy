@@ -55,6 +55,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                 fontWeight: AppFontWeight.bold,
                 fontSize: 20,
               ),
+
               const SizedBox(height: 8),
               CustomTextWidget(
                 widget.desc ?? ('not_register_desc').tr(),
