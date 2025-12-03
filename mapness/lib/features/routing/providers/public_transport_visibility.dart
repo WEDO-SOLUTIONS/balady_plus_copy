@@ -77,7 +77,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       final hasRoutes = await _checkPublicTransportRoutes(
         normalizedStartPoint,
         normalizedFinishPoint,
-        intermediatePoints?.points,
+        intermediatePoints?.points.map((e) => e.value).nonNulls.toList(),
       );
 
       if (!hasRoutes) {

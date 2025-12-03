@@ -74,10 +74,12 @@ class CurrentRouteState with _$CurrentRouteState {
 
   RouteParamsPointWithLabel? get finishPoint => points.lastOrNull;
 
+  RouteParamsPointList? get intermediatePointsWithLabels => points.getIntermediatePointsWithLabels();
+
   RouteParamsPointList? get intermediatePoints => points.map((e) => e.value).toList().getIntermediatePoints();
 
   bool containsIntermediatePOI(int objectId) =>
-      intermediatePoints?.points.where((e) => e.objectId == objectId).isNotEmpty ?? false;
+      intermediatePoints?.points.where((e) => e.value?.objectId == objectId).isNotEmpty ?? false;
 
   bool isStartOrFinishPOI(int objectId) =>
       [startPoint, finishPoint].nonNulls.where((e) => e.value?.objectId == objectId).isNotEmpty;

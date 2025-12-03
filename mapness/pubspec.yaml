@@ -75,7 +75,7 @@ dependencies:
   hive_generator: 2.0.1
   internet_connection_checker: 1.0.0+1
   hive: 2.2.3
-  path_provider: 2.1.4
+  path_provider: 2.1.5
   expansion_widget: 0.1.0
   uuid: 4.5.1
   carousel_slider: 5.0.0

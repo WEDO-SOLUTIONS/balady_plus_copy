@@ -71,7 +71,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _initNavigationTypeCalculation() async {
-    await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
     if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
       unawaited(_calculateNavigationType(null));
     } else {
@@ -292,6 +291,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
     _navigationStarted = true;
+    if (!ref.context.mounted) {
+      return;
+    }
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
     final location = ref.read(cityByLocationProvider.notifier);
