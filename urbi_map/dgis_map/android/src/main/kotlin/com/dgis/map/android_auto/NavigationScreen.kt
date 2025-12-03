@@ -225,7 +225,7 @@ class NavigationScreen(
         navigationTemplate.setMapActionStrip(mapActionStrip)
         navigationTemplate.setPanModeListener(panModeListener)
 
-        if (locationState == LocationState.NOT_AVAILABLE) {
+        if ((isNavigation || isFreeRoam) && locationState == LocationState.NOT_AVAILABLE) {
             navigationTemplate.setNavigationInfo(
                 MessageInfo.Builder(getString(R.string.location_signal_lost_message))
                     .build()
