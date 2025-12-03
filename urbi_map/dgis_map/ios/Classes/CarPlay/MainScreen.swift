@@ -12,6 +12,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let eventChannel: DgisStreamHandler?
     private let container: DGis.Container
     unowned private let hostFlutterApi: HostFlutterApi
+    private let indoorControlHandler: IndoorControlHandler
 
     init(
         map: Map,
@@ -27,6 +28,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     ) {
         self.map = map
         self.container = container
+        self.indoorControlHandler = IndoorControlHandler(manager: map.indoorManager)
         self.routeEditor = RouteEditor(context: try! container.context)
         self.routeEditorSource = RouteEditorSource(
             context: try! container.context, routeEditor: routeEditor,
@@ -82,6 +84,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         mapTemplate.trailingNavigationBarButtons = []
         mapTemplate.mapButtons = []
         navigationSessionManeuvers.cancel()
+        indoorControlHandler.cancel()
         window.rootViewController = nil
     }
 
@@ -516,7 +519,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             coordinates: GeoPoint(
                 latitude: lastLocation.value.latitude,
                 longitude: lastLocation.value.longitude
-            ))
+            ),
+            levelId: indoorControlHandler.currentLevelId
+        )
 
         let routeEditorRouteParams = RouteEditorRouteParams(
             startPoint: startPoint,

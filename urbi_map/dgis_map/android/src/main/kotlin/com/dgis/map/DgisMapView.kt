@@ -79,8 +79,7 @@ class DgisMapView(
     private val closables = mutableListOf<AutoCloseable>()
 
     private fun getCurrentLevelId(): LevelId? {
-        val building = map?.indoorManager?.focusedBuilding ?: return null
-        return building.levels.getOrNull(building.defaultLevelIndex.toInt())?.id
+        return indoorControlHandler?.currentLevelId
     }
 
     init {
@@ -1102,10 +1101,10 @@ class DgisMapView(
                 )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler)
+        indoorControlHandler = IndoorControlHandler(map, eventSink)
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler, indoorControlHandler)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
-        indoorControlHandler = IndoorControlHandler(map, eventSink)
         visibleRectHandler = VisibleRectHandler(map, eventSink)
         searchHandler =
                 SearchHandler(
