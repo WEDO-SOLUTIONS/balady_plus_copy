@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
@@ -18,7 +19,6 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -194,6 +194,13 @@ class HomeMiniAppsListPages extends StatelessWidget {
 
                                                 miniAppIcon:
                                                     favMiniApp.iconPath,
+                                                child: CustomNetworkImageWidget(
+                                                  favMiniApp.iconPath,
+                                                  sso: true,
+                                                  ssoAuth: true,
+                                                  imageWidth: context.w(42),
+                                                  imageHeight: context.h(42),
+                                                ),
                                               ),
                                             );
                                           },
@@ -275,8 +282,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                 return CustomMiniAppsCard(
                                                   width: context.w(104),
                                                   height: context.h(104),
-                                                  iconHeight: context.h(48),
-                                                  iconWidth: context.w(48),
+                                                  iconHeight: context.h(64),
+                                                  iconWidth: context.w(64),
                                                   titlesHeight: context.h(17),
                                                   titlesWidth: context.w(66),
                                                   withCardEffect: true,
@@ -291,6 +298,14 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                           miniApp,
                                                         );
                                                   },
+                                                  child:
+                                                      CustomNetworkImageWidget(
+                                                    miniApp.iconPath,
+                                                    sso: true,
+                                                    ssoAuth: true,
+                                                    imageWidth: context.w(42),
+                                                    imageHeight: context.h(42),
+                                                  ),
                                                 );
                                               },
                                             ),
