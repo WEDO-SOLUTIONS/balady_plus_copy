@@ -1,10 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class CustomMiniAppsCard extends StatelessWidget {
   final double? width;
@@ -84,21 +82,14 @@ class CustomMiniAppsCard extends StatelessWidget {
               boxShadow: boxShadow ?? defaultShadow,
             ),
             child: SizedBox(
-              width: width ?? context.w(53.95),
-              height: height ?? context.h(53.95),
+              width: width ?? context.w(54.95),
+              height: height ?? context.h(54.95),
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   color: backgroundColor ?? Colors.white,
                   borderRadius: borderRadius ?? BorderRadius.circular(16),
                 ),
-                child: child ??
-                    Center(
-                      child: SvgPicture.asset(
-                        miniAppIcon ?? IconPath.defaultMiniAppIcon,
-                        width: iconWidth ?? context.w(26),
-                        height: iconHeight ?? context.h(26),
-                      ),
-                    ),
+                child: child,
               ),
             ),
           ),

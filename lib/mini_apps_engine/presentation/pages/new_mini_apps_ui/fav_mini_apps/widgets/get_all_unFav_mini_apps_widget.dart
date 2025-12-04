@@ -56,7 +56,7 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                       ),
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: context.screenWidth * 0.02,
+                          horizontal: context.screenWidth * 0.01,
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -69,6 +69,8 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
                                   iconHeight: context.h(37.73630905151367),
                                   iconWidth: context.w(37.73630905151367),
                                   isTextRemove: true,
+                                  iconPath: miniApp.iconPath,
+                                  radius: 12.7,
                                 ),
                                 SizedBox(
                                   width: context.screenWidth * 0.02,
