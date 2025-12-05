@@ -10,7 +10,8 @@ part 'offer_details_body.g.dart';
 class OfferDetailsBody extends MomraBody<OfferDetails, OfferDetailsData> {
   OfferDetailsBody({required super.statusDetails, super.data});
 
-  factory OfferDetailsBody.fromJson(Map<String, dynamic> json) => _$OfferDetailsBodyFromJson(json);
+  factory OfferDetailsBody.fromJson(Map<String, dynamic> json) =>
+      _$OfferDetailsBodyFromJson(json);
 }
 
 @noRenameNoToJson
@@ -22,7 +23,8 @@ class OfferDetailsData extends Data<OfferDetails> {
     required super.result,
   });
 
-  factory OfferDetailsData.fromJson(Map<String, dynamic> json) => _$OfferDetailsDataFromJson(json);
+  factory OfferDetailsData.fromJson(Map<String, dynamic> json) =>
+      _$OfferDetailsDataFromJson(json);
 }
 
 @noRenameNoToJson
@@ -52,9 +54,10 @@ class OfferDetails extends Offer {
     required super.crNumber,
     required super.favorite,
     required super.redeemed,
-    required super.typeDetails,
     required this.terms,
     required this.briefDurationTo,
+    required super.distance,
+    super.typeDetails,
   });
 
   OfferDetails copyWith({
@@ -64,7 +67,7 @@ class OfferDetails extends Offer {
     String? description,
     OfferType? type,
     OfferProvider? provider,
-    Iterable<Category>? categories,
+    Iterable<CategoryWithSubCategories>? categories,
     Iterable<String>? images,
     DateTime? publishStartDate,
     DateTime? publishEndDate,
@@ -80,6 +83,7 @@ class OfferDetails extends Offer {
     TypeDetails? typeDetails,
     String? terms,
     double? briefDurationTo,
+    String? distance,
   }) =>
       OfferDetails(
         id: id ?? this.id,
@@ -97,14 +101,17 @@ class OfferDetails extends Offer {
         branchName: branchName ?? this.branchName,
         city: city ?? this.city,
         location: location ?? this.location,
-        commercialLicenseNumber: commercialLicenseNumber ?? this.commercialLicenseNumber,
+        commercialLicenseNumber:
+            commercialLicenseNumber ?? this.commercialLicenseNumber,
         crNumber: crNumber ?? this.crNumber,
         favorite: favorite ?? this.favorite,
         redeemed: redeemed ?? this.redeemed,
         typeDetails: typeDetails ?? this.typeDetails,
         terms: terms ?? this.terms,
         briefDurationTo: briefDurationTo ?? this.briefDurationTo,
+        distance: distance ?? this.distance,
       );
 
-  factory OfferDetails.fromJson(Map<String, dynamic> json) => _$OfferDetailsFromJson(json);
+  factory OfferDetails.fromJson(Map<String, dynamic> json) =>
+      _$OfferDetailsFromJson(json);
 }

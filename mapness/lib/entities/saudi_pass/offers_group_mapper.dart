@@ -11,7 +11,7 @@ extension OffersGroupMapper on OffersGroup {
     }
 
     return switch (mainCategory) {
-      Category.food => OffersGroup.food,
+      Category.eat => OffersGroup.eat,
       Category.shopping => OffersGroup.shopping,
       Category.homeAndAuto => OffersGroup.homeAndAuto,
       Category.beautyAndHealth => OffersGroup.beautyAndHealth,
@@ -22,7 +22,7 @@ extension OffersGroupMapper on OffersGroup {
   }
 
   String toCategoryId() => switch (this) {
-        OffersGroup.food => Category.food,
+        OffersGroup.eat => Category.eat,
         OffersGroup.shopping => Category.shopping,
         OffersGroup.homeAndAuto => Category.homeAndAuto,
         OffersGroup.beautyAndHealth => Category.beautyAndHealth,

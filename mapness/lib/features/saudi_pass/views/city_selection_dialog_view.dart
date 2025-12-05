@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:mapness/features/saudi_pass/views/search_view.dart';
 
 abstract class CitySelectionDialogView implements Listenable {
   Iterable<SearchView> get searchViews;
@@ -6,12 +7,4 @@ abstract class CitySelectionDialogView implements Listenable {
   String get search;
 
   void onSearchInput(String input);
-}
-
-abstract class SearchView {
-  String get title;
-
-  bool get isMagnifierVisible;
-
-  void onTap(BuildContext context);
 }
