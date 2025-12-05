@@ -15,6 +15,7 @@ import kotlin.math.round
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
+import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.bearing
@@ -77,11 +78,8 @@ class DgisMapView(
 
     private val closables = mutableListOf<AutoCloseable>()
 
-    private fun getCurrentLevelId(): ru.dgis.sdk.LevelId? {
-        val building = map?.indoorManager?.focusedBuilding ?: return null
-        if (building.levels.isEmpty()) return null
-        // Find first floor (level with name "1"), fallback to first level in list
-        return building.levels.find { it.name == "1" }?.id ?: building.levels[0].id
+    private fun getCurrentLevelId(): LevelId? {
+        return indoorControlHandler?.currentLevelId
     }
 
     init {
@@ -1103,10 +1101,10 @@ class DgisMapView(
                 )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler)
+        indoorControlHandler = IndoorControlHandler(map, eventSink)
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler, indoorControlHandler)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
-        indoorControlHandler = IndoorControlHandler(map, eventSink)
         visibleRectHandler = VisibleRectHandler(map, eventSink)
         searchHandler =
                 SearchHandler(

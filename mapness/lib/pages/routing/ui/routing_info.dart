@@ -201,24 +201,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(activePublicTransportRouteProvider);
-
-    final routes = ref.watch(
-      routesProvider(
-        startPoint: widget.points[0],
-        finishPoint: widget.points[1],
-        navType: _navType.value,
-      ),
-    );
-
-    final publicTransportVisibility = ref.watch(
-      publicTransportVisibilityProvider(
-        startPoint: widget.points[0],
-        finishPoint: widget.points[1],
-      ),
-    );
-
     ref
+      ..watch(activePublicTransportRouteProvider)
       ..listen(carConnectionProvider, (_, next) {
         final connected = next.valueOrNull ?? false;
         if (connected) {
@@ -237,30 +221,57 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           }
         },
       );
+
     return ValueListenableBuilder(
-      valueListenable: _navType,
-      builder: (context, navigatingType, _) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Spacing.$4x.heightBox,
-          RoutesCarousel(
-            points: widget.pointsWithLabel,
-            startNavigation: (route) => _startNavigation(route, navigatingType),
-            navType: navigatingType,
-            publicTransportVisibility: publicTransportVisibility,
-            routes: routes,
-          ),
-          Spacing.$4x.heightBox,
-          RouteTabBar(
-            active: navigatingType,
-            onChanged: _onChanged,
-            points: widget.points,
-            publicTransportVisibility: publicTransportVisibility,
-            routes: routes,
-          ),
-        ],
-      ),
+      valueListenable: _isNavTypeLoading,
+      builder: (context, isLoading, _) {
+        if (isLoading) {
+          return const Center(child: Loading(size: LoaderSize.large));
+        }
+
+        return ValueListenableBuilder(
+          valueListenable: _navType,
+          builder: (context, navigatingType, _) {
+            final routes = ref.watch(
+              routesProvider(
+                startPoint: widget.points[0],
+                finishPoint: widget.points[1],
+                navType: navigatingType,
+              ),
+            );
+
+            final publicTransportVisibility = ref.watch(
+              publicTransportVisibilityProvider(
+                startPoint: widget.points[0],
+                finishPoint: widget.points[1],
+              ),
+            );
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Spacing.$4x.heightBox,
+                RoutesCarousel(
+                  points: widget.pointsWithLabel,
+                  startNavigation: (route) => _startNavigation(route, navigatingType),
+                  navType: navigatingType,
+                  publicTransportVisibility: publicTransportVisibility,
+                  routes: routes,
+                ),
+                Spacing.$4x.heightBox,
+                RouteTabBar(
+                  active: navigatingType,
+                  onChanged: _onChanged,
+                  points: widget.points,
+                  publicTransportVisibility: publicTransportVisibility,
+                  routes: routes,
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 

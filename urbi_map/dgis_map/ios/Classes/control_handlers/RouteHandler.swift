@@ -11,49 +11,52 @@ class RouteHandler {
     private var publicTransportHandler: PublicTransportHandler?
     private let trafficRouter: TrafficRouter
     private let navigationHandler: NavigationHandler
-    
+    private let indoorControlHandler: IndoorControlHandler?
+
     private let locationService: LocationService
     private let map: Map
     private let eventChannel: DgisStreamHandler
-    
+
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    
+
     private(set) var options: RouteSearchOptions?
     private(set) var finishPoint: RouteSearchPoint?
-    
+
     var selectedRoute: TrafficRoute? {
         get {
             guard let routeIndex = self.routeEditor.activeRouteIndex?.value else {
                 return nil
             }
-            
+
             return self.routeEditor.routesInfo.routes[Int(routeIndex)]
         }
     }
-    
+
     init(
         map: Map,
         sdk: Container,
         eventChannel: DgisStreamHandler,
-        navigationHandler: NavigationHandler
+        navigationHandler: NavigationHandler,
+        indoorControlHandler: IndoorControlHandler? = nil
     ) {
         let context = try! sdk.context
-        
+
         self.locationService = try! sdk.locationService
         self.map = map
         self.eventChannel = eventChannel
         self.navigationHandler = navigationHandler
+        self.indoorControlHandler = indoorControlHandler
         self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
             context: context, routeEditor: self.routeEditor,
             calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
-        
+
         self.trafficRouter = TrafficRouter.init(context: context)
-        
+
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
-        
+
         cancelable.append(self.routeEditor.routesInfoChannel.sink { [weak self] info in
             if case .publicTransport = self?.options {
                 self?.publicTransportHandler?.onRoutesChanged()
@@ -66,17 +69,13 @@ class RouteHandler {
             }
             self?.onActiveRouteChanged(index)
         })
-        
+
         self.map.addSource(source: routeEditorSource)
 
     }
 
     private func getCurrentLevelId() -> LevelId? {
-        guard let building = map.indoorManager.focusedBuilding else {
-            return nil
-        }
-        let index = Int(building.defaultLevelIndex)
-        return building.levels.indices.contains(index) ? building.levels[index].id : nil
+        return indoorControlHandler?.currentLevelId
     }
 
     func cancel() {

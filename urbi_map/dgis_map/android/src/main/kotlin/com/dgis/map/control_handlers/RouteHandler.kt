@@ -29,6 +29,7 @@ class RouteHandler(
         private val eventSink: EventChannel.EventSink,
         private val locationSource: FusedLocationSource,
         private val navigationHandler: NavigationHandler,
+        private val indoorControlHandler: IndoorControlHandler? = null,
 ) : AutoCloseable {
     private val closeables = mutableListOf<AutoCloseable>()
 
@@ -88,8 +89,7 @@ class RouteHandler(
     }
 
     private fun getCurrentLevelId(): LevelId? {
-        val building = map.indoorManager.focusedBuilding ?: return null
-        return building.levels.getOrNull(building.defaultLevelIndex.toInt())?.id
+        return indoorControlHandler?.currentLevelId
     }
 
     fun setRouteParams(params: RouteEditorRouteParamsMessage) {
