@@ -73,6 +73,7 @@ import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -197,7 +198,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then(
-      (RemoteMessage? message) {
+      (message) {
         if (message != null && message.data.containsKey('url')) {
           final url = message.data['url'];
           openAppLink(url);
@@ -344,6 +345,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+
+    ref.listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
+      if (next == null) return;
+      if (prev?.zoom == next.zoom) return;
+      _updateGlobalMarkerCityscape(ref);
+    });
+
+    // listen cityscapeProvider and selectedMarkerProvider for other updates
     ref.listen<bool>(cityscapeProvider, (prev, next) {
       _updateGlobalMarkerCityscape(ref);
     });
@@ -510,7 +519,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future initInsider() async {
     if (!mounted) return;
     // FIXME-INSIDER: Please change with your partner name and app group.
-    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations", (int type, dynamic data) {
+    await FlutterInsider.Instance.init('baladyapp', 'group.movingViolations', (int type, data) {
       switch (type) {
         case InsiderCallbackAction.NOTIFICATION_OPEN:
           // if(Platform.isIOS) {
@@ -526,7 +535,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
           break;
         default:
-          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          print('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
           break;
       }
     });
@@ -607,7 +616,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       CommonFunctions.openMovingViolations(uri);
     } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
       MiniAppModel app = MiniAppModel();
-      var subPath;
+      String? subPath;
       if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
       } else if (path != null) {
@@ -716,8 +725,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Quran_Show_All_Surahs_Page",
+      serviceKey: 'islamicservice',
+      path: '#Quran_Show_All_Surahs_Page',
     );
   }
 
@@ -726,15 +735,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
 
     await sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Athkar_Page",
+      serviceKey: 'islamicservice',
+      path: '#Athkar_Page',
     );
   }
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
     await sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "snapandsend",
+      serviceKey: 'snapandsend',
     );
 
     // await NavigationService.navigatorKey.currentState!.pushNamed(
@@ -1003,7 +1012,7 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void analyticsTrack(String event) {
-    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    analyticsClient.track(event, properties: {'app_run': isAppRun});
   }
 
   @override

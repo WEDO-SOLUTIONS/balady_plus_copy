@@ -1,22 +1,26 @@
 import 'package:flutter/foundation.dart';
 
 class JobBaseResponse<T> {
-
   const JobBaseResponse({
     this.data,
     this.statusDetails,
   });
 
-  factory JobBaseResponse.fromJson(Map<String, dynamic> json,
-          T Function(Map<String, dynamic>) fromJson,) =>
+  factory JobBaseResponse.fromJson(
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) fromJson,
+  ) =>
       JobBaseResponse(
         statusDetails: json['statusDetails'] != null
             ? StatusModel.fromJson(
-                json['statusDetails'] as Map<String, dynamic>,)
+                json['statusDetails'] as Map<String, dynamic>,
+              )
             : null,
         data: json['data'] != null
             ? JobResponseModel.fromJson(
-                json['data'] as Map<String, dynamic>, fromJson,)
+                json['data'] as Map<String, dynamic>,
+                fromJson,
+              )
             : null,
       );
   final StatusModel? statusDetails;
@@ -29,7 +33,6 @@ class JobBaseResponse<T> {
 //TODO(Scroollocker): change to equatable
 @immutable
 class StatusModel {
-
   const StatusModel({
     this.code,
     this.message,
@@ -48,9 +51,7 @@ class StatusModel {
       return true;
     }
 
-    return other is StatusModel &&
-        other.code == code &&
-        other.message == message;
+    return other is StatusModel && other.code == code && other.message == message;
   }
 
   @override
@@ -59,7 +60,6 @@ class StatusModel {
 
 @immutable
 class JobResponseModel<T> {
-
   const JobResponseModel({
     this.responseCode,
     this.responseMessage,
@@ -67,15 +67,15 @@ class JobResponseModel<T> {
     this.result,
   });
 
-  factory JobResponseModel.fromJson(Map<String, dynamic> json,
-          T Function(Map<String, dynamic>) fromJson,) =>
+  factory JobResponseModel.fromJson(
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) fromJson,
+  ) =>
       JobResponseModel(
         responseCode: json['responseCode'] as String?,
         responseMessage: json['responseMessage'] as String?,
         responseId: json['responseId'] as String?,
-        result: json['result'] != null
-            ? fromJson(json['result'] as Map<String, dynamic>)
-            : null,
+        result: json['result'] != null ? fromJson(json['result'] as Map<String, dynamic>) : null,
       );
   final String? responseCode;
   final String? responseMessage;
@@ -96,9 +96,5 @@ class JobResponseModel<T> {
   }
 
   @override
-  int get hashCode =>
-      responseCode.hashCode ^
-      responseMessage.hashCode ^
-      responseId.hashCode ^
-      result.hashCode;
+  int get hashCode => responseCode.hashCode ^ responseMessage.hashCode ^ responseId.hashCode ^ result.hashCode;
 }

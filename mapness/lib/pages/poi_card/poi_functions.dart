@@ -5,8 +5,9 @@ void openRoutingRoutes(
   int objectId,
   String title,
   RouteParamsPoint finishPoint,
-  WidgetRef ref,
-) {
+  WidgetRef ref, {
+  List<RouteParamsPointWithLabel>? intermediatePoints,
+}) {
   final mapSetting = MapObjectManagerSettings.search();
   ref
       .read(
@@ -24,6 +25,7 @@ void openRoutingRoutes(
           value: null,
           label: context.l10n.myLocation,
         ),
+        ...?intermediatePoints,
         RouteParamsPointWithLabel(
           value: finishPoint,
           label: title,

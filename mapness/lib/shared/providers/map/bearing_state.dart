@@ -22,8 +22,7 @@ class BearingState extends _$BearingState {
   @override
   Bearing build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    final bearingSubscription =
-        dgisController.value?.compassBearingEvents.listen(_bearingListener);
+    final bearingSubscription = dgisController.value?.compassBearingEvents.listen(_bearingListener);
 
     ref.onDispose(
       () {
@@ -53,10 +52,6 @@ class BearingState extends _$BearingState {
       group: MetricsConstants.exploreTag,
       action: MetricAction.tap.name,
     );
-    ref
-        .read(dgisControllerProvider)
-        .value
-        ?.naviCompassController
-        .onCompassClicked();
+    ref.read(dgisControllerProvider).value?.naviCompassController.onCompassClicked();
   }
 }

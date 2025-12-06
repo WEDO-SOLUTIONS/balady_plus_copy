@@ -14,7 +14,8 @@ import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/landing/dashboard/cityescape_control.dart';
+import 'package:mapness/widgets/landing/dashboard/cityscape_background.dart';
+import 'package:mapness/widgets/landing/dashboard/cityscape_logo.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
 import 'package:mapness/widgets/landing/dashboard/wrc_background.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
@@ -160,8 +161,14 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                   ),
               ),
             if (isCityscapeDay)
-              CityscapeGlobal(
+              CityscapeBackground(
                 controller: widget.controller,
+                onTap: () {
+                  ref.read(cityscapeProvider.notifier).openThePlace();
+                },
+              ),
+            if (isCityscapeDay)
+              CityscapeLogo(
                 onTap: () {
                   ref.read(cityscapeProvider.notifier).openThePlace();
                 },
