@@ -5,7 +5,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'zoom_state.g.dart';
 
 class Zoom {
-
   Zoom({
     required this.zoomInEnabled,
     required this.zoomOutEnabled,
@@ -28,8 +27,7 @@ class ZoomState extends _$ZoomState {
   @override
   Zoom build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    final zoomSubscription =
-        dgisController.value?.zoomControlEnabledEvents.listen(_zoomListener);
+    final zoomSubscription = dgisController.value?.zoomControlEnabledEvents.listen(_zoomListener);
 
     ref.onDispose(
       () {

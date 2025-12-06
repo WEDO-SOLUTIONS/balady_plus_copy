@@ -1,7 +1,6 @@
 import 'package:dgis_map/library.dart';
 
 class PathNavSpeedInfo {
-
   const PathNavSpeedInfo({
     required this.direction,
     required this.speed,
@@ -18,10 +17,11 @@ class PathNavSpeedInfo {
     int? speed,
     int? speedLimit,
     bool? speedExceed,
-  }) => PathNavSpeedInfo(
-      direction: direction ?? this.direction,
-      speed: speed ?? this.speed,
-      speedLimit: speedLimit ?? this.speedLimit,
-      speedExceed: speedExceed ?? this.speedExceed,
-    );
+  }) =>
+      PathNavSpeedInfo(
+        direction: direction ?? this.direction,
+        speed: speed ?? this.speed,
+        speedLimit: speedLimit ?? this.speedLimit,
+        speedExceed: speedExceed ?? this.speedExceed,
+      );
 }

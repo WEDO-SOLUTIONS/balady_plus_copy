@@ -6,7 +6,6 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishStateLabel extends StatelessWidget {
-
   const IwishStateLabel({required this.state, super.key});
   final IwishState state;
 
@@ -22,13 +21,13 @@ class IwishStateLabel extends StatelessWidget {
             IwishState.planned => context.l10n.planned,
             IwishState.completed => context.l10n.completed,
           },
-          style:
-              Theme.of(context).extension<ThemeTextStyles>()!.footNoteBold.copyWith(
-                      color: switch (state) {
-                    IwishState.unknown => Colors.grey,
-                    IwishState.planned => NonThemeColor.color20,
-                    IwishState.completed => NonThemeColor.color3,
-                  },),
+          style: Theme.of(context).extension<ThemeTextStyles>()!.footNoteBold.copyWith(
+                color: switch (state) {
+                  IwishState.unknown => Colors.grey,
+                  IwishState.planned => NonThemeColor.color20,
+                  IwishState.completed => NonThemeColor.color3,
+                },
+              ),
         ),
       );
 }

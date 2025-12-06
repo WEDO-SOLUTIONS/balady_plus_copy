@@ -12,7 +12,8 @@ part 'promotions_body.g.dart';
 class PromotionsBody extends MomraBody<Promotions, PromotionsData> {
   PromotionsBody({required super.statusDetails, super.data});
 
-  factory PromotionsBody.fromJson(Map<String, dynamic> json) => _$PromotionsBodyFromJson(json);
+  factory PromotionsBody.fromJson(Map<String, dynamic> json) =>
+      _$PromotionsBodyFromJson(json);
 }
 
 @noRenameNoToJson
@@ -24,7 +25,8 @@ class PromotionsData extends Data<Promotions> {
     required super.result,
   });
 
-  factory PromotionsData.fromJson(Map<String, dynamic> json) => _$PromotionsDataFromJson(json);
+  factory PromotionsData.fromJson(Map<String, dynamic> json) =>
+      _$PromotionsDataFromJson(json);
 }
 
 @noRenameNoToJson
@@ -43,7 +45,8 @@ class PagingStatus {
     required this.recordsCount,
   });
 
-  factory PagingStatus.fromJson(Map<String, dynamic> json) => _$PagingStatusFromJson(json);
+  factory PagingStatus.fromJson(Map<String, dynamic> json) =>
+      _$PagingStatusFromJson(json);
 }
 
 @noRenameNoToJson
@@ -54,7 +57,8 @@ class Promotions {
 
   const Promotions({required this.pagingStatus, required this.records});
 
-  factory Promotions.fromJson(Map<String, dynamic> json) => _$PromotionsFromJson(json);
+  factory Promotions.fromJson(Map<String, dynamic> json) =>
+      _$PromotionsFromJson(json);
 }
 
 @noRenameNoToJson
@@ -65,7 +69,7 @@ class Offer {
   final String description;
   final OfferType type;
   final OfferProvider provider;
-  final Iterable<Category> categories;
+  final Iterable<CategoryWithSubCategories> categories;
   final Iterable<String> images;
   final DateTime publishStartDate;
   final DateTime publishEndDate;
@@ -78,7 +82,8 @@ class Offer {
   final String crNumber;
   final bool favorite;
   final bool redeemed;
-  final TypeDetails typeDetails;
+  final TypeDetails? typeDetails;
+  final String? distance;
 
   Offer({
     required this.id,
@@ -100,7 +105,8 @@ class Offer {
     required this.crNumber,
     required this.favorite,
     required this.redeemed,
-    required this.typeDetails,
+    this.typeDetails,
+    this.distance,
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) {
@@ -116,23 +122,25 @@ class Offer {
   }
 
   String? get code => switch (type.id) {
-        TypeDetails.vouchers => typeDetails.number,
-        TypeDetails.coupons => typeDetails.code,
+        TypeDetails.vouchers => typeDetails?.number,
+        TypeDetails.coupons => typeDetails?.code,
         _ => null,
       };
 
   num? get discount => switch (type.id) {
-        TypeDetails.vouchers => typeDetails.amount,
-        TypeDetails.coupons => typeDetails.ratio,
+        TypeDetails.vouchers => typeDetails?.amount,
+        TypeDetails.coupons => typeDetails?.ratio,
         _ => null,
       };
 
-  bool get willExpiredSoon => publishEndDate.difference(DateTime.now()).inDays < 7;
+  bool get willExpiredSoon =>
+      publishEndDate.difference(DateTime.now()).inDays < 7;
 
-  String byDate(String languageCode) => DateFormat('d MMMM', languageCode).format(publishEndDate);
+  String byDate(String languageCode) =>
+      DateFormat('d MMMM', languageCode).format(publishEndDate);
 
   OffersGroup get offerGroup {
-    final categoryIds = categories.map((e) => e.id).toList();
+    final categoryIds = categories.map((e) => e.category.id).toList();
     return OffersGroupMapper.fromCategoryIds(categoryIds);
   }
 }
@@ -166,5 +174,6 @@ class TypeDetails {
     this.code,
   });
 
-  factory TypeDetails.fromJson(Map<String, dynamic> json) => _$TypeDetailsFromJson(json);
+  factory TypeDetails.fromJson(Map<String, dynamic> json) =>
+      _$TypeDetailsFromJson(json);
 }

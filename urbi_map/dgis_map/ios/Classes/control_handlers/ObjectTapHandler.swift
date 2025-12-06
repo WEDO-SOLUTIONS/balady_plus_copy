@@ -978,7 +978,7 @@ class ObjectTapHandler {
 
         let polylineOptions =
             PolylineOptions(
-                points: points.map { $0.geoPoint },
+                points: points.map { $0.geoPoint }
             )
         
         let circleOptions = CircleOptions(position: points.first!.geoPoint, radius: Meter(500.0))

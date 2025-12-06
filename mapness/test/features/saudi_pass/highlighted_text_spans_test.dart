@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mapness/features/saudi_pass/widgets/city_selection_dialog_view_widget.dart';
+import 'package:mapness/features/saudi_pass/functions/get_highlighted_text_spans.dart';
 
 void main() {
   late String search;
@@ -9,7 +9,11 @@ void main() {
   const baseStyle = TextStyle(fontSize: 2, debugLabel: 'baseStyle');
 
   List<TextSpan> highlight({required String source, required String search}) =>
-      highlightedTextSpans(source: source, search: search, highlightStyle: highlightStyle, baseStyle: baseStyle);
+      getHighlightedTextSpans(
+          source: source,
+          search: search,
+          highlightStyle: highlightStyle,
+          baseStyle: baseStyle);
 
   group('GIVEN source=Saint-P AND search=Sa', () {
     setUp(() {

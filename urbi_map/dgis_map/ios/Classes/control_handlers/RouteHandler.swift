@@ -96,23 +96,27 @@ class RouteHandler {
     func setShowOnlyActiveRoute(_ visible: Bool) {
         self.routeEditorSource.setShowOnlyActiveRoute(showOnlyActiveRoute: visible)
     }
+
+    private func createRouteSearchPoint(_ point: RouteEditorRoutePointMessage) -> RouteSearchPoint {
+        return RouteSearchPoint(
+            coordinates: GeoPoint(
+                latitude: point.point.latitude,
+                longitude: point.point.longitude
+            ),
+            objectId: DgisObjectId(
+                objectId: UInt64(point.objectId?.objectId ?? 0),
+                entranceId: UInt64(point.objectId?.entranceId ?? 0)
+            ),
+            levelId: point.levelId.map {
+                LevelId(value: UInt64($0))
+            }
+        )
+    }
     
     func setRouteParams(_ params: RouteEditorRouteParamsMessage) {
         let startPoint: RouteSearchPoint? = {
             if let pStartPoint = params.startPoint {
-                return RouteSearchPoint(
-                    coordinates: GeoPoint(
-                        latitude: pStartPoint.point.latitude,
-                        longitude: pStartPoint.point.longitude
-                    ),
-                    objectId: DgisObjectId(
-                        objectId: UInt64(pStartPoint.objectId?.objectId ?? 0),
-                        entranceId: UInt64(pStartPoint.objectId?.entranceId ?? 0)
-                    ),
-                    levelId: pStartPoint.levelId.map {
-                        LevelId(value: UInt64($0))
-                    }
-                )
+                return createRouteSearchPoint(pStartPoint)
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
                 return RouteSearchPoint(coordinates: GeoPoint(
                     latitude: lastLocation.value.latitude,
@@ -125,19 +129,7 @@ class RouteHandler {
         
         let finishPoint: RouteSearchPoint? = {
             if let pFinishPoint = params.finishPoint {
-                return RouteSearchPoint(
-                    coordinates: GeoPoint(
-                        latitude: pFinishPoint.point.latitude,
-                        longitude: pFinishPoint.point.longitude
-                    ),
-                    objectId: DgisObjectId(
-                        objectId: UInt64(pFinishPoint.objectId?.objectId ?? 0),
-                        entranceId: UInt64(pFinishPoint.objectId?.entranceId ?? 0)
-                    ),
-                    levelId: pFinishPoint.levelId.map {
-                        LevelId(value: UInt64($0))
-                    }
-                )
+                return createRouteSearchPoint(pFinishPoint)
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
                 return RouteSearchPoint(coordinates: GeoPoint(
                     latitude: lastLocation.value.latitude,
@@ -157,11 +149,13 @@ class RouteHandler {
         
         self.finishPoint = finishPoint
         
+        let intermediatePoints = params.intermediatePoints?.map { createRouteSearchPoint($0)}
+
         let routeEditorParams = RouteEditorRouteParams(
             startPoint: startPoint,
             finishPoint: finishPoint,
             routeSearchOptions: routeSearchOptions,
-            intermediatePoints: []
+            intermediatePoints: intermediatePoints ?? []
         )
         routeEditor.setRouteParams(routeParams: routeEditorParams)
         
@@ -393,12 +387,14 @@ class RouteHandler {
         startPoint: RouteSearchPoint,
         finishPoint: RouteSearchPoint,
         routeSearchOptions: RouteSearchOptions,
+        intermediatePoints: [RouteSearchPoint]?,
         completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void
     ) {
         let routesFuture = trafficRouter.findRoute(
             startPoint: startPoint,
             finishPoint: finishPoint,
-            routeSearchOptions: routeSearchOptions
+            routeSearchOptions: routeSearchOptions,
+            intermediatePoints: intermediatePoints ?? [],
         )
         
         self.cancelable.append(routesFuture.sink { (response: [TrafficRoute]) in

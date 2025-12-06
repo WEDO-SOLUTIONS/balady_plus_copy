@@ -4,7 +4,9 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mapness/features/saudi_pass/functions/get_highlighted_text_spans.dart';
 import 'package:mapness/features/saudi_pass/views/city_selection_dialog_view.dart';
+import 'package:mapness/features/saudi_pass/views/search_view.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
@@ -13,13 +15,14 @@ import 'package:sheetify/sheetify.dart';
 class CitySelectionDialogViewWidget extends HookWidget {
   final CitySelectionDialogView citySelectionDialogView;
 
-  const CitySelectionDialogViewWidget(this.citySelectionDialogView, {super.key});
+  const CitySelectionDialogViewWidget(this.citySelectionDialogView,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
     final scrollController = useToggleSheetController(
       onClose: (_) => context.router.popForced(),
-      heightModel: ToggleSheetHeightModel.fraction(1.0),
+      heightModel: ToggleSheetHeightModel.fraction(0.99),
     );
 
     final textEditingController = useTextEditingController();
@@ -36,7 +39,8 @@ class CitySelectionDialogViewWidget extends HookWidget {
       bottom: false,
       child: ToggleSheet(
         barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
-          function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
+          function: (controller) =>
+              AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
         ),
         backgroundColor: context.colors.backgroundSurface2,
         safeAreaColor: context.colors.backgroundSurface2,
@@ -46,8 +50,11 @@ class CitySelectionDialogViewWidget extends HookWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyles.h2SemiBold),
-               CustomCloseButton(onClose: () => scrollController.close(),),
+              Text(
+                context.l10n.saudiPassCitySelectionPageTitle,
+                style: context.textStyles.h2SemiBold,
+              ),
+              CustomCloseButton(onClose: context.router.popForced),
             ],
           ),
         ),
@@ -60,7 +67,8 @@ class CitySelectionDialogViewWidget extends HookWidget {
                   searchInput: BaladyTextInput(
                     config: BaladyInputConfig(
                       autofocus: true,
-                      hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
+                      hintText:
+                          context.l10n.saudiPassCitySelectionPageSearchHint,
                       isDisposed: false,
                     ),
                     controller: textEditingController,
@@ -69,7 +77,8 @@ class CitySelectionDialogViewWidget extends HookWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$4x),
+                  padding: const EdgeInsetsDirectional.only(
+                      start: Spacing.$2x, end: Spacing.$4x),
                   child: ListenableBuilder(
                     listenable: citySelectionDialogView,
                     builder: (context, _) {
@@ -110,11 +119,13 @@ class SearchViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SizedBox(
         height: AppSizes.l,
-        child: ContentRowV2(
+        child: ContentRow(
           onTap: () => view.onTap(context),
           leading: Icon(
             SystemIcons.search,
-            color: view.isMagnifierVisible ? context.colors.foregroundMuted : Colors.transparent,
+            color: view.isMagnifierVisible
+                ? context.colors.foregroundMuted
+                : Colors.transparent,
           ),
           text: ContentRowTextOptions(
             titleOptions: ContentRowTextOption(
@@ -122,11 +133,13 @@ class SearchViewWidget extends StatelessWidget {
                 final color = context.colors.foregroundDefault;
                 return Text.rich(
                   TextSpan(
-                    children: highlightedTextSpans(
+                    children: getHighlightedTextSpans(
                       source: view.title,
                       search: citySelectionDialogView.search,
-                      highlightStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: color),
-                      baseStyle: context.textStyles.bodySmallRegular.copyWith(color: color),
+                      highlightStyle: context.textStyles.bodyLargeSemiBold
+                          .copyWith(color: color),
+                      baseStyle: context.textStyles.bodySmallRegular
+                          .copyWith(color: color),
                     ),
                   ),
                 );
@@ -137,37 +150,4 @@ class SearchViewWidget extends StatelessWidget {
           supportTitleRTL: true,
         ),
       );
-}
-
-List<TextSpan> highlightedTextSpans({
-  required String source,
-  required String search,
-  required TextStyle highlightStyle,
-  required TextStyle baseStyle,
-}) {
-  if (search.isEmpty || !source.toLowerCase().contains(search.toLowerCase())) {
-    return [TextSpan(text: source, style: baseStyle)];
-  }
-
-  final matches = search.toLowerCase().allMatches(source.toLowerCase());
-
-  int lastMatchEnd = 0;
-
-  final List<TextSpan> children = [];
-  for (var i = 0; i < matches.length; i++) {
-    final match = matches.elementAt(i);
-
-    if (match.start != lastMatchEnd) {
-      children.add(TextSpan(text: source.substring(lastMatchEnd, match.start), style: baseStyle));
-    }
-
-    children.add(TextSpan(text: source.substring(match.start, match.end), style: highlightStyle));
-
-    if (i == matches.length - 1 && match.end != source.length) {
-      children.add(TextSpan(text: source.substring(match.end, source.length), style: baseStyle));
-    }
-
-    lastMatchEnd = match.end;
-  }
-  return children;
 }

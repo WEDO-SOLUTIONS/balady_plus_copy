@@ -29,7 +29,7 @@ String _removeComma(String title) {
 /// The break character is '\n' symbol
 /// Max length in the line should be less or equal `maxLength` value
 String _breakLineInTwo(String inputString) {
-  const int maxLength = 20;
+  const int maxLength = 30;
 
   // If the string fits within the max length, return it as is
   if (inputString.length <= maxLength) {

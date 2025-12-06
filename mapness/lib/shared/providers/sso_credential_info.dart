@@ -28,7 +28,6 @@ const _ssoCredential = {
 };
 
 class Credential {
-
   const Credential(this.username, this.password, this.otp);
   final String username;
   final String password;

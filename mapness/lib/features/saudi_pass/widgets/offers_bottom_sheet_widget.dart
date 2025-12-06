@@ -53,14 +53,15 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
     final colors = context.colors;
     final textStyles = context.textStyles;
     final locale = Localizations.localeOf(context);
-    final byDate = DateFormat('d MMMM', locale.languageCode).format(offerDetails.publishEndDate);
+    final byDate = DateFormat('d MMMM', locale.languageCode)
+        .format(offerDetails.publishEndDate);
     final byDateStyle = textStyles.captionMediumRegular.copyWith(
       color: offerDetails.willExpiredSoon ? colors.errorDefault : null,
     );
 
     final amountOrRatioTextSpan = createAmountOrRatioTextSpan(
-      amount: offerDetails.typeDetails.amount,
-      ratio: offerDetails.typeDetails.ratio,
+      amount: offerDetails.typeDetails?.amount,
+      ratio: offerDetails.typeDetails?.ratio,
       language: ref.watch(appLanguageProvider),
       locale: Localizations.localeOf(context),
       iconSize: 12,
@@ -74,13 +75,14 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
         child: Row(
           children: [
             if (offerImage != null)
-            ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-              child: SizedBox.square(
-                dimension: Spacing.$12x,
-                child:  SaudiPassImage(imageId: offerDetails.provider.logo),
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+                child: SizedBox.square(
+                  dimension: Spacing.$12x,
+                  child: SaudiPassImage(imageId: offerDetails.provider.logo),
+                ),
               ),
-            ),
             const SizedBox(width: Spacing.$3x),
             Expanded(
               child: Column(
@@ -89,13 +91,23 @@ class _OfferViewWidgetDetails extends ConsumerWidget {
                   Text.rich(
                     TextSpan(
                       children: [
-                        if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
-                        TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
+                        if (amountOrRatioTextSpan != null)
+                          amountOrRatioTextSpan,
+                        TextSpan(
+                          text: ' • ',
+                          style: TextStyle(color: colors.neutralMuted),
+                        ),
                         TextSpan(text: offerDetails.name),
                         WidgetSpan(
                           child: Padding(
-                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-                            child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
+                            padding: const EdgeInsetsDirectional.only(
+                              start: Spacing.$1x,
+                            ),
+                            child: Icon(
+                              PlacesIcons.markets,
+                              size: 16,
+                              color: colors.neutralMuted,
+                            ),
                           ),
                         ),
                       ],
