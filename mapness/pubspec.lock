@@ -654,14 +654,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.10.1"
-  dashed_rect:
-    dependency: transitive
-    description:
-      name: dashed_rect
-      sha256: af85245671a270231f4368a9ddfcc6906bc56776da3a7a19d907081d73ae2216
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.4"
   dbus:
     dependency: transitive
     description:
@@ -740,6 +732,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  dotted_line:
+    dependency: transitive
+    description:
+      name: dotted_line
+      sha256: "41e3d655939559815daa1370fc1e07673a205fa628cf40ce3af45d90029a77b6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.3"
   dsbridge_flutter:
     dependency: transitive
     description:

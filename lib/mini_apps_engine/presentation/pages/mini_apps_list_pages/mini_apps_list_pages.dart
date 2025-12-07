@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/general_error_widget.dart';
@@ -18,7 +19,9 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
+import 'package:balady_plus/super_app_js_bridge/js_bridge_listener.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,8 +39,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
         backgroundColor: const Color(0xFFF5F7FA),
         body: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
           builder: (context, state) {
-            final hasError =
-                state.entryPointsError != null && state.favError != null;
+            final hasError = state.entryPointsError != null && state.favError != null;
             if (hasError) {
               return GeneralErrorWidget(
                 error: state.favError ?? state.entryPointsError!,
@@ -72,8 +74,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF1CA9A6),
                                         fontWeight: FontWeight.w700,
-                                        fontFamily:
-                                            "packages/balady_uikit/Frutiger",
+                                        fontFamily: "packages/balady_uikit/Frutiger",
                                       ),
                                     ),
                                   ),
@@ -89,8 +90,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF1CA9A6),
                                         fontWeight: FontWeight.w700,
-                                        fontFamily:
-                                            "packages/balady_uikit/Frutiger",
+                                        fontFamily: "packages/balady_uikit/Frutiger",
                                       ),
                                     ),
                                   ),
@@ -100,8 +100,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          const MiniAppsSearchPage(),
+                                      builder: (_) => const MiniAppsSearchPage(),
                                     ),
                                   );
                                 },
@@ -114,8 +113,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                   "search2".tr(),
                                   style: const TextStyle(color: Colors.black),
                                 ),
-                                suffixIcon:
-                                    SvgPicture.asset(IconPath.searchSVG),
+                                suffixIcon: SvgPicture.asset(IconPath.searchSVG),
                               ),
                             ],
                           ),
@@ -142,12 +140,10 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                   ),
                                   SizedBox(height: context.screenHeight * 0.02),
                                   Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       const CustomDashedAddMiniAppFav(),
-                                      SizedBox(
-                                          width: context.screenWidth * 0.04),
+                                      SizedBox(width: context.screenWidth * 0.04),
                                       SizedBox(
                                         height: context.screenHeight * 0.13,
                                         width: context.screenWidth * 0.70,
@@ -155,45 +151,33 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                           scrollDirection: Axis.horizontal,
                                           itemCount: state.favoriteApps.length,
                                           onReorder: (oldIndex, newIndex) {
-                                            context
-                                                .read<NewMiniAppLogicCubit>()
-                                                .reorderFavoriteApps(
+                                            context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(
                                                   oldIndex,
                                                   newIndex,
                                                 );
                                           },
                                           itemBuilder: (context, index) {
-                                            final favMiniApp =
-                                                state.favoriteApps[index];
+                                            final favMiniApp = state.favoriteApps[index];
                                             return Padding(
                                               key: Key(favMiniApp.id),
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      context.screenWidth *
-                                                          0.01),
+                                              padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
                                               child: CustomMiniAppsCard(
                                                 key: Key(favMiniApp.id),
                                                 //key for reordering
                                                 onTap: () {
-                                                  context
-                                                      .read<
-                                                          NewMiniAppLogicCubit>()
-                                                      .openMiniApp(
+                                                  context.read<NewMiniAppLogicCubit>().openMiniApp(
                                                         context,
                                                         favMiniApp,
                                                       );
                                                 },
                                                 text: favMiniApp.name,
-                                                titlesHeight:
-                                                    context.screenHeight * 0.05,
-                                                titlesWidth:
-                                                    context.screenWidth * 0.20,
+                                                titlesHeight: context.screenHeight * 0.05,
+                                                titlesWidth: context.screenWidth * 0.20,
                                                 maxLines: 2,
                                                 maxFontSize: 20,
                                                 minFontSize: 9,
 
-                                                miniAppIcon:
-                                                    favMiniApp.iconPath,
+                                                miniAppIcon: favMiniApp.iconPath,
                                               ),
                                             );
                                           },
@@ -229,12 +213,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                 children: [
                                   ListView.separated(
                                     shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    separatorBuilder: (context, index) =>
-                                        SizedBox(
-                                            height:
-                                                context.screenHeight * 0.02),
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.02),
                                     itemCount: state.entryPoints.length,
                                     itemBuilder: (context, index) {
                                       final section = state.entryPoints[index];
@@ -244,29 +224,22 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         return const SizedBox.shrink();
                                       }
 
-                                      final title = CommonFunctions.isAppAR
-                                          ? section.arName
-                                          : section.enName;
+                                      final title = CommonFunctions.isAppAR ? section.arName : section.enName;
 
                                       return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           CustomSubHeadingText(
                                             text: title,
                                           ),
-                                          SizedBox(
-                                              height:
-                                                  context.screenHeight * 0.01),
+                                          SizedBox(height: context.screenHeight * 0.01),
                                           SizedBox(
                                             height: context.screenHeight * 0.20,
                                             width: context.screenWidth,
                                             child: ListView.separated(
                                               scrollDirection: Axis.horizontal,
-                                              separatorBuilder: (context, i) =>
-                                                  SizedBox(
-                                                width:
-                                                    context.screenWidth * 0.03,
+                                              separatorBuilder: (context, i) => SizedBox(
+                                                width: context.screenWidth * 0.03,
                                               ),
                                               itemCount: apps.length,
                                               itemBuilder: (context, appIndex) {
@@ -321,25 +294,19 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   GridView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
+                                    physics: const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: state.appGroups.length,
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
-                                      mainAxisSpacing:
-                                          context.screenHeight * 0.02,
-                                      crossAxisSpacing:
-                                          context.screenWidth * 0.04,
+                                      mainAxisSpacing: context.screenHeight * 0.02,
+                                      crossAxisSpacing: context.screenWidth * 0.04,
                                       childAspectRatio: 0.8,
                                     ),
                                     itemBuilder: (context, index) {
                                       final appGroup = state.appGroups[index];
 
-                                      final groupName = CommonFunctions.isAppAR
-                                          ? appGroup.nameAr
-                                          : appGroup.nameEn;
+                                      final groupName = CommonFunctions.isAppAR ? appGroup.nameAr : appGroup.nameEn;
 
                                       return CustomLargMoreApps(
                                         withCardEffect: true,
@@ -349,8 +316,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         onTap: () {
                                           Navigator.of(context).push(
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  AppsGroupPage(
+                                              builder: (context) => AppsGroupPage(
                                                 appGroup: appGroup,
                                               ),
                                             ),
@@ -375,4 +341,23 @@ class HomeMiniAppsListPages extends StatelessWidget {
       ),
     );
   }
+
+  // void checkIfLogin(BuildContext context, MiniApp miniApp) async {
+  //   final action = context.read<NewMiniAppLogicCubit>().openMiniApp(
+  //         context,
+  //         miniApp,
+  //       );
+  //
+  //   if (miniApp.requireLogin) {
+  //     if (CommonProperties.isLoggedInMunicipality) {
+  //       action;
+  //     } else {
+  //       // final res = await sl<SuperAppTokenCubit>().getAccessToken();
+  //       // final res = await sl<JsBridgeListener>().getAccessToken('', CompletionHandler());
+  //       // if (res) action;
+  //     }
+  //   } else {
+  //     action;
+  //   }
+  // }
 }
