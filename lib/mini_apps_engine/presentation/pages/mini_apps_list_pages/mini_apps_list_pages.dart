@@ -99,8 +99,10 @@ class HomeMiniAppsListPages extends StatelessWidget {
                               MiniAppsCustomTextField(
                                 onTap: () {
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) =>
+                                    PageRouteBuilder(
+                                      opaque: false,
+                                      barrierColor: Colors.transparent,
+                                      pageBuilder: (_, __, ___) =>
                                           const MiniAppsSearchPage(),
                                     ),
                                   );
@@ -284,8 +286,11 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                   height: context.h(104),
                                                   iconHeight: context.h(64),
                                                   iconWidth: context.w(64),
-                                                  titlesHeight: context.h(17),
+                                                  titlesHeight: context.h(47),
                                                   titlesWidth: context.w(66),
+                                                  maxLines: 3,
+                                                  maxFontSize: 20,
+                                                  minFontSize: 8,
                                                   withCardEffect: true,
                                                   text: miniApp.name,
                                                   miniAppIcon: miniApp.iconPath,
@@ -363,11 +368,13 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         totalAppCount: appGroup.appCount,
                                         onTap: () {
                                           Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
+                                            PageRouteBuilder(
+                                              opaque: false, // ✅ IMPORTANT
+                                              barrierColor: Colors
+                                                  .transparent, // ✅ let previous screen show
+                                              pageBuilder: (_, __, ___) =>
                                                   AppsGroupPage(
-                                                appGroup: appGroup,
-                                              ),
+                                                      appGroup: appGroup),
                                             ),
                                           );
                                         },
