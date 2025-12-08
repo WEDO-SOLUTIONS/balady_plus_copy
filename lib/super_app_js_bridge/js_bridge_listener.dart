@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
 import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -398,8 +399,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       late BaseResponse response;
       if (msg != null && msg is String) {
         Map data = jsonDecode(msg);
-        sl<HomeMiniAppsListCubit>()
-            .openMiniApp(serviceKey: data["miniAppKey"], path: data['path']);
+        sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
+          serviceKey: data["miniAppKey"],
+          path: data['path'],
+          context: NavigationService.navigatorKey.currentContext!,
+        );
         response = BaseResponse(
           code: 200,
           message: "success",
