@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
@@ -72,8 +73,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF1CA9A6),
                                         fontWeight: FontWeight.w700,
-                                        fontFamily:
-                                            "packages/balady_uikit/Frutiger",
+                                        fontFamily: GeneralKey.appFontType,
                                       ),
                                     ),
                                   ),
@@ -89,8 +89,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF1CA9A6),
                                         fontWeight: FontWeight.w700,
-                                        fontFamily:
-                                            "packages/balady_uikit/Frutiger",
+                                        fontFamily: GeneralKey.appFontType,
                                       ),
                                     ),
                                   ),
@@ -198,8 +197,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                     favMiniApp.iconPath,
                                                 child: CustomNetworkImageWidget(
                                                   favMiniApp.iconPath,
-                                                  sso: true,
-                                                  ssoAuth: true,
+                                                  // sso: true,
+                                                  isVerifyingKey: true,
                                                   imageWidth: context.w(42),
                                                   imageHeight: context.h(42),
                                                 ),
@@ -306,8 +305,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                   child:
                                                       CustomNetworkImageWidget(
                                                     miniApp.iconPath,
-                                                    sso: true,
-                                                    ssoAuth: true,
+                                                    // sso: true,
+                                                    isVerifyingKey: true,
                                                     imageWidth: context.w(42),
                                                     imageHeight: context.h(42),
                                                   ),

@@ -208,7 +208,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     /// if mini app needs login
     if (miniApp.nafathLogin || miniApp.otpLogin) {
       /// check if we already logged in
-      if (!(miniApp.latestVersion?.nafathLogin == true) &&
+      if (/*!(miniApp.latestVersion?.nafathLogin == true) &&*/
           !CommonProperties.isLoggedInMunicipality) {
         showDialog(
           context: context,
