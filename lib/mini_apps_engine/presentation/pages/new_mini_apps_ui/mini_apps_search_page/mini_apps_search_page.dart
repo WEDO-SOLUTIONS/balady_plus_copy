@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
@@ -88,8 +89,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             color: Color(0xFF1CA9A6),
                                             fontWeight: FontWeight.w700,
                                             fontSize: 25,
-                                            fontFamily:
-                                                "packages/balady_uikit/Frutiger",
+                                            fontFamily: GeneralKey.appFontType,
                                           ),
                                         ),
                                         const SizedBox(height: 10),
@@ -102,8 +102,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             color: Color.fromARGB(161, 0, 0, 0),
                                             fontWeight: FontWeight.w400,
                                             fontSize: 15,
-                                            fontFamily:
-                                                "packages/balady_uikit/Frutiger",
+                                            fontFamily: GeneralKey.appFontType,
                                           ),
                                         ),
                                       ],
@@ -130,8 +129,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                         style: const TextStyle(
                                           color: Color.fromARGB(161, 0, 0, 0),
                                           fontWeight: FontWeight.w400,
-                                          fontFamily:
-                                              "packages/balady_uikit/Frutiger",
+                                          fontFamily: GeneralKey.appFontType,
                                         ),
                                       ),
                                     ),

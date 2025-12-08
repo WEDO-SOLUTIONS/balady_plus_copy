@@ -19,8 +19,9 @@ class CustomSubCardsOfLargCard extends StatelessWidget {
           child: Center(
             child: CustomNetworkImageWidget(
               iconPath,
-              sso: true,
-              ssoAuth: true,
+              // sso: true,
+              // ssoAuth: true,
+              isVerifyingKey: true,
               imageWidth: context.w(42),
               imageHeight: context.h(42),
             ),

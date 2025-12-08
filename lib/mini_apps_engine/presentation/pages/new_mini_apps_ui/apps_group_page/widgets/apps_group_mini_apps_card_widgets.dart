@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
@@ -55,8 +56,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                       child: Center(
                         child: CustomNetworkImageWidget(
                           iconPath,
-                          sso: true,
-                          ssoAuth: true,
+                          // sso: true,
+                          // ssoAuth: true,
+                          isVerifyingKey: true,
                           imageWidth: iconWidth ?? context.w(60),
                           imageHeight: iconHeight ?? context.h(60),
                           placeHolderWidget:
@@ -83,7 +85,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.w400,
                       color: Color(0XFF1E2A36),
-                      fontFamily: "packages/balady_uikit/Frutiger",
+                      fontFamily: GeneralKey.appFontType,
                     ),
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.center,
@@ -105,8 +107,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                   child: Center(
                     child: CustomNetworkImageWidget(
                       iconPath,
-                      sso: true,
-                      ssoAuth: true,
+                      // sso: true,
+                      // ssoAuth: true,
+                      isVerifyingKey: true,
                       imageWidth: iconWidth ?? context.w(60),
                       imageHeight: iconHeight ?? context.h(60),
                       placeHolderWidget:
