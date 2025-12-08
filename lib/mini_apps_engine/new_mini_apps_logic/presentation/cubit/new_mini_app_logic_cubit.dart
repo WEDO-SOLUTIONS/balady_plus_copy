@@ -26,6 +26,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       : super(NewMiniAppLogicState.initial());
 
   Timer? _searchDebounce;
+
   //! Get mini apps ...
   Future<void> loadMiniApps() async {
     emit(
@@ -206,11 +207,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   void openMiniApp(BuildContext context, MiniApp miniApp) async {
     /// if mini app needs login
-    if (miniApp.nafathLogin ) {
+    if (miniApp.nafathLogin) {
       /// check if we already logged in
       /*if (!(miniApp.latestVersion?.nafathLogin == true) &&*/
-          if(!CommonProperties.isLoggedInMunicipality) {
-       await showDialog(
+      if (!CommonProperties.isLoggedInMunicipality) {
+        await showDialog(
           context: context,
           builder: (ctx) => NeedLoginDialog(
             onSuccessLogin: (bool? isSuccess) async {
@@ -218,7 +219,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             },
           ),
         );
-       return;
+        return;
       }
     }
 
@@ -262,6 +263,22 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           );
         }
       }
+    }
+  }
+
+  Future<void> openMiniAppByServiceKey({
+    required BuildContext context,
+    required String serviceKey,
+    String? path,
+  }) async {
+    try {
+      MiniApp miniApp = state.allMiniApps
+          .firstWhere((service) => service.serviceKey == serviceKey)
+          .copyWith();
+
+      openMiniApp(context, miniApp);
+    } catch (e) {
+      // CommonFunctions.showSuccess(e.toString());
     }
   }
 
