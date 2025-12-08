@@ -206,11 +206,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   void openMiniApp(BuildContext context, MiniApp miniApp) async {
     /// if mini app needs login
-    if (miniApp.nafathLogin || miniApp.otpLogin) {
+    if (miniApp.nafathLogin ) {
       /// check if we already logged in
-      if (!(miniApp.latestVersion?.nafathLogin == true) &&
-          !CommonProperties.isLoggedInMunicipality) {
-        showDialog(
+      /*if (!(miniApp.latestVersion?.nafathLogin == true) &&*/
+          if(!CommonProperties.isLoggedInMunicipality) {
+       await showDialog(
           context: context,
           builder: (ctx) => NeedLoginDialog(
             onSuccessLogin: (bool? isSuccess) async {
@@ -218,6 +218,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             },
           ),
         );
+       return;
       }
     }
 
