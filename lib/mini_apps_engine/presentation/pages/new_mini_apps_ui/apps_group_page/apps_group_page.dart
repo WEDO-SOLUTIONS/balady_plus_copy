@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
@@ -244,7 +245,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 style: const TextStyle(
                                   color: Color(0xFF242424),
                                   fontSize: 25,
-                                  fontFamily: "packages/balady_uikit/Frutiger",
+                                  fontFamily: GeneralKey.appFontType,
                                 ),
                               ),
                             );

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +37,7 @@ class CustomSubHeadingText extends StatelessWidget {
                   color: fontColor ?? Colors.black,
                   fontWeight: fontWeight ?? FontWeight.w700,
                   fontSize: fontSize ?? 18,
-                  fontFamily: "packages/balady_uikit/Frutiger",
+                  fontFamily: GeneralKey.appFontType,
                 ),
                 textAlign: TextAlign.start,
               ),
@@ -52,7 +53,7 @@ class CustomSubHeadingText extends StatelessWidget {
                 fontWeight: fontWeight ?? FontWeight.w700,
                 // fontSize: fontSize ?? 18,
 
-                fontFamily: "packages/balady_uikit/Frutiger",
+                fontFamily: GeneralKey.appFontType,
               ),
               textAlign: TextAlign.start,
             ),

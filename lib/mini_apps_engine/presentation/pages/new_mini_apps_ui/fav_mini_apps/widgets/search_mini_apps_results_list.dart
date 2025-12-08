@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
@@ -37,7 +38,7 @@ class SearchMiniAppsResultsList extends StatelessWidget {
               'no_results_found'.tr(),
               style: const TextStyle(
                 color: Color(0xFF777777),
-                fontFamily: "packages/balady_uikit/Frutiger",
+                fontFamily: GeneralKey.appFontType,
                 fontSize: 30,
               ),
             ),
