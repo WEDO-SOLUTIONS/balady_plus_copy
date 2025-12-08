@@ -30,7 +30,8 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 part 'offers_filters_view_notifier.dart';
 part 'prefs_offers_view_notifier.dart';
 
-class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScreenView {
+class OffersScreenViewNotifier extends OffersViewNotifier
+    implements OffersScreenView {
   OffersScreenViewNotifier({
     required super.saudiPassRepository,
     required super.cityIdByLocation,
@@ -42,7 +43,8 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
   final OffersGroup? offersGroup;
 
   @override
-  late Future<PrefsOffersViewNotifier> prefsOffersViewFuture = createPrefsOffersViewNotifier();
+  late Future<PrefsOffersViewNotifier> prefsOffersViewFuture =
+      createPrefsOffersViewNotifier();
 
   @override
   bool get isFavoritesOnly => false;
@@ -50,17 +52,25 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
   @override
   bool isByPreferencesElseAll = false;
 
+  bool _isManuallySelected = false;
+
+  bool get isManuallySelected => _isManuallySelected;
+
   @override
   void tapBack() => ref.read(appRouterProvider).popForced();
 
   @override
   void tapByPreferences() {
+    // Always allow switching to By Preferences tab
+    // If not logged in, the UI will show login prompt
+    _isManuallySelected = true;
     isByPreferencesElseAll = true;
     notifyListeners();
   }
 
   @override
   void tapAll() {
+    _isManuallySelected = true;
     isByPreferencesElseAll = false;
     notifyListeners();
   }
@@ -77,6 +87,12 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
     final cityByLocation = await this.cityByLocation();
     final controller = await ref.read(dgisControllerProvider.future);
     final cameraPosition = await controller.getCameraPosition();
-    return PrefsOffersViewNotifier(saudiPassRepository, cameraPosition.point, cityByLocation, ref, preferences);
+    return PrefsOffersViewNotifier(
+      saudiPassRepository,
+      cameraPosition.point,
+      cityByLocation,
+      ref,
+      preferences,
+    );
   }
 }

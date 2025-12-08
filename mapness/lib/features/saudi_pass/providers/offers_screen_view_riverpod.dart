@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/notifiers/offers_screen_view_notifier.dart';
@@ -21,17 +19,14 @@ class OffersScreenViewRiverpod extends _$OffersScreenViewRiverpod {
     );
 
     // Show offers by preferences if user is logged in
+    // If preferences are not populated, the UI will show a placeholder to set preferences
+    // We don't auto-switch to All tab - user should see the placeholder
     if (CommonProperties.isLoggedIn) {
-      unawaited(
-        notifier.prefsOffersViewFuture.then(
-          (value) {
-            if (value.preferences.isNotPopulated) {
-              notifier.isByPreferencesElseAll = false;
-            }
-          },
-        ),
-      );
+      // Set initial state to By Preferences
       notifier.isByPreferencesElseAll = true;
+    } else {
+      // If not logged in, default to All tab
+      notifier.isByPreferencesElseAll = false;
     }
 
     ref.onDispose(notifier.dispose);
