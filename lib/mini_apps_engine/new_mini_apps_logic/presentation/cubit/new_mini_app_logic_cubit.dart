@@ -205,23 +205,25 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   void openMiniApp(BuildContext context, MiniApp miniApp) async {
-    if (miniApp.latestVersion?.nafathLogin == true &&
-        !CommonProperties.isLoggedInMunicipality &&
-        miniApp.latestVersion?.deepLinkDto == null) {
-      showDialog(
-        context: context,
-        builder: (ctx) => NeedLoginDialog(
-          onSuccessLogin: (bool? isSuccess) async {
-            if (isSuccess ?? false) {
-              NavigationService.pushNamed(
-                routeName: RouteName.miniAppsMainScreen,
-                args: miniApp,
-              );
-            }
-          },
-        ),
-      );
-    } else if (miniApp.latestVersion?.otpLogin == true &&
+    /// if mini app needs login
+    if (miniApp.nafathLogin || miniApp.otpLogin) {
+      /// check if we already logged in
+      if (!(miniApp.latestVersion?.nafathLogin == true) &&
+          !CommonProperties.isLoggedInMunicipality) {
+        showDialog(
+          context: context,
+          builder: (ctx) => NeedLoginDialog(
+            onSuccessLogin: (bool? isSuccess) async {
+              if (isSuccess ?? false) openMiniApp(context, miniApp);
+            },
+          ),
+        );
+      }
+    }
+
+    /// continue flow
+
+    if (miniApp.latestVersion?.otpLogin == true &&
         miniApp.latestVersion?.deepLinkDto == null) {
       CommonFunctions.onLogin();
     } else {
@@ -243,14 +245,12 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             NavigationService.pushNamed(
               routeName: RouteName.miniAppsMainScreen,
               args: miniApp.copyWith(
-                // get this from parent
                 latestVersion: parentMAiniApp.latestVersion,
                 serviceKey: miniApp.parentServiceKey,
                 path: miniApp.childDeepLinkUrl,
               ),
             );
           } else {
-            /// TODO : Show errors Not Fund The Parent Maini App
             CommonFunctions.showError(
                 'Show errors Not Fund The Parent Maini App'.tr());
           }

@@ -272,6 +272,9 @@ class MiniApp {
 
   final String? path;
 
+  final bool nafathLogin;
+  final bool otpLogin;
+
   MiniApp({
     required this.id,
     required this.name,
@@ -296,6 +299,8 @@ class MiniApp {
     required this.serviceCategoryOrder,
     required this.serviceEntryPointOrder,
     this.path,
+    required this.nafathLogin,
+    required this.otpLogin,
   });
 
   factory MiniApp.fromJson(Map<String, dynamic> json) {
@@ -338,6 +343,8 @@ class MiniApp {
       parentService: json['parentService'],
       serviceCategoryOrder: json['serviceCategoryOrder'] as int,
       serviceEntryPointOrder: json['serviceEntryPointOrder'] as int,
+      nafathLogin: json['nafathLogin'] as bool,
+      otpLogin: json['otpLogin'] as bool,
     );
   }
 
@@ -365,10 +372,10 @@ class MiniApp {
       'parentService': parentService,
       'serviceCategoryOrder': serviceCategoryOrder,
       'serviceEntryPointOrder': serviceEntryPointOrder,
+      'nafathLogin': nafathLogin,
+      'otpLogin': otpLogin,
     };
   }
-
-
 
   MiniApp copyWith({
     String? id,
@@ -394,6 +401,8 @@ class MiniApp {
     int? serviceCategoryOrder,
     int? serviceEntryPointOrder,
     String? path,
+    bool? nafathLogin,
+    bool? otpLogin,
   }) {
     return MiniApp(
       id: id ?? this.id,
@@ -405,7 +414,7 @@ class MiniApp {
       parentServiceKey: parentServiceKey ?? this.parentServiceKey,
       cdnLogoRef: cdnLogoRef ?? this.cdnLogoRef,
       attachmentConfiguration:
-      attachmentConfiguration ?? this.attachmentConfiguration,
+          attachmentConfiguration ?? this.attachmentConfiguration,
       serviceOrder: serviceOrder ?? this.serviceOrder,
       portNumber: portNumber ?? this.portNumber,
       haveChilds: haveChilds ?? this.haveChilds,
@@ -417,15 +426,14 @@ class MiniApp {
       latestVersion: latestVersion ?? this.latestVersion,
       childServices: childServices ?? this.childServices,
       parentService: parentService ?? this.parentService,
-      serviceCategoryOrder:
-      serviceCategoryOrder ?? this.serviceCategoryOrder,
+      serviceCategoryOrder: serviceCategoryOrder ?? this.serviceCategoryOrder,
       serviceEntryPointOrder:
-      serviceEntryPointOrder ?? this.serviceEntryPointOrder,
+          serviceEntryPointOrder ?? this.serviceEntryPointOrder,
       path: path ?? this.path,
+      nafathLogin: nafathLogin ?? this.nafathLogin,
+      otpLogin: otpLogin ?? this.otpLogin,
     );
   }
-
-
 }
 
 class MiniAppCategory {
