@@ -85,6 +85,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessSSOToken(dynamic msg, CompletionHandler handler) async {
+    bool optionalLogin = false ;
+    try {
+      Map data = json.decode(msg);
+      optionalLogin = data['optionalLogin'] ?? false;
+    } catch(_) {
+    }
     BaseResponse response = BaseResponse(
       code: 401,
       message: "Unauthorized",
@@ -99,7 +105,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: AccessTokenModel(accessToken: CommonProperties.token),
       );
       handler.complete(response.jsonEncodeModel());
-    } else {
+    } else if ( !optionalLogin ) {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
           if (isSuccess ?? false) {
