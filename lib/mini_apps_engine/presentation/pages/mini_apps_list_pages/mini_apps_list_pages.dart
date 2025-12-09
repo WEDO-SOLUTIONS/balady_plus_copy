@@ -271,11 +271,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                             miniApp,
                                           );
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SvgPicture.asset(
-                                          "assets/icons/svg/${CommonFunctions.isAppAR ? 'promoAr.svg' : 'promoEn.svg'}"),
-                                    ),
+                                    child: Image.asset(
+                                        "assets/icons/png/${CommonFunctions.isAppAR ? 'promoAr.png' : 'promoEn.png'}"),
                                   )
                                 ],
                               ),
