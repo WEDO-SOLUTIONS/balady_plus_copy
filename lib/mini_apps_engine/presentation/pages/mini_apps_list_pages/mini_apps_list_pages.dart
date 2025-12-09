@@ -40,6 +40,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
           builder: (context, state) {
             final hasError =
                 state.entryPointsError != null && state.favError != null;
+
             if (hasError) {
               return GeneralErrorWidget(
                 error: state.favError ?? state.entryPointsError!,
@@ -181,7 +182,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                       .read<
                                                           NewMiniAppLogicCubit>()
                                                       .openMiniApp(
-                                                        context,
                                                         favMiniApp,
                                                       );
                                                 },
@@ -268,7 +268,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       context
                                           .read<NewMiniAppLogicCubit>()
                                           .openMiniApp(
-                                            context,
                                             miniApp,
                                           );
                                     },
@@ -366,10 +365,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                     context
                                                         .read<
                                                             NewMiniAppLogicCubit>()
-                                                        .openMiniApp(
-                                                          context,
-                                                          miniApp,
-                                                        );
+                                                        .openMiniApp(miniApp);
                                                   },
                                                   child:
                                                       CustomNetworkImageWidget(
@@ -437,9 +433,10 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         onTap: () {
                                           Navigator.of(context).push(
                                             PageRouteBuilder(
-                                              opaque: false, // ✅ IMPORTANT
-                                              barrierColor: Colors
-                                                  .transparent, // ✅ let previous screen show
+                                              opaque: false,
+                                              // ✅ IMPORTANT
+                                              barrierColor: Colors.transparent,
+                                              // ✅ let previous screen show
                                               pageBuilder: (_, __, ___) =>
                                                   AppsGroupPage(
                                                       appGroup: appGroup),

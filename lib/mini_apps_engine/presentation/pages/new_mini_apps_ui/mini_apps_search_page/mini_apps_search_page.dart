@@ -8,7 +8,6 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/helpers/mini_apps_navigation_helper.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
@@ -176,9 +175,9 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             title: miniApp.name,
                                             iconPath: miniApp.iconPath,
                                             onTap: () {
-                                              MiniAppsNavigationHelper()
-                                                  .handleTap(context, miniApp);
-                                              // _handleTap(context, miniApp);
+                                              context
+                                                  .read<NewMiniAppLogicCubit>()
+                                                  .openMiniApp(miniApp);
                                             },
                                           );
                                         },
