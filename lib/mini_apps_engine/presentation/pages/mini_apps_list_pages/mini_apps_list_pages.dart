@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/general_error_widget.dart';
@@ -209,6 +210,74 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       ),
                                     ],
                                   ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      //todo: open promo mini app from static data
+                                      final miniApp = MiniApp.fromJson({
+                                        "id":
+                                            "af81d44f-4436-441e-12c8-08de30ae6b36",
+                                        "serviceName": "Compliance Certificate",
+                                        "description": "Compliance Certificate",
+                                        "entity":
+                                            "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
+                                        "logoKey":
+                                            "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_2269e98c-b909-43d4-aa29-52572f8c26a3.png",
+                                        "serviceKey": "ComplianceCertificate",
+                                        "parentServiceKey": "municipalservice",
+                                        "cdnLogoRef":
+                                            "logo_2269e98c-b909-43d4-aa29-52572f8c26a3.png",
+                                        "attachmentConfiguration": "CDN",
+                                        "serviceOrder": null,
+                                        "portNumber": 9673,
+                                        "haveChilds": false,
+                                        "isChild": true,
+                                        "requirements": [
+                                          {
+                                            "requirementKey": "checkPermission",
+                                            "name": "Check Permission"
+                                          }
+                                        ],
+                                        "entryPoints": [],
+                                        "categories": [
+                                          {
+                                            "id":
+                                                "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
+                                            "name": "Individual Municipal Apps",
+                                            "categoryOrder": null,
+                                            "serviceOrderByCategory": null
+                                          },
+                                          {
+                                            "id":
+                                                "6f736c81-c998-4c3e-09ea-08de2cce6088",
+                                            "name": "Business Municipal Apps",
+                                            "categoryOrder": null,
+                                            "serviceOrderByCategory": null
+                                          }
+                                        ],
+                                        "childDeepLinkUrl":
+                                            "DynamicCardsServicesScreen?id=11429&pageRourting=Compliance_Certificate_Service_Card_Page",
+                                        "latestVersion": null,
+                                        "childServices": null,
+                                        "parentService": null,
+                                        "serviceCategoryOrder": 0,
+                                        "serviceEntryPointOrder": 0,
+                                        "nafathLogin": true,
+                                        "otpLogin": false
+                                      });
+
+                                      context
+                                          .read<NewMiniAppLogicCubit>()
+                                          .openMiniApp(
+                                            context,
+                                            miniApp,
+                                          );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SvgPicture.asset(
+                                          "assets/icons/svg/${CommonFunctions.isAppAR ? 'promoAr.svg' : 'promoEn.svg'}"),
+                                    ),
+                                  )
                                 ],
                               ),
                             ],
