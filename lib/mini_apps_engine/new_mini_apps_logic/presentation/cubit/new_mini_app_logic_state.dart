@@ -1,6 +1,6 @@
 part of 'new_mini_app_logic_cubit.dart';
 
-class NewMiniAppLogicState extends Equatable {
+class NewMiniAppLogicState  {
   //! Loading
   final bool isFavLoading;
   final bool isUnFavLoading;
@@ -101,13 +101,13 @@ class NewMiniAppLogicState extends Equatable {
       entryPoints: entryPoints ?? this.entryPoints,
     );
   }
-  @override
-  // TODO: implement props
-  List<Object?> get props => [
-        allMiniApps,
-        appGroups,
-        isFavLoading,
-        isAppsGroupLoading,
-        isEntryPointsLoading,
-      ];
+  // @override
+  // // TODO: implement props
+  // List<Object?> get props => [
+  //       allMiniApps,
+  //       appGroups,
+  //       isFavLoading,
+  //       isAppsGroupLoading,
+  //       isEntryPointsLoading,
+  //     ];
 }
