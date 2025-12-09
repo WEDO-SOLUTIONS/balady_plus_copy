@@ -65,6 +65,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
         emit(
           state.copyWith(
+            allMiniApps: data.miniApps,
             isFavLoading: false,
             isAppsGroupLoading: false,
             isEntryPointsLoading: false,
@@ -201,12 +202,12 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   void openMiniApp(BuildContext context, MiniApp miniApp) async {
-
     /// if mini app needs login
-    if (miniApp.nafathLogin || miniApp.otpLogin) {
+    if (miniApp.nafathLogin) {
       /// check if we already logged in
-      if (!(miniApp.latestVersion?.nafathLogin == true) && !CommonProperties.isLoggedInMunicipality) {
-        showDialog(
+      /*if (!(miniApp.latestVersion?.nafathLogin == true) &&*/
+      if (!CommonProperties.isLoggedInMunicipality) {
+        await showDialog(
           context: context,
           builder: (ctx) => NeedLoginDialog(
             onSuccessLogin: (bool? isSuccess) async {
@@ -214,12 +215,14 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             },
           ),
         );
+        return;
       }
     }
 
     /// continue flow
 
-    if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
+    if (miniApp.latestVersion?.otpLogin == true &&
+        miniApp.latestVersion?.deepLinkDto == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.latestVersion?.deepLinkDto != null) {
@@ -257,8 +260,25 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     }
   }
 
+  Future<void> openMiniAppByServiceKey({
+    required BuildContext context,
+    required String serviceKey,
+    String? path,
+  }) async {
+    try {
+      MiniApp miniApp = state.allMiniApps
+          .firstWhere((service) => service.serviceKey == serviceKey)
+          .copyWith();
+
+      openMiniApp(context, miniApp);
+    } catch (e) {
+      // CommonFunctions.showSuccess(e.toString());
+    }
+  }
+
   void clearSearch() {
     emit(state.copyWith(
+
       searchResults: [],
       isSearching: false,
       searchError: null,

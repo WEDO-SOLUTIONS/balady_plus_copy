@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -134,7 +135,7 @@ class CustomLargMoreApps extends StatelessWidget {
                 style: const TextStyle(
                   color: Color(0XFF242424),
                   fontWeight: FontWeight.w700,
-                  fontFamily: "packages/balady_uikit/Frutiger",
+                  fontFamily: GeneralKey.appFontType,
                 ),
               ),
             ),

@@ -105,9 +105,12 @@ class Data {
 
   factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
-      miniApps: (json['miniApps'] as List<dynamic>).map((e) => MiniApp.fromJson(e as Map<String, dynamic>)).toList(),
-      categories:
-          (json['categories'] as List<dynamic>).map((e) => DataCategory.fromJson(e as Map<String, dynamic>)).toList(),
+      miniApps: (json['miniApps'] as List<dynamic>)
+          .map((e) => MiniApp.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      categories: (json['categories'] as List<dynamic>)
+          .map((e) => DataCategory.fromJson(e as Map<String, dynamic>))
+          .toList(),
       entryPoints: (json['entryPoints'] as List<dynamic>)
           .map((e) => DataEntryPoint.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -267,6 +270,9 @@ class MiniApp {
 
   final String? path;
 
+  final bool nafathLogin;
+  final bool otpLogin;
+
   MiniApp({
     required this.id,
     required this.name,
@@ -293,6 +299,8 @@ class MiniApp {
     required this.serviceCategoryOrder,
     required this.serviceEntryPointOrder,
     this.path,
+    required this.nafathLogin,
+    required this.otpLogin,
   });
 
   factory MiniApp.fromJson(Map<String, dynamic> json) {
@@ -332,6 +340,8 @@ class MiniApp {
       parentService: json['parentService'],
       serviceCategoryOrder: json['serviceCategoryOrder'] as int,
       serviceEntryPointOrder: json['serviceEntryPointOrder'] as int,
+      nafathLogin: json['nafathLogin'] as bool,
+      otpLogin: json['otpLogin'] as bool,
     );
   }
 

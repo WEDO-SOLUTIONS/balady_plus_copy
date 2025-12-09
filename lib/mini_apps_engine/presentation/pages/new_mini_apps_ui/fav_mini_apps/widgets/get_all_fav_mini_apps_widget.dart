@@ -74,6 +74,8 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
                                 iconHeight: context.h(37.73630905151367),
                                 iconWidth: context.w(37.73630905151367),
                                 isTextRemove: true,
+                                iconPath: favApp.iconPath,
+                                radius: 12.7,
                               ),
                               SizedBox(
                                 width: context.screenWidth * 0.02,

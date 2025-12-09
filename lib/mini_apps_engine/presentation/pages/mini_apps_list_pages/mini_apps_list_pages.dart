@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
@@ -19,9 +21,6 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
-import 'package:balady_plus/super_app_js_bridge/js_bridge_listener.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,7 +38,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
         backgroundColor: const Color(0xFFF5F7FA),
         body: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
           builder: (context, state) {
-            final hasError = state.entryPointsError != null && state.favError != null;
+            final hasError =
+                state.entryPointsError != null && state.favError != null;
             if (hasError) {
               return GeneralErrorWidget(
                 error: state.favError ?? state.entryPointsError!,
@@ -74,7 +74,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF1CA9A6),
                                         fontWeight: FontWeight.w700,
-                                        fontFamily: "packages/balady_uikit/Frutiger",
+                                        fontFamily: GeneralKey.appFontType,
                                       ),
                                     ),
                                   ),
@@ -90,7 +90,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       style: const TextStyle(
                                         color: Color(0xFF1CA9A6),
                                         fontWeight: FontWeight.w700,
-                                        fontFamily: "packages/balady_uikit/Frutiger",
+                                        fontFamily: GeneralKey.appFontType,
                                       ),
                                     ),
                                   ),
@@ -99,8 +99,10 @@ class HomeMiniAppsListPages extends StatelessWidget {
                               MiniAppsCustomTextField(
                                 onTap: () {
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (_) => const MiniAppsSearchPage(),
+                                    PageRouteBuilder(
+                                      opaque: false,
+                                      barrierColor: Colors.transparent,
+                                      pageBuilder: (_, __, ___) => const MiniAppsSearchPage(),
                                     ),
                                   );
                                 },
@@ -178,6 +180,13 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                 minFontSize: 9,
 
                                                 miniAppIcon: favMiniApp.iconPath,
+                                                child: CustomNetworkImageWidget(
+                                                  favMiniApp.iconPath,
+                                                  // sso: true,
+                                                  isVerifyingKey: true,
+                                                  imageWidth: context.w(42),
+                                                  imageHeight: context.h(42),
+                                                ),
                                               ),
                                             );
                                           },
@@ -185,6 +194,74 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       ),
                                     ],
                                   ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      //todo: open promo mini app from static data
+                                      final miniApp = MiniApp.fromJson({
+                                        "id":
+                                            "af81d44f-4436-441e-12c8-08de30ae6b36",
+                                        "serviceName": "Compliance Certificate",
+                                        "description": "Compliance Certificate",
+                                        "entity":
+                                            "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
+                                        "logoKey":
+                                            "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_2269e98c-b909-43d4-aa29-52572f8c26a3.png",
+                                        "serviceKey": "ComplianceCertificate",
+                                        "parentServiceKey": "municipalservice",
+                                        "cdnLogoRef":
+                                            "logo_2269e98c-b909-43d4-aa29-52572f8c26a3.png",
+                                        "attachmentConfiguration": "CDN",
+                                        "serviceOrder": null,
+                                        "portNumber": 9673,
+                                        "haveChilds": false,
+                                        "isChild": true,
+                                        "requirements": [
+                                          {
+                                            "requirementKey": "checkPermission",
+                                            "name": "Check Permission"
+                                          }
+                                        ],
+                                        "entryPoints": [],
+                                        "categories": [
+                                          {
+                                            "id":
+                                                "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
+                                            "name": "Individual Municipal Apps",
+                                            "categoryOrder": null,
+                                            "serviceOrderByCategory": null
+                                          },
+                                          {
+                                            "id":
+                                                "6f736c81-c998-4c3e-09ea-08de2cce6088",
+                                            "name": "Business Municipal Apps",
+                                            "categoryOrder": null,
+                                            "serviceOrderByCategory": null
+                                          }
+                                        ],
+                                        "childDeepLinkUrl":
+                                            "DynamicCardsServicesScreen?id=11429&pageRourting=Compliance_Certificate_Service_Card_Page",
+                                        "latestVersion": null,
+                                        "childServices": null,
+                                        "parentService": null,
+                                        "serviceCategoryOrder": 0,
+                                        "serviceEntryPointOrder": 0,
+                                        "nafathLogin": true,
+                                        "otpLogin": false
+                                      });
+
+                                      context
+                                          .read<NewMiniAppLogicCubit>()
+                                          .openMiniApp(
+                                            context,
+                                            miniApp,
+                                          );
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SvgPicture.asset(
+                                          "assets/icons/svg/${CommonFunctions.isAppAR ? 'promoAr.svg' : 'promoEn.svg'}"),
+                                    ),
+                                  )
                                 ],
                               ),
                             ],
@@ -248,10 +325,13 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                 return CustomMiniAppsCard(
                                                   width: context.w(104),
                                                   height: context.h(104),
-                                                  iconHeight: context.h(48),
-                                                  iconWidth: context.w(48),
-                                                  titlesHeight: context.h(17),
+                                                  iconHeight: context.h(64),
+                                                  iconWidth: context.w(64),
+                                                  titlesHeight: context.h(47),
                                                   titlesWidth: context.w(66),
+                                                  maxLines: 3,
+                                                  maxFontSize: 20,
+                                                  minFontSize: 8,
                                                   withCardEffect: true,
                                                   text: miniApp.name,
                                                   miniAppIcon: miniApp.iconPath,
@@ -264,6 +344,14 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                           miniApp,
                                                         );
                                                   },
+                                                  child:
+                                                      CustomNetworkImageWidget(
+                                                    miniApp.iconPath,
+                                                    // sso: true,
+                                                    isVerifyingKey: true,
+                                                    imageWidth: context.w(42),
+                                                    imageHeight: context.h(42),
+                                                  ),
                                                 );
                                               },
                                             ),
@@ -315,10 +403,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         totalAppCount: appGroup.appCount,
                                         onTap: () {
                                           Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) => AppsGroupPage(
-                                                appGroup: appGroup,
-                                              ),
+                                            PageRouteBuilder(
+                                              opaque: false, // ✅ IMPORTANT
+                                              barrierColor: Colors
+                                                  .transparent, // ✅ let previous screen show
+                                              pageBuilder: (_, __, ___) => AppsGroupPage(
+                                                      appGroup: appGroup),
                                             ),
                                           );
                                         },
