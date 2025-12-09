@@ -68,6 +68,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
         emit(
           state.copyWith(
+            allMiniApps: data.miniApps,
             isFavLoading: false,
             isAppsGroupLoading: false,
             isEntryPointsLoading: false,
@@ -284,6 +285,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   void clearSearch() {
     emit(state.copyWith(
+
       searchResults: [],
       isSearching: false,
       searchError: null,
