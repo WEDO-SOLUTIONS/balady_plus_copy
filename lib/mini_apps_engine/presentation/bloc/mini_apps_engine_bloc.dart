@@ -5,8 +5,8 @@ import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
 
-import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
@@ -44,9 +44,12 @@ class MiniAppsEngineBloc
 
   void _checkMiniAppsEngine(
       CheckMiniAppsEngineEvent event, Emitter emit) async {
-    // await prepareServerPath();
 
     if (event.miniApp.latestVersion?.serviceUrl != null) {
+      if(event.miniApp.nafathLogin) {
+        GetCookie getCookie = GetCookie(repository: sl());
+        final failureOrSuccessForCookie = await getCookie(true);
+      }
       emit(
         MiniAppsEngineLoadedState(
           servicePath: event.miniApp.latestVersion!.serviceUrl!,
@@ -155,12 +158,7 @@ class MiniAppsEngineBloc
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: event.miniApp.portNumber ??
-              generateRandomPort(
-                portNumber,
-                event.miniApp.name,
-                event.miniApp.serviceKey,
-              ),
+          port: 5066,
           shared: true,
         ),
       );
@@ -172,7 +170,7 @@ class MiniAppsEngineBloc
         await localhostServer!.start();
       }
 
-      String servicePath = "http://localhost:${localhostServer!.port}/";
+      String servicePath = "http://localhost:5066/";
 
       emit(
         MiniAppsEngineLoadedState(

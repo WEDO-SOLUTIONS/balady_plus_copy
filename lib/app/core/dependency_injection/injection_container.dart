@@ -19,7 +19,6 @@ import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/repositori
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/repositories/new_mini_apps_logic_repository.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/use_cases/get_new_mini_apps_logic_usecase.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
@@ -169,9 +168,6 @@ void initialize() {
   sl.registerLazySingleton<MiniAppsRepository>(() => MiniAppsRepository(
         localDataSource: sl<MiniAppsLocalDataSource>(),
       ));
-  sl.registerLazySingleton<HomeMiniAppsListCubit>(() => HomeMiniAppsListCubit(
-        homeServicesUseCases: sl<MiniAppsRepository>(),
-      ));
 
   //! New mini apps logic ==========================================================
 
@@ -195,6 +191,7 @@ void initialize() {
     () => NewMiniAppLogicCubit(
       sl<GetNewMiniAppsLogicUseCase>(),
       sl<FlutterSecureStorage>(),
+      sl<MiniAppsRepository>()
     ),
   );
 

@@ -1,12 +1,13 @@
 part of 'new_mini_app_logic_cubit.dart';
 
-class NewMiniAppLogicState {
+class NewMiniAppLogicState extends Equatable {
   //! Loading
   final bool isFavLoading;
   final bool isUnFavLoading;
   final bool isSearching;
   final bool isEntryPointsLoading;
   final bool isAppsGroupLoading;
+
   //! Result
   final Map<String, MiniApp> parentMiniApp;
   final List<CategoryGroup> appGroups;
@@ -15,6 +16,7 @@ class NewMiniAppLogicState {
   final List<MiniApp> searchResults;
   final List<MiniApp> allMiniApps;
   final List<EntryPoints> entryPoints;
+
   //! Error
   final String? favError;
   final String? unFavError;
@@ -84,7 +86,7 @@ class NewMiniAppLogicState {
       isFavLoading: isFavLoading ?? this.isFavLoading,
       parentMiniApp: parentMiniApp ?? this.parentMiniApp,
       allMiniApps: allMiniApps ?? this.allMiniApps,
-      favError: favError ?? this.favError,
+      favError: this.favError,
       favoriteApps: favoriteApps ?? this.favoriteApps,
       unFavoriteApps: unFavoriteApps ?? this.unFavoriteApps,
       isUnFavLoading: isUnFavLoading ?? this.isUnFavLoading,
@@ -95,8 +97,17 @@ class NewMiniAppLogicState {
       isSearching: isSearching ?? this.isSearching,
       searchError: searchError ?? this.searchError,
       isEntryPointsLoading: isEntryPointsLoading ?? this.isEntryPointsLoading,
-      entryPointsError: entryPointsError ?? this.entryPointsError,
+      entryPointsError: this.entryPointsError,
       entryPoints: entryPoints ?? this.entryPoints,
     );
   }
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        allMiniApps,
+        appGroups,
+        isFavLoading,
+        isAppsGroupLoading,
+        isEntryPointsLoading,
+      ];
 }

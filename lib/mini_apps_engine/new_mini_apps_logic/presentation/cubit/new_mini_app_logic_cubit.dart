@@ -1,15 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
+import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/use_cases/get_new_mini_apps_logic_usecase.dart';
+import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -19,11 +26,15 @@ part 'new_mini_app_logic_state.dart';
 class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   final GetNewMiniAppsLogicUseCase getMiniAppsUseCase;
   final FlutterSecureStorage secureStorage;
+  MiniAppsRepository homeServicesUseCases;
 
   static const _favoritesKey = 'mini_apps_favorite_ids';
 
-  NewMiniAppLogicCubit(this.getMiniAppsUseCase, this.secureStorage)
-      : super(NewMiniAppLogicState.initial());
+  NewMiniAppLogicCubit(
+    this.getMiniAppsUseCase,
+    this.secureStorage,
+    this.homeServicesUseCases,
+  ) : super(NewMiniAppLogicState.initial());
 
   Timer? _searchDebounce;
 
@@ -66,6 +77,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         final unFavoriteApps =
             allApps.where((app) => !savedFavIds.contains(app.id)).toList();
 
+
         emit(
           state.copyWith(
             allMiniApps: data.miniApps,
@@ -77,6 +89,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             parentMiniApp: data.parentMiniApp,
             appGroups: data.appGroups,
             entryPoints: data.entryPoints,
+            favError: null,
+            entryPointsError: null,
           ),
         );
       },
@@ -206,17 +220,17 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     await secureStorage.write(key: _favoritesKey, value: jsonString);
   }
 
-  void openMiniApp(BuildContext context, MiniApp miniApp) async {
+  void openMiniApp(MiniApp miniApp) async {
     /// if mini app needs login
     if (miniApp.nafathLogin) {
       /// check if we already logged in
       /*if (!(miniApp.latestVersion?.nafathLogin == true) &&*/
       if (!CommonProperties.isLoggedInMunicipality) {
         await showDialog(
-          context: context,
+          context: NavigationService.navigatorKey.currentState!.context,
           builder: (ctx) => NeedLoginDialog(
             onSuccessLogin: (bool? isSuccess) async {
-              if (isSuccess ?? false) openMiniApp(context, miniApp);
+              if (isSuccess ?? false) openMiniApp(miniApp);
             },
           ),
         );
@@ -268,7 +282,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   Future<void> openMiniAppByServiceKey({
-    required BuildContext context,
     required String serviceKey,
     String? path,
   }) async {
@@ -277,7 +290,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           .firstWhere((service) => service.serviceKey == serviceKey)
           .copyWith();
 
-      openMiniApp(context, miniApp);
+      openMiniApp(miniApp);
     } catch (e) {
       // CommonFunctions.showSuccess(e.toString());
     }
@@ -285,7 +298,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   void clearSearch() {
     emit(state.copyWith(
-
       searchResults: [],
       isSearching: false,
       searchError: null,
@@ -296,5 +308,51 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Future<void> close() {
     _searchDebounce?.cancel();
     return super.close();
+  }
+
+  Future<BaseResponse?> getMiniAppAcessToken(MiniApp miniApp) async {
+    MiniApp model = miniApp;
+
+    try {
+      final response =
+          await homeServicesUseCases.getMiniAppAcessToken(model.id);
+
+      return response.fold(
+        (error) {
+          if (error is ServerFailure) {
+            return BaseResponse(
+              code: 500,
+              message: error.errorMessage,
+              eventName: "getAccessToken",
+              data: null,
+            );
+          } else {
+            return BaseResponse(
+              code: 500,
+              message: 'An unknown error occurred',
+              eventName: "getAccessToken",
+              data: null,
+            );
+          }
+        },
+        (res) {
+          return BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "getAccessToken",
+            data: AccessTokenModel(
+              accessToken: res.toString(),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      return BaseResponse(
+        code: 500,
+        message: 'Failed to get access token: ${e.toString()}',
+        eventName: "getAccessToken",
+        data: null,
+      );
+    }
   }
 }
