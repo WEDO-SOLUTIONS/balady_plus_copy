@@ -8,12 +8,14 @@ class PoiContentAboutCard extends StatefulWidget {
   final PoiContentAboutModel data;
   final Duration animationDuration;
   final Curve animationCurve;
+  final bool isExpandable;
 
   const PoiContentAboutCard({
     required this.data,
     this.collapsedLinesCount = 3,
     this.animationDuration = const Duration(milliseconds: 200),
     this.animationCurve = Curves.easeInOut,
+    this.isExpandable = true,
     super.key,
   });
 
@@ -23,14 +25,16 @@ class PoiContentAboutCard extends StatefulWidget {
 
 class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTickerProviderStateMixin {
   static const _heightOfGradient = 36.0;
+
   // This manages height and label "Show more"/"Show less"
   bool isFullVisible = false;
   bool truncateText = false;
   double _maxWidth = 100;
+
   // ignore: prefer_const_constructors
   _AboutTextModel _textHeight = _AboutTextModel(height: 0, heightTruncated: 0, linesCount: 0);
 
-  bool get _showExpandButton => _textHeight.linesCount > widget.collapsedLinesCount;
+  bool get _showExpandButton => _textHeight.linesCount > widget.collapsedLinesCount && widget.isExpandable;
 
   late final AnimationController _animationController;
   late final Animation<double> _animation;
@@ -118,8 +122,10 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                       alignment: AlignmentDirectional.bottomStart,
                       children: [
                         SizedBox(
-                          height: _textHeight.heightTruncated +
-                              (_textHeight.height - _textHeight.heightTruncated) * _animation.value,
+                          height: widget.isExpandable
+                              ? _textHeight.heightTruncated +
+                                  (_textHeight.height - _textHeight.heightTruncated) * _animation.value
+                              : null,
                           width: _maxWidth,
                           child: Text(
                             widget.data.text,

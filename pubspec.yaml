@@ -299,7 +299,6 @@ flutter:
   shaders:
     - shaders/radar.frag
   assets:
-    - assets/mock/mini_apps_response.json
     - assets/
     - assets/icons/svg/
     - assets/icons/svg/jod/
