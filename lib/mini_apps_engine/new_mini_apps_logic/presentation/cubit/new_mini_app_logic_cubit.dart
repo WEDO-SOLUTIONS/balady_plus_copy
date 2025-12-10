@@ -77,7 +77,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         final unFavoriteApps =
             allApps.where((app) => !savedFavIds.contains(app.id)).toList();
 
-
         emit(
           state.copyWith(
             allMiniApps: data.miniApps,
@@ -221,6 +220,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   void openMiniApp(MiniApp miniApp) async {
+
     /// if mini app needs login
     if (miniApp.nafathLogin) {
       /// check if we already logged in

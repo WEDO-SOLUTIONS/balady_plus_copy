@@ -214,56 +214,62 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     onTap: () {
                                       //todo: open promo mini app from static data
                                       final miniApp = MiniApp.fromJson({
-                                        "id":
-                                            "af81d44f-4436-441e-12c8-08de30ae6b36",
-                                        "serviceName": "Compliance Certificate",
-                                        "description": "Compliance Certificate",
-                                        "entity":
-                                            "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
+                                        "id": "76fdfee4-4086-436c-2e59-08de371bca28",
+                                        "serviceName": "Emtithal Map",
+                                        "description": "BaladyUrbiImtithal",
+                                        "entity": "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
                                         "logoKey":
-                                            "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_2269e98c-b909-43d4-aa29-52572f8c26a3.png",
-                                        "serviceKey": "ComplianceCertificate",
-                                        "parentServiceKey": "municipalservice",
-                                        "cdnLogoRef":
-                                            "logo_2269e98c-b909-43d4-aa29-52572f8c26a3.png",
+                                        "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
+                                        "serviceKey": "BaladyUrbiImtithal",
+                                        "parentServiceKey": null,
+                                        "cdnLogoRef": "logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
                                         "attachmentConfiguration": "CDN",
                                         "serviceOrder": null,
-                                        "portNumber": 9673,
+                                        "portNumber": 2546,
                                         "haveChilds": false,
-                                        "isChild": true,
-                                        "requirements": [
-                                          {
-                                            "requirementKey": "checkPermission",
-                                            "name": "Check Permission"
-                                          }
-                                        ],
+                                        "isChild": false,
+                                        "requirements": [],
                                         "entryPoints": [],
                                         "categories": [
                                           {
-                                            "id":
-                                                "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
-                                            "name": "Individual Municipal Apps",
+                                            "id": "6f736c81-c998-4c3e-09ea-08de2cce6088",
+                                            "name": "Business Municipal Apps",
                                             "categoryOrder": null,
                                             "serviceOrderByCategory": null
                                           },
                                           {
-                                            "id":
-                                                "6f736c81-c998-4c3e-09ea-08de2cce6088",
-                                            "name": "Business Municipal Apps",
+                                            "id": "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
+                                            "name": "Individual Municipal Apps",
                                             "categoryOrder": null,
                                             "serviceOrderByCategory": null
                                           }
                                         ],
-                                        "childDeepLinkUrl":
-                                            "DynamicCardsServicesScreen?id=11429&pageRourting=Compliance_Certificate_Service_Card_Page",
-                                        "latestVersion": null,
+                                        "childDeepLinkUrl": null,
+                                        "latestVersion": {
+                                          "id": "b9d25306-522a-4bc3-9b79-08de371b7e8c",
+                                          "versionDescription": "EMTITHAL MAP",
+                                          "versionNumber": "v1.0.4",
+                                          "serviceUrl": "https://gisappstg.momra.gov.sa/BaladyUrbiImtithal",
+                                          "nafathLogin": false,
+                                          "otpLogin": false,
+                                          "forceUpdate": false,
+                                          "status": 3,
+                                          "packageMetaDataDto": null,
+                                          "webPackageMetaDataDto": null,
+                                          "androidPackageMetaDataDto": null,
+                                          "iosPackageMetaDataDto": null,
+                                          "deepLinkDto": null,
+                                          "type": 1,
+                                          "notes": null
+                                        },
                                         "childServices": null,
                                         "parentService": null,
                                         "serviceCategoryOrder": 0,
                                         "serviceEntryPointOrder": 0,
-                                        "nafathLogin": true,
+                                        "nafathLogin": false,
                                         "otpLogin": false
                                       });
+
 
                                       context
                                           .read<NewMiniAppLogicCubit>()
