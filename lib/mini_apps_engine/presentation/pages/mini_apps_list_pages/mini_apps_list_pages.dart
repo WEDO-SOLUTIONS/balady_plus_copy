@@ -214,15 +214,18 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     onTap: () {
                                       //todo: open promo mini app from static data
                                       final miniApp = MiniApp.fromJson({
-                                        "id": "76fdfee4-4086-436c-2e59-08de371bca28",
+                                        "id":
+                                            "76fdfee4-4086-436c-2e59-08de371bca28",
                                         "serviceName": "Emtithal Map",
                                         "description": "BaladyUrbiImtithal",
-                                        "entity": "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
+                                        "entity":
+                                            "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
                                         "logoKey":
-                                        "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
+                                            "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
                                         "serviceKey": "BaladyUrbiImtithal",
                                         "parentServiceKey": null,
-                                        "cdnLogoRef": "logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
+                                        "cdnLogoRef":
+                                            "logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
                                         "attachmentConfiguration": "CDN",
                                         "serviceOrder": null,
                                         "portNumber": 2546,
@@ -232,13 +235,15 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         "entryPoints": [],
                                         "categories": [
                                           {
-                                            "id": "6f736c81-c998-4c3e-09ea-08de2cce6088",
+                                            "id":
+                                                "6f736c81-c998-4c3e-09ea-08de2cce6088",
                                             "name": "Business Municipal Apps",
                                             "categoryOrder": null,
                                             "serviceOrderByCategory": null
                                           },
                                           {
-                                            "id": "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
+                                            "id":
+                                                "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
                                             "name": "Individual Municipal Apps",
                                             "categoryOrder": null,
                                             "serviceOrderByCategory": null
@@ -246,10 +251,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         ],
                                         "childDeepLinkUrl": null,
                                         "latestVersion": {
-                                          "id": "b9d25306-522a-4bc3-9b79-08de371b7e8c",
+                                          "id":
+                                              "b9d25306-522a-4bc3-9b79-08de371b7e8c",
                                           "versionDescription": "EMTITHAL MAP",
                                           "versionNumber": "v1.0.4",
-                                          "serviceUrl": "https://gisappstg.momra.gov.sa/BaladyUrbiImtithal",
+                                          "serviceUrl":
+                                              "https://gisappstg.momra.gov.sa/BaladyUrbiImtithal",
                                           "nafathLogin": false,
                                           "otpLogin": false,
                                           "forceUpdate": false,
@@ -269,7 +276,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         "nafathLogin": false,
                                         "otpLogin": false
                                       });
-
 
                                       context
                                           .read<NewMiniAppLogicCubit>()
