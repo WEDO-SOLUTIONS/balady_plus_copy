@@ -28,15 +28,43 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   static const _favoritesKey = 'mini_apps_favorite_ids';
 
   NewMiniAppLogicCubit(
-    this.getMiniAppsUseCase,
-    this.secureStorage,
-    this.homeServicesUseCases,
-  ) : super(NewMiniAppLogicState.initial());
+      this.getMiniAppsUseCase,
+      this.secureStorage,
+      this.homeServicesUseCases,
+      ) : super(NewMiniAppLogicState.initial());
 
   Timer? _searchDebounce;
 
   //! Get mini apps ...
   Future<void> loadMiniApps({bool showLoading = true}) async {
+  List<CategoryGroup> _processAppGroups(List<CategoryGroup> rawAppGroups) {
+    final List<CategoryGroup> processedGroups = [];
+    final List<MiniApp> otherServicesApps = [];
+
+    for (final group in rawAppGroups) {
+      if (group.apps.length >= 2) {
+        processedGroups.add(group);
+      } else if (group.apps.length == 1) {
+        otherServicesApps.addAll(group.apps);
+      }
+    }
+
+    if (otherServicesApps.isNotEmpty) {
+      processedGroups.add(
+        CategoryGroup(
+          id: 'other_services_group',
+          nameAr: 'خدمات أخرى',
+          nameEn: 'Other Services',
+          apps: otherServicesApps,
+
+        ),
+      );
+    }
+
+    return processedGroups;
+  }
+
+  Future<void> loadMiniApps() async {
     emit(
       state.copyWith(
         isFavLoading: true,
@@ -53,7 +81,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     final result = await getMiniAppsUseCase();
 
     result.fold(
-      (e) {
+          (e) {
         emit(
           state.copyWith(
             isFavLoading: false,
@@ -77,6 +105,9 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         final unFavoriteApps =
             allApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
 
+        // Process app groups before emitting state
+        final processedAppGroups = _processAppGroups(data.appGroups);
+
         emit(
           state.copyWith(
             allMiniApps: data.miniApps,
@@ -86,7 +117,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             favoriteApps: favoriteApps,
             unFavoriteApps: unFavoriteApps,
             parentMiniApp: data.parentMiniApp,
-            appGroups: data.appGroups,
+            appGroups: processedAppGroups, // Use processed groups
             entryPoints: data.entryPoints,
             favError: null,
             entryPointsError: null,
@@ -150,7 +181,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     }
   }
 
-  //! Reorder fav apps ...
   Future<void> reorderFavoriteApps(int oldIndex, int newIndex) async {
     final favoriteApps = List<MiniApp>.from(state.favoriteApps);
 
@@ -170,7 +200,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     await _saveFavoriteIds(favoriteApps);
   }
 
-  //! Search for mini app ...
   void searchMiniApp(String query, {List<MiniApp>? source}) {
     _searchDebounce?.cancel();
 
@@ -216,7 +245,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     );
   }
 
-  //! Get the fav mini apps ...
   Future<List<String>> _loadFavoriteIds() async {
     try {
       final jsonString = await secureStorage.read(key: _favoritesKey);
@@ -228,12 +256,10 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       }
       return [];
     } catch (_) {
-      // if anything goes wrong, just treat as no favorites
       return [];
     }
   }
 
-  //! Save the selected fav apps to local storage ...
   Future<void> _saveFavoriteIds(List<MiniApp> favorites) async {
     final ids = favorites.map((e) => e.id).toList();
     final jsonString = json.encode(ids);
@@ -244,7 +270,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     /// if mini app needs login
     if (miniApp.nafathLogin) {
       /// check if we already logged in
-      /*if (!(miniApp.latestVersion?.nafathLogin == true) &&*/
       if (!CommonProperties.isLoggedInMunicipality) {
         await showDialog(
           context: NavigationService.navigatorKey.currentState!.context,
@@ -268,7 +293,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         try {
           await AppLaunchService.launchApp(
             deepLinkInfo: miniApp.latestVersion!.deepLinkDto!,
-            //deepLink: deeplink,
           );
         } catch (e) {
           CommonFunctions.showError('launch_failed'.tr());
@@ -276,7 +300,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       } else {
         if (miniApp.childDeepLinkUrl != null) {
           MiniApp? parentMAiniApp =
-              state.parentMiniApp[miniApp.parentServiceKey];
+          state.parentMiniApp[miniApp.parentServiceKey];
 
           if (parentMAiniApp != null) {
             NavigationService.pushNamed(
@@ -335,10 +359,10 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     try {
       final response =
-          await homeServicesUseCases.getMiniAppAcessToken(model.id);
+      await homeServicesUseCases.getMiniAppAcessToken(model.id);
 
       return response.fold(
-        (error) {
+            (error) {
           if (error is ServerFailure) {
             return BaseResponse(
               code: 500,
@@ -355,7 +379,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             );
           }
         },
-        (res) {
+            (res) {
           return BaseResponse(
             code: 200,
             message: "success",

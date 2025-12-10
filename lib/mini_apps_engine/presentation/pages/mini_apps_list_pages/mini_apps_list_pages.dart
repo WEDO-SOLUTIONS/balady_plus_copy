@@ -152,156 +152,146 @@ class HomeMiniAppsListPages extends StatelessWidget {
                               return const MiniAppsFavSectionShimmerWidget();
                             }
 
-                            return StaggeredAppear(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    CustomSubHeadingText(
-                                      text: "my_favorite_apps".tr(),
-                                      width: context.w(170),
-                                      height: context.h(33),
-                                    ),
-                                    SizedBox(
-                                        height: context.screenHeight * 0.02),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const CustomDashedAddMiniAppFav(),
-                                        SizedBox(
-                                            width: context.screenWidth * 0.04),
-                                        SizedBox(
-                                          height: context.screenHeight * 0.13,
-                                          width: context.screenWidth * 0.70,
-                                          child: ReorderableListView.builder(
-                                            scrollDirection: Axis.horizontal,
-                                            itemCount:
-                                                state.favoriteApps.length,
-                                            onReorder: (oldIndex, newIndex) {
-                                              context
-                                                  .read<NewMiniAppLogicCubit>()
-                                                  .reorderFavoriteApps(
-                                                    oldIndex,
-                                                    newIndex,
-                                                  );
-                                            },
-                                            itemBuilder: (context, index) {
-                                              final favMiniApp =
-                                                  state.favoriteApps[index];
-                                              return Padding(
-                                                key: Key(favMiniApp.id),
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal:
-                                                        context.screenWidth *
-                                                            0.01),
-                                                child: CustomMiniAppsCard(
-                                                  key: Key(favMiniApp.id),
-                                                  //key for reordering
-                                                  onTap: () {
-                                                    context
-                                                        .read<
-                                                            NewMiniAppLogicCubit>()
-                                                        .openMiniApp(
-                                                          favMiniApp,
-                                                        );
-                                                  },
-                                                  text: favMiniApp.name,
-                                                  titlesHeight:
-                                                      context.screenHeight *
-                                                          0.05,
-                                                  titlesWidth:
-                                                      context.screenWidth *
-                                                          0.20,
-                                                  maxLines: 2,
-                                                  maxFontSize: 20,
-                                                  minFontSize: 9,
-
-                                                  miniAppIcon:
-                                                      favMiniApp.iconPath,
-                                                  child:
-                                                      CustomNetworkImageWidget(
-                                                    favMiniApp.iconPath,
-                                                    // sso: true,
-                                                    isVerifyingKey: true,
-                                                    imageWidth: context.w(42),
-                                                    imageHeight: context.h(42),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        //todo: open promo mini app from static data
-                                        final miniApp = MiniApp.fromJson({
-                                          "id":
-                                              "76fdfee4-4086-436c-2e59-08de371bca28",
-                                          "serviceName": "Emtithal Map",
-                                          "description": "BaladyUrbiImtithal",
-                                          "entity":
-                                              "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
-                                          "logoKey":
-                                              "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
-                                          "serviceKey": "BaladyUrbiImtithal",
-                                          "parentServiceKey": null,
-                                          "cdnLogoRef":
-                                              "logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
-                                          "attachmentConfiguration": "CDN",
-                                          "serviceOrder": null,
-                                          "portNumber": 2546,
-                                          "haveChilds": false,
-                                          "isChild": false,
-                                          "requirements": [],
-                                          "entryPoints": [],
-                                          "categories": [
-                                            {
-                                              "id":
-                                                  "6f736c81-c998-4c3e-09ea-08de2cce6088",
-                                              "name": "Business Municipal Apps",
-                                              "categoryOrder": null,
-                                              "serviceOrderByCategory": null
-                                            },
-                                            {
-                                              "id":
-                                                  "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
-                                              "name":
-                                                  "Individual Municipal Apps",
-                                              "categoryOrder": null,
-                                              "serviceOrderByCategory": null
-                                            }
-                                          ],
-                                          "childDeepLinkUrl": null,
-                                          "latestVersion": {
-                                            "id":
-                                                "b9d25306-522a-4bc3-9b79-08de371b7e8c",
-                                            "versionDescription":
-                                                "EMTITHAL MAP",
-                                            "versionNumber": "v1.0.4",
-                                            "serviceUrl":
-                                                "https://gisappstg.momra.gov.sa/BaladyUrbiImtithal",
-                                            "nafathLogin": false,
-                                            "otpLogin": false,
-                                            "forceUpdate": false,
-                                            "status": 3,
-                                            "packageMetaDataDto": null,
-                                            "webPackageMetaDataDto": null,
-                                            "androidPackageMetaDataDto": null,
-                                            "iosPackageMetaDataDto": null,
-                                            "deepLinkDto": null,
-                                            "type": 1,
-                                            "notes": null
+                          return StaggeredAppear(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomSubHeadingText(
+                                    text: "my_favorite_apps".tr(),
+                                    width: context.w(170),
+                                    height: context.h(33),
+                                  ),
+                                  SizedBox(height: context.screenHeight * 0.02),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const CustomDashedAddMiniAppFav(),
+                                      SizedBox(
+                                          width: context.screenWidth * 0.04),
+                                      SizedBox(
+                                        height: context.screenHeight * 0.13,
+                                        width: context.screenWidth * 0.70,
+                                        child: ReorderableListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: state.favoriteApps.length,
+                                          onReorder: (oldIndex, newIndex) {
+                                            context
+                                                .read<NewMiniAppLogicCubit>()
+                                                .reorderFavoriteApps(
+                                                  oldIndex,
+                                                  newIndex,
+                                                );
                                           },
-                                          "childServices": null,
-                                          "parentService": null,
-                                          "serviceCategoryOrder": 0,
-                                          "serviceEntryPointOrder": 0,
+                                          itemBuilder: (context, index) {
+                                            final favMiniApp =
+                                                state.favoriteApps[index];
+
+                                            return Padding(
+                                              key: Key(favMiniApp.id),
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal:
+                                                    context.screenWidth * 0.03,
+                                              ),
+                                              child: CustomMiniAppsCard(
+                                                key: Key(favMiniApp.id),
+                                                width:
+                                                    context.screenWidth * 0.14,
+                                                titlesWidth:
+                                                    context.screenWidth * 0.14,
+                                                onTap: () {
+                                                  context
+                                                      .read<
+                                                          NewMiniAppLogicCubit>()
+                                                      .openMiniApp(favMiniApp);
+                                                },
+                                                text: favMiniApp.name,
+                                                titlesHeight:
+                                                    context.screenHeight * 0.05,
+                                                maxLines: 2,
+                                                maxFontSize: 20,
+                                                minFontSize: 9,
+                                                miniAppIcon:
+                                                    favMiniApp.iconPath,
+                                                child: CustomNetworkImageWidget(
+                                                  favMiniApp.iconPath,
+                                                  isVerifyingKey: true,
+                                                  imageFit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      //todo: open promo mini app from static data
+                                      final miniApp = MiniApp.fromJson({
+                                        "id":
+                                            "76fdfee4-4086-436c-2e59-08de371bca28",
+                                        "serviceName": "Emtithal Map",
+                                        "description": "BaladyUrbiImtithal",
+                                        "entity":
+                                            "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
+                                        "logoKey":
+                                            "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
+                                        "serviceKey": "BaladyUrbiImtithal",
+                                        "parentServiceKey": null,
+                                        "cdnLogoRef":
+                                            "logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
+                                        "attachmentConfiguration": "CDN",
+                                        "serviceOrder": null,
+                                        "portNumber": 2546,
+                                        "haveChilds": false,
+                                        "isChild": false,
+                                        "requirements": [],
+                                        "entryPoints": [],
+                                        "categories": [
+                                          {
+                                            "id":
+                                                "6f736c81-c998-4c3e-09ea-08de2cce6088",
+                                            "name": "Business Municipal Apps",
+                                            "categoryOrder": null,
+                                            "serviceOrderByCategory": null
+                                          },
+                                          {
+                                            "id":
+                                                "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
+                                            "name": "Individual Municipal Apps",
+                                            "categoryOrder": null,
+                                            "serviceOrderByCategory": null
+                                          }
+                                        ],
+                                        "childDeepLinkUrl": null,
+                                        "latestVersion": {
+                                          "id":
+                                              "b9d25306-522a-4bc3-9b79-08de371b7e8c",
+                                          "versionDescription": "EMTITHAL MAP",
+                                          "versionNumber": "v1.0.4",
+                                          "serviceUrl":
+                                              "https://gisappstg.momra.gov.sa/BaladyUrbiImtithal",
                                           "nafathLogin": false,
-                                          "otpLogin": false
-                                        });
+                                          "otpLogin": false,
+                                          "forceUpdate": false,
+                                          "status": 3,
+                                          "packageMetaDataDto": null,
+                                          "webPackageMetaDataDto": null,
+                                          "androidPackageMetaDataDto": null,
+                                          "iosPackageMetaDataDto": null,
+                                          "deepLinkDto": null,
+                                          "type": 1,
+                                          "notes": null
+                                        },
+                                        "childServices": null,
+                                        "parentService": null,
+                                        "serviceCategoryOrder": 0,
+                                        "serviceEntryPointOrder": 0,
+                                        "nafathLogin": false,
+                                        "otpLogin": false
+                                      });
 
                                         context
                                             .read<NewMiniAppLogicCubit>()
@@ -372,96 +362,94 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                     0.01),
                                             SizedBox(
                                               height:
-                                                  context.screenHeight * 0.20,
-                                              width: context.screenWidth,
-                                              child: ListView.separated(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                separatorBuilder:
-                                                    (context, i) => SizedBox(
-                                                  width: context.screenWidth *
-                                                      0.03,
-                                                ),
-                                                itemCount: apps.length,
-                                                itemBuilder:
-                                                    (context, appIndex) {
-                                                  final miniApp =
-                                                      apps[appIndex];
-
-                                                  return CustomMiniAppsCard(
-                                                    width: context.w(104),
-                                                    height: context.h(104),
-                                                    iconHeight: context.h(64),
-                                                    iconWidth: context.w(64),
-                                                    titlesHeight: context.h(47),
-                                                    titlesWidth: context.w(66),
-                                                    maxLines: 3,
-                                                    maxFontSize: 20,
-                                                    minFontSize: 8,
-                                                    withCardEffect: true,
-                                                    text: miniApp.name,
-                                                    miniAppIcon:
-                                                        miniApp.iconPath,
-                                                    onTap: () {
-                                                      context
-                                                          .read<
-                                                              NewMiniAppLogicCubit>()
-                                                          .openMiniApp(miniApp);
-                                                    },
-                                                    child:
-                                                        CustomNetworkImageWidget(
-                                                      miniApp.iconPath,
-                                                      // sso: true,
-                                                      isVerifyingKey: true,
-                                                      imageWidth: context.w(42),
-                                                      imageHeight:
-                                                          context.h(42),
-                                                    ),
-                                                  );
-                                                },
+                                                  context.screenHeight * 0.01),
+                                          SizedBox(
+                                            height: context.screenHeight * 0.20,
+                                            width: context.screenWidth,
+                                            child: ListView.separated(
+                                              scrollDirection: Axis.horizontal,
+                                              separatorBuilder: (context, i) =>
+                                                  SizedBox(
+                                                width:
+                                                    context.screenWidth * 0.02,
                                               ),
+                                              itemCount: apps.length,
+                                              itemBuilder: (context, appIndex) {
+                                                final miniApp = apps[appIndex];
+
+                                                return CustomMiniAppsCard(
+                                                  width:
+                                                      context.screenWidth / 3.8,
+                                                  height: context.h(104),
+                                                  iconHeight: context.h(64),
+                                                  iconWidth: context.w(64),
+                                                  titlesHeight: context.h(47),
+                                                  titlesWidth:
+                                                      context.screenWidth / 3.8,
+                                                  maxLines: 3,
+                                                  maxFontSize: 20,
+                                                  minFontSize: 8,
+                                                  withCardEffect: true,
+                                                  text: miniApp.name,
+                                                  miniAppIcon: miniApp.iconPath,
+                                                  onTap: () {
+                                                    context
+                                                        .read<
+                                                            NewMiniAppLogicCubit>()
+                                                        .openMiniApp(miniApp);
+                                                  },
+                                                  child:
+                                                      CustomNetworkImageWidget(
+                                                    miniApp.iconPath,
+                                                    isVerifyingKey: true,
+                                                    imageWidth: context.w(42),
+                                                    imageHeight: context.h(42),
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                          ],
-                                        );
-                                      },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      //!
+                      SizedBox(height: context.screenHeight * 0.02),
+                      const CustomDashedLineWidget(),
+                      SizedBox(height: context.screenHeight * 0.02),
+                      //! Apps group section
+                      BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+                        builder: (context, state) {
+                          if (state.isAppsGroupLoading) {
+                            return const AppsGroupSectionShimmerWidget();
+                          }
+                          return StaggeredAppear(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GridView.builder(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    itemCount: state.appGroups.length,
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      mainAxisSpacing:
+                                          context.screenHeight * 0.02,
+                                      crossAxisSpacing:
+                                          context.screenWidth * 0.04,
+                                      childAspectRatio: 0.8,
                                     ),
-                                  ],
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        //!
-                        SizedBox(height: context.screenHeight * 0.02),
-                        const CustomDashedLineWidget(),
-                        SizedBox(height: context.screenHeight * 0.02),
-                        //! Apps group section
-                        BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-                          builder: (context, state) {
-                            if (state.isAppsGroupLoading) {
-                              return const AppsGroupSectionShimmerWidget();
-                            }
-                            return StaggeredAppear(
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    GridView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: state.appGroups.length,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2,
-                                        mainAxisSpacing:
-                                            context.screenHeight * 0.02,
-                                        crossAxisSpacing:
-                                            context.screenWidth * 0.04,
-                                        childAspectRatio: 0.8,
-                                      ),
-                                      itemBuilder: (context, index) {
-                                        final appGroup = state.appGroups[index];
+                                    itemBuilder: (context, index) {
+                                      final appGroup = state.appGroups[index];
 
                                         final groupName =
                                             CommonFunctions.isAppAR
