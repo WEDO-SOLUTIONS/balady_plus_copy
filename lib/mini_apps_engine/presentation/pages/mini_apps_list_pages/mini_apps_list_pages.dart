@@ -406,16 +406,28 @@ class HomeMiniAppsListPages extends StatelessWidget {
                           if (state.isAppsGroupLoading) {
                             return const AppsGroupSectionShimmerWidget();
                           }
+
+                          // Separate regular groups from "Other Services"
+                          final regularGroups = state.appGroups
+                              .where(
+                                  (group) => group.id != 'other_services_group')
+                              .toList();
+
+                          final otherServicesGroup = state.appGroups.firstWhere(
+                            (group) => group.id == 'other_services_group',
+                          );
+
                           return StaggeredAppear(
                             children: [
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  // Regular groups (2+ apps)
                                   GridView.builder(
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount: state.appGroups.length,
+                                    itemCount: regularGroups.length,
                                     gridDelegate:
                                         SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
@@ -426,8 +438,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       childAspectRatio: 0.8,
                                     ),
                                     itemBuilder: (context, index) {
-                                      final appGroup = state.appGroups[index];
-
+                                      final appGroup = regularGroups[index];
                                       final groupName = CommonFunctions.isAppAR
                                           ? appGroup.nameAr
                                           : appGroup.nameEn;
@@ -441,9 +452,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                           Navigator.of(context).push(
                                             PageRouteBuilder(
                                               opaque: false,
-                                              // ✅ IMPORTANT
                                               barrierColor: Colors.transparent,
-                                              // ✅ let previous screen show
                                               pageBuilder: (_, __, ___) =>
                                                   AppsGroupPage(
                                                       appGroup: appGroup),
@@ -453,6 +462,61 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       );
                                     },
                                   ),
+
+                                  // Show dashed line and "Other Services" only if it exists
+                                  if (otherServicesGroup != null &&
+                                      otherServicesGroup.apps.isNotEmpty) ...[
+                                    SizedBox(
+                                        height: context.screenHeight * 0.02),
+                                    const CustomDashedLineWidget(),
+                                    SizedBox(
+                                        height: context.screenHeight * 0.02),
+
+                                    // "Other Services" group
+                                    GridView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          1, // Only "Other Services" group
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        mainAxisSpacing:
+                                            context.screenHeight * 0.02,
+                                        crossAxisSpacing:
+                                            context.screenWidth * 0.04,
+                                        childAspectRatio: 0.8,
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        final groupName =
+                                            CommonFunctions.isAppAR
+                                                ? otherServicesGroup.nameAr
+                                                : otherServicesGroup.nameEn;
+
+                                        return CustomLargMoreApps(
+                                          withCardEffect: true,
+                                          text: groupName,
+                                          apps: otherServicesGroup.apps,
+                                          totalAppCount:
+                                              otherServicesGroup.appCount,
+                                          onTap: () {
+                                            Navigator.of(context).push(
+                                              PageRouteBuilder(
+                                                opaque: false,
+                                                barrierColor:
+                                                    Colors.transparent,
+                                                pageBuilder: (_, __, ___) =>
+                                                    AppsGroupPage(
+                                                        appGroup:
+                                                            otherServicesGroup),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ],
                                 ],
                               ),
                             ],
