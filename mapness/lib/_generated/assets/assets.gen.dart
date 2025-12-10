@@ -149,6 +149,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/wavinghand.png
   AssetGenImage get wavinghand => const AssetGenImage('assets/images/wavinghand.png');
 
+  /// File path: assets/images/wrc_dashboard.png
+  AssetGenImage get wrcDashboard => const AssetGenImage('assets/images/wrc_dashboard.png');
+
   /// List of all assets
   List<dynamic> get values => [
         addCompany,
@@ -189,7 +192,8 @@ class $AssetsImagesGen {
         successAppFeedback,
         sunrisePray,
         treeAndParkBenchWhiteBackground,
-        wavinghand
+        wavinghand,
+        wrcDashboard
       ];
 }
 
@@ -461,6 +465,89 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_share.svg
   SvgGenImage get icShare => const SvgGenImage('assets/icons/svg/ic_share.svg');
 
+  /// File path: assets/icons/svg/ic_wrc_map_marker_award_ceremony.svg
+  SvgGenImage get icWrcMapMarkerAwardCeremony =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_award_ceremony.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_map_marker_fan_zone.svg
+  SvgGenImage get icWrcMapMarkerFanZone => const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_fan_zone.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_map_marker_jeddah_corniche_parade.svg
+  SvgGenImage get icWrcMapMarkerJeddahCornicheParade =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_jeddah_corniche_parade.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_map_marker_parking.svg
+  SvgGenImage get icWrcMapMarkerParking => const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_parking.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_map_marker_rally_stage.svg
+  SvgGenImage get icWrcMapMarkerRallyStage => const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_rally_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_map_marker_service_park.svg
+  SvgGenImage get icWrcMapMarkerServicePark => const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_service_park.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_map_marker_shakedown_stage.svg
+  SvgGenImage get icWrcMapMarkerShakedownStage =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_shakedown_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_map_marker_special_super_stage.svg
+  SvgGenImage get icWrcMapMarkerSpecialSuperStage =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_map_marker_special_super_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_award_ceremony.svg
+  SvgGenImage get icWrcPinAwardCeremony => const SvgGenImage('assets/icons/svg/ic_wrc_pin_award_ceremony.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_fan_zone.svg
+  SvgGenImage get icWrcPinFanZone => const SvgGenImage('assets/icons/svg/ic_wrc_pin_fan_zone.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_jeddah_corniche_parade.svg
+  SvgGenImage get icWrcPinJeddahCornicheParade =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_pin_jeddah_corniche_parade.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_parking.svg
+  SvgGenImage get icWrcPinParking => const SvgGenImage('assets/icons/svg/ic_wrc_pin_parking.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_rally_stage.svg
+  SvgGenImage get icWrcPinRallyStage => const SvgGenImage('assets/icons/svg/ic_wrc_pin_rally_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_service_park.svg
+  SvgGenImage get icWrcPinServicePark => const SvgGenImage('assets/icons/svg/ic_wrc_pin_service_park.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_shakedown_stage.svg
+  SvgGenImage get icWrcPinShakedownStage => const SvgGenImage('assets/icons/svg/ic_wrc_pin_shakedown_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_pin_special_super_stage.svg
+  SvgGenImage get icWrcPinSpecialSuperStage => const SvgGenImage('assets/icons/svg/ic_wrc_pin_special_super_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_award_ceremony.svg
+  SvgGenImage get icWrcSearchMarkerAwardCeremony =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_award_ceremony.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_fan_zone.svg
+  SvgGenImage get icWrcSearchMarkerFanZone => const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_fan_zone.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_jeddah_corniche_parade.svg
+  SvgGenImage get icWrcSearchMarkerJeddahCornicheParade =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_jeddah_corniche_parade.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_parking.svg
+  SvgGenImage get icWrcSearchMarkerParking => const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_parking.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_rally_stage.svg
+  SvgGenImage get icWrcSearchMarkerRallyStage =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_rally_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_service_park.svg
+  SvgGenImage get icWrcSearchMarkerServicePark =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_service_park.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_shakedown_stage.svg
+  SvgGenImage get icWrcSearchMarkerShakedownStage =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_shakedown_stage.svg');
+
+  /// File path: assets/icons/svg/ic_wrc_search_marker_special_super_stage.svg
+  SvgGenImage get icWrcSearchMarkerSpecialSuperStage =>
+      const SvgGenImage('assets/icons/svg/ic_wrc_search_marker_special_super_stage.svg');
+
   /// Directory path: assets/icons/svg/layers
   $AssetsIconsSvgLayersGen get layers => const $AssetsIconsSvgLayersGen();
 
@@ -585,6 +672,30 @@ class $AssetsIconsSvgGen {
         icRoutingLocation,
         icSearchClear,
         icShare,
+        icWrcMapMarkerAwardCeremony,
+        icWrcMapMarkerFanZone,
+        icWrcMapMarkerJeddahCornicheParade,
+        icWrcMapMarkerParking,
+        icWrcMapMarkerRallyStage,
+        icWrcMapMarkerServicePark,
+        icWrcMapMarkerShakedownStage,
+        icWrcMapMarkerSpecialSuperStage,
+        icWrcPinAwardCeremony,
+        icWrcPinFanZone,
+        icWrcPinJeddahCornicheParade,
+        icWrcPinParking,
+        icWrcPinRallyStage,
+        icWrcPinServicePark,
+        icWrcPinShakedownStage,
+        icWrcPinSpecialSuperStage,
+        icWrcSearchMarkerAwardCeremony,
+        icWrcSearchMarkerFanZone,
+        icWrcSearchMarkerJeddahCornicheParade,
+        icWrcSearchMarkerParking,
+        icWrcSearchMarkerRallyStage,
+        icWrcSearchMarkerServicePark,
+        icWrcSearchMarkerShakedownStage,
+        icWrcSearchMarkerSpecialSuperStage,
         parkingControl,
         percent,
         photoGallery,

@@ -1742,6 +1742,12 @@ abstract class MapApi {
   );
 
   @async
+  CameraPositionMessage calcPositionForGeoPoints(
+    List<GeoPointMessage> points,
+    CalcPositionOptionsMessage options,
+  );
+
+  @async
   void animateToRepresentativeArea(
     GeometryMessage area,
     CalcPositionOptionsMessage options,
