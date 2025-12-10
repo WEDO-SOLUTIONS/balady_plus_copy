@@ -158,7 +158,12 @@ class MiniAppsEngineBloc
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: 5066,
+          port: event.miniApp.portNumber ??
+              generateRandomPort(
+                portNumber,
+                event.miniApp.name,
+                event.miniApp.serviceKey,
+              ),
           shared: true,
         ),
       );
@@ -170,7 +175,7 @@ class MiniAppsEngineBloc
         await localhostServer!.start();
       }
 
-      String servicePath = "http://localhost:5066/";
+      String servicePath = "http://localhost:${localhostServer!.port}/";
 
       emit(
         MiniAppsEngineLoadedState(
