@@ -4589,6 +4589,7 @@
 
   "search_for_mini_app": "ابحث عن التطبيقات المصغرة",
   "search_by_name_or_description": "ابحث بالاسم أو بالوصف الخاص بالتطبيق",
-  "no_results_found":"لاتوجد نتائج"
+  "no_results_found":"لاتوجد نتائج",
+  "max_fav_apps_limit":"لا يمكنك إضافة أكثر من 10 تطبيقات إلى المفضلة."
  
 }
