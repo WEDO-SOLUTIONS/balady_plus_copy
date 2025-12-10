@@ -100,24 +100,6 @@ class CameraPosition extends _$CameraPosition {
     );
   }
 
-  Future<void> animateToGeoPoints(
-    List<GeoPointMessage> points, {
-    CalcPositionOptionsMessage? options,
-  }) async {
-    final dgisController = ref.read(dgisControllerProvider);
-
-    final position = await dgisController.value!.calcPositionForGeoPoints(
-      points,
-      options ?? CalcPositionOptionsMessage(),
-    );
-
-    await dgisController.value!.moveCamera(
-      position,
-      0.3,
-      CameraAnimationTypeMessage.linear,
-    );
-  }
-
   Future<void> setPadding(CameraSetPaddingMessage padding) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 

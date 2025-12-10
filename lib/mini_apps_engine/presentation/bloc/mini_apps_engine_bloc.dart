@@ -20,7 +20,8 @@ import '../../server/CustomInAppLocalhostServer.dart';
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
-class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
+class MiniAppsEngineBloc
+    extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniApp miniApp;
 
   CustomInAppLocalhostServer? localhostServer;
@@ -42,9 +43,11 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
     add(CheckMiniAppsEngineEvent(miniApp: miniApp));
   }
 
-  void _checkMiniAppsEngine(CheckMiniAppsEngineEvent event, Emitter emit) async {
+  void _checkMiniAppsEngine(
+      CheckMiniAppsEngineEvent event, Emitter emit) async {
+
     if (event.miniApp.latestVersion?.serviceUrl != null) {
-      if (event.miniApp.nafathLogin) {
+      if(event.miniApp.nafathLogin) {
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(true);
       }
@@ -55,8 +58,10 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
         ),
       );
     } else {
-      basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
-      String dir = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
+      basePathService =
+          "${(await getApplicationDocumentsDirectory()).path}/www/";
+      String dir =
+          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       File file = File('$dir/index.html');
       bool exists = await file.exists();
       if (exists) {
