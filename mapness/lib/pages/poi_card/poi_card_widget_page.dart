@@ -14,6 +14,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/entities/wrc/wrc_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -44,6 +45,7 @@ import 'package:mapness/features/poi_card/widgets/poi_content_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/parking_content.dart';
@@ -55,6 +57,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/parking_store_model_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
@@ -75,6 +78,7 @@ part 'poi_card_content.dart';
 part 'poi_card_no_info.dart';
 part 'poi_card_wrapper.dart';
 part 'poi_functions.dart';
+part 'wrc_card_content.dart';
 
 @RoutePage()
 class PoiCardWidgetPage extends StatelessWidget {

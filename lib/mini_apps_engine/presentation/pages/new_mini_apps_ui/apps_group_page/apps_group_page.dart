@@ -223,7 +223,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                       onTap: () {
                                         context
                                             .read<NewMiniAppLogicCubit>()
-                                            .openMiniApp(context, miniApp);
+                                            .openMiniApp(miniApp);
                                       },
                                     ),
                                   ],
@@ -269,7 +269,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 onTap: () {
                                   context
                                       .read<NewMiniAppLogicCubit>()
-                                      .openMiniApp(context, miniApp);
+                                      .openMiniApp(miniApp);
                                 },
                               );
                             },

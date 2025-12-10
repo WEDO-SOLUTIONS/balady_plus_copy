@@ -7,8 +7,8 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:geolocator/geolocator.dart' as geo_locator;
@@ -29,6 +29,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/export/mapness_functions.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:open_file_plus/open_file_plus.dart';
@@ -293,11 +294,14 @@ class CommonFunctions {
     return null;
   }
 
-  static void openMiniApp(MiniAppModel? miniApp) {
-    if (miniApp != null) {
-      sl<HomeMiniAppsListCubit>()
-          .openMiniApp(serviceKey: miniApp.serviceKey!, path: miniApp.path);
-    }
+  static void openMiniApp({
+    required String serviceKey,
+    String? path,
+  }) {
+    sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
+      serviceKey: serviceKey,
+      path: path,
+    );
   }
 
   static Future<LatLng?> handelLocationCatch(

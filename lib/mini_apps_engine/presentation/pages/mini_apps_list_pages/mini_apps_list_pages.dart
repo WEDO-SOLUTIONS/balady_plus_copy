@@ -40,6 +40,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
           builder: (context, state) {
             final hasError =
                 state.entryPointsError != null && state.favError != null;
+
             if (hasError) {
               return GeneralErrorWidget(
                 error: state.favError ?? state.entryPointsError!,
@@ -102,7 +103,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                     PageRouteBuilder(
                                       opaque: false,
                                       barrierColor: Colors.transparent,
-                                      pageBuilder: (_, __, ___) => const MiniAppsSearchPage(),
+                                      pageBuilder: (_, __, ___) =>
+                                          const MiniAppsSearchPage(),
                                     ),
                                   );
                                 },
@@ -115,7 +117,8 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                   "search2".tr(),
                                   style: const TextStyle(color: Colors.black),
                                 ),
-                                suffixIcon: SvgPicture.asset(IconPath.searchSVG),
+                                suffixIcon:
+                                    SvgPicture.asset(IconPath.searchSVG),
                               ),
                             ],
                           ),
@@ -142,10 +145,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                   ),
                                   SizedBox(height: context.screenHeight * 0.02),
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const CustomDashedAddMiniAppFav(),
-                                      SizedBox(width: context.screenWidth * 0.04),
+                                      SizedBox(
+                                          width: context.screenWidth * 0.04),
                                       SizedBox(
                                         height: context.screenHeight * 0.13,
                                         width: context.screenWidth * 0.70,
@@ -153,33 +158,44 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                           scrollDirection: Axis.horizontal,
                                           itemCount: state.favoriteApps.length,
                                           onReorder: (oldIndex, newIndex) {
-                                            context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(
+                                            context
+                                                .read<NewMiniAppLogicCubit>()
+                                                .reorderFavoriteApps(
                                                   oldIndex,
                                                   newIndex,
                                                 );
                                           },
                                           itemBuilder: (context, index) {
-                                            final favMiniApp = state.favoriteApps[index];
+                                            final favMiniApp =
+                                                state.favoriteApps[index];
                                             return Padding(
                                               key: Key(favMiniApp.id),
-                                              padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal:
+                                                      context.screenWidth *
+                                                          0.01),
                                               child: CustomMiniAppsCard(
                                                 key: Key(favMiniApp.id),
                                                 //key for reordering
                                                 onTap: () {
-                                                  context.read<NewMiniAppLogicCubit>().openMiniApp(
-                                                        context,
+                                                  context
+                                                      .read<
+                                                          NewMiniAppLogicCubit>()
+                                                      .openMiniApp(
                                                         favMiniApp,
                                                       );
                                                 },
                                                 text: favMiniApp.name,
-                                                titlesHeight: context.screenHeight * 0.05,
-                                                titlesWidth: context.screenWidth * 0.20,
+                                                titlesHeight:
+                                                    context.screenHeight * 0.05,
+                                                titlesWidth:
+                                                    context.screenWidth * 0.20,
                                                 maxLines: 2,
                                                 maxFontSize: 20,
                                                 minFontSize: 9,
 
-                                                miniAppIcon: favMiniApp.iconPath,
+                                                miniAppIcon:
+                                                    favMiniApp.iconPath,
                                                 child: CustomNetworkImageWidget(
                                                   favMiniApp.iconPath,
                                                   // sso: true,
@@ -252,15 +268,11 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                       context
                                           .read<NewMiniAppLogicCubit>()
                                           .openMiniApp(
-                                            context,
                                             miniApp,
                                           );
                                     },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SvgPicture.asset(
-                                          "assets/icons/svg/${CommonFunctions.isAppAR ? 'promoAr.svg' : 'promoEn.svg'}"),
-                                    ),
+                                    child: Image.asset(
+                                        "assets/icons/png/${CommonFunctions.isAppAR ? 'promoAr.png' : 'promoEn.png'}"),
                                   )
                                 ],
                               ),
@@ -290,8 +302,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                 children: [
                                   ListView.separated(
                                     shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    separatorBuilder: (context, index) => SizedBox(height: context.screenHeight * 0.02),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    separatorBuilder: (context, index) =>
+                                        SizedBox(
+                                            height:
+                                                context.screenHeight * 0.02),
                                     itemCount: state.entryPoints.length,
                                     itemBuilder: (context, index) {
                                       final section = state.entryPoints[index];
@@ -301,22 +317,29 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         return const SizedBox.shrink();
                                       }
 
-                                      final title = CommonFunctions.isAppAR ? section.arName : section.enName;
+                                      final title = CommonFunctions.isAppAR
+                                          ? section.arName
+                                          : section.enName;
 
                                       return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           CustomSubHeadingText(
                                             text: title,
                                           ),
-                                          SizedBox(height: context.screenHeight * 0.01),
+                                          SizedBox(
+                                              height:
+                                                  context.screenHeight * 0.01),
                                           SizedBox(
                                             height: context.screenHeight * 0.20,
                                             width: context.screenWidth,
                                             child: ListView.separated(
                                               scrollDirection: Axis.horizontal,
-                                              separatorBuilder: (context, i) => SizedBox(
-                                                width: context.screenWidth * 0.03,
+                                              separatorBuilder: (context, i) =>
+                                                  SizedBox(
+                                                width:
+                                                    context.screenWidth * 0.03,
                                               ),
                                               itemCount: apps.length,
                                               itemBuilder: (context, appIndex) {
@@ -339,10 +362,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                     context
                                                         .read<
                                                             NewMiniAppLogicCubit>()
-                                                        .openMiniApp(
-                                                          context,
-                                                          miniApp,
-                                                        );
+                                                        .openMiniApp(miniApp);
                                                   },
                                                   child:
                                                       CustomNetworkImageWidget(
@@ -382,19 +402,25 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   GridView.builder(
-                                    physics: const NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     itemCount: state.appGroups.length,
-                                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
-                                      mainAxisSpacing: context.screenHeight * 0.02,
-                                      crossAxisSpacing: context.screenWidth * 0.04,
+                                      mainAxisSpacing:
+                                          context.screenHeight * 0.02,
+                                      crossAxisSpacing:
+                                          context.screenWidth * 0.04,
                                       childAspectRatio: 0.8,
                                     ),
                                     itemBuilder: (context, index) {
                                       final appGroup = state.appGroups[index];
 
-                                      final groupName = CommonFunctions.isAppAR ? appGroup.nameAr : appGroup.nameEn;
+                                      final groupName = CommonFunctions.isAppAR
+                                          ? appGroup.nameAr
+                                          : appGroup.nameEn;
 
                                       return CustomLargMoreApps(
                                         withCardEffect: true,
@@ -404,10 +430,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                         onTap: () {
                                           Navigator.of(context).push(
                                             PageRouteBuilder(
-                                              opaque: false, // ✅ IMPORTANT
-                                              barrierColor: Colors
-                                                  .transparent, // ✅ let previous screen show
-                                              pageBuilder: (_, __, ___) => AppsGroupPage(
+                                              opaque: false,
+                                              // ✅ IMPORTANT
+                                              barrierColor: Colors.transparent,
+                                              // ✅ let previous screen show
+                                              pageBuilder: (_, __, ___) =>
+                                                  AppsGroupPage(
                                                       appGroup: appGroup),
                                             ),
                                           );
@@ -431,23 +459,4 @@ class HomeMiniAppsListPages extends StatelessWidget {
       ),
     );
   }
-
-  // void checkIfLogin(BuildContext context, MiniApp miniApp) async {
-  //   final action = context.read<NewMiniAppLogicCubit>().openMiniApp(
-  //         context,
-  //         miniApp,
-  //       );
-  //
-  //   if (miniApp.requireLogin) {
-  //     if (CommonProperties.isLoggedInMunicipality) {
-  //       action;
-  //     } else {
-  //       // final res = await sl<SuperAppTokenCubit>().getAccessToken();
-  //       // final res = await sl<JsBridgeListener>().getAccessToken('', CompletionHandler());
-  //       // if (res) action;
-  //     }
-  //   } else {
-  //     action;
-  //   }
-  // }
 }
