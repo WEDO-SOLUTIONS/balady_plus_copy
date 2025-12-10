@@ -4813,6 +4813,8 @@
 
   "search_for_mini_app": "Search for mini app",
   "search_by_name_or_description": "Search by name or by description of that app",
-  "no_results_found":"No results found"
+  "no_results_found":"No results found",
+  "max_fav_apps_limit":"You cannot add more than 10 apps to favorites."
+
 
 }

@@ -9,6 +9,8 @@ class NewMiniAppLogicState {
   final bool isAppsGroupLoading;
 
   final bool isRefreshing;
+  // bool isReachLimit;
+  final int reachLimitNumber;
 
   //! Result
   final Map<String, MiniApp> parentMiniApp;
@@ -43,6 +45,7 @@ class NewMiniAppLogicState {
     required this.entryPointsError,
     required this.entryPoints,
     required this.isRefreshing,
+    required this.reachLimitNumber,
   });
 
   factory NewMiniAppLogicState.initial() {
@@ -64,6 +67,7 @@ class NewMiniAppLogicState {
       entryPointsError: null,
       entryPoints: const [],
       isRefreshing: false,
+      reachLimitNumber: 0,
     );
   }
 
@@ -86,6 +90,7 @@ class NewMiniAppLogicState {
     List<EntryPoints>? entryPoints,
     MiniApp? miniApp,
     bool? isRefreshing,
+    int? reachLimitNumber,
   }) {
     return NewMiniAppLogicState(
       isFavLoading: isFavLoading ?? this.isFavLoading,
@@ -105,6 +110,7 @@ class NewMiniAppLogicState {
       entryPointsError: this.entryPointsError,
       entryPoints: entryPoints ?? this.entryPoints,
       isRefreshing: isRefreshing ?? this.isRefreshing,
+      reachLimitNumber: reachLimitNumber ?? this.reachLimitNumber,
     );
   }
   // @override

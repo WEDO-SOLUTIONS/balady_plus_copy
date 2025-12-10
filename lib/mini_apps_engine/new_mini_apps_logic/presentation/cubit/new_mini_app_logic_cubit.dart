@@ -115,7 +115,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Future<void> toggleFavoriteLocal(String id) async {
     final favoriteApps = List<MiniApp>.from(state.favoriteApps);
     final unFavoriteApps = List<MiniApp>.from(state.unFavoriteApps);
-
     final favIndex = favoriteApps.indexWhere((e) => e.id == id);
     if (favIndex != -1) {
       final app = favoriteApps.removeAt(favIndex);
@@ -132,6 +131,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     final unFavIndex = unFavoriteApps.indexWhere((e) => e.id == id);
     if (unFavIndex != -1) {
+      if (favoriteApps.length >= 10) {
+        state.reachLimitNumber + 1;
+        emit(state.copyWith(reachLimitNumber: state.reachLimitNumber + 1));
+        return;
+      }
       final app = unFavoriteApps.removeAt(unFavIndex);
       favoriteApps.add(app);
       emit(
@@ -140,6 +144,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           unFavoriteApps: unFavoriteApps,
         ),
       );
+
       await _saveFavoriteIds(favoriteApps);
     }
   }
