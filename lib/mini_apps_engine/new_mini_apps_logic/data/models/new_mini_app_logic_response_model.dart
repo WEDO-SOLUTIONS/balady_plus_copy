@@ -164,7 +164,9 @@ class DataCategory {
       enDescription: json['enDescription'] as String,
       createdBy: json['createdBy'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] == null ? null : DateTime.parse(json['updatedAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
       updatedBy: json['updatedBy'] as String?,
       order: json['order'] as int?,
       isActive: json['isActive'] as bool,
@@ -219,7 +221,9 @@ class DataEntryPoint {
       enName: json['enName'] as String,
       createdBy: json['createdBy'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] == null ? null : DateTime.parse(json['updatedAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
       updatedBy: json['updatedBy'] as String?,
       isActive: json['isActive'] as bool,
     );
@@ -270,9 +274,6 @@ class MiniApp {
 
   final String? path;
 
-  final bool nafathLogin;
-  final bool otpLogin;
-
   MiniApp({
     required this.id,
     required this.name,
@@ -299,8 +300,6 @@ class MiniApp {
     required this.serviceCategoryOrder,
     required this.serviceEntryPointOrder,
     this.path,
-    required this.nafathLogin,
-    required this.otpLogin,
   });
 
   factory MiniApp.fromJson(Map<String, dynamic> json) {
@@ -315,13 +314,16 @@ class MiniApp {
       cdnLogoRef: json['cdnLogoRef'] as String,
       attachmentConfiguration: json['attachmentConfiguration'] as String,
       serviceOrder: json['serviceOrder'] as int?,
-      portNumber: json['portNumber'] is String ? int.tryParse(json['portNumber']) : json['portNumber'],
+      portNumber: json['portNumber'] is String
+          ? int.tryParse(json['portNumber'])
+          : json['portNumber'],
       haveChilds: json['haveChilds'] as bool,
       isChild: json['isChild'] as bool,
       nafathLogin: json['nafathLogin'] as bool,
       otpLogin: json['otpLogin'] as bool,
-      requirements:
-          (json['requirements'] as List<dynamic>).map((e) => Requirement.fromJson(e as Map<String, dynamic>)).toList(),
+      requirements: (json['requirements'] as List<dynamic>)
+          .map((e) => Requirement.fromJson(e as Map<String, dynamic>))
+          .toList(),
       entryPoints: (json['entryPoints'] as List<dynamic>)
           .map((e) => MiniAppEntryPoint.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -336,12 +338,12 @@ class MiniApp {
             ),
       childServices: json['childServices'] == null
           ? null
-          : (json['childServices'] as List<dynamic>).map((e) => MiniApp.fromJson(e as Map<String, dynamic>)).toList(),
+          : (json['childServices'] as List<dynamic>)
+              .map((e) => MiniApp.fromJson(e as Map<String, dynamic>))
+              .toList(),
       parentService: json['parentService'],
       serviceCategoryOrder: json['serviceCategoryOrder'] as int,
       serviceEntryPointOrder: json['serviceEntryPointOrder'] as int,
-      nafathLogin: json['nafathLogin'] as bool,
-      otpLogin: json['otpLogin'] as bool,
     );
   }
 
@@ -410,7 +412,8 @@ class MiniApp {
       serviceKey: serviceKey ?? this.serviceKey,
       parentServiceKey: parentServiceKey ?? this.parentServiceKey,
       cdnLogoRef: cdnLogoRef ?? this.cdnLogoRef,
-      attachmentConfiguration: attachmentConfiguration ?? this.attachmentConfiguration,
+      attachmentConfiguration:
+          attachmentConfiguration ?? this.attachmentConfiguration,
       serviceOrder: serviceOrder ?? this.serviceOrder,
       portNumber: portNumber ?? this.portNumber,
       haveChilds: haveChilds ?? this.haveChilds,
@@ -423,7 +426,8 @@ class MiniApp {
       childServices: childServices ?? this.childServices,
       parentService: parentService ?? this.parentService,
       serviceCategoryOrder: serviceCategoryOrder ?? this.serviceCategoryOrder,
-      serviceEntryPointOrder: serviceEntryPointOrder ?? this.serviceEntryPointOrder,
+      serviceEntryPointOrder:
+          serviceEntryPointOrder ?? this.serviceEntryPointOrder,
       path: path ?? this.path,
       nafathLogin: nafathLogin ?? this.nafathLogin,
       otpLogin: otpLogin ?? this.otpLogin,
@@ -551,8 +555,9 @@ class LatestVersion {
             ),
       androidPackageMetaDataDto: json['androidPackageMetaDataDto'],
       iosPackageMetaDataDto: json['iosPackageMetaDataDto'],
-      deepLinkDto:
-          json['deepLinkDto'] == null ? null : DeepLinkModel.fromJson(json['deepLinkDto'] as Map<String, dynamic>),
+      deepLinkDto: json['deepLinkDto'] == null
+          ? null
+          : DeepLinkModel.fromJson(json['deepLinkDto'] as Map<String, dynamic>),
       type: json['type'] as int,
       notes: json['notes'],
     );
