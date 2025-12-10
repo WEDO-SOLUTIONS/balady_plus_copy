@@ -1,12 +1,14 @@
 part of 'new_mini_app_logic_cubit.dart';
 
-class NewMiniAppLogicState  {
+class NewMiniAppLogicState {
   //! Loading
   final bool isFavLoading;
   final bool isUnFavLoading;
   final bool isSearching;
   final bool isEntryPointsLoading;
   final bool isAppsGroupLoading;
+
+  final bool isRefreshing;
 
   //! Result
   final Map<String, MiniApp> parentMiniApp;
@@ -40,6 +42,7 @@ class NewMiniAppLogicState  {
     required this.isEntryPointsLoading,
     required this.entryPointsError,
     required this.entryPoints,
+    required this.isRefreshing,
   });
 
   factory NewMiniAppLogicState.initial() {
@@ -60,6 +63,7 @@ class NewMiniAppLogicState  {
       isEntryPointsLoading: false,
       entryPointsError: null,
       entryPoints: const [],
+      isRefreshing: false,
     );
   }
 
@@ -81,6 +85,7 @@ class NewMiniAppLogicState  {
     String? entryPointsError,
     List<EntryPoints>? entryPoints,
     MiniApp? miniApp,
+    bool? isRefreshing,
   }) {
     return NewMiniAppLogicState(
       isFavLoading: isFavLoading ?? this.isFavLoading,
@@ -99,6 +104,7 @@ class NewMiniAppLogicState  {
       isEntryPointsLoading: isEntryPointsLoading ?? this.isEntryPointsLoading,
       entryPointsError: this.entryPointsError,
       entryPoints: entryPoints ?? this.entryPoints,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
     );
   }
   // @override
