@@ -108,7 +108,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                 placeholderBuilder: (BuildContext context) {
                   return widget.placeHolderWidget ??
                       Container(
-                        color: const Color.fromARGB(0, 42, 179, 170),
+                        color: AppColor.primary900Light,
                         width: widget.imageWidth,
                         height: widget.imageHeight,
                       );
@@ -125,7 +125,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                   if (loadingProgress == null) return child;
                   return widget.placeHolderWidget ??
                       Container(
-                        color: const Color.fromARGB(0, 42, 179, 170),
+                        color: AppColor.primary900Light,
                         width: widget.imageWidth,
                         height: widget.imageHeight,
                       );

@@ -92,15 +92,6 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       );
     }
 
-    final wrcEventPoint = ref.read(wRCProvider.notifier).getWRCEventPoint(widget.objectId.objectId);
-
-    if (wrcEventPoint != null) {
-      return _WrcCardContent(
-        wrcEventPoint: wrcEventPoint,
-        poiCardState: poiCardState,
-      );
-    }
-
     // We need to leave this block of code to specify the point where the route will be built. (BSA-2415)
     //
     // Example: The user put a point on the map in a field (or desert). If we don't change markerPosition to closestPoint,

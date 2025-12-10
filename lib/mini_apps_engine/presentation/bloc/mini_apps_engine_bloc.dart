@@ -27,6 +27,7 @@ class MiniAppsEngineBloc
   CustomInAppLocalhostServer? localhostServer;
   String? serviceDownloadPath;
   late String basePathService;
+  ServerSocket? dummyServer;
 
   // String serverPath;
 
@@ -64,6 +65,8 @@ class MiniAppsEngineBloc
       File file = File('$dir/index.html');
       bool exists = await file.exists();
       if (exists) {
+        /// This simulation code is for testing port conflict handling
+        // await initDummyServer(miniApp.portNumber ?? generateRandomPort(portNumber, miniApp.name, miniApp.serviceKey));
         add(OpenServerEngineEvent(miniApp: miniApp));
       } else {
         add(DownloadMiniAppsEngineEvent(miniApp: event.miniApp));
@@ -72,40 +75,7 @@ class MiniAppsEngineBloc
     return;
   }
 
-  // Future<String?> prepareDownloadPath(String dir, String version) async {
-  //   try {
-  //     serviceDownloadPath = '${CommonProperties.serverRootPath!}/$dir';
-  //     bool exists = await Directory(serviceDownloadPath!).exists();
-  //     if (exists == false) {
-  //       await Directory(serviceDownloadPath!).create();
-  //     }
-  //
-  //     serviceDownloadPath = '${CommonProperties.serverRootPath!}/$dir/$version';
-  //     exists = await Directory(serviceDownloadPath!).exists();
-  //     if (exists == false) {
-  //       await Directory(serviceDownloadPath!).create();
-  //     }
-  //
-  //     return serviceDownloadPath;
-  //   } catch (e) {
-  //     return null;
-  //   }
-  // }
-
-  // prepareServerPath() async {
-  //   try {
-  //     String serverRootPath =
-  //         "${(await getApplicationDocumentsDirectory()).path}/www";
-  //     bool existsss = await Directory(serverRootPath).exists();
-  //     if (existsss == false) {
-  //       await Directory(serverRootPath).create();
-  //     }
-  //     CommonProperties.serverRootPath = serverRootPath;
-  //   } catch (e) {}
-  // }
-
-  void _downloadMiniAppsEngine(
-      DownloadMiniAppsEngineEvent event, Emitter emit) async {
+  void _downloadMiniAppsEngine(DownloadMiniAppsEngineEvent event, Emitter emit) async {
     emit(const MiniAppsEngineLoadingState(progress: '0'));
 
     serviceDownloadPath = "$basePathService${event.miniApp.serviceKey}";
@@ -114,13 +84,11 @@ class MiniAppsEngineBloc
     // chick if have old version of the app delete it
     if (exists) {
       await directoryApp.delete(recursive: true);
-      serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     } else {
-      serviceDownloadPath =
-          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     }
@@ -142,31 +110,49 @@ class MiniAppsEngineBloc
     }
   }
 
+  // ============ TEST CODE: Occupy the port first ============
+  Future<void> initDummyServer(int portToUse) async {
+    try {
+      // Start a dummy server on the same port to simulate port conflict
+      dummyServer = await ServerSocket.bind('127.0.0.1', portToUse);
+      print('🔴 TESTING: Dummy server occupying port $portToUse');
+
+      // Keep it running for a moment to ensure conflict
+      await Future.delayed(const Duration(milliseconds: 500));
+    } catch (e) {
+      print('⚠️ Could not start dummy server: $e');
+    }
+  }
+
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
       if (state is MiniAppsEngineLoadingState) {
-        MiniAppsEngineLoadingState tempState =
-            state as MiniAppsEngineLoadingState;
+        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
         if (!tempState.progress.contains("100")) {
           return;
         }
       }
-      String pathService =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
+      String pathService = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       CommonProperties.currentLocalServerDirectory = pathService;
-      localhostServer ??= CustomInAppLocalhostServer(
-        PlatformInAppLocalhostServerCreationParams(
-          documentRoot: pathService,
-          port: event.miniApp.portNumber ??
-              generateRandomPort(
-                portNumber,
-                event.miniApp.name,
-                event.miniApp.serviceKey,
-              ),
-          shared: true,
-        ),
-      );
+
+      int portToUse = event.miniApp.portNumber ??
+          generateRandomPort(
+            portNumber,
+            event.miniApp.name,
+            event.miniApp.serviceKey,
+          );
+
+      if (localhostServer == null || localhostServer!.port != portToUse) {
+        localhostServer = CustomInAppLocalhostServer(
+          PlatformInAppLocalhostServerCreationParams(
+            documentRoot: pathService,
+            port: portToUse,
+            shared: true,
+          ),
+        );
+      }
+
       bool isRunning = localhostServer!.isRunning();
       if (isRunning) {
         await localhostServer?.close();
@@ -184,7 +170,11 @@ class MiniAppsEngineBloc
         ),
       );
     } catch (e) {
-      print(e.toString());
+      // print(e.toString());
+      print('Error in _openLocalHostServer: ${e.toString()}');
+      add(OpenServerEngineEvent(
+          miniApp: event.miniApp
+              .copyWith(portNumber: generateRandomPort(portNumber, event.miniApp.name, event.miniApp.serviceKey))));
     }
   }
 
@@ -275,12 +265,7 @@ class MiniAppsEngineBloc
         //  var fileName = '$basePathService/${file.name}';
         if (file.isFile && !file.name.contains("__MACOSX")) {
           var outFile = File('$extractPath/${file.name}');
-          if (file.name.contains("index.html")) {
-            // indexFilePath = outFile.path.replaceAll(
-            //   basePathService,
-            //   "http://localhost:$portNumber",
-            // );
-          }
+          if (file.name.contains("index.html")) {}
           outFile = await outFile.create(recursive: true);
           await outFile.writeAsBytes(file.content);
         }
@@ -288,39 +273,7 @@ class MiniAppsEngineBloc
     } catch (e) {
       print("Test");
     }
-    // return indexFilePath;
   }
-
-// Future<String?> unarchiveAndSave(File zippedFile,emitter) async {
-  //   String dir = CommonProperties.serverRootPath!;
-  //   String? indexFilePath;
-  //   await ZipFile.extractToDirectory(
-  //       zipFile: zippedFile,
-  //       destinationDir: Directory(dir),
-  //       onExtracting: (zipEntry, progress) {
-  //         print('progress: ${progress.toStringAsFixed(1)}%');
-  //         emitter(
-  //           MiniAppsEngineLoadingState(
-  //             progress: progress.toStringAsFixed(1),
-  //           ),
-  //         );
-  //
-  //         if(zipEntry.name.contains("index.html"))
-  //           {
-  //             indexFilePath = zipEntry.name;
-  //           }
-  //         print('name: ${zipEntry.name}');
-  //         print('isDirectory: ${zipEntry.isDirectory}');
-  //         print(
-  //             'modificationDate: ${zipEntry.modificationDate?.toLocal().toIso8601String()}');
-  //         print('uncompressedSize: ${zipEntry.uncompressedSize}');
-  //         print('compressedSize: ${zipEntry.compressedSize}');
-  //         print('compressionMethod: ${zipEntry.compressionMethod}');
-  //         print('crc: ${zipEntry.crc}');
-  //         return ZipFileOperation.includeItem;
-  //       });
-  //   return indexFilePath;
-  // }
 
   int generateRandomPort(int oldPort, String serviceName, String serviceKey) {
     if (serviceKey == "islamicservice") {

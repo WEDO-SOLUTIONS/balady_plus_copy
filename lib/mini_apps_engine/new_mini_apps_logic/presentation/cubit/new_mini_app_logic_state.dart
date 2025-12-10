@@ -1,6 +1,6 @@
 part of 'new_mini_app_logic_cubit.dart';
 
-class NewMiniAppLogicState {
+class NewMiniAppLogicState  {
   //! Loading
   final bool isFavLoading;
   final bool isUnFavLoading;
