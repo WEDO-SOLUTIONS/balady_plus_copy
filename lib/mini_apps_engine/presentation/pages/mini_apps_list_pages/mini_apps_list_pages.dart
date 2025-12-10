@@ -168,46 +168,43 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                           itemBuilder: (context, index) {
                                             final favMiniApp =
                                                 state.favoriteApps[index];
+
                                             return Padding(
                                               key: Key(favMiniApp.id),
                                               padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      context.screenWidth *
-                                                          0.01),
+                                                horizontal:
+                                                    context.screenWidth * 0.03,
+                                              ),
                                               child: CustomMiniAppsCard(
                                                 key: Key(favMiniApp.id),
-                                                //key for reordering
+                                                width:
+                                                    context.screenWidth * 0.14,
+                                                titlesWidth:
+                                                    context.screenWidth * 0.14,
                                                 onTap: () {
                                                   context
                                                       .read<
                                                           NewMiniAppLogicCubit>()
-                                                      .openMiniApp(
-                                                        favMiniApp,
-                                                      );
+                                                      .openMiniApp(favMiniApp);
                                                 },
                                                 text: favMiniApp.name,
                                                 titlesHeight:
                                                     context.screenHeight * 0.05,
-                                                titlesWidth:
-                                                    context.screenWidth * 0.20,
                                                 maxLines: 2,
                                                 maxFontSize: 20,
                                                 minFontSize: 9,
-
                                                 miniAppIcon:
                                                     favMiniApp.iconPath,
                                                 child: CustomNetworkImageWidget(
                                                   favMiniApp.iconPath,
-                                                  // sso: true,
                                                   isVerifyingKey: true,
-                                                  imageWidth: context.w(42),
-                                                  imageHeight: context.h(42),
+                                                  imageFit: BoxFit.contain,
                                                 ),
                                               ),
                                             );
                                           },
                                         ),
-                                      ),
+                                      )
                                     ],
                                   ),
                                   GestureDetector(
@@ -351,19 +348,21 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                               separatorBuilder: (context, i) =>
                                                   SizedBox(
                                                 width:
-                                                    context.screenWidth * 0.03,
+                                                    context.screenWidth * 0.02,
                                               ),
                                               itemCount: apps.length,
                                               itemBuilder: (context, appIndex) {
                                                 final miniApp = apps[appIndex];
 
                                                 return CustomMiniAppsCard(
-                                                  width: context.w(104),
+                                                  width:
+                                                      context.screenWidth / 3.8,
                                                   height: context.h(104),
                                                   iconHeight: context.h(64),
                                                   iconWidth: context.w(64),
                                                   titlesHeight: context.h(47),
-                                                  titlesWidth: context.w(66),
+                                                  titlesWidth:
+                                                      context.screenWidth / 3.8,
                                                   maxLines: 3,
                                                   maxFontSize: 20,
                                                   minFontSize: 8,
@@ -379,7 +378,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                   child:
                                                       CustomNetworkImageWidget(
                                                     miniApp.iconPath,
-                                                    // sso: true,
                                                     isVerifyingKey: true,
                                                     imageWidth: context.w(42),
                                                     imageHeight: context.h(42),
