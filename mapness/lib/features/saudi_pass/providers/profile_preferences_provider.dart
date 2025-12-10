@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:mapness/features/saudi_pass/providers/get_all_lookups_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/get_all_subcategories_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/get_profile_preferences_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/shared/entities/selection.dart';
@@ -9,24 +10,28 @@ part 'profile_preferences_provider.g.dart';
 
 class ProfilePreferencesState {
   final City? city;
-  final List<Selection<Category>> categories;
+  final List<Selection<SubCategory>> subCategories;
   final List<Selection<RecommendedType>> recommendedTypes;
+  final Iterable<Category> allCategories;
 
   ProfilePreferencesState({
     required this.city,
-    required this.categories,
+    required this.subCategories,
     required this.recommendedTypes,
+    required this.allCategories,
   });
 
   ProfilePreferencesState copyWith({
     City? city,
-    List<Selection<Category>>? categories,
+    List<Selection<SubCategory>>? subCategories,
     List<Selection<RecommendedType>>? recommendedTypes,
+    Iterable<Category>? allCategories,
   }) =>
       ProfilePreferencesState(
         city: city ?? this.city,
-        categories: categories ?? this.categories,
+        subCategories: subCategories ?? this.subCategories,
         recommendedTypes: recommendedTypes ?? this.recommendedTypes,
+        allCategories: allCategories ?? this.allCategories,
       );
 }
 
@@ -39,32 +44,82 @@ class ProfilePreferences extends _$ProfilePreferences {
       ref.watch(getProfilePreferencesProvider.future),
     ).wait;
 
-    final categoriesInPreferences = preferences.categories.toSet();
+    final allCategories = lookups.categories;
+    final subCategoriesInPreferences = preferences.subCategoriesOnly.toSet();
+
     final typesInPreferences = preferences.recommendedTypes.toSet();
 
-    final city = lookups.cities.firstWhereOrNull((e) => e == preferences.cities.firstOrNull);
-    final selectionCategories = lookups.categories
+    final categoryIds = allCategories.map((cat) => cat.id);
+
+    final subCategories =
+        await ref.watch(getAllSubCategoriesProvider.call(categoryIds).future);
+
+    final city = lookups.cities
+        .firstWhereOrNull((e) => e == preferences.cities.firstOrNull);
+
+    final selectionSubCategories = subCategories
         .map(
-          (e) => Selection<Category>(value: e, selected: categoriesInPreferences.contains(e)),
+          (e) => Selection<SubCategory>(
+              value: e, selected: subCategoriesInPreferences.contains(e)),
         )
         .toList();
     final selectionTypes = lookups.recommendedTypes
         .map(
-          (e) => Selection<RecommendedType>(value: e, selected: typesInPreferences.contains(e)),
+          (e) => Selection<RecommendedType>(
+              value: e, selected: typesInPreferences.contains(e)),
         )
         .toList();
 
     return ProfilePreferencesState(
-      city: city,
-      categories: selectionCategories,
-      recommendedTypes: selectionTypes,
+        city: city,
+        subCategories: selectionSubCategories,
+        recommendedTypes: selectionTypes,
+        allCategories: allCategories);
+  }
+
+  void changeSubCategory(Selection<SubCategory> subCategory) {
+    update(
+      (state) => state.copyWith(
+        subCategories: state.subCategories
+            .map(
+              (e) => e == subCategory ? e.copyWith(selected: !e.selected) : e,
+            )
+            .toList(),
+      ),
     );
   }
 
-  void changeCategory(Selection<Category> category) {
+  void toggleCategory(String categoryId) {
+    update((state) {
+      final subcategoriesForCategory = state.subCategories
+          .where((sub) => sub.value.categoryId == categoryId);
+      final allSelected = subcategoriesForCategory.every((sub) => sub.selected);
+
+      return state.copyWith(
+        subCategories: state.subCategories
+            .map(
+              (e) => e.value.categoryId == categoryId
+                  ? e.copyWith(selected: !allSelected)
+                  : e,
+            )
+            .toList(),
+      );
+    });
+  }
+
+  void applySubCategories(Set<SubCategory> selected) {
+    final selections = selected.map(
+      (it) => Selection<SubCategory>(value: it, selected: true),
+    );
+
     update(
       (state) => state.copyWith(
-        categories: state.categories.map((e) => e == category ? e.copyWith(selected: !e.selected) : e).toList(),
+        subCategories: state.subCategories
+            .map(
+              (e) => e.copyWith(
+                  selected: selections.any((it) => it.value.id == e.value.id)),
+            )
+            .toList(),
       ),
     );
   }
@@ -72,7 +127,9 @@ class ProfilePreferences extends _$ProfilePreferences {
   void changeRecommendedType(Selection<RecommendedType> type) {
     update(
       (state) => state.copyWith(
-        recommendedTypes: state.recommendedTypes.map((e) => e == type ? e.copyWith(selected: !e.selected) : e).toList(),
+        recommendedTypes: state.recommendedTypes
+            .map((e) => e == type ? e.copyWith(selected: !e.selected) : e)
+            .toList(),
       ),
     );
   }
