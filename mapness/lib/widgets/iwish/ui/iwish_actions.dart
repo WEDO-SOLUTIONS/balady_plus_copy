@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mapness/widgets/iwish/lib/iwish_action_drive_button.dart';
 
 class IwishActions extends StatelessWidget {
-
   const IwishActions({
     // required this.onShare,
     // required this.onEnter,
     // required this.onCall,
-    required this.onDrive, required this.driveLabel, super.key,
+    required this.onDrive,
+    required this.driveLabel,
+    super.key,
   });
   // final VoidCallback onShare;
   // final VoidCallback onEnter;

@@ -30,10 +30,10 @@ class CustomModalRoute<T> extends PageRoute<T> {
   /// improve accessibility by making the route scope explicit.
   @override
   Widget buildPage(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      ) =>
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) =>
       Semantics(
         scopesRoute: true,
         explicitChildNodes: true,
@@ -101,8 +101,8 @@ class CustomModalRoute<T> extends PageRoute<T> {
   Widget buildModalBarrier() => const SizedBox.shrink();
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation,
-      Widget child) {
+  Widget buildTransitions(
+      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     final transitionsBuilder = _defaultTransitionsBuilder;
     return transitionsBuilder(context, animation, secondaryAnimation, child);
   }

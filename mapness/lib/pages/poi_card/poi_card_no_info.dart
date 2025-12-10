@@ -19,6 +19,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
       ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
       context.router.popForced();
     });
+    final l10n = context.l10n;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
@@ -85,6 +86,8 @@ class _PoiCardNoInfo extends HookConsumerWidget {
             ref,
           );
         },
+        onAddPointToRoute: () => _onAddEmptyPointToRoute(context, l10n, ref, objectId, closestPoint),
+        onRemovePointFromRoute: () => _onRemoveEmptyPointToRoute(context, l10n, ref, objectId, closestPoint),
         onTapFavorite: (item) =>
             _onFavoriteTap(context: context, ref: ref, data: poiCardState!.gisObjectIdMessage!, favouriteItem: item),
       ),

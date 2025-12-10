@@ -35,7 +35,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
         child: Directionality(
           textDirection: ref.watch(uiDirectionProvider),
           child: Material(
-            color: Colors.white,
+            color: context.colors.backgroundSurface4,
             child: Padding(
               padding: const EdgeInsets.only(top: Spacing.$4x),
               child: Scaffold(
@@ -71,49 +71,67 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ],
                       ),
                       const SizedBox(height: Spacing.$4x),
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final language = ref.watch(appLanguageProvider);
-                          return ContentWrapper(
-                            color: context.colors.backgroundSurface4,
-                            children: [
-                              ContentRowExpandable(
-                                options: ContentRowOptions(
-                                  title: context.l10n.language,
-                                  subtitle: language.title,
-                                  leadingIcon: leadingIcon(language),
-                                ),
-                                content: const LanguagePicker(),
-                                expandIconColor: context.colors.foregroundSoft,
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                      Spacing.$2x.heightBox,
                       ContentWrapper(
-                        color: context.colors.backgroundSurface4,
                         children: [
                           ContentRow(
                             onTap: () => context.router.push(const DarkMapRoute()),
-                            options: ContentRowOptions(
-                              leadingIcon: AppIcons(
-                                iconData: GeneralIcons.darkMode,
-                                color: context.colors.accentDefault,
-                                size: 24,
-                              ),
+                            leading: AppIcons(
+                              iconData: GeneralIcons.darkMode,
+                              color: context.colors.accentDefault,
+                              size: 24,
+                            ),
+                            text: ContentRowTextOptions(
                               title: context.l10n.darkMap,
-                              actionWidget: ContentRowActionOptions(
-                                actionIcon: AppIcons(
-                                  iconData: SystemIcons.arrowCornerRightLarge,
-                                  color: context.colors.foregroundSoft,
-                                ),
-                              ),
+                            ),
+                            trailing: ContentRowTextTrailingOptions(
+                              icon: SystemIcons.arrowCornerRightLarge,
+                              iconColor: context.colors.foregroundSoft,
                             ),
                           )
                         ],
                       ),
                       Spacing.$2x.heightBox,
+                      ContentWrapper(
+                        children: [
+                          ContentRow(
+                            onTap: () => context.router.push(
+                              NavigatorSettingsRoute(showDarkModeSection: false),
+                            ),
+                            leading: AppIcons(
+                              // TODO:(zhukeev) Set proper icon
+                              iconData: SystemIcons.settings,
+                              color: context.colors.accentDefault,
+                              size: 24,
+                            ),
+                            text: ContentRowTextOptions(
+                              title: context.l10n.navigatorSettings,
+                            ),
+                            trailing: ContentRowTextTrailingOptions(
+                              icon: SystemIcons.arrowCornerRightLarge,
+                              iconColor: context.colors.foregroundSoft,
+                            ),
+                          )
+                        ],
+                      ),
+                      Spacing.$2x.heightBox,
+                      Consumer(
+                        builder: (context, ref, child) {
+                          final language = ref.watch(appLanguageProvider);
+                          return ContentWrapper(
+                            color: Colors.white,
+                            children: [
+                              ContentRowExpandable(
+                                leading: leadingIcon(language),
+                                text: ContentRowTextOptions(
+                                  title: context.l10n.language,
+                                  subtitle: language.title,
+                                ),
+                                content: const LanguagePicker(),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -133,7 +151,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           width: 22,
         )
       : SvgPicture.asset(
-          color: context.colors.accentDefault,
+          colorFilter: ColorFilter.mode(
+            context.colors.accentDefault,
+            BlendMode.srcIn,
+          ),
           Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,

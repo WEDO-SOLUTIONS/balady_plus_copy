@@ -30,6 +30,7 @@ class Routes extends _$Routes {
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     final online = ref.watch(networkStatusProvider);
     await AdvancedMetrics.instance.startRouteCalculation(
@@ -40,12 +41,15 @@ class Routes extends _$Routes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
+
     unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      intermediatePoints: intermediatePoints,
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
@@ -120,6 +124,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
     Duration? timeout,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     final online = ref.watch(networkStatusProvider);
     await AdvancedMetrics.instance.startRouteCalculation(
@@ -130,11 +135,14 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
+
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      intermediatePoints: intermediatePoints,
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,

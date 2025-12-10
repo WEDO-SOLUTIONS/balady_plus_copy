@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 //TODO(Scroollocker): change to equatable
 @immutable
 class JobModel {
-
   const JobModel({
     this.id,
     this.number,
@@ -26,22 +25,19 @@ class JobModel {
         id: json['id'] as String?,
         number: json['number'] as String?,
         name: json['name'] as String?,
-        provider: json['provider'] == null
-            ? null
-            : ProviderModel.fromJson(json['provider'] as Map<String, dynamic>),
+        provider: json['provider'] == null ? null : ProviderModel.fromJson(json['provider'] as Map<String, dynamic>),
         description: json['description'] as String?,
         workHours: json['workHours'] as double?,
         contractType: json['contractType'] == null
             ? null
             : ContractTypeModel.fromJson(
-                json['contractType'] as Map<String, dynamic>,),
+                json['contractType'] as Map<String, dynamic>,
+              ),
         expiryDate: json['expiryDate'] as String?,
         skills: json['skills'] as String?,
         email: json['email'] as String?,
         mobile: json['mobile'] as String?,
-        location: json['location'] == null
-            ? null
-            : LocationModel.fromJson(json['location'] as Map<String, dynamic>),
+        location: json['location'] == null ? null : LocationModel.fromJson(json['location'] as Map<String, dynamic>),
         publishDate: json['publishDate'] as String?,
         commercialLicenseNumber: json['commercialLicenseNumber'] as String?,
         saudi: json['saudi'] as bool?,
@@ -107,7 +103,6 @@ class JobModel {
 
 @immutable
 class LocationModel {
-
   const LocationModel({
     this.latitude,
     this.longitude,
@@ -126,9 +121,7 @@ class LocationModel {
       return true;
     }
 
-    return other is LocationModel &&
-        other.latitude == latitude &&
-        other.longitude == longitude;
+    return other is LocationModel && other.latitude == latitude && other.longitude == longitude;
   }
 
   @override
@@ -137,7 +130,6 @@ class LocationModel {
 
 @immutable
 class ProviderModel {
-
   const ProviderModel({
     this.id,
     this.name,
@@ -165,14 +157,12 @@ class ProviderModel {
 
 @immutable
 class ContractTypeModel {
-
   const ContractTypeModel({
     this.id,
     this.name,
   });
 
-  factory ContractTypeModel.fromJson(Map<String, dynamic> json) =>
-      ContractTypeModel(
+  factory ContractTypeModel.fromJson(Map<String, dynamic> json) => ContractTypeModel(
         id: json['id'] as String?,
         name: json['name'] as String?,
       );
