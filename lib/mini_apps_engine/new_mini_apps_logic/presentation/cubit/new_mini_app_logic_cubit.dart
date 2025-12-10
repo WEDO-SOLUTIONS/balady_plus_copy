@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -16,7 +14,6 @@ import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/use_case
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -39,7 +36,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Timer? _searchDebounce;
 
   //! Get mini apps ...
-  Future<void> loadMiniApps() async {
+  Future<void> loadMiniApps({bool showLoading = false}) async {
     emit(
       state.copyWith(
         isFavLoading: true,
@@ -77,7 +74,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         final unFavoriteApps =
             allApps.where((app) => !savedFavIds.contains(app.id)).toList();
 
-
         emit(
           state.copyWith(
             allMiniApps: data.miniApps,
@@ -95,6 +91,24 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         );
       },
     );
+  }
+
+  //! Pull to refresh ...
+  Future<void> refreshMiniApps() async {
+    if (state.isRefreshing) {
+      return;
+    }
+
+    emit(state.copyWith(
+      isRefreshing: true,
+      favError: null,
+      entryPointsError: null,
+      searchError: null,
+    ));
+
+    await loadMiniApps(showLoading: false);
+
+    emit(state.copyWith(isRefreshing: false));
   }
 
   //! Toggle fav apps ...
