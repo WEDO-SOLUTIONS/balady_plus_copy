@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -10,8 +12,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_pass/pages/offers_list_bottom_sheet_map_page.dart';
 import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
-import 'package:mapness/features/saudi_pass/repo/lookups_body.dart'
-    as lookups_body;
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -20,12 +21,13 @@ import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:rxdart/rxdart.dart';
 
 const offerPoiPinId = 'offer_poi_pin_id';
 
@@ -55,6 +57,17 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   static const double _kClusterFitPaddingDp = 40.0;
   static const double _kClusterIconSize = 32.0;
   final ValueNotifier<List<String>> _notifierIds = ValueNotifier([]);
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future<void> init() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+    _setupVisibleRectListener(controller);
+  }
 
   MarkerTextStyleMessage _buildTextStyle({
     required bool isArabic,
@@ -87,9 +100,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
       isVisible: true,
       icon: SvgMarkerIcon(
-        svgPath: isDark
-            ? Assets.icons.svg.icOfferMarkerDark.keyName
-            : Assets.icons.svg.icOfferMarker.keyName,
+        svgPath: isDark ? Assets.icons.svg.icOfferMarkerDark.keyName : Assets.icons.svg.icOfferMarker.keyName,
         width: _kMarkerWidth,
       ),
     );
@@ -108,22 +119,18 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
   }) =>
       SimpleClusterOptionsMessage(
         icon: isDark
-            ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName
-                .markerIcon(size: _kClusterIconSize)
-            : Assets.icons.svg.icOffersClusteringMarker.keyName
-                .markerIcon(size: _kClusterIconSize),
+            ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName.markerIcon(size: _kClusterIconSize)
+            : Assets.icons.svg.icOffersClusteringMarker.keyName.markerIcon(size: _kClusterIconSize),
         text: objectCount.toString(),
         textStyle: MarkerTextStyleMessage(
-          textPlacement: MarkerTextPlacementMessage(
-              placement: TextPlacementMessage.centerCenter),
+          textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
           color: Colors.white.value,
           fontSize: 13,
           fontName: isRtl ? poiMapFontAr : poiMapFontEn,
         ),
       );
 
-  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject,
-      CameraPosition cameraPosition) async {
+  Future<void> _onClusterTap(SimpleClusterObject simpleClusterObject, CameraPosition cameraPosition) async {
     final media = ref.read(mediaQueryInfoProvider);
     final _cameraPosition = ref.read(cameraPositionProvider);
     final dpr = media?.devicePixelRatio ?? 1.0;
@@ -160,8 +167,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     }
   }
 
-  Future<void> _onTapMarker(
-      Offer item, String? text, MarkerOptionsMessage options) async {
+  Future<void> _onTapMarker(Offer item, String? text, MarkerOptionsMessage options) async {
     final showMapOffers = ref.read(showMapOffersProvider.notifier);
     await showMapOffers.showMarker(
       Markers.pinMarker(
@@ -180,11 +186,30 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     _notifierIds.value = [item.id];
   }
 
+  late StreamSubscription<VisibleRectEvent> _visibleRectSub;
+
+  void _setupVisibleRectListener(DgisMapController controller) {
+    _visibleRectSub = controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen((event) {
+      final showMapOffers = ref.read(showMapOffersProvider.notifier);
+      showMapOffers.switchOffersVisibility(
+        enabled: true,
+        cityId: widget.city.id,
+        isAll: widget.isAll,
+        category: widget.categories.isEmpty ? null : widget.categories,
+        promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+        visibleRect: event.visibleRect,
+      );
+    });
+  }
+
   @override
   void dispose() {
+    _visibleRectSub.cancel();
     _notifierIds.dispose();
     super.dispose();
   }
+
+  bool _isFirstLoad = true;
 
   @override
   Widget build(BuildContext context) {
@@ -192,21 +217,24 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     final cameraPosition = ref.read(cameraPositionProvider.notifier);
 
     useEffect(() {
+      // First load
       showMapOffers.switchOffersVisibility(
         enabled: true,
         cityId: widget.city.id,
         isAll: widget.isAll,
         category: widget.categories.isEmpty ? null : widget.categories,
-        promotionsType:
-            widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+        promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
       );
 
-      return () => showMapOffers.switchOffersVisibility(
-            enabled: false,
-            isAll: widget.isAll,
-            cityId: widget.city.id,
-          );
-    });
+      return () {
+        // on exit
+        showMapOffers.switchOffersVisibility(
+          enabled: false,
+          isAll: widget.isAll,
+          cityId: widget.city.id,
+        );
+      };
+    }, []);
 
     ref.listen(showMapOffersProvider, (prev, next) async {
       final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
@@ -222,38 +250,24 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
               maxZoom: _kClusterMaxZoom,
             ),
             onTap: (cluster) => _onClusterTap(cluster, cameraPosition),
-            renderCluster: (count) => _clusterOptions(
-                isRtl: isRtl, isDark: isDark, objectCount: count),
+            renderCluster: (count) => _clusterOptions(isRtl: isRtl, isDark: isDark, objectCount: count),
           ),
         ).notifier,
       );
 
-      final markers = next
-          .map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark))
-          .toList();
+      final markers = next.map((o) => _createMarker(item: o, isRtl: isRtl, isDark: isDark)).toList();
 
       await mapObjectManager.removeAllMarkers();
       await mapObjectManager.addMarkers(markers);
-      double lat, lng;
-      if (markers.isNotEmpty) {
-        final firstPosition = markers.first.options.position;
-        lat = firstPosition.latitude;
-        lng = firstPosition.longitude;
-      } else {
-        final userPos = ref.read(locationProvider);
-        if (userPos == null) {
-          return;
-        }
-        lat = userPos.latitude;
-        lng = userPos.longitude;
+
+      // Only for the first load, animate to the first marker
+      if (_isFirstLoad && markers.isNotEmpty) {
+        _isFirstLoad = false;
+        final first = markers.first.options.position;
+        final gp = GeoPointMessage(latitude: first.latitude, longitude: first.longitude);
+        final zoom = await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
+        await cameraPosition.animateTo(CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
       }
-
-      final gp = GeoPointMessage(latitude: lat, longitude: lng);
-      final zoom =
-          await GeoUtils.zoomByMarkersNearby(markers: markers, position: gp);
-
-      await cameraPosition.animateTo(
-          CameraPositionMessage(point: gp, zoom: zoom, tilt: 0, bearing: 0));
 
       await showMapOffers.initObjectManager(mapObjectManager);
     });
@@ -273,8 +287,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
               BaladyTopBar.iconAndText(
                 systemUiOverlayStyle: SystemUiOverlayStyle.dark,
                 title: context.l10n.offers,
-                textStyle: context.textStyles.bodyLargeSemiBold
-                    .copyWith(color: context.colors.foregroundDefault),
+                textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                 colorEnabled: context.colors.foregroundDefault,
                 leading: ActionModel(
                   onPressed: () {
@@ -285,7 +298,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                 ),
               ),
               Padding(
-                padding:  const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: 8),
                 child: Material(
                   color: Colors.transparent,
                   child: Text(

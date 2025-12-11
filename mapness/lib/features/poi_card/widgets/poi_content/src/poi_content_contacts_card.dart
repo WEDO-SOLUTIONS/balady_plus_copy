@@ -71,14 +71,14 @@ class PoiContentContactsCard extends StatelessWidget {
   }
 
   static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
-    PoiContentSocialMediaTypes.website => GeneralIcons.web,
-    PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
-    PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
-    PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
-    PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
-    PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
-    PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
-  };
+        PoiContentSocialMediaTypes.website => GeneralIcons.web,
+        PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
+        PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
+        PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
+        PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
+        PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
+        PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+      };
 }
 
 class _PhoneItemWidget extends StatelessWidget {

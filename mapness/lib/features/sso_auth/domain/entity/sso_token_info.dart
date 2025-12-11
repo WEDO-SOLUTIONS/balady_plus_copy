@@ -27,10 +27,10 @@ class SsoTokenInfo {
   DateTime? getExpirationTime() => DateTime.tryParse(expirationTime ?? '');
 
   Map<String, dynamic> toJson() => {
-      'expirationTime': expirationTime,
-      'refreshToken': refreshToken,
-      'token': token,
-      'idToken': idToken,
-      'appCookie': appCookie,
-    };
+        'expirationTime': expirationTime,
+        'refreshToken': refreshToken,
+        'token': token,
+        'idToken': idToken,
+        'appCookie': appCookie,
+      };
 }
