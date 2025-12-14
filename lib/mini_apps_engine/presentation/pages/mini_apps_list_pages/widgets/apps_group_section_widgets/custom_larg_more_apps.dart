@@ -1,4 +1,7 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
@@ -44,6 +47,7 @@ class CustomLargMoreApps extends StatelessWidget {
   });
 
   @override
+  @override
   Widget build(BuildContext context) {
     final List<BoxShadow> defaultShadow = withCardEffect
         ? [
@@ -61,8 +65,47 @@ class CustomLargMoreApps extends StatelessWidget {
           ]
         : [];
 
-    final displayApps = apps.take(3).toList();
+    final random = Random();
+    final displayApps = List<MiniApp>.from(apps)..shuffle(random);
+    // final displayAppsToShow = displayApps.take(3).toList();
+    //  final displayApps = apps.take(3).toList();
     final remainingCount = totalAppCount - 3;
+    final isArabic = CommonFunctions.isAppAR;
+
+    /// Helper: returns app cards aligned based on language
+    List<Widget> buildTopRow() {
+      final widgets = [
+        displayApps.isNotEmpty
+            ? CustomSubCardsOfLargCard(iconPath: displayApps[0].iconPath)
+            : const EmptyCardWidget(),
+        displayApps.length >= 2
+            ? CustomSubCardsOfLargCard(iconPath: displayApps[1].iconPath)
+            : const EmptyCardWidget(),
+      ];
+      return isArabic ? widgets.reversed.toList() : widgets;
+    }
+
+    List<Widget> buildBottomRow() {
+      Widget thirdAppWidget = displayApps.length >= 3
+          ? CustomSubCardsOfLargCard(iconPath: displayApps[2].iconPath)
+          : const SizedBox(
+              width: 64.37,
+              height: 64.37,
+            );
+
+      Widget remainingWidget = remainingCount > 0
+          ? CustomNumberOfAppsSubCard(count: remainingCount)
+          : const SizedBox(
+              width: 64.37,
+              height: 64.37,
+            );
+
+      final widgets = isArabic
+          ? [remainingWidget, thirdAppWidget]
+          : [thirdAppWidget, remainingWidget];
+
+      return CommonFunctions.isAppAR ? widgets.reversed.toList() : widgets;
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -86,35 +129,17 @@ class CustomLargMoreApps extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        displayApps.isNotEmpty
-                            ? CustomSubCardsOfLargCard(
-                                iconPath: displayApps[0].iconPath,
-                              )
-                            : const EmptyCardWidget(),
-                        displayApps.length >= 2
-                            ? CustomSubCardsOfLargCard(
-                                iconPath: displayApps[1].iconPath,
-                              )
-                            : const EmptyCardWidget(),
-                      ],
+                      textDirection:
+                          isArabic ? TextDirection.rtl : TextDirection.ltr,
+                      children: buildTopRow(),
                     ),
                     SizedBox(height: context.screenHeight * 0.02),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        displayApps.length >= 3
-                            ? CustomSubCardsOfLargCard(
-                                iconPath: displayApps[2].iconPath,
-                              )
-                            : const EmptyCardWidget(),
-                        remainingCount > 0
-                            ? CustomNumberOfAppsSubCard(
-                                count: remainingCount > 0 ? remainingCount : 0,
-                              )
-                            : const SizedBox(),
-                      ],
-                    )
+                      textDirection:
+                          isArabic ? TextDirection.rtl : TextDirection.ltr,
+                      children: buildBottomRow(),
+                    ),
                   ],
                 ),
               ),
@@ -131,7 +156,7 @@ class CustomLargMoreApps extends StatelessWidget {
                 maxFontSize: 20,
                 minFontSize: 10,
                 overflow: TextOverflow.visible,
-                textAlign: TextAlign.center,
+                textAlign: isArabic ? TextAlign.right : TextAlign.left,
                 style: const TextStyle(
                   color: Color(0XFF242424),
                   fontWeight: FontWeight.w700,

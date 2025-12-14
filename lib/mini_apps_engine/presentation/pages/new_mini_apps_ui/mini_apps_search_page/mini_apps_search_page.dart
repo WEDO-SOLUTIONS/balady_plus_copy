@@ -233,13 +233,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     onTap: () {},
                                     keyboardType: TextInputType.text,
                                     isReadOnly: false,
-                                    suffixString: value.text.isEmpty
-                                        ? Text(
-                                            "search2".tr(),
-                                            style: const TextStyle(
-                                                color: Colors.black),
-                                          )
-                                        : const SizedBox(),
+                                    hintText: "search2".tr(),
                                     suffixIcon: value.text.isEmpty
                                         ? SvgPicture.asset(IconPath.searchSVG)
                                         : IconButton(

@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MiniAppsCustomTextField extends StatelessWidget {
   final String? hintText;
@@ -89,10 +90,15 @@ class MiniAppsCustomTextField extends StatelessWidget {
             absorbing: !isEnabled,
             child: SizedBox.expand(
               child: TextFormField(
+                textAlign:
+                    CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
+                textDirection: CommonFunctions.isAppAR
+                    ? TextDirection.rtl
+                    : TextDirection.ltr,
+                textAlignVertical: TextAlignVertical.center,
                 readOnly: isReadOnly,
                 enabled: isEnabled,
                 maxLines: 1,
-                textAlignVertical: TextAlignVertical.center,
                 textInputAction: textInputAction,
                 onFieldSubmitted: onFieldSubmitted,
                 inputFormatters: inputFormatters ??
@@ -109,10 +115,8 @@ class MiniAppsCustomTextField extends StatelessWidget {
                 cursorColor: const Color(0XFF2AB3A9),
                 style: const TextStyle(color: textColor),
                 decoration: InputDecoration(
-                  contentPadding: EdgeInsets.symmetric(
-                    vertical: context.screenHeight * 0.04,
-                    horizontal: context.screenWidth * 0.04,
-                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                   filled: true,
                   fillColor: backgroundColor ?? const Color(0xFFF5F7FA),
                   errorStyle: const TextStyle(color: Colors.red),
@@ -132,13 +136,13 @@ class MiniAppsCustomTextField extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  hintText: hintText,
+                  hintText: "search2".tr(),
                   hintStyle: TextStyle(
                     color: hintColor,
                     fontSize: hintTextSize ?? 15,
                   ),
                   prefixIcon: icon,
-                  suffixIcon: _buildSuffix(context),
+                  suffixIcon: _buildSuffix(),
                 ),
                 obscureText: obscureText ?? false,
                 keyboardType: keyboardType,
@@ -151,17 +155,17 @@ class MiniAppsCustomTextField extends StatelessWidget {
     );
   }
 
-  Widget? _buildSuffix(BuildContext context) {
+  Widget? _buildSuffix() {
     if (suffixIcon == null && suffixString == null) return null;
 
     return Padding(
-      padding: suffixPadding ??
-          const EdgeInsetsDirectional.symmetric(horizontal: 16),
+      padding: suffixPadding ?? const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        textDirection: Directionality.of(context),
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (suffixString != null) suffixString!,
+          //  if (suffixString != null) suffixString!,
           if (suffixString != null && suffixIcon != null)
             const SizedBox(width: 8),
           if (suffixIcon != null) suffixIcon!,
@@ -169,5 +173,4 @@ class MiniAppsCustomTextField extends StatelessWidget {
       ),
     );
   }
-
 }

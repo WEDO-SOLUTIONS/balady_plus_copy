@@ -89,13 +89,13 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                               ? TextAlign.right
                                               : TextAlign.left,
                                           text: TextSpan(
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 24,
                                               height: 28 / 24,
                                               fontWeight: FontWeight.w800,
                                               fontFamily:
                                                   GeneralKey.appFontType,
-                                              color: const Color(0xFF1CA9A6),
+                                              color: Color(0xFF1CA9A6),
                                             ),
                                             children: [
                                               TextSpan(text: "quick_apps".tr()),
@@ -220,11 +220,17 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                     minFontSize: 9,
                                                     miniAppIcon:
                                                         favMiniApp.iconPath,
-                                                    child:
-                                                        CustomNetworkImageWidget(
-                                                      favMiniApp.iconPath,
-                                                      isVerifyingKey: true,
-                                                      imageFit: BoxFit.contain,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child:
+                                                          CustomNetworkImageWidget(
+                                                        favMiniApp.iconPath,
+                                                        isVerifyingKey: true,
+                                                        imageFit:
+                                                            BoxFit.contain,
+                                                      ),
                                                     ),
                                                   ),
                                                 );
@@ -375,8 +381,20 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            CustomSubHeadingText(
-                                              text: title,
+                                            Text(
+                                              title,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
+                                              textAlign: CommonFunctions.isAppAR
+                                                  ? TextAlign.right
+                                                  : TextAlign.left,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w700,
+                                                fontFamily:
+                                                    GeneralKey.appFontType,
+                                                color: Colors.black,
+                                              ),
                                             ),
                                             SizedBox(
                                                 height: context.screenHeight *
@@ -424,13 +442,19 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                               NewMiniAppLogicCubit>()
                                                           .openMiniApp(miniApp);
                                                     },
-                                                    child:
-                                                        CustomNetworkImageWidget(
-                                                      miniApp.iconPath,
-                                                      isVerifyingKey: true,
-                                                      imageWidth: context.w(42),
-                                                      imageHeight:
-                                                          context.h(42),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
+                                                      child:
+                                                          CustomNetworkImageWidget(
+                                                        miniApp.iconPath,
+                                                        isVerifyingKey: true,
+                                                        imageWidth:
+                                                            context.w(30),
+                                                        imageHeight:
+                                                            context.h(30),
+                                                      ),
                                                     ),
                                                   );
                                                 },
