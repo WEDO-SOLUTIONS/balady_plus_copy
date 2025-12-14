@@ -46,13 +46,14 @@ class CustomSubHeadingText extends StatelessWidget {
           : AutoSizeText(
               text,
               maxFontSize: 18,
-              minFontSize: 15,
+              minFontSize: 14,
               overflow: TextOverflow.visible,
               maxLines: maxLines ?? 1,
               style: TextStyle(
                 color: fontColor ?? Colors.black,
                 fontWeight: fontWeight ?? FontWeight.w700,
                 // fontSize: fontSize ?? 18,
+                height: 1.4,
                 fontFamily: GeneralKey.appFontType,
               ),
               textAlign: TextAlign.start,

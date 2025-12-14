@@ -77,21 +77,19 @@ class CustomMiniAppsCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          DecoratedBox(
+          Container(
+            width: width ?? context.w(54.95),
+            height: height ?? context.h(54.95),
             decoration: BoxDecoration(
               borderRadius: borderRadius ?? BorderRadius.circular(16),
               boxShadow: boxShadow ?? defaultShadow,
             ),
-            child: SizedBox(
-              width: width ?? context.w(54.95),
-              height: height ?? context.h(54.95),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: backgroundColor ?? Colors.white,
-                  borderRadius: borderRadius ?? BorderRadius.circular(16),
-                ),
-                child: child,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: backgroundColor ?? Colors.white,
+                borderRadius: borderRadius ?? BorderRadius.circular(16),
               ),
+              child: child,
             ),
           ),
           SizedBox(height: context.screenHeight * 0.01),
