@@ -94,6 +94,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                     fontColor: const Color(0XFFA1A1A1),
                                     fontWeight: FontWeight.w300,
                                     fontSize: 13,
+
                                   ),
                                 ],
                               ),
