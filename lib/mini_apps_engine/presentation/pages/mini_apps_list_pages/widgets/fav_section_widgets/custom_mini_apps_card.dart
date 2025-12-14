@@ -96,7 +96,7 @@ class CustomMiniAppsCard extends StatelessWidget {
           ),
           SizedBox(height: context.screenHeight * 0.01),
           SizedBox(
-            width: titlesWidth ?? context.w(55),
+            width: titlesWidth ?? context.w(60),
             height: titlesHeight ?? context.h(30),
             child: Text(
               text ?? "example",
@@ -105,7 +105,7 @@ class CustomMiniAppsCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 fontSize: 13,
-                height: 14.43 / 13,
+                height: 1.4,
                 fontWeight: FontWeight.w400,
                 fontFamily: GeneralKey.appFontType,
                 color: const Color(0xFF1E2A36),
