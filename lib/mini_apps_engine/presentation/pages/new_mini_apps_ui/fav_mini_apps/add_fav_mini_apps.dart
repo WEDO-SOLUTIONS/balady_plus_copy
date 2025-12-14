@@ -66,38 +66,91 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                 padding: EdgeInsets.symmetric(
                   horizontal: context.screenWidth * 0.04,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    StaggeredAppear(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (!_isSearching)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                        StaggeredAppear(
+                          children: [
+                            if (!_isSearching)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  CustomSubHeadingText(
-                                    width: context.w(144),
-                                    height: context.h(28),
-                                    text: 'my_favorite_apps'.tr(),
-                                    fontColor: const Color(0XFF242424),
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 18,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      CustomSubHeadingText(
+                                        width: context.w(144),
+                                        height: context.h(28),
+                                        text: 'my_favorite_apps'.tr(),
+                                        fontColor: const Color(0XFF242424),
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 18,
+                                      ),
+                                      CustomSubHeadingText(
+                                        maxLines: 2,
+                                        width: context.w(235),
+                                        height: context.h(50),
+                                        text: 'you_can_add_your_favorite_apps_for_easy_access'.tr(),
+                                        fontColor: const Color(0XFFA1A1A1),
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 13,
+                                      ),
+                                    ],
                                   ),
-                                  CustomSubHeadingText(
-                                    maxLines: 2,
-                                    width: context.w(235),
-                                    height: context.h(50),
-                                    text: 'you_can_add_your_favorite_apps_for_easy_access'.tr(),
-                                    fontColor: const Color(0XFFA1A1A1),
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 13,
-
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: context.w(49),
+                                        height: context.h(49),
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color: const Color(0XFFFFFFFF),
+                                            borderRadius: BorderRadius.circular(100),
+                                            border: Border.all(
+                                              color: const Color(0xFFEDEDED),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: IconButton(
+                                              onPressed: () => _startSearch(context),
+                                              icon: SvgPicture.asset(
+                                                IconPath.searchSVG,
+                                                width: context.w(20),
+                                                height: context.h(20),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: context.w(10)),
+                                      SizedBox(
+                                        width: context.w(49),
+                                        height: context.h(49),
+                                        child: DecoratedBox(
+                                          decoration: BoxDecoration(
+                                            color: const Color(0XFFFFFFFF),
+                                            borderRadius: BorderRadius.circular(100),
+                                            border: Border.all(
+                                              color: const Color(0xFFEDEDED),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: IconButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            icon: const Icon(Icons.close),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              ),
+                              )
+                            else
                               Row(
                                 children: [
                                   SizedBox(
@@ -112,169 +165,143 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                           width: 1,
                                         ),
                                       ),
-                                      child: Center(
-                                        child: IconButton(
-                                          onPressed: () => _startSearch(context),
-                                          icon: SvgPicture.asset(
-                                            IconPath.searchSVG,
-                                            width: context.w(20),
-                                            height: context.h(20),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: context.w(10)),
-                                  SizedBox(
-                                    width: context.w(49),
-                                    height: context.h(49),
-                                    child: DecoratedBox(
-                                      decoration: BoxDecoration(
-                                        color: const Color(0XFFFFFFFF),
-                                        borderRadius: BorderRadius.circular(100),
-                                        border: Border.all(
-                                          color: const Color(0xFFEDEDED),
-                                          width: 1,
-                                        ),
-                                      ),
                                       child: IconButton(
                                         onPressed: () {
-                                          Navigator.pop(context);
+                                          if (_searchController.text.isNotEmpty) {
+                                            // _searchController.clear();
+                                            // context
+                                            //     .read<NewMiniAppLogicCubit>()
+                                            //     .searchMiniApp('');
+                                            _stopSearch(context);
+                                          } else {
+                                            _stopSearch(context);
+                                          }
                                         },
                                         icon: const Icon(Icons.close),
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          )
-                        else
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: context.w(49),
-                                height: context.h(49),
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    color: const Color(0XFFFFFFFF),
-                                    borderRadius: BorderRadius.circular(100),
-                                    border: Border.all(
-                                      color: const Color(0xFFEDEDED),
-                                      width: 1,
+                                  SizedBox(width: context.w(10)),
+                                  Expanded(
+                                    child: ValueListenableBuilder<TextEditingValue>(
+                                      valueListenable: _searchController,
+                                      builder: (context, value, child) {
+                                        final hasText = value.text.isNotEmpty;
+
+                                        return MiniAppsCustomTextField(
+                                          width: context.screenWidth * 0.75,
+                                          height: context.h(49),
+                                          suffixPadding: hasText
+                                              ? const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                ) // when user typed
+                                              : const EdgeInsets.symmetric(
+                                                  horizontal: 20,
+                                                ),
+                                          autoFocus: true,
+                                          autofocus: true,
+                                          controller: _searchController,
+                                          onTap: () {},
+                                          keyboardType: TextInputType.text,
+                                          isReadOnly: false,
+                                          suffixString: value.text.isEmpty
+                                              ? Text(
+                                                  "search2".tr(),
+                                                  style: const TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                )
+                                              : const SizedBox(),
+                                          suffixIcon: value.text.isEmpty
+                                              ? SvgPicture.asset(IconPath.searchSVG)
+                                              : IconButton(
+                                                  onPressed: () {
+                                                    _searchController.clear();
+                                                    context.read<NewMiniAppLogicCubit>().searchMiniApp('');
+                                                  },
+                                                  icon: const Icon(
+                                                    Icons.close_rounded,
+                                                    color: Color(0XFFB2B2B2),
+                                                  ),
+                                                ),
+                                          onChanged: (query) {
+                                            context.read<NewMiniAppLogicCubit>().searchMiniApp(query);
+                                          },
+                                        );
+                                      },
                                     ),
                                   ),
-                                  child: IconButton(
-                                    onPressed: () {
-                                      if (_searchController.text.isNotEmpty) {
-                                        // _searchController.clear();
-                                        // context
-                                        //     .read<NewMiniAppLogicCubit>()
-                                        //     .searchMiniApp('');
-                                        _stopSearch(context);
-                                      } else {
-                                        _stopSearch(context);
-                                      }
-                                    },
-                                    icon: const Icon(Icons.close),
-                                  ),
-                                ),
+                                ],
                               ),
-                              SizedBox(width: context.w(10)),
-                              Expanded(
-                                child: ValueListenableBuilder<TextEditingValue>(
-                                  valueListenable: _searchController,
-                                  builder: (context, value, child) {
-                                    final hasText = value.text.isNotEmpty;
+                          ],
+                        ),
+                        SizedBox(height: context.screenHeight * 0.02),
+                        if (_isSearching)
+                          const Expanded(
+                            child: SearchMiniAppsResultsList(),
+                          )
+                        else
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // ! Fav apps
+                                  state.favoriteApps.isNotEmpty
+                                      ? const StaggeredAppear(children: [GetAllFavMiniAppsWidget()])
+                                      : const SizedBox(),
 
-                                    return MiniAppsCustomTextField(
-                                      width: context.screenWidth * 0.75,
-                                      height: context.h(49),
-                                      suffixPadding: hasText
-                                          ? const EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                            ) // when user typed
-                                          : const EdgeInsets.symmetric(
-                                              horizontal: 20,
+                                  const SizedBox(height: 12),
+
+                                  //! All apps (unFavorite)
+                                  state.unFavoriteApps.isNotEmpty
+                                      ? StaggeredAppear(
+                                          initialDelay: const Duration(milliseconds: 220),
+                                          itemDuration: const Duration(milliseconds: 120),
+                                          itemDelay: const Duration(milliseconds: 100),
+                                          children: [
+                                            CustomSubHeadingText(
+                                              width: context.w(144),
+                                              height: context.h(28),
+                                              text: 'all_apps'.tr(),
+                                              fontColor: const Color(0XFF242424),
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 18,
                                             ),
-                                      autoFocus: true,
-                                      autofocus: true,
-                                      controller: _searchController,
-                                      onTap: () {},
-                                      keyboardType: TextInputType.text,
-                                      isReadOnly: false,
-                                      suffixString: value.text.isEmpty
-                                          ? Text(
-                                              "search2".tr(),
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                              ),
-                                            )
-                                          : const SizedBox(),
-                                      suffixIcon: value.text.isEmpty
-                                          ? SvgPicture.asset(IconPath.searchSVG)
-                                          : IconButton(
-                                              onPressed: () {
-                                                _searchController.clear();
-                                                context.read<NewMiniAppLogicCubit>().searchMiniApp('');
-                                              },
-                                              icon: const Icon(
-                                                Icons.close_rounded,
-                                                color: Color(0XFFB2B2B2),
-                                              ),
-                                            ),
-                                      onChanged: (query) {
-                                        context.read<NewMiniAppLogicCubit>().searchMiniApp(query);
-                                      },
-                                    );
-                                  },
-                                ),
+                                          ],
+                                        )
+                                      : const SizedBox(),
+
+                                  const SizedBox(height: 12),
+
+                                  const StaggeredAppear(children: [GetAllUnFavMiniAppsWidget()]),
+                                  SizedBox(height: context.screenHeight * 0.08)
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                       ],
                     ),
-                    SizedBox(height: context.screenHeight * 0.02),
-                    if (_isSearching)
-                      const Expanded(
-                        child: SearchMiniAppsResultsList(),
-                      )
-                    else
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // ! Fav apps
-                              state.favoriteApps.isNotEmpty ? const GetAllFavMiniAppsWidget() : const SizedBox(),
-
-                              //! All apps (unFavorite)
-                              state.unFavoriteApps.isNotEmpty
-                                  ? StaggeredAppear(
-                                initialDelay: const Duration(milliseconds: 220),
-                                itemDuration: const Duration(milliseconds: 120),
-                                itemDelay: const Duration(milliseconds: 100),
-                                children: [
-                                  CustomSubHeadingText(
-                                    width: context.w(144),
-                                    height: context.h(28),
-                                    text: 'all_apps'.tr(),
-                                    fontColor: const Color(0XFF242424),
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 18,
-                                  ),
-                                ],
-                              )
-                                  : const SizedBox(),
-
-                              const GetAllUnFavMiniAppsWidget(),
-
-                              Container(height: 50, color: Colors.white, width: double.infinity, ),
-
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: context.screenHeight * 0.08,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color(0x00FFFFFF),
+                              Color(0x99FFFFFF),
+                              Color(0xFFFFFFFF),
                             ],
+                            stops: [0.0, 0.4135, 1.0],
                           ),
                         ),
                       ),
+                    ),
                   ],
                 ),
               ),

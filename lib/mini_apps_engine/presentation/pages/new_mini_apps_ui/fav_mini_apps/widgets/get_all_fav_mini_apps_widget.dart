@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GetAllFavMiniAppsWidget extends StatelessWidget {
   final double? height;
+
   const GetAllFavMiniAppsWidget({super.key, this.height});
 
   @override
@@ -35,17 +37,14 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: state.favoriteApps.length,
-            onReorder: (oldIndex, newIndex) {
-            context
-                .read<NewMiniAppLogicCubit>()
-                .reorderFavoriteApps(oldIndex, newIndex);
+          onReorder: (oldIndex, newIndex) {
+            context.read<NewMiniAppLogicCubit>().reorderFavoriteApps(oldIndex, newIndex);
           },
           itemBuilder: (context, index) {
             final favApp = state.favoriteApps[index];
             return Padding(
               key: Key(favApp.id),
-              padding:
-                  EdgeInsets.symmetric(vertical: context.screenHeight * 0.00),
+              padding: EdgeInsets.only(bottom: context.screenHeight * 0.01),
               child: SizedBox(
                 key: Key(favApp.id), // Important: Add key for reordering
                 width: context.screenWidth,
@@ -94,9 +93,7 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
                             CustomMiniAppSwitch(
                               isActive: true,
                               onChanged: (_) {
-                                context
-                                    .read<NewMiniAppLogicCubit>()
-                                    .toggleFavoriteLocal(favApp.id);
+                                context.read<NewMiniAppLogicCubit>().toggleFavoriteLocal(favApp.id);
                               },
                             ),
                             // Drag handle - make it more prominent

@@ -16,116 +16,88 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      // height: height ?? context.screenHeight * 0.30,
-      // width: width ?? context.screenWidth,
-      child: Stack(
-        children: [
-          BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-            builder: (context, state) {
-              if (state.isUnFavLoading) {
-                return const FavPageShimmerLoadingWidget();
-              }
+    return BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+      builder: (context, state) {
+        if (state.isUnFavLoading) {
+          return const FavPageShimmerLoadingWidget();
+        }
 
-              if (state.unFavError != null) {
-                return Center(
-                  child: Text(
-                    state.unFavError!,
-                    style: const TextStyle(color: Colors.red),
+        if (state.unFavError != null) {
+          return Center(
+            child: Text(
+              state.unFavError!,
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
+        }
+
+        return ListView.separated(
+          separatorBuilder: (context, index) =>
+              SizedBox(height: context.screenHeight * 0.01),
+          scrollDirection: Axis.vertical,
+          itemCount: state.unFavoriteApps.length,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            final miniApp = state.unFavoriteApps[index];
+            return SizedBox(
+              width: context.screenWidth,
+              height: context.h(64),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: const Color(0XFFFFFFFF),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0XFFEFEEEE),
                   ),
-                );
-              }
-
-              return ListView.separated(
-                separatorBuilder: (context, index) =>
-                    SizedBox(height: context.screenHeight * 0.01),
-                scrollDirection: Axis.vertical,
-                itemCount: state.unFavoriteApps.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final miniApp = state.unFavoriteApps[index];
-                  return SizedBox(
-                    width: context.screenWidth,
-                    height: context.h(64),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: const Color(0XFFFFFFFF),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: const Color(0XFFEFEEEE),
-                        ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.screenWidth * 0.01,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          AppsGroupMiniAppsCardWidgets(
+                            width: context.w(48.09228515625),
+                            height: context.h(48.09228515625),
+                            iconHeight: context.h(37.73630905151367),
+                            iconWidth: context.w(37.73630905151367),
+                            isTextRemove: true,
+                            iconPath: miniApp.iconPath,
+                            radius: 12.7,
+                          ),
+                          SizedBox(
+                            width: context.screenWidth * 0.02,
+                          ),
+                          CustomSubHeadingText(
+                            width: context.w(192),
+                            height: context.h(30),
+                            text: miniApp.name,
+                            fontColor: const Color(0XFF1E2A36),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ],
                       ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: context.screenWidth * 0.01,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                AppsGroupMiniAppsCardWidgets(
-                                  width: context.w(48.09228515625),
-                                  height: context.h(48.09228515625),
-                                  iconHeight: context.h(37.73630905151367),
-                                  iconWidth: context.w(37.73630905151367),
-                                  isTextRemove: true,
-                                  iconPath: miniApp.iconPath,
-                                  radius: 12.7,
-                                ),
-                                SizedBox(
-                                  width: context.screenWidth * 0.02,
-                                ),
-                                CustomSubHeadingText(
-                                  width: context.w(192),
-                                  height: context.h(30),
-                                  text: miniApp.name,
-                                  fontColor: const Color(0XFF1E2A36),
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 15,
-                                ),
-                              ],
-                            ),
-                            CustomMiniAppSwitch(
-                              isActive: false,
-                              onChanged: (_) {
-                                context
-                                    .read<NewMiniAppLogicCubit>()
-                                    .toggleFavoriteLocal(miniApp.id);
-                              },
-                            ),
-                          ],
-                        ),
+                      CustomMiniAppSwitch(
+                        isActive: false,
+                        onChanged: (_) {
+                          context
+                              .read<NewMiniAppLogicCubit>()
+                              .toggleFavoriteLocal(miniApp.id);
+                        },
                       ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: context.screenHeight * 0.04,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x00FFFFFF),
-                    Color(0x99FFFFFF),
-                    Color(0xFFFFFFFF),
-                  ],
-                  stops: [0.0, 0.4135, 1.0],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
-      ),
+            );
+          },
+        );
+      },
     );
   }
 }
