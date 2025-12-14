@@ -17,8 +17,8 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? context.screenHeight * 0.30,
-      width: width ?? context.screenWidth,
+      // height: height ?? context.screenHeight * 0.30,
+      // width: width ?? context.screenWidth,
       child: Stack(
         children: [
           BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
@@ -38,9 +38,11 @@ class GetAllUnFavMiniAppsWidget extends StatelessWidget {
 
               return ListView.separated(
                 separatorBuilder: (context, index) =>
-                    SizedBox(height: context.screenHeight * 0.02),
+                    SizedBox(height: context.screenHeight * 0.01),
                 scrollDirection: Axis.vertical,
                 itemCount: state.unFavoriteApps.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   final miniApp = state.unFavoriteApps[index];
                   return SizedBox(

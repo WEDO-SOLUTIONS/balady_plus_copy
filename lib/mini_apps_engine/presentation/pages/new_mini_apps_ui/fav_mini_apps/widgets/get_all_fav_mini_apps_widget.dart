@@ -14,110 +14,108 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height ?? context.screenHeight * 0.40,
-      width: context.screenWidth,
-      child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-        builder: (context, state) {
-          if (state.isFavLoading) {
-            return const FavPageShimmerLoadingWidget();
-          }
+    return BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
+      builder: (context, state) {
+        if (state.isFavLoading) {
+          return const FavPageShimmerLoadingWidget();
+        }
 
-          if (state.favError != null) {
-            return Center(
-              child: Text(
-                state.favError!,
-                style: const TextStyle(color: Colors.red),
-              ),
-            );
-          }
+        if (state.favError != null) {
+          return Center(
+            child: Text(
+              state.favError!,
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
+        }
 
-          return ReorderableListView.builder(
-            // Changed to ReorderableListView
-            padding: EdgeInsets.zero,
-            itemCount: state.favoriteApps.length,
+        return ReorderableListView.builder(
+          // Changed to ReorderableListView
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: state.favoriteApps.length,
             onReorder: (oldIndex, newIndex) {
-              context
-                  .read<NewMiniAppLogicCubit>()
-                  .reorderFavoriteApps(oldIndex, newIndex);
-            },
-            itemBuilder: (context, index) {
-              final favApp = state.favoriteApps[index];
-              return Padding(
-                key: Key(favApp.id),
-                padding:
-                    EdgeInsets.symmetric(vertical: context.screenHeight * 0.01),
-                child: SizedBox(
-                  key: Key(favApp.id), // Important: Add key for reordering
-                  width: context.screenWidth,
-                  height: context.h(64),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: const Color(0XFFFFFFFF),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: const Color(0XFFEFEEEE),
-                      ),
+            context
+                .read<NewMiniAppLogicCubit>()
+                .reorderFavoriteApps(oldIndex, newIndex);
+          },
+          itemBuilder: (context, index) {
+            final favApp = state.favoriteApps[index];
+            return Padding(
+              key: Key(favApp.id),
+              padding:
+                  EdgeInsets.symmetric(vertical: context.screenHeight * 0.01),
+              child: SizedBox(
+                key: Key(favApp.id), // Important: Add key for reordering
+                width: context.screenWidth,
+                height: context.h(64),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: const Color(0XFFFFFFFF),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: const Color(0XFFEFEEEE),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.screenWidth * 0.01,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              AppsGroupMiniAppsCardWidgets(
-                                width: context.w(48.09228515625),
-                                height: context.h(48.09228515625),
-                                iconHeight: context.h(37.73630905151367),
-                                iconWidth: context.w(37.73630905151367),
-                                isTextRemove: true,
-                                iconPath: favApp.iconPath,
-                                radius: 12.7,
-                              ),
-                              SizedBox(
-                                width: context.screenWidth * 0.02,
-                              ),
-                              CustomSubHeadingText(
-                                width: context.w(192),
-                                height: context.h(30),
-                                text: favApp.name,
-                                fontColor: const Color(0XFF1E2A36),
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              CustomMiniAppSwitch(
-                                isActive: true,
-                                onChanged: (_) {
-                                  context
-                                      .read<NewMiniAppLogicCubit>()
-                                      .toggleFavoriteLocal(favApp.id);
-                                },
-                              ),
-                              // Drag handle - make it more prominent
-                              const Icon(
-                                Icons.drag_indicator_rounded,
-                                color: Color(0x99002A46),
-                                size: 20,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.screenWidth * 0.01,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            AppsGroupMiniAppsCardWidgets(
+                              width: context.w(48.09228515625),
+                              height: context.h(48.09228515625),
+                              iconHeight: context.h(37.73630905151367),
+                              iconWidth: context.w(37.73630905151367),
+                              isTextRemove: true,
+                              iconPath: favApp.iconPath,
+                              radius: 12.7,
+                            ),
+                            SizedBox(
+                              width: context.screenWidth * 0.02,
+                            ),
+                            CustomSubHeadingText(
+                              width: context.w(192),
+                              height: context.h(30),
+                              text: favApp.name,
+                              fontColor: const Color(0XFF1E2A36),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            CustomMiniAppSwitch(
+                              isActive: true,
+                              onChanged: (_) {
+                                context
+                                    .read<NewMiniAppLogicCubit>()
+                                    .toggleFavoriteLocal(favApp.id);
+                              },
+                            ),
+                            // Drag handle - make it more prominent
+                            const Icon(
+                              Icons.drag_indicator_rounded,
+                              color: Color(0x99002A46),
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              );
-            },
-          );
-        },
-      ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

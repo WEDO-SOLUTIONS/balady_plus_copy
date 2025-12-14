@@ -97,7 +97,7 @@ class CustomMiniAppsCard extends StatelessWidget {
           SizedBox(height: context.screenHeight * 0.01),
           SizedBox(
             width: titlesWidth ?? context.w(60),
-            height: titlesHeight ?? context.h(30),
+            height: titlesHeight ?? context.h(33),
             child: Text(
               text ?? "example",
               textAlign: TextAlign.center,
