@@ -53,15 +53,16 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
     return BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
       builder: (context, state) {
         return BlocListener<NewMiniAppLogicCubit, NewMiniAppLogicState>(
-          listenWhen: (prev, curr) =>
-              prev.reachLimitNumber != curr.reachLimitNumber,
+          listenWhen: (prev, curr) => prev.reachLimitNumber != curr.reachLimitNumber,
           listener: (context, state) {
             CommonFunctions.showError("max_fav_apps_limit".tr());
           },
           child: Scaffold(
             backgroundColor: Colors.white,
             body: SafeArea(
-              child: Padding(
+              child: Container(
+                height: context.screenHeight,
+                width: context.screenWidth,
                 padding: EdgeInsets.symmetric(
                   horizontal: context.screenWidth * 0.04,
                 ),
@@ -89,9 +90,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                     maxLines: 2,
                                     width: context.w(235),
                                     height: context.h(50),
-                                    text:
-                                        'you_can_add_your_favorite_apps_for_easy_access'
-                                            .tr(),
+                                    text: 'you_can_add_your_favorite_apps_for_easy_access'.tr(),
                                     fontColor: const Color(0XFFA1A1A1),
                                     fontWeight: FontWeight.w300,
                                     fontSize: 13,
@@ -106,8 +105,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                     child: DecoratedBox(
                                       decoration: BoxDecoration(
                                         color: const Color(0XFFFFFFFF),
-                                        borderRadius:
-                                            BorderRadius.circular(100),
+                                        borderRadius: BorderRadius.circular(100),
                                         border: Border.all(
                                           color: const Color(0xFFEDEDED),
                                           width: 1,
@@ -115,8 +113,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                       ),
                                       child: Center(
                                         child: IconButton(
-                                          onPressed: () =>
-                                              _startSearch(context),
+                                          onPressed: () => _startSearch(context),
                                           icon: SvgPicture.asset(
                                             IconPath.searchSVG,
                                             width: context.w(20),
@@ -133,8 +130,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                     child: DecoratedBox(
                                       decoration: BoxDecoration(
                                         color: const Color(0XFFFFFFFF),
-                                        borderRadius:
-                                            BorderRadius.circular(100),
+                                        borderRadius: BorderRadius.circular(100),
                                         border: Border.all(
                                           color: const Color(0xFFEDEDED),
                                           width: 1,
@@ -219,10 +215,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                           : IconButton(
                                               onPressed: () {
                                                 _searchController.clear();
-                                                context
-                                                    .read<
-                                                        NewMiniAppLogicCubit>()
-                                                    .searchMiniApp('');
+                                                context.read<NewMiniAppLogicCubit>().searchMiniApp('');
                                               },
                                               icon: const Icon(
                                                 Icons.close_rounded,
@@ -230,9 +223,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                               ),
                                             ),
                                       onChanged: (query) {
-                                        context
-                                            .read<NewMiniAppLogicCubit>()
-                                            .searchMiniApp(query);
+                                        context.read<NewMiniAppLogicCubit>().searchMiniApp(query);
                                       },
                                     );
                                   },
@@ -253,61 +244,32 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              //! Fav apps
-                              state.favoriteApps.isNotEmpty
-                                  ? StaggeredAppear(
-                                      children: [
-                                        GetAllFavMiniAppsWidget(
-                                          height:
-                                              state.unFavoriteApps.isNotEmpty
-                                                  ? context.screenHeight * 0.40
-                                                  : context.screenHeight * 0.73,
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox(),
-
-                              SizedBox(height: context.screenHeight * 0.02),
+                              // ! Fav apps
+                              state.favoriteApps.isNotEmpty ? const GetAllFavMiniAppsWidget() : const SizedBox(),
 
                               //! All apps (unFavorite)
                               state.unFavoriteApps.isNotEmpty
                                   ? StaggeredAppear(
-                                      initialDelay:
-                                          const Duration(milliseconds: 220),
-                                      itemDuration:
-                                          const Duration(milliseconds: 120),
-                                      itemDelay:
-                                          const Duration(milliseconds: 100),
-                                      children: [
-                                        CustomSubHeadingText(
-                                          width: context.w(144),
-                                          height: context.h(28),
-                                          text: 'all_apps'.tr(),
-                                          fontColor: const Color(0XFF242424),
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 18,
-                                        ),
-                                      ],
-                                    )
+                                initialDelay: const Duration(milliseconds: 220),
+                                itemDuration: const Duration(milliseconds: 120),
+                                itemDelay: const Duration(milliseconds: 100),
+                                children: [
+                                  CustomSubHeadingText(
+                                    width: context.w(144),
+                                    height: context.h(28),
+                                    text: 'all_apps'.tr(),
+                                    fontColor: const Color(0XFF242424),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18,
+                                  ),
+                                ],
+                              )
                                   : const SizedBox(),
-                              SizedBox(height: context.screenHeight * 0.01),
-                              state.unFavoriteApps.isNotEmpty
-                                  ? StaggeredAppear(
-                                      initialDelay:
-                                          const Duration(milliseconds: 320),
-                                      itemDuration:
-                                          const Duration(milliseconds: 220),
-                                      itemDelay:
-                                          const Duration(milliseconds: 130),
-                                      children: [
-                                        GetAllUnFavMiniAppsWidget(
-                                          height: state.favoriteApps.isNotEmpty
-                                              ? context.screenHeight * 0.30
-                                              : context.screenHeight * 0.70,
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox(),
+
+                              const GetAllUnFavMiniAppsWidget(),
+
+                              Container(height: 50, color: Colors.white, width: double.infinity, ),
+
                             ],
                           ),
                         ),
