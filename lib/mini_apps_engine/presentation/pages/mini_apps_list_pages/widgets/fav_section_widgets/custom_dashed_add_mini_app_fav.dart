@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
@@ -63,17 +64,19 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
           width: context.screenWidth * 0.15,
           height: context.screenHeight * 0.04,
           child: Center(
-            child: AutoSizeText(
+            child: Text(
               text ?? "add2".tr(),
               maxLines: 2,
-              maxFontSize: 20,
-              minFontSize: 13,
-              overflow: TextOverflow.visible,
-              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                color: Color(0XFF1E2A36),
+                fontSize: 13,
+                height: 14.43 / 13,
                 fontWeight: FontWeight.w400,
+                fontFamily: GeneralKey.appFontType,
+                color:  Color(0xFF1E2A36),
+                leadingDistribution: TextLeadingDistribution.even,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
         ),

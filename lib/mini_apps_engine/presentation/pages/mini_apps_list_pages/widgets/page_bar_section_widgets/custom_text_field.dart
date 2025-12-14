@@ -138,7 +138,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
                     fontSize: hintTextSize ?? 15,
                   ),
                   prefixIcon: icon,
-                  suffixIcon: _buildSuffix(),
+                  suffixIcon: _buildSuffix(context),
                 ),
                 obscureText: obscureText ?? false,
                 keyboardType: keyboardType,
@@ -151,15 +151,15 @@ class MiniAppsCustomTextField extends StatelessWidget {
     );
   }
 
-  Widget? _buildSuffix() {
+  Widget? _buildSuffix(BuildContext context) {
     if (suffixIcon == null && suffixString == null) return null;
 
     return Padding(
-      padding: suffixPadding ?? const EdgeInsets.symmetric(horizontal: 20),
+      padding: suffixPadding ??
+          const EdgeInsetsDirectional.symmetric(horizontal: 16),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.end,
+        textDirection: Directionality.of(context),
         children: [
           if (suffixString != null) suffixString!,
           if (suffixString != null && suffixIcon != null)
@@ -169,4 +169,5 @@ class MiniAppsCustomTextField extends StatelessWidget {
       ),
     );
   }
+
 }
