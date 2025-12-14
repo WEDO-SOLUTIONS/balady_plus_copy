@@ -33,11 +33,10 @@ class CustomSubHeadingText extends StatelessWidget {
           ? Center(
               child: Text(
                 text,
-
                 style: TextStyle(
-                  height: 1.4,
+                  height: 1.2,
                   color: fontColor ?? Colors.black,
-                  fontWeight: fontWeight ?? FontWeight.w700,
+                  fontWeight: fontWeight ?? FontWeight.w300,
                   fontSize: fontSize ?? 18,
                   fontFamily: GeneralKey.appFontType,
                 ),

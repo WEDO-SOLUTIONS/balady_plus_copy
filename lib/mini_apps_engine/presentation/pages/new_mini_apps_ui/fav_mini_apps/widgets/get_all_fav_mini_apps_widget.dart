@@ -45,7 +45,7 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
             return Padding(
               key: Key(favApp.id),
               padding:
-                  EdgeInsets.symmetric(vertical: context.screenHeight * 0.01),
+                  EdgeInsets.symmetric(vertical: context.screenHeight * 0.00),
               child: SizedBox(
                 key: Key(favApp.id), // Important: Add key for reordering
                 width: context.screenWidth,
