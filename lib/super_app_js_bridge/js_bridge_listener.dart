@@ -334,6 +334,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       var dataJsonString = response.jsonEncodeModel();
       handler.complete(dataJsonString);
+
     } catch (_) {
       BaseResponse response = BaseResponse(
         code: 500,
