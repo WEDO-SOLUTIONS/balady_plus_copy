@@ -89,6 +89,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               ? appGroup.nameAr
                               : appGroup.nameEn,
                           fontColor: const Color(0XFF242424),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
                         ),
                       ],
                     ),
