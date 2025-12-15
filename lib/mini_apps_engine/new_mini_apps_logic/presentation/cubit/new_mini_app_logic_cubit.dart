@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_bottom_sheet.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
@@ -246,13 +247,21 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       /// check if we already logged in
       /*if (!(miniApp.latestVersion?.nafathLogin == true) &&*/
       if (!CommonProperties.isLoggedInMunicipality) {
-        await showDialog(
+        await showModalBottomSheet(
           context: NavigationService.navigatorKey.currentState!.context,
-          builder: (ctx) => NeedLoginDialog(
-            onSuccessLogin: (bool? isSuccess) async {
-              if (isSuccess ?? false) openMiniApp(miniApp);
-            },
-          ),
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) {
+            return NeedLoginBottomSheet(
+
+              onSuccessLogin: (bool? isSuccess) async {
+                if (isSuccess ?? false) {
+                  Navigator.pop(context);
+                  openMiniApp(miniApp);
+                }
+              },
+            );
+          },
         );
         return;
       }
