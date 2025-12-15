@@ -1,27 +1,23 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
-
+import 'package:balady_plus/mini_apps_engine/helper/port_helper.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
+import 'package:balady_plus/mini_apps_engine/server/CustomInAppLocalhostServer.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:path_provider/path_provider.dart';
-
-import '../../server/CustomInAppLocalhostServer.dart';
 
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
-class MiniAppsEngineBloc
-    extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
+class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniApp miniApp;
 
   CustomInAppLocalhostServer? localhostServer;
@@ -43,11 +39,9 @@ class MiniAppsEngineBloc
     add(CheckMiniAppsEngineEvent(miniApp: miniApp));
   }
 
-  void _checkMiniAppsEngine(
-      CheckMiniAppsEngineEvent event, Emitter emit) async {
-
+  void _checkMiniAppsEngine(CheckMiniAppsEngineEvent event, Emitter emit) async {
     if (event.miniApp.latestVersion?.serviceUrl != null) {
-      if(event.miniApp.nafathLogin) {
+      if (event.miniApp.nafathLogin) {
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(true);
       }
@@ -58,10 +52,8 @@ class MiniAppsEngineBloc
         ),
       );
     } else {
-      basePathService =
-          "${(await getApplicationDocumentsDirectory()).path}/www/";
-      String dir =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
+      basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
+      String dir = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       File file = File('$dir/index.html');
       bool exists = await file.exists();
       if (exists) {
@@ -126,7 +118,6 @@ class MiniAppsEngineBloc
 
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
-      // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
       if (state is MiniAppsEngineLoadingState) {
         MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
         if (!tempState.progress.contains("100")) {
@@ -136,12 +127,22 @@ class MiniAppsEngineBloc
       String pathService = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       CommonProperties.currentLocalServerDirectory = pathService;
 
+      /// Testing implementation
+      // this is fixed port for testing purpose
+      // this port is net::ERR_UNSAFE_PORT in webview
+      // int portToUse = 5061;
+
+      /// Real implementation
       int portToUse = event.miniApp.portNumber ??
-          generateRandomPort(
+          PortHelper.generateRandomPort(
             portNumber,
             event.miniApp.name,
             event.miniApp.serviceKey,
           );
+
+      if (PortHelper.isPortUnsafe(portToUse)) {
+        portToUse = PortHelper.generateRandomPort(portToUse, event.miniApp.name, event.miniApp.serviceKey);
+      }
 
       if (localhostServer == null || localhostServer!.port != portToUse) {
         localhostServer = CustomInAppLocalhostServer(
@@ -173,8 +174,8 @@ class MiniAppsEngineBloc
       // print(e.toString());
       print('Error in _openLocalHostServer: ${e.toString()}');
       add(OpenServerEngineEvent(
-          miniApp: event.miniApp
-              .copyWith(portNumber: generateRandomPort(portNumber, event.miniApp.name, event.miniApp.serviceKey))));
+          miniApp: event.miniApp.copyWith(
+              portNumber: PortHelper.generateRandomPort(portNumber, event.miniApp.name, event.miniApp.serviceKey))));
     }
   }
 
@@ -272,20 +273,6 @@ class MiniAppsEngineBloc
       }
     } catch (e) {
       print("Test");
-    }
-  }
-
-  int generateRandomPort(int oldPort, String serviceName, String serviceKey) {
-    if (serviceKey == "islamicservice") {
-      return 1245;
-    }
-    final random = Random();
-    int newPort = 1000 + random.nextInt(9999); // 8080 to 8090 inclusive
-
-    if (newPort != oldPort && newPort != 1245) {
-      return newPort;
-    } else {
-      return generateRandomPort(oldPort, serviceName, serviceKey);
     }
   }
 
