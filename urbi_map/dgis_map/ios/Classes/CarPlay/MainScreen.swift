@@ -13,6 +13,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private let container: DGis.Container
     unowned private let hostFlutterApi: HostFlutterApi
     private let indoorControlHandler: IndoorControlHandler
+    private var moveCameraCancellable: DGis.Cancellable?
 
     init(
         map: Map,
@@ -86,6 +87,10 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         navigationSessionManeuvers.cancel()
         indoorControlHandler.cancel()
         window.rootViewController = nil
+        moveCameraCancellable?.cancel()
+        
+        // Reset camera position point to default, similar to viewSafeAreaInsetsDidChange cleanup
+        try? map.camera.setPositionPoint(positionPoint: DgisCarPlayMapView.defaultCameraPositionPoint)
     }
 
     func createTemplate() -> CPMapTemplate {
@@ -114,9 +119,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             navigatorStateListener
         )
 
-        routeChannelCancelable = model.routeChannel.sink(
-            receiveValue: receiveRouteInfo
-        )
+        routeChannelCancelable = model.routeChannel.sinkOnMainThread { receiveRouteInfo in
+            self.receiveRouteInfo(routeInfo: receiveRouteInfo)
+        }
 
         return mapTemplate
     }
@@ -528,21 +533,31 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             finishPoint: finishPoint,
             routeSearchOptions: routeSearchOptions
         )
+        routeEditor.setRouteParams(routeParams: routeEditorRouteParams)
 
         routesInfoChannelCancellable = routeEditor.routesInfoChannel
             .sinkOnMainThread {
                 [self]
                 routeEditorRoutesInfo in
-                showTripPreview(
-                    to: destinationName, with: additionalInformation,
-                    with: routeEditorRoutesInfo
-                )
+                /// BSA-3348: This channel has unexpected behaviour
+                /// `routeEditor.routesInfoChannel` returns 2 values: previous and current. If previous is not exist, it returns empty list
+                /// Because of this issue we have to check if the value is the same that we want to achive. Here we decided to compare destination points
+                /// If we use `sink` instead of  `sinkOnMainThread` everything works fine. We believe that this works correctly solely because it is called on different threads,
+                /// and due to racing, the last call comes last (because the onRoutesInfoChanged method is synchronous).
+                ///
+                /// Since future versions of the SDK will not support `sink`, we have to use `sinkOnMainThread`. More: https://docs.2gis.com/en/ios/sdk/examples/base#data-channels
+                ///
+                /// TODO: We don't know whether this problem lies in the SDK or in our implementation. But it is huge problem.
+                if(routeEditorRoutesInfo.routeParams.finishPoint.coordinates == geoPoint) {
+                    self.onRoutesInfoChanged(
+                        to: destinationName, with: additionalInformation,
+                        with: routeEditorRoutesInfo,
+                    )
+                }
             }
-
-        routeEditor.setRouteParams(routeParams: routeEditorRouteParams)
     }
 
-    private func showTripPreview(
+    private func onRoutesInfoChanged(
         to destinationName: String,
         with additionalInformation: String,
         with routeEditorRoutesInfo: RouteEditorRoutesInfo
@@ -556,7 +571,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             with: additionalInformation,
             with: routeEditorRoutesInfo
         )
-
+        
+        calcGeometry(for: routeEditorRoutesInfo.routes)
         showRoutes(for: trip)
 
         buildLeadButtons()
@@ -574,9 +590,60 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 updateEstimates(for: trip)
             }
     }
+    
+    private func calcGeometry(for routes: [DGis.TrafficRoute]) {
+        let geometries = routes.map { route in
+            route.route.geometry.entries.map { entry in
+                PointGeometry(point: entry.value)
+            }
+        }.flatMap { $0 }
+        
+        let geometry = ComplexGeometry(geometries: geometries)
+        
+        // Get screen dimensions
+        let screenBounds = window.screen.nativeBounds
+        let screenWidth = Float(screenBounds.width)
+        let screenHeight = Float(screenBounds.height)
+        
+        // Calculate padding as percentage of screen size
+        let leftPaddingPercent: Float = 0.2
+        let rightPaddingPercent: Float = 0.1
+        let topPaddingPercent: Float = 0.05
+        let bottomPaddingPercent: Float = 0.05
+        
+        let leftPaddingFloat = screenWidth * leftPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.left)
+        let rightPaddingFloat = screenWidth * rightPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.right)
+        let topBasePaddingFloat = screenHeight * topPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.top)
+        let bottomBasePaddingFloat = screenHeight * bottomPaddingPercent + Float(dgisCarPlayMapView.view.safeAreaInsets.bottom)
+        
+        let leftPadding = UInt32(clamping: Int(leftPaddingFloat))
+        let rightPadding = UInt32(clamping: Int(rightPaddingFloat))
+        let topPadding = UInt32(clamping: Int(topBasePaddingFloat))
+        let bottomPadding = UInt32(clamping: Int(bottomBasePaddingFloat))
+        
+        let position = calcPosition(
+            camera: self.map.camera,
+            geometry: geometry,
+            screenArea: DGis.Padding(
+                left: leftPadding,
+                top: topPadding,
+                right: rightPadding,
+                bottom: bottomPadding
+            ),
+            size: DGis.ScreenSize(
+                width: UInt32(screenWidth),
+                height: UInt32(screenHeight),
+            ),
+        )
+        self.moveCameraCancellable?.cancel()
+        self.moveCameraCancellable = self.map.camera.move(
+            position: position
+        ).sinkOnMainThread {_ in } failure: {_ in }
+    }
 
     private func showRoutes(for trip: CPTrip) {
         isRoutesShown = true
+        stopFollowNavigation()
 
         routeEditorSource.setRoutesVisible(visible: isRoutesShown)
 
@@ -602,7 +669,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
 
     private func hideRoutes() {
         isRoutesShown = false
-
+        startFollowNavigation()
+        moveCameraCancellable?.cancel()
         routeEditorSource.setRoutesVisible(visible: isRoutesShown)
 
         mapTemplate.hideTripPreviews()
@@ -740,6 +808,22 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             routeBuildOptions: routeBuildOptions,
             trafficRoute: routeEditor.activeTrafficRoute
         )
+    }
+    /// To start default following for the car we have to call this method
+    func startFollowNavigation() {
+        map.camera.setBehaviour(
+            behaviour: self.navigationManager.mapFollowController.cameraBehaviour
+        )
+        self.navigationManager.mapFollowController.setFollow(follow: true)
+        // Default delay is 15 seconds
+        self.navigationManager.mapFollowController.followReturnDelay = 15.0
+    }
+    
+    /// We want to stop zoom in to the car during the route choosing
+    func stopFollowNavigation() {
+        self.navigationManager.mapFollowController.setFollow(follow: false)
+        // Disable auto return to follow mode
+        self.navigationManager.mapFollowController.followReturnDelay = 0.0
     }
 
     private func createBetterRouteAlert(for betterRouteInfo: BetterRouteInfo)

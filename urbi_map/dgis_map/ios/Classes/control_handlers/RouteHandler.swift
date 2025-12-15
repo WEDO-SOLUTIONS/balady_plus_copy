@@ -57,6 +57,9 @@ class RouteHandler {
 
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
 
+        
+        /// Since future versions of the SDK will not support `sink`, we have to use `sinkOnMainThread`. More: https://docs.2gis.com/en/ios/sdk/examples/base#data-channels
+        /// TODO: It is necessary to consider error handling for this method. See BSA-3348 issue
         cancelable.append(self.routeEditor.routesInfoChannel.sink { [weak self] info in
             if case .publicTransport = self?.options {
                 self?.publicTransportHandler?.onRoutesChanged()
