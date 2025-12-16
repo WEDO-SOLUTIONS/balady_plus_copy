@@ -615,13 +615,13 @@ packages:
     source: hosted
     version: "0.7.1"
   custom_lint_visitor:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: custom_lint_visitor
-      sha256: "91f2a81e9f0abb4b9f3bb529f78b6227ce6050300d1ae5b1e2c69c66c7a566d8"
+      sha256: bfe9b7a09c4775a587b58d10ebb871d4fe618237639b1e84d5ec62d7dfef25f9
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0+8.4.0"
+    version: "1.0.0+6.11.0"
   dart_ipify:
     dependency: transitive
     description:

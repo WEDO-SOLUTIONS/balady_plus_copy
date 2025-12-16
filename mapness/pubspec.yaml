@@ -5,18 +5,18 @@ version: 2.1.0+7.4
 publish_to: "none"
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.7.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
   cupertino_icons: 1.0.8
   flutter:
     sdk: flutter
-  flutter_riverpod: 2.6.1
+  flutter_riverpod: ^2.6.1
   auto_route: 9.2.2
   shared_preferences: 2.3.2
   # the annotation package containing @riverpod
-  riverpod_annotation: 2.6.1
+  riverpod_annotation: ^2.6.1
   async: ^2.11.0
 
   ##! Internet
@@ -117,7 +117,7 @@ dependencies:
   freezed_annotation: 2.4.4
   freezed: 2.5.7
   flutter_hooks: 0.20.5
-  hooks_riverpod: 2.6.1
+  hooks_riverpod: ^2.6.1
   http: 1.2.2
   image: 4.3.0
   vector_math: 2.1.4
@@ -175,9 +175,10 @@ dependency_overrides:
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
   sentry_dio: 8.14.2
-  analyzer: ^6.5.0
+  analyzer: ^6.11.0
   custom_lint_builder: ^0.7.0
   analyzer_plugin: ^0.11.2
+  custom_lint_visitor: 1.0.0+6.11.0
 
 dev_dependencies:
   flutter_test:
@@ -186,7 +187,7 @@ dev_dependencies:
   flutter_lints: 5.0.0
   # a tool for running code generators
   flutter_gen_runner:
-  build_runner: 2.4.13
+  build_runner: ^2.4.13
   # the code generator
   riverpod_generator: 2.6.3
   # riverpod_lint makes it easier to work with Riverpod
