@@ -133,39 +133,47 @@ class EtaHeader extends HookConsumerWidget {
                           PathNavState.paused => _PausedStateTitle(eta: eta),
                         }),
                         if (state != PathNavState.paused)
-                          ListenableBuilder(
-                            listenable: isClosedButtonVisible,
-                            builder: (context, _) => Stack(
-                              children: [
-                                IgnorePointer(
-                                  ignoring: !isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('hide_button'),
-                                    opacity: ReverseAnimation(animation),
-                                    child: _Button(
-                                      icon: SystemIcons.arrowCornerDownLarge,
-                                      onTap: () {
-                                        sheetController.close(duration: Durations.long1);
-                                      },
+                          if (state == PathNavState.finished)
+                            _Button(
+                              icon: SystemIcons.close,
+                              onTap: () {
+                                openEndTripSheet(context);
+                              },
+                            )
+                          else
+                            ListenableBuilder(
+                              listenable: isClosedButtonVisible,
+                              builder: (context, _) => Stack(
+                                children: [
+                                  IgnorePointer(
+                                    ignoring: !isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('hide_button'),
+                                      opacity: ReverseAnimation(animation),
+                                      child: _Button(
+                                        icon: SystemIcons.arrowCornerDownLarge,
+                                        onTap: () {
+                                          sheetController.close(duration: Durations.long1);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IgnorePointer(
-                                  ignoring: isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('close_button'),
-                                    opacity: animation,
-                                    child: _Button(
-                                      icon: SystemIcons.close,
-                                      onTap: () {
-                                        openEndTripSheet(context);
-                                      },
+                                  IgnorePointer(
+                                    ignoring: isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('close_button'),
+                                      opacity: animation,
+                                      child: _Button(
+                                        icon: SystemIcons.close,
+                                        onTap: () {
+                                          openEndTripSheet(context);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                       ],
                     ),
                   ],
