@@ -13,7 +13,6 @@ import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 
-// ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -54,7 +53,6 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
-import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -282,7 +280,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> _updateGlobalMarker(WidgetRef ref) async {
   Future<void> checkNavigationState() async {
     final controller = await ref.read(dgisControllerProvider.future);
     final navStateMessage = await controller.getCurrentNavigationState();
@@ -314,7 +311,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
+    Future<void> _updateGlobalMarker(WidgetRef ref) async {
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -335,7 +332,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     ref.listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
       if (next == null) return;
       if (prev?.zoom == next.zoom) return;
-      _updateGlobalMarkerCityscape(ref);
+      _updateGlobalMarker(ref);
     });
 
     // listen cityscapeProvider and selectedMarkerProvider for other updates
@@ -615,7 +612,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
     } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
-      MiniAppModel app = MiniAppModel();
       String? subPath;
       if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
@@ -627,8 +623,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         serviceKey: serviceKey.replaceAll('/app/', ''),
         path: subPath,
       );
-    } else if (cityEventName != null) {
-      await _handleCityEvent(cityEventName);
     } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
@@ -662,26 +656,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     }
   }
-
-  Future<void> _handleCityEvent(String cityEventName) async {
-    var eventHandled = true;
-    // check here for other city events if they come up in the future
-    switch (cityEventName) {
-      case WRC.deeplinkEventValue:
-        await ref.read(wRCProvider.notifier).moveCameraToEventArea();
-      default:
-        eventHandled = false;
-    }
-
-    final AppRouter router = await ref.read(appRouterProvider);
-    final areStoriesOpen = ref.read(storiesOpenStateProvider);
-    // if we come from stories we must close them for nice user experience
-    if (eventHandled && areStoriesOpen && router.canPop()) {
-      await router.topMostRouter().maybePop();
-      ref.read(landingPageBottomSheetControllerProvider)?.setState(ThreeStateSheet.hidden);
-    }
-  }
-
   Future<void> _openRegisterPage() async {
     await CommonFunctions.onLogin();
   }
@@ -1051,3 +1025,4 @@ class _HostFlutterApi extends HostFlutterApi {
     }
   }
 }
+
