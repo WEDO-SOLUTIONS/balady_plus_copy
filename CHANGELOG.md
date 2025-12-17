@@ -137645,7 +137645,22 @@
 
 
 ### Bug Fixes
-
+// urbi-dev-2
+* BSA-3024: [Profile] Navigator & Sound Settings Access from Profile Page ([073ffb6](https://github.com/urbi-ae/baladi/commit/073ffb66e598a6bb888a32b9dac4758312ff5af2))
+* BSA-3023: Navigation-view-should-default-to-3D-for-better-route-visibility-CarPlay ([58e4947](https://github.com/urbi-ae/baladi/commit/58e49471429bd9db0d28f6fd9dd41280e26e79b3))
+* BSA-3010 : Navigation SDK - CarPlay - wrong zoom and tilt behavior ([58e4947](https://github.com/urbi-ae/baladi/commit/58e49471429bd9db0d28f6fd9dd41280e26e79b3))
+* BSA-2756: [MKTG] App log user out after any update ([7a6dfe2](https://github.com/urbi-ae/baladi/commit/7a6dfe24ab637820216166a055af3efdffc6d9b1))
+* BSA-2317: Update navigation panel ([b325196](https://github.com/urbi-ae/baladi/commit/b32519685e775bcef3b0dc347753e4a5c5d51854))
+* BSA-68: add platform bridges for multi location routes ([0168284](https://github.com/urbi-ae/baladi/commit/01682843b6f5c214b8826035d041774b39cbfaf8))
+* BSA-3025: CityScape 2025 Floor Plan and Navigation in Mobile App ([50edfb8](https://github.com/urbi-ae/baladi/commit/50edfb8260aca1c92cd35121d0365edc09578ae8))
+* BSA-3158: [Cityscape] Mega Icon for Cityscape ([f709237](https://github.com/urbi-ae/baladi/commit/f70923743d853bfec234a07be1dac4aad574c2ce))
+* UBS-14: [Dev] Cityscape: POI card ([004f7f3](https://github.com/urbi-ae/baladi/commit/004f7f36a0999d88ee25755083fd8f423d68c096))
+* UBS-3: extract and update uikit components for multi location routing ([7ca6b93](https://github.com/urbi-ae/baladi/commit/7ca6b935ffffcaae28bf48a674b7ef63c027ead1))
+* UBS-5: added multi location routing ([7d60f5e](https://github.com/urbi-ae/baladi/commit/7d60f5e0193b00144545f3f07ffea70c020489b6))
+* UBS-17 [Tadalal] Rectangle colour ([3db9c83](https://github.com/urbi-ae/baladi/commit/3db9c8338943a142b6dc1f9cae773aeb3cf32694))
+* BSA 2224: [Tadalal] [Offers list] Show 'By preferences' tab by default for logged in user ([04f334d](https://github.com/urbi-ae/baladi/commit/04f334df29a5244aaf0a9dbf42155fd3fe41c4dc))
+* UBS-6 Add stop in navigator ([41e571b](https://github.com/urbi-ae/baladi/commit/41e571bda9cc9e7b66c27646a1e495d8ee26f3c0))
+//
 * ** BSA-2695:** steps align ([f597b12](https://github.com/urbi-ae/baladi/commit/f597b128b9a98a6187f8acb66f7b7eed8d40e7f0))
 * ** BSA-3067:** on scroll no events ([40a17e0](https://github.com/urbi-ae/baladi/commit/40a17e051ce6c5d59dffc2abbc17c90d87a58156))
 * :ambulance: iwish and happiness map state animation ([a0545e8](https://github.com/urbi-ae/baladi/commit/a0545e8cb8f33197d7db6472fe46e2d502aa9686))

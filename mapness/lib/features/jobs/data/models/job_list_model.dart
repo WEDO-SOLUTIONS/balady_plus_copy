@@ -4,7 +4,6 @@ import 'package:mapness/features/jobs/data/models/job_model.dart';
 //TODO(Scroollocker): change to equatable
 @immutable
 class JobListModel {
-
   const JobListModel({
     this.records,
     this.totalRecordsCount,
@@ -39,8 +38,7 @@ class JobListModel {
   }
 
   @override
-  int get hashCode =>
-      records.hashCode ^ totalRecordsCount.hashCode ^ pagesCount.hashCode;
+  int get hashCode => records.hashCode ^ totalRecordsCount.hashCode ^ pagesCount.hashCode;
 
   JobListModel copyWith({
     List<JobModel>? records,

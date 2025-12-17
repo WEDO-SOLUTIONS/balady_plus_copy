@@ -78,6 +78,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       icon: bigIconPath,
       id: poiPinId,
     ),
+    objectId: objectId.objectId,
   );
 
   final highlightController = ref.read(highlightProvider.notifier);

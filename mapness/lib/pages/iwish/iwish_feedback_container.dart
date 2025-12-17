@@ -13,14 +13,13 @@ class IwishFeedbackContainerPage extends StatefulWidget {
   State<IwishFeedbackContainerPage> createState() => _IwishFeedbackContainerPageState();
 }
 
-class _IwishFeedbackContainerPageState extends State<IwishFeedbackContainerPage>
-    with TickerProviderStateMixin {
+class _IwishFeedbackContainerPageState extends State<IwishFeedbackContainerPage> with TickerProviderStateMixin {
   late final AnimationController confettiController;
 
   final ConfettiGeneratorConfig config = ConfettiGeneratorConfig.confetti();
 
-  void playConfettiAnimation() => confettiController.animateTo(1,
-      duration: config.animationDuration, curve: config.animationCurve);
+  void playConfettiAnimation() =>
+      confettiController.animateTo(1, duration: config.animationDuration, curve: config.animationCurve);
 
   @override
   void initState() {

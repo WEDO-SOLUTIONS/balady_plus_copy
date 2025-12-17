@@ -5,8 +5,7 @@ extension AuthTokenResponseFromEntity on AuthorizationTokenResponse {
   SsoTokenInfo get toDomain => SsoTokenInfo(
         token: accessToken,
         refreshToken: refreshToken,
-        expirationTime:
-            accessTokenExpirationDateTime?.millisecondsSinceEpoch.toString(),
+        expirationTime: accessTokenExpirationDateTime?.millisecondsSinceEpoch.toString(),
         idToken: idToken,
       );
 }
@@ -15,8 +14,7 @@ extension TokenResponseFromEntity on TokenResponse {
   SsoTokenInfo get toDomain => SsoTokenInfo(
         token: accessToken,
         refreshToken: refreshToken,
-        expirationTime:
-            accessTokenExpirationDateTime?.millisecondsSinceEpoch.toString(),
+        expirationTime: accessTokenExpirationDateTime?.millisecondsSinceEpoch.toString(),
         idToken: idToken,
       );
 }

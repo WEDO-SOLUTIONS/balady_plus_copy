@@ -6,7 +6,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_features.g.dart';
 
 class AppFeatures {
-
   AppFeatures({
     required this.naviEnabled,
   });

@@ -28,45 +28,23 @@ class SaudiPassChipsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    final color = context.color;
-    final colorsV2 = context.colorsV2;
-    final textStyle = context.textStyle;
-
-    final backgroundColor = isSelected ? colorsV2.accentSecondaryDefault : colorsV2.neutralContainerDefault;
-    final textColor = isSelected ? colorsV2.accentOnAccent : colorsV2.foregroundDefault;
-
-    final overriddenColor = color.copyWith(
-      surfaceBaseSecondary: backgroundColor, // background
-      textAndIconsBasePrimary: textColor, // icons
-      textAndIconsBaseTertiary: colorsV2.accentSecondaryMuted, // label
-    );
-    final overriddenTextStyle = textStyle.copyWith(callout: textStyle.callout.copyWith(color: textColor));
-
-    final bool hasText = (title?.trim().isNotEmpty ?? false) || (label?.trim().isNotEmpty ?? false);
-    return Theme(
-      data: theme.overrideExtension(overriddenTextStyle).overrideExtension(overriddenColor),
-      child: Chips(
-        onPressed: onTap,
-        type: ChipsType.neutral,
-        options: hasText
-            ? ChipsLabelOptions(
-                labelFirst: title ?? '',
-                labelSecond: label,
-                leadingIcon: leadingIcon,
-                trailingIcon: trailingIcon,
-              )
-            : (leadingIcon != null || trailingIcon != null)
-            ? ChipsIconOptions(icon: leadingIcon ?? trailingIcon!)
-            : null,
-      ),
+    final bool hasText = (title?.trim().isNotEmpty ?? false) ||
+        (label?.trim().isNotEmpty ?? false);
+    final labelColor = isSelected ? context.colors.accentSecondaryMuted : null;
+    return Chips(
+      onPressed: onTap,
+      type: isSelected ? ChipsType.accentSecondary : ChipsType.neutral,
+      options: hasText
+          ? ChipsLabelOptions(
+              labelFirst: title ?? '',
+              labelSecond: label,
+              labelSecondColor: labelColor,
+              leadingIcon: leadingIcon,
+              trailingIcon: trailingIcon,
+            )
+          : (leadingIcon != null || trailingIcon != null)
+              ? ChipsIconOptions(icon: leadingIcon ?? trailingIcon!)
+              : null,
     );
   }
-}
-
-extension ThemeExtensionOverrideExt on ThemeData {
-  ThemeData overrideExtension<T extends ThemeExtension<T>>(ThemeExtension<T> style) => copyWith(
-        extensions: {...extensions, T: style}.values,
-      );
 }

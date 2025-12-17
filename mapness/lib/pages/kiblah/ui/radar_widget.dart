@@ -18,8 +18,7 @@ class RadarWidget extends StatefulWidget {
   State<StatefulWidget> createState() => RadarWidgetState();
 }
 
-class RadarWidgetState extends State<RadarWidget>
-    with TickerProviderStateMixin {
+class RadarWidgetState extends State<RadarWidget> with TickerProviderStateMixin {
   double updateTime = 0;
 
   Ticker? _ticker;

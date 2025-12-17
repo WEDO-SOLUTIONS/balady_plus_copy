@@ -8,8 +8,7 @@ part 'lookups_body.g.dart';
 class LookupsBody extends MomraBody<Lookups, LookupsData> {
   LookupsBody({required super.statusDetails, super.data});
 
-  factory LookupsBody.fromJson(Map<String, dynamic> json) =>
-      _$LookupsBodyFromJson(json);
+  factory LookupsBody.fromJson(Map<String, dynamic> json) => _$LookupsBodyFromJson(json);
 }
 
 @noRenameNoToJson
@@ -21,8 +20,7 @@ class LookupsData extends Data<Lookups> {
     required super.responseId,
   });
 
-  factory LookupsData.fromJson(Map<String, dynamic> json) =>
-      _$LookupsDataFromJson(json);
+  factory LookupsData.fromJson(Map<String, dynamic> json) => _$LookupsDataFromJson(json);
 }
 
 @noRenameNoToJson
@@ -33,8 +31,7 @@ class Lookups {
     required this.cities,
   });
 
-  factory Lookups.fromJson(Map<String, dynamic> json) =>
-      _$LookupsFromJson(json);
+  factory Lookups.fromJson(Map<String, dynamic> json) => _$LookupsFromJson(json);
 }
 
 @immutable
@@ -51,8 +48,7 @@ class NameId {
 
   @override
   bool operator ==(covariant NameId other) =>
-      identical(this, other) ||
-      runtimeType == other.runtimeType && id == other.id;
+      identical(this, other) || runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -64,6 +60,5 @@ class NameId {
 class City extends NameId {
   const City({required super.id, required super.name});
 
-  City.fromJson(Map<String, dynamic> json)
-      : super._fromInstance(_$NameIdFromJson(json));
+  City.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }

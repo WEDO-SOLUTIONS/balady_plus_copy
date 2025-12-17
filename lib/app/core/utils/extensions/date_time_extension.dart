@@ -2,10 +2,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../dependency_injection/injection_container.dart';
 import '../utils_exports.dart' show CommonFunctions, DateForm;
-
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 extension DateTimeExtension on DateTime {
   String toFormattedDate() {

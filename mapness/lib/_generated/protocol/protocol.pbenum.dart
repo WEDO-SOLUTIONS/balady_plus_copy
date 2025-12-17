@@ -19,7 +19,7 @@ class Env extends $pb.ProtobufEnum {
   static const Env ENV_SANDBOX = Env._(2, _omitEnumNames ? '' : 'ENV_SANDBOX');
   static const Env ENV_PRODUCTION = Env._(3, _omitEnumNames ? '' : 'ENV_PRODUCTION');
 
-  static const $core.List<Env> values = <Env> [
+  static const $core.List<Env> values = <Env>[
     ENV_UNKNOWN,
     ENV_DEV,
     ENV_SANDBOX,
@@ -39,7 +39,7 @@ class Error extends $pb.ProtobufEnum {
   static const Error ERROR_NOT_FOUND = Error._(3, _omitEnumNames ? '' : 'ERROR_NOT_FOUND');
   static const Error ERROR_INTERNAL_SERVER_ERROR = Error._(4, _omitEnumNames ? '' : 'ERROR_INTERNAL_SERVER_ERROR');
 
-  static const $core.List<Error> values = <Error> [
+  static const $core.List<Error> values = <Error>[
     ERROR_UNKNOWN,
     ERROR_BAD_REQUEST,
     ERROR_UNAUTHORIZED,
@@ -54,12 +54,16 @@ class Error extends $pb.ProtobufEnum {
 }
 
 class FavouriteItemType extends $pb.ProtobufEnum {
-  static const FavouriteItemType FAVOURITE_ITEM_TYPE_UNKNOWN = FavouriteItemType._(0, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_UNKNOWN');
-  static const FavouriteItemType FAVOURITE_ITEM_TYPE_HOME = FavouriteItemType._(1, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_HOME');
-  static const FavouriteItemType FAVOURITE_ITEM_TYPE_WORK = FavouriteItemType._(2, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_WORK');
-  static const FavouriteItemType FAVOURITE_ITEM_TYPE_PLACE = FavouriteItemType._(3, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_PLACE');
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_UNKNOWN =
+      FavouriteItemType._(0, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_UNKNOWN');
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_HOME =
+      FavouriteItemType._(1, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_HOME');
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_WORK =
+      FavouriteItemType._(2, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_WORK');
+  static const FavouriteItemType FAVOURITE_ITEM_TYPE_PLACE =
+      FavouriteItemType._(3, _omitEnumNames ? '' : 'FAVOURITE_ITEM_TYPE_PLACE');
 
-  static const $core.List<FavouriteItemType> values = <FavouriteItemType> [
+  static const $core.List<FavouriteItemType> values = <FavouriteItemType>[
     FAVOURITE_ITEM_TYPE_UNKNOWN,
     FAVOURITE_ITEM_TYPE_HOME,
     FAVOURITE_ITEM_TYPE_WORK,
@@ -73,10 +77,11 @@ class FavouriteItemType extends $pb.ProtobufEnum {
 }
 
 class EntitySourceType extends $pb.ProtobufEnum {
-  static const EntitySourceType ENTITY_SOURCE_UNKNOWN = EntitySourceType._(0, _omitEnumNames ? '' : 'ENTITY_SOURCE_UNKNOWN');
+  static const EntitySourceType ENTITY_SOURCE_UNKNOWN =
+      EntitySourceType._(0, _omitEnumNames ? '' : 'ENTITY_SOURCE_UNKNOWN');
   static const EntitySourceType ENTITY_SOURCE_URBI = EntitySourceType._(1, _omitEnumNames ? '' : 'ENTITY_SOURCE_URBI');
 
-  static const $core.List<EntitySourceType> values = <EntitySourceType> [
+  static const $core.List<EntitySourceType> values = <EntitySourceType>[
     ENTITY_SOURCE_UNKNOWN,
     ENTITY_SOURCE_URBI,
   ];
@@ -88,11 +93,14 @@ class EntitySourceType extends $pb.ProtobufEnum {
 }
 
 class InterestingPlaceTag extends $pb.ProtobufEnum {
-  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_UNKNOWN = InterestingPlaceTag._(0, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_UNKNOWN');
-  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL = InterestingPlaceTag._(1, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL');
-  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_FLOORS = InterestingPlaceTag._(2, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_FLOORS');
+  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_UNKNOWN =
+      InterestingPlaceTag._(0, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_UNKNOWN');
+  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL =
+      InterestingPlaceTag._(1, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL');
+  static const InterestingPlaceTag INTERESTING_PLACE_CATEGORY_FLOORS =
+      InterestingPlaceTag._(2, _omitEnumNames ? '' : 'INTERESTING_PLACE_CATEGORY_FLOORS');
 
-  static const $core.List<InterestingPlaceTag> values = <InterestingPlaceTag> [
+  static const $core.List<InterestingPlaceTag> values = <InterestingPlaceTag>[
     INTERESTING_PLACE_CATEGORY_UNKNOWN,
     INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
     INTERESTING_PLACE_CATEGORY_FLOORS,
@@ -109,7 +117,7 @@ class IWishState extends $pb.ProtobufEnum {
   static const IWishState IWISH_STATE_PLANNED = IWishState._(1, _omitEnumNames ? '' : 'IWISH_STATE_PLANNED');
   static const IWishState IWISH_STATE_COMPLETED = IWishState._(2, _omitEnumNames ? '' : 'IWISH_STATE_COMPLETED');
 
-  static const $core.List<IWishState> values = <IWishState> [
+  static const $core.List<IWishState> values = <IWishState>[
     IWISH_STATE_UNKNOWN,
     IWISH_STATE_PLANNED,
     IWISH_STATE_COMPLETED,
@@ -128,7 +136,7 @@ class IWishSize extends $pb.ProtobufEnum {
   static const IWishSize IWISH_SIZE_MEDIUM = IWishSize._(3, _omitEnumNames ? '' : 'IWISH_SIZE_MEDIUM');
   static const IWishSize IWISH_SIZE_LARGE = IWishSize._(4, _omitEnumNames ? '' : 'IWISH_SIZE_LARGE');
 
-  static const $core.List<IWishSize> values = <IWishSize> [
+  static const $core.List<IWishSize> values = <IWishSize>[
     IWISH_SIZE_UNKNOWN,
     IWISH_SIZE_NONE,
     IWISH_SIZE_SMALL,
@@ -143,10 +151,12 @@ class IWishSize extends $pb.ProtobufEnum {
 }
 
 class IWishCategory extends $pb.ProtobufEnum {
-  static const IWishCategory IWISH_CATEGORY_UNKNOWN = IWishCategory._(0, _omitEnumNames ? '' : 'IWISH_CATEGORY_UNKNOWN');
-  static const IWishCategory IWISH_CATEGORY_JOY_PARKS = IWishCategory._(1, _omitEnumNames ? '' : 'IWISH_CATEGORY_JOY_PARKS');
+  static const IWishCategory IWISH_CATEGORY_UNKNOWN =
+      IWishCategory._(0, _omitEnumNames ? '' : 'IWISH_CATEGORY_UNKNOWN');
+  static const IWishCategory IWISH_CATEGORY_JOY_PARKS =
+      IWishCategory._(1, _omitEnumNames ? '' : 'IWISH_CATEGORY_JOY_PARKS');
 
-  static const $core.List<IWishCategory> values = <IWishCategory> [
+  static const $core.List<IWishCategory> values = <IWishCategory>[
     IWISH_CATEGORY_UNKNOWN,
     IWISH_CATEGORY_JOY_PARKS,
   ];
@@ -158,11 +168,14 @@ class IWishCategory extends $pb.ProtobufEnum {
 }
 
 class IWishFeedbackRating extends $pb.ProtobufEnum {
-  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_HAPPY = IWishFeedbackRating._(0, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_HAPPY');
-  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_NEUTRAL = IWishFeedbackRating._(1, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_NEUTRAL');
-  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_UPSET = IWishFeedbackRating._(2, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_UPSET');
+  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_HAPPY =
+      IWishFeedbackRating._(0, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_HAPPY');
+  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_NEUTRAL =
+      IWishFeedbackRating._(1, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_NEUTRAL');
+  static const IWishFeedbackRating IWISH_FEEDBACK_RATING_UPSET =
+      IWishFeedbackRating._(2, _omitEnumNames ? '' : 'IWISH_FEEDBACK_RATING_UPSET');
 
-  static const $core.List<IWishFeedbackRating> values = <IWishFeedbackRating> [
+  static const $core.List<IWishFeedbackRating> values = <IWishFeedbackRating>[
     IWISH_FEEDBACK_RATING_HAPPY,
     IWISH_FEEDBACK_RATING_NEUTRAL,
     IWISH_FEEDBACK_RATING_UPSET,
@@ -173,6 +186,5 @@ class IWishFeedbackRating extends $pb.ProtobufEnum {
 
   const IWishFeedbackRating._(super.v, super.n);
 }
-
 
 const _omitEnumNames = $core.bool.fromEnvironment('protobuf.omit_enum_names');

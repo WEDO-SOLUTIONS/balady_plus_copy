@@ -5,8 +5,8 @@ import 'package:dgis_map/library.dart';
 
 extension TrafficStateEventColor on TrafficStateEvent {
   Color? get color => switch (score) {
-      < 3 => NonThemeColor.color3,
-      < 6 => NonThemeColor.color54,
-      _ => NonThemeColor.color1,
-    };
+        < 3 => NonThemeColor.color3,
+        < 6 => NonThemeColor.color54,
+        _ => NonThemeColor.color1,
+      };
 }

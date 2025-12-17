@@ -48,7 +48,8 @@ class AppRouter extends RootStackRouter {
               path: 'service_available',
               page: ServiceNotAvailableSheetRoute.page,
               opaque: false,
-              customRouteBuilder: <T>(context, child, page) => RouteBuilders.modalSheetBuilder(
+              customRouteBuilder: <T>(context, child, page) =>
+                  RouteBuilders.modalSheetBuilder(
                 context,
                 child,
                 page,
@@ -230,12 +231,6 @@ class AppRouter extends RootStackRouter {
               page: PoiFavoriteDialogRoute.page,
             ),
             CustomRoute(
-              page: CitySelectionDialogViewRoute.page,
-              path: 'saudi_pass_city_selection_dialog',
-              opaque: false,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
-            ),
-            CustomRoute(
               path: 'error_sheet_dialog',
               page: ErrorSheetDialogRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
@@ -263,14 +258,21 @@ class AppRouter extends RootStackRouter {
               page: OffersOnMapRoute.page,
             ),
             CustomRoute(
+              page: CitySelectionDialogViewRoute.page,
+              path: 'saudi_pass_city_selection_dialog',
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
               path: 'saudi_pass_type_selection_dialog',
               page: TypeSelectionDialogViewRoute.page,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
-              path: 'saudi_pass_category_selection_dialog',
-              page: CategorySelectionDialogViewRoute.page,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+              path: 'saudi_pass_all_categories_selection_dialog',
+              page: AllCategoriesSelectionDialogViewRoute.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
             CustomRoute(
               path: 'saudi_pass_sorting_selection_dialog',
@@ -389,6 +391,10 @@ class AppRouter extends RootStackRouter {
               page: FeedbackAddressSuggester.page,
               opaque: false,
               transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            AppRoute(
+              path: 'profile_preferences',
+              page: ProfilePreferencesRoute.page,
             ),
           ],
         ),
