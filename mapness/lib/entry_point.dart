@@ -54,6 +54,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
+import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -71,6 +72,7 @@ import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -183,6 +185,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // Initialization of BSS and Search Region singleton services
       await _initBssService();
       await ref.read(initializeSearchRegionServiceProvider.future);
+      unawaited(checkNavigationState());
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance
@@ -193,7 +196,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then(
-      (RemoteMessage? message) {
+      (message) {
         if (message != null && message.data.containsKey('url')) {
           final url = message.data['url'];
           openAppLink(url);
@@ -280,6 +283,38 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> _updateGlobalMarker(WidgetRef ref) async {
+  Future<void> checkNavigationState() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+    final navStateMessage = await controller.getCurrentNavigationState();
+
+    if (navStateMessage.state == NavigationState.navigation) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                  initAction: null,
+                ),
+              );
+        } else {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
+            if (next != null) {
+              _locationListener?.close();
+              ref.read(appRouterProvider).push(
+                    PathNavRoute(
+                      navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
+                      initAction: null,
+                    ),
+                  );
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -296,6 +331,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+
+    ref.listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
+      if (next == null) return;
+      if (prev?.zoom == next.zoom) return;
+      _updateGlobalMarkerCityscape(ref);
+    });
+
+    // listen cityscapeProvider and selectedMarkerProvider for other updates
     ref.listen<bool>(cityscapeProvider, (prev, next) {
       _updateGlobalMarker(ref);
     });
@@ -393,8 +436,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> clearCache() async {
-    final controller = await ref.read(dgisControllerProvider.future);
-    await controller.stopNavigation();
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
     final poiBox =
@@ -493,7 +534,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
           break;
         default:
-          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          print('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
           break;
       }
     });
@@ -573,10 +614,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await _delayIfFirstRun(
           isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-    } else if (serviceKey.isNotEmpty &&
-        serviceKey != '/poi-map' &&
-        serviceKey.startsWith('/app')) {
-      var subPath;
+    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
+      MiniAppModel app = MiniAppModel();
+      String? subPath;
       if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
       } else if (path != null) {
@@ -587,8 +627,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         serviceKey: serviceKey.replaceAll('/app/', ''),
         path: subPath,
       );
-    } else if (url.toString().isNotEmpty &&
-        !url.toString().contains('insiderbaladyapp')) {
+    } else if (cityEventName != null) {
+      await _handleCityEvent(cityEventName);
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -619,6 +660,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else {
         await router.pushNamed(url.toString());
       }
+    }
+  }
+
+  Future<void> _handleCityEvent(String cityEventName) async {
+    var eventHandled = true;
+    // check here for other city events if they come up in the future
+    switch (cityEventName) {
+      case WRC.deeplinkEventValue:
+        await ref.read(wRCProvider.notifier).moveCameraToEventArea();
+      default:
+        eventHandled = false;
+    }
+
+    final AppRouter router = await ref.read(appRouterProvider);
+    final areStoriesOpen = ref.read(storiesOpenStateProvider);
+    // if we come from stories we must close them for nice user experience
+    if (eventHandled && areStoriesOpen && router.canPop()) {
+      await router.topMostRouter().maybePop();
+      ref.read(landingPageBottomSheetControllerProvider)?.setState(ThreeStateSheet.hidden);
     }
   }
 
@@ -951,7 +1011,7 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void analyticsTrack(String event) {
-    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    analyticsClient.track(event, properties: {'app_run': isAppRun});
   }
 
   @override

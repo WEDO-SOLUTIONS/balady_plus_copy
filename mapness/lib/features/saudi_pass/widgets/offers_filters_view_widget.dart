@@ -44,7 +44,7 @@ class OffersFiltersViewWidget extends StatelessWidget {
           FilterWidget(
             filter: view.categoryFilterView,
             l10nString: l10n.saudiPassOffersPageFilterCategory,
-            onTap: view.tapCategory,
+            onTap: view.tapShowAllCategories,
           ),
         ];
 
@@ -79,7 +79,9 @@ class FilterWidget extends StatelessWidget {
           ({color}) => InkWell(
             onTap: filter.isHighlighted ? filter.tapCross : null,
             child: Icon(
-              filter.isHighlighted ? SystemIcons.closeSmall : SystemIcons.arrowCornerDownSmall,
+              filter.isHighlighted
+                  ? SystemIcons.closeSmall
+                  : SystemIcons.arrowCornerDownSmall,
               color: color,
             ),
           ),

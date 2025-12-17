@@ -253,6 +253,9 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/sad_face.svg
   SvgGenImage get sadFace => const SvgGenImage('assets/images_svg/sad_face.svg');
 
+  /// Directory path: assets/images_svg/saudi_pass
+  $AssetsImagesSvgSaudiPassGen get saudiPass => const $AssetsImagesSvgSaudiPassGen();
+
   /// File path: assets/images_svg/union.svg
   SvgGenImage get union => const SvgGenImage('assets/images_svg/union.svg');
 
@@ -629,6 +632,31 @@ class $AssetsImagesSaudiPassGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [basket, books, car, clock, hearts, others, plane];
+}
+
+class $AssetsImagesSvgSaudiPassGen {
+  const $AssetsImagesSvgSaudiPassGen();
+
+  /// File path: assets/images_svg/saudi_pass/auto.svg
+  SvgGenImage get auto => const SvgGenImage('assets/images_svg/saudi_pass/auto.svg');
+
+  /// File path: assets/images_svg/saudi_pass/cart.svg
+  SvgGenImage get cart => const SvgGenImage('assets/images_svg/saudi_pass/cart.svg');
+
+  /// File path: assets/images_svg/saudi_pass/food.svg
+  SvgGenImage get food => const SvgGenImage('assets/images_svg/saudi_pass/food.svg');
+
+  /// File path: assets/images_svg/saudi_pass/health.svg
+  SvgGenImage get health => const SvgGenImage('assets/images_svg/saudi_pass/health.svg');
+
+  /// File path: assets/images_svg/saudi_pass/plane.svg
+  SvgGenImage get plane => const SvgGenImage('assets/images_svg/saudi_pass/plane.svg');
+
+  /// File path: assets/images_svg/saudi_pass/service.svg
+  SvgGenImage get service => const SvgGenImage('assets/images_svg/saudi_pass/service.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [auto, cart, food, health, plane, service];
 }
 
 class $AssetsMapsConfigsGen {

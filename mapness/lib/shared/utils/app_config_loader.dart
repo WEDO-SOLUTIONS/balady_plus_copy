@@ -47,9 +47,12 @@ class AppConfigLoader {
         },
       );
       _config!.complete(remoteConfig);
-    } catch (e) {
+    } catch (e, st) {
       /// If an error occurs, reset the config and print the error to debug output
-      logger.log('Error initializing Firebase Remote Config: ${e.toString()}');
+      logger.log(
+        'Error initializing Firebase Remote Config: ${e.toString()} ${st.toString()}',
+        logLevel: MapnessLogLevel.error,
+      );
       _config!.complete();
     }
 

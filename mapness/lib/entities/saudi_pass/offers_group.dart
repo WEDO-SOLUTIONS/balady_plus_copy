@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum OffersGroup {
-  food,
+  eat,
   shopping,
   homeAndAuto,
   beautyAndHealth,
@@ -14,7 +14,7 @@ enum OffersGroup {
 
 extension OffersGroupExtension on OffersGroup {
   static List<OffersGroup> get mainCategories => [
-        OffersGroup.food,
+        OffersGroup.eat,
         OffersGroup.shopping,
         OffersGroup.homeAndAuto,
         OffersGroup.beautyAndHealth,
@@ -23,7 +23,7 @@ extension OffersGroupExtension on OffersGroup {
       ];
 
   String title(AppLocalizations locale) => switch (this) {
-        OffersGroup.food => locale.tastyDeals,
+        OffersGroup.eat => locale.tastyDeals,
         OffersGroup.shopping => locale.styleForLess,
         OffersGroup.homeAndAuto => locale.homeAndAuto,
         OffersGroup.beautyAndHealth => locale.selfCare,
@@ -33,7 +33,7 @@ extension OffersGroupExtension on OffersGroup {
       };
 
   String description(AppLocalizations locale) => switch (this) {
-        OffersGroup.food => locale.tastyDealsDescription,
+        OffersGroup.eat => locale.tastyDealsDescription,
         OffersGroup.shopping => locale.styleForLessDescription,
         OffersGroup.homeAndAuto => locale.homeAndAutoDescription,
         OffersGroup.beautyAndHealth => locale.selfCareDescription,
@@ -45,7 +45,7 @@ extension OffersGroupExtension on OffersGroup {
   String get imagePath {
     const pathPrefix = 'packages/mapness/assets/images/saudi_pass';
     return switch (this) {
-      OffersGroup.food => '$pathPrefix/basket.png',
+      OffersGroup.eat => '$pathPrefix/basket.png',
       OffersGroup.shopping => '$pathPrefix/clock.png',
       OffersGroup.homeAndAuto => '$pathPrefix/car.png',
       OffersGroup.beautyAndHealth => '$pathPrefix/hearts.png',
@@ -56,7 +56,7 @@ extension OffersGroupExtension on OffersGroup {
   }
 
   List<Color> get color => switch (this) {
-        OffersGroup.food => const [
+        OffersGroup.eat => const [
             Color(0xFFF19F2F),
             Color(0xFFD6650E),
           ],

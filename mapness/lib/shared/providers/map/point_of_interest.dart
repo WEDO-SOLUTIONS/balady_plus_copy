@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -11,6 +12,8 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../features/parking_spot/parking_manage.dart';
+
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
@@ -20,14 +23,24 @@ const poiMapFontEn = 'GolosText_SemiBold';
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
   Ref ref,
-  DgisObjectIdMessage objectId,
+  DgisObjectId objectId,
   LatLng? closestPoint,
 ) async {
+  final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+  final parkingManager = ref.read(parkingManageProvider.notifier);
+
+  ref.onDispose(() {
+    selectedMarker.removeMarker(poiPinId);
+    parkingManager.restoreMarker();
+  });
+
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
-  final mapMarkerMapper = await ref.read(rubricMarkerMapperProvider.notifier).getMarkerPath(rubrics, objectId.objectId);
+  final mapMarkerMapper = await ref
+      .read(rubricMarkerMapperProvider.notifier)
+      .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final bigIconPath = mapMarkerMapper.$2;
 
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
@@ -37,7 +50,6 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     longitude: directoryObject?.markerPosition!.longitude ?? 0,
   );
 
-  final selectedMarker = ref.read(selectedMarkerProvider.notifier);
   final dark = await ref.watch(darkModeProvider.future);
   final isRtl = ref.read(appLanguageProvider) == Language.arabic;
 
@@ -66,11 +78,12 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       icon: bigIconPath,
       id: poiPinId,
     ),
+    objectId: objectId.objectId,
   );
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
-  await highlightController.addHighlight(objectId);
+  await highlightController.addHighlight(objectId.toMessage());
 
   if (directoryObject != null) {
     for (final entrance in directoryObject.entrances) {

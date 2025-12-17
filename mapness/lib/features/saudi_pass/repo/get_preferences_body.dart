@@ -9,7 +9,8 @@ part 'get_preferences_body.g.dart';
 class GetPreferencesBody extends MomraBody<Preferences, PreferencesData> {
   GetPreferencesBody({required super.statusDetails, super.data});
 
-  factory GetPreferencesBody.fromJson(Map<String, dynamic> json) => _$GetPreferencesBodyFromJson(json);
+  factory GetPreferencesBody.fromJson(Map<String, dynamic> json) =>
+      _$GetPreferencesBodyFromJson(json);
 }
 
 @noRenameNoToJson
@@ -21,7 +22,8 @@ class PreferencesData extends Data<Preferences> {
     required super.result,
   });
 
-  factory PreferencesData.fromJson(Map<String, dynamic> json) => _$PreferencesDataFromJson(json);
+  factory PreferencesData.fromJson(Map<String, dynamic> json) =>
+      _$PreferencesDataFromJson(json);
 }
 
 @noRenameNoToJson
@@ -35,7 +37,7 @@ class Preferences {
   @JsonKey(defaultValue: {})
   final Iterable<City> cities;
   @JsonKey(defaultValue: {})
-  final Iterable<Category> categories;
+  final Iterable<CategoryWithSubCategories> categories;
   @JsonKey(defaultValue: {})
   final Iterable<RecommendedType> recommendedTypes;
   final bool receiveNearbyDeals;
@@ -52,11 +54,19 @@ class Preferences {
     required this.recommendedTypes,
     required this.receiveNearbyDeals,
     required this.receiveNewOpeningDeals,
-  }) : isNotPopulated = cities.isEmpty && categories.isEmpty && recommendedTypes.isEmpty;
+  }) : isNotPopulated =
+            cities.isEmpty && categories.isEmpty && recommendedTypes.isEmpty;
 
   final bool isNotPopulated;
 
-  factory Preferences.fromJson(Map<String, dynamic> json) => _$PreferencesFromJson(json);
+  List<Category> get categoriesOnly =>
+      categories.map((e) => e.category).toList();
+
+  List<SubCategory> get subCategoriesOnly =>
+      categories.expand((e) => e.subCategories).toList();
+
+  factory Preferences.fromJson(Map<String, dynamic> json) =>
+      _$PreferencesFromJson(json);
 
   static const iterableEquality = IterableEquality();
 

@@ -10,6 +10,7 @@ import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
+import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
@@ -28,7 +29,7 @@ String _removeComma(String title) {
 /// The break character is '\n' symbol
 /// Max length in the line should be less or equal `maxLength` value
 String _breakLineInTwo(String inputString) {
-  const int maxLength = 20;
+  const int maxLength = 30;
 
   // If the string fits within the max length, return it as is
   if (inputString.length <= maxLength) {
@@ -58,7 +59,11 @@ String _breakLineInTwo(String inputString) {
   return '$firstLine\n$secondLine';
 }
 
-typedef AdvancedIconResolver = Future<(String? smallIcon, String? bigIcon)> Function(Set<int> rubricIds, int objectId);
+typedef AdvancedIconResolver = Future<(String? smallIcon, String? bigIcon)> Function(
+  Set<int> rubricIds,
+  int objectId, {
+  GeoPointMessage? closestPoint,
+});
 
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
@@ -101,7 +106,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
       MarkerIconMessage? icon;
 
       if (advancedIconResolver != null) {
-        icon = (await advancedIconResolver(rubrics, objectId!)).$1?.markerIcon(size: 32);
+        icon = (await advancedIconResolver(rubrics, objectId!, closestPoint: markerInfo.geoPoint.geoPoint))
+            .$1
+            ?.markerIcon(size: 32);
       } else {
         icon = (await iconResolver(rubrics))?.iconPath.markerIcon(size: 32);
       }
@@ -125,6 +132,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                     objectId: objectId!,
                     entranceId: 0,
                   ),
+                  closestPoint: latLng,
                 ),
                 toCompareRoutes: [PoiCardWidgetRoute.page]);
           },
@@ -161,6 +169,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
 
 extension IconPathFromMapMarkersType on MapMarkersType {
   static final isSaudiDay = SaudiNationalDay.isNow();
+
   String get iconPath => switch (this) {
         MapMarkersType.markets => isSaudiDay
             ? Assets.icons.svg.placesNewSaudiDay.icMarkets.keyName

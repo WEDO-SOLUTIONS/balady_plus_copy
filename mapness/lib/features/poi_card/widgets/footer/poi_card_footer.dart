@@ -1,14 +1,16 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide TransportIcons, StopNumbersIcons;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/balady_uikit/core/icons/transport_icons.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
+import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
@@ -24,6 +26,8 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback? callPhone;
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
+  final VoidCallback onAddPointToRoute;
+  final VoidCallback onRemovePointFromRoute;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
   final LatLng? closestPoint;
   final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
@@ -31,6 +35,8 @@ class PoiCardFooter extends HookConsumerWidget {
   const PoiCardFooter({
     required this.share,
     required this.onTapCar,
+    required this.onAddPointToRoute,
+    required this.onRemovePointFromRoute,
     required this.onTapFavorite,
     this.callPhone,
     this.onEntranceTap,
@@ -64,6 +70,7 @@ class PoiCardFooter extends HookConsumerWidget {
     final objectId = data?.id?.objectId;
 
     ref.watch(favouriteCacheProvider).valueOrNull;
+    final currentRoute = ref.watch(currentRouteProvider);
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
     final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
@@ -97,6 +104,23 @@ class PoiCardFooter extends HookConsumerWidget {
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
             onPressed: onTapCar,
           ),
+          if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
+            if (!currentRoute.containsIntermediatePOI(objectId))
+              ItemActionBar(
+                icon: TransportIcons.addStop,
+                buttonType: ButtonType.secondary,
+                label: context.l10n.addStop,
+                innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+                onPressed: onAddPointToRoute,
+              )
+            else
+              ItemActionBar(
+                icon: SystemIcons.closeSmall,
+                buttonType: ButtonType.primary,
+                label: context.l10n.deletePoint,
+                innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
+                onPressed: onRemovePointFromRoute,
+              ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
               icon: GeneralIcons.phoneLTR,

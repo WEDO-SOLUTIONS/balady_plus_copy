@@ -125,14 +125,12 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
             errorContent: context.l10n.saudiPassSomethingWentWrongHint,
             buttonLabel: context.l10n.complete,
             onClose: () async {
-              await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
               await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
               context.router.popForced();
             },
             onRetry: () {
-              if (!state.isRefreshing) {
-                ref.invalidate(viewModelProvider);
-              }
+              context.router.popForced();
             },
           );
         }
@@ -177,14 +175,142 @@ void _onDirectionsTap(
   int objectId,
   String title,
   RouteParamsPoint finishPoint,
+  WidgetRef ref, {
+  List<RouteParamsPointWithLabel>? intermediatePoints,
+}) {
+  Metrics.logEventAdvanced(
+    MetricsConstants.poiKeys.makeRoute,
+    group: MetricsConstants.poiTag,
+    action: MetricAction.tap.toString(),
+    props: {
+      'object_id': objectId,
+      'finish_point': finishPoint.latLngToString(),
+      'intermediate_points': '${intermediatePoints?.latLngToString()}',
+    },
+  );
+
+  openRoutingRoutes(context, objectId, title, finishPoint, ref, intermediatePoints: intermediatePoints);
+}
+
+void _onAddObjectPointToRoute(
+  BuildContext context,
+  AppLocalizations l10n,
+  WidgetRef ref,
+  DirectoryObjectMessage object,
+) {
+  ref.read(currentRouteProvider.notifier).addPointToRoute(object.toRouteParamsPointWithLabel());
+
+  _onUpdateRouteState(
+    context,
+    l10n,
+    object.id!.objectId,
+    object.title,
+    object.toRouteParamsPoint(),
+    ref,
+  );
+}
+
+void _onAddEmptyPointToRoute(
+  BuildContext context,
+  AppLocalizations l10n,
+  WidgetRef ref,
+  int objectId,
+  LatLng? closestPoint,
+) {
+  if (closestPoint == null) {
+    return;
+  }
+
+  final point = RouteParamsPoint(
+    latitude: closestPoint.latitude,
+    longitude: closestPoint.longitude,
+    objectId: objectId,
+  );
+  ref.read(currentRouteProvider.notifier).addPointToRoute(RouteParamsPointWithLabel(value: point, label: ''));
+
+  _onUpdateRouteState(
+    context,
+    l10n,
+    objectId,
+    '',
+    point,
+    ref,
+  );
+}
+
+void _onRemoveObjectPointToRoute(
+  BuildContext context,
+  AppLocalizations l10n,
+  WidgetRef ref,
+  DirectoryObjectMessage object,
+) {
+  final objectId = object.id!.objectId;
+  ref.read(currentRouteProvider.notifier).removePointFromRoute(objectId);
+
+  _onUpdateRouteState(
+    context,
+    l10n,
+    objectId,
+    object.title,
+    object.toRouteParamsPoint(),
+    ref,
+  );
+}
+
+void _onRemoveEmptyPointToRoute(
+  BuildContext context,
+  AppLocalizations l10n,
+  WidgetRef ref,
+  int objectId,
+  LatLng? closestPoint,
+) {
+  if (closestPoint == null) {
+    return;
+  }
+
+  final point = RouteParamsPoint(
+    latitude: closestPoint.latitude,
+    longitude: closestPoint.longitude,
+    objectId: objectId,
+  );
+  ref.read(currentRouteProvider.notifier).removePointFromRoute(objectId);
+
+  _onUpdateRouteState(
+    context,
+    l10n,
+    objectId,
+    '',
+    point,
+    ref,
+  );
+}
+
+void _onUpdateRouteState(
+  BuildContext context,
+  AppLocalizations l10n,
+  int objectId,
+  String title,
+  RouteParamsPoint finishPoint,
   WidgetRef ref,
 ) {
-  Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
-      group: MetricsConstants.poiTag,
-      action: MetricAction.tap.toString(),
-      props: {'object_id': objectId, 'finish_point': '${finishPoint.latitude},${finishPoint.longitude}'});
+  final currentRouteState = ref.read(currentRouteProvider);
+  if (currentRouteState == null) {
+    throw Exception('The route must already exist to add point to it');
+  }
 
-  openRoutingRoutes(context, objectId, title, finishPoint, ref);
+  final finishPoint = currentRouteState.finishPoint;
+  if (finishPoint == null) {
+    return;
+  }
+
+  _onDirectionsTap(
+    context,
+    objectId,
+    finishPoint.label,
+    finishPoint.value!,
+    ref,
+    intermediatePoints: currentRouteState.intermediatePointsWithLabels?.points,
+  );
 }
 
 Future<void> _onFavoriteTap({

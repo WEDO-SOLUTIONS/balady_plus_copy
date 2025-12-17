@@ -18,6 +18,6 @@ class IntegrationUrls extends _$IntegrationUrls {
 
   @override
   String build() => isProduction
-        ? 'https://sa1.ops.2gis.dev/v1/recruitment-services'
-        : 'https://sa1.ops.2gis.dev/v1/recruitment-services';
+      ? 'https://sa1.ops.2gis.dev/v1/recruitment-services'
+      : 'https://sa1.ops.2gis.dev/v1/recruitment-services';
 }
