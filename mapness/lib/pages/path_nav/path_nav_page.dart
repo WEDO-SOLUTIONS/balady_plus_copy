@@ -87,6 +87,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool _isSwitchingToPedestrian = false;
   bool _finishedByEta = false;
   bool _arrivalToastShown = false;
+  // Cache for indoor support check to avoid network delay on arrival
+  bool? _cachedIndoorSupport;
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -94,6 +96,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final _navigationState = ValueNotifier(PathNavState.running);
   final _betterRouteDurationProfit = ValueNotifier<int?>(null);
   final isControlsActive = ValueNotifier(true);
+  final isSwitchingToFoot = ValueNotifier(false);
 
   late StreamSubscription? _naviEventsListener;
   bool wasSetActive = true;
@@ -182,6 +185,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _navigationState.dispose();
     timer?.cancel();
     WakelockPlus.disable();
+    isSwitchingToFoot.dispose();
     super.dispose();
   }
 
@@ -229,6 +233,31 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
       await _moveCameraToUser();
       await saveNavigationState();
+    }
+
+    if (widget.navType == RouteSearchOptionsMessage.car) {
+      unawaited(_prefetchIndoorInfo());
+    }
+  }
+
+  Future<void> _prefetchIndoorInfo() async {
+    try {
+      final finishPoint = ref.read(currentNavigationDestinationProvider);
+      final dgisController = await ref.read(dgisControllerProvider.future);
+
+      if (finishPoint?.dgisObjectId != null) {
+        final objectInfo = await dgisController.searchByObjectId(finishPoint!.dgisObjectId!);
+        final hasLevels = objectInfo.buildingLevels?.levels.isNotEmpty ?? false;
+        final hasExplicitLevel = finishPoint.levelId != null || objectInfo.levelId != null;
+
+        if (mounted) {
+          setState(() {
+            _cachedIndoorSupport = hasLevels || hasExplicitLevel;
+          });
+        }
+      }
+    } catch (e) {
+      // Ignore errors during prefetch, we will fallback to normal check if needed
     }
   }
 
@@ -419,6 +448,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     : null,
                 child: NaviSheetPanel(
                   key: panelKey,
+                  isSwitchingToFoot: isSwitchingToFoot,
                   navType: widget.navType,
                   navigationState: _navigationState,
                   onShowRoutePressed: _onShowRoutePressed,
@@ -724,104 +754,111 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
 
   Future<void> _checkAndSwitchToPedestrian() async {
-    final finishPoint = ref.read(currentNavigationDestinationProvider);
-    final location = ref.read(locationProvider);
-    final dgisController = ref.read(dgisControllerProvider).valueOrNull;
-    print('amr finishPoint ${finishPoint.toString()}');
-    print('amr location ${location.toString()}');
-    if (finishPoint == null || location == null || dgisController == null) {
+    isSwitchingToFoot.value = true;
+    try {
+      final finishPoint = ref.read(currentNavigationDestinationProvider);
+      final location = ref.read(locationProvider);
+      final dgisController = ref.read(dgisControllerProvider).valueOrNull;
+
+      if (finishPoint == null || location == null || dgisController == null) {
+        _finishNavigation();
+        if (mounted) {
+          await _endTripAndShowHome();
+        }
+        return;
+      }
+      final distance = cf.CommonFunctions.distance(
+        location.latitude,
+        location.longitude,
+        finishPoint.geoPoint.latitude,
+        finishPoint.geoPoint.longitude,
+      );
+
+      // If distance > 20 meters, check for indoor support (switch to pedestrian)
+      if (distance > 0.02) {
+        bool supportsIndoor = false;
+        // Check if we have objectId to fetch building info
+        if (finishPoint.dgisObjectId != null) {
+          try {
+            if (_cachedIndoorSupport != null) {
+              supportsIndoor = _cachedIndoorSupport!;
+            } else {
+              final objectInfo = await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
+
+              // Check for building levels (indoor map support)
+              if (objectInfo.buildingLevels != null && (objectInfo.buildingLevels?.levels.isNotEmpty ?? false)) {
+                supportsIndoor = true;
+              }
+
+              // Fallback: update supportsIndoor if levelId is explicitly set in destination
+              if (finishPoint.levelId != null || objectInfo.levelId != null) {
+                supportsIndoor = true;
+              }
+            }
+          } catch (e) {
+            logger.log('Error fetching object info for pedestrian switch: $e', logLevel: MapnessLogLevel.error);
+          }
+        }
+
+        if (supportsIndoor) {
+          // Switch to pedestrian
+          final startPoint = RouteParamsPoint(
+            latitude: location.latitude,
+            longitude: location.longitude,
+          );
+          // Calculate route (keep minimal to reduce lag)
+          try {
+            await ref.read(routesProvider(
+              startPoint: startPoint,
+              finishPoint: finishPoint,
+              navType: RouteSearchOptionsMessage.pedestrian,
+              showOnlyActiveRoute: true,
+            ).future);
+
+          } on WalkingDistanceException catch (ex) {
+             logger.log(ex.toString(), logLevel: MapnessLogLevel.warning);
+          }
+
+          // Navigate to new navigation session
+          if (mounted) {
+            // Start navigation on the newly calculated route
+            await dgisController.startNavigation(
+              NavigationConstants.navigationSpeedRangeZooms,
+            );
+
+            // Save the navigation state so it can be restored on the new page
+            final state = await dgisController.saveNavigationState();
+            await ref.read(sharedPrefsProvider).setString(
+                MapnessConstants.navigatorStateKey, base64.encode(state));
+            await ref.read(sharedPrefsProvider).setString(
+                MapnessConstants.navigatorStateTypeKey,
+                RouteSearchOptionsMessage.pedestrian.name);
+
+            // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
+
+            // Replace current page with pedestrian navigation
+             // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
+            isSwitchingToFoot.value = false;
+            await context.router.replace(
+              PathNavRoute(
+                navType: RouteSearchOptionsMessage.pedestrian,
+                isHomeOrWork: widget.isHomeOrWork,
+                initAction: PathNavPageInitAction.restoreFromState,
+              ),
+            );
+            return;
+          }
+        }
+      }
+      _isSwitchingToPedestrian = false;
       _finishNavigation();
       if (mounted) {
         await _endTripAndShowHome();
       }
-      return;
-    }
-    final distance = cf.CommonFunctions.distance(
-      location.latitude,
-      location.longitude,
-      finishPoint.geoPoint.latitude,
-      finishPoint.geoPoint.longitude,
-    );
-    print('amr distance $distance');
-    // If distance > 20 meters, check for indoor support (switch to pedestrian)
-    if (distance > 0.02) {
-      bool supportsIndoor = false;
-      // Check if we have objectId to fetch building info
-      if (finishPoint.dgisObjectId != null) {
-        try {
-          print('amr try');
-          final objectInfo = await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
-          print('amr objectInfo $objectInfo');
-          // Check for building levels (indoor map support)
-          if (objectInfo.buildingLevels != null && (objectInfo.buildingLevels?.levels.isNotEmpty ?? false)) {
-            supportsIndoor = true;
-          }
-
-          // Fallback: update supportsIndoor if levelId is explicitly set in destination
-          if (finishPoint.levelId != null || objectInfo.levelId != null) {
-            supportsIndoor = true;
-          }
-        } catch (e) {
-          print('amr Error fetching object info for pedestrian switch: $e');
-        }
+    } finally {
+      if (mounted) {
+        isSwitchingToFoot.value = false;
       }
-      print('amr supportsIndoor2 $supportsIndoor');
-
-      if (supportsIndoor) {
-        // Switch to pedestrian
-        final startPoint = RouteParamsPoint(
-          latitude: location.latitude,
-          longitude: location.longitude,
-        );
-        // Calculate route (keep minimal to reduce lag)
-        try
-        {
-          final list = await ref.read(routesProvider(
-            startPoint: startPoint,
-            finishPoint: finishPoint,
-            navType: RouteSearchOptionsMessage.pedestrian,
-            showOnlyActiveRoute: true,
-          ).future);
-          print('amr list $list');
-
-        }on WalkingDistanceException catch (ex){
-          print('amr catch ex ${ex.toString()}');
-        }
-
-        // Navigate to new navigation session
-        print('amr mounted $mounted');
-        if (mounted) {
-          // Start navigation on the newly calculated route
-          await dgisController.startNavigation(
-            NavigationConstants.navigationSpeedRangeZooms,
-          );
-
-          // Save the navigation state so it can be restored on the new page
-          final state = await dgisController.saveNavigationState();
-          await ref.read(sharedPrefsProvider).setString(
-              MapnessConstants.navigatorStateKey, base64.encode(state));
-          await ref.read(sharedPrefsProvider).setString(
-              MapnessConstants.navigatorStateTypeKey,
-              RouteSearchOptionsMessage.pedestrian.name);
-
-          // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
-
-          // Replace current page with pedestrian navigation
-          await context.router.replace(
-            PathNavRoute(
-              navType: RouteSearchOptionsMessage.pedestrian,
-              isHomeOrWork: widget.isHomeOrWork,
-              initAction: PathNavPageInitAction.restoreFromState,
-            ),
-          );
-          return;
-        }
-      }
-    }
-    _isSwitchingToPedestrian = false;
-    _finishNavigation();
-    if (mounted) {
-      await _endTripAndShowHome();
     }
   }
 
