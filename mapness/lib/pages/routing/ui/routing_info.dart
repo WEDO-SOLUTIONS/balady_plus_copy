@@ -226,7 +226,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     ref.watch(activePublicTransportRouteProvider);
     final intermediatePoints = widget.points.getIntermediatePoints();
 
-    print('amr intermediatePoints $intermediatePoints');
     final routes = ref.watch(
       routesProvider(
         startPoint: widget.points.first,

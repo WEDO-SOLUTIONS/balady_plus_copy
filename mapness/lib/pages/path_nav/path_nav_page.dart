@@ -712,8 +712,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Notify the listeners about the end of the trip
   void _naviEvent(NavigationEvent event) {
-    print('amr _naviEvent $event');
-    print('amr widget.navType ${widget.navType}');
     if (event == NavigationEvent.finished) {
       if (widget.navType == RouteSearchOptionsMessage.car) {
         _isSwitchingToPedestrian = true;
@@ -735,7 +733,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
   void _finishNavigation() {
-    print('amr finish Navigation');
     ref.read(urbiAnalyticsProvider).track('tripCompleted');
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
     ref.read(advertMetricsProvider.notifier).sendEvent(
