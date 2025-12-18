@@ -30,8 +30,6 @@ pubget:
     cd mapness
     fvm flutter pub get
     cd ..
-    # Fix Syncfusion Registrar compatibility issue
-    bash ./fix_syncfusion_registrar.sh || true
 
 clean:
     #!/bin/bash

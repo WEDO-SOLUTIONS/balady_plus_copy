@@ -189,6 +189,14 @@ dependency_overrides:
       ref: master
   # Fix for http_certificate_pinning: override balady_authorization's constraint to use version 3.0.1 (fixes Registrar issue)
   http_certificate_pinning: 3.0.1
+  # Force all Syncfusion packages to use the newer 29.1.33 line, which:
+  # - fixes old v1 PluginRegistry.Registrar issues in Android plugins
+  # - is compatible with Flutter 3.29.x
+  # This override also upgrades the versions required by balady_authorization (via balady_plus).
+  syncfusion_flutter_pdfviewer: 29.1.33
+  syncfusion_flutter_core: 29.1.33
+  syncfusion_flutter_datepicker: 29.1.33
+  syncfusion_localizations: 29.1.33
 
 dev_dependencies:
   flutter_test:
