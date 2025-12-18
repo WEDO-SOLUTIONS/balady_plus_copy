@@ -76,6 +76,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openMiniApps);
     registerFunction(openPdfFile);
     registerFunction(openAppSetting);
+    registerFunction(closeCurrentMiniApp);
+  }
+
+  @pragma('vm:entry-point')
+  void closeCurrentMiniApp(dynamic msg, CompletionHandler handler) async {
+    if ( NavigationService.navigatorKey.currentContext!.mounted)
+      Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
+
   }
 
   @pragma('vm:entry-point')
