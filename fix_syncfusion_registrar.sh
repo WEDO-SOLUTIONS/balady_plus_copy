@@ -1,9 +1,13 @@
 #!/bin/bash
 
+set -euo pipefail
+
 # Script to fix Syncfusion PDF Viewer Registrar compatibility issue with Flutter 3.29.1+
 # This patches the deprecated registerWith method that uses PluginRegistry.Registrar
 
-PLUGIN_FILE="$HOME/.pub-cache/hosted/pub.dev/syncfusion_flutter_pdfviewer-26.2.14/android/src/main/java/com/syncfusion/flutter/pdfviewer/SyncfusionFlutterPdfViewerPlugin.java"
+# Resolve the actual pub cache directory that the current Flutter SDK is using
+PUB_CACHE_DIR="$(fvm flutter pub cache 2>/dev/null | awk 'END {print $NF}')"
+PLUGIN_FILE="$PUB_CACHE_DIR/hosted/pub.dev/syncfusion_flutter_pdfviewer-26.2.14/android/src/main/java/com/syncfusion/flutter/pdfviewer/SyncfusionFlutterPdfViewerPlugin.java"
 
 if [ ! -f "$PLUGIN_FILE" ]; then
     echo "⚠ Syncfusion plugin file not found (this is OK if package isn't installed yet)"
