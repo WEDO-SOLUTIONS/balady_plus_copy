@@ -15,6 +15,7 @@ import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
+import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/providers/routes_update_tab.dart';
@@ -52,36 +53,52 @@ class RoutingInfo extends ConsumerStatefulWidget {
 
 class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(RouteSearchOptionsMessage.car);
-
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
+
   bool _navigationStarted = false;
+  RouteSearchOptionsMessage? _lockedNavType;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
-      if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
-        unawaited(_calculateNavigationType(null));
-      } else {
-        Position? location = ref.read(locationProvider);
-        if (location == null) {
-          // TODO(Ayat) rewriting to human form is a temporary fix
-          final isGranded = await Permission.location.isGranted;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initialize());
+  }
 
-          if (!isGranded) {
-            context.router.popForced();
-            return;
-          }
-          // Due to the addition of checks on Huawei, it was not possible to get the provider's
-          // location during the first installation, I made this method so as not to catch a crash
-          location = await Geolocator.getCurrentPosition();
-        }
-        unawaited(_calculateNavigationType(location));
-      }
+  Future<void> _initialize() async {
+    final navState = await ActiveNavigationHelper.getState(
+      ref.read(dgisControllerProvider).valueOrNull,
+    );
+
+    if (navState.isActive) {
+      _lockedNavType = navState.navType;
+      _navType.value = navState.navType!;
+      _isNavTypeLoading.value = false;
       setCameraPadding();
       hideActiveLayer();
-    });
+      return;
+    }
+
+    await _initializeNavType();
+    setCameraPadding();
+    hideActiveLayer();
+  }
+
+  Future<void> _initializeNavType() async {
+    if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
+      unawaited(_calculateNavigationType(null));
+      return;
+    }
+
+    Position? location = ref.read(locationProvider);
+    if (location == null) {
+      final isGranted = await Permission.location.isGranted;
+      if (!isGranted) {
+        context.router.popForced();
+        return;
+      }
+      location = await Geolocator.getCurrentPosition();
+    }
+    unawaited(_calculateNavigationType(location));
   }
 
   void setCameraPadding() {
@@ -266,6 +283,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                   points: widget.points,
                   publicTransportVisibility: publicTransportVisibility,
                   routes: routes,
+                  lockedNavType: _lockedNavType,
                 ),
               ],
             );
@@ -277,6 +295,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
     _navigationStarted = true;
+
+    // Stop current navigation if it's active before starting a new one
+    // This prevents route duplication on the map
+    if (_lockedNavType != null) {
+      await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
+    }
+
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
     final location = ref.read(cityByLocationProvider.notifier);

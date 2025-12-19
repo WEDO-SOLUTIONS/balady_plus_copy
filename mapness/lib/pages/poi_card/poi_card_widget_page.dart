@@ -40,8 +40,10 @@ import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_fe
 import 'package:mapness/features/poi_card/widgets/poi_content_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
+import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
+import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/poi_card/parking_content.dart';
 import 'package:mapness/pages/poi_card/poi_card_error_or_loading.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -57,6 +59,7 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
