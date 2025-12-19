@@ -29,7 +29,7 @@ on:
 jobs:
   build:
     name: Build Android (manual)
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     # For self-hosted Linux runner, uncomment the line below and comment ubuntu-latest
     # runs-on: [self-hosted, Linux]
     timeout-minutes: 60
