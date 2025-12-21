@@ -16,7 +16,6 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 class WebMiniAppsScreen extends ConsumerStatefulWidget {
   const WebMiniAppsScreen({Key? key}) : super(key: key);
 
-
   @override
   ConsumerState<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
 }
@@ -52,7 +51,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
     );
 
     final DWebViewController controller =
-    DWebViewController.fromPlatformCreationParams(params);
+        DWebViewController.fromPlatformCreationParams(params);
     _controller = controller;
 
     controller.setBackgroundColor(Colors.transparent);
@@ -87,7 +86,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     if (Platform.isAndroid) {
       final androidController =
-      _controller.platform as AndroidWebViewController;
+          _controller.platform as AndroidWebViewController;
       androidController.setGeolocationPermissionsPromptCallbacks(
         onShowPrompt: (request) async {
           return const GeolocationPermissionsResponse(
@@ -108,14 +107,13 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     if (!_initialized) {
       _controller
-        ..loadRequest(Uri.parse(state.servicePath + (state.path ?? "")))
+        ..loadRequest(Uri.parse(state.servicePath +"#"+ state.path))
         ..addJavaScriptObject(
           JsBridgeListener(
             miniAppsEngineBloc: miniAppsEngineBloc,
             isLoading: _isLoading,
           ),
-        )
-      ;
+        );
       _initialized = true;
     }
 

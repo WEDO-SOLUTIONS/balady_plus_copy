@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 
 /// contains theme for [DgisBottomSheet] widget
 class DgisBottomSheetTheme {
-
   const DgisBottomSheetTheme({
     required this.bodyBackgroundColor,
     required this.expandedBackgroundColor,

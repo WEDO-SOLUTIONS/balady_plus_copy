@@ -162,6 +162,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         }
       },
     );
+    final l10n = context.l10n;
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
@@ -259,21 +260,23 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           ),
           onTapCar: () {
             _bssOnRouteTap();
-
-              _onDirectionsTap(
-                context,
-                widget.data.id!.objectId,
-                widget.data.title,
-                RouteParamsPoint(
-                  latitude: widget.data.markerPosition!.latitude,
-                  longitude: widget.data.markerPosition!.longitude,
-                  objectId: widget.data.id?.objectId,
-                  entranceId: widget.data.id?.entranceId,
-                  levelId: widget.data.levelId,
-                ),ref,
-              );
-            },
-            onTapFavorite: (item) {
+            _onDirectionsTap(
+              context,
+              widget.data.id!.objectId,
+              widget.data.title,
+              RouteParamsPoint(
+                latitude: widget.data.markerPosition!.latitude,
+                longitude: widget.data.markerPosition!.longitude,
+                objectId: widget.data.id?.objectId,
+                entranceId: widget.data.id?.entranceId,
+                levelId: widget.data.levelId,
+              ),
+              ref,
+            );
+          },
+          onAddPointToRoute: () => _onAddObjectPointToRoute(context, l10n, ref, widget.data),
+          onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, l10n, ref, widget.data),
+          onTapFavorite: (item) {
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
           },
@@ -328,7 +331,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               action: MetricAction.tap.toString(),
             );
 
-            ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+            ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
             ref.read(parkingManageProvider.notifier).restoreMarker();
             ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
             context.router.popForced();

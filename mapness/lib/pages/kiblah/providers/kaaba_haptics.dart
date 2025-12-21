@@ -12,9 +12,8 @@ class KaabaHaptics extends _$KaabaHaptics {
     final kaabaBearing = ref.watch(kaabaBearingProvider);
     final userBearing = ref.watch(compassProvider);
 
-    final correct = userBearing != null &&
-        kaabaBearing != null &&
-        (kaabaBearing.floor() - userBearing.floor()).abs() <= 5;
+    final correct =
+        userBearing != null && kaabaBearing != null && (kaabaBearing.floor() - userBearing.floor()).abs() <= 5;
 
     if (correct && !(stateOrNull ?? true)) {
       Vibration.vibrate();

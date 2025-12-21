@@ -50,103 +50,135 @@ class DgisMapPlugin extends FlutterMapApi {
   late final _publicTransportEventHandler = PublicTransportEventHandler();
   late final _naviMessageEventHandler = MessageEventHandler();
   late final _naviManeuverEventHandler = ManeuverEventHandler();
-  late final _trafficAndParkingStateEventHandler = TrafficAndParkingEventHandler();
+  late final _trafficAndParkingStateEventHandler =
+      TrafficAndParkingEventHandler();
   late final _packagesHandler = PackageEventHandler();
 
   /// Zoom control enabled events stream.
-  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents => _zoomEventHandler.zoomControlEnabledEvents;
+  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
+      _zoomEventHandler.zoomControlEnabledEvents;
 
   /// Location enabled events stream.
-  Stream<LocationEnabledEvent> get locationEnabledEvents => _locationEventHandler.locationEnabledEvents;
+  Stream<LocationEnabledEvent> get locationEnabledEvents =>
+      _locationEventHandler.locationEnabledEvents;
 
   /// Location follow events stream.
-  Stream<LocationFollowEvent> get locationFollowEvents => _locationEventHandler.locationFollowEvents;
+  Stream<LocationFollowEvent> get locationFollowEvents =>
+      _locationEventHandler.locationFollowEvents;
 
   /// Indoor levels names events stream.
-  Stream<IndoorLevelsEvent> get indoorLevelNames => _indoorEventHandler.indoorLevelNames;
+  Stream<IndoorLevelsEvent> get indoorLevelNames =>
+      _indoorEventHandler.indoorLevelNames;
 
   /// Indoor levels hiding events stream.
-  Stream<HideIndoorLevelsEvent> get hideIndoorLevels => _indoorEventHandler.hideIndoorLevels;
+  Stream<HideIndoorLevelsEvent> get hideIndoorLevels =>
+      _indoorEventHandler.hideIndoorLevels;
 
   /// Last indoor active level event.
-  IndoorActiveLevelEvent? get lastIndoorActiveLevel => _indoorEventHandler.lastIndoorActiveLevel;
+  IndoorActiveLevelEvent? get lastIndoorActiveLevel =>
+      _indoorEventHandler.lastIndoorActiveLevel;
 
   /// Last indoor level names event.
-  IndoorLevelsEvent? get lastIndoorLevelNames => _indoorEventHandler.lastIndoorLevelNames;
+  IndoorLevelsEvent? get lastIndoorLevelNames =>
+      _indoorEventHandler.lastIndoorLevelNames;
 
   /// Indoor active index stream.
-  Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _indoorEventHandler.indoorActiveLevel;
+  Stream<IndoorActiveLevelEvent> get indoorActiveIndex =>
+      _indoorEventHandler.indoorActiveLevel;
 
   /// Object tap events stream.
-  Stream<TapEvent> get objectTapEvents => _objectTapEventHandler.objectTapEvents;
+  Stream<TapEvent> get objectTapEvents =>
+      _objectTapEventHandler.objectTapEvents;
 
   /// Visible rect events stream.
-  Stream<VisibleRectEvent> get visibleRectEvents => _visibleRectEventHandler.visibleRectEvents;
+  Stream<VisibleRectEvent> get visibleRectEvents =>
+      _visibleRectEventHandler.visibleRectEvents;
 
   /// Camera position events stream.
-  Stream<CameraPositionMessage> get cameraPositionEvents => _visibleRectEventHandler.cameraPositionEvents;
+  Stream<CameraPositionMessage> get cameraPositionEvents =>
+      _visibleRectEventHandler.cameraPositionEvents;
 
   /// Camera state events stream.
-  Stream<CameraStateEvent> get cameraStateEvents => _cameraStateEventHandler.cameraStateEvents;
+  Stream<CameraStateEvent> get cameraStateEvents =>
+      _cameraStateEventHandler.cameraStateEvents;
 
   /// Marker with photo tap events stream.
-  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents => _markerTapEventHandler.markerWithPhotoTapEvents;
+  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
+      _markerTapEventHandler.markerWithPhotoTapEvents;
 
   /// Active route changed events stream.
-  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents => _routesEventHandler.activeRouteChangedEvents;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
+      _routesEventHandler.activeRouteChangedEvents;
 
   /// Routes info changed events stream.
-  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents => _routesEventHandler.routesInfoChangedEvents;
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
+      _routesEventHandler.routesInfoChangedEvents;
 
   /// Better route info events stream.
-  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _routesEventHandler.betterRouteInfoEvents;
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
+      _routesEventHandler.betterRouteInfoEvents;
 
   /// Navigation events stream.
-  Stream<NavigationEvent> get navigationEvents => _navigationEventHandler.navigationEvents;
+  Stream<NavigationEvent> get navigationEvents =>
+      _navigationEventHandler.navigationEvents;
 
   /// Sound on events stream.
-  Stream<SoundOnEvent> get soundOnEvents => _navigationEventHandler.soundOnEvents;
+  Stream<SoundOnEvent> get soundOnEvents =>
+      _navigationEventHandler.soundOnEvents;
 
   /// Android Auto connection events stream.
-  Stream<bool> get androidAutoConnectionEvents => _androidAutoHandler.androidAutoEvents;
+  Stream<bool> get androidAutoConnectionEvents =>
+      _androidAutoHandler.androidAutoEvents;
 
   /// Navi dashboard events stream.
-  Stream<NaviDashboardEvent> get naviDashboardEvents => _naviDashboardEventHandler.dashboardEvents;
+  Stream<NaviDashboardEvent> get naviDashboardEvents =>
+      _naviDashboardEventHandler.dashboardEvents;
 
   /// Compass bearing events stream.
-  Stream<CompassBearingEvent> get compassBearingEvents => _compassEventHandler.compassBearingEvents;
+  Stream<CompassBearingEvent> get compassBearingEvents =>
+      _compassEventHandler.compassBearingEvents;
 
   /// Navi speed events stream.
-  Stream<NaviSpeedEvent> get naviSpeedEvents => _naviSpeedEventHandler.speedEvents;
+  Stream<NaviSpeedEvent> get naviSpeedEvents =>
+      _naviSpeedEventHandler.speedEvents;
 
   /// Navi message events stream.
-  Stream<NaviMessageEvent> get naviMessageEvents => _naviMessageEventHandler.messageEvents;
+  Stream<NaviMessageEvent> get naviMessageEvents =>
+      _naviMessageEventHandler.messageEvents;
 
   /// Navi maneuver events stream.
-  Stream<NaviManeuverEvent> get naviManeuverEvents => _naviManeuverEventHandler.maneuverEvents;
+  Stream<NaviManeuverEvent> get naviManeuverEvents =>
+      _naviManeuverEventHandler.maneuverEvents;
 
   /// Public transport routes changed events stream.
-  Stream<PublicTransportRoutesChangedEvent> get publicTransportRoutesChangedEvents =>
-      _publicTransportEventHandler.routesChangedEvents;
+  Stream<PublicTransportRoutesChangedEvent>
+      get publicTransportRoutesChangedEvents =>
+          _publicTransportEventHandler.routesChangedEvents;
 
   /// Parking state events stream.
-  Stream<ParkingStateEvent> get parkingStateEvents => _trafficAndParkingStateEventHandler.parkingStateEvents;
+  Stream<ParkingStateEvent> get parkingStateEvents =>
+      _trafficAndParkingStateEventHandler.parkingStateEvents;
 
   /// Traffic state events stream.
-  Stream<TrafficStateEvent> get trafficStateEvents => _trafficAndParkingStateEventHandler.trafficStateEvents;
+  Stream<TrafficStateEvent> get trafficStateEvents =>
+      _trafficAndParkingStateEventHandler.trafficStateEvents;
 
   /// Public transport active route changed events stream.
-  Stream<PublicTransportActiveRouteChanged> get publicTransportActiveRouteChangedEvents =>
-      _publicTransportEventHandler.activeRouteChangedEvents;
+  Stream<PublicTransportActiveRouteChanged>
+      get publicTransportActiveRouteChangedEvents =>
+          _publicTransportEventHandler.activeRouteChangedEvents;
 
   /// Package progress events stream.
-  Stream<PackageProgressEvent> get packageProgressEvents => _packagesHandler.packageProgressEvents;
+  Stream<PackageProgressEvent> get packageProgressEvents =>
+      _packagesHandler.packageProgressEvents;
 
   /// Package info changed events stream.
-  Stream<PackageInfoChangedEvent> get packageInfoChangedEvents => _packagesHandler.packagesInfoChangedEvents;
+  Stream<PackageInfoChangedEvent> get packageInfoChangedEvents =>
+      _packagesHandler.packagesInfoChangedEvents;
 
   /// Route options events stream.
-  Stream<RouteOptionsEvent> get routeOptionsEvent => _navigationEventHandler.routeOptionEvents;
+  Stream<RouteOptionsEvent> get routeOptionsEvent =>
+      _navigationEventHandler.routeOptionEvents;
 
   /// isInitialized getter.
   bool get isInitialized => _isInitialized;
@@ -193,7 +225,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// On zoom action event.
-  Future<void> onZoomAction(ZoomControlType btn, {required bool isPressed}) async {
+  Future<void> onZoomAction(ZoomControlType btn,
+      {required bool isPressed}) async {
     return _zoomEventHandler.onZoomAction(btn, isPressed: isPressed);
   }
 
@@ -218,7 +251,9 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   StreamSubscription _initEventChannel() {
-    return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen(
+    return EventChannel('com.dgis.map_view_events_$_viewId')
+        .receiveBroadcastStream()
+        .listen(
       (event) {
         final map = event as Map<dynamic, dynamic>;
         switch (map['event']) {
@@ -340,7 +375,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Set camera position point.
-  Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) {
+  Future<void> setCameraPositionPoint(
+      CameraPositionPointMessage cameraPosition) {
     return _api.setCameraPositionPoint(cameraPosition);
   }
 
@@ -350,8 +386,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Move Camera to the specified [cameraPosition].
-  Future<void> moveCamera(
-      CameraPositionMessage cameraPosition, double duration, CameraAnimationTypeMessage animationType) {
+  Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
+      CameraAnimationTypeMessage animationType) {
     return _api.moveCamera(cameraPosition, duration, animationType);
   }
 
@@ -366,35 +402,38 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Calculate [CameraPositionMessage] for the specified route.
-  Future<CameraPositionMessage> calcPositionForRoute(CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForRoute(
+      CalcPositionOptionsMessage options) {
     return _api.calcPositionForRoute(options);
   }
 
   /// Calculate [CameraPositionMessage] for the specified markers.
-  Future<CameraPositionMessage> calcPositionForMarkers(List<String> markers, CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForMarkers(
+      List<String> markers, CalcPositionOptionsMessage options) {
     return _api.calcPositionForMarkers(markers, options);
   }
 
   /// Calculate [CameraPositionMessage] for the specified polygons.
-  Future<CameraPositionMessage> calcPositionForPolygons(List<String> polygons, CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForPolygons(
+      List<String> polygons, CalcPositionOptionsMessage options) {
     return _api.calcPositionForPolygons(polygons, options);
   }
 
   /// Calculate [CameraPositionMessage] for the specified polylines.
-  Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForPolylines(
+      List<String> polylines, CalcPositionOptionsMessage options) {
     return _api.calcPositionForPolylines(polylines, options);
-  }
-
-  /// Calculate [CameraPositionMessage] for the specified points.
-  Future<CameraPositionMessage> calcPositionForGeoPoints(List<GeoPointMessage> points, CalcPositionOptionsMessage options) {
-    return _api.calcPositionForGeoPoints(points, options);
   }
 
   /// Animation of the camera to the representative area (or out view port) of the search.
   /// Search returns a Geometry that represents the best area to show.
-  Future<void> animateToRepresentativeArea(GeometryMessage area, CalcPositionOptionsMessage options, double duration,
+  Future<void> animateToRepresentativeArea(
+      GeometryMessage area,
+      CalcPositionOptionsMessage options,
+      double duration,
       CameraAnimationTypeMessage animationType) {
-    return _api.animateToRepresentativeArea(area, options, duration, animationType);
+    return _api.animateToRepresentativeArea(
+        area, options, duration, animationType);
   }
 
   /// Get current camera position.
@@ -404,11 +443,14 @@ class DgisMapPlugin extends FlutterMapApi {
 
   /// Get nearest objects.
   Future<List<RenderedObjectMessage>> getNearestObjects() async {
-    return (await _api.getNearestObjects()).whereType<RenderedObjectMessage>().toList();
+    return (await _api.getNearestObjects())
+        .whereType<RenderedObjectMessage>()
+        .toList();
   }
 
   /// Search by object id.
-  Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId) {
+  Future<DirectoryObjectMessage> searchByObjectId(
+      DgisObjectIdMessage objectId) {
     return _api.searchByObjectId(objectId);
   }
 
@@ -497,10 +539,12 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Fetch Previous Page.
-  Future<PageMessage> fetchPrevPage(PageIdMessage pageId) => _api.fetchPrevPage(pageId);
+  Future<PageMessage> fetchPrevPage(PageIdMessage pageId) =>
+      _api.fetchPrevPage(pageId);
 
   /// Fetch Next Page.
-  Future<PageMessage> fetchNextPage(PageIdMessage pageId) => _api.fetchNextPage(pageId);
+  Future<PageMessage> fetchNextPage(PageIdMessage pageId) =>
+      _api.fetchNextPage(pageId);
 
   /// Release Page.
   Future<void> releasePage(PageIdMessage pageId) => _api.releasePage(pageId);
@@ -520,10 +564,12 @@ class DgisMapPlugin extends FlutterMapApi {
     SuggestorTypeEnum? suggestorType,
     int? limit,
   }) =>
-      _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale, suggestorType, limit);
+      _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale,
+          suggestorType, limit);
 
   /// Get distance to the specified points.
-  Future<List<DistanceResponseMessage?>> getDistanceTo(List<DistanceRequestMessage> points) {
+  Future<List<DistanceResponseMessage?>> getDistanceTo(
+      List<DistanceRequestMessage> points) {
     return _api.getDistanceTo(points);
   }
 
@@ -593,7 +639,8 @@ class DgisMapPlugin extends FlutterMapApi {
     ClusteringMapObjectManager manager, {
     String? layerId,
   }) async {
-    final result = await _api.createMapObjectManagerWithClustering(manager.options, layerId);
+    final result = await _api.createMapObjectManagerWithClustering(
+        manager.options, layerId);
     _objectTapEventHandler.addClusterRenderer(result.id, manager.renderCluster);
     if (manager.onTap != null) {
       _objectTapEventHandler.addClusterHandler(result.id, manager.onTap!);
@@ -618,7 +665,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Set map object manager visible.
-  Future<void> setMapObjectManagerIsVisible({required bool isVisible, required MapObjectManagerMessage? manager}) {
+  Future<void> setMapObjectManagerIsVisible(
+      {required bool isVisible, required MapObjectManagerMessage? manager}) {
     return _api.setMapObjectManagerIsVisible(isVisible, manager);
   }
 
@@ -667,7 +715,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.addPolygons(
       polygons
           .map(
-            (polygon) => PolygonMessage(id: polygon.id, options: polygon.options),
+            (polygon) =>
+                PolygonMessage(id: polygon.id, options: polygon.options),
           )
           .toList(),
       manager,
@@ -756,7 +805,8 @@ class DgisMapPlugin extends FlutterMapApi {
     MapObjectManagerMessage? manager,
   ) {
     if (polyline.onTap != null) {
-      _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!, manager?.id);
+      _objectTapEventHandler.addPolylineHandler(
+          polyline.id, polyline.onTap!, manager?.id);
     }
     return _api.addPolyline(
       PolylineMessage(id: polyline.id, options: polyline.options),
@@ -771,13 +821,15 @@ class DgisMapPlugin extends FlutterMapApi {
   ) {
     for (var polyline in polylines) {
       if (polyline.onTap != null) {
-        _objectTapEventHandler.addPolylineHandler(polyline.id, polyline.onTap!, manager?.id);
+        _objectTapEventHandler.addPolylineHandler(
+            polyline.id, polyline.onTap!, manager?.id);
       }
     }
     return _api.addPolylines(
       polylines
           .map(
-            (polyline) => PolylineMessage(id: polyline.id, options: polyline.options),
+            (polyline) =>
+                PolylineMessage(id: polyline.id, options: polyline.options),
           )
           .toList(),
       manager,
@@ -815,7 +867,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// On location permission granted.
-  Future<void> onLocationPermissionGranted(DesiredAccuracyMessage desiredAccuracy) {
+  Future<void> onLocationPermissionGranted(
+      DesiredAccuracyMessage desiredAccuracy) {
     return _api.onLocationPermissionGranted(desiredAccuracy);
   }
 
@@ -903,7 +956,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Restore navigation state.
-  Future<void> restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom) {
+  Future<void> restoreNavigationState(
+      Uint8List state, List<SpeedRangeZoom> speedRangeZoom) {
     return _api.restoreNavigationState(state, speedRangeZoom);
   }
 
@@ -913,7 +967,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Get current navigation state.
-  Future<NavigationStateMessage> getCurrentNavigationState() => _api.getCurrentNavigationState();
+  Future<NavigationStateMessage> getCurrentNavigationState() =>
+      _api.getCurrentNavigationState();
 
   /// Move camera to selected panorama.
   Future<void> moveCameraToSelectedPanorama() {
@@ -972,7 +1027,8 @@ class DgisMapPlugin extends FlutterMapApi {
   ///
   /// Parameters:
   /// - [favouritesState]: A current favourites satet
-  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState) {
+  Future<void> favouritesUpdateNotification(
+      FavouritesStateMessage favouritesState) {
     return _api.favouritesUpdateNotification(favouritesState);
   }
 
@@ -1082,9 +1138,15 @@ class DgisMapPlugin extends FlutterMapApi {
   Future<FindRouteResultMessage> findRoute(
     RouteSearchPointMessage startPoint,
     RouteSearchPointMessage finishPoint,
-    RouteSearchOptionsMessage routeSearchOptions,
-  ) {
-    return _api.findRoute(startPoint, finishPoint, routeSearchOptions);
+    RouteSearchOptionsMessage routeSearchOptions, {
+    List<RouteSearchPointMessage>? intermediatePoints,
+  }) {
+    return _api.findRoute(
+      startPoint,
+      finishPoint,
+      routeSearchOptions,
+      intermediatePoints: intermediatePoints,
+    );
   }
 
   /// Retrieves a list of available packages.
@@ -1150,19 +1212,24 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Toggle heatmap.
-  Future<bool> toggleHeatmap(WeatherMapMessage message) => _api.toggleHeatmap(message);
+  Future<bool> toggleHeatmap(WeatherMapMessage message) =>
+      _api.toggleHeatmap(message);
 
   /// Better route response.
-  Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _api.betterRouteResponse(response);
+  Future<void> betterRouteResponse(BetterRouteResponseMessage response) =>
+      _api.betterRouteResponse(response);
 
   /// Get better route settings.
-  Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _api.getBetterRouteSettings();
+  Future<BetterRouteSettingsMessage> getBetterRouteSettings() =>
+      _api.getBetterRouteSettings();
 
   /// Set better route settings.
-  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _api.setBetterRouteSettings(message);
+  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) =>
+      _api.setBetterRouteSettings(message);
 
   /// Set better route enabled.
-  Future<void> setBetterRouteEnabled({required bool enabled}) => _api.setBetterRouteEnabled(enabled);
+  Future<void> setBetterRouteEnabled({required bool enabled}) =>
+      _api.setBetterRouteEnabled(enabled);
 
   /// Set map max fps
   Future<void> setMaxFps(int? fps) => _api.setMaxFps(fps);

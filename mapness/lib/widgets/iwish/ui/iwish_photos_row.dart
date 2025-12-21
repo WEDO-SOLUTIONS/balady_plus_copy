@@ -39,8 +39,13 @@ class IwishPhotosRow extends ConsumerWidget {
                   key: ValueKey(photos[index]),
                   aspectRatio: 1,
                   child: LoadingShimmerImage(
-                    onImageTap: (name, {isAsset}) =>
-                        context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
+                    onImageTap: (name, {isAsset}) => context.router.push(
+                      PhotoViewerRoute(
+                        photoPaths: photos,
+                        previewUrls: photos,
+                        currentPhotoIndex: index,
+                      ),
+                    ),
                     imageUrl: photos[index],
                     fit: BoxFit.cover,
                   ),

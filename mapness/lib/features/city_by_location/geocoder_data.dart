@@ -8,8 +8,7 @@ class GeocoderData {
 
   GeocoderData({required this.result});
 
-  factory GeocoderData.fromJson(Map<String, dynamic> json) =>
-      _$GeocoderDataFromJson(json);
+  factory GeocoderData.fromJson(Map<String, dynamic> json) => _$GeocoderDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$GeocoderDataToJson(this);
 }
@@ -33,12 +32,7 @@ class Item {
   final String subtype;
   final String type;
 
-  Item(
-      {required this.fullName,
-      required this.id,
-      required this.name,
-      required this.subtype,
-      required this.type});
+  Item({required this.fullName, required this.id, required this.name, required this.subtype, required this.type});
 
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 

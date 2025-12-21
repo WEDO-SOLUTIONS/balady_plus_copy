@@ -5,7 +5,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'follow_state.g.dart';
 
 class Follow {
-
   Follow({
     required this.enabled,
     required this.type,
@@ -28,10 +27,8 @@ class FollowState extends _$FollowState {
   @override
   Follow build() {
     final dgisController = ref.watch(dgisControllerProvider);
-    final typeSubscription =
-        dgisController.value?.locationFollowEvents.listen(_followTypeListener);
-    final enabledSubscription = dgisController.value?.locationEnabledEvents
-        .listen(_locationEnabledListener);
+    final typeSubscription = dgisController.value?.locationFollowEvents.listen(_followTypeListener);
+    final enabledSubscription = dgisController.value?.locationEnabledEvents.listen(_locationEnabledListener);
     ref.onDispose(
       () {
         typeSubscription?.cancel();

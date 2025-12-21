@@ -34,7 +34,6 @@ class MapObjectManagerSettings {
         name: 'favourite-markers',
         layerId: MapObjectLayers.defaultLayerId,
       );
-
   factory MapObjectManagerSettings.esri() => const MapObjectManagerSettings._(
         name: 'esri_markers',
         layerId: MapObjectLayers.defaultLayerId,
@@ -44,7 +43,6 @@ class MapObjectManagerSettings {
         name: MapnessConstants.mapLayerName,
         layerId: MapObjectLayers.defaultLayerId,
       );
-
   factory MapObjectManagerSettings.search() => const MapObjectManagerSettings._(
         name: 'balady_search',
         layerId: MapObjectLayers.defaultLayerId,
@@ -84,12 +82,6 @@ class MapObjectManagerSettings {
         name: 'metro',
         layerId: MapObjectLayers.metroLayerId,
       );
-
-  const MapObjectManagerSettings.wrcEvent()
-      : this._(
-          name: 'wrc-event',
-          layerId: MapObjectLayers.hajjLayerId,
-        );
 }
 
 @riverpod

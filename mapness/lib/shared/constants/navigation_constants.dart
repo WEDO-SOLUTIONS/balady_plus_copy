@@ -8,25 +8,25 @@ class NavigationConstants {
       maxSpeedRange: 5,
       minSpeedRange: 0,
       routeDistanceMillimeters: 0,
-      styleZoomValue: 16.5,
+      styleZoomValue: 22,
     ),
     SpeedRangeZoom(
       maxSpeedRange: 20,
       minSpeedRange: 5,
       routeDistanceMillimeters: 20,
-      styleZoomValue: 18,
+      styleZoomValue: 20,
     ),
     SpeedRangeZoom(
       maxSpeedRange: 60,
       minSpeedRange: 20,
       routeDistanceMillimeters: 100,
-      styleZoomValue: 20,
+      styleZoomValue: 18,
     ),
     SpeedRangeZoom(
       maxSpeedRange: 200,
       minSpeedRange: 60,
       routeDistanceMillimeters: 300,
-      styleZoomValue: 22,
+      styleZoomValue: 16.5,
     ),
   ];
 }

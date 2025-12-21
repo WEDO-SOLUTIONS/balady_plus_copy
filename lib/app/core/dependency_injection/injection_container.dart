@@ -14,7 +14,11 @@ import 'package:balady_plus/app/features/weather/domain/usecases/get_weather_inf
 import 'package:balady_plus/app/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/data/datasource/events_data_source.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/data_sources/new_mini_apps_logic_data_source.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/repositories/new_mini_apps_logic_repository_impl.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/repositories/new_mini_apps_logic_repository.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/use_cases/get_new_mini_apps_logic_usecase.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
@@ -29,13 +33,11 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
-import '../../features/force_update/presentation/core/force_update_cubit.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
 import '../../features/notifications/data/repositories/notification_repository_implementation.dart';
 import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/volunteer_profile/injection/volunteer_profile_injection.dart';
-import '../../features/volunteer_profile/presentation/bloc/volunteer_profile_bloc.dart';
 import '../dependency_injection/dependency_injection_exports.dart'
     show
         DelegatorsInjection,
@@ -158,7 +160,6 @@ void initialize() {
   sl.registerLazySingleton<SplashRemoteDataSource>(
       () => SplashRemoteDataSourceImpl(webService: sl()));
 
-
   //// For Mini Apps Engine
   sl.registerLazySingleton<MiniAppsLocalDataSource>(
       () => MiniAppsDataSourceImplementation(
@@ -167,9 +168,34 @@ void initialize() {
   sl.registerLazySingleton<MiniAppsRepository>(() => MiniAppsRepository(
         localDataSource: sl<MiniAppsLocalDataSource>(),
       ));
-  sl.registerLazySingleton<HomeMiniAppsListCubit>(() => HomeMiniAppsListCubit(
-        homeServicesUseCases: sl<MiniAppsRepository>(),
-      ));
+
+  //! New mini apps logic ==========================================================
+
+  //* Data Sources
+  sl.registerLazySingleton<NewMiniAppsLogicDataSource>(
+    () => NewMiniAppsLogicDataSourceImpl(webServices: sl<WebService>()),
+  );
+
+  //* Repository
+  sl.registerLazySingleton<NewMiniAppsLogicRepository>(
+    () => NewMiniAppsLogicRepositoryImpl(
+      dataSource: sl(),
+    ),
+  );
+
+  //* Use Cases
+  sl.registerLazySingleton(() => GetNewMiniAppsLogicUseCase(sl()));
+
+  //* Cubits
+  sl.registerLazySingleton<NewMiniAppLogicCubit>(
+    () => NewMiniAppLogicCubit(
+      sl<GetNewMiniAppsLogicUseCase>(),
+      sl<FlutterSecureStorage>(),
+      sl<MiniAppsRepository>()
+    ),
+  );
+
+  //! New mini apps logic ==========================================================
 
   /////////////// get All Authentication Model Injection Container
   switch (sl<EnvType>().name) {
@@ -197,5 +223,4 @@ void initialize() {
   /////////////// End
 
   VolunteerProfileInjection.initialize();
-
 }

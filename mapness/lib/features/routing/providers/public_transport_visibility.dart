@@ -63,6 +63,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
   Future<PublicTransportVisibilityResult> build({
     required RouteParamsPoint? startPoint,
     required RouteParamsPoint? finishPoint,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     final online = ref.watch(networkStatusProvider);
     try {
@@ -76,6 +77,7 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
       final hasRoutes = await _checkPublicTransportRoutes(
         normalizedStartPoint,
         normalizedFinishPoint,
+        intermediatePoints?.points.map((e) => e.value).nonNulls.toList(),
       );
 
       if (!hasRoutes) {
@@ -96,23 +98,30 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
         hasPublicTransportRoutes: true,
         reason: isBothInRiyadh ? null : PublicTransportVisibilityReason.notInRiyadh,
       );
+    } on NoInternetException {
+      // Re-throw NoInternetException to be handled by UI
+      rethrow;
     } on PublicTransportVisibilityException catch (e) {
+      // Handle specific visibility exceptions
       return PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
         reason: e.reason,
       );
-    } on PublicTransportVisibilityIsTooFarException catch (_) {
+    } on PublicTransportVisibilityIsTooFarException {
+      // Handle route distance exception
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
         reason: PublicTransportVisibilityReason.findRouteError,
       );
     } catch (error) {
+      // Re-check network status before returning unknown error
       if (!online) {
         throw const NoInternetException();
       }
 
+      // Return unknown error as result (not exception)
       return const PublicTransportVisibilityResult(
         isBothInRiyadh: false,
         hasPublicTransportRoutes: false,
@@ -145,15 +154,18 @@ class PublicTransportVisibility extends _$PublicTransportVisibility {
   Future<bool> _checkPublicTransportRoutes(
     RouteParamsPoint startPoint,
     RouteParamsPoint finishPoint,
+    List<RouteParamsPoint>? intermediatePoints,
   ) async {
     final online = ref.watch(networkStatusProvider);
     final dgisController = await ref.read(dgisControllerProvider.future);
+    final intermediateSearchPoints = intermediatePoints?.map((e) => e.routeSearchPointMessage).toList();
     try {
       // Initial route search
       final initialRoutes = await dgisController.findRoute(
         options: RouteSearchOptionsMessage.publicTransport,
         startPoint: startPoint.routeSearchPointMessage,
         finishPoint: finishPoint.routeSearchPointMessage,
+        intermediatePoints: intermediateSearchPoints,
       );
 
       if (initialRoutes.routes.isEmpty) {

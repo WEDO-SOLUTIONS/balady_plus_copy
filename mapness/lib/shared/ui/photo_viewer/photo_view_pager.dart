@@ -14,6 +14,7 @@ class PhotoViewPager extends StatefulWidget {
   final void Function(bool)? showTitleBar;
 
   final List<String> imageSource;
+  final List<String> imagePreviews;
 
   /// Create new instance, using the [easyImageProvider] to populate the [PageView],
   /// and the [pageController] to control the initial image index to display.
@@ -26,6 +27,7 @@ class PhotoViewPager extends StatefulWidget {
     this.showTitleBar,
     this.infinitelyScrollable = false,
     required this.imageSource,
+    required this.imagePreviews,
   }) : super(key: key);
 
   @override
@@ -34,6 +36,25 @@ class PhotoViewPager extends StatefulWidget {
 
 class _PhotoViewPagerState extends State<PhotoViewPager> {
   int? imageIndex;
+
+  String? _previewForIndex(int index) {
+    if (index < 0 || index >= widget.imagePreviews.length) {
+      return null;
+    }
+    return widget.imagePreviews[index];
+  }
+
+  Widget _buildPageImage(int index) {
+    final previewUrl = _previewForIndex(index);
+    final imageUrl = widget.imageSource[index];
+
+    return CachedNetworkImage(
+      imageUrl: imageUrl,
+      placeholder: (_, __) => previewUrl != null
+          ? Image(image: CachedNetworkImageProvider(previewUrl))
+          : const Center(child: CircularProgressIndicator.adaptive()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,11 +103,7 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
             widget.showTitleBar?.call(false);
           });
         },
-        child: Image(
-          image: CachedNetworkImageProvider(
-            widget.imageSource[index],
-          ),
-        ),
+        child: _buildPageImage(index),
       ),
     );
   }

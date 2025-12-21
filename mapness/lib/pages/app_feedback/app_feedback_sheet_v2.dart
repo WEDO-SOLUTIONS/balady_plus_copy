@@ -32,10 +32,7 @@ class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
 }
 
 class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
-  late final ToggleSheetController scrollController = ToggleSheetController(
-    onClose: (_) => context.router.popForced(),
-    heightModel: ToggleSheetHeightModel.fraction(.98),
-  );
+  late final ToggleSheetController scrollController;
   final ValueNotifier<int> rating = ValueNotifier(0);
   Set<TagV2> selectedTags = Set.identity();
   String feedbackText = '';
@@ -43,6 +40,10 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   @override
   void initState() {
     super.initState();
+    scrollController = ToggleSheetController(
+      onClose: (_) => context.router.popForced(),
+      heightModel: ToggleSheetHeightModel.fraction(1),
+    );
     rating.value = widget.rating ?? 0;
   }
 
@@ -55,6 +56,14 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   @override
   Widget build(BuildContext context) {
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
+    ref.listen(
+      sendFeedbackProvider,
+      (previous, next) {
+        scrollController.updateHeightModel(
+          ToggleSheetHeightModel.fraction(.5),
+        );
+      },
+    );
 
     return ToggleSheet(
       scrollController: scrollController,

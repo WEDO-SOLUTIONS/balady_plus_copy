@@ -408,14 +408,6 @@ class DgisMapView(
         objectTapHandler?.calcPositionForPolylines(polylines, options, callback)
     }
 
-    override fun calcPositionForGeoPoints(
-        points: List<GeoPointMessage>,
-        options: CalcPositionOptionsMessage,
-        callback: (Result<CameraPositionMessage>) -> Unit
-    ) {
-        objectTapHandler?.calcPositionForGeoPoints(points, options, callback)
-    }
-
     override fun animateToRepresentativeArea(
             area: GeometryMessage,
             options: CalcPositionOptionsMessage,
@@ -1173,6 +1165,7 @@ class DgisMapView(
             startPoint: RouteSearchPointMessage,
             finishPoint: RouteSearchPointMessage,
             navType: RouteSearchOptionsMessage,
+            intermediatePoints: List<RouteSearchPointMessage>?,
             callback: (Result<FindRouteResultMessage>) -> Unit
     ) {
         val routeSearchOptions = navType.toRouteSearchOptions()
@@ -1183,6 +1176,7 @@ class DgisMapView(
             startPoint = startSearchPoint,
             finishPoint = finishSearchPoint,
             routeSearchOptions = routeSearchOptions,
+            intermediatePoints = intermediatePoints?.map { it.toRouteSearchPoint() },
             callback = callback
         )
     }

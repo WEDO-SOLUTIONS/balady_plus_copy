@@ -8,7 +8,7 @@ import 'package:mapness/features/favourites/mappers/point_mapper.dart';
 extension FavouriteItemMapper on proto.FavouriteItem {
   FavouriteItem toDomain() => FavouriteItem(
         coordinates: place.location.point.toDomain(),
-        id: place.entity.id,
+        id: id,
         title: place.title,
         subtitle: place.subtitle,
         entity: place.entity.toDomain(),
