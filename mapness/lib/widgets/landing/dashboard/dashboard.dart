@@ -247,7 +247,9 @@ class _DashboardState extends ConsumerState<Dashboard>
                   ),
                   const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
-                    text:context.l10n.streamAudio,
+                    //TODO: Add to localization MBC
+                    // text:context.l10n.streamAudio,
+                    text: 'Stream Audio',
                     icon: Icons.wifi,
                     child: SvgPicture.asset(
                       Assets.icons.svg.audio.audioStream.keyName,
@@ -373,12 +375,12 @@ class _DashboardState extends ConsumerState<Dashboard>
 
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    CommonFunctions.openMiniApp(serviceKey: "Quran");
+    CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    CommonFunctions.openMiniApp(serviceKey: "Athkar");
+    CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
   void _openFreeRoam() {
@@ -415,7 +417,7 @@ class _DashboardState extends ConsumerState<Dashboard>
         MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
         action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
     sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
-      serviceKey: "snapandsend",
+      serviceKey: 'snapandsend',
     );
   }
 

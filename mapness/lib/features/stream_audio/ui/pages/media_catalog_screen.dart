@@ -37,7 +37,9 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
           backgroundColor: Colors.grey.shade100,
           appBar: BaladyTopBar.iconAndText(
             systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-            title: context.l10n.mediaSub,
+            //TODO: Add to localization MBC
+            // title: context.l10n.mediaSub,
+            title: 'MBC Mood',
             colorEnabled: context.color.textAndIconsStatusAccent,
             leading: ActionModel(
               onPressed: () => context.router.popForced(),
@@ -47,13 +49,17 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    DashboardTitle(context.l10n.liveNow),
-                    const Padding(
+                    const DashboardTitle(
+                      //TODO: Add to localization MBC
+                      //   context.l10n.liveNow
+                      'Live Now',
+                    ),
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: MBCMood(color: Color.fromRGBO(242, 74, 56, 1)),
                     )
@@ -63,9 +69,13 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               Builder(builder: (_) {
                 final channels = ref.watch(streamAudioProvider).filteredChannels;
                 if (channels.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(context.l10n.noChannels),
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text(
+                        //TODO: Add to localization MBC
+                        //   context.l10n.noChannels
+                        'No Channels'
+                    ),
                   );
                 }
 
@@ -138,7 +148,10 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(channel.currentPlayedProgram?.name ?? context.l10n.onAir,
+                                Text(channel.currentPlayedProgram?.name ??
+                                //TODO: Add to localization MBC
+                                //     context.l10n.onAir,
+                                'On Air',
                                     style: TextStyle(
                                         color: isSelected ? const Color(0xff9547E9).withOpacity( 0.7) : null)),
                                 if (channel.currentPlayedProgram?.date != null)
@@ -172,9 +185,10 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               const SizedBox(
                 height: 24,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: DashboardTitle(context.l10n.arrivingSoon),
+              const DashboardTitle(
+                //TODO: Add to localization MBC
+                //   context.l10n.arrivingSoon
+                'Arriving Soon',
               ),
               const ArrivingSoon()
             ],

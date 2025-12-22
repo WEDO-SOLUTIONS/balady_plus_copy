@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/mbc_mood.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ExploreCard extends ConsumerStatefulWidget {
   const ExploreCard({super.key});
@@ -66,13 +65,17 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
           padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
           child: RichText(
             text: TextSpan(
-              text: context.l10n.mediaHeader, // context.l10n.driveBack,
+              //TODO: Add to localization MBC
+              // text: context.l10n.mediaHeader,
+              text: 'MBC ',
               style: context.textStyles.h3Medium.copyWith(
                 color: Colors.white,
               ),
               children: [
                 TextSpan(
-                  text: context.l10n.mediaSub,
+                  //TODO: Add to localization MBC
+                  // text: context.l10n.mediaSub,
+                  text: 'Mood',
                   style: context.textStyles.h3Medium.copyWith(
                     color: const Color(0xFF00FFFA),
                   ),

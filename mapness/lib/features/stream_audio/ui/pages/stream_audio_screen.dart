@@ -202,7 +202,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
           // Show a simple black screen during rapid transitions to avoid layer disposal errors
           if (_isTransitioningOrientation) {
             return Container(
-              color: Colors.black,
+              color: Colors.transparent,
               child: Center(
                 child: widget.child,
               ),
