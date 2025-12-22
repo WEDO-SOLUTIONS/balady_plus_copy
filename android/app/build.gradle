@@ -134,7 +134,7 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
     implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
@@ -142,10 +142,12 @@ dependencies {
     implementation 'com.adjust.sdk:adjust-android-meta-referrer:5.0.1'
     implementation 'androidx.glance:glance-appwidget:1.0.0'
     implementation 'com.huawei.agconnect:agconnect-core:1.9.1.301'
-
+    // AndroidX Media support for MediaSessionCompat, PlaybackStateCompat, MediaMetadataCompat
+    implementation 'androidx.media:media:1.7.0'
     implementation 'com.adjust.sdk:adjust-android:5.4.0'
     implementation 'com.adjust.sdk:adjust-android-oaid:5.4.0'
     implementation 'com.huawei.hms:ads-identifier:3.4.62.300'
 }
+
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'

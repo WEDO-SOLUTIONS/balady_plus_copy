@@ -69,13 +69,14 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSAllowsArbitraryLoadsInWebContent</key>
-	<true/>
+
 	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+        <key>NSAllowsArbitraryLoadsInWebContent</key>
+        <true/>
+    </dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Play Videos</string>
 	<key>NSCalendarsUsageDescription</key>
@@ -147,6 +148,7 @@
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
+	    <string>audio</string>
 		<string>location</string>
 		<string>fetch</string>
 		<string>remote-notification</string>

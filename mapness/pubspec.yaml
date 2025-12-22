@@ -31,6 +31,11 @@ dependencies:
   hive_flutter: 1.1.0
   flutter_svg: 2.0.16
 
+  ## Audio
+  just_audio: ^0.9.46
+#  just_audio: ^0.10.5
+#  just_audio_background: ^0.0.1-beta.17
+
   # Map urbi SDK
   dgis_map:
     path: ../urbi_map/dgis_map
@@ -166,7 +171,7 @@ dependency_overrides:
   # for dio_http_cache
   json_serializable: 6.9.0
   dio: 5.7.0
-  google_api_headers: 4.2.4
+#  google_api_headers: 4.2.4
   rxdart: 0.28.0
   device_info_plus: 11.1.1
   collection: 1.19.0
@@ -206,6 +211,7 @@ flutter:
     - assets/icons/svg/
     - assets/icons/svg/profile/
     - assets/icons/lottie/
+    - assets/icons/svg/audio/
     - assets/icons/svg/quick_filters/
     - assets/icons/svg/weather/
     - assets/icons/svg/layers/
@@ -214,6 +220,8 @@ flutter:
     - assets/icons/svg/places_big_new_saudi_day/
     - assets/icons/svg/places_new_saudi_day/
     - assets/images/
+    - assets/images/audio_placeholders/
+    - assets/images/audio_placeholders/arriving_soon/
     - assets/images/saudi_pass/
     - assets/images_svg/
     - assets/maps/configs/

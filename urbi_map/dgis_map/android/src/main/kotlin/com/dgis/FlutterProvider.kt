@@ -4,6 +4,7 @@ import android.content.Context
 import com.dgis.map.map_api.HostFlutterApi
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
+import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
 
 
 object FlutterProvider {
@@ -13,6 +14,10 @@ object FlutterProvider {
     fun getFlutterEngine(context: Context): FlutterEngine {
         if (flutterEngine == null) {
             flutterEngine = FlutterEngine(context)
+            
+            // Don't register plugins here - let MainActivity handle plugin registration
+            // This prevents double registration issues with audio_service
+            
             flutterEngine!!.navigationChannel.setInitialRoute("/")
             flutterEngine!!.dartExecutor.executeDartEntrypoint(
                 DartExecutor.DartEntrypoint.createDefault()
