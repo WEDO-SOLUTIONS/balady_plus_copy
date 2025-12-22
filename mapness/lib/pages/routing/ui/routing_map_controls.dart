@@ -56,16 +56,17 @@ class RoutingMapControls extends ConsumerWidget {
                       const Spacer(),
                       Row(
                         children: [
-                          uikit.AppButton(
-                            color: context.colors.backgroundSurface1,
-                            iconColor: context.colors.foregroundSoft,
-                            innerPadding: const EdgeInsets.symmetric(
-                              horizontal: uikit.Spacing.$3x,
-                            ),
-                            onTap: () => context.router.push(NavigatorSettingsRoute()),
-                            buttonColorScheme: uikit.ButtonColorScheme.neutral,
-                            primaryIcon: uikit.SystemIcons.tuning,
-                          ),
+                          // todo: hide this button for now
+                          // uikit.AppButton(
+                          //   color: context.colors.backgroundSurface1,
+                          //   iconColor: context.colors.foregroundSoft,
+                          //   innerPadding: const EdgeInsets.symmetric(
+                          //     horizontal: uikit.Spacing.$3x,
+                          //   ),
+                          //   onTap: () => context.router.push(NavigatorSettingsRoute()),
+                          //   buttonColorScheme: uikit.ButtonColorScheme.neutral,
+                          //   primaryIcon: uikit.SystemIcons.tuning,
+                          // ),
                           if (onAddStop != null) ...[
                             const SizedBox(width: uikit.Spacing.$2x),
                             uikit.AppButton(
