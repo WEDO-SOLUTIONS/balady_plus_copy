@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
@@ -12,6 +13,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/filter_buttom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -123,8 +125,41 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                             ),
 
                             // spacing between close & search
-                            SizedBox(width: context.w(8)),
-
+                            SizedBox(width: context.w(4)),
+                            SizedBox(
+                              width: context.w(49),
+                              height: context.h(49),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: const Color(0XFFFFFFFF),
+                                  borderRadius: BorderRadius.circular(100),
+                                  border: Border.all(
+                                    color: const Color(0xFFEDEDED),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: IconButton(
+                                  onPressed: () async {
+                                    final cubit =
+                                        context.read<NewMiniAppLogicCubit>();
+                                    final result = await FilterButtomSheet.show(
+                                      context,
+                                      initialSelectedType:
+                                          cubit.state.selectedSortType,
+                                    );
+                                    if (result != null && mounted) {
+                                      cubit.setSortType(result);
+                                    }
+                                  },
+                                  icon: Image.asset(
+                                    ImagePath.sortDescending,
+                                    width: context.w(24),
+                                    height: context.h(24),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: context.w(4)),
                             Expanded(
                               child: ValueListenableBuilder<TextEditingValue>(
                                 valueListenable: controller,
@@ -200,6 +235,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               !state.isSearching;
 
                           if (isInitial) {
+                            final cubit = context.read<NewMiniAppLogicCubit>();
+                            final sortedApps = cubit.sortApps(
+                              appGroup.apps,
+                              state.selectedSortType,
+                            );
                             return GridView.builder(
                               physics: const BouncingScrollPhysics(),
                               gridDelegate:
@@ -209,9 +249,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 mainAxisSpacing: 16,
                                 childAspectRatio: 0.8,
                               ),
-                              itemCount: appGroup.apps.length,
+                              itemCount: sortedApps.length,
                               itemBuilder: (context, index) {
-                                final miniApp = appGroup.apps[index];
+                                final miniApp = sortedApps[index];
                                 return StaggeredAppear(
                                   initialDelay:
                                       const Duration(milliseconds: 150),
@@ -239,8 +279,13 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           }
 
                           final results = state.searchResults;
+                          final cubit = context.read<NewMiniAppLogicCubit>();
+                          final sortedResults = cubit.sortApps(
+                            results,
+                            state.selectedSortType,
+                          );
 
-                          if (results.isEmpty) {
+                          if (sortedResults.isEmpty) {
                             return Center(
                               child: Text(
                                 "no_results_found".tr(),
@@ -262,9 +307,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               mainAxisSpacing: 16,
                               childAspectRatio: 0.8,
                             ),
-                            itemCount: results.length,
+                            itemCount: sortedResults.length,
                             itemBuilder: (context, index) {
-                              final miniApp = results[index];
+                              final miniApp = sortedResults[index];
                               return AppsGroupMiniAppsCardWidgets(
                                 title: miniApp.name,
                                 iconPath: miniApp.iconPath,

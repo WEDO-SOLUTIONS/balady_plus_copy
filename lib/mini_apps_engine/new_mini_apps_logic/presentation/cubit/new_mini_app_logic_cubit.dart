@@ -12,6 +12,7 @@ import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/use_cases/get_new_mini_apps_logic_usecase.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/filter_buttom_sheet.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:bloc/bloc.dart';
@@ -276,7 +277,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           backgroundColor: Colors.transparent,
           builder: (context) {
             return NeedLoginBottomSheet(
-
               onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
                   Navigator.pop(context);
@@ -353,6 +353,46 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       isSearching: false,
       searchError: null,
     ));
+  }
+
+  void setSortType(FilterOptionType? sortType) {
+    emit(state.copyWith(selectedSortType: sortType));
+  }
+
+  List<MiniApp> sortApps(List<MiniApp> apps, FilterOptionType? sortType) {
+    if (sortType == null) return apps;
+
+    final sortedApps = List<MiniApp>.from(apps);
+
+    switch (sortType) {
+      case FilterOptionType.ServiceDateAscending:
+        sortedApps.sort((a, b) {
+          if (a.serviceOrder == null && b.serviceOrder == null) return 0;
+          if (a.serviceOrder == null) return 1;
+          if (b.serviceOrder == null) return -1;
+          return a.serviceOrder!.compareTo(b.serviceOrder!);
+        });
+        break;
+
+      case FilterOptionType.ServiceDateDescending:
+        sortedApps.sort((a, b) {
+          if (a.serviceOrder == null && b.serviceOrder == null) return 0;
+          if (a.serviceOrder == null) return 1;
+          if (b.serviceOrder == null) return -1;
+          return b.serviceOrder!.compareTo(a.serviceOrder!);
+        });
+        break;
+
+      case FilterOptionType.AlphabeticalAscending:
+        sortedApps.sort((a, b) => a.name.compareTo(b.name));
+        break;
+
+      case FilterOptionType.AlphabeticalDescending:
+        sortedApps.sort((a, b) => b.name.compareTo(a.name));
+        break;
+    }
+
+    return sortedApps;
   }
 
   @override
