@@ -146,6 +146,11 @@ dependencies {
     implementation 'com.adjust.sdk:adjust-android:5.4.0'
     implementation 'com.adjust.sdk:adjust-android-oaid:5.4.0'
     implementation 'com.huawei.hms:ads-identifier:3.4.62.300'
+    configurations.all {
+        resolutionStrategy {
+            force 'com.huawei.hms:location:6.14.2.300'
+        }
+    }
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.huawei.agconnect'
