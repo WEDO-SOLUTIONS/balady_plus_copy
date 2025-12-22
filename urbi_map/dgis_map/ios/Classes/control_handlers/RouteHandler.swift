@@ -11,49 +11,55 @@ class RouteHandler {
     private var publicTransportHandler: PublicTransportHandler?
     private let trafficRouter: TrafficRouter
     private let navigationHandler: NavigationHandler
-    
+    private let indoorControlHandler: IndoorControlHandler?
+
     private let locationService: LocationService
     private let map: Map
     private let eventChannel: DgisStreamHandler
-    
+
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
-    
+
     private(set) var options: RouteSearchOptions?
     private(set) var finishPoint: RouteSearchPoint?
-    
+
     var selectedRoute: TrafficRoute? {
         get {
             guard let routeIndex = self.routeEditor.activeRouteIndex?.value else {
                 return nil
             }
-            
+
             return self.routeEditor.routesInfo.routes[Int(routeIndex)]
         }
     }
-    
+
     init(
         map: Map,
         sdk: Container,
         eventChannel: DgisStreamHandler,
-        navigationHandler: NavigationHandler
+        navigationHandler: NavigationHandler,
+        indoorControlHandler: IndoorControlHandler? = nil
     ) {
         let context = try! sdk.context
-        
+
         self.locationService = try! sdk.locationService
         self.map = map
         self.eventChannel = eventChannel
         self.navigationHandler = navigationHandler
+        self.indoorControlHandler = indoorControlHandler
         self.routeEditor = RouteEditor(context: context)
         self.routeEditorSource = RouteEditorSource(
             context: context, routeEditor: self.routeEditor,
             calloutLabelDisplayMode: .relativeToActiveRouteValues
         )
-        
+
         self.trafficRouter = TrafficRouter.init(context: context)
-        
+
         self.publicTransportHandler = PublicTransportHandler(eventChannel: eventChannel, routeHandler: self)
+
         
+        /// Since future versions of the SDK will not support `sink`, we have to use `sinkOnMainThread`. More: https://docs.2gis.com/en/ios/sdk/examples/base#data-channels
+        /// TODO: It is necessary to consider error handling for this method. See BSA-3348 issue
         cancelable.append(self.routeEditor.routesInfoChannel.sink { [weak self] info in
             if case .publicTransport = self?.options {
                 self?.publicTransportHandler?.onRoutesChanged()
@@ -66,11 +72,15 @@ class RouteHandler {
             }
             self?.onActiveRouteChanged(index)
         })
-        
+
         self.map.addSource(source: routeEditorSource)
-        
+
     }
-    
+
+    private func getCurrentLevelId() -> LevelId? {
+        return indoorControlHandler?.currentLevelId
+    }
+
     func cancel() {
         cancelable.forEach { $0.cancel() }
         moveCameraCancellable?.cancel()
@@ -114,15 +124,18 @@ class RouteHandler {
                     }
                 )
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.value.latitude,
-                    longitude: lastLocation.value.longitude
-                ))
+                return RouteSearchPoint(
+                    coordinates: GeoPoint(
+                        latitude: lastLocation.value.latitude,
+                        longitude: lastLocation.value.longitude
+                    ),
+                    levelId: getCurrentLevelId()
+                )
             }
-            
+
             return nil
         }()
-        
+
         let finishPoint: RouteSearchPoint? = {
             if let pFinishPoint = params.finishPoint {
                 return RouteSearchPoint(
@@ -139,15 +152,18 @@ class RouteHandler {
                     }
                 )
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-                return RouteSearchPoint(coordinates: GeoPoint(
-                    latitude: lastLocation.value.latitude,
-                    longitude: lastLocation.value.longitude
-                ))
+                return RouteSearchPoint(
+                    coordinates: GeoPoint(
+                        latitude: lastLocation.value.latitude,
+                        longitude: lastLocation.value.longitude
+                    ),
+                    levelId: getCurrentLevelId()
+                )
             }
-            
+
             return nil
         }()
-        
+
         guard let startPoint = startPoint, let finishPoint = finishPoint else {
             return
         }
@@ -312,10 +328,13 @@ class RouteHandler {
         if let startPoint {
             startSearchPoint = startPoint
         } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-            startSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.value.latitude,
-                longitude: lastLocation.value.longitude
-            ))
+            startSearchPoint = RouteSearchPoint(
+                coordinates: GeoPoint(
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
+                ),
+                levelId: getCurrentLevelId()
+            )
         } else {
             completion(
                 Result.failure(
@@ -331,10 +350,13 @@ class RouteHandler {
         if let finishPoint {
             finishSearchPoint = finishPoint
         } else if let lastLocation = self.locationService.lastLocation?.coordinates {
-            finishSearchPoint = RouteSearchPoint(coordinates: GeoPoint(
-                latitude: lastLocation.value.latitude,
-                longitude: lastLocation.value.longitude
-            ))
+            finishSearchPoint = RouteSearchPoint(
+                coordinates: GeoPoint(
+                    latitude: lastLocation.value.latitude,
+                    longitude: lastLocation.value.longitude
+                ),
+                levelId: getCurrentLevelId()
+            )
         } else {
             completion(
                 Result.failure(

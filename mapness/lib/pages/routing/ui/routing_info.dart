@@ -15,6 +15,7 @@ import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
+import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/routing/providers/routes_update_tab.dart';
@@ -52,36 +53,52 @@ class RoutingInfo extends ConsumerStatefulWidget {
 
 class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   final ValueNotifier<RouteSearchOptionsMessage> _navType = ValueNotifier(RouteSearchOptionsMessage.car);
-
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
+
   bool _navigationStarted = false;
+  RouteSearchOptionsMessage? _lockedNavType;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
-      if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
-        unawaited(_calculateNavigationType(null));
-      } else {
-        Position? location = ref.read(locationProvider);
-        if (location == null) {
-          // TODO(Ayat) rewriting to human form is a temporary fix
-          final isGranded = await Permission.location.isGranted;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initialize());
+  }
 
-          if (!isGranded) {
-            context.router.popForced();
-            return;
-          }
-          // Due to the addition of checks on Huawei, it was not possible to get the provider's
-          // location during the first installation, I made this method so as not to catch a crash
-          location = await Geolocator.getCurrentPosition();
-        }
-        unawaited(_calculateNavigationType(location));
-      }
+  Future<void> _initialize() async {
+    final navState = await ActiveNavigationHelper.getState(
+      ref.read(dgisControllerProvider).valueOrNull,
+    );
+
+    if (navState.isActive) {
+      _lockedNavType = navState.navType;
+      _navType.value = navState.navType!;
+      _isNavTypeLoading.value = false;
       setCameraPadding();
       hideActiveLayer();
-    });
+      return;
+    }
+
+    await _initializeNavType();
+    setCameraPadding();
+    hideActiveLayer();
+  }
+
+  Future<void> _initializeNavType() async {
+    if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
+      unawaited(_calculateNavigationType(null));
+      return;
+    }
+
+    Position? location = ref.read(locationProvider);
+    if (location == null) {
+      final isGranted = await Permission.location.isGranted;
+      if (!isGranted) {
+        context.router.popForced();
+        return;
+      }
+      location = await Geolocator.getCurrentPosition();
+    }
+    unawaited(_calculateNavigationType(location));
   }
 
   void setCameraPadding() {
@@ -201,24 +218,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(activePublicTransportRouteProvider);
-
-    final routes = ref.watch(
-      routesProvider(
-        startPoint: widget.points[0],
-        finishPoint: widget.points[1],
-        navType: _navType.value,
-      ),
-    );
-
-    final publicTransportVisibility = ref.watch(
-      publicTransportVisibilityProvider(
-        startPoint: widget.points[0],
-        finishPoint: widget.points[1],
-      ),
-    );
-
     ref
+      ..watch(activePublicTransportRouteProvider)
       ..listen(carConnectionProvider, (_, next) {
         final connected = next.valueOrNull ?? false;
         if (connected) {
@@ -237,35 +238,70 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           }
         },
       );
+
     return ValueListenableBuilder(
-      valueListenable: _navType,
-      builder: (context, navigatingType, _) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Spacing.$4x.heightBox,
-          RoutesCarousel(
-            points: widget.pointsWithLabel,
-            startNavigation: (route) => _startNavigation(route, navigatingType),
-            navType: navigatingType,
-            publicTransportVisibility: publicTransportVisibility,
-            routes: routes,
-          ),
-          Spacing.$4x.heightBox,
-          RouteTabBar(
-            active: navigatingType,
-            onChanged: _onChanged,
-            points: widget.points,
-            publicTransportVisibility: publicTransportVisibility,
-            routes: routes,
-          ),
-        ],
-      ),
+      valueListenable: _isNavTypeLoading,
+      builder: (context, isLoading, _) {
+        if (isLoading) {
+          return const Center(child: Loading(size: LoaderSize.large));
+        }
+
+        return ValueListenableBuilder(
+          valueListenable: _navType,
+          builder: (context, navigatingType, _) {
+            final routes = ref.watch(
+              routesProvider(
+                startPoint: widget.points[0],
+                finishPoint: widget.points[1],
+                navType: navigatingType,
+              ),
+            );
+
+            final publicTransportVisibility = ref.watch(
+              publicTransportVisibilityProvider(
+                startPoint: widget.points[0],
+                finishPoint: widget.points[1],
+              ),
+            );
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Spacing.$4x.heightBox,
+                RoutesCarousel(
+                  points: widget.pointsWithLabel,
+                  startNavigation: (route) => _startNavigation(route, navigatingType),
+                  navType: navigatingType,
+                  publicTransportVisibility: publicTransportVisibility,
+                  routes: routes,
+                ),
+                Spacing.$4x.heightBox,
+                RouteTabBar(
+                  active: navigatingType,
+                  onChanged: _onChanged,
+                  points: widget.points,
+                  publicTransportVisibility: publicTransportVisibility,
+                  routes: routes,
+                  lockedNavType: _lockedNavType,
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
   Future<void> _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) async {
     _navigationStarted = true;
+
+    // Stop current navigation if it's active before starting a new one
+    // This prevents route duplication on the map
+    if (_lockedNavType != null) {
+      await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
+    }
+
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
     final location = ref.read(cityByLocationProvider.notifier);

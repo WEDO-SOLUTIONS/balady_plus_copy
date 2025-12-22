@@ -15,6 +15,7 @@ import kotlin.math.round
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
+import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.bearing
@@ -76,6 +77,10 @@ class DgisMapView(
     private val androidAutoHandler = AndroidAutoHandler(context, eventSink)
 
     private val closables = mutableListOf<AutoCloseable>()
+
+    private fun getCurrentLevelId(): LevelId? {
+        return indoorControlHandler?.currentLevelId
+    }
 
     init {
         val messenger = ProxyBinaryMessenger(binaryMessenger, nameSuffix = "map_$id")
@@ -1096,10 +1101,10 @@ class DgisMapView(
                 )
         map.addSource(mapSource)
 
-        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler)
+        indoorControlHandler = IndoorControlHandler(map, eventSink)
+        routeHandler = RouteHandler(map, sdkContext, eventSink, locationSource, navigationHandler, indoorControlHandler)
         zoomControlHandler = ZoomControlHandler(map, eventSink)
         locationControlHandler = LocationControlHandler(map, eventSink)
-        indoorControlHandler = IndoorControlHandler(map, eventSink)
         visibleRectHandler = VisibleRectHandler(map, eventSink)
         searchHandler =
                 SearchHandler(
@@ -1129,7 +1134,8 @@ class DgisMapView(
                         ?: locationSource.lastLocation.let {
                             return@let RouteSearchPoint(
                                     coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
-                                    objectId = DgisObjectId(objectId = 0, entranceId = 0)
+                                    objectId = DgisObjectId(objectId = 0, entranceId = 0),
+                                    levelId = getCurrentLevelId()
                             )
                         }
         val finishSearchPoint =
@@ -1137,7 +1143,8 @@ class DgisMapView(
                         ?: locationSource.lastLocation.let {
                             return@let RouteSearchPoint(
                                     coordinates = GeoPoint(it?.latitude ?: .0, it?.longitude ?: .0),
-                                    objectId = DgisObjectId(objectId = 0, entranceId = 0)
+                                    objectId = DgisObjectId(objectId = 0, entranceId = 0),
+                                    levelId = getCurrentLevelId()
                             )
                         }
         val briefRouteInfoSearchPoints =

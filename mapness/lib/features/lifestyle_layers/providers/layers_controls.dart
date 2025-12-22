@@ -133,17 +133,9 @@ class LayersControls extends _$LayersControls {
 
     final selectedLayerState = _getLayerState();
 
-    // Wait for the state to be initialized
-    Future.delayed(Duration.zero, () async {
-      if (selectedLayerState != null) {
-        await _tapHandler(selectedLayerState);
-        await toggle(selectedLayerState);
-      }
-    });
-
     return LayersState(
       layersVisible: false,
-      selectedType: null,
+      selectedType: selectedLayerState,
       isLoading: false,
       investmentsMarkers: {},
       polygons: {},
@@ -218,10 +210,13 @@ class LayersControls extends _$LayersControls {
 
     if (layerType case LayerType.favourites) {
       await ref.read(favouriteToggleProvider.notifier).enable();
+      setSelection(selectedType: LayerType.favourites);
     } else if (layerType case LayerType.parkingLots) {
       await ref.read(parkingStateProvider.notifier).showParking();
+      setSelection(selectedType: LayerType.parkingLots);
     } else if (layerType case LayerType.metro) {
       ref.read(metroLayerRepositoryProvider.notifier).showMetro();
+      setSelection(selectedType: LayerType.metro);
     }
   }
 
@@ -383,9 +378,9 @@ class LayersControls extends _$LayersControls {
     final layers = ref.read(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     await _viewPortSubscription?.cancel();
-    await _removeAll();
 
     if (currentState == LayerType.parkingLots) {
+      await _removeAll();
       final manager = ref.read(mapObjectManagerProvider(
         named: esriMapObjectSettings.name,
         layerId: esriMapObjectSettings.layerId,
@@ -398,6 +393,7 @@ class LayersControls extends _$LayersControls {
 
       await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
+      await _removeMapObjects();
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
     }
