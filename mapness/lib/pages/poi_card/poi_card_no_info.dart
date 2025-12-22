@@ -17,7 +17,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useToggleSheetController(onClose: (_) {
       ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-      context.router.popForced();
+      closePoiCard(context, ref);
     });
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
@@ -30,16 +30,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
         title: '${closestPoint?.longitude.roundDecimal(places: 6)}, ${closestPoint?.latitude.roundDecimal(places: 6)}',
         subTitle: context.l10n.poi,
         poiCardState: poiCardState,
-        onTapClose: () {
-          Metrics.logEventAdvanced(
-            MetricsConstants.poiKeys.exitButton,
-            group: MetricsConstants.poiTag,
-            action: MetricAction.tap.toString(),
-          );
-
-          ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-          context.router.popForced();
-        },
+        onTapClose: () => closePoiCard(context, ref),
       ),
       outside: PoiCardMapControlsWrapper(objectIdForIndoorLevels: objectId),
       topHeader: PoiPhotosHeader(objectId: objectId),
