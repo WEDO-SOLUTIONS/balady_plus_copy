@@ -394,7 +394,7 @@ class RouteHandler {
             startPoint: startPoint,
             finishPoint: finishPoint,
             routeSearchOptions: routeSearchOptions,
-            intermediatePoints: intermediatePoints ?? [],
+            intermediatePoints: intermediatePoints ?? []
         )
         
         self.cancelable.append(routesFuture.sink { (response: [TrafficRoute]) in

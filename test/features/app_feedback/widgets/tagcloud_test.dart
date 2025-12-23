@@ -20,7 +20,7 @@ void main() {
 
     testWidgets('TagCloud displays correct tags based on rating', (WidgetTester tester) async {
       const rating = 5;
-      final tags = AppFeedbackTagMapper().getTags(rating);
+      final tags = AppFeedbackTagMapper().getTags(rating, true);
 
       final l10n = AppLocalizationsAr();
 
@@ -37,7 +37,7 @@ void main() {
 
     testWidgets('TagCloud updates selected tags when a tag is tapped', (WidgetTester tester) async {
       const rating = 4;
-      final tags = AppFeedbackTagMapper().getTags(rating);
+      final tags = AppFeedbackTagMapper().getTags(rating, true);
       Set<Tag>? selectedTags;
 
       await tester.pumpWidget(ProviderScope(
