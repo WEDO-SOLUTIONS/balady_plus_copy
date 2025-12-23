@@ -20,7 +20,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 3.12.21+417
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.7.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -47,7 +47,7 @@ dependencies:
   # Functional programming in Dart e.g. Either<Left,Right>
   dartz: ^0.10.1
   # Form representation and validation in a generic way
-  formz: ^0.6.0
+  formz: ^0.8.0
   # Equality Comparisons among objects
   equatable: 2.0.7
   # Dependency Injection Service Locator
@@ -66,13 +66,11 @@ dependencies:
   hive_flutter: ^1.1.0
   ##! Actions
   # A package that allows you to use a native file explorer
-  file_picker: 8.1.4
+  file_picker: ^10.3.7
   # picking images and taking new pictures with the camera.
   image_picker: ^1.1.2
   # Native APP to open files with string result
-  open_file_plus:
-    git:
-      url: https://github.com/urbi-ae/open_file_plus
+  open_filex: ^4.7.0
   # for getting commonly used locations on host platform file
   path_provider: ^2.0.11
   # Launching a URL, Open contacts and others.
@@ -107,25 +105,25 @@ dependencies:
   # Get current device information
   device_info_plus: 11.1.1
   # API for querying information about an application package
-  package_info_plus: ^8.1.0
+  package_info_plus: ^9.0.0
   # parses Adobe After Effects animations
-  lottie: ^2.2.0
+  lottie: ^3.3.0
   # Generate Unique ID
   uuid: ^4.5.1
   hijri: ^3.0.0
   # swiper/carousel for flutter, with multiple layouts,
-  flutter_card_swiper: ^6.0.0
+  flutter_card_swiper: ^7.2.0
   # QR.Flutter is a Flutter library for simple and fast QR code rendering.
   qr_flutter: ^4.1.0
   # A cross platform plugin for displaying and scheduling local notifications
   flutter_local_notifications: ^18.0.1
   # A flutter plugin for getting the local timezone of the device.
-  flutter_timezone: ^1.0.7
+  flutter_timezone: 4.1.1
   youtube_player_flutter: ^9.1.0
-  launch_review: ^3.0.1
+  # launch_review: ^3.0.1  # Replaced with store_redirect due to Registrar compatibility issues
   mocktail: ^1.0.4
   flutter_riverpod: ^2.4.1
-  battery_plus: ^6.0.4
+  battery_plus: ^7.0.0
   app_tracking_transparency: ^2.0.6
   adjust_sdk: 5.1.1
   flutter_appauth: ^9.0.0
@@ -133,21 +131,21 @@ dependencies:
   webview_flutter: 4.10.0
   flutter_inappwebview: ^6.1.5
 
-  version: ^2.0.0
+  version: ^3.0.2
   #google_maps_flutter: ^2.5.3
   share_plus: ^10.0.2
   pinput: ^2.2.31
   pin_code_fields: ^8.0.1
   cached_network_image: ^3.2.2
-  mime: ^1.0.4
+  mime: ^2.0.0
   jwt_decoder:
   photo_view: ^0.15.0
   flutter_rating_bar: ^4.0.0
   tuple: ^2.0.0
   flutter_easyloading: ^3.0.3
-  connectivity_plus: ^6.1.5
-  qr_code_scanner_plus: ^2.0.14
-  # scan: ^1.6.0
+  connectivity_plus: ^7.0.0
+  qr_code_scanner_plus: ^2.0.8
+  # scan: ^1.6.0  # Removed: unused and has Registrar compatibility issues with Flutter 3.29.1
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent
@@ -161,27 +159,27 @@ dependencies:
   percent_indicator: ^4.2.3
   flutter_staggered_grid_view: ^0.7.0
   # flutter_cached_pdfview: ^0.4.2
-  network_info_plus: ^6.1.3
+  network_info_plus: ^7.0.0
   dart_ipify: ^1.1.1
   timelines: ^0.1.0
-  pdfx: 2.8.0
+  pdfx: ^2.9.2
   archive: ^3.3.7
-  bottom_picker: ^2.0.4
+  bottom_picker: ^4.1.1
   page_view_dot_indicator: ^2.3.0
   firebase_core: ^3.1.0
   # eliminate this after lazy-ass author update the package
   firebase_messaging: 15.1.5
   firebase_analytics: ^11.0.1
-  flutter_uxcam: ^2.4.7
+  flutter_uxcam: ^2.7.1
   card_swiper: ^3.0.1
   carousel_slider: ^5.0.0
   add_2_calendar: ^3.0.1
   flutter_svg_provider:
-  app_settings: 5.1.1
+  app_settings: ^7.0.0
   dotted_border: ^2.0.0+3
   linkable: ^3.0.0
   flutter_hms_gms_availability: ^3.10.0
-  huawei_push: ^6.12.0+303
+  huawei_push: ^6.14.0+300
   encrypt: ^5.0.0
   printing: ^5.14.2
 
@@ -208,16 +206,15 @@ dependencies:
     path: mapness
 
 
-  wakelock_plus: 1.2.8
+  wakelock_plus: ^1.4.0
   provider: ^6.0.5
   flutter_compass: ^0.8.0
 
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
-  mixpanel_flutter: ^2.2.0
+  mixpanel_flutter: ^2.4.4
   rate_my_app: ^2.0.0
   flutter_datetime_picker_plus: ^2.1.0
-  background_location: ^0.13.0
   preload_page_view: ^0.2.0
   flutter_linkify: ^6.0.0
   screenshot: ^3.0.0
@@ -232,9 +229,9 @@ dependencies:
   jiffy:
   gif: ^2.3.0
   bloc: ^8.1.4
-  http_certificate_pinning: ^2.1.3
+  http_certificate_pinning: 3.0.1
 
-  syncfusion_flutter_pdfviewer:
+  syncfusion_flutter_pdfviewer: ^29.1.33
 
 
   ############################################################
@@ -248,28 +245,29 @@ dependencies:
   #      path: packages/firebase_messaging/firebase_messaging
   ############################################################
 
-  syncfusion_localizations:
-  huawei_location: 6.14.2+300
+  syncfusion_localizations: ^29.1.33
+  huawei_location: ^6.16.0+300
 
-  home_widget: ^0.7.0
+  home_widget: ^0.8.1
 
   cached_network_svg_image: any
 
   #  For Load the variable from local file  .env
-  flutter_dotenv: ^5.2.1
+  flutter_dotenv: ^6.0.0
   pdf: ^3.11.3
   flutter_launcher_icons: ^0.14.4
   visibility_detector: ^0.4.0+2
   in_app_review: ^2.0.10
   external_app_launcher: ^4.0.3
   store_redirect: ^2.0.4
+  shared_preferences: 2.3.2
 
 dependency_overrides:
   # for dio_http_cache
   dio: 5.7.0
   json_serializable: 6.8.0
   device_info_plus: 11.1.1
-  google_api_headers: ^4.2.4
+  google_api_headers: ^5.0.1
   rxdart: 0.28.0
   collection: 1.19.0
   # https://github.com/flutter/flutter/issues/162437#issuecomment-2661727397
@@ -283,14 +281,37 @@ dependency_overrides:
   # flutter_pdfview: ^1.4.3
   flutter_spinkit: 5.2.1
   mocktail: ^1.0.4
+  # Fix for smooth_corner: version 1.1.1 fixes hashValues deprecation issue with Flutter 3.29.1
+  # while maintaining SmoothClipRRect support required by balady_uikit
+  smooth_corner: 1.1.1
+  # Fix for flutter_hms_gms_availability: use git fork that fixes Registrar deprecation issue with Flutter 3.29.1
+  flutter_hms_gms_availability:
+    git:
+      url: https://github.com/LeeeYudE/flutter_hms_gms_availability
+      ref: master
+  # Fix for http_certificate_pinning: override balady_authorization's constraint to use version 3.0.1 (fixes Registrar issue)
+  http_certificate_pinning: 3.0.1
+  # Fix for shared_preferences_android: use version 2.2.4 which is compatible with shared_preferences 2.3.2 and doesn't have Pigeon API issues
+  shared_preferences_android: 2.2.4
+  # Fix for path_provider_android: use version 2.2.18 which supports Flutter 3.29/Dart 3.7
+  # Plugins are registered in App.kt to ensure Pigeon channels are available early
+  path_provider_android: 2.2.18
+  # Force all Syncfusion packages to use the newer 29.1.33 line, which:
+  # - fixes old v1 PluginRegistry.Registrar issues in Android plugins
+  # - is compatible with Flutter 3.29.x
+  # This override also upgrades the versions required by balady_authorization.
+  syncfusion_flutter_pdfviewer: 29.1.33
+  syncfusion_flutter_core: 29.1.33
+  syncfusion_flutter_datepicker: 29.1.33
+  syncfusion_localizations: 29.1.33
 
 dev_dependencies:
   build_runner: ^2.4.12
-  flutter_lints: ^2.0.1
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
   json_serializable: 6.8.0
-  very_good_analysis: ^5.1.0
+  very_good_analysis: ^8.0.0
 
 flutter:
   uses-material-design: true
