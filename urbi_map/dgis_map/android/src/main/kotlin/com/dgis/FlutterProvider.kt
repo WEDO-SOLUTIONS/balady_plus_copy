@@ -4,6 +4,7 @@ import android.content.Context
 import com.dgis.map.map_api.HostFlutterApi
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
+import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
 
 
 object FlutterProvider {

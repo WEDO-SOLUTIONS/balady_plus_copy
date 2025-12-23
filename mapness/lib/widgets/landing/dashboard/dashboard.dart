@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
@@ -10,6 +9,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -22,6 +22,8 @@ import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
+import 'package:mapness/features/stream_audio/ui/widgets/explore_card.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -245,6 +247,35 @@ class _DashboardState extends ConsumerState<Dashboard>
                   ),
                   const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
+                    //TODO: Add to localization MBC
+                    // text:context.l10n.streamAudio,
+                    text: 'Stream Audio',
+                    icon: Icons.wifi,
+                    child: SvgPicture.asset(
+                      Assets.icons.svg.audio.audioStream.keyName,
+                      height: Spacing.$6x + Spacing.$1x,
+                      colorFilter: ColorFilter.mode(
+                        context.colors.accentDefault,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    onTap: () async {
+                      final provider = ref.read(streamAudioProvider.notifier);
+
+                      // Reset if needed before getting live programs
+                      if (provider.needsReinitialization) {
+                        await provider.reset();
+                      }
+
+                      // Ensure we have live programs data first
+                      await provider.getChannels();
+                      if (provider.filteredChannels.isNotEmpty == true) {
+                        await provider.selectChannel(provider.filteredChannels.first);
+                      }
+                    },
+                  ),
+                  const SizedBox(width: Spacing.$2x),
+                  QuickActionButton(
                     text: context.l10n.snapAndSendAction,
                     icon: General32Icons.snapAndSendAction,
                     onTap: _openSnapAndSend,
@@ -280,6 +311,8 @@ class _DashboardState extends ConsumerState<Dashboard>
             DashboardTitle(context.l10n.exploreNearby),
             const SizedBox(height: Spacing.$4x),
             const PlacePreview(),
+            const SizedBox(height: Spacing.$4x),
+            const ExploreCard(),
             const SizedBox(height: Spacing.$6x),
           ],
           if (isNationalDay)
@@ -305,6 +338,8 @@ class _DashboardState extends ConsumerState<Dashboard>
                   DashboardTitle(context.l10n.exploreNearby),
                   const SizedBox(height: Spacing.$4x),
                   const PlacePreview(),
+                  const SizedBox(height: Spacing.$4x),
+                  const ExploreCard(),
                   const SizedBox(height: Spacing.$6x),
                 ],
               ),
@@ -340,12 +375,12 @@ class _DashboardState extends ConsumerState<Dashboard>
 
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    CommonFunctions.openMiniApp(serviceKey: "Quran");
+    CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    CommonFunctions.openMiniApp(serviceKey: "Athkar");
+    CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
   void _openFreeRoam() {
@@ -382,7 +417,7 @@ class _DashboardState extends ConsumerState<Dashboard>
         MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
         action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
     sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
-      serviceKey: "snapandsend",
+      serviceKey: 'snapandsend',
     );
   }
 

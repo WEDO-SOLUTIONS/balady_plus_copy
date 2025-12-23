@@ -372,11 +372,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         child: Consumer(
           builder: (context, ref, child) {
             return MaterialApp.router(
-              routerConfig: ref.read(appRouterProvider).config(
-                    navigatorObservers: () => [
-                      RoutesObserver(ref: ref),
-                    ],
-                  ),
+              routerConfig: ref.read(appRouterProvider).config(navigatorObservers: () => [RoutesObserver(ref: ref)]),
               theme: ThemeData(
                 scaffoldBackgroundColor: Colors.transparent,
                 dividerColor: Colors.grey[400],
@@ -404,7 +400,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   ? LoadingOverlay(
                       child: ToastOverlay(
                         child: GlobalScopes(
-                          child: child,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: child,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )

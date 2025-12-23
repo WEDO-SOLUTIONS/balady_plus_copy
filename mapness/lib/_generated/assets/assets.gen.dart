@@ -31,6 +31,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
+  /// Directory path: assets/images/audio_placeholders
+  $AssetsImagesAudioPlaceholdersGen get audioPlaceholders => const $AssetsImagesAudioPlaceholdersGen();
+
   /// File path: assets/images/background_ornament_saudiday.png
   AssetGenImage get backgroundOrnamentSaudiday => const AssetGenImage('assets/images/background_ornament_saudiday.png');
 
@@ -64,6 +67,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/eta_sheet_background.png
   AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
+
+  /// File path: assets/images/explore_mbc.png
+  AssetGenImage get exploreMbc => const AssetGenImage('assets/images/explore_mbc.png');
 
   /// File path: assets/images/favorites_example_arabic.png
   AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
@@ -164,6 +170,7 @@ class $AssetsImagesGen {
         driveHomeBackground,
         driveHomeBackgroundSaudiday,
         etaSheetBackground,
+        exploreMbc,
         favoritesExampleArabic,
         favoritesExampleArabicSaudiday,
         favoritesExampleEnglish,
@@ -304,6 +311,9 @@ class $AssetsIconsLottieGen {
 class $AssetsIconsSvgGen {
   const $AssetsIconsSvgGen();
 
+  /// Directory path: assets/icons/svg/audio
+  $AssetsIconsSvgAudioGen get audio => const $AssetsIconsSvgAudioGen();
+
   /// File path: assets/icons/svg/car.svg
   SvgGenImage get car => const SvgGenImage('assets/icons/svg/car.svg');
 
@@ -380,6 +390,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_fav.svg
   SvgGenImage get icFav => const SvgGenImage('assets/icons/svg/ic_fav.svg');
 
+  /// File path: assets/icons/svg/ic_filter.svg
+  SvgGenImage get icFilter => const SvgGenImage('assets/icons/svg/ic_filter.svg');
+
   /// File path: assets/icons/svg/ic_iwish_marker_completed.svg
   SvgGenImage get icIwishMarkerCompleted => const SvgGenImage('assets/icons/svg/ic_iwish_marker_completed.svg');
 
@@ -406,6 +419,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/ic_marker_m_new_saudi_day.svg
   SvgGenImage get icMarkerMNewSaudiDay => const SvgGenImage('assets/icons/svg/ic_marker_m_new_saudi_day.svg');
+
+  /// File path: assets/icons/svg/ic_mbc_mood.svg
+  SvgGenImage get icMbcMood => const SvgGenImage('assets/icons/svg/ic_mbc_mood.svg');
 
   /// File path: assets/icons/svg/ic_metro_marker.svg
   SvgGenImage get icMetroMarker => const SvgGenImage('assets/icons/svg/ic_metro_marker.svg');
@@ -564,6 +580,7 @@ class $AssetsIconsSvgGen {
         icDragIndicator,
         icEntrance,
         icFav,
+        icFilter,
         icIwishMarkerCompleted,
         icIwishMarkerPlanned,
         icIwishMarkerSelected,
@@ -573,6 +590,7 @@ class $AssetsIconsSvgGen {
         icLanguageChange,
         icMarkerMNew,
         icMarkerMNewSaudiDay,
+        icMbcMood,
         icMetroMarker,
         icNotification,
         icOfferMarker,
@@ -609,6 +627,44 @@ class $AssetsIconsSvgGen {
         tagTraffic,
         ukFlag
       ];
+}
+
+class $AssetsImagesAudioPlaceholdersGen {
+  const $AssetsImagesAudioPlaceholdersGen();
+
+  /// File path: assets/images/audio_placeholders/arabiya.png
+  AssetGenImage get arabiya => const AssetGenImage('assets/images/audio_placeholders/arabiya.png');
+
+  /// File path: assets/images/audio_placeholders/arabiya_fm.png
+  AssetGenImage get arabiyaFm => const AssetGenImage('assets/images/audio_placeholders/arabiya_fm.png');
+
+  /// File path: assets/images/audio_placeholders/arriving.png
+  AssetGenImage get arriving => const AssetGenImage('assets/images/audio_placeholders/arriving.png');
+
+  /// Directory path: assets/images/audio_placeholders/arriving_soon
+  $AssetsImagesAudioPlaceholdersArrivingSoonGen get arrivingSoon =>
+      const $AssetsImagesAudioPlaceholdersArrivingSoonGen();
+
+  /// File path: assets/images/audio_placeholders/hoda.png
+  AssetGenImage get hoda => const AssetGenImage('assets/images/audio_placeholders/hoda.png');
+
+  /// File path: assets/images/audio_placeholders/mbc_fm.png
+  AssetGenImage get mbcFm => const AssetGenImage('assets/images/audio_placeholders/mbc_fm.png');
+
+  /// File path: assets/images/audio_placeholders/mbc_loud.png
+  AssetGenImage get mbcLoud => const AssetGenImage('assets/images/audio_placeholders/mbc_loud.png');
+
+  /// File path: assets/images/audio_placeholders/non.png
+  AssetGenImage get non => const AssetGenImage('assets/images/audio_placeholders/non.png');
+
+  /// File path: assets/images/audio_placeholders/panorama.png
+  AssetGenImage get panorama => const AssetGenImage('assets/images/audio_placeholders/panorama.png');
+
+  /// File path: assets/images/audio_placeholders/sweet.png
+  AssetGenImage get sweet => const AssetGenImage('assets/images/audio_placeholders/sweet.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [arabiya, arabiyaFm, arriving, hoda, mbcFm, mbcLoud, non, panorama, sweet];
 }
 
 class $AssetsImagesSaudiPassGen {
@@ -678,6 +734,41 @@ class $AssetsMapsConfigsGen {
 
   /// List of all assets
   List<String> get values => [momrahProdVendorConfig, momrahStagingVendorConfig, urbiPreProdVendorConfig];
+}
+
+class $AssetsIconsSvgAudioGen {
+  const $AssetsIconsSvgAudioGen();
+
+  /// File path: assets/icons/svg/audio/audio_stream.svg
+  SvgGenImage get audioStream => const SvgGenImage('assets/icons/svg/audio/audio_stream.svg');
+
+  /// File path: assets/icons/svg/audio/check.svg
+  SvgGenImage get check => const SvgGenImage('assets/icons/svg/audio/check.svg');
+
+  /// File path: assets/icons/svg/audio/close.svg
+  SvgGenImage get close => const SvgGenImage('assets/icons/svg/audio/close.svg');
+
+  /// File path: assets/icons/svg/audio/contextual_banner.svg
+  SvgGenImage get contextualBanner => const SvgGenImage('assets/icons/svg/audio/contextual_banner.svg');
+
+  /// File path: assets/icons/svg/audio/pause.svg
+  SvgGenImage get pause => const SvgGenImage('assets/icons/svg/audio/pause.svg');
+
+  /// File path: assets/icons/svg/audio/resume.svg
+  SvgGenImage get resume => const SvgGenImage('assets/icons/svg/audio/resume.svg');
+
+  /// File path: assets/icons/svg/audio/seek_backward.svg
+  SvgGenImage get seekBackward => const SvgGenImage('assets/icons/svg/audio/seek_backward.svg');
+
+  /// File path: assets/icons/svg/audio/seek_forward.svg
+  SvgGenImage get seekForward => const SvgGenImage('assets/icons/svg/audio/seek_forward.svg');
+
+  /// File path: assets/icons/svg/audio/waves.svg
+  SvgGenImage get waves => const SvgGenImage('assets/icons/svg/audio/waves.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values =>
+      [audioStream, check, close, contextualBanner, pause, resume, seekBackward, seekForward, waves];
 }
 
 class $AssetsIconsSvgLayersGen {
@@ -1325,6 +1416,32 @@ class $AssetsIconsSvgWeatherGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [moon, sunNew, floodPoint, humidity, pressure, thermometerEmpty, umbrellaEmpty, wind];
+}
+
+class $AssetsImagesAudioPlaceholdersArrivingSoonGen {
+  const $AssetsImagesAudioPlaceholdersArrivingSoonGen();
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/apple_car_play.png
+  AssetGenImage get appleCarPlay =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/apple_car_play.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/balady_content.png
+  AssetGenImage get baladyContent =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/balady_content.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/mbc_video_news.png
+  AssetGenImage get mbcVideoNews =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/mbc_video_news.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/on_demand.png
+  AssetGenImage get onDemand => const AssetGenImage('assets/images/audio_placeholders/arriving_soon/on_demand.png');
+
+  /// File path: assets/images/audio_placeholders/arriving_soon/speed_alerts.png
+  AssetGenImage get speedAlerts =>
+      const AssetGenImage('assets/images/audio_placeholders/arriving_soon/speed_alerts.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [appleCarPlay, baladyContent, mbcVideoNews, onDemand, speedAlerts];
 }
 
 class Assets {
