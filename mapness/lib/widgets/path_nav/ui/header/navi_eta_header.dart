@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -32,12 +33,14 @@ class EtaHeader extends HookConsumerWidget {
   final VoidCallback onEndTripPressed;
   final VoidCallback onContinuePressed;
   final ToggleSheetController sheetController;
+  final ValueListenable<bool> isSwitchingToFoot;
 
   const EtaHeader({
     required this.onEndTripPressed,
     required this.onContinuePressed,
     required this.sheetController,
     required this.state,
+    required this.isSwitchingToFoot,
     this.onSearchPressed,
     this.onTapRoute,
     super.key,
@@ -114,18 +117,38 @@ class EtaHeader extends HookConsumerWidget {
                           state != PathNavState.finished ? CrossAxisAlignment.start : CrossAxisAlignment.center,
                       children: [
                         if (state != PathNavState.paused)
-                          if (!landscape && onSearchPressed != null || state == PathNavState.finished)
-                            _Button(
-                              icon: SystemIcons.search,
-                              onTap: onSearchPressed!,
-                            )
-                          else
-                            onTapRoute != null
-                                ? _Button(
-                                    icon: GeneralIcons.routeStroke,
-                                    onTap: onTapRoute!,
-                                  )
-                                : SizedBox(width: ButtonSize.small.height),
+                          ValueListenableBuilder<bool>(
+                            valueListenable: isSwitchingToFoot,
+                            builder: (context, isSwitching, child) {
+                              if (isSwitching) {
+                                return const SizedBox(
+                                  height: 32,
+                                  width: 32,
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (!landscape && onSearchPressed != null || state == PathNavState.finished) {
+                                return _Button(
+                                  icon: SystemIcons.search,
+                                  onTap: onSearchPressed!,
+                                );
+                              }
+                              return onTapRoute != null
+                                  ? _Button(
+                                      icon: GeneralIcons.routeStroke,
+                                      onTap: onTapRoute!,
+                                    )
+                                  : SizedBox(width: ButtonSize.small.height);
+                            },
+                          ),
                         Expanded(
                             child: switch (state) {
                           PathNavState.running => _RunningStateTitle(eta: eta),
@@ -133,39 +156,47 @@ class EtaHeader extends HookConsumerWidget {
                           PathNavState.paused => _PausedStateTitle(eta: eta),
                         }),
                         if (state != PathNavState.paused)
-                          ListenableBuilder(
-                            listenable: isClosedButtonVisible,
-                            builder: (context, _) => Stack(
-                              children: [
-                                IgnorePointer(
-                                  ignoring: !isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('hide_button'),
-                                    opacity: ReverseAnimation(animation),
-                                    child: _Button(
-                                      icon: SystemIcons.arrowCornerDownLarge,
-                                      onTap: () {
-                                        sheetController.close(duration: Durations.long1);
-                                      },
+                          if (state == PathNavState.finished)
+                            _Button(
+                              icon: SystemIcons.close,
+                              onTap: () {
+                                openEndTripSheet(context);
+                              },
+                            )
+                          else
+                            ListenableBuilder(
+                              listenable: isClosedButtonVisible,
+                              builder: (context, _) => Stack(
+                                children: [
+                                  IgnorePointer(
+                                    ignoring: !isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('hide_button'),
+                                      opacity: ReverseAnimation(animation),
+                                      child: _Button(
+                                        icon: SystemIcons.arrowCornerDownLarge,
+                                        onTap: () {
+                                          sheetController.close(duration: Durations.long1);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IgnorePointer(
-                                  ignoring: isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('close_button'),
-                                    opacity: animation,
-                                    child: _Button(
-                                      icon: SystemIcons.close,
-                                      onTap: () {
-                                        openEndTripSheet(context);
-                                      },
+                                  IgnorePointer(
+                                    ignoring: isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('close_button'),
+                                      opacity: animation,
+                                      child: _Button(
+                                        icon: SystemIcons.close,
+                                        onTap: () {
+                                          openEndTripSheet(context);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
                       ],
                     ),
                   ],
