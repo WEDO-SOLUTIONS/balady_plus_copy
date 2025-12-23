@@ -117,9 +117,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 ),
                                 child: IconButton(
                                   onPressed: () => Navigator.pop(context),
-                                  icon: const Icon(Icons.close),
+                                  icon: const Icon(Icons.close,
+                                      color: Color(0XFF242424) ),),
                                 ),
-                              ),
+
                             ),
 
                             // spacing between close & search
@@ -156,7 +157,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                           )
                                         : const SizedBox(),
                                     suffixIcon: value.text.isEmpty
-                                        ? SvgPicture.asset(IconPath.searchSVG)
+                                        ? SvgPicture.asset( Theme.of(context).brightness ==
+                                        Brightness.dark
+                                        ? IconPath.searchSVG2
+                                        : IconPath.searchSVG)
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();

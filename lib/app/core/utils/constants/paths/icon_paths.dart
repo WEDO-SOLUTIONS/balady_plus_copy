@@ -464,6 +464,7 @@ class IconPath {
 
   static const defaultMiniAppIcon = '${_svgIconPath}default_mini_app_logo$_svg';
   static const searchSVG = '${_svgIconPath}search$_svg';
+  static const searchSVG2 = '${_svgIconPath}search2$_svg';
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

@@ -50,7 +50,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                     height: height ?? context.h(87.12268829345703),
                     child: DecoratedBox(
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE5EBED),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Color(0xFF012F41)
+                            : Color(0XFFE5EBED),
                         borderRadius: BorderRadius.circular(radius ?? 22),
                       ),
                       child: Center(
@@ -83,7 +85,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
-                      color: Color(0XFF1E2A36),
+                   //   color: Color(0XFF1E2A36),
                       fontFamily: GeneralKey.appFontType,
                       height: 1.4,
                     ),
@@ -101,7 +103,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                 height: height ?? context.h(87.12268829345703),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE5EBED),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Color(0xFF012F41)
+                        : Color(0XFFE5EBED),
                     borderRadius: BorderRadius.circular(radius ?? 22),
                   ),
                   child: Center(

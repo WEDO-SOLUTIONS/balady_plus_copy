@@ -4,6 +4,7 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/entry_point.dart';
 
 class CustomMiniAppsCard extends StatelessWidget {
   final double? width;
@@ -82,11 +83,13 @@ class CustomMiniAppsCard extends StatelessWidget {
             height: height ?? context.h(54.95),
             decoration: BoxDecoration(
               borderRadius: borderRadius ?? BorderRadius.circular(16),
-              boxShadow: boxShadow ?? defaultShadow,
+              boxShadow: defaultShadow,
             ),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: backgroundColor ?? Colors.white,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Color(0xFF01222E)
+                    : Colors.white,
                 borderRadius: borderRadius ?? BorderRadius.circular(16),
               ),
               child: child,
@@ -106,7 +109,7 @@ class CustomMiniAppsCard extends StatelessWidget {
                 height: 1.4,
                 fontWeight: FontWeight.w400,
                 fontFamily: GeneralKey.appFontType,
-                color: const Color(0xFF1E2A36),
+                //  color: const Color(0xFF1E2A36),
                 leadingDistribution: TextLeadingDistribution.even,
               ),
             ),

@@ -138,7 +138,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
                   ),
                   hintText: "search2".tr(),
                   hintStyle: TextStyle(
-                    color: hintColor,
+                  //  color: hintColor,
                     fontSize: hintTextSize ?? 15,
                   ),
                   prefixIcon: icon,

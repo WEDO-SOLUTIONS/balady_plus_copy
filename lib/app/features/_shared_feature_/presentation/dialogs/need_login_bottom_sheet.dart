@@ -108,7 +108,7 @@ class NeedLoginBottomSheet extends StatelessWidget {
                       btnTextWeight: AppFontWeight.bold,
                       btnTextColor: Color(0xFF606060),
                       btnHeight: 56,
-                      btnColor: Color(0x1F898989),
+                      btnColor: Color(0x1F898989).withOpacity(0.1),
                       btnRadius: 8,
                     ),
                     const SizedBox(height: 12),
