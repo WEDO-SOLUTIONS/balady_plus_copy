@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/feedback/dto/feedback_form_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/feedback/feedback_dio.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/features/feedback/submit_feedback_payload.dart';
@@ -74,6 +75,7 @@ Future<void> submitFeedback(
         objectType: objectType,
       ).toJson(),
     );
+    ref.read(appAnalyticsProvider).poiContributionUsed(type: payload.category);
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.poiSubmitted);
     logger.log(response.data.toString());
   } on DioException catch (e) {
