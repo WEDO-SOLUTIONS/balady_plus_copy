@@ -57,6 +57,7 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -86,6 +87,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   bool _isSwitchingToPedestrian = false;
   bool _finishedByEta = false;
   bool _arrivalToastShown = false;
+
   // Cache for indoor support check to avoid network delay on arrival
   bool? _cachedIndoorSupport;
 
@@ -218,6 +220,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await ref.read(sharedPrefsProvider).remove(MapnessConstants.navigatorStateTypeKey);
   }
 
+  Future<void> isNavigationUser() async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    final isNavUser = sharedPrefs.getBool('isNavigationUser') ?? false;
+    if (!isNavUser) {
+      ref.read(appAnalyticsProvider).isNavigationUser(isNavUser: true);
+      await sharedPrefs.setBool('isNavigationUser', true);
+    }
+  }
+
   Future<void> _initNavigation() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
@@ -227,6 +238,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       // After restore, move camera close without forcing follow to avoid zoom flicker
       await _moveCameraToUser(followAfter: false);
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
+      unawaited(isNavigationUser());
       await dgisController.startNavigation(
         NavigationConstants.navigationSpeedRangeZooms,
       );
@@ -351,8 +363,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             }
 
             // Fallback: finish pedestrian trip when very close to destination
-            final shouldFinishByEta =
-                widget.navType == RouteSearchOptionsMessage.pedestrian && !_finishedByEta && distance != null && distance <= 5;
+            final shouldFinishByEta = widget.navType == RouteSearchOptionsMessage.pedestrian &&
+                !_finishedByEta &&
+                distance != null &&
+                distance <= 5;
             if (shouldFinishByEta) {
               _finishedByEta = true;
               _finishNavigation();
@@ -730,6 +744,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       }
     }
   }
+
   void _finishNavigation() {
     ref.read(urbiAnalyticsProvider).track('tripCompleted');
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
@@ -745,7 +760,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     unawaited(clearNavigationState());
     unawaited(_stopActiveSharing());
   }
-
 
   Future<void> _checkAndSwitchToPedestrian() async {
     isSwitchingToFoot.value = true;
@@ -809,9 +823,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               navType: RouteSearchOptionsMessage.pedestrian,
               showOnlyActiveRoute: true,
             ).future);
-
           } on WalkingDistanceException catch (ex) {
-             logger.log(ex.toString(), logLevel: MapnessLogLevel.warning);
+            logger.log(ex.toString(), logLevel: MapnessLogLevel.warning);
           }
 
           // Navigate to new navigation session
@@ -823,16 +836,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
             // Save the navigation state so it can be restored on the new page
             final state = await dgisController.saveNavigationState();
-            await ref.read(sharedPrefsProvider).setString(
-                MapnessConstants.navigatorStateKey, base64.encode(state));
-            await ref.read(sharedPrefsProvider).setString(
-                MapnessConstants.navigatorStateTypeKey,
-                RouteSearchOptionsMessage.pedestrian.name);
+            await ref.read(sharedPrefsProvider).setString(MapnessConstants.navigatorStateKey, base64.encode(state));
+            await ref
+                .read(sharedPrefsProvider)
+                .setString(MapnessConstants.navigatorStateTypeKey, RouteSearchOptionsMessage.pedestrian.name);
 
             // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
 
             // Replace current page with pedestrian navigation
-             // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
+            // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
             isSwitchingToFoot.value = false;
             await context.router.replace(
               PathNavRoute(
@@ -856,7 +868,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       }
     }
   }
-
 
   Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);

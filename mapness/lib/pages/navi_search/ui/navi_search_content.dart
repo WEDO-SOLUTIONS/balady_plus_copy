@@ -4,6 +4,8 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -61,6 +63,17 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
     });
   }
 
+  void _sendNavigationEvent({required String searchText, required bool isResultsFound, required int resultCount}) {
+    final city = ref.read(cityByLocationProvider);
+    ref.read(appAnalyticsProvider).navigationSearch(
+          destinationCity: city.value?.name ?? '',
+          keyword: searchText,
+          originCity: city.value?.name ?? '',
+          isResultsFound: isResultsFound,
+          resultCount: resultCount,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     _hasConnection = ref.watch(networkStatusProvider);
@@ -74,6 +87,18 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
             properties: {
               'text': newState.searchText,
             },
+          );
+        } else if (newState is SearchStateResults) {
+          _sendNavigationEvent(
+            searchText: newState.searchText,
+            isResultsFound: newState.results.firstPage?.items.isNotEmpty ?? false,
+            resultCount: newState.results.firstPage?.items.length ?? 0,
+          );
+        } else if (newState is SearchStateSuggest) {
+          _sendNavigationEvent(
+            searchText: newState.searchText,
+            isResultsFound: newState.suggest.suggests.isNotEmpty,
+            resultCount: newState.suggest.suggests.length,
           );
         }
       })
