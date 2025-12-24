@@ -4,7 +4,6 @@ import android.content.Context
 import com.dgis.map.map_api.HostFlutterApi
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.embedding.engine.plugins.util.GeneratedPluginRegister
 
 
 object FlutterProvider {
@@ -14,7 +13,8 @@ object FlutterProvider {
     fun getFlutterEngine(context: Context): FlutterEngine {
         if (flutterEngine == null) {
             val dartVmArgs = null
-            val automaticallyRegisterPlugins = false
+            // Enable automatic plugin registration - this will register all Flutter plugins
+            val automaticallyRegisterPlugins = true
             flutterEngine = FlutterEngine(context, dartVmArgs, automaticallyRegisterPlugins)
             flutterEngine!!.navigationChannel.setInitialRoute("/")
             flutterEngine!!.dartExecutor.executeDartEntrypoint(

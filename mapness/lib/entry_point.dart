@@ -443,24 +443,35 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> initMixpanel() async {
-    logger.log('Initializing Mixpanel...');
-    mixpanel = await Mixpanel.init(
-      '2d045d85e25087812e92c62b84d6fbc3',
-      trackAutomaticEvents: true,
-    );
-    mixpanel?.setLoggingEnabled(true);
-    logger.log('Mixpanel initialized successfully');
+    try {
+      logger.log('Initializing Mixpanel...');
+      mixpanel = await Mixpanel.init(
+        '2d045d85e25087812e92c62b84d6fbc3',
+        trackAutomaticEvents: true,
+      );
+      mixpanel?.setLoggingEnabled(true);
+      logger.log('Mixpanel initialized successfully');
+    } catch (e, stackTrace) {
+      logger.log('Error initializing Mixpanel: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    }
 
-    final config = FlutterUxConfig(
-      enableAdvancedGestureRecognition: true,
-      enableCrashHandling: true,
-      enableMultiSessionRecord: true,
-      enableNetworkLogging: true,
-      userAppKey: '2w1otnta9bvvhzo',
-      enableAutomaticScreenNameTagging: false,
-    );
-    await FlutterUxcam.startWithConfiguration(config);
-    logger.log('UXCam started with configuration');
+    try {
+      final config = FlutterUxConfig(
+        enableAdvancedGestureRecognition: true,
+        enableCrashHandling: true,
+        enableMultiSessionRecord: true,
+        enableNetworkLogging: true,
+        userAppKey: '2w1otnta9bvvhzo',
+        enableAutomaticScreenNameTagging: false,
+      );
+      await FlutterUxcam.startWithConfiguration(config);
+      logger.log('UXCam started with configuration');
+    } catch (e, stackTrace) {
+      logger.log('Error initializing UXCam: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+      // Continue without UXCam - it's not critical for app functionality
+    }
   }
 
   Future<void> initDeepLinks() async {
@@ -942,8 +953,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
 Future<void> setupMapness(EnvType envType) async {
   final vendorConfigLocal = await AppConfigLoader.getAppConfig();
-  final vendorConfigContentMessage =
-      VendorConfigContentMessage(content: vendorConfigLocal);
+  final vendorConfigContentMessage = VendorConfigContentMessage(content: vendorConfigLocal);
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
@@ -954,28 +964,73 @@ Future<void> setupMapness(EnvType envType) async {
   );
 }
 
-Future<void> runMapnessApp(
-    EnvType envType, FutureOr<void> Function() main) async {
+Future<void> runMapnessApp(EnvType envType, FutureOr<void> Function() main) async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initHive();
 
-  final hostFlutterApi = _HostFlutterApi();
-  HostFlutterApi.setUp(hostFlutterApi);
+  try {
+    print('runMapnessApp: Starting initialization...');
+    await initHive();
+    print('runMapnessApp: Hive initialized');
 
-  await AppConfigLoader.init(envType);
-  await hostFlutterApi.appRunCompleter.future;
+    final hostFlutterApi = _HostFlutterApi();
+    HostFlutterApi.setUp(hostFlutterApi);
+    print('runMapnessApp: HostFlutterApi set up, waiting for runMain()...');
 
-  await main();
+    await AppConfigLoader.init(envType);
+    print('runMapnessApp: AppConfigLoader initialized');
+
+    // Add timeout to prevent infinite waiting
+    await hostFlutterApi.appRunCompleter.future.timeout(
+      const Duration(seconds: 10),
+      onTimeout: () {
+        print('runMapnessApp: WARNING - Timeout waiting for runMain() from native side');
+        // Complete manually if timeout occurs (this might indicate the native side already called it)
+        if (!hostFlutterApi.appRunCompleter.isCompleted) {
+          hostFlutterApi.appRunCompleter.complete();
+        }
+      },
+    );
+    print('runMapnessApp: runMain() received, proceeding to main()');
+
+    await main();
+    print('runMapnessApp: main() completed');
+  } catch (e, stackTrace) {
+    print('runMapnessApp: ERROR - $e');
+    print('runMapnessApp: StackTrace - $stackTrace');
+    try {
+      logger.log('Error in runMapnessApp: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    } catch (_) {
+      // Logger might not be initialized yet
+    }
+    rethrow;
+  }
 }
 
 Future<void> initHive() async {
-  await Hive.initFlutter();
-  Hive
-    ..registerAdapter(SearchHistoryItemAdapter())
-    ..registerAdapter(FavoriteCacheItemAdapter())
-    ..registerAdapter(HiveCoordinatesAdapter())
-    ..registerAdapter(HiveFavouriteItemEntityAdapter())
-    ..registerAdapter(FavoriteCacheStateAdapter());
+  try {
+    print('initHive: Starting Hive initialization...');
+    await Hive.initFlutter();
+    print('initHive: Hive.initFlutter() completed');
+    Hive
+      ..registerAdapter(SearchHistoryItemAdapter())
+      ..registerAdapter(FavoriteCacheItemAdapter())
+      ..registerAdapter(HiveCoordinatesAdapter())
+      ..registerAdapter(HiveFavouriteItemEntityAdapter())
+      ..registerAdapter(FavoriteCacheStateAdapter());
+    print('initHive: All adapters registered');
+  } catch (e, stackTrace) {
+    print('initHive: ERROR - $e');
+    print('initHive: StackTrace - $stackTrace');
+    try {
+      logger.log('Error initializing Hive: $e', logLevel: MapnessLogLevel.error);
+      logger.log('StackTrace: $stackTrace', logLevel: MapnessLogLevel.error);
+    } catch (_) {
+      // Logger might not be initialized yet
+    }
+    // Re-throw to prevent app from continuing with broken Hive
+    rethrow;
+  }
 }
 
 class _HostFlutterApi extends HostFlutterApi {
@@ -992,8 +1047,14 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void runMain() {
+    print('_HostFlutterApi.runMain() called from native side');
     isAppRun = true;
-    appRunCompleter.complete();
+    if (!appRunCompleter.isCompleted) {
+      appRunCompleter.complete();
+      print('_HostFlutterApi.runMain() - completer completed');
+    } else {
+      print('_HostFlutterApi.runMain() - completer already completed');
+    }
   }
 
   @override
