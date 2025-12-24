@@ -36,9 +36,11 @@ class HomeMiniAppsListPages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Navigator(
+
       key: servicesNavigatorKey,
       initialRoute: '/',
       onGenerateRoute: (settings) {
+
         switch (settings.name) {
           case '/':
             return MaterialPageRoute(

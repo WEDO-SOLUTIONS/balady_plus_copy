@@ -70,6 +70,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                 ),
               ),
             ),
+
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -329,6 +330,33 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: context.screenHeight * 0.08,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? [
+                      Colors.black.withOpacity(0.0),
+                      Colors.black.withOpacity(0.6),
+                      Colors.black,
+                    ]
+                        : [
+                      Colors.white.withOpacity(0.0),
+                      Colors.white.withOpacity(0.6),
+                      Colors.white,
+                    ],
+                    stops: const [0.0, 0.45, 1.0],
+                  ),
                 ),
               ),
             ),

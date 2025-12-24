@@ -98,7 +98,7 @@ class AppWidgetState extends State<AppWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // final themeController = context.watch<ThemeController>();
+    final themeController = context.watch<ThemeController>();
 
     return GestureDetector(
       onTap: () {
@@ -116,105 +116,107 @@ class AppWidgetState extends State<AppWidget> {
             title: 'appNameWord'.tr(),
             debugShowCheckedModeBanner: false,
             navigatorKey: NavigationService.navigatorKey,
-            theme: ThemeData(
-              primaryColor: CommonFunctions.isTodayInRanges ? AppColor.primary900LightEvent : AppColor.primary900Light,
-              scaffoldBackgroundColor: AppColor.scaffoldBackground,
-              fontFamily: AppConfig.appFontType,
-              useMaterial3: false,
-              appBarTheme: const AppBarTheme(
-                backgroundColor: AppColor.primary900Light,
-                centerTitle: true,
-              ),
-              dropdownMenuTheme: const DropdownMenuThemeData(
-                inputDecorationTheme: InputDecorationTheme(),
-                menuStyle: MenuStyle(),
-              ),
-              inputDecorationTheme: InputDecorationTheme(
-                counterStyle: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                hintStyle: const TextStyle(
-                  fontSize: 16,
-                  color: Color(0xff71717A),
-                  fontWeight: FontWeight.normal,
-                ),
-                errorStyle: const TextStyle(color: AppColor.error),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Color(0xffD4D4D8),
-                    width: 1.5,
-                  ),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: AppColor.primary800Light,
-                    width: 1.5,
-                  ),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: AppColor.error,
-                    width: 1.5,
-                  ),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: AppColor.error,
-                    width: 1.5,
-                  ),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              elevatedButtonTheme: ElevatedButtonThemeData(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColor.primary800Light,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  minimumSize: const Size(double.infinity, 34),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColor.primary900Light,
-                ),
-              ),
-              outlinedButtonTheme: OutlinedButtonThemeData(
-                style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColor.primary900Light,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(double.infinity, 34),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: const BorderSide(
-                      width: .8,
-                      color: AppColor.primary900Light,
-                    )),
-              ),
-            ),
-            // theme:
-            //     AppThemeColors.buildLightTheme(translator.activeLanguageCode),
-            //
-            // darkTheme:
-            //     AppThemeColors.buildDarkTheme(translator.activeLanguageCode),
+            // theme: ThemeData(
+            //   primaryColor: CommonFunctions.isTodayInRanges ? AppColor.primary900LightEvent : AppColor.primary900Light,
+            //   scaffoldBackgroundColor: AppColor.scaffoldBackground,
+            //   fontFamily: AppConfig.appFontType,
+            //   useMaterial3: false,
+            //   appBarTheme: const AppBarTheme(
+            //     backgroundColor: AppColor.primary900Light,
+            //     centerTitle: true,
+            //   ),
+            //   dropdownMenuTheme: const DropdownMenuThemeData(
+            //     inputDecorationTheme: InputDecorationTheme(),
+            //     menuStyle: MenuStyle(),
+            //   ),
+            //   inputDecorationTheme: InputDecorationTheme(
+            //     counterStyle: const TextStyle(
+            //       fontSize: 16,
+            //       color: Colors.black,
+            //     ),
+            //     hintStyle: const TextStyle(
+            //       fontSize: 16,
+            //       color: Color(0xff71717A),
+            //       fontWeight: FontWeight.normal,
+            //     ),
+            //     errorStyle: const TextStyle(color: AppColor.error),
+            //     contentPadding: const EdgeInsets.symmetric(
+            //       vertical: 12,
+            //       horizontal: 16,
+            //     ),
+            //     enabledBorder: OutlineInputBorder(
+            //       borderSide: const BorderSide(
+            //         color: Color(0xffD4D4D8),
+            //         width: 1.5,
+            //       ),
+            //       borderRadius: BorderRadius.circular(6),
+            //     ),
+            //     focusedBorder: OutlineInputBorder(
+            //       borderSide: const BorderSide(
+            //         color: AppColor.primary800Light,
+            //         width: 1.5,
+            //       ),
+            //       borderRadius: BorderRadius.circular(6),
+            //     ),
+            //     errorBorder: OutlineInputBorder(
+            //       borderSide: const BorderSide(
+            //         color: AppColor.error,
+            //         width: 1.5,
+            //       ),
+            //       borderRadius: BorderRadius.circular(6),
+            //     ),
+            //     focusedErrorBorder: OutlineInputBorder(
+            //       borderSide: const BorderSide(
+            //         color: AppColor.error,
+            //         width: 1.5,
+            //       ),
+            //       borderRadius: BorderRadius.circular(6),
+            //     ),
+            //   ),
+            //   elevatedButtonTheme: ElevatedButtonThemeData(
+            //     style: ElevatedButton.styleFrom(
+            //       backgroundColor: AppColor.primary800Light,
+            //       padding: const EdgeInsets.symmetric(
+            //         horizontal: 16,
+            //         vertical: 8,
+            //       ),
+            //       minimumSize: const Size(double.infinity, 34),
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(8),
+            //       ),
+            //     ),
+            //   ),
+            //   textButtonTheme: TextButtonThemeData(
+            //     style: TextButton.styleFrom(
+            //       foregroundColor: AppColor.primary900Light,
+            //     ),
+            //   ),
+            //   outlinedButtonTheme: OutlinedButtonThemeData(
+            //     style: OutlinedButton.styleFrom(
+            //         foregroundColor: AppColor.primary900Light,
+            //         padding: const EdgeInsets.symmetric(
+            //           horizontal: 16,
+            //           vertical: 8,
+            //         ),
+            //         minimumSize: const Size(double.infinity, 34),
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(8),
+            //         ),
+            //         side: const BorderSide(
+            //           width: .8,
+            //           color: AppColor.primary900Light,
+            //         )),
+            //   ),
+            // ),
+            theme:
+            AppThemeColors.buildDarkTheme(translator.activeLanguageCode),
 
-           // themeMode: themeController.themeMode,
+            //  AppThemeColors.buildLightTheme(translator.activeLanguageCode),
+
+            darkTheme:
+                AppThemeColors.buildDarkTheme(translator.activeLanguageCode),
+
+           themeMode: themeController.themeMode,
 
             builder: EasyLoading.init(builder: BotToastInit()),
             navigatorObservers: [
