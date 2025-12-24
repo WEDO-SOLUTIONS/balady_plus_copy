@@ -136,9 +136,9 @@ class MiniAppsCustomTextField extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  hintText: "search2".tr(),
+                  hintText: hintText,
                   hintStyle: TextStyle(
-                  //  color: hintColor,
+                    //  color: hintColor,
                     fontSize: hintTextSize ?? 15,
                   ),
                   prefixIcon: icon,
@@ -165,9 +165,9 @@ class MiniAppsCustomTextField extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          //  if (suffixString != null) suffixString!,
+          if (suffixString != null) suffixString!,
           if (suffixString != null && suffixIcon != null)
-            const SizedBox(width: 8),
+            const SizedBox(width: 20),
           if (suffixIcon != null) suffixIcon!,
         ],
       ),
