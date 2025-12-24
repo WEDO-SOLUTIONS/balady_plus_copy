@@ -209,9 +209,8 @@ class AppWidgetState extends State<AppWidget> {
             //   ),
             // ),
             theme:
-            AppThemeColors.buildDarkTheme(translator.activeLanguageCode),
 
-            //  AppThemeColors.buildLightTheme(translator.activeLanguageCode),
+              AppThemeColors.buildLightTheme(translator.activeLanguageCode),
 
             darkTheme:
                 AppThemeColors.buildDarkTheme(translator.activeLanguageCode),
