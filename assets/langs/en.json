@@ -4798,5 +4798,23 @@
   "AppsTitle": "Applications",
   "passcode_sequence_error": "Passcode should not be a sequence.",
   "passcode_id_error": "Passcode should not contain part of your ID.",
-  "incorrect_username_password": "The username or password is incorrect"
+  "incorrect_username_password": "The username or password is incorrect",
+  "quick_apps": "Quick Apps,",
+  "one_place": "One Place",
+  "search2": "Search", 
+  "my_favorite_apps": "My Favorite Apps ⭐",
+  "most_used_apps": "Most Used Apps",
+  "add2": "Add",
+
+  "no_favorite_apps":"No favorite apps",
+  "all_apps":"All apps",
+  "my_favorite_apps2":"My favorite apps",
+  "you_can_add_your_favorite_apps_for_easy_access":"You can add your favorite apps for easy access",
+
+  "search_for_mini_app": "Search for mini app",
+  "search_by_name_or_description": "Search by name or by description of that app",
+  "no_results_found":"No results found",
+  "max_fav_apps_limit":"You cannot add more than 10 apps to favorites."
+
+
 }

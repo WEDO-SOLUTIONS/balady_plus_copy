@@ -223,6 +223,8 @@ class AppInterceptors extends Interceptor {
               : false,
           corelationId: xCorrelationId);
 
+      print(verifyingKEY);
+
       options.headers
           .putIfAbsent(ApiHeader.verifyingKEY.name, () => verifyingKEY);
     }
@@ -307,7 +309,8 @@ class AppInterceptors extends Interceptor {
         Breadcrumb(
           message: 'Request Successful',
           data: {
-            "url": response.requestOptions.baseUrl + response.requestOptions.path,
+            "url":
+                response.requestOptions.baseUrl + response.requestOptions.path,
             "queryParameters": response.requestOptions.queryParameters,
             "requestBody": response.requestOptions.data,
             "headers": response.requestOptions.headers,

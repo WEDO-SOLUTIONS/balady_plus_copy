@@ -4573,5 +4573,23 @@
   "AppsTitle": "التطبيقات",
   "passcode_sequence_error": "يجب ألا تكون كلمة المرور عبارة عن تسلسل رقمي.",
   "passcode_id_error": "يجب ألا تحتوي كلمة المرور على جزء من رقم الهوية.",
-  "incorrect_username_password": "اسم المستخدم أو كلمة المرور غير صحيحة"
+  "incorrect_username_password": "اسم المستخدم أو كلمة المرور غير صحيحة",
+  
+  "quick_apps": "تطبيقات سريعة،",
+  "one_place":"مكان واحد",
+  "search2": "بحث",
+  "my_favorite_apps": "تطبيقاتي المفضلة ⭐",
+  "most_used_apps": "التطبيقات الأكثر إستخداماً", 
+  "add2": "أضف",
+
+  "no_favorite_apps":"لا توجد تطبيقات مفضلة",
+  "all_apps":"جميع التطبيقات",
+  "my_favorite_apps2":"تطبيقاتي المفضلة",
+  "you_can_add_your_favorite_apps_for_easy_access":"يمكنك إضافة تطبيقاتك المفضلة لسهولة الوصول اليها",
+
+  "search_for_mini_app": "ابحث عن التطبيقات المصغرة",
+  "search_by_name_or_description": "ابحث بالاسم أو بالوصف الخاص بالتطبيق",
+  "no_results_found":"لاتوجد نتائج",
+  "max_fav_apps_limit":"لا يمكنك إضافة أكثر من 10 تطبيقات إلى المفضلة."
+ 
 }

@@ -1,11 +1,10 @@
-import 'package:balady_plus/app/core/base/base_view.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -57,7 +56,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             fontSize: 17,
                             fontFamily: 'packages/balady_uikit/Frutiger',
-                            color: Color(0xFF003449)),
+                            color: const Color(0xFF003449)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -101,7 +100,7 @@ class MiniAppsItemWidget extends StatelessWidget {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
-        context.read<HomeMiniAppsListCubit>().openMiniApp(
+        context.read<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
               serviceKey: "municipalservice",
               path: "#Volunteer_Home_Screen",
             );

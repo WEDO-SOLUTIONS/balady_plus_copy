@@ -444,11 +444,8 @@ class IconPath {
   static const biometric = '${_authPath}biometric$_svg';
   static const quick_access = '${_authPath}quick_access$_svg';
 
-
-
   // Classification Certificate
   static const newOfficeIcon = '${_svgIconPath}new_office$_svg';
-
 
   static const chat_bot_like_icon = '${_svgIconPath}chat-bot-like$_svg';
   static const chat_bot_dislike_icon = '${_svgIconPath}chat-bot-dislike$_svg';
@@ -463,9 +460,10 @@ class IconPath {
   static const medalIcon = '${_svgIconPath}medal_06$_svg';
   static const elementsIcon = '${_svgIconPath}elements$_svg';
 
+  //! My icons
 
-
-
+  static const defaultMiniAppIcon = '${_svgIconPath}default_mini_app_logo$_svg';
+  static const searchSVG = '${_svgIconPath}search$_svg';
 }
 
 ///Users/abdelrahmanismail/StudioProjects/balady-plus/assets/icons/svg/jod/apple_pay.svg

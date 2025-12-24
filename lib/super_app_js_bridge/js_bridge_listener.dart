@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
 import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -42,7 +43,6 @@ import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
@@ -80,6 +80,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openMiniApps);
     registerFunction(openPdfFile);
     registerFunction(openAppSetting);
+    registerFunction(closeCurrentMiniApp);
+  }
+
+  @pragma('vm:entry-point')
+  void closeCurrentMiniApp(dynamic msg, CompletionHandler handler) async {
+    if ( NavigationService.navigatorKey.currentContext!.mounted)
+      Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
+
   }
 
   @pragma('vm:entry-point')
@@ -146,8 +154,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       final needDialog = NeedLoginDialog(
         onSuccessLogin: (bool? isSuccess) async {
           if (isSuccess ?? false) {
-            await sl<HomeMiniAppsListCubit>()
-                .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+            await sl<NewMiniAppLogicCubit>()
+                .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
                 .then((result) {
               response = result!;
             });
@@ -180,8 +188,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: null,
       );
     } else {
-      await sl<HomeMiniAppsListCubit>()
-          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp.serviceKey!)
+      await sl<NewMiniAppLogicCubit>()
+          .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
           .then((result) {
         response = result!;
       });
@@ -334,6 +342,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       var dataJsonString = response.jsonEncodeModel();
       handler.complete(dataJsonString);
+
     } catch (_) {
       BaseResponse response = BaseResponse(
         code: 500,
@@ -398,8 +407,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       late BaseResponse response;
       if (msg != null && msg is String) {
         Map data = jsonDecode(msg);
-        sl<HomeMiniAppsListCubit>()
-            .openMiniApp(serviceKey: data["miniAppKey"], path: data['path']);
+        sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
+          serviceKey: data["miniAppKey"],
+          path: data['path'],
+        );
         response = BaseResponse(
           code: 200,
           message: "success",
