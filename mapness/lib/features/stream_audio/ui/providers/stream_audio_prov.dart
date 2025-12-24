@@ -373,7 +373,7 @@ class StreamAudioProvider extends ChangeNotifier {
         url: channel.streamUrl!,
         channelId: channel.id.toString(),
         title: channel.name,
-        programName: channel.currentPlayedProgram?.name ?? 'on Air',
+        programName: channel.currentPlayedProgram?.name,
       );
       debugPrint('StreamAudioProvider: Successfully started playing ${channel.name}');
     } catch (e) {
@@ -422,7 +422,7 @@ class StreamAudioProvider extends ChangeNotifier {
         url: _selectedChannel!.streamUrl!,
         channelId: _selectedChannel!.id!.toString(),
         title: _selectedChannel!.name,
-        programName: _selectedChannel!.currentPlayedProgram?.name ?? 'on Air',
+        programName: _selectedChannel!.currentPlayedProgram?.name,
       );
       debugPrint('StreamAudioProvider: Stream playing successfully');
     } catch (e) {

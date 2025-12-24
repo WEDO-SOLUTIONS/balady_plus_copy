@@ -37,9 +37,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
           backgroundColor: Colors.grey.shade100,
           appBar: BaladyTopBar.iconAndText(
             systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-            //TODO: Add to localization MBC
-            // title: context.l10n.mediaSub,
-            title: 'MBC Mood',
+            title: Directionality.of(context) == TextDirection.rtl ? 'كتالوج الوسائط' : 'media catalog',
             colorEnabled: context.color.textAndIconsStatusAccent,
             leading: ActionModel(
               onPressed: () => context.router.popForced(),
@@ -49,17 +47,13 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const DashboardTitle(
-                      //TODO: Add to localization MBC
-                      //   context.l10n.liveNow
-                      'Live Now',
-                    ),
-                    Padding(
+                    DashboardTitle(Directionality.of(context) == TextDirection.rtl ? 'مباشر الآن' : 'Live now'),
+                    const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
                       child: MBCMood(color: Color.fromRGBO(242, 74, 56, 1)),
                     )
@@ -69,13 +63,11 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               Builder(builder: (_) {
                 final channels = ref.watch(streamAudioProvider).filteredChannels;
                 if (channels.isEmpty) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text(
-                        //TODO: Add to localization MBC
-                        //   context.l10n.noChannels
-                        'No Channels'
-                    ),
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(Directionality.of(context) == TextDirection.rtl
+                        ? 'لا توجد قنوات حاليا'
+                        : 'No channels right now'),
                   );
                 }
 
@@ -136,11 +128,11 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             leading: SizedBox(
                               width: imagesWidth,
                               child: MediaImages(
-                                      imagesWidth: imagesWidth,
-                                      programUrl: programUrl,
-                                      channelUrl: channelUrl,
-                                      hasProgram: hasProgram,
-                                    ),
+                                imagesWidth: imagesWidth,
+                                programUrl: programUrl,
+                                channelUrl: channelUrl,
+                                hasProgram: hasProgram,
+                              ),
                             ),
 
                             title: Text(channel.name ?? context.l10n.name,
@@ -148,16 +140,15 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(channel.currentPlayedProgram?.name ??
-                                //TODO: Add to localization MBC
-                                //     context.l10n.onAir,
-                                'On Air',
-                                    style: TextStyle(
-                                        color: isSelected ? const Color(0xff9547E9).withOpacity( 0.7) : null)),
+                                Text(
+                                    channel.currentPlayedProgram?.name ??
+                                        (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
+                                    style:
+                                        TextStyle(color: isSelected ? const Color(0xff9547E9).withOpacity(0.7) : null)),
                                 if (channel.currentPlayedProgram?.date != null)
                                   Text(channel.currentPlayedProgram!.date!,
                                       style: TextStyle(
-                                          color: isSelected ? const Color(0xff9547E9).withOpacity( 0.7) : null)),
+                                          color: isSelected ? const Color(0xff9547E9).withOpacity(0.7) : null)),
                               ],
                             ),
                             trailing: SizedBox(
@@ -185,10 +176,8 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
               const SizedBox(
                 height: 24,
               ),
-              const DashboardTitle(
-                //TODO: Add to localization MBC
-                //   context.l10n.arrivingSoon
-                'Arriving Soon',
+              DashboardTitle(
+                Directionality.of(context) == TextDirection.rtl ? 'سيصل قريباً' : 'Arriving Soon',
               ),
               const ArrivingSoon()
             ],
@@ -227,7 +216,10 @@ class MediaImages extends StatelessWidget {
               width: (imagesWidth / 2) - 4,
               child: Stack(
                 children: [
-                  ProgramImage(url: programUrl, withBoarder: true,),
+                  ProgramImage(
+                    url: programUrl,
+                    withBoarder: true,
+                  ),
                   if (!hasProgram)
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -241,11 +233,11 @@ class MediaImages extends StatelessWidget {
                               begin: const Alignment(0.50, -0.00),
                               end: const Alignment(0.50, 1.00),
                               stops: const [0.00, 1.00],
-                              colors: [Colors.black.withOpacity( 0.10), Colors.black.withOpacity( 0)],
+                              colors: [Colors.black.withOpacity(0.10), Colors.black.withOpacity(0)],
                             ),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
-                              color: Colors.black.withOpacity( 0.10),
+                              color: Colors.black.withOpacity(0.10),
                             ),
                           ),
                         ),
@@ -286,7 +278,7 @@ class ArrivingSoon extends StatelessWidget {
     ];
 
     return Padding(
-      padding:  EdgeInsets.only(
+      padding: EdgeInsets.only(
         top: 16.0,
         bottom: 16.0,
         left: CommonFunctions.isAppAR ? 0 : 14.0,

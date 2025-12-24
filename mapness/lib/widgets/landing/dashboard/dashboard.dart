@@ -247,9 +247,7 @@ class _DashboardState extends ConsumerState<Dashboard>
                   ),
                   const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
-                    //TODO: Add to localization MBC
-                    // text:context.l10n.streamAudio,
-                    text: 'Stream Audio',
+                    text: Directionality.of(context) == TextDirection.rtl ? 'البث الصوتي' : 'Stream Audio',
                     icon: Icons.wifi,
                     child: SvgPicture.asset(
                       Assets.icons.svg.audio.audioStream.keyName,

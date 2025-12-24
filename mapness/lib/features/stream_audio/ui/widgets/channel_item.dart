@@ -18,7 +18,7 @@ class MediaCatalogItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = channel.currentPlayedProgram?.name ?? 'On Air';
+    final title = channel.currentPlayedProgram?.name ?? (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air');
     final subTitle = channel.name ?? '-';
     final hasProgram = channel.currentPlayedProgram != null;
 

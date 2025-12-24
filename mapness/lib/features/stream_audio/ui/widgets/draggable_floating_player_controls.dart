@@ -497,7 +497,7 @@ class _ContentState extends ConsumerState<Content> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  selectedChannel?.currentPlayedProgram?.name ?? 'On Air',
+                  selectedChannel?.currentPlayedProgram?.name ?? (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,

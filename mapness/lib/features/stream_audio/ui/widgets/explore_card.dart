@@ -65,17 +65,13 @@ class _ExploreCardState extends ConsumerState<ExploreCard> {
           padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
           child: RichText(
             text: TextSpan(
-              //TODO: Add to localization MBC
-              // text: context.l10n.mediaHeader,
-              text: 'MBC ',
+              text: Directionality.of(context) == TextDirection.rtl ? 'استكشِف' : 'Explore the',
               style: context.textStyles.h3Medium.copyWith(
                 color: Colors.white,
               ),
               children: [
                 TextSpan(
-                  //TODO: Add to localization MBC
-                  // text: context.l10n.mediaSub,
-                  text: 'Mood',
+                  text: Directionality.of(context) == TextDirection.rtl ? '\nكتالوج الوسائط' : '\nmedia catalog',
                   style: context.textStyles.h3Medium.copyWith(
                     color: const Color(0xFF00FFFA),
                   ),

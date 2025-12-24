@@ -144,7 +144,7 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            provider.selectedChannel?.currentPlayedProgram?.name ?? 'On Air',
+            provider.selectedChannel?.currentPlayedProgram?.name ?? (Directionality.of(context) == TextDirection.rtl ? 'على الهواء' : 'On Air'),
             style: const TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
