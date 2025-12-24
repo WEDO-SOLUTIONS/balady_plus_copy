@@ -210,7 +210,8 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    icon: const Icon(Icons.arrow_back),
+                                    icon: const Icon(Icons.arrow_back,
+                                        color: Color(0XFFB2B2B2)),
                                   ),
                                 ),
                               ),
@@ -235,7 +236,12 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     isReadOnly: false,
                                     hintText: "search2".tr(),
                                     suffixIcon: value.text.isEmpty
-                                        ? SvgPicture.asset(IconPath.searchSVG)
+                                        ? SvgPicture.asset(
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? IconPath.searchSVG2
+                                                : IconPath.searchSVG,
+                                          )
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();
@@ -243,9 +249,13 @@ class MiniAppsSearchPage extends StatelessWidget {
                                                   .read<NewMiniAppLogicCubit>()
                                                   .searchMiniApp('');
                                             },
-                                            icon: const Icon(
+                                            icon: Icon(
                                               Icons.close_rounded,
-                                              color: Color(0XFFB2B2B2),
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.black
+                                                  : Color(0XFFB2B2B2),
                                             ),
                                           ),
                                     onChanged: (query) {

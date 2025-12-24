@@ -51,7 +51,7 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
                 height: context.h(64),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: const Color(0XFFFFFFFF),
+                  //  color: const Color(0XFFFFFFFF),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: const Color(0XFFEFEEEE),
@@ -82,7 +82,7 @@ class GetAllFavMiniAppsWidget extends StatelessWidget {
                               width: context.w(192),
                               height: context.h(30),
                               text: favApp.name,
-                              fontColor: const Color(0XFF1E2A36),
+                             // fontColor: const Color(0XFF1E2A36),
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
                             ),

@@ -58,7 +58,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
             CommonFunctions.showError("max_fav_apps_limit".tr());
           },
           child: Scaffold(
-            backgroundColor: Colors.white,
+         //   backgroundColor: Colors.white,
             body: SafeArea(
               child: Container(
                 height: context.screenHeight,
@@ -84,7 +84,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                         width: context.w(144),
                                         height: context.h(28),
                                         text: 'my_favorite_apps'.tr(),
-                                        fontColor: const Color(0XFF242424),
+                                      //  fontColor: const Color(0XFF242424),
                                         fontWeight: FontWeight.w700,
                                         fontSize: 18,
                                       ),
@@ -106,7 +106,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                         height: context.h(49),
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
-                                            color: const Color(0XFFFFFFFF),
+                                           // color: Theme.of(context).colorScheme.surface,
                                             borderRadius: BorderRadius.circular(100),
                                             border: Border.all(
                                               color: const Color(0xFFEDEDED),
@@ -117,7 +117,10 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                             child: IconButton(
                                               onPressed: () => _startSearch(context),
                                               icon: SvgPicture.asset(
-                                                IconPath.searchSVG,
+                                                Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                    ? IconPath.searchSVG2
+                                                    : IconPath.searchSVG,
                                                 width: context.w(20),
                                                 height: context.h(20),
                                               ),
@@ -131,7 +134,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                         height: context.h(49),
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
-                                            color: const Color(0XFFFFFFFF),
+                                          //  color: const Color(0XFFFFFFFF),
                                             borderRadius: BorderRadius.circular(100),
                                             border: Border.all(
                                               color: const Color(0xFFEDEDED),
@@ -142,7 +145,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                             onPressed: () {
                                               Navigator.pop(context);
                                             },
-                                            icon: const Icon(Icons.close),
+                                            icon:  Icon(Icons.close,color: Theme.of(context).iconTheme.color,),
                                           ),
                                         ),
                                       ),
@@ -177,7 +180,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                             _stopSearch(context);
                                           }
                                         },
-                                        icon: const Icon(Icons.close),
+                                        icon:  Icon(Icons.close,color: Theme.of(context).iconTheme.color,),
                                       ),
                                     ),
                                   ),
@@ -213,15 +216,18 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                                 )
                                               : const SizedBox(),
                                           suffixIcon: value.text.isEmpty
-                                              ? SvgPicture.asset(IconPath.searchSVG)
+                                              ? SvgPicture.asset(Theme.of(context).brightness ==
+                                              Brightness.dark
+                                              ? IconPath.searchSVG2
+                                              : IconPath.searchSVG)
                                               : IconButton(
                                                   onPressed: () {
                                                     _searchController.clear();
                                                     context.read<NewMiniAppLogicCubit>().searchMiniApp('');
                                                   },
-                                                  icon: const Icon(
+                                                  icon:  Icon(
                                                     Icons.close_rounded,
-                                                    color: Color(0XFFB2B2B2),
+                                                    color: Theme.of(context).iconTheme.color,
                                                   ),
                                                 ),
                                           onChanged: (query) {
@@ -264,7 +270,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                               width: context.w(144),
                                               height: context.h(28),
                                               text: 'all_apps'.tr(),
-                                              fontColor: const Color(0XFF242424),
+                                            //  fontColor: const Color(0XFF242424),
                                               fontWeight: FontWeight.w700,
                                               fontSize: 18,
                                             ),
@@ -288,20 +294,26 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                       right: 0,
                       child: Container(
                         height: context.screenHeight * 0.08,
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Color(0x00FFFFFF),
-                              Color(0x99FFFFFF),
-                              Color(0xFFFFFFFF),
+                              Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(0.0),
+                              Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(0.6),
+                              Theme.of(context)
+                                  .scaffoldBackgroundColor,
                             ],
-                            stops: [0.0, 0.4135, 1.0],
+                            stops: const [0.0, 0.45, 1.0],
                           ),
                         ),
                       ),
                     ),
+
                   ],
                 ),
               ),

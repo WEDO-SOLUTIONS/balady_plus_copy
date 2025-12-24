@@ -121,7 +121,9 @@ class CustomLargMoreApps extends StatelessWidget {
               height: height ?? context.h(168),
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  color: backgroundColor ?? Colors.white,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Color(0xFF01222E)
+                      : Colors.white,
                   borderRadius: borderRadius ?? BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -158,7 +160,7 @@ class CustomLargMoreApps extends StatelessWidget {
                 overflow: TextOverflow.visible,
                 textAlign: isArabic ? TextAlign.right : TextAlign.left,
                 style: const TextStyle(
-                  color: Color(0XFF242424),
+              //    color: Color(0XFF242424),
                   fontWeight: FontWeight.w700,
                   fontFamily: GeneralKey.appFontType,
                 ),

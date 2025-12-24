@@ -53,7 +53,7 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
               child: const Center(
                 child: Icon(
                   Icons.add,
-                  color: Color(0XFF1B153D),
+                //  color: Color(0XFF1B153D),
                   size: 30,
                 ),
               ),
@@ -73,7 +73,7 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
                 height: 14.43 / 13,
                 fontWeight: FontWeight.w400,
                 fontFamily: GeneralKey.appFontType,
-                color:  Color(0xFF1E2A36),
+               // color:  Color(0xFF1E2A36),
                 leadingDistribution: TextLeadingDistribution.even,
               ),
               textAlign: TextAlign.center,

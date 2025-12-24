@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:flutter/src/material/theme.dart';
 
 final GlobalKey<NavigatorState> servicesNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -44,7 +45,6 @@ class HomeMiniAppsListPages extends StatelessWidget {
               builder: (_) => BlocProvider<NewMiniAppLogicCubit>.value(
                 value: sl<NewMiniAppLogicCubit>()..loadMiniApps(),
                 child: Scaffold(
-                  backgroundColor: const Color(0xFFF5F7FA),
                   body: Stack(
                     children: [
                       const Positioned(top: 0, child: OverlayBlurCircle()),
@@ -160,14 +160,19 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                       suffixString: Text(
                                                         "search2".tr(),
                                                         style: const TextStyle(
-                                                          color: Colors.black,
+                                                          // color: Colors.black,
                                                           fontFamily: GeneralKey
                                                               .appFontType,
                                                         ),
                                                       ),
-                                                      suffixIcon:
-                                                          SvgPicture.asset(
-                                                              IconPath
+                                                      suffixIcon: SvgPicture
+                                                          .asset(Theme.of(context)
+                                                                      .brightness ==
+                                                                  Brightness
+                                                                      .dark
+                                                              ? IconPath
+                                                                  .searchSVG2
+                                                              : IconPath
                                                                   .searchSVG),
                                                     ),
                                                   ],
@@ -205,13 +210,17 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                               .isAppAR
                                                           ? TextAlign.right
                                                           : TextAlign.left,
-                                                      style: const TextStyle(
+                                                      style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.w700,
                                                         fontFamily: GeneralKey
                                                             .appFontType,
-                                                        color: Colors.black,
+                                                        color: Theme.of(context)
+                                                                    .brightness ==
+                                                                Brightness.dark
+                                                            ? Colors.white
+                                                            : Colors.black,
                                                       ),
                                                     ),
                                                   ),
@@ -272,6 +281,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                                 ),
                                                                 child:
                                                                     CustomMiniAppsCard(
+
                                                                   key: Key(
                                                                       favMiniApp
                                                                           .id),
@@ -523,8 +533,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                                         .right
                                                                     : TextAlign
                                                                         .left,
-                                                            style:
-                                                                const TextStyle(
+                                                            style: TextStyle(
                                                               fontSize: 18,
                                                               fontWeight:
                                                                   FontWeight
@@ -532,8 +541,13 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                               fontFamily:
                                                                   GeneralKey
                                                                       .appFontType,
-                                                              color:
-                                                                  Colors.black,
+                                                              color: Theme.of(context)
+                                                                          .brightness ==
+                                                                      Brightness
+                                                                          .dark
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black,
                                                             ),
                                                           ),
                                                           SizedBox(
