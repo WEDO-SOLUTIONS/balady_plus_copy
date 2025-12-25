@@ -29,7 +29,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class HomeMiniAppsListPages extends StatelessWidget {
   const HomeMiniAppsListPages({super.key});
-  MiniApp getMenAppByServiceId(String serviceKey) {
+  MiniApp getMiniAppByServiceId(String serviceKey) {
     final miniAppsCubit = sl<NewMiniAppLogicCubit>();
     try {
       return miniAppsCubit.state.allMiniApps
@@ -289,7 +289,7 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                               context
                                                   .read<NewMiniAppLogicCubit>()
                                                   .openMiniApp(
-                                                    getMenAppByServiceId(
+                                                    getMiniAppByServiceId(
                                                         "BaladyUrbiImtithal"),
                                                   );
                                             },
