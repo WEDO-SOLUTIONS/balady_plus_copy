@@ -17,7 +17,6 @@ class StreamAudio extends ConsumerStatefulWidget {
 }
 
 class _StreamAudioState extends ConsumerState<StreamAudio> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final DraggableScrollableController _sheetController = DraggableScrollableController();
 
   final double _minChildSize = 0.0;
@@ -121,97 +120,93 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   Widget build(BuildContext context) {
     final provider = ref.watch(streamAudioProvider);
 
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.black,
-      body: OrientationBuilder(
-        builder: (context, orientation) {
-          final isLandscape = orientation == Orientation.landscape;
+    return OrientationBuilder(
+      builder: (context, orientation) {
+        final isLandscape = orientation == Orientation.landscape;
 
-          // Handle orientation change after frame
-          if (_previousOrientation != null && _previousOrientation != orientation && !_isTransitioningOrientation) {
-            _isTransitioningOrientation = true;
+        // Handle orientation change after frame
+        if (_previousOrientation != null && _previousOrientation != orientation && !_isTransitioningOrientation) {
+          _isTransitioningOrientation = true;
 
-            WidgetsBinding.instance.addPostFrameCallback((_) async {
+          WidgetsBinding.instance.addPostFrameCallback((_) async {
+            if (!mounted) {
+              _isTransitioningOrientation = false;
+              return;
+            }
+
+            try {
+              // Small delay to let the layout settle
+              await Future.delayed(const Duration(milliseconds: 50));
               if (!mounted) {
-                _isTransitioningOrientation = false;
                 return;
               }
 
-              try {
-                // Small delay to let the layout settle
-                await Future.delayed(const Duration(milliseconds: 50));
-                if (!mounted) {
-                  return;
-                }
-
-                if (isLandscape) {
-                  // Switching to landscape: if portrait sheet was open, open landscape sheet
-                  if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
-                    if (mounted) {
-                      setState(() {
-                        _landscapeSheetWidth = _landscapeMaxWidth;
-                        _isTransitioningOrientation = false;
-                      });
-                    }
-                  } else {
-                    if (mounted) {
-                      setState(() => _isTransitioningOrientation = false);
-                    }
+              if (isLandscape) {
+                // Switching to landscape: if portrait sheet was open, open landscape sheet
+                if (_sheetController.isAttached && _sheetController.size > _minChildSize) {
+                  if (mounted) {
+                    setState(() {
+                      _landscapeSheetWidth = _landscapeMaxWidth;
+                      _isTransitioningOrientation = false;
+                    });
                   }
                 } else {
-                  // Switching to portrait: if landscape sheet was open, open portrait sheet
-                  if (_landscapeSheetWidth > 0) {
-                    if (mounted) {
-                      setState(() {
-                        _landscapeSheetWidth = 0;
-                        _isTransitioningOrientation = false;
-                      });
-                    }
-
-                    // Wait a frame before animating the portrait sheet
-                    await Future.delayed(const Duration(milliseconds: 100));
-                    if (mounted && _sheetController.isAttached) {
-                      await _sheetController.animateTo(
-                        _maxChildSize,
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeOutCubic,
-                      );
-                    }
-                  } else {
-                    if (mounted) {
-                      setState(() => _isTransitioningOrientation = false);
-                    }
+                  if (mounted) {
+                    setState(() => _isTransitioningOrientation = false);
                   }
                 }
-              } catch (e) {
-                // Silently handle any state transition errors during orientation change
-                debugPrint('StreamAudio orientation change error: $e');
-                if (mounted) {
-                  setState(() => _isTransitioningOrientation = false);
+              } else {
+                // Switching to portrait: if landscape sheet was open, open portrait sheet
+                if (_landscapeSheetWidth > 0) {
+                  if (mounted) {
+                    setState(() {
+                      _landscapeSheetWidth = 0;
+                      _isTransitioningOrientation = false;
+                    });
+                  }
+
+                  // Wait a frame before animating the portrait sheet
+                  await Future.delayed(const Duration(milliseconds: 100));
+                  if (mounted && _sheetController.isAttached) {
+                    await _sheetController.animateTo(
+                      _maxChildSize,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeOutCubic,
+                    );
+                  }
+                } else {
+                  if (mounted) {
+                    setState(() => _isTransitioningOrientation = false);
+                  }
                 }
               }
-            });
-          }
-
-          // Update orientation tracking after frame to avoid build-time mutation
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _previousOrientation = orientation;
+            } catch (e) {
+              // Silently handle any state transition errors during orientation change
+              debugPrint('StreamAudio orientation change error: $e');
+              if (mounted) {
+                setState(() => _isTransitioningOrientation = false);
+              }
+            }
           });
+        }
 
-          // Show a simple black screen during rapid transitions to avoid layer disposal errors
-          if (_isTransitioningOrientation) {
-            return Container(
-              color: Colors.transparent,
-              child: Center(
-                child: widget.child,
-              ),
-            );
-          }
+        // Update orientation tracking after frame to avoid build-time mutation
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _previousOrientation = orientation;
+        });
 
-          return isLandscape ? _buildLandscapeLayout(provider) : _buildPortraitLayout(provider);
-        },
-      ),
+        // Show a simple black screen during rapid transitions to avoid layer disposal errors
+        if (_isTransitioningOrientation) {
+          return Container(
+            color: Colors.transparent,
+            child: Center(
+              child: widget.child,
+            ),
+          );
+        }
+
+        return isLandscape ? _buildLandscapeLayout(provider) : _buildPortraitLayout(provider);
+      },
     );
   }
 
@@ -352,7 +347,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             },
             child: Container(
               decoration: const BoxDecoration(
-                color: Colors.black,
+                color: Colors.green,
                 // Border is updated below based on side
               ),
               child: DecoratedBox(
@@ -438,78 +433,91 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
         ),
       );
 
-  Widget _buildDetailsControlsSheet(StreamAudioProvider provider) => DraggableScrollableSheet(
-        controller: _sheetController,
-        initialChildSize: _minChildSize,
-        minChildSize: _minChildSize,
-        maxChildSize: _maxChildSize,
-        builder: (context, scrollController) => Container(
-          decoration: const BoxDecoration(color: Colors.black),
-          child: SingleChildScrollView(
-            controller: scrollController,
-            padding: const EdgeInsets.all(0),
-            physics: const ClampingScrollPhysics(),
-            child: Column(
-              children: [
-                Container(
-                  width: 40,
-                  height: 3,
-                  margin: const EdgeInsets.symmetric(vertical: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(36),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const PlayingAudioTile(instanceId: 'portrait_sheet'),
-                if (provider.hasError) ...[
-                  const SizedBox(height: 16),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
-                      border: Border.all(color: Colors.red.withOpacity(0.3)),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.error_outline, color: Colors.red, size: 20),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 12,
-                            ),
+  Widget _buildDetailsControlsSheet(StreamAudioProvider provider) => AnimatedBuilder(
+        animation: _sheetController,
+        builder: (context, _) {
+          final double currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+          final bool isVisible = currentSize > _minChildSize;
+
+          return DraggableScrollableSheet(
+            controller: _sheetController,
+            initialChildSize: _minChildSize,
+            minChildSize: _minChildSize,
+            maxChildSize: _maxChildSize,
+            builder: (context, scrollController) => Container(
+              decoration: BoxDecoration(
+                color: isVisible ? Colors.black : Colors.transparent,
+              ),
+              child: Opacity(
+                opacity: isVisible ? 1.0 : 0.0,
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  padding: const EdgeInsets.all(0),
+                  physics: const ClampingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 3,
+                        margin: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(36),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const PlayingAudioTile(instanceId: 'portrait_sheet'),
+                      if (provider.hasError) ...[
+                        const SizedBox(height: 16),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            border: Border.all(color: Colors.red.withOpacity(0.3)),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.error_outline, color: Colors.red, size: 20),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Audio Error: ${provider.errorMessage ?? "Unknown error"}',
+                                  style: const TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
-                    ),
+                      const SizedBox(height: 8),
+                      MediaCatalogList(
+                        needReset: () {
+                          //reset the timer
+                          _autoCloseTimer?.cancel();
+                          _autoCloseTimer = Timer(const Duration(seconds: 8), () {
+                            if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
+                              _sheetController.animateTo(
+                                _minChildSize,
+                                duration: const Duration(milliseconds: 800),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 32),
+                    ],
                   ),
-                ],
-                const SizedBox(height: 8),
-                MediaCatalogList(
-                  needReset: () {
-                    //reset the timer
-                    _autoCloseTimer?.cancel();
-                    _autoCloseTimer = Timer(const Duration(seconds: 8), () {
-                      if (mounted && _sheetController.isAttached && _sheetController.size > _minChildSize) {
-                        _sheetController.animateTo(
-                          _minChildSize,
-                          duration: const Duration(milliseconds: 800),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    });
-                  },
                 ),
-                const SizedBox(height: 32),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       );
 
   Widget _buildRemovalZone() => Positioned(
@@ -567,7 +575,9 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
                         children: [
                           Icon(Icons.close, color: Colors.white.withOpacity(0.80), size: 22),
                           Text(
-                            Directionality.of(context) == TextDirection.rtl ? 'اسحب هنا للخروج من مشغل الصوت' : 'Drag here to exit audio player',
+                            Directionality.of(context) == TextDirection.rtl
+                                ? 'اسحب هنا للخروج من مشغل الصوت'
+                                : 'Drag here to exit audio player',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 12,

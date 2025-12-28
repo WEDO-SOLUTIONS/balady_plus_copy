@@ -423,7 +423,7 @@ class _DashboardState extends ConsumerState<Dashboard>
     footerOpacity.value =
         min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
 
-    Future.delayed(Duration.zero, () {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(
           MapControlsStateDashboard(),
