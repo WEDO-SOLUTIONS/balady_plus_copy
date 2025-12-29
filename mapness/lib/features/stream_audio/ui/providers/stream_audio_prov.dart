@@ -460,15 +460,21 @@ class StreamAudioProvider extends ChangeNotifier {
       }
     }
 
+    // Sync state first to ensure we have accurate information about current playback state
+    _audioService.syncState();
+    
     // If we have a selected channel but audio service is not playing, start playing
     if (!_audioService.isPlaying && !_audioService.isLoading) {
       debugPrint('StreamAudioProvider: Starting playback for selected channel: ${_selectedChannel!.name}');
       await playStream();
     } else {
-      // Otherwise, toggle play/pause normally
+      // Otherwise, toggle play/pause normally (togglePlayPause will also sync state internally)
       debugPrint('StreamAudioProvider: Toggling play/pause state');
       await _audioService.togglePlayPause();
     }
+    
+    // Ensure UI is updated after toggle
+    notifyListeners();
   }
 
   // Channel navigation
@@ -553,11 +559,16 @@ class StreamAudioProvider extends ChangeNotifier {
 
     switch (state) {
       case AppLifecycleState.resumed:
-        // App came back to foreground - check if audio should be playing
+        // App came back to foreground - immediately sync state, then check recovery
         if (_selectedChannel != null && !_isExited) {
-          // Give a small delay to allow system to settle
+          // Immediately sync state to reflect actual player state
+          _audioService.syncState();
+          notifyListeners();
+          
+          // Then check for recovery after a small delay to allow system to settle
           Future.delayed(const Duration(milliseconds: 500), () {
             _audioService.monitorAndRecover();
+            notifyListeners();
           });
         }
         break;

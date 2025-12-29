@@ -31,7 +31,8 @@ class AudioService extends ChangeNotifier {
   bool _isLoading = false;
   bool _hasError = false;
   String? _errorMessage;
-  // Simplified live-only playback: no interruption state or last-playback tracking
+  // Track when we expect audio to be playing (to distinguish user pause vs system interruption)
+  bool _expectsToBePlaying = false;
 
   // Getters
   bool get isInitialized => _isInitialized;
@@ -144,17 +145,33 @@ class AudioService extends ChangeNotifier {
       final bool wasPlaying = _isPlaying;
       final bool wasLoading = _isLoading;
 
-      _isPlaying = state.playing;
-      // No last-playback tracking for pure live playback
-
-      if (state.processingState == ProcessingState.loading || state.processingState == ProcessingState.buffering) {
-        _isLoading = true;
-      } else if (state.processingState == ProcessingState.ready ||
-          state.processingState == ProcessingState.completed ||
-          state.processingState == ProcessingState.idle) {
+      // Handle processing state - idle and completed indicate stopped state
+      // Even if state.playing is true, if processingState is idle/completed, audio is stopped
+      if (state.processingState == ProcessingState.idle || state.processingState == ProcessingState.completed) {
+        // Player is stopped, regardless of playing flag
+        _isPlaying = false;
         _isLoading = false;
+
+        // If we expected to be playing but now we're stopped, this is an unexpected stop
+        if (_expectsToBePlaying) {
+          debugPrint('AudioService: Unexpected stop detected - processingState: ${state.processingState}');
+          _handleUnexpectedStop();
+        }
+
         if (_hasError) {
           _clearError();
+        }
+      } else {
+        // For other states, use the playing flag
+        _isPlaying = state.playing;
+
+        if (state.processingState == ProcessingState.loading || state.processingState == ProcessingState.buffering) {
+          _isLoading = true;
+        } else if (state.processingState == ProcessingState.ready) {
+          _isLoading = false;
+          if (_hasError) {
+            _clearError();
+          }
         }
       }
 
@@ -164,6 +181,23 @@ class AudioService extends ChangeNotifier {
     }, onError: (error) {
       debugPrint('AudioService: Player state stream error: $error');
       _setError('Player error: $error');
+    });
+
+    // Listen to playback events for errors and interruptions
+    _playbackEventSubscription = _player!.playbackEventStream.listen((event) {
+      // Handle playback errors
+      if (event.processingState == ProcessingState.idle || event.processingState == ProcessingState.completed) {
+        // Check if this is an unexpected stop
+        if (_expectsToBePlaying && !_isPlaying) {
+          debugPrint(
+              'AudioService: Playback event indicates unexpected stop - processingState: ${event.processingState}');
+          _handleUnexpectedStop();
+        }
+      }
+    }, onError: (error) {
+      debugPrint('AudioService: Playback event stream error: $error');
+      _handleUnexpectedStop();
+      // Don't set error here as state stream will handle it, but log it
     });
 
     // Setup audio focus handling for Android
@@ -237,6 +271,9 @@ class AudioService extends ChangeNotifier {
       await _player!.play();
       debugPrint('AudioService: Playback started successfully');
 
+      // Mark that we expect audio to be playing
+      _expectsToBePlaying = true;
+
       // Clear error again after successful playback start
       _clearError();
       notifyListeners();
@@ -250,6 +287,8 @@ class AudioService extends ChangeNotifier {
   // Playback controls
   Future<void> pause() async {
     try {
+      // Mark that we no longer expect to be playing (user-initiated pause)
+      _expectsToBePlaying = false;
       // Stop instead of pause to avoid buffering any past content
       await _player?.stop();
       notifyListeners();
@@ -273,16 +312,73 @@ class AudioService extends ChangeNotifier {
     }
   }
 
+  // Synchronize internal state with actual player state
+  void syncState() {
+    if (_player == null) {
+      _isPlaying = false;
+      _isLoading = false;
+      return;
+    }
+
+    try {
+      final currentState = _player!.playerState;
+
+      // Check actual playing state
+      final isActuallyPlaying = currentState.playing &&
+          currentState.processingState != ProcessingState.idle &&
+          currentState.processingState != ProcessingState.completed;
+
+      // Check loading state
+      final isActuallyLoading = currentState.processingState == ProcessingState.loading ||
+          currentState.processingState == ProcessingState.buffering;
+
+      final bool wasPlaying = _isPlaying;
+      final bool wasLoading = _isLoading;
+
+      _isPlaying = isActuallyPlaying;
+      _isLoading = isActuallyLoading;
+
+      // If state changed, notify listeners
+      if (wasPlaying != _isPlaying || wasLoading != _isLoading) {
+        debugPrint('AudioService: State synced - isPlaying: $_isPlaying, isLoading: $_isLoading');
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('AudioService: Error syncing state: $e');
+    }
+  }
+
   Future<void> togglePlayPause() async {
-    if (_isPlaying) {
-      await pause();
+    // Sync state first to ensure we have accurate information
+    syncState();
+
+    // Now check the actual state (not just _isPlaying which might be stale)
+    if (_player != null) {
+      final currentState = _player!.playerState;
+      final isActuallyPlaying = currentState.playing &&
+          currentState.processingState != ProcessingState.idle &&
+          currentState.processingState != ProcessingState.completed;
+
+      if (isActuallyPlaying) {
+        await pause();
+      } else {
+        await resume();
+      }
     } else {
+      // No player, try to resume (which will initialize if needed)
       await resume();
     }
   }
 
   // Handle unexpected audio stops
-  void _handleUnexpectedStop() {}
+  void _handleUnexpectedStop() {
+    debugPrint('AudioService: Handling unexpected stop');
+    // Update state to reflect that audio is stopped
+    _isPlaying = false;
+    _isLoading = false;
+    // Keep _expectsToBePlaying as true so monitorAndRecover can attempt recovery
+    notifyListeners();
+  }
 
   // Schedule automatic reconnection
   void _scheduleReconnection() {}
@@ -294,10 +390,59 @@ class AudioService extends ChangeNotifier {
   }
 
   // Check if audio should be playing but isn't (for background monitoring)
-  bool get shouldBePlayingButIsnt => false;
+  bool get shouldBePlayingButIsnt {
+    if (!_expectsToBePlaying) {
+      return false; // We don't expect to be playing, so no issue
+    }
+
+    if (_player == null) {
+      return true; // Player is null but we expect to be playing
+    }
+
+    try {
+      final currentState = _player!.playerState;
+      // Check if player state indicates it's not actually playing
+      final isActuallyPlaying = currentState.playing &&
+          currentState.processingState != ProcessingState.idle &&
+          currentState.processingState != ProcessingState.completed;
+
+      return !isActuallyPlaying;
+    } catch (e) {
+      debugPrint('AudioService: Error checking shouldBePlayingButIsnt: $e');
+      return false;
+    }
+  }
 
   // Monitor and recover from background audio issues
-  void monitorAndRecover() {}
+  void monitorAndRecover() {
+    // First, immediately sync state with actual player state
+    syncState();
+
+    if (!_expectsToBePlaying || _currentStreamUrl == null) {
+      return; // Nothing to recover
+    }
+
+    if (shouldBePlayingButIsnt) {
+      debugPrint('AudioService: Detected audio should be playing but isn\'t - attempting recovery');
+
+      // State already synced by syncState() above, so _isPlaying should be false now
+      // Attempt to recover by restarting playback
+      // Use a small delay to avoid rapid reconnection attempts
+      _reconnectionTimer?.cancel();
+      _reconnectionTimer = Timer(const Duration(seconds: 2), () {
+        if (_expectsToBePlaying && _currentStreamUrl != null && _player != null) {
+          debugPrint('AudioService: Attempting to recover playback');
+          _playLiveStream().catchError((error) {
+            debugPrint('AudioService: Recovery attempt failed: $error');
+            // If recovery fails, stop expecting to play
+            _expectsToBePlaying = false;
+            _setError('Playback stopped unexpectedly and recovery failed');
+          });
+        }
+      });
+    }
+    // If audio is playing correctly, syncState() already handled synchronization
+  }
 
   // Stop and cleanup
   Future<void> stop() async {
@@ -324,6 +469,7 @@ class AudioService extends ChangeNotifier {
   void _resetState() {
     _isPlaying = false;
     _isLoading = false;
+    _expectsToBePlaying = false;
     _currentChannelId = null;
     _currentStreamUrl = null;
     _reconnectionTimer?.cancel();
