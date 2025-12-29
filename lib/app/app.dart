@@ -5,20 +5,11 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
-import 'package:balady_plus/app_theme_colors.dart';
-import 'package:balady_uikit/core/colors/app_colors_theme.dart';
-import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
-import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
-import 'package:balady_uikit/core/colorsV2/app_theme.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
-import 'package:bot_toast/bot_toast.dart'
-    show BotToastInit, BotToastNavigatorObserver;
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -36,7 +27,6 @@ import './core/utils/utils_exports.dart'
 import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
-
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
@@ -57,6 +47,7 @@ class App extends StatelessWidget {
       FlutterUxcam.optIntoSchematicRecordings();
       FlutterUxcam.startWithConfiguration(config);
     }
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeController()),
@@ -67,6 +58,10 @@ class App extends StatelessWidget {
         BlocProvider<NewMiniAppLogicCubit>.value(
           value: sl<NewMiniAppLogicCubit>(),
         )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AccessibilityController(),
+        ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
@@ -99,6 +94,356 @@ class AppWidgetState extends State<AppWidget> {
 
   @override
   Widget build(BuildContext context) {
+    return Consumer<AccessibilityController>(
+      builder: (context, controller, child) {
+        final grayscaleFilter = controller.grayscale
+            ? const ColorFilter.matrix([
+                0.2126,
+                0.7152,
+                0.0722,
+                0,
+                0,
+                0.2126,
+                0.7152,
+                0.0722,
+                0,
+                0,
+                0.2126,
+                0.7152,
+                0.0722,
+                0,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+              ])
+            : null;
+
+        return ColorFiltered(
+          colorFilter: grayscaleFilter ??
+              const ColorFilter.mode(Colors.transparent, BlendMode.srcOver),
+          child: GestureDetector(
+            onTap: () {
+              if (Platform.isIOS) hideKeyboard(context);
+            },
+            child: Directionality(
+              textDirection: translator.activeLanguageCode == "ar"
+                  ? TextDirection.rtl
+                  : TextDirection.ltr,
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  textScaler: TextScaler.linear(controller.textScale),
+                ),
+                child: MaterialApp(
+
+                  title: 'appNameWord'.tr(),
+                  debugShowCheckedModeBanner: false,
+                  navigatorKey: NavigationService.navigatorKey,
+                  theme: _buildLightTheme(controller),
+                  darkTheme: _buildDarkTheme(controller),
+                  themeMode:
+                      controller.darkMode ? ThemeMode.dark : ThemeMode.light,
+                  builder: (context, child) {
+                    final botToastBuilder = BotToastInit();
+                    final easyLoadingBuilder =
+                        EasyLoading.init(builder: botToastBuilder);
+                    return easyLoadingBuilder(context, child);
+                  },
+                  navigatorObservers: [
+                    SentryNavigatorObserver(),
+                    BotToastNavigatorObserver(),
+                    FlutterUxcamNavigatorObserver(),
+                    MapnessRouteObserver(),
+                  ],
+                  localizationsDelegates: translator.delegates.toList()
+                    ..add(CountryLocalizations.delegate),
+                  locale: translator.activeLocale,
+                  supportedLocales: translator.locals(),
+                  initialRoute: RouteName.bottomNavigation,
+                  routes: Routes.routes(),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  ThemeData _buildLightTheme(AccessibilityController controller) {
+    final primaryColor = CommonFunctions.isTodayInRanges
+        ? AppColor.primary900LightEvent
+        : AppColor.primary900Light;
+
+    final scaffoldColor =
+        controller.highContrast ? Colors.black : AppColor.scaffoldBackground;
+
+    final textColor = controller.highContrast ? Colors.white : Colors.black;
+
+    return ThemeData(
+      primaryColor: primaryColor,
+      scaffoldBackgroundColor: scaffoldColor,
+      fontFamily: AppConfig.appFontType,
+      useMaterial3: false,
+      appBarTheme: AppBarTheme(
+        backgroundColor: controller.highContrast ? Colors.black : primaryColor,
+        centerTitle: true,
+      ),
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(),
+        menuStyle: MenuStyle(),
+      ),
+      inputDecorationTheme:
+          _buildInputDecorationTheme(controller, primaryColor),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor:
+              controller.highContrast ? Colors.white : AppColor.primary800Light,
+          foregroundColor:
+              controller.highContrast ? Colors.black : Colors.white,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16 * 1.0, // Apply tap target scaling
+            vertical: 8 * 1.0,
+          ),
+          minimumSize: Size(
+            double.infinity,
+            34 * controller.tapTargetSize, // Apply tap target scaling
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor:
+              controller.highContrast ? Colors.white : primaryColor,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor:
+              controller.highContrast ? Colors.white : primaryColor,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16 * 1.0,
+            vertical: 8 * 1.0,
+          ),
+          minimumSize: Size(
+            double.infinity,
+            34 * controller.tapTargetSize,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          side: BorderSide(
+            width: .8,
+            color: controller.highContrast ? Colors.white : primaryColor,
+          ),
+        ),
+      ),
+      textTheme: TextTheme(
+        // Apply text scaling through getModifiedTextStyle
+        bodyLarge: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 16,
+            color: textColor,
+          ),
+        ),
+        bodyMedium: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 14,
+            color: textColor,
+          ),
+        ),
+        titleLarge: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
+        ),
+        titleMedium: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
+        ),
+        // Add more text styles as needed
+      ),
+    );
+  }
+
+  ThemeData _buildDarkTheme(AccessibilityController controller) {
+    final primaryColor = CommonFunctions.isTodayInRanges
+        ? AppColor.primary900LightEvent
+        : AppColor.primary900Light;
+
+    final scaffoldColor =
+        controller.highContrast ? Colors.black : Colors.grey.shade900;
+
+    final textColor =
+        controller.highContrast ? Colors.white : Colors.grey.shade200;
+
+    return ThemeData(
+      brightness: Brightness.dark,
+      primaryColor: primaryColor,
+      scaffoldBackgroundColor: scaffoldColor,
+      fontFamily: AppConfig.appFontType,
+      useMaterial3: false,
+      appBarTheme: AppBarTheme(
+        backgroundColor: controller.highContrast ? Colors.black : primaryColor,
+        centerTitle: true,
+      ),
+      dropdownMenuTheme: const DropdownMenuThemeData(
+        inputDecorationTheme: InputDecorationTheme(),
+        menuStyle: MenuStyle(),
+      ),
+      inputDecorationTheme:
+          _buildInputDecorationTheme(controller, primaryColor),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor:
+              controller.highContrast ? Colors.white : AppColor.primary800Light,
+          foregroundColor:
+              controller.highContrast ? Colors.black : Colors.white,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16 * 1.0,
+            vertical: 8 * 1.0,
+          ),
+          minimumSize: Size(
+            double.infinity,
+            34 * controller.tapTargetSize,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor:
+              controller.highContrast ? Colors.white : primaryColor,
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor:
+              controller.highContrast ? Colors.white : primaryColor,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16 * 1.0,
+            vertical: 8 * 1.0,
+          ),
+          minimumSize: Size(
+            double.infinity,
+            34 * controller.tapTargetSize,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          side: BorderSide(
+            width: .8,
+            color: controller.highContrast ? Colors.white : primaryColor,
+          ),
+        ),
+      ),
+      textTheme: TextTheme(
+        bodyLarge: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 16,
+            color: textColor,
+          ),
+        ),
+        bodyMedium: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 14,
+            color: textColor,
+          ),
+        ),
+        titleLarge: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
+        ),
+        titleMedium: controller.getModifiedTextStyle(
+          TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: textColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  InputDecorationTheme _buildInputDecorationTheme(
+    AccessibilityController controller,
+    Color primaryColor,
+  ) {
+    final borderColor =
+        controller.highContrast ? Colors.white : const Color(0xffD4D4D8);
+
+    final errorColor =
+        controller.highContrast ? Colors.redAccent : AppColor.error;
+
+    final focusedBorderColor =
+        controller.highContrast ? Colors.blueAccent : AppColor.primary800Light;
+
+    return InputDecorationTheme(
+      counterStyle: controller.getModifiedTextStyle(
+        const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+        ),
+      ),
+      hintStyle: controller.getModifiedTextStyle(
+        const TextStyle(
+          fontSize: 16,
+          color: Color(0xff71717A),
+          fontWeight: FontWeight.normal,
+        ),
+      ),
+      errorStyle: controller.getModifiedTextStyle(
+        TextStyle(color: errorColor),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        vertical: 12,
+        horizontal: 16,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: borderColor,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: focusedBorderColor,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: errorColor,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: BorderSide(
+          color: errorColor,
+          width: 1.5,
+        ),
+        borderRadius: BorderRadius.circular(6),
+      ),
+    );
+  }
     final themeController = context.watch<ThemeController>();
 
     return GestureDetector(
