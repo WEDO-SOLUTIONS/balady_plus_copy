@@ -103,43 +103,38 @@ class AppWidgetState extends State<AppWidget> {
 
         return ColorFiltered(
           colorFilter: grayscaleFilter ?? const ColorFilter.mode(Colors.transparent, BlendMode.srcOver),
-          child: GestureDetector(
-            onTap: () {
-              if (Platform.isIOS) hideKeyboard(context);
-            },
-            child: Directionality(
-              textDirection: translator.activeLanguageCode == "ar"
-                  ? TextDirection.rtl
-                  : TextDirection.ltr,
-              child: MediaQuery(
-                data: MediaQuery.of(context).copyWith(
-                  textScaler: TextScaler.linear(controller.textScale),
-                ),
-                child: MaterialApp(
-                  title: 'appNameWord'.tr(),
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: NavigationService.navigatorKey,
-                  theme: _buildLightTheme(controller),
-                  darkTheme: _buildDarkTheme(controller),
-                  themeMode: controller.darkMode ? ThemeMode.dark : ThemeMode.light,
-                  builder: (context, child) {
-                    final botToastBuilder = BotToastInit();
-                    final easyLoadingBuilder = EasyLoading.init(builder: botToastBuilder);
-                    return easyLoadingBuilder(context, child);
-                  },
-                  navigatorObservers: [
-                    SentryNavigatorObserver(),
-                    BotToastNavigatorObserver(),
-                    FlutterUxcamNavigatorObserver(),
-                    MapnessRouteObserver(),
-                  ],
-                  localizationsDelegates: translator.delegates.toList()
-                    ..add(CountryLocalizations.delegate),
-                  locale: translator.activeLocale,
-                  supportedLocales: translator.locals(),
-                  initialRoute: RouteName.bottomNavigation,
-                  routes: Routes.routes(),
-                ),
+          child: Directionality(
+            textDirection: translator.activeLanguageCode == "ar"
+                ? TextDirection.rtl
+                : TextDirection.ltr,
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(controller.textScale),
+              ),
+              child: MaterialApp(
+                title: 'appNameWord'.tr(),
+                debugShowCheckedModeBanner: false,
+                navigatorKey: NavigationService.navigatorKey,
+                theme: _buildLightTheme(controller),
+                darkTheme: _buildDarkTheme(controller),
+                themeMode: controller.darkMode ? ThemeMode.dark : ThemeMode.light,
+                builder: (context, child) {
+                  final botToastBuilder = BotToastInit();
+                  final easyLoadingBuilder = EasyLoading.init(builder: botToastBuilder);
+                  return easyLoadingBuilder(context, child);
+                },
+                navigatorObservers: [
+                  SentryNavigatorObserver(),
+                  BotToastNavigatorObserver(),
+                  FlutterUxcamNavigatorObserver(),
+                  MapnessRouteObserver(),
+                ],
+                localizationsDelegates: translator.delegates.toList()
+                  ..add(CountryLocalizations.delegate),
+                locale: translator.activeLocale,
+                supportedLocales: translator.locals(),
+                initialRoute: RouteName.bottomNavigation,
+                routes: Routes.routes(),
               ),
             ),
           ),

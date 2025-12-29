@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:balady_plus/app/features/accecipilities/life_sycle_event_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -207,11 +208,40 @@ class AccessibilityController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleScreenReader(bool value) {
+  Future<void> toggleScreenReader(value) async {
+    AppSettings.openAppSettings();
     screenReaderEnabled = value;
     _saveSettings();
     notifyListeners();
+    // try {
+    //   if (Platform.isIOS) {
+    //     // Try direct accessibility settings
+    //     const url = 'App-Prefs:root=ACCESSIBILITY';
+    //     if (await canLaunchUrl(Uri.parse(url))) {
+    //       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    //     } else {
+    //       // Fallback to general settings
+    //       const fallbackUrl = 'app-settings:';
+    //       if (await canLaunchUrl(Uri.parse(fallbackUrl))) {
+    //         await launchUrl(Uri.parse(fallbackUrl), mode: LaunchMode.externalApplication);
+    //       }
+    //     }
+    //   } else if (Platform.isAndroid) {
+    //     const url = 'android.settings.ACCESSIBILITY_SETTINGS';
+    //     if (await canLaunchUrl(Uri.parse(url))) {
+    //       await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    //     } else {
+    //       const fallbackUrl = 'android.settings.SETTINGS';
+    //       if (await canLaunchUrl(Uri.parse(fallbackUrl))) {
+    //         await launchUrl(Uri.parse(fallbackUrl), mode: LaunchMode.externalApplication);
+    //       }
+    //     }
+    //   }
+    // } catch (e) {
+    //   debugPrint('Failed to open accessibility settings: $e');
+    // }
   }
+
 
   // Cognitive methods
   void toggleSimplifyLayout(bool value) {
