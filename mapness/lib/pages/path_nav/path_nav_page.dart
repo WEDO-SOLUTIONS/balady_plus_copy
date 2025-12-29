@@ -803,18 +803,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             latitude: location.latitude,
             longitude: location.longitude,
           );
-          // Calculate route (keep minimal to reduce lag)
-          try {
-            await ref.read(routesProvider(
-              startPoint: startPoint,
-              finishPoint: finishPoint,
-              navType: RouteSearchOptionsMessage.pedestrian,
-              showOnlyActiveRoute: true,
-            ).future);
+          final points = [startPoint, finishPoint];
+          final intermediatePoints = points.getIntermediatePoints();
 
-          } on WalkingDistanceException catch (ex) {
-             logger.log(ex.toString(), logLevel: MapnessLogLevel.warning);
-          }
+          ref.read(routesProvider(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            navType: RouteSearchOptionsMessage.pedestrian,
+            intermediatePoints: intermediatePoints,
+            showOnlyActiveRoute: true,
+          ));
 
           // Navigate to new navigation session
           if (mounted) {
