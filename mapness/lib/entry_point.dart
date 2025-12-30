@@ -14,6 +14,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:collection/collection.dart';
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -88,6 +89,7 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 
+import 'entities/saudi_pass/offers_group.dart';
 import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
@@ -652,7 +654,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openSnapSend();
       } else if (url.path == '/parking') {
         _openParking();
-      } else {
+      } else if (url.path == '/tadalal') {
+        final category = params['category'];
+        OffersGroup? group;
+        group = OffersGroupExtension.mainCategories.firstWhereOrNull((element) => element.name == category);
+        await router.push(OffersScreenViewRoute(offersGroup: group));
+      }
+      else {
         await router.pushNamed(url.toString());
       }
     }
