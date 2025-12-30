@@ -350,7 +350,7 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             },
             child: Container(
               decoration: const BoxDecoration(
-                color: Colors.green,
+                color: Colors.black,
                 // Border is updated below based on side
               ),
               child: DecoratedBox(

@@ -58,10 +58,13 @@ abstract class AppEnv {
       // Use googleAdId string value.
     });
 
-    /// force app to be only portrait
+    /// allow all orientations (portrait and landscape)
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
+      //TODO: enable landscape mode after testing
+      // DeviceOrientation.landscapeLeft,
+      // DeviceOrientation.landscapeRight,
     ]);
 
     //MapUtils.loadMarkers();
