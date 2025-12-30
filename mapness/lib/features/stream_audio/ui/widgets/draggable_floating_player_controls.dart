@@ -40,7 +40,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
   static const double widgetHeight = 48;
   static const double circleSize = 60;
   static const double edgeThreshold = 50;
-  static const double removeThreshold = 50;
+  static const double removeThreshold = 100;
 
   // States
   bool _isDragging = false;
@@ -319,7 +319,7 @@ class _DraggableFloatingPlayerControlsState extends State<DraggableFloatingPlaye
                   // Check if dragging to top for removal
                   final distanceFromTop = (constrainedY - topBoundary).abs();
 
-                  if (distanceFromTop < removeThreshold && constrainedY == topBoundary) {
+                  if (distanceFromTop <= removeThreshold ) {
                     // In removal zone - notify parent to show removal UI
                     if (!_inRemovalZone) {
                       _inRemovalZone = true;

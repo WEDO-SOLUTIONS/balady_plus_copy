@@ -259,20 +259,23 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
             _isPanelFullyOpened = false;
           }
 
-          return Stack(
-            children: [
-              /// Passed [child] widget, can be anything it pushed from the bottom sheet when it's opened
-              _buildChild(mapOffset, currentSize, false),
+          return Container(
+            color: Colors.black,
+            child: Stack(
+              children: [
+                /// Passed [child] widget, can be anything it pushed from the bottom sheet when it's opened
+                _buildChild(mapOffset, currentSize, false),
 
-              /// Player controls widget, it's only visible when the panel is fully opened and there is a program selected
-              _buildFloatingControls(provider, currentSize, false),
+                /// Player controls widget, it's only visible when the panel is fully opened and there is a program selected
+                _buildFloatingControls(provider, currentSize, false),
 
-              /// Details Radio Controls Sheet (can be dragged to close)
-              _buildDetailsControlsSheet(provider),
+                /// Details Radio Controls Sheet (can be dragged to close)
+                _buildDetailsControlsSheet(provider),
 
-              /// Removal zone widget, it's only visible when the panel is fully opened and there is a program selected
-              _buildRemovalZone(),
-            ],
+                /// Removal zone widget, it's only visible when the panel is fully opened and there is a program selected
+                _buildRemovalZone(),
+              ],
+            ),
           );
         },
       );
