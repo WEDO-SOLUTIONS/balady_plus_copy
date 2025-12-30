@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/features/landing/map_controls.dart';
@@ -9,7 +10,6 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'poi_card_actions_provider.g.dart';
@@ -44,7 +44,7 @@ class PoiCardActions extends _$PoiCardActions {
       query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
     }
 
-    return Share.share(BaldayDeeplink.urlWithQuery(baseUri, query));
+    return balady_utils.safeShareText(BaldayDeeplink.urlWithQuery(baseUri, query));
   }
 
   String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(
@@ -58,7 +58,7 @@ class PoiCardActions extends _$PoiCardActions {
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
-      Share.share(_myLocationDeeplink(location));
+      balady_utils.safeShareText(_myLocationDeeplink(location));
     } else {
       onError();
     }

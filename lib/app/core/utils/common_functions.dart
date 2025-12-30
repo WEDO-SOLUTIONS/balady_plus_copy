@@ -2,7 +2,6 @@ import 'dart:convert' show base64, base64Decode, base64Encode, jsonDecode, utf8;
 import 'dart:io' show File, Platform;
 import 'dart:math' show asin, cos, sqrt;
 import 'dart:typed_data' show Uint8List;
-import 'dart:ui';
 
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
@@ -22,7 +21,6 @@ import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
-import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
@@ -40,6 +38,7 @@ import 'package:path_provider/path_provider.dart'
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
@@ -71,13 +70,6 @@ import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/notifications/manager/notification_manager.dart';
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../errors/exceptions.dart';
-import '../services/services_exports.dart'
-    show
-        AppInterceptors,
-        EntryPointBridge,
-        NavigationService,
-        NoParams,
-        WebService;
 import './utils_exports.dart'
     show
         AppColor,
@@ -88,10 +80,8 @@ import './utils_exports.dart'
         RouteName,
         UIHelper,
         WithDelay;
-import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
-import 'enums/enums.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -2076,3 +2066,54 @@ class CommonProperties {
   sub: "",
   nationality: "سعودي",
 );*/
+
+/// Safely shares text content, handling iOS sharePositionOrigin requirement
+///
+/// This function wraps Share.share() and handles the iOS requirement for
+/// sharePositionOrigin. If a BuildContext is provided, it will attempt to
+/// get the position origin from the context. Otherwise, it will share
+/// without position origin which works in most cases.
+///
+/// [text] - The text content to share
+/// [context] - Optional BuildContext to determine share position origin
+Future<void> safeShareText(String text, {BuildContext? context}) async {
+  try {
+    if (Platform.isIOS && context != null) {
+      // Try to get the RenderBox from the context to determine position
+      final RenderBox? box = context.findRenderObject() as RenderBox?;
+      if (box != null &&
+          box.hasSize &&
+          box.size.width > 0 &&
+          box.size.height > 0) {
+        final size = box.size;
+        final position = box.localToGlobal(Offset.zero);
+        final rect = Rect.fromLTWH(
+          position.dx,
+          position.dy,
+          size.width,
+          size.height,
+        );
+        // Only use position origin if it's valid (non-zero size)
+        if (rect.width > 0 && rect.height > 0) {
+          await Share.share(text, sharePositionOrigin: rect);
+          return;
+        }
+      }
+    }
+    // Fallback: share without position origin
+    // This works on Android and most iOS contexts
+    await Share.share(text);
+  } catch (e) {
+    // If sharing with position origin fails, retry without it
+    // This handles cases where position origin is invalid
+    if (e.toString().contains('sharePositionOrigin')) {
+      try {
+        await Share.share(text);
+      } catch (_) {
+        rethrow;
+      }
+    } else {
+      rethrow;
+    }
+  }
+}
