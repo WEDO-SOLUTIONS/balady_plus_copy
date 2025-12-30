@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -23,7 +24,6 @@ import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
-import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
@@ -332,8 +332,13 @@ class ParkingSpotPage extends HookConsumerWidget {
             query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
             query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
 
-            await Share.share(
-                '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
+            final context = rootNavigatorKey.currentContext;
+            if (context != null) {
+              await safeShareText(
+                '${context.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',
+                context: context,
+              );
+            }
           },
         ),
       ],
