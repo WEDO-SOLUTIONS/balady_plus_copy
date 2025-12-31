@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/notifiers/offers_screen_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_city_by_location_riverpod.dart';
@@ -20,19 +17,9 @@ class OffersScreenViewRiverpod extends _$OffersScreenViewRiverpod {
       offersGroup: offersGroup,
     );
 
-    // Show offers by preferences if user is logged in
-    if (CommonProperties.isLoggedIn) {
-      unawaited(
-        notifier.prefsOffersViewFuture.then(
-          (value) {
-            if (value.preferences.isNotPopulated) {
-              notifier.isByPreferencesElseAll = false;
-            }
-          },
-        ),
-      );
-      notifier.isByPreferencesElseAll = true;
-    }
+    // Initialize tab state based on user preferences
+    // This will check if user has preferences and set the appropriate tab
+    notifier.initializeTabState();
 
     ref.onDispose(notifier.dispose);
 

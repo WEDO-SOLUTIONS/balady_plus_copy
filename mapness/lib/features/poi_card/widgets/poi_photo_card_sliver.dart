@@ -151,8 +151,13 @@ class PoiPhotoCardSliver extends ConsumerWidget {
               child: LoadingShimmerImage(
                 imageUrl: photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index],
                 fit: BoxFit.cover,
-                onImageTap: (name, {isAsset}) =>
-                    context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),
+                onImageTap: (name, {isAsset}) => context.router.push(
+                  PhotoViewerRoute(
+                    photoPaths: photosUrls,
+                    previewUrls: photoItems.map((e) => e.previewUrls?.mediumByWidth).nonNulls.toList(),
+                    currentPhotoIndex: index,
+                  ),
+                ),
               ),
             ),
           ),

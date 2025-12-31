@@ -42,129 +42,134 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
-    return ToggleSheet(
-      barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
-        function: (controller) => AppColor.black.withOpacity(
-          0.4 * (1 - controller.interpolation),
-        ),
-      ),
-      dragger: DraggerContainer(
-        backgroundColor: context.colors.backgroundSurface1,
-      ),
-      backgroundColor: context.colors.backgroundSurface5,
-      safeAreaColor: context.colors.backgroundSurface5,
-      startConfig: ToggleSheetStart.instant,
-      scrollController: scrollController,
-      header: Container(
-        color: context.colors.backgroundSurface1,
-        padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              context.l10n.saudiPassOffersPageFilterCategory,
-              style: context.textStyles.h2SemiBold,
-            ),
-            CustomCloseButton(
-              onClose: () => selectionDialogView.tapCross(context),
-            ),
-          ],
-        ),
-      ),
-      sliver: SliverFillRemaining(
-        child: ListenableBuilder(
-            listenable: selectionDialogView,
-            builder: (context, _) {
-              final notingFound = selectionDialogView.nothingFound;
-              final search = selectionDialogView.search;
-              final group = selectionDialogView.groupedViews
-                ..removeWhere(
-                  (cat, views) => views.isEmpty,
-                );
-
-              return Column(
-                children: [
-                  Container(
-                      padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
-                      decoration: BoxDecoration(
-                        color: context.colors.backgroundSurface1,
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(RadiusBorder.xl),
-                          bottomRight: Radius.circular(RadiusBorder.xl),
-                        ),
-                      ),
-                      child: BaladyTextInput(
-                        config: BaladyInputConfig(
-                          fillColor: context.colors.backgroundSurface5,
-                          autofocus: true,
-                          hintColor: context.colors.foregroundMuted,
-                          hintText: context
-                              .l10n.saudiPassCategorySelectionPageSearchHint,
-                          isDisposed: false,
-                        ),
-                        controller: textEditingController,
-                        inputState: notingFound
-                            ? BaladyInputState.error
-                            : BaladyInputState.defaultValue,
-                        supportingText: notingFound
-                            ? BaladySupportingText(
-                                text: context
-                                    .l10n.noResultsFoundPleaseSelectFromTheList,
-                              )
-                            : null,
-                      )),
-                  Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      children: group.entries.map((entry) {
-                        final category = entry.key;
-                        final subViews = entry.value;
-
-                        final bool isSearchingCategory = category.name
-                            .toLowerCase()
-                            .contains(search.toLowerCase());
-                        return Column(
-                          children: [
-                            if (isSearchingCategory || notingFound) ...[
-                              CategoryHeader(
-                                category: category,
-                                onTap: (id) =>
-                                    selectionDialogView.toggleCategory(
-                                  categoryId: id,
-                                  context: context,
-                                ),
-                                isHighlighted: subViews.every(
-                                  (view) => view.isHighlighted,
-                                ),
-                              ),
-                              CategoriesCard(
-                                child: SubCategoriesWidget(
-                                  selectionViews: subViews,
-                                ),
-                              ),
-                            ] else
-                              SubCategoriesWidget(
-                                selectionViews: subViews,
-                                categoryId: category.id,
-                                search: search,
-                              ),
-                          ],
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
-              );
-            }),
-      ),
-      footer: ColoredBox(
-        color: context.colors.backgroundSurface5,
-        child: Padding(
-          padding: horizontalPadding.copyWith(
-            top: Spacing.$6x,
-            bottom: Spacing.$4x + MediaQuery.viewPaddingOf(context).bottom,
+    return SafeArea(
+      bottom: false,
+      child: ToggleSheet(
+        barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
+          function: (controller) => AppColor.black.withOpacity(
+            0.4 * (1 - controller.interpolation),
           ),
-          child: ResetSaveWidget(selectionDialogView),
+        ),
+        dragger: DraggerContainer(
+          backgroundColor: context.colors.backgroundSurface1,
+        ),
+        backgroundColor: context.colors.backgroundSurface5,
+        safeAreaColor: context.colors.backgroundSurface5,
+        scrollController: scrollController,
+        header: Container(
+          color: context.colors.backgroundSurface1,
+          padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                context.l10n.saudiPassOffersPageFilterCategory,
+                style: context.textStyles.h2SemiBold,
+              ),
+              CustomCloseButton(
+                onClose: () => selectionDialogView.tapCross(context),
+              ),
+            ],
+          ),
+        ),
+        sliver: SliverFillRemaining(
+          child: ListenableBuilder(
+              listenable: selectionDialogView,
+              builder: (context, _) {
+                final notingFound = selectionDialogView.nothingFound;
+                final search = selectionDialogView.search;
+                final group = selectionDialogView.groupedViews
+                  ..removeWhere(
+                    (cat, views) => views.isEmpty,
+                  );
+
+                return Column(
+                  children: [
+                    Container(
+                        padding:
+                            horizontalPadding.copyWith(bottom: Spacing.$4x),
+                        decoration: BoxDecoration(
+                          color: context.colors.backgroundSurface1,
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(RadiusBorder.xl),
+                            bottomRight: Radius.circular(RadiusBorder.xl),
+                          ),
+                        ),
+                        child: BaladyTextInput(
+                          config: BaladyInputConfig(
+                            fillColor: context.colors.backgroundSurface5,
+                            autofocus: true,
+                            hintColor: context.colors.foregroundMuted,
+                            hintText: context
+                                .l10n.saudiPassCategorySelectionPageSearchHint,
+                            isDisposed: false,
+                          ),
+                          controller: textEditingController,
+                          inputState: notingFound
+                              ? BaladyInputState.error
+                              : BaladyInputState.defaultValue,
+                          supportingText: notingFound
+                              ? BaladySupportingText(
+                                  text: context.l10n
+                                      .noResultsFoundPleaseSelectFromTheList,
+                                )
+                              : null,
+                        )),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: group.length,
+                        itemBuilder: (context, index) {
+                          final entry = group.entries.elementAt(index);
+                          final category = entry.key;
+                          final subViews = entry.value;
+
+                          final bool isSearchingCategory = category.name
+                              .toLowerCase()
+                              .contains(search.toLowerCase());
+                          return Column(
+                            children: [
+                              if (isSearchingCategory || notingFound) ...[
+                                CategoryHeader(
+                                  category: category,
+                                  onTap: (id) =>
+                                      selectionDialogView.toggleCategory(
+                                    categoryId: id,
+                                    context: context,
+                                  ),
+                                  isHighlighted: subViews.every(
+                                    (view) => view.isHighlighted,
+                                  ),
+                                ),
+                                CategoriesCard(
+                                  child: SubCategoriesWidget(
+                                    selectionViews: subViews,
+                                  ),
+                                ),
+                              ] else
+                                SubCategoriesWidget(
+                                  selectionViews: subViews,
+                                  categoryId: category.id,
+                                  search: search,
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                );
+              }),
+        ),
+        footer: ColoredBox(
+          color: context.colors.backgroundSurface5,
+          child: Padding(
+            padding: horizontalPadding.copyWith(
+              top: Spacing.$6x,
+              bottom: Spacing.$4x + MediaQuery.viewPaddingOf(context).bottom,
+            ),
+            child: ResetSaveWidget(selectionDialogView),
+          ),
         ),
       ),
     );

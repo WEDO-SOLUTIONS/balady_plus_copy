@@ -1,10 +1,8 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/eta_sharing_control.dart';
@@ -56,16 +54,17 @@ class RoutingMapControls extends ConsumerWidget {
                       const Spacer(),
                       Row(
                         children: [
-                          uikit.AppButton(
-                            color: context.colors.backgroundSurface1,
-                            iconColor: context.colors.foregroundSoft,
-                            innerPadding: const EdgeInsets.symmetric(
-                              horizontal: uikit.Spacing.$3x,
-                            ),
-                            onTap: () => context.router.push(NavigatorSettingsRoute()),
-                            buttonColorScheme: uikit.ButtonColorScheme.neutral,
-                            primaryIcon: uikit.SystemIcons.tuning,
-                          ),
+                          // todo: hide this button for now
+                          // uikit.AppButton(
+                          //   color: context.colors.backgroundSurface1,
+                          //   iconColor: context.colors.foregroundSoft,
+                          //   innerPadding: const EdgeInsets.symmetric(
+                          //     horizontal: uikit.Spacing.$3x,
+                          //   ),
+                          //   onTap: () => context.router.push(NavigatorSettingsRoute()),
+                          //   buttonColorScheme: uikit.ButtonColorScheme.neutral,
+                          //   primaryIcon: uikit.SystemIcons.tuning,
+                          // ),
                           if (onAddStop != null) ...[
                             const SizedBox(width: uikit.Spacing.$2x),
                             uikit.AppButton(

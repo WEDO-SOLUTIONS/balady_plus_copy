@@ -19,9 +19,11 @@ class TagCloud extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final tagKey = 'tag_cloud_$rating';
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     final selectedTags = useState<Set<Tag>>({});
-    final useTags = useMemoized(() => AppFeedbackTagMapper().getTags(rating), [tagKey]);
+    final useTags = useMemoized(
+        () => AppFeedbackTagMapper().getTags(rating, isRtl), [tagKey]);
 
     return Padding(
       key: ValueKey(tagKey),
@@ -34,9 +36,15 @@ class TagCloud extends HookWidget {
           runSpacing: 10.0,
           children: useTags.map((tag) {
             final isSelected = selectedTagsValue.contains(tag);
-            final textColor = isSelected ? context.colors.accentOnAccent : context.colors.foregroundDefault;
-            final iconColor = isSelected ? context.colors.accentOnAccent : context.colors.accentDefault;
-            final backgroundColor = isSelected ? context.colors.accentDefault : context.colors.backgroundSurface1;
+            final textColor = isSelected
+                ? context.colors.accentOnAccent
+                : context.colors.foregroundDefault;
+            final iconColor = isSelected
+                ? context.colors.accentOnAccent
+                : context.colors.accentDefault;
+            final backgroundColor = isSelected
+                ? context.colors.accentDefault
+                : context.colors.backgroundSurface1;
 
             return GestureDetector(
               onTap: () {
@@ -66,7 +74,8 @@ class TagCloud extends HookWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        AppFeedbackTagMapper.getLocalizedText(context.l10n, tag),
+                        AppFeedbackTagMapper.getLocalizedText(
+                            context.l10n, tag),
                         style: context.textStyles.bodySmallRegular.copyWith(
                           color: textColor,
                         ),
@@ -76,7 +85,8 @@ class TagCloud extends HookWidget {
                       ),
                       SvgPicture.asset(
                         AppFeedbackTagMapper.getIconByTag(tag),
-                        colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                        colorFilter:
+                            ColorFilter.mode(iconColor, BlendMode.srcIn),
                         width: Spacing.$4x,
                         height: Spacing.$4x,
                       ),

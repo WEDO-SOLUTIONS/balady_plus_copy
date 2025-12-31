@@ -317,6 +317,10 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/car_active_saudi.svg
   SvgGenImage get carActiveSaudi => const SvgGenImage('assets/icons/svg/car_active_saudi.svg');
 
+  /// File path: assets/icons/svg/cityscape_unique_default_marker.svg
+  SvgGenImage get cityscapeUniqueDefaultMarker =>
+      const SvgGenImage('assets/icons/svg/cityscape_unique_default_marker.svg');
+
   /// File path: assets/icons/svg/cityscape_unique_marker.svg
   SvgGenImage get cityscapeUniqueMarker => const SvgGenImage('assets/icons/svg/cityscape_unique_marker.svg');
 
@@ -625,6 +629,7 @@ class $AssetsIconsSvgGen {
         car,
         carActive,
         carActiveSaudi,
+        cityscapeUniqueDefaultMarker,
         cityscapeUniqueMarker,
         currentLocationIcon,
         ic2d,

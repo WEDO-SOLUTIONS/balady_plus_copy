@@ -39,6 +39,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/constants/navigation_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/lib/common_functions.dart' as cf;
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -83,12 +84,19 @@ class PathNavPage extends StatefulHookConsumerWidget {
 
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
   final panelKey = GlobalKey();
+  bool _isSwitchingToPedestrian = false;
+  bool _finishedByEta = false;
+  bool _arrivalToastShown = false;
+  // Cache for indoor support check to avoid network delay on arrival
+  bool? _cachedIndoorSupport;
+
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(uikit.Spacing.$3x);
   final _navigationState = ValueNotifier(PathNavState.running);
   final _betterRouteDurationProfit = ValueNotifier<int?>(null);
   final isControlsActive = ValueNotifier(true);
+  final isSwitchingToFoot = ValueNotifier(false);
 
   late StreamSubscription? _naviEventsListener;
   bool wasSetActive = true;
@@ -177,6 +185,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _navigationState.dispose();
     timer?.cancel();
     WakelockPlus.disable();
+    isSwitchingToFoot.dispose();
     super.dispose();
   }
 
@@ -216,12 +225,39 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     if (widget.initAction == PathNavPageInitAction.restoreFromState) {
       await restoreNavigationState();
+      // After restore, move camera close without forcing follow to avoid zoom flicker
+      await _moveCameraToUser(followAfter: false);
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
       await dgisController.startNavigation(
         NavigationConstants.navigationSpeedRangeZooms,
       );
       await _moveCameraToUser();
       await saveNavigationState();
+    }
+
+    if (widget.navType == RouteSearchOptionsMessage.car) {
+      unawaited(_prefetchIndoorInfo());
+    }
+  }
+
+  Future<void> _prefetchIndoorInfo() async {
+    try {
+      final finishPoint = ref.read(currentNavigationDestinationProvider);
+      final dgisController = await ref.read(dgisControllerProvider.future);
+
+      if (finishPoint?.dgisObjectId != null) {
+        final objectInfo = await dgisController.searchByObjectId(finishPoint!.dgisObjectId!);
+        final hasLevels = objectInfo.buildingLevels?.levels.isNotEmpty ?? false;
+        final hasExplicitLevel = finishPoint.levelId != null || objectInfo.levelId != null;
+
+        if (mounted) {
+          setState(() {
+            _cachedIndoorSupport = hasLevels || hasExplicitLevel;
+          });
+        }
+      }
+    } catch (e) {
+      // Ignore errors during prefetch, we will fallback to normal check if needed
     }
   }
 
@@ -296,7 +332,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             widget.navType != RouteSearchOptionsMessage.car &&
             _navigationState.value != PathNavState.finished;
         if (shouldEndTrip) {
-          _endTripAndShowHome();
+          unawaited(_endTripAndShowHome());
         }
       })
       ..listen(
@@ -313,6 +349,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             final parkingTurnedOn = activeLayer == LayerType.parkingLots;
             if (distanceLessThen500Meters && navParkingEnabled == true && !parkingTurnedOn) {
               ref.read(layersControlsProvider.notifier).enableParking();
+            }
+
+            // Fallback: finish pedestrian trip when very close to destination
+            final shouldFinishByEta =
+                widget.navType == RouteSearchOptionsMessage.pedestrian && !_finishedByEta && distance != null && distance <= 5;
+            if (shouldFinishByEta) {
+              _finishedByEta = true;
+              _finishNavigation();
+              if (mounted) {
+                unawaited(_endTripAndShowHome());
+              }
             }
           }
         },
@@ -401,6 +448,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     : null,
                 child: NaviSheetPanel(
                   key: panelKey,
+                  isSwitchingToFoot: isSwitchingToFoot,
                   navType: widget.navType,
                   navigationState: _navigationState,
                   onShowRoutePressed: _onShowRoutePressed,
@@ -467,10 +515,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             AdvertMetricsKeys.journeyHalfwayUnique,
             isUniquePerSession: true,
           );
-      ref.read(pathNavMessageProvider.notifier).stopNavigation();
-      await ref.read(dgisControllerProvider).value?.stopNavigation();
-      ref.read(currentRouteProvider.notifier).clearRoute();
     }
+
+    // Always stop navigation to ensure engine is fully terminated
+    try {
+      ref.read(pathNavMessageProvider.notifier).stopNavigation();
+    } catch (_) {}
+    try {
+      await ref.read(dgisControllerProvider).value?.stopNavigation();
+    } catch (_) {}
+
+    // Clear route state regardless of the finish source
+    ref.read(currentRouteProvider.notifier).clearRoute();
 
     // Remove route from the map for public transport
     if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
@@ -527,6 +583,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         context.router.popUntilRouteWithName(BottomMenuRoute.name);
       }
     });
+
+    // After returning home, show "You arrived" toast once
+    if (!_arrivalToastShown) {
+      _arrivalToastShown = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final toastCtx = rootNavigatorKey.currentContext ?? context;
+        if (toastCtx.mounted) {
+          ToastOverlay.of(toastCtx).show(title: context.l10n.youArrived);
+        }
+      });
+    }
   }
 
   // Show the feedback page after the trip is finished manually
@@ -646,46 +713,171 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Notify the listeners about the end of the trip
   void _naviEvent(NavigationEvent event) {
     if (event == NavigationEvent.finished) {
-      ref.read(urbiAnalyticsProvider).track('tripCompleted');
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
-      ref.read(advertMetricsProvider.notifier).sendEvent(
-            AdvertMetricsKeys.journeyCompleteUnique,
-            isUniquePerSession: true,
-          );
-      _navigationState.value = PathNavState.finished;
-      ref.read(layersControlsProvider.notifier).hideParking();
-      ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-      ref.read(currentRouteProvider.notifier).clearRoute();
-
-      sheetController.close();
-
-      unawaited(clearNavigationState());
-      unawaited(_stopActiveSharing());
+      if (widget.navType == RouteSearchOptionsMessage.car) {
+        _isSwitchingToPedestrian = true;
+        _checkAndSwitchToPedestrian();
+        return;
+      }
+      // If pedestrian navigation finished, ensure trip ends and navigate home
+      _finishNavigation();
+      if (mounted) {
+        unawaited(_endTripAndShowHome());
+      }
     } else if (event == NavigationEvent.disabled) {
+      if (_isSwitchingToPedestrian) {
+        return;
+      }
       if (context.mounted && _navigationState.value != PathNavState.finished) {
-        _endTripAndShowHome();
+        unawaited(_endTripAndShowHome());
+      }
+    }
+  }
+  void _finishNavigation() {
+    ref.read(urbiAnalyticsProvider).track('tripCompleted');
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
+    ref.read(advertMetricsProvider.notifier).sendEvent(
+          AdvertMetricsKeys.journeyCompleteUnique,
+          isUniquePerSession: true,
+        );
+    _navigationState.value = PathNavState.finished;
+    ref.read(layersControlsProvider.notifier).hideParking();
+    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+    ref.read(currentRouteProvider.notifier).clearRoute();
+
+    sheetController.close();
+    unawaited(clearNavigationState());
+    unawaited(_stopActiveSharing());
+  }
+
+
+  Future<void> _checkAndSwitchToPedestrian() async {
+    isSwitchingToFoot.value = true;
+    try {
+      final finishPoint = ref.read(currentNavigationDestinationProvider);
+      final location = ref.read(locationProvider);
+      final dgisController = ref.read(dgisControllerProvider).valueOrNull;
+
+      if (finishPoint == null || location == null || dgisController == null) {
+        _finishNavigation();
+        if (mounted) {
+          await _endTripAndShowHome();
+        }
+        return;
+      }
+      final distance = cf.CommonFunctions.distance(
+        location.latitude,
+        location.longitude,
+        finishPoint.geoPoint.latitude,
+        finishPoint.geoPoint.longitude,
+      );
+
+      // If distance > 20 meters, check for indoor support (switch to pedestrian)
+      if (distance > 0.02) {
+        bool supportsIndoor = false;
+        // Check if we have objectId to fetch building info
+        if (finishPoint.dgisObjectId != null) {
+          try {
+            if (_cachedIndoorSupport != null) {
+              supportsIndoor = _cachedIndoorSupport!;
+            } else {
+              final objectInfo = await dgisController.searchByObjectId(finishPoint.dgisObjectId!);
+
+              // Check for building levels (indoor map support)
+              if (objectInfo.buildingLevels != null && (objectInfo.buildingLevels?.levels.isNotEmpty ?? false)) {
+                supportsIndoor = true;
+              }
+
+              // Fallback: update supportsIndoor if levelId is explicitly set in destination
+              if (finishPoint.levelId != null || objectInfo.levelId != null) {
+                supportsIndoor = true;
+              }
+            }
+          } catch (e) {
+            logger.log('Error fetching object info for pedestrian switch: $e', logLevel: MapnessLogLevel.error);
+          }
+        }
+
+        if (supportsIndoor) {
+          // Switch to pedestrian
+          final startPoint = RouteParamsPoint(
+            latitude: location.latitude,
+            longitude: location.longitude,
+          );
+          final points = [startPoint, finishPoint];
+          final intermediatePoints = points.getIntermediatePoints();
+
+          ref.read(routesProvider(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            navType: RouteSearchOptionsMessage.pedestrian,
+            intermediatePoints: intermediatePoints,
+            showOnlyActiveRoute: true,
+          ));
+
+          // Navigate to new navigation session
+          if (mounted) {
+            // Start navigation on the newly calculated route
+            await dgisController.startNavigation(
+              NavigationConstants.navigationSpeedRangeZooms,
+            );
+
+            // Save the navigation state so it can be restored on the new page
+            final state = await dgisController.saveNavigationState();
+            await ref.read(sharedPrefsProvider).setString(
+                MapnessConstants.navigatorStateKey, base64.encode(state));
+            await ref.read(sharedPrefsProvider).setString(
+                MapnessConstants.navigatorStateTypeKey,
+                RouteSearchOptionsMessage.pedestrian.name);
+
+            // Avoid pre-replace zoom to reduce flicker; we will adjust after restore
+
+            // Replace current page with pedestrian navigation
+             // Set to false before navigating to avoid keeping the overlay if something goes wrong during replacement
+            isSwitchingToFoot.value = false;
+            await context.router.replace(
+              PathNavRoute(
+                navType: RouteSearchOptionsMessage.pedestrian,
+                isHomeOrWork: widget.isHomeOrWork,
+                initAction: PathNavPageInitAction.restoreFromState,
+              ),
+            );
+            return;
+          }
+        }
+      }
+      _isSwitchingToPedestrian = false;
+      _finishNavigation();
+      if (mounted) {
+        await _endTripAndShowHome();
+      }
+    } finally {
+      if (mounted) {
+        isSwitchingToFoot.value = false;
       }
     }
   }
 
-  Future<void> _moveCameraToUser() async {
+
+  Future<void> _moveCameraToUser({double targetZoom = 17.5, bool followAfter = true}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
-
-    await dgisController.startFollowNavigation();
 
     if (position != null) {
       if (_isLocationAccuracyAcceptable(position.latitude, position.longitude)) {
         await cameraProvider.animateTo(
           CameraPositionMessage(
             point: GeoPointMessage(latitude: position.latitude, longitude: position.longitude),
-            zoom: 17.5,
+            zoom: targetZoom,
             tilt: 0,
             bearing: 0,
           ),
         );
       }
+    }
+
+    if (followAfter) {
+      await dgisController.startFollowNavigation();
     }
   }
 

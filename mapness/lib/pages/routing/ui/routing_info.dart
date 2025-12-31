@@ -356,6 +356,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             route: route,
           ),
         );
+    ref.read(currentNavigationDestinationProvider.notifier).state = widget.pointsWithLabel.lastOrNull?.value;
 
     await context.router.pushAndPopUntil(
         PathNavRoute(

@@ -1,5 +1,7 @@
 //import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
+import 'dart:async';
+
 import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
@@ -62,32 +64,74 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     required GetAPIgeeToken getAPIgeeToken,
     required GetForceVersion forceVersion,
     // required GetGISData getGisData,
-  })  : _getToken = getToken,
-        _saveAuth = saveAuth,
-        _checkAuth = checkAuth,
-        _refreshToken = refreshToken,
-        _getProfile = getProfile,
-        _saveSSOProfile = saveSSOProfile,
-        _checkSSOProfile = checkSSOProfile,
-        _getCookie = getCookie,
-        _getAPIgeeToken = getAPIgeeToken,
-        _clearAuth = clearAuth,
-        _logout = logout,
-        _getPaymentUrl = GetPaymentUrl(repository: sl()),
-        _getForceVersion = forceVersion,
-        _getTestData = GetTestData(repository: sl()),
-        _getEkramPermission = GetEkramPermission(repository: sl()),
-        // _getGisData = getGisData,
-        super(const EntryPointState()) {
+  }) : _getToken = getToken,
+       _saveAuth = saveAuth,
+       _checkAuth = checkAuth,
+       _refreshToken = refreshToken,
+       _getProfile = getProfile,
+       _saveSSOProfile = saveSSOProfile,
+       _checkSSOProfile = checkSSOProfile,
+       _getCookie = getCookie,
+       _getAPIgeeToken = getAPIgeeToken,
+       _clearAuth = clearAuth,
+       _logout = logout,
+       _getPaymentUrl = GetPaymentUrl(repository: sl()),
+       _getForceVersion = forceVersion,
+       _getTestData = GetTestData(repository: sl()),
+       _getEkramPermission = GetEkramPermission(repository: sl()),
+       // _getGisData = getGisData,
+       super(const EntryPointState()) {
     sl<LocationCubit>().getLocationInit();
     refreshAPIGeeToken();
     Permission.notification.request();
+    // Restore authentication state on app startup (non-blocking)
+    unawaited(_restoreAuthState());
+  }
+
+  /// Restore authentication state from storage when app starts
+  Future<void> _restoreAuthState() async {
+    try {
+      // Check if there's stored authentication data
+      final failureOrSuccess = await _checkAuth(NoParams());
+      await failureOrSuccess.fold(
+        (failure) {
+          // No stored auth data, keep initial state
+          return;
+        },
+        (token) async {
+          // Found stored token, restore state
+          final failureOrSuccessForProfile = await _checkSSOProfile(NoParams());
+          failureOrSuccessForProfile.fold(
+            (failure) {
+              // Profile not found, clear auth
+              emit(state.copyWith(status: AuthStatus.notAuthenticated));
+            },
+            (profile) {
+              // Restore authenticated state
+              emit(
+                state.copyWith(
+                  status: AuthStatus.authenticated,
+                  token: token,
+                  userInfo: profile,
+                  errorMessage: "",
+                ),
+              );
+              if (profile.idNo != null) {
+                FlutterUxcam.setUserIdentity(profile.idNo);
+                FlutterUxcam.setUserProperty("name", profile.arName ?? "");
+              }
+            },
+          );
+        },
+      );
+    } catch (e) {
+      // Error restoring state, keep initial state
+      // Don't emit error to avoid blocking app startup
+    }
   }
 
   void hideSplash() {
-    emit(
-      state.copyWith(showSplash: false),
-    );
+    emit(state.copyWith(showSplash: false));
   }
 
   // Future<void> onLoadingApp() async {
@@ -122,7 +166,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   //   refreshAPIGeeToken();
   // }
 
-  String? mainPage ;
+  String? mainPage;
 
   ////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////
@@ -150,9 +194,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     bool isFromEtmam = false,
   }) async {
     EasyLoading.show();
-    emit(state.copyWith(
-      status: AuthStatus.loading,
-    ));
+    emit(state.copyWith(status: AuthStatus.loading));
     late SSOToken token;
 
     if (data != null) {
@@ -164,25 +206,33 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       );
     } else {
       final failureOrSuccessForToken = await _getToken(NoParams());
-      await failureOrSuccessForToken.fold((failure) {
-        emit(state.copyWith(
-          status: AuthStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-      }, (success) async {
-        token = SSOToken(
-          token: success.accessToken,
-          refreshToken: success.refreshToken,
-          idToken: success.idToken,
-          expirationTime: success.accessTokenExpirationDateTime.toString(),
-        );
-      });
+      await failureOrSuccessForToken.fold(
+        (failure) {
+          emit(
+            state.copyWith(
+              status: AuthStatus.failure,
+              errorMessage: (failure as ServerFailure).errorMessage,
+            ),
+          );
+        },
+        (success) async {
+          token = SSOToken(
+            token: success.accessToken,
+            refreshToken: success.refreshToken,
+            idToken: success.idToken,
+            expirationTime: success.accessTokenExpirationDateTime.toString(),
+          );
+        },
+      );
     }
     AuthenticatedState authState =
         sl<AuthenticationBloc>().state as AuthenticatedState;
     if (authState is AuthenticatedMunicipalityState) {
       _saveDataLogin(
-          token: token, isFromEtmam: isFromEtmam, authState: authState);
+        token: token,
+        isFromEtmam: isFromEtmam,
+        authState: authState,
+      );
     } else {
       final data = authState.profileData;
       emit(
@@ -214,47 +264,47 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   ////////////////////////////////////////////////////////////////////////
-  Future<void> onLoginNfaaz({
-    bool isFromEtmam = false,
-  }) async {
+  Future<void> onLoginNfaaz({bool isFromEtmam = false}) async {
     EasyLoading.show();
-    emit(state.copyWith(
-      status: AuthStatus.loading,
-    ));
+    emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccessForToken = await _getToken(NoParams());
-    await failureOrSuccessForToken.fold((failure) {
-      emit(
-        state.copyWith(
-          status: AuthStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ),
-      );
-      EasyLoading.dismiss();
-      return;
-    }, (success) async {
-      try {
-        EasyLoading.dismiss();
-        sl<AuthenticationBloc>().add(
-          LoginWithNafazAuthentication(
-            dataLogin: {
-              "access_token": success.accessToken,
-              "idToken": success.idToken,
-              "expires_in": success.accessTokenExpirationDateTime != null
-                  ? DateTime.now()
-                      .difference(success.accessTokenExpirationDateTime!)
-                      .inSeconds
-                  : 3500000,
-              "token_type": success.tokenType,
-              "refresh_token": success.refreshToken,
-              "scope": success.scopes ?? "",
-            },
+    await failureOrSuccessForToken.fold(
+      (failure) {
+        emit(
+          state.copyWith(
+            status: AuthStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
           ),
         );
-      } catch (e) {
         EasyLoading.dismiss();
-        print("object");
-      }
-    });
+        return;
+      },
+      (success) async {
+        try {
+          EasyLoading.dismiss();
+          sl<AuthenticationBloc>().add(
+            LoginWithNafazAuthentication(
+              dataLogin: {
+                "access_token": success.accessToken,
+                "idToken": success.idToken,
+                "expires_in":
+                    success.accessTokenExpirationDateTime != null
+                        ? DateTime.now()
+                            .difference(success.accessTokenExpirationDateTime!)
+                            .inSeconds
+                        : 3500000,
+                "token_type": success.tokenType,
+                "refresh_token": success.refreshToken,
+                "scope": success.scopes ?? "",
+              },
+            ),
+          );
+        } catch (e) {
+          EasyLoading.dismiss();
+          print("object");
+        }
+      },
+    );
     return;
   }
 
@@ -303,27 +353,32 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    DateTime? expireTime =
-        DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
+    DateTime? expireTime = DateTime.tryParse(
+      state.apigeeToken?.expirationTime ?? "",
+    );
 
     if (expireTime == null ||
         (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
-      return await failureOrSuccess.fold((failure) {
-        return false;
-      }, (success) async {
-        success.expirationTime = success.getExpireTime().toString();
-        emit(state.copyWith(apigeeToken: success));
-        return true;
-      });
+      return await failureOrSuccess.fold(
+        (failure) {
+          return false;
+        },
+        (success) async {
+          success.expirationTime = success.getExpireTime().toString();
+          emit(state.copyWith(apigeeToken: success));
+          return true;
+        },
+      );
     }
     return true;
   }
 
   Future<void> checkifTokenExpired() async {
     if (state.status == AuthStatus.notAuthenticated) {
-      DateTime? expireTime =
-          DateTime.tryParse(state.token?.expirationTime ?? "");
+      DateTime? expireTime = DateTime.tryParse(
+        state.token?.expirationTime ?? "",
+      );
 
       if (expireTime != null) {
         if (!DateTime.now()
@@ -383,11 +438,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       return;
     }
     try {
-      emit(
-        const EntryPointState(
-          status: AuthStatus.notAuthenticated,
-        ),
-      );
+      emit(const EntryPointState(status: AuthStatus.notAuthenticated));
       sl<AuthenticationBloc>().add(LogoutAuthentication());
     } catch (e) {
       print("object");
@@ -417,13 +468,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           sl<AuthenticationBloc>().state as AuthenticatedState;
       if (authState is AuthenticatedMunicipalityState) {
         final failureOrSuccessForProfile = await _getProfile(NoParams());
-        await failureOrSuccessForProfile.fold((failure) async {},
-            (success) async {
+        await failureOrSuccessForProfile.fold((failure) async {}, (
+          success,
+        ) async {
           final failureOrSuccess = await _saveSSOProfile(success);
           if (failureOrSuccess.isRight()) {
-            emit(state.copyWith(
-              userInfo: success,
-            ));
+            emit(state.copyWith(userInfo: success));
           }
         });
       }
@@ -481,31 +531,43 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
     if (latlng == null) {
     } else {
-      emit(state.copyWith(
-          userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
+      emit(
+        state.copyWith(
+          userLocation: GISParams(x: latlng.longitude, y: latlng.latitude),
+        ),
+      );
 
       GetGISData getgis = GetGISData(repository: sl());
 
-      var result =
-          await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
-      result.fold((l) {
-        emit(state.copyWith(gisStatus: BlocStatus.failure));
-      }, (r) {
-        emit(state.copyWith(userLocationGIS: r, gisStatus: BlocStatus.success));
+      var result = await getgis(
+        GISParams(x: latlng.longitude, y: latlng.latitude),
+      );
+      result.fold(
+        (l) {
+          emit(state.copyWith(gisStatus: BlocStatus.failure));
+        },
+        (r) {
+          emit(
+            state.copyWith(userLocationGIS: r, gisStatus: BlocStatus.success),
+          );
 
-        return (state.userLocation, state.userLocationGIS);
-      });
+          return (state.userLocation, state.userLocationGIS);
+        },
+      );
     }
     return null;
   }
 
   Future<String?> getPaymentURL(PaymentRequest request) async {
     var result = await _getPaymentUrl(request);
-    result.fold((l) {
-      CommonFunctions.showError((l as ServerFailure).errorMessage);
-    }, (r) async {
-      return r;
-    });
+    result.fold(
+      (l) {
+        CommonFunctions.showError((l as ServerFailure).errorMessage);
+      },
+      (r) async {
+        return r;
+      },
+    );
 
     return result.getRight;
   }
@@ -526,74 +588,88 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     print(" ");
     print(" ");
     final failureOrSuccess = await _saveAuth(token);
-    failureOrSuccess.fold((failure) {
-      print("object");
-    }, (success) async {
-      emit(
-        state.copyWith(
-          status: AuthStatus.loading,
-          token: token,
-          errorMessage: "",
-        ),
-      );
-
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
-      SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-      final failureOrSuccess =
-          await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
-      if (failureOrSuccess.isRight()) {
+    failureOrSuccess.fold(
+      (failure) {
+        print("object");
+      },
+      (success) async {
         emit(
           state.copyWith(
-            status: AuthStatus.authenticated,
+            status: AuthStatus.loading,
             token: token,
-            userInfo: user.copyWith(
-              name: authState.profileData.firstNameArabic,
-              sname: authState.profileData.lastNameArabic,
-              enName: authState.profileData.enName,
-              arName: authState.profileData.arName,
-              mail: authState.profileData.email,
-              phone: authState.profileData.phoneNumber,
-              loginType: SsoLoginType.nationalId,
-            ),
             errorMessage: "",
           ),
         );
-        FlutterUxcam.setUserIdentity(user.idNo);
-        FlutterUxcam.setUserProperty("name", user.arName ?? "");
-      }
 
-      final failureOrSuccessForCookie = await _getCookie(true);
-
-      await failureOrSuccessForCookie.fold((l) async {
-        final failureOrSuccessForCookie = await _getCookie(true);
-        await failureOrSuccessForCookie.fold((failure) {
-          emit(state.copyWith(
-            status: AuthStatus.failure,
-            errorMessage: (failure as ServerFailure).errorMessage,
-          ));
-        }, (r) async {
-          SSOToken? token = state.token;
-          token?.appCookie = r;
-          if (token != null) {
-            await _saveAuth(token);
-            emit(state.copyWith(token: token));
-          }
-        });
-      }, (r) async {
-        SSOToken? token = state.token;
-        token?.appCookie = r;
-        if (token != null) {
-          await _saveAuth(token);
-          emit(state.copyWith(token: token));
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(
+          token.token ?? "",
+        );
+        SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
+        final failureOrSuccess = await _saveSSOProfile(
+          SsoUserInfoModel.fromJson(decodedToken),
+        );
+        if (failureOrSuccess.isRight()) {
+          emit(
+            state.copyWith(
+              status: AuthStatus.authenticated,
+              token: token,
+              userInfo: user.copyWith(
+                name: authState.profileData.firstNameArabic,
+                sname: authState.profileData.lastNameArabic,
+                enName: authState.profileData.enName,
+                arName: authState.profileData.arName,
+                mail: authState.profileData.email,
+                phone: authState.profileData.phoneNumber,
+                loginType: SsoLoginType.nationalId,
+              ),
+              errorMessage: "",
+            ),
+          );
+          FlutterUxcam.setUserIdentity(user.idNo);
+          FlutterUxcam.setUserProperty("name", user.arName ?? "");
         }
-      });
 
-      EasyLoading.dismiss();
-      if (state.status == AuthStatus.notAuthenticated) {
-        //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
-        //MM  PCPViewModel.checkIfSameLoggedInUser();
-        return;
-      }
-    });
+        final failureOrSuccessForCookie = await _getCookie(true);
+
+        await failureOrSuccessForCookie.fold(
+          (l) async {
+            final failureOrSuccessForCookie = await _getCookie(true);
+            await failureOrSuccessForCookie.fold(
+              (failure) {
+                emit(
+                  state.copyWith(
+                    status: AuthStatus.failure,
+                    errorMessage: (failure as ServerFailure).errorMessage,
+                  ),
+                );
+              },
+              (r) async {
+                SSOToken? token = state.token;
+                token?.appCookie = r;
+                if (token != null) {
+                  await _saveAuth(token);
+                  emit(state.copyWith(token: token));
+                }
+              },
+            );
+          },
+          (r) async {
+            SSOToken? token = state.token;
+            token?.appCookie = r;
+            if (token != null) {
+              await _saveAuth(token);
+              emit(state.copyWith(token: token));
+            }
+          },
+        );
+
+        EasyLoading.dismiss();
+        if (state.status == AuthStatus.notAuthenticated) {
+          //MM  locator<CustomerSoundViewModel>().getUserRequests(showLoad: false);
+          //MM  PCPViewModel.checkIfSameLoggedInUser();
+          return;
+        }
+      },
+    );
   }
 }

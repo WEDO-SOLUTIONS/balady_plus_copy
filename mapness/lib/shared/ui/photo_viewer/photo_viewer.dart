@@ -10,11 +10,13 @@ import 'package:mapness/shared/ui/photo_viewer/photo_view_pager.dart';
 @RoutePage()
 class PhotoViewerPage extends StatefulWidget {
   final List<String>? photoPaths;
+  final List<String>? previewUrls;
   final int currentPhotoIndex;
 
   const PhotoViewerPage({
     required this.photoPaths,
     required this.currentPhotoIndex,
+    this.previewUrls,
     super.key,
   });
 
@@ -78,6 +80,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
           decoration: const BoxDecoration(color: backgroundColor),
           child: PhotoViewPager(
             imageSource: widget.photoPaths ?? [],
+            imagePreviews: widget.previewUrls ?? [],
             scrollPhysics: CustomScrollPhysics.common(),
             doubleTapZoomable: true,
             pageController: pageController,
