@@ -1,8 +1,10 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/entities/saudi_pass/offers_group_mapper.dart';
 import 'package:mapness/features/saudi_pass/notifiers/offers_screen_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/providers/get_profile_preferences_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
 import 'package:mapness/features/saudi_pass/views/offers_view.dart';
@@ -67,10 +69,30 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
 
     final subcategories = results.expand((it) => it).toList();
 
+    // Determine default city: use city from preferences if available, otherwise use location-based city
+    City defaultCity = await cityByLocation();
+    if (CommonProperties.isLoggedIn) {
+      try {
+        final preferences =
+            await ref.read(getProfilePreferencesProvider.future);
+        if (preferences.cities.isNotEmpty) {
+          // User has set a city in preferences, use it as default
+          final preferenceCity = lookups.cities
+              .where((city) => city.id == preferences.cities.first.id)
+              .firstOrNull;
+          if (preferenceCity != null) {
+            defaultCity = preferenceCity;
+          }
+        }
+      } catch (_) {
+        // If error fetching preferences, fall back to location-based city
+      }
+    }
+
     return OffersFiltersViewNotifier(
       ref: ref,
       saudiPassRepository: saudiPassRepository,
-      defaultCity: await cityByLocation(),
+      defaultCity: defaultCity,
       lookups: lookups,
       isFavoritesOnly: isFavoritesOnly,
       subCategoriesSelected: mapPreSelected(subcategories).toSet(),

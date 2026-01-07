@@ -53,8 +53,36 @@ class OffersScreenViewNotifier extends OffersViewNotifier
   bool isByPreferencesElseAll = false;
 
   bool _isManuallySelected = false;
+  bool _hasCheckedPreferences = false;
 
   bool get isManuallySelected => _isManuallySelected;
+
+  /// Initialize the tab state based on user preferences
+  Future<void> initializeTabState() async {
+    if (_hasCheckedPreferences || _isManuallySelected) {
+      return;
+    }
+    if (CommonProperties.isLoggedIn) {
+      try {
+        final saudiPassRepository = await this.saudiPassRepository;
+        final preferences = await saudiPassRepository.getPreferences();
+        if (!preferences.isNotPopulated) {
+          // User has preferences, set initial state to By Preferences
+          isByPreferencesElseAll = true;
+          notifyListeners();
+        } else {
+          // User is logged in but has no preferences, default to All tab
+          isByPreferencesElseAll = false;
+          notifyListeners();
+        }
+      } catch (_) {
+        // If error fetching preferences, default to All tab
+        isByPreferencesElseAll = false;
+        notifyListeners();
+      }
+      _hasCheckedPreferences = true;
+    }
+  }
 
   @override
   void tapBack() => ref.read(appRouterProvider).popForced();

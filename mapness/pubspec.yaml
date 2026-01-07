@@ -5,19 +5,19 @@ version: 2.1.0+7.4
 publish_to: "none"
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.7.0 <4.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
   cupertino_icons: 1.0.8
   flutter:
     sdk: flutter
-  flutter_riverpod: 2.6.1
+  flutter_riverpod: ^2.6.1
   auto_route: 9.2.2
   shared_preferences: 2.3.2
   # the annotation package containing @riverpod
-  riverpod_annotation: 2.6.1
-  async: 2.11.0
+  riverpod_annotation: ^2.6.1
+  async: ^2.11.0
 
   ##! Internet
   # Http client for Dart, which supports Interceptors
@@ -68,7 +68,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: 0.19.0
-  wakelock_plus: 1.2.8
+  wakelock_plus: ^1.4.0
   provider: 6.1.2
   url_launcher: 6.3.1
   shimmer: 3.0.0
@@ -77,7 +77,7 @@ dependencies:
       url: https://github.com/Demezy/cube_transition_plus
   protobuf: 4.0.0
   permission_handler: 12.0.0+1
-  package_info_plus: 8.1.0
+  package_info_plus: ^9.0.0
   hive_generator: 2.0.1
   internet_connection_checker: 1.0.0+1
   hive: 2.2.3
@@ -93,7 +93,7 @@ dependencies:
   image_picker: 1.1.2
   geobase: 1.4.0+1
   crypto: 3.0.6
-  mixpanel_flutter: 2.3.3
+  mixpanel_flutter: ^2.4.4
   rate_my_app: 2.2.0
   webview_flutter: 4.10.0
   auto_size_text: 3.0.0
@@ -101,7 +101,7 @@ dependencies:
   youtube_player_flutter: 9.1.1
   custom_image_crop: 0.0.13
   flutter_image_compress: 2.3.0
-  flutter_uxcam: 2.5.6
+  flutter_uxcam: ^2.7.1
   dio_http_cache: 0.3.0
   sliver_tools: 0.2.12
   json_annotation: 4.9.0
@@ -124,8 +124,8 @@ dependencies:
   freezed_annotation: 2.4.4
   freezed: 2.5.7
   flutter_hooks: 0.20.5
-  hooks_riverpod: 2.6.1
-  http: 1.2.2
+  hooks_riverpod: ^2.6.1
+  http: ^1.3.0
   image: 4.3.0
   vector_math: 2.1.4
   fast_immutable_collections: 11.0.0
@@ -173,7 +173,7 @@ dependency_overrides:
   # for dio_http_cache
   json_serializable: 6.9.0
   dio: 5.7.0
-#  google_api_headers: 4.2.4
+#  google_api_headers: ^5.0.1
   rxdart: 0.28.0
   device_info_plus: 11.1.1
   collection: 1.19.0
@@ -183,10 +183,28 @@ dependency_overrides:
   webview_flutter_wkwebview: 3.17.0
   sentry_flutter: 8.14.2
   sentry_dio: 8.14.2
-  analyzer: ^6.5.0
+  analyzer: ^6.11.0
   custom_lint_builder: ^0.7.0
-  custom_lint_visitor: 1.0.0+6.7.0
+  custom_lint_visitor: 1.0.0+6.11.0
   analyzer_plugin: ^0.11.2
+  # Fix for smooth_corner: version 1.1.1 fixes hashValues deprecation issue with Flutter 3.29.1
+  # while maintaining SmoothClipRRect support required by balady_uikit
+  smooth_corner: 1.1.1
+  # Fix for flutter_hms_gms_availability: use git fork that fixes Registrar deprecation issue with Flutter 3.29.1
+  flutter_hms_gms_availability:
+    git:
+      url: https://github.com/LeeeYudE/flutter_hms_gms_availability
+      ref: master
+  # Fix for http_certificate_pinning: override balady_authorization's constraint to use version 3.0.1 (fixes Registrar issue)
+  http_certificate_pinning: 3.0.1
+  # Force all Syncfusion packages to use the newer 29.1.33 line, which:
+  # - fixes old v1 PluginRegistry.Registrar issues in Android plugins
+  # - is compatible with Flutter 3.29.x
+  # This override also upgrades the versions required by balady_authorization (via balady_plus).
+  syncfusion_flutter_pdfviewer: 29.1.33
+  syncfusion_flutter_core: 29.1.33
+  syncfusion_flutter_datepicker: 29.1.33
+  syncfusion_localizations: 29.1.33
 
 dev_dependencies:
   flutter_test:
@@ -195,7 +213,7 @@ dev_dependencies:
   flutter_lints: 5.0.0
   # a tool for running code generators
   flutter_gen_runner:
-  build_runner: 2.4.13
+  build_runner: ^2.4.13
   # the code generator
   riverpod_generator: 2.6.3
   # riverpod_lint makes it easier to work with Riverpod
