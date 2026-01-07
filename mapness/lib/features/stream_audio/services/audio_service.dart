@@ -492,7 +492,7 @@ class AudioService extends ChangeNotifier {
           title: _currentTitle ?? 'Live Radio',
           artist: _currentArtist ?? 'Live Stream',
           artUri: _currentArtUri != null ? Uri.parse(_currentArtUri!) : null,
-          isLive: true,
+          // isLive: true,
         ),
       );
 

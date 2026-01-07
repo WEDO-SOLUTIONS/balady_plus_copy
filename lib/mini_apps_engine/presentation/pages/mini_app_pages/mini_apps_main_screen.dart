@@ -36,6 +36,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
     // Hide floating player and prepare for mini app navigation
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final audioProvider = ref.read(streamAudioProvider);
+      audioProvider.setInWeb(true);
       audioProvider.setFloatingPlayerVisibility(false);
       audioProvider.prepareForMiniAppNavigation();
     });
@@ -93,7 +94,9 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
           final shouldExit = await _showExitConfirmationDialog();
           if (shouldExit && context.mounted) {
             // Show floating player when mini app is closed
-            ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+            final audioProvider = ref.read(streamAudioProvider);
+            audioProvider.setInWeb(false);
+            audioProvider.setFloatingPlayerVisibility(true);
             Navigator.of(context).pop();
           }
         },
@@ -108,7 +111,9 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
                 final shouldExit = await _showExitConfirmationDialog();
                 if (shouldExit && context.mounted) {
                   // Show floating player when mini app is closed
-                  ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
+                  final audioProvider = ref.read(streamAudioProvider);
+                  audioProvider.setInWeb(false);
+                  audioProvider.setFloatingPlayerVisibility(true);
                   Navigator.of(context).pop();
                 }
               },
@@ -221,6 +226,7 @@ class _MiniAppsMainScreenState extends ConsumerState<MiniAppsMainScreen> {
     // Restore audio provider and show floating player when mini app is closed
     if (mounted) {
       try {
+        ref.read(streamAudioProvider).setInWeb(false);
         ref.read(streamAudioProvider).setFloatingPlayerVisibility(true);
       } catch (e) {
         debugPrint('MiniAppsMainScreen: Error restoring audio provider: $e');

@@ -94,9 +94,8 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
 
     final programLogo = channel?.currentPlayedProgram?.image;
     final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
-    final programUrl = hasProgramLogo
-        ? programLogo
-        : (channel?.maximizedLogo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
+    final programUrl =
+        hasProgramLogo ? programLogo : (channel?.logo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -114,15 +113,18 @@ class _PlayingAudioTileState extends ConsumerState<PlayingAudioTile> with Single
         ],
       ),
       child: !programUrl.contains('svg')
-          ? ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.network(
-                programUrl,
-                fit: BoxFit.fitWidth,
-                errorBuilder: (_, __, ___) => Padding(
-                  padding: const EdgeInsets.all(4),
-                  child: Assets.icons.svg.icMbcMood.svg(
-                    colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+          ? Padding(
+              padding: const EdgeInsets.all(2),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  programUrl,
+                  fit: BoxFit.fitWidth,
+                  errorBuilder: (_, __, ___) => Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Assets.icons.svg.icMbcMood.svg(
+                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                    ),
                   ),
                 ),
               ),

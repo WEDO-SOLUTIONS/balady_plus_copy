@@ -21,6 +21,7 @@ class StreamAudioProvider extends ChangeNotifier {
   Timer? _contextualMessageTimer;
   bool _isDragging = false;
   bool _isFloatingPlayerVisible = true;
+  bool isInWeb = false;
   bool _isLoadingChannels = false;
   bool _isSelectingChannel = false; // Track when we're actively selecting a channel
 
@@ -213,10 +214,21 @@ class StreamAudioProvider extends ChangeNotifier {
     debugPrint('StreamAudioProvider: notifyListeners called');
   }
 
+  void setInWeb(bool inWeb) {
+    debugPrint('StreamAudioProvider: setInWeb called - old: $isInWeb, new: $inWeb');
+    isInWeb = inWeb;
+    notifyListeners();
+    debugPrint('StreamAudioProvider: InWeb state changed to $inWeb');
+  }
+
   void setFloatingPlayerVisibility(bool isVisible) {
     debugPrint(
         'StreamAudioProvider: setFloatingPlayerVisibility called - old: $_isFloatingPlayerVisible, new: $isVisible');
-    _isFloatingPlayerVisible = isVisible;
+    if (isInWeb && isVisible) {
+      _isFloatingPlayerVisible = false;
+    } else {
+      _isFloatingPlayerVisible = isVisible;
+    }
     notifyListeners();
     debugPrint('StreamAudioProvider: Floating player visibility changed to $isVisible');
   }
@@ -401,7 +413,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
       _selectedChannel = channel;
       _isExited = false;
-      _isFloatingPlayerVisible = true; // Show floating player when selecting a channel
+      setFloatingPlayerVisibility(true); // Show floating player when selecting a channel
 
       await _audioService.playStream(
         url: channel.streamUrl!,
@@ -477,7 +489,7 @@ class StreamAudioProvider extends ChangeNotifier {
     }
 
     _isExited = false;
-    _isFloatingPlayerVisible = true; // Show floating player when playing
+    setFloatingPlayerVisibility(true); // Show floating player when playing
 
     try {
       await _audioService.playStream(
@@ -622,7 +634,7 @@ class StreamAudioProvider extends ChangeNotifier {
     _isExited = true;
     _selectedChannel = null;
     _isInitialized = false;
-    _isFloatingPlayerVisible = false; // Hide floating player when exiting
+    setFloatingPlayerVisibility(false); // Hide floating player when exiting
 
     debugPrint('StreamAudioProvider: Player exited successfully');
     notifyListeners();

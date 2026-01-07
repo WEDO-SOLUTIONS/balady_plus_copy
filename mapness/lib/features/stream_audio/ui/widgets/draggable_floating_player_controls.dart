@@ -586,7 +586,7 @@ class _ContentState extends ConsumerState<Content> {
     final hasProgram = channel?.currentPlayedProgram != null;
     final programLogo = channel?.currentPlayedProgram?.image;
     final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
-    final url = hasProgramLogo ? programLogo : (channel?.minimizedLogo ?? 'https://www.mbcmood.com/images/Logo.png');
+    final url = hasProgramLogo ? programLogo : (channel?.logo ?? 'https://www.mbcmood.com/images/Logo.png');
 
     return Stack(
       children: [
@@ -598,19 +598,22 @@ class _ContentState extends ConsumerState<Content> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: !url.contains('svg')
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    url,
-                    fit: BoxFit.fitWidth,
-                    errorBuilder: (_, __, ___) => Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Assets.icons.svg.icMbcMood.svg(
-                        colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+              ? Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      url,
+                      fit: BoxFit.fitWidth,
+                      errorBuilder: (_, __, ___) => Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Assets.icons.svg.icMbcMood.svg(
+                          colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                        ),
                       ),
                     ),
                   ),
-                )
+              )
               : SvgPicture.network(
                   url,
                   placeholderBuilder: (_) => Padding(

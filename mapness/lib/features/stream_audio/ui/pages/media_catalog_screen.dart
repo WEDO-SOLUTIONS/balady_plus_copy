@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -68,13 +69,13 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                 if (isLoading) {
                   return SizedBox(
                     height: MediaQuery.of(context).size.height * 0.44,
-                    child: const Center(
+                    child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 16),
-                          Text('Loading channels...'),
+                          const CircularProgressIndicator(color: AppColor.baladyDarkGreen2,),
+                          const SizedBox(height: 16),
+                          Text(Directionality.of(context) == TextDirection.rtl ? 'تحميل المحطات...' : 'Loading channels...'),
                         ],
                       ),
                     ),
@@ -131,9 +132,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
 
                       final programLogo = channel.currentPlayedProgram?.image;
                       final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
-                      final programUrl = hasProgramLogo
-                          ? programLogo
-                          : (channel.logo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
+                      final programUrl = hasProgramLogo ? programLogo : channelUrl;
 
                       final hasProgram = channel.currentPlayedProgram != null;
                       final imagesWidth = MediaQuery.of(context).size.width * 0.25;

@@ -131,7 +131,7 @@ class MediaCatalogItem extends StatelessWidget {
   Widget buildProgramImage() {
     final programLogo = channel.currentPlayedProgram?.image;
     final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
-    final url = hasProgramLogo ? programLogo : (channel.maximizedLogo ?? 'https://www.mbcmood.com/images/Logo.png');
+    final url = hasProgramLogo ? programLogo : (channel.logo ?? channel.maximizedLogo ?? 'https://www.mbcmood.com/images/Logo.png');
 
     return ProgramImage(url: url);
   }
