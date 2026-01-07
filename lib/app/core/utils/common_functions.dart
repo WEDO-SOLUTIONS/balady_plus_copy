@@ -2070,15 +2070,14 @@ class CommonProperties {
 /// Safely shares text content, handling iOS sharePositionOrigin requirement
 ///
 /// This function wraps Share.share() and handles the iOS requirement for
-/// sharePositionOrigin. If a BuildContext is provided, it will attempt to
-/// get the position origin from the context. Otherwise, it will share
-/// without position origin which works in most cases.
+/// sharePositionOrigin. It requires a BuildContext to determine the position
+/// origin for the share sheet.
 ///
 /// [text] - The text content to share
-/// [context] - Optional BuildContext to determine share position origin
-Future<void> safeShareText(String text, {BuildContext? context}) async {
+/// [context] - Required BuildContext to determine share position origin
+Future<void> safeShareText(String text, {required BuildContext context}) async {
   try {
-    if (Platform.isIOS && context != null) {
+    if (Platform.isIOS) {
       // Try to get the RenderBox from the context to determine position
       final RenderBox? box = context.findRenderObject() as RenderBox?;
       if (box != null &&
@@ -2101,7 +2100,7 @@ Future<void> safeShareText(String text, {BuildContext? context}) async {
       }
     }
     // Fallback: share without position origin
-    // This works on Android and most iOS contexts
+    // This works on Android and iOS contexts where position cannot be determined
     await Share.share(text);
   } catch (e) {
     // If sharing with position origin fails, retry without it
