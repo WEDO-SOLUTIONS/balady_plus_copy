@@ -2,7 +2,6 @@ import 'package:localize_and_translate/localize_and_translate.dart' show Localiz
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
@@ -16,11 +15,10 @@ void main() async {
 
   unhandledExceptionBaladyLogs(() async {
     await runMapnessApp(EnvType.stg, () async {
-
       AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
       await AppEnv.setupEnv(EnvType.stg);
       await setupMapness(EnvType.stg);
-        runApp(
+      runApp(
         const MapnessProviderScope(
           child: LocalizedApp(
             child: App(),

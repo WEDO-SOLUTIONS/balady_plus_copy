@@ -3,8 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_uikit/balady_uikit.dart'
-    hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -40,7 +39,6 @@ import 'package:mapness/widgets/landing/quick_action_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 import 'package:sheetify/sheetify.dart';
 
-
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     required this.bottomSheetController,
@@ -56,38 +54,31 @@ class Dashboard extends ConsumerStatefulWidget {
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard>
-    with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   late FreeRoamStartState freeRoamState;
 
-  late final outsideOpacityDelegate = StatefulSheetDelegateFunction<
-      double,
-      ThreeStateSheet>(
+  late final outsideOpacityDelegate = StatefulSheetDelegateFunction<double, ThreeStateSheet>(
     function: (controller) {
       final fraction = controller.fraction;
       final interpolation = controller.interpolation;
       final state = controller.state;
 
-      final isGoToNavigatorShown = freeRoamState.canStart &&
-          !freeRoamState.isAutorun;
+      final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
 
       final isSheetCoversHalfOfTheScreen = fraction > 0.4;
       final isSheetStateOpen = state == ThreeStateSheet.open;
       final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
       final isFull = isGoToNavigatorShown ||
-          (!controller.isEnabled && isSheetStateOpen &&
-              isSheetScrolledForHalfOfTheState) ||
+          (!controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
           isSheetCoversHalfOfTheScreen;
 
       return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
     },
   );
-  final barrierColorDelegate = StatefulSheetDelegateFunction<
-      Color?,
-      ThreeStateBottomSheet>(function: (controller) {
+  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
     final state = controller.state;
 
     if (state == ThreeStateBottomSheet.expanded) {
@@ -99,8 +90,7 @@ class _DashboardState extends ConsumerState<Dashboard>
     return null;
   });
 
-  final topHeaderOffset = const StatefulSheetDelegateValue<double>(
-      value: -Spacing.$4x);
+  final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
 
   @override
   void initState() {
@@ -115,8 +105,7 @@ class _DashboardState extends ConsumerState<Dashboard>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) =>
-      _checkLocationPermission(state);
+  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
 
   ///This method is intended for handling location permission requests
   /// if it's triggered by someone before Mapness starts.
@@ -138,21 +127,17 @@ class _DashboardState extends ConsumerState<Dashboard>
     final isNationalDay = ref.watch(saudiNationalDayProvider);
 
     return Padding(
-      padding: EdgeInsets.only(top: MediaQuery
-          .viewPaddingOf(context)
-          .top),
+      padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
       child: MultiStateSheet<ThreeStateSheet>(
         animateOpening: false,
         keepContentBehindFooter: true,
         useSafeArea: false,
         scrollController: widget.bottomSheetController,
-        topHeader: MapHiddenStateControls(
-            widget.bottomSheetController, widget.fireworksController),
+        topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
         topHeaderOffset: isNationalDay ? topHeaderOffset : null,
         offsetOutsideWidgetByTopheader: !isNationalDay,
         backgroundColor: context.colors.backgroundSurface2,
-        dragger: SheetDragger(
-            backgroundColor: context.colors.backgroundSurface2),
+        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
         header: const DashboardHeader(),
         footer: IgnorePointer(
           child: SizedBox(
@@ -177,8 +162,7 @@ class _DashboardState extends ConsumerState<Dashboard>
           ),
         ),
         barrierColorDelegate: barrierColorDelegate,
-        outside: MapDashboardControls(widget.bottomSheetController,
-            key: const ValueKey('MapDashboardControls')),
+        outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
         outsideOpacityDelegate: outsideOpacityDelegate,
         sliver: SliverPersistentHeader(
           delegate: DashboardHeaderDelegate(vsync: this),
@@ -192,19 +176,18 @@ class _DashboardState extends ConsumerState<Dashboard>
                 ? Assets.images.feedbackDashboardSaudiday.keyName
                 : Assets.images.feedbackDashboard.keyName,
             onTap: () {
-              ref.read(advertMetricsProvider.notifier).sendEvent(
-                  AdvertMetricsKeys.addPoiBanner);
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
               context.router.push(const ContributeRoute());
             },
             gradientColors: isNationalDay
                 ? [
-              const Color(0xFF014850),
-              const Color(0xFF00343A),
-            ]
+                    const Color(0xFF014850),
+                    const Color(0xFF00343A),
+                  ]
                 : [
-              const Color(0xFF4EC9C0),
-              const Color(0xFF2AB3A9),
-            ],
+                    const Color(0xFF4EC9C0),
+                    const Color(0xFF2AB3A9),
+                  ],
             title: context.l10n.contribute,
             subtitle: context.l10n.buildBaladyTogether,
           ),
@@ -221,8 +204,7 @@ class _DashboardState extends ConsumerState<Dashboard>
           ScrollConfiguration(
             behavior: NoGlowingScrollBehavior(),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Spacing.$4x, vertical: Spacing.$0_5x),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$0_5x),
               scrollDirection: Axis.horizontal,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,30 +228,81 @@ class _DashboardState extends ConsumerState<Dashboard>
                     onTap: _openParking,
                   ),
                   const SizedBox(width: Spacing.$2x),
-                  QuickActionButton(
-                    text: Directionality.of(context) == TextDirection.rtl ? 'البث الصوتي' : 'Stream Audio',
-                    icon: Icons.wifi,
-                    child: SvgPicture.asset(
-                      Assets.icons.svg.audio.audioStream.keyName,
-                      height: Spacing.$6x + Spacing.$1x,
-                      colorFilter: ColorFilter.mode(
-                        context.colors.accentDefault,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    onTap: () async {
-                      final provider = ref.read(streamAudioProvider.notifier);
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final streamAudio = ref.watch(streamAudioProvider);
+                      final isLoading = streamAudio.isLoadingChannels;
+                      final hasChannels = streamAudio.hasChannels;
 
-                      // Reset if needed before getting live programs
-                      if (provider.needsReinitialization) {
-                        await provider.reset();
-                      }
+                      return QuickActionButton(
+                        text: Directionality.of(context) == TextDirection.rtl ? 'البث الصوتي' : 'Stream Audio',
+                        icon: Icons.wifi,
+                        child: isLoading
+                            ? SizedBox(
+                                height: Spacing.$6x + Spacing.$1x,
+                                width: Spacing.$6x + Spacing.$1x,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    context.colors.accentDefault,
+                                  ),
+                                ),
+                              )
+                            : SvgPicture.asset(
+                                Assets.icons.svg.audio.audioStream.keyName,
+                                height: Spacing.$6x + Spacing.$1x,
+                                colorFilter: ColorFilter.mode(
+                                  context.colors.accentDefault,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                        onTap: () async {
+                          final provider = ref.read(streamAudioProvider.notifier);
 
-                      // Ensure we have live programs data first
-                      await provider.getChannels();
-                      if (provider.filteredChannels.isNotEmpty == true) {
-                        await provider.selectChannel(provider.filteredChannels.first);
-                      }
+                          try {
+                            // Reset if needed before getting live programs
+                            if (provider.needsReinitialization) {
+                              await provider.reset();
+                            }
+
+                            // Always try to get channels (this will show loading state)
+                            await provider.getChannels(forceRefresh: !hasChannels);
+
+                            if (provider.filteredChannels.isNotEmpty) {
+                              await provider.selectChannel(provider.filteredChannels.first);
+                            } else {
+                              // Show message if no channels available
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(Directionality.of(context) == TextDirection.rtl
+                                        ? 'لا توجد قنوات متاحة حالياً. اضغط مرة أخرى للمحاولة.'
+                                        : 'No channels available right now. Tap again to retry.'),
+                                    action: SnackBarAction(
+                                      label:
+                                          Directionality.of(context) == TextDirection.rtl ? 'إعادة المحاولة' : 'Retry',
+                                      onPressed: () async {
+                                        await provider.getChannels(forceRefresh: true);
+                                      },
+                                    ),
+                                  ),
+                                );
+                              }
+                            }
+                          } catch (e) {
+                            debugPrint('Dashboard: Error loading channels: $e');
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(Directionality.of(context) == TextDirection.rtl
+                                      ? 'خطأ في تحميل القنوات. اضغط مرة أخرى للمحاولة.'
+                                      : 'Error loading channels. Tap again to retry.'),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                      );
                     },
                   ),
                   const SizedBox(width: Spacing.$2x),
@@ -349,8 +382,7 @@ class _DashboardState extends ConsumerState<Dashboard>
 
   void _openParking() {
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
-    widget.bottomSheetController.position.animateTo(
-        0, duration: Durations.medium1, curve: Curves.easeOutQuart);
+    widget.bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
     widget.bottomSheetController.setState(ThreeStateSheet.hidden);
     ref.read(layersControlsProvider.notifier).enableParking();
   }
@@ -394,16 +426,14 @@ class _DashboardState extends ConsumerState<Dashboard>
       action: MetricAction.tap.toString(),
     );
 
-    ref.read(advertMetricsProvider.notifier).sendEvent(
-        AdvertMetricsKeys.exploreLandingEngagement);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
     if (userLocation != null) {
       context.router.push(
         ShareMyLocationRoute(
           cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-          closestPoint: LatLng(latitude: userLocation.latitude,
-              longitude: userLocation.longitude),
+          closestPoint: LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude),
         ),
       );
     }
@@ -411,8 +441,7 @@ class _DashboardState extends ConsumerState<Dashboard>
 
   void _openSnapAndSend() {
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
-    Metrics.logEventAdvanced(
-        MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
+    Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
         action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
     sl<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
       serviceKey: 'snapandsend',
@@ -420,18 +449,17 @@ class _DashboardState extends ConsumerState<Dashboard>
   }
 
   void _scrollListenHandler() {
-    footerOpacity.value =
-        min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
+    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(
-          MapControlsStateDashboard(),
-        );
+              MapControlsStateDashboard(),
+            );
       } else {
         ref.read(mapControlsProvider.notifier).update(
-          MapControlsStateIdle(),
-        );
+              MapControlsStateIdle(),
+            );
       }
     });
   }

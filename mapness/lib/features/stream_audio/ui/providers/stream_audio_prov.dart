@@ -22,6 +22,7 @@ class StreamAudioProvider extends ChangeNotifier {
   bool _isDragging = false;
   bool _isFloatingPlayerVisible = true;
   bool _isLoadingChannels = false;
+  bool _isSelectingChannel = false; // Track when we're actively selecting a channel
 
   // Request deduplication
   Future<void>? _currentChannelsRequest;
@@ -39,7 +40,11 @@ class StreamAudioProvider extends ChangeNotifier {
     _loadChannelsOnInit();
   }
 
-  // Set the ref to listen to language changes
+  void testAudioService() {
+    _audioService.testAudioService();
+  }
+
+  // Set the ref to listen to language changes and initialize coordinator
   void setRef(Ref<StreamAudioProvider> ref) {
     // Listen to language changes
     ref.listen<Language>(appLanguageProvider, (previous, next) {
@@ -48,14 +53,36 @@ class StreamAudioProvider extends ChangeNotifier {
         refreshChannels();
       }
     });
+
+    // Provider initialization complete
   }
 
   Future<void> _initializeService() async {
     await _audioService.init();
     _audioService.addListener(_onAudioServiceChanged);
+
+    // Set callback for notification dismissal
+    _audioService.setOnNotificationDismissedCallback(() {
+      debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
+      // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
+      // This is a user action that should take precedence over any ongoing operations
+      if (_isSelectingChannel) {
+        debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
+        // Cancel the selection flag immediately so exitPlayer can proceed
+        _isSelectingChannel = false;
+      }
+
+      // Always exit when notification is dismissed (user action)
+      if (!_isExited) {
+        exitPlayer();
+      }
+    });
+
     _isInitialized = true;
     notifyListeners();
   }
+
+  // Coordinator initialization removed for simplicity
 
   // Load channels automatically when provider is initialized
   void _loadChannelsOnInit() {
@@ -155,6 +182,9 @@ class StreamAudioProvider extends ChangeNotifier {
 
   // State getters from audio service
   bool get isPlaying => _audioService.isPlaying;
+
+  // Helper to check if audio is effectively playing (including when ducked)
+  bool get isEffectivelyPlaying => _audioService.isEffectivelyPlaying;
 
   bool get isLoading => _audioService.isLoading;
 
@@ -359,25 +389,38 @@ class StreamAudioProvider extends ChangeNotifier {
 
     debugPrint('StreamAudioProvider: Selecting program: ${channel.name}');
 
-    // If we were previously exited, reinitialize the audio service
-    if (_isExited) {
-      debugPrint('StreamAudioProvider: Reinitializing after exit');
-      await _reinitializeAudioService();
-    }
-
-    _selectedChannel = channel;
-    _isExited = false;
+    // Prevent exitPlayer from interfering while selecting
+    _isSelectingChannel = true;
 
     try {
+      // If we were previously exited, reinitialize the audio service
+      if (_isExited) {
+        debugPrint('StreamAudioProvider: Reinitializing after exit');
+        await _reinitializeAudioService();
+      }
+
+      _selectedChannel = channel;
+      _isExited = false;
+      _isFloatingPlayerVisible = true; // Show floating player when selecting a channel
+
       await _audioService.playStream(
         url: channel.streamUrl!,
         channelId: channel.id.toString(),
         title: channel.name,
         programName: channel.currentPlayedProgram?.name,
+        artUri: channel.logo, // Add artwork URL if available
       );
+
+      // Stream audio is now active
+
       debugPrint('StreamAudioProvider: Successfully started playing ${channel.name}');
     } catch (e) {
       debugPrint('StreamAudioProvider: Error playing stream: $e');
+    } finally {
+      // Allow exitPlayer after a short delay to ensure playback has started
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        _isSelectingChannel = false;
+      });
     }
 
     notifyListeners();
@@ -395,6 +438,24 @@ class StreamAudioProvider extends ChangeNotifier {
 
     // Add listener to the reinitialized service
     _audioService.addListener(_onAudioServiceChanged);
+
+    // Re-set callback for notification dismissal
+    _audioService.setOnNotificationDismissedCallback(() {
+      debugPrint('StreamAudioProvider: Notification dismissed callback received - forcing exit (like mustRemove)');
+      // When notification is dismissed from outside, ALWAYS exit (like mustRemove)
+      // This is a user action that should take precedence over any ongoing operations
+      if (_isSelectingChannel) {
+        debugPrint('StreamAudioProvider: Currently selecting channel, canceling selection and exiting');
+        // Cancel the selection flag immediately so exitPlayer can proceed
+        _isSelectingChannel = false;
+      }
+
+      // Always exit when notification is dismissed (user action)
+      if (!_isExited) {
+        exitPlayer();
+      }
+    });
+
     _isInitialized = true;
 
     debugPrint('StreamAudioProvider: Audio service reinitialized');
@@ -416,6 +477,7 @@ class StreamAudioProvider extends ChangeNotifier {
     }
 
     _isExited = false;
+    _isFloatingPlayerVisible = true; // Show floating player when playing
 
     try {
       await _audioService.playStream(
@@ -423,7 +485,11 @@ class StreamAudioProvider extends ChangeNotifier {
         channelId: _selectedChannel!.id!.toString(),
         title: _selectedChannel!.name,
         programName: _selectedChannel!.currentPlayedProgram?.name,
+        artUri: _selectedChannel!.logo, // Add artwork URL if available
       );
+
+      // Stream audio is now active
+
       debugPrint('StreamAudioProvider: Stream playing successfully');
     } catch (e) {
       debugPrint('StreamAudioProvider: Error in playStream: $e');
@@ -434,6 +500,9 @@ class StreamAudioProvider extends ChangeNotifier {
 
   Future<void> pauseStream() async {
     await _audioService.pause();
+
+    // Stream audio is no longer active
+
     notifyListeners();
   }
 
@@ -462,7 +531,7 @@ class StreamAudioProvider extends ChangeNotifier {
 
     // Sync state first to ensure we have accurate information about current playback state
     _audioService.syncState();
-    
+
     // If we have a selected channel but audio service is not playing, start playing
     if (!_audioService.isPlaying && !_audioService.isLoading) {
       debugPrint('StreamAudioProvider: Starting playback for selected channel: ${_selectedChannel!.name}');
@@ -472,7 +541,7 @@ class StreamAudioProvider extends ChangeNotifier {
       debugPrint('StreamAudioProvider: Toggling play/pause state');
       await _audioService.togglePlayPause();
     }
-    
+
     // Ensure UI is updated after toggle
     notifyListeners();
   }
@@ -538,6 +607,11 @@ class StreamAudioProvider extends ChangeNotifier {
   Future<void> exitPlayer() async {
     debugPrint('StreamAudioProvider: Exiting player');
 
+    // Stream audio is no longer active
+
+    // Reset selection flag to allow exit
+    _isSelectingChannel = false;
+
     // Remove listener to avoid notifications during cleanup
     _audioService.removeListener(_onAudioServiceChanged);
 
@@ -548,6 +622,7 @@ class StreamAudioProvider extends ChangeNotifier {
     _isExited = true;
     _selectedChannel = null;
     _isInitialized = false;
+    _isFloatingPlayerVisible = false; // Hide floating player when exiting
 
     debugPrint('StreamAudioProvider: Player exited successfully');
     notifyListeners();
@@ -559,17 +634,21 @@ class StreamAudioProvider extends ChangeNotifier {
 
     switch (state) {
       case AppLifecycleState.resumed:
-        // App came back to foreground - immediately sync state, then check recovery
+        // App came back to foreground - check if notification was dismissed
         if (_selectedChannel != null && !_isExited) {
+          // Check if player was dismissed while app was in background
+          final wasDismissed = _audioService.checkIfPlayerWasDismissed();
+          if (wasDismissed) {
+            debugPrint('StreamAudioProvider: Player was dismissed while app was in background');
+            // exitPlayer() will be called by the callback, but ensure state is updated
+            return;
+          }
+
           // Immediately sync state to reflect actual player state
           _audioService.syncState();
           notifyListeners();
-          
-          // Then check for recovery after a small delay to allow system to settle
-          Future.delayed(const Duration(milliseconds: 500), () {
-            _audioService.monitorAndRecover();
-            notifyListeners();
-          });
+
+          // Audio service monitoring removed for simplicity
         }
         break;
       case AppLifecycleState.paused:
@@ -682,6 +761,8 @@ class StreamAudioProvider extends ChangeNotifier {
     // Clear callback references to prevent memory leaks
     _togglePanelCallback = null;
 
+    // Navigation coordinator removed
+
     // Remove listener and dispose audio service
     _audioService.removeListener(_onAudioServiceChanged);
     // _audioService.dispose();
@@ -700,7 +781,7 @@ class StreamAudioProvider extends ChangeNotifier {
 final streamAudioProvider = ChangeNotifierProvider<StreamAudioProvider>(
   (ref) {
     final provider = StreamAudioProvider();
-    // provider.setRef(ref);
+    provider.setRef(ref);
     return provider;
   },
 );

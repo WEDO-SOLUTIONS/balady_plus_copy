@@ -78,7 +78,7 @@
         <true/>
     </dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Play Videos</string>
+	<string>Play Videos, and we need access to play audio in the background</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>To Allow to Add Events to the calendar</string>
 	<key>NSCameraUsageDescription</key>

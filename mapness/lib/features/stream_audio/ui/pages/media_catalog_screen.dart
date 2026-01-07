@@ -61,13 +61,51 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                 ),
               ),
               Builder(builder: (_) {
-                final channels = ref.watch(streamAudioProvider).filteredChannels;
+                final streamAudio = ref.watch(streamAudioProvider);
+                final channels = streamAudio.filteredChannels;
+                final isLoading = streamAudio.isLoadingChannels;
+
+                if (isLoading) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.44,
+                    child: const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(),
+                          SizedBox(height: 16),
+                          Text('Loading channels...'),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
                 if (channels.isEmpty) {
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(Directionality.of(context) == TextDirection.rtl
-                        ? 'لا توجد قنوات حاليا'
-                        : 'No channels right now'),
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.44,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            Directionality.of(context) == TextDirection.rtl
+                                ? 'لا توجد قنوات حاليا'
+                                : 'No channels right now',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await ref.read(streamAudioProvider.notifier).getChannels(forceRefresh: true);
+                            },
+                            child: Text(
+                              Directionality.of(context) == TextDirection.rtl ? 'إعادة المحاولة' : 'Retry',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
                 }
 
@@ -87,7 +125,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                     itemBuilder: (_, index) {
                       final channel = channels[index];
                       final bool isSelected = ref.watch(streamAudioProvider).selectedChannel?.id == channel.id;
-                      final channelUrl = channel.circledLogo ??
+                      final channelUrl = channel.logo ??
                           channel.maximizedLogo ??
                           'https://assets.mbcmood.com/channels/1708604937logombc.png';
 
@@ -95,7 +133,7 @@ class _MediaCatalogPageState extends ConsumerState<MediaCatalogPage> {
                       final bool hasProgramLogo = programLogo != null && programLogo.isNotEmpty;
                       final programUrl = hasProgramLogo
                           ? programLogo
-                          : (channel.maximizedLogo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
+                          : (channel.logo ?? 'https://assets.mbcmood.com/channels/1708604937logombc.png');
 
                       final hasProgram = channel.currentPlayedProgram != null;
                       final imagesWidth = MediaQuery.of(context).size.width * 0.25;

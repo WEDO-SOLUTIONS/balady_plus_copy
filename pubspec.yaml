@@ -135,8 +135,7 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   ## Audio
   just_audio: ^0.9.46
-#  just_audio: ^0.10.5
-#  just_audio_background: ^0.0.1-beta.17
+  just_audio_background: ^0.0.1-beta.17
 
   version: ^2.0.0
   #google_maps_flutter: ^2.5.3

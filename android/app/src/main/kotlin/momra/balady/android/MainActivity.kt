@@ -13,9 +13,9 @@ import io.flutter.embedding.android.FlutterFragment
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-// TEMPORARILY DISABLED: import com.ryanheise.audioservice.AudioServiceFragmentActivity
+import com.ryanheise.audioservice.AudioServiceFragmentActivity
 
-class MainActivity : FlutterFragmentActivity() {
+class MainActivity : AudioServiceFragmentActivity() {
     
     // TEMPORARILY DISABLED: private var mediaSessionHandler: MediaSessionHandler? = null
 
@@ -51,6 +51,8 @@ class MainActivity : FlutterFragmentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         MainAppScreenStateNotifier.setState(MainAppScreenState.DESTROYED)
+        
+        // Audio interruption handler removed
 
         if (NavigationCarAppService.connectionState == CarAppConnectionState.DISCONNECTED) {
             FlutterProvider.destroyFlutterEngine()
@@ -70,6 +72,8 @@ class MainActivity : FlutterFragmentActivity() {
         // val channel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "balady_media_session")
         // mediaSessionHandler = MediaSessionHandler(this, channel)
         // channel.setMethodCallHandler(mediaSessionHandler)
+        
+        // Native audio interruption removed for simplicity
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {

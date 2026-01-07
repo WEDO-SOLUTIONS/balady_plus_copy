@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/stream_audio/ui/providers/stream_audio_prov.dart';
 import 'package:mapness/features/stream_audio/ui/widgets/draggable_floating_player_controls.dart';
@@ -16,7 +17,7 @@ class StreamAudio extends ConsumerStatefulWidget {
   ConsumerState<StreamAudio> createState() => _StreamAudioState();
 }
 
-class _StreamAudioState extends ConsumerState<StreamAudio> {
+class _StreamAudioState extends ConsumerState<StreamAudio> with WidgetsBindingObserver {
   final DraggableScrollableController _sheetController = DraggableScrollableController();
 
   final double _minChildSize = 0.0;
@@ -25,6 +26,10 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
 
   /// Timer for 8-second auto-close
   Timer? _autoCloseTimer;
+
+  /// Keyboard visibility detection
+  late final StreamSubscription<bool> _keyboardVisibilitySubscription;
+  final KeyboardVisibilityController _keyboardVisibilityController = KeyboardVisibilityController();
 
   /// Track if we've already triggered the 150px threshold
   bool _hasTriggeredHeightThreshold = false;
@@ -41,6 +46,11 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   @override
   void initState() {
     super.initState();
+
+    // Initialize keyboard visibility listener
+    _keyboardVisibilitySubscription = _keyboardVisibilityController.onChange.listen(_onKeyboardToggle);
+    WidgetsBinding.instance.addObserver(this);
+
     Future.microtask(() {
       ref.read(streamAudioProvider).getChannels();
       // Register the togglePanel callback with the provider
@@ -51,9 +61,40 @@ class _StreamAudioState extends ConsumerState<StreamAudio> {
   @override
   void dispose() {
     _autoCloseTimer?.cancel();
+
+    // Dispose keyboard visibility listener
+    _keyboardVisibilitySubscription.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+
     // Unregister the callback when disposing
     ref.read(streamAudioProvider).setTogglePanelCallback(null);
     super.dispose();
+  }
+
+  /// Handles keyboard visibility changes
+  void _onKeyboardToggle(bool isVisible) {
+    if (!isVisible) {
+      return; // Only act when keyboard opens, not when it closes
+    }
+
+    final screenSize = MediaQuery.of(context).size;
+    final isLandscape = screenSize.width > screenSize.height;
+
+    bool shouldClose = false;
+
+    if (isLandscape) {
+      // Check if landscape sheet is open
+      shouldClose = _landscapeSheetWidth > 0;
+    } else {
+      // Check if portrait sheet is open
+      final currentSize = _sheetController.isAttached ? _sheetController.size : _minChildSize;
+      shouldClose = currentSize > _minChildSize;
+    }
+
+    // Close the sheet if it's open
+    if (shouldClose) {
+      togglePanel();
+    }
   }
 
   /// Toggles the panel between open and closed states

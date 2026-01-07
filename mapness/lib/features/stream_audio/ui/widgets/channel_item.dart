@@ -119,9 +119,9 @@ class MediaCatalogItem extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: 54,
+            top: 60,
             right: 0,
-            child: CircleImage(url: channel.circledLogo ?? channel.logo ?? ''),
+            child: CircleImage(url: channel.logo ?? channel.circledLogo ?? ''),
           ),
         ],
       ),
@@ -149,6 +149,7 @@ class CircleImage extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         height: 45,
         width: 45,
+        padding: const EdgeInsets.all(4.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(RadiusBorder.full),
           border: Border.all(
@@ -212,15 +213,18 @@ class ProgramImage extends StatelessWidget {
                   colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
                 ),
               )
-            : ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  url,
-                  fit: BoxFit.fitWidth,
-                  errorBuilder: (_, __, ___) => Assets.icons.svg.icMbcMood.svg(
-                    colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+            : Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.network(
+                    url,
+                    fit: BoxFit.fitWidth,
+                    errorBuilder: (_, __, ___) => Assets.icons.svg.icMbcMood.svg(
+                      colorFilter: const ColorFilter.mode(Color(0xffF24A38), BlendMode.srcIn),
+                    ),
                   ),
                 ),
-              ),
+            ),
       );
 }
