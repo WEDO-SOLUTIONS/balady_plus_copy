@@ -303,7 +303,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     ));
 
     callToast(context, latLng);
-    context.router.popUntilRouteWithName(BottomMenuRoute.name);
+    await context.router.maybePop();
   }
 
   void callToast(
