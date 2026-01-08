@@ -26,14 +26,14 @@ dependencies:
   dgis_map_platform_interface:
     path: ../dgis_map_platform_interface
   json_annotation: 4.9.0
-  dio: 5.7.0
-  flutter_svg: 2.0.16
+  dio: ^5.9.0
+  flutter_svg: ^2.2.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   plugin_platform_interface: 2.1.8
-  build_runner: 2.4.13
-  flutter_lints: 5.0.0
-  json_serializable: 6.8.0
-  dart_style: 2.3.7
+  build_runner: ^2.10.4
+  flutter_lints: ^6.0.0
+  json_serializable: ^6.11.3
+  dart_style: ^3.1.3
