@@ -32,7 +32,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/export/mapness_functions.dart';
 import 'package:mime/mime.dart' as mime;
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart'
     show getExternalStorageDirectory, getTemporaryDirectory;
 
@@ -40,6 +40,7 @@ import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
@@ -210,8 +211,9 @@ class CommonFunctions {
         (mime.defaultMagicNumbersMaxLength / 3).ceil() * 4;
     return mime.lookupMimeType(
       '',
-      headerBytes:
-          base64.decode(base64String.substring(0, minimumBase64Length)),
+      headerBytes: base64.decode(
+        base64String.substring(0, minimumBase64Length),
+      ),
     );
   }
 
@@ -425,7 +427,7 @@ class CommonFunctions {
     file.writeAsBytesSync(bytes);
 
     // Open File From file path
-    OpenFile.open(tempDocumentPath);
+    OpenFilex.open(tempDocumentPath);
   }
 
   static Future<void> createOpenTempBytesFile(
@@ -439,13 +441,13 @@ class CommonFunctions {
     file.writeAsBytesSync(bytes);
 
     // Open File From file path
-    OpenFile.open(tempDocumentPath);
+    OpenFilex.open(tempDocumentPath);
   }
 
   static Future<void> openFile(File file) async {
     final url = file.path;
 
-    await OpenFile.open(url);
+    await OpenFilex.open(url);
   }
 
   static String getDayName(String? dateStr) {
@@ -1558,7 +1560,7 @@ class CommonFunctions {
                           title: fileName,
                         )));
           } else {*/
-          OpenFile.open(fileDownloaded.path);
+          OpenFilex.open(fileDownloaded.path);
           //  }
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
@@ -1663,7 +1665,7 @@ class CommonFunctions {
   }
 
   static void openComplianceTerms() async {
-// استعرض الاشتراطات
+    // استعرض الاشتراطات
 
     await BottomSheetDialog.showDraggableSheet(
       NavigationService.navigatorKey.currentContext!,
@@ -1874,7 +1876,7 @@ class CommonProperties {
   static Uuid uuidInstance = const Uuid();
   static List<String> allowedSHAFingerprints = [
     "67:3C:D5:53:27:AF:82:86:9A:19:23:83:09:EB:4A:C9:AA:E6:71:E8:37:EA:DC:60:C3:2E:99:73:3A:BD:73:15",
-    "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
+    "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D",
   ];
 
   //static String get token =>
@@ -1952,3 +1954,53 @@ class CommonProperties {
   sub: "",
   nationality: "سعودي",
 );*/
+
+/// Safely shares text content, handling iOS sharePositionOrigin requirement
+///
+/// This function wraps Share.share() and handles the iOS requirement for
+/// sharePositionOrigin. It requires a BuildContext to determine the position
+/// origin for the share sheet.
+///
+/// [text] - The text content to share
+/// [context] - Required BuildContext to determine share position origin
+Future<void> safeShareText(String text, {required BuildContext context}) async {
+  try {
+    if (Platform.isIOS) {
+      // Try to get the RenderBox from the context to determine position
+      final RenderBox? box = context.findRenderObject() as RenderBox?;
+      if (box != null &&
+          box.hasSize &&
+          box.size.width > 0 &&
+          box.size.height > 0) {
+        final size = box.size;
+        final position = box.localToGlobal(Offset.zero);
+        final rect = Rect.fromLTWH(
+          position.dx,
+          position.dy,
+          size.width,
+          size.height,
+        );
+        // Only use position origin if it's valid (non-zero size)
+        if (rect.width > 0 && rect.height > 0) {
+          await Share.share(text, sharePositionOrigin: rect);
+          return;
+        }
+      }
+    }
+    // Fallback: share without position origin
+    // This works on Android and iOS contexts where position cannot be determined
+    await Share.share(text);
+  } catch (e) {
+    // If sharing with position origin fails, retry without it
+    // This handles cases where position origin is invalid
+    if (e.toString().contains('sharePositionOrigin')) {
+      try {
+        await Share.share(text);
+      } catch (_) {
+        rethrow;
+      }
+    } else {
+      rethrow;
+    }
+  }
+}
