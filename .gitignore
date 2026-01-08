@@ -171,3 +171,4 @@ reports/
 /.env.stg
 /.env.dev
 /.env.urbiPre
+/.fvm/
