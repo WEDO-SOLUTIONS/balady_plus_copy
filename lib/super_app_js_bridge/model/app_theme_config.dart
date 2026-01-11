@@ -72,17 +72,17 @@ class ColorSchemeModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'primary': colorScheme.primary,
-      'onPrimary': colorScheme.onPrimary,
-      'secondary': colorScheme.secondary,
-      'onSecondary': colorScheme.onSecondary,
-      'error': colorScheme.error,
-      'onError': colorScheme.onError,
-      'surface': colorScheme.surface,
-      'onSurface': colorScheme.onSurface,
+      'primary': colorScheme.primary.value,
+      'onPrimary': colorScheme.onPrimary.value,
+      'secondary': colorScheme.secondary.value,
+      'onSecondary': colorScheme.onSecondary.value,
+      'error': colorScheme.error.value,
+      'onError': colorScheme.onError.value,
+      'surface': colorScheme.surface.value,
+      'onSurface': colorScheme.onSurface.value,
       'brightness': colorScheme.brightness.name,
-      'cardColor': cardColor,
-      'scaffoldBackgroundColor': scaffoldBackgroundColor,
+      'cardColor': cardColor.value,
+      'scaffoldBackgroundColor': scaffoldBackgroundColor.value,
     };
   }
 }
