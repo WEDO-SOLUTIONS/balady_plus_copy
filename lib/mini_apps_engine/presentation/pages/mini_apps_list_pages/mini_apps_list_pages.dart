@@ -20,6 +20,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/fav_section_widgets/custom_mini_apps_card.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_dashed_line_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/dashboard_button.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,15 +31,20 @@ import 'package:flutter/src/material/theme.dart';
 final GlobalKey<NavigatorState> servicesNavigatorKey =
     GlobalKey<NavigatorState>();
 
-class HomeMiniAppsListPages extends StatefulWidget {
+class HomeMiniAppsListPages extends StatelessWidget {
   const HomeMiniAppsListPages({super.key});
 
-  @override
-  State<HomeMiniAppsListPages> createState() => _HomeMiniAppsListPagesState();
-}
+  MiniApp getMiniAppByServiceId(BuildContext context, String serviceKey) {
+    final miniAppsCubit = context.read<NewMiniAppLogicCubit>();
+    try {
+      return miniAppsCubit.state.allMiniApps
+          .firstWhere((miniApp) => miniApp.serviceKey == serviceKey);
+    } catch (e) {
+      throw Exception('MiniApp with serviceId $serviceKey not found');
+    }
+  }
 
-class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
-  final dashboardMinApp = MiniApp.fromJson(
+  /*MiniApp.fromJson(
     {
       "id": "b5a665f6-41ce-4761-ad49-08de2db254c5",
       "serviceName": "لوحة البيانات",
@@ -79,7 +85,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       "serviceCategoryOrder": 0,
       "serviceEntryPointOrder": 0
     },
-  );
+  );*/
 
   @override
   Widget build(BuildContext context) {
@@ -166,85 +172,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                           // letterSpacing: -0.24,
                                                         ),
                                                       ),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          context
-                                                              .read<
-                                                                  NewMiniAppLogicCubit>()
-                                                              .openMiniApp(
-                                                                dashboardMinApp,
-                                                              );
-                                                        },
-                                                        child: Container(
-                                                          // width: 117,
-                                                          // height: 33,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal: 3,
-                                                                  vertical: 4),
-                                                          decoration: BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          18.5)),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        8,
-                                                                    vertical:
-                                                                        4),
-                                                                decoration: BoxDecoration(
-                                                                    color: const Color(
-                                                                        0XFFE5EBED),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            13.5)),
-                                                                child:
-                                                                    CustomNetworkImageWidget(
-                                                                  dashboardMinApp
-                                                                      .iconPath,
-                                                                  isVerifyingKey:
-                                                                      true,
-                                                                  imageWidth:
-                                                                      context.w(
-                                                                          24),
-                                                                  imageHeight:
-                                                                      context.h(
-                                                                          24),
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: context
-                                                                    .w(8),
-                                                              ),
-                                                              Text(
-                                                                "dashboard"
-                                                                    .tr(),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontFamily:
-                                                                      'Frutiger',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: context
-                                                                    .w(9),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
+                                                      DashboardButton(
+                                                        dashboardMinApp:
+                                                            getMiniAppByServiceId(
+                                                                context,
+                                                                "Dashboard"),
                                                       )
 
                                                       // Expanded(
