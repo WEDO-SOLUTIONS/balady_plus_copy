@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/super_app_js_bridge/model/app_theme_config.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
 import 'package:balady_plus/super_app_js_bridge/pages/pdf_viewer_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -28,7 +29,6 @@ import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
@@ -36,7 +36,6 @@ import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/location_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_preferences_model.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_cookie.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
@@ -318,23 +317,23 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         code: 200,
         message: "success",
         eventName: "AppPreferences",
-        data: JsPreferencesModel(
+        data: AppThemeConfig(
           language: 'locale'.tr(),
-          themeType: "dark",
-          colors: {
-            "primary": AppColor.primary900Light.value,
-            "secondary": AppColor.secondary900Light.value,
-            // "background": AppColor.backgroundColor,
-            // "text": AppColor.textColor,
-            // "error": AppColor.errorColor,
-            // "warning": AppColor.warningColor,
-            // "success": AppColor.successColor,
-          },
+          themeType: Theme.of(NavigationService.navigatorKey!.currentContext!,).brightness.name,
+          colorSchemeDark: ColorSchemeModel(
+            colorScheme: Theme.of(NavigationService.navigatorKey!.currentContext!,).colorScheme,
+            cardColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).cardColor,
+            scaffoldBackgroundColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).scaffoldBackgroundColor,
+          ),
+          colorSchemeLight: ColorSchemeModel(
+            colorScheme: Theme.of(NavigationService.navigatorKey!.currentContext!,).colorScheme,
+            cardColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).cardColor,
+            scaffoldBackgroundColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).scaffoldBackgroundColor,
+          ),
         ),
       );
       var dataJsonString = response.jsonEncodeModel();
       handler.complete(dataJsonString);
-
     } catch (_) {
       BaseResponse response = BaseResponse(
         code: 500,
