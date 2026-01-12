@@ -249,10 +249,7 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_favourite_offers_screen',
               page: FavouriteOffersScreenViewRoute.page,
             ),
-            AppRoute(
-              path: 'saudi_pass_profile_preferences_screen',
-              page: ProfilePreferencesRoute.page,
-            ),
+            RedirectRoute(path: 'saudi_pass_profile_preferences_screen', redirectTo: 'profile_preferences'),
             AppRoute(
               path: 'saudi_pass_offers_on_map_screen',
               page: OffersOnMapRoute.page,
@@ -287,12 +284,7 @@ class AppRouter extends RootStackRouter {
               path: 'saudi_pass_offer_page',
               page: OfferRoute.page,
             ),
-            CustomRoute(
-              path: 'saudi_pass_offer_feedback',
-              page: AppFeedbackSheet.page,
-              opaque: false,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
-            ),
+            RedirectRoute(path: 'saudi_pass_offer_feedback', redirectTo: 'feedback'),
             CustomRoute(
               path: 'saudi_pass_offer_favorites_removing_sheet',
               page: OfferFavoritesRemovingSheetRoute.page,
