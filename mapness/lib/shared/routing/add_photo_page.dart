@@ -37,7 +37,7 @@ class AddPhotoPage extends ConsumerWidget {
                 case FeedbackImageSelectorType.gallery:
                   await _handleCategories(ref, type!, context);
                 case null:
-                  context.router.popForced();
+                  context.router.pop();
                   return;
               }
             },
@@ -62,9 +62,9 @@ class AddPhotoPage extends ConsumerWidget {
 
       final images = ref.read(feedbackImageSelectorProvider);
       if (images.isNotEmpty) {
-        context.router.popForced(images);
+        context.router.pop(images);
       } else {
-        context.router.popForced();
+        context.router.pop();
       }
     } catch (e) {
       await _handleError(

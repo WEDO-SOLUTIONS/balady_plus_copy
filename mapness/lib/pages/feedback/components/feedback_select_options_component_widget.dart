@@ -25,7 +25,7 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final poiData = ref.watch(poiFeedbackProvider(objectId));
-    final objectType = poiData.valueOrNull?.types.firstOrNull?.type;
+    final objectType = poiData.value?.types.firstOrNull?.type;
     final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
     final categories = ref.watch(provider);
 
@@ -34,13 +34,13 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
         child: Loading.large(),
       ),
     );
-    final hasData = poiData.hasValue && categories.hasValue && categories.valueOrNull!.isNotEmpty;
+    final hasData = poiData.hasValue && categories.hasValue && categories.value!.isNotEmpty;
 
     if (hasData) {
       return FeedbackSelectOptionsFormContainer(
         child: FeedbackSelectOptionsWidget(
-          poiDataValue: poiData.valueOrNull!,
-          categoriesValue: categories.valueOrNull!,
+          poiDataValue: poiData.value!,
+          categoriesValue: categories.value!,
           onTap: (category, objectId) => _onTap(context, category, objectId),
         ),
       );

@@ -24,13 +24,13 @@ class ProfileImageWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileImage = ref.watch(profileImageProvider);
-    final value = profileImage.valueOrNull;
+    final value = profileImage.value;
     if (value != null && value.imageBase64.isNotEmpty) {
       final imageBytes = base64Decode(value.imageBase64);
       // TODO: remove this after Adding Avatar widget to balady_uikit
       // ignore: deprecated_member_use_from_same_package
       return picture.Picture.large(
-        key: ValueKey(profileImage.valueOrNull!.imageBase64),
+        key: ValueKey(profileImage.value!.imageBase64),
         size: dimension,
         imgBytes: imageBytes,
       );

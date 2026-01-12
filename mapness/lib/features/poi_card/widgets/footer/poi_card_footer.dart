@@ -71,7 +71,7 @@ class PoiCardFooter extends HookConsumerWidget {
 
     final objectId = data?.id?.objectId;
 
-    ref.watch(favouriteCacheProvider).valueOrNull;
+    ref.watch(favouriteCacheProvider).value;
     final currentRoute = ref.watch(currentRouteProvider);
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
@@ -179,7 +179,7 @@ class PoiCardFooter extends HookConsumerWidget {
   }
 
   void _onParkingTab(WidgetRef ref, BuildContext context) {
-    final hasParking = ref.read(parkingManageProvider).valueOrNull != null;
+    final hasParking = ref.read(parkingManageProvider).value != null;
     if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
@@ -188,7 +188,7 @@ class PoiCardFooter extends HookConsumerWidget {
           onAcceptTab: () async {
             // BSA-2734: popAndPush have a bug when we have a bottom sheet open
             // We need to make it consistent with popForced
-            context.router.popForced();
+            context.router.pop();
             await Future.delayed(Duration.zero);
             await context.router.push(
               ParkingSpotRoute(
@@ -203,7 +203,7 @@ class PoiCardFooter extends HookConsumerWidget {
               ),
             );
           },
-          onCancelTab: context.router.popForced,
+          onCancelTab: context.router.pop,
         ),
       );
     } else {
@@ -234,7 +234,7 @@ class PoiCardFooter extends HookConsumerWidget {
           );
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },
-        onCancelTab: context.router.popForced,
+        onCancelTab: context.router.pop,
       ),
     );
   }

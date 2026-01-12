@@ -21,12 +21,12 @@ class EtaShareControlSheet extends ConsumerWidget {
 
     Future<void> _stopShare() async {
       await _closeStream();
-      context.router.popForced();
+      context.router.pop();
     }
 
     Future<void> _shareMore() async {
       ref.read(shareEtaProvider.notifier).shareCurrentStream(EtaStreamType.eta);
-      context.router.popForced();
+      context.router.pop();
     }
 
     return Container(
@@ -56,7 +56,7 @@ class EtaShareControlSheet extends ConsumerWidget {
                   color: context.colors.foregroundDefault,
                 ),
                 customActionWidget: AppButton.close(
-                  onTap: () => context.router.popForced(),
+                  onTap: () => context.router.pop(),
                   padding: EdgeInsets.zero,
                   textColor: context.colors.neutralOnContainer,
                   color: context.colors.neutralContainerDefault,

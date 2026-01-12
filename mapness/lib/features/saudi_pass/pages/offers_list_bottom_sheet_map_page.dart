@@ -95,7 +95,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
             primaryIcon: uikit.SystemIcons.closeSmall,
             onTap: () async {
               await showMapOffers.removeMarker(offerPoiPinId);
-              context.router.popForced();
+              context.router.pop();
             },
           ),
         ],

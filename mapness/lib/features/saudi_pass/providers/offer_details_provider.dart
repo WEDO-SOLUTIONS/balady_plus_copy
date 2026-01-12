@@ -16,7 +16,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'offer_details_provider.g.dart';
 
-const offerDetailsProvider = _offerDetailsProvider;
+final offerDetailsProvider = _offerDetailsProvider;
 
 @riverpod
 class _OfferDetails extends _$OfferDetails {

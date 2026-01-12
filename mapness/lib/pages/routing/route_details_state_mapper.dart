@@ -1,4 +1,5 @@
-import 'package:balady_uikit/balady_uikit.dart';
+import 'package:mapness/balady_uikit/components/stateful_bottom_sheet/bottom_sheet_snapping/bottom_sheet_state_mapper.dart';
+import 'package:mapness/balady_uikit/components/stateful_bottom_sheet/stateful_bottom_sheet.dart';
 import 'package:sheetify/sheetify.dart' as sheetify;
 
 final class RouteDetailsStateMapper implements BottomSheetStateMapper<ThreeStateBottomSheet> {
@@ -6,10 +7,10 @@ final class RouteDetailsStateMapper implements BottomSheetStateMapper<ThreeState
 
   @override
   ThreeStateBottomSheet state(int state) => switch (state) {
-        0 => ThreeStateBottomSheet.hidden,
-        1 => ThreeStateBottomSheet.open,
-        _ => ThreeStateBottomSheet.expanded,
-      };
+    0 => ThreeStateBottomSheet.hidden,
+    1 => ThreeStateBottomSheet.open,
+    _ => ThreeStateBottomSheet.expanded,
+  };
 
   @override
   int index(ThreeStateBottomSheet state) => state.index.clamp(0, 2);
@@ -31,19 +32,16 @@ final class RouteDetailsStateMapper implements BottomSheetStateMapper<ThreeState
   }
 }
 
-enum TwoStateSheet {
-  hidden,
-  expanded,
-}
+enum TwoStateSheet { hidden, expanded }
 
 final class RouteDetailsStateMapperV2 implements sheetify.SheetStateMapper<TwoStateSheet> {
   const RouteDetailsStateMapperV2();
 
   @override
   TwoStateSheet state(int state) => switch (state) {
-        0 => TwoStateSheet.hidden,
-        _ => TwoStateSheet.expanded,
-      };
+    0 => TwoStateSheet.hidden,
+    _ => TwoStateSheet.expanded,
+  };
 
   @override
   int index(TwoStateSheet state) => state.index.clamp(0, 2);

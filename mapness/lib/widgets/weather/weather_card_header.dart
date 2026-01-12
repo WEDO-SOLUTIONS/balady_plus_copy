@@ -149,10 +149,9 @@ class Data extends ConsumerWidget {
 
               ///close
               AppButton.close(
-                buttonType: ButtonType.secondary,
                 onTap: () async {
                   await ref.read(weatherMapControllerProvider().notifier).switchOffWeatherLayers();
-                  context.router.popForced();
+                  context.router.pop();
                 },
               ),
             ],

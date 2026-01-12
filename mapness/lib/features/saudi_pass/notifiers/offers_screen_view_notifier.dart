@@ -85,7 +85,7 @@ class OffersScreenViewNotifier extends OffersViewNotifier
   }
 
   @override
-  void tapBack() => ref.read(appRouterProvider).popForced();
+  void tapBack() => ref.read(appRouterProvider).pop();
 
   @override
   void tapByPreferences() {

@@ -41,7 +41,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final follow = ref.read(followStateProvider);
       if (follow.type != LocationFollowType.off) {
-        ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
+        ref.read(dgisControllerProvider).value?.stopFollowNavigation();
       }
     });
   }
@@ -179,13 +179,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
 
     switch (nearestObject) {
       case DGisNearestObject(nearestPoint: final nearestPoint):
-        context.router.popForced(
+        context.router.pop(
           // We need to pass the coordinates of the nearest point
           // because coordinates of object like street or districts are so far from the selected point
           RoutePointCoordinates(nearestPoint.geoPoint, nearestObject.object.title, nearestObject.object.levelId),
         );
       case CooridnatesNearestObject(geoPoint: final geoPoint):
-        context.router.popForced(
+        context.router.pop(
           RoutePointCoordinates(geoPoint, null, null),
         );
     }
@@ -198,7 +198,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
       action: MetricAction.tap.toString(),
     );
 
-    context.router.popForced();
+    context.router.pop();
   }
 }
 

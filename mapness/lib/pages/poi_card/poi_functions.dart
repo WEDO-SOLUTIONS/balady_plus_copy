@@ -41,7 +41,7 @@ void toggleFavoriteDirectoryObject({
   required DirectoryObjectMessage data,
   required FavouriteItem? favouriteItem,
 }) {
-  final favState = ref.read(favouriteCacheProvider).valueOrNull;
+  final favState = ref.read(favouriteCacheProvider).value;
   final favRepo = ref.read(favouriteCacheProvider.notifier);
 
   /// if already in favourites - remove

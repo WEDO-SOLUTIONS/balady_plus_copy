@@ -87,7 +87,7 @@ class FavouritesSearch extends ConsumerWidget {
       },
       onClose: () {
         FocusScope.of(context).unfocus();
-        context.router.popForced();
+        context.router.pop();
       },
       onChanged: (value) {
         if (value.isEmpty) {
@@ -127,7 +127,7 @@ class FavouritesSearch extends ConsumerWidget {
       },
     );
     if (context.mounted && context.router.canPop()) {
-      context.router.popForced();
+      context.router.pop();
     }
   }
 }

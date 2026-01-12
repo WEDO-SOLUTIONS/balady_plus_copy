@@ -30,7 +30,7 @@ class WeatherRepository extends _$WeatherRepository {
       proxy: env.proxy,
     );
 
-    final data = await state.valueOrNull?.getForecastWeatherData(
+    final data = await state.value?.getForecastWeatherData(
       params: weatherParams,
       cancelToken: cancelToken,
     );

@@ -142,7 +142,7 @@ class EtaUtils {
             await ref.read(dgisControllerProvider).value?.setMapAttributeBool('navigatorOn', value: false);
             unawaited(ref.read(dgisControllerProvider).value?.stopNavigation());
             ref.read(currentRouteProvider.notifier).clearRoute();
-            unawaited(ref.read(dgisControllerProvider).valueOrNull?.hideRoutes());
+            unawaited(ref.read(dgisControllerProvider).value?.hideRoutes());
           }
 
           await appRouter.navigate(const LandingRoute());

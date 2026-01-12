@@ -30,7 +30,7 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
       });
 
       Future.delayed(_popDuration, () {
-        context.router.popForced();
+        context.router.pop();
       });
     });
     super.initState();

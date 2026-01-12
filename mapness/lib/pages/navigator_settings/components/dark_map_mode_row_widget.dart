@@ -33,7 +33,7 @@ class DarkMapModeRowWidget extends ConsumerWidget {
         titleStyle: context.textStyles.bodyLargeRegular.copyWith(
           color: context.colors.foregroundDefault,
         ),
-        customActionWidget: darModeState.valueOrNull?.currentMapMode == currentMode
+        customActionWidget: darModeState.value?.currentMapMode == currentMode
             ? Padding(
                 padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
                 child: Icon(

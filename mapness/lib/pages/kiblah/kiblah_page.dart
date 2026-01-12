@@ -26,7 +26,7 @@ class KiblahPage extends ConsumerWidget {
       backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
       appBar: BaladyTopBar(
         onLeadingPressed: () {
-          context.router.popForced();
+          context.router.pop();
         },
         leading: Padding(
           padding: const EdgeInsets.only(

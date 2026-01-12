@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'eta_stream_store.freezed.dart';
 
 @freezed
-class EtaStreamStore with _$EtaStreamStore {
+abstract class EtaStreamStore with _$EtaStreamStore {
   const factory EtaStreamStore({
     final String? streamId,
     final String? streamToken,

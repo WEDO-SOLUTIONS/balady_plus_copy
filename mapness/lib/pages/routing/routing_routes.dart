@@ -256,7 +256,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         // We need to pass the points and labels as copy (List.of) to manipulate the data and
         // change original data only when user confirms
         points: List.of(points),
-        onClose: () => context.router.popForced(),
+        onClose: () => context.router.pop(),
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
         externalContext: context,
       ),
@@ -270,7 +270,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     setState(() {
       this.points = points;
     });
-    context.router.popForced();
+    context.router.pop();
   }
 
   void _onClose() {
@@ -290,6 +290,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       action: MetricAction.tap.toString(),
     );
 
-    context.router.popForced();
+    context.router.pop();
   }
 }

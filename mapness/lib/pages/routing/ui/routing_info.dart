@@ -80,7 +80,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         final isGranted = await Permission.location.isGranted;
 
         if (!isGranted) {
-          context.router.popForced();
+          context.router.pop();
           return;
         }
         // Due to the addition of checks on Huawei, it was not possible to get the provider's
@@ -145,7 +145,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   Future<void> _calculateNavigationType(Position? location) async {
     var navType = _defaultNavType;
-    final dgisController = ref.read(dgisControllerProvider).valueOrNull;
+    final dgisController = ref.read(dgisControllerProvider).value;
     final carConnected = await ref.read(carConnectionProvider.future);
 
     final pointCount = widget.points.length;
@@ -245,7 +245,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     ref
       ..listen(carConnectionProvider, (_, next) {
-        final connected = next.valueOrNull ?? false;
+        final connected = next.value ?? false;
         if (connected) {
           _navType.value = RouteSearchOptionsMessage.car;
         }

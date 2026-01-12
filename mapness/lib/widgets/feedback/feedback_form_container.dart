@@ -36,7 +36,7 @@ class FeedbackFormContainer extends ConsumerWidget {
                 title: title,
                 leading: ActionModel(
                   icon: SystemIcons.arrowCornerLeftLarge,
-                  onPressed: onBack ?? context.router.popForced,
+                  onPressed: onBack ?? context.router.pop,
                 ),
                 trailing: isSendVisible
                     ? ActionModel(

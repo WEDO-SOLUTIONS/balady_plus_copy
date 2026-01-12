@@ -51,7 +51,7 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
     await _controller.reverse(from: from);
     widget.onClose?.call();
     if (mounted && context.router.canPop()) {
-      context.router.popForced();
+      context.router.pop();
     }
   }
 

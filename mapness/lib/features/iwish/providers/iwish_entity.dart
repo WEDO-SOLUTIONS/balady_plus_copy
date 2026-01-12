@@ -84,4 +84,4 @@ class _IwishEntity extends _$IwishEntity {
   }
 }
 
-const iwishEntityProvider = _iwishEntityProvider;
+final iwishEntityProvider = _iwishEntityProvider;

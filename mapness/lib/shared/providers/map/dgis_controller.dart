@@ -69,7 +69,7 @@ class DgisController extends _$DgisController {
         darkModeProvider,
         (previous, next) {
           controller.setAppearance(
-            next.valueOrNull?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day,
+            next.value?.isDark ?? false ? MapAppearanceMessage.night : MapAppearanceMessage.day,
           );
         },
       )

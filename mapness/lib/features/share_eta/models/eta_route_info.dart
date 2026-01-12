@@ -25,7 +25,7 @@ enum RouteType {
 
 /// Represents the ETA payload.
 @freezed
-class EtaRoutePayload with _$EtaRoutePayload {
+abstract class EtaRoutePayload with _$EtaRoutePayload {
   /// Default constructor for [EtaRoutePayload].
   @JsonSerializable(explicitToJson: true)
   const factory EtaRoutePayload({
@@ -40,7 +40,7 @@ class EtaRoutePayload with _$EtaRoutePayload {
 
 /// Represents the ETA route update metadata.
 @freezed
-class EtaRouteMetadataPayload with _$EtaRouteMetadataPayload {
+abstract class EtaRouteMetadataPayload with _$EtaRouteMetadataPayload {
   /// Default constructor for [EtaRoutePayload].
   @JsonSerializable(explicitToJson: true)
   const factory EtaRouteMetadataPayload({
@@ -52,7 +52,7 @@ class EtaRouteMetadataPayload with _$EtaRouteMetadataPayload {
 }
 
 @freezed
-class EtaRouteUpdatePayload with _$EtaRouteUpdatePayload {
+abstract class EtaRouteUpdatePayload with _$EtaRouteUpdatePayload {
   @JsonSerializable(explicitToJson: true)
   const factory EtaRouteUpdatePayload({
     required final EtaRouteMetadataPayload metadata,
@@ -63,7 +63,7 @@ class EtaRouteUpdatePayload with _$EtaRouteUpdatePayload {
 
 /// Represents a user.
 @freezed
-class User with _$User {
+abstract class User with _$User {
   /// Default constructor for [User].
   const factory User({
     @JsonKey(name: 'first_name') final String? firstName,
@@ -77,7 +77,7 @@ class User with _$User {
 
 /// Represents a route.
 @freezed
-class EtaRoute with _$EtaRoute {
+abstract class EtaRoute with _$EtaRoute {
   /// Default constructor for [EtaRoute].
   @JsonSerializable(explicitToJson: true)
   const factory EtaRoute({
@@ -99,7 +99,7 @@ extension RouteX on EtaRoute {
 
 /// Represents the ETA route point information.
 @freezed
-class EtaRoutePoint with _$EtaRoutePoint {
+abstract class EtaRoutePoint with _$EtaRoutePoint {
   /// Default constructor for [EtaRoutePoint].
   @JsonSerializable(explicitToJson: true)
   const factory EtaRoutePoint({

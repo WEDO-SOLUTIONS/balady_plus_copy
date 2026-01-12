@@ -90,7 +90,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
 
         if (code == EtaErrorStatusCodes.endConnection &&
             [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
-          context.router.popForced();
+          context.router.pop();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
@@ -110,7 +110,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
 
             ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
             if (context.mounted) {
-              context.router.popForced();
+              context.router.pop();
             }
 
             WidgetsBinding.instance.addPostFrameCallback((_) {

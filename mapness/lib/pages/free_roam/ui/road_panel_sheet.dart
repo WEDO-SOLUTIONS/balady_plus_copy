@@ -26,7 +26,7 @@ class RoadPanelSheetPage extends HookConsumerWidget {
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
 
     final sheetController = useToggleSheetController(onClose: (c) {
-      context.router.popForced();
+      context.router.pop();
     });
 
     final l10n = context.l10n;

@@ -65,7 +65,7 @@ class AppFeedbackMain extends HookConsumerWidget {
               onClose: () {
                 if (rating.value == (initialRating ?? 0) ||
                     onNeedPopConfirm == null) {
-                  context.router.popForced();
+                  context.router.pop();
                 } else {
                   onNeedPopConfirm?.call();
                 }

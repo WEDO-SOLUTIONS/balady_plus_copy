@@ -291,7 +291,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                 colorEnabled: context.colors.foregroundDefault,
                 leading: ActionModel(
                   onPressed: () {
-                    context.router.popForced();
+                    context.router.pop();
                     showMapOffers.removeMarker(offerPoiPinId);
                   },
                   icon: SystemIcons.arrowCornerLeftLarge,

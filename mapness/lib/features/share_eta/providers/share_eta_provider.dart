@@ -225,7 +225,7 @@ class ShareEta extends _$ShareEta {
         if (!next.hasValue ||
             next.isLoading ||
             next.hasError ||
-            next.valueOrNull == null) {
+            next.value == null) {
           return;
         }
         final streamId = next.value!.streamId;

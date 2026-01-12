@@ -62,7 +62,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
               title: context.l10n.aboutApp,
               colorEnabled: context.colors.accentDefault,
               leading: ActionModel(
-                onPressed: () => context.router.popForced(),
+                onPressed: () => context.router.pop(),
                 icon: SystemIcons.arrowCornerLeftLarge,
               ),
             ),

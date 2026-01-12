@@ -44,7 +44,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   title: context.l10n.settings,
                   colorEnabled: context.colors.accentDefault,
                   leading: ActionModel(
-                    onPressed: () => context.router.popForced(),
+                    onPressed: () => context.router.pop(),
                     icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),
