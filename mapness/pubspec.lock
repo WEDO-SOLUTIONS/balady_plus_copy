@@ -18,7 +18,7 @@ packages:
     source: hosted
     version: "1.3.65"
   add_2_calendar:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: add_2_calendar
       sha256: "8d7a82aba607d35f2a5bc913419e12f865a96a350a8ad2509a59322bc161f200"
@@ -399,7 +399,7 @@ packages:
     source: hosted
     version: "3.0.1"
   carousel_slider:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: carousel_slider
       sha256: bcc61735345c9ab5cb81073896579e735f81e35fd588907a393143ea986be8ff
@@ -542,15 +542,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  cube_transition_plus:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: c2eb74a6df42f0ec6c6e6bbada087fcc86f71b99
-      url: "https://github.com/Demezy/cube_transition_plus"
-    source: git
-    version: "2.0.1"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -718,14 +709,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  easy_image_viewer:
-    dependency: "direct main"
-    description:
-      name: easy_image_viewer
-      sha256: fb6cb123c3605552cc91150dcdb50ca977001dcddfb71d20caa0c5edc9a80947
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.1"
   encrypt:
     dependency: transitive
     description:
@@ -847,7 +830,7 @@ packages:
     source: hosted
     version: "0.9.3+5"
   firebase_analytics:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: firebase_analytics
       sha256: "8ca4832c7a6d145ce987fd07d6dfbb8c91d9058178342f20de6305fb77b1b40d"
@@ -956,7 +939,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_animate:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_animate
       sha256: "7befe2d3252728afb77aecaaea1dec88a89d35b9b1d2eea6d04479e8af9117b5"
@@ -1084,7 +1067,7 @@ packages:
     source: hosted
     version: "5.12.0"
   flutter_hms_gms_availability:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_hms_gms_availability
       sha256: e10cf8692d6265524ede42f2f0f22af66254dd34860b59491b22b34c0327f892
@@ -1425,7 +1408,7 @@ packages:
     source: hosted
     version: "0.1.3"
   flutter_spinkit:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_spinkit
       sha256: "77850df57c00dc218bfe96071d576a8babec24cf58b2ed121c83cca4a2fdce7f"
@@ -1547,7 +1530,7 @@ packages:
     source: hosted
     version: "14.0.2"
   geolocator_android:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: geolocator_android
       sha256: "179c3cb66dfa674fc9ccbf2be872a02658724d1c067634e2c427cf6df7df901a"
@@ -2179,14 +2162,6 @@ packages:
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
     version: "1.3.3"
-  mask_text_input_formatter:
-    dependency: "direct main"
-    description:
-      name: mask_text_input_formatter
-      sha256: "978c58ec721c25621ceb468e633f4eef64b64d45424ac4540e0565d4f7c800cd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.9.0"
   matcher:
     dependency: transitive
     description:
@@ -2643,16 +2618,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.2"
-  random_string:
-    dependency: "direct dev"
-    description:
-      name: random_string
-      sha256: "03b52435aae8cbdd1056cf91bfc5bf845e9706724dd35ae2e99fa14a1ef79d02"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.1"
   rate_my_app:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: rate_my_app
       sha256: aeb400808f99aba7e8b853b911915bca10308aff711fa8e2d46b5f68dc383786
@@ -2897,7 +2864,7 @@ packages:
     source: hosted
     version: "1.1.1"
   smooth_page_indicator:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: smooth_page_indicator
       sha256: "4b497e9898d095de40d246db943371183fa7482492a88391cfa8415ef94d57ba"
