@@ -69,6 +69,7 @@ dependencies:
   url_launcher: ^6.3.2
   shimmer: 3.0.0
   protobuf: ^6.0.0
+  fixnum: ^1.1.1
   permission_handler: ^12.0.1
   package_info_plus: ^9.0.0
   hive_ce_generator: ^1.10.0
@@ -147,6 +148,7 @@ dependencies:
   flutter_insider: ^4.0.6+nh
   visibility_detector: ^0.4.0+2
   thermal: ^1.1.12
+  battery_plus: ^7.0.0
 
 dev_dependencies:
   flutter_test:
