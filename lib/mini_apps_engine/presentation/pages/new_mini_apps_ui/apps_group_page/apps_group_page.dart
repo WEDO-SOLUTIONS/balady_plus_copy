@@ -70,7 +70,6 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                 ),
               ),
             ),
-
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -121,9 +120,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 child: IconButton(
                                   onPressed: () => Navigator.pop(context),
                                   icon: const Icon(Icons.close,
-                                      color: Color(0XFF242424) ),),
+                                      color: Color(0XFF242424)),
                                 ),
-
+                              ),
                             ),
 
                             // spacing between close & search
@@ -193,10 +192,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                           )
                                         : const SizedBox(),
                                     suffixIcon: value.text.isEmpty
-                                        ? SvgPicture.asset( Theme.of(context).brightness ==
-                                        Brightness.dark
-                                        ? IconPath.searchSVG2
-                                        : IconPath.searchSVG)
+                                        ? SvgPicture.asset(
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? IconPath.searchSVG2
+                                                : IconPath.searchSVG)
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();
@@ -254,9 +254,47 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 mainAxisSpacing: 16,
                                 childAspectRatio: 0.8,
                               ),
-                              itemCount: sortedApps.length,
+                              itemCount:
+                                  (appGroup.subCategoryGroup?.length ?? 0) +
+                                      sortedApps.length,
                               itemBuilder: (context, index) {
-                                final miniApp = sortedApps[index];
+                                if (appGroup.subCategoryGroup != null &&
+                                    index < appGroup.subCategoryGroup!.length) {
+                                  CategoryGroup categoryGroup = appGroup
+                                      .subCategoryGroup!.values
+                                      .toList()[index];
+                                  return StaggeredAppear(
+                                    initialDelay:
+                                        const Duration(milliseconds: 150),
+                                    itemDuration:
+                                        const Duration(milliseconds: 150),
+                                    itemDelay:
+                                        const Duration(milliseconds: 200),
+                                    children: [
+                                      InkWell(
+                                        child: Card(
+                                          child: Text(categoryGroup.nameAr),
+                                        ),
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              opaque: false,
+                                              barrierColor: Colors.transparent,
+                                              pageBuilder: (_, __, ___) =>
+                                                  AppsGroupPage(
+                                                appGroup: categoryGroup,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }
+
+                                int newIndex = index -
+                                    (appGroup.subCategoryGroup?.length ?? 0);
+                                final miniApp = sortedApps[newIndex];
                                 return StaggeredAppear(
                                   initialDelay:
                                       const Duration(milliseconds: 150),
@@ -343,18 +381,17 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors:
-                    Theme.of(context).brightness == Brightness.dark
+                    colors: Theme.of(context).brightness == Brightness.dark
                         ? [
-                      Colors.black.withOpacity(0.0),
-                      Colors.black.withOpacity(0.6),
-                      Colors.black,
-                    ]
+                            Colors.black.withOpacity(0.0),
+                            Colors.black.withOpacity(0.6),
+                            Colors.black,
+                          ]
                         : [
-                      Colors.white.withOpacity(0.0),
-                      Colors.white.withOpacity(0.6),
-                      Colors.white,
-                    ],
+                            Colors.white.withOpacity(0.0),
+                            Colors.white.withOpacity(0.6),
+                            Colors.white,
+                          ],
                     stops: const [0.0, 0.45, 1.0],
                   ),
                 ),

@@ -440,20 +440,28 @@ class MiniAppCategory {
   final String name;
   final int? categoryOrder;
   final int? serviceOrderByCategory;
+  final List<MiniAppCategory>? subCategories;
 
   MiniAppCategory({
     required this.id,
     required this.name,
     required this.categoryOrder,
     required this.serviceOrderByCategory,
+    required this.subCategories,
   });
 
   factory MiniAppCategory.fromJson(Map<String, dynamic> json) {
     return MiniAppCategory(
       id: json['id'] as String,
-      name: json['name'] as String,
+      name: json['name']  ?? json['arName'],
       categoryOrder: json['categoryOrder'] as int?,
       serviceOrderByCategory: json['serviceOrderByCategory'] as int?,
+      subCategories: json['subCategories'] != null &&
+              json['subCategories'] is List<dynamic> && json['subCategories'].isNotEmpty
+          ? json['subCategories']
+              .map<MiniAppCategory>((e) => MiniAppCategory.fromJson(e as Map<String, dynamic>))
+              .toList()
+          : null,
     );
   }
 
@@ -463,6 +471,7 @@ class MiniAppCategory {
       'name': name,
       'categoryOrder': categoryOrder,
       'serviceOrderByCategory': serviceOrderByCategory,
+      'subCategories': subCategories,
     };
   }
 }

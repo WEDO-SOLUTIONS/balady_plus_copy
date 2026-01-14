@@ -3,9 +3,11 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/model/investment_details_response.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/general_error_widget.dart';
@@ -26,6 +28,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter/src/material/theme.dart';
+import 'package:collection/collection.dart';
 
 final GlobalKey<NavigatorState> servicesNavigatorKey =
     GlobalKey<NavigatorState>();
@@ -858,17 +861,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                 // Separate regular groups from "Other Services"
                                                 final regularGroups = state
                                                     .appGroups
-                                                    .where((group) =>
-                                                        group.id !=
-                                                        'other_services_group')
-                                                    .toList();
+                                                    ;
 
-                                                final otherServicesGroup =
-                                                    state.appGroups.firstWhere(
-                                                  (group) =>
-                                                      group.id ==
-                                                      'other_services_group',
-                                                );
+
+                                                CategoryGroup? otherServicesGroup =
+                                                    state.appGroups?.firstOrNull;
 
                                                 return StaggeredAppear(
                                                   children: [
@@ -944,8 +941,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
                                                         // Show dashed line and "Other Services" only if it exists
                                                         if (otherServicesGroup
-                                                            .apps
-                                                            .isNotEmpty) ...[
+                                                            ?.apps
+                                                            .isNotEmpty ?? false) ...[
                                                           SizedBox(
                                                               height: context
                                                                       .screenHeight *
@@ -980,10 +977,9 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                     index) {
                                                               final groupName = CommonFunctions
                                                                       .isAppAR
-                                                                  ? otherServicesGroup
-                                                                      .nameAr
+                                                                  ? otherServicesGroup!.nameAr
                                                                   : otherServicesGroup
-                                                                      .nameEn;
+                                                                      !.nameEn;
 
                                                               return CustomLargMoreApps(
                                                                 withCardEffect:

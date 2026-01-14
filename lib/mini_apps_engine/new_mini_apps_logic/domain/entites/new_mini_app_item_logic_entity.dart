@@ -27,11 +27,15 @@ class CategoryGroup {
   final String nameEn;
   final List<MiniApp> apps;
 
+  /// Fix It  add  copyWith
+  Map<String, CategoryGroup>? subCategoryGroup;
+
   CategoryGroup({
     required this.id,
     required this.nameAr,
     required this.nameEn,
     required this.apps,
+    this.subCategoryGroup,
   });
 
   int get appCount => apps.length;
