@@ -64,7 +64,6 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
       return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
-          // Обработка чистого тапа
           setState(() {
             imageIndex = null;
             widget.showTitleBar?.call(true);
@@ -100,7 +99,6 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
           (context, index) => GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              // Обработка чистого тапа
               setState(() {
                 imageIndex = index;
                 widget.showTitleBar?.call(false);
