@@ -151,7 +151,10 @@ dependencies:
   add_2_calendar: ^3.0.1
   flutter_svg_provider:
   app_settings: ^7.0.0
-  flutter_hms_gms_availability: ^3.10.0
+  flutter_hms_gms_availability:
+    git:
+      url: https://github.com/vant3ch/flutter_hms_gms_availability
+      ref: cfc1bd0dc1006717e8fa0dd24c6f6c4b5c889032
   huawei_push: ^6.14.0+300
   encrypt: ^5.0.3
   dsbridge_flutter: ^1.2.0
@@ -205,6 +208,8 @@ dependencies:
   ############################################################
 
   huawei_location: ^6.16.0+300
+
+  home_widget: ^0.8.1
 
   cached_network_svg_image: any
 
