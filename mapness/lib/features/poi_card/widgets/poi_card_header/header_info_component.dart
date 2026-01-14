@@ -13,6 +13,7 @@ import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext
 import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -31,10 +32,25 @@ class HeaderInfoComponent extends ConsumerWidget {
           ),
       dgisObjectId: data.id!,
     );
+
+    // Get user's current location to use as startPoint for route calculation
+    final userLocation = ref.watch(locationProvider);
+    RouteSearchPoint? startPoint;
+    if (userLocation != null) {
+      startPoint = RouteSearchPoint(
+        coordinates: GeoPointMessage(
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+        ),
+        dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
+      );
+    }
+
     final briefInfo = ref.watch(
       briefRouteInfoProvider(
         finishPoint: finishPoint,
         navType: RouteSearchOptionsMessage.car,
+        startPoint: startPoint,
       ),
     );
 

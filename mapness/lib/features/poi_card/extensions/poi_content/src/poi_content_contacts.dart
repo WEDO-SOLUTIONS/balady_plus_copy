@@ -31,7 +31,11 @@ extension PoiContentContactsExt on DirectoryObjectMessage {
           final type = ContactsInfoTypeExt.fromString(e.type);
           final v = type.poiContentSocialMediaType;
           if (v != null) {
-            return PoiContentSocialMediaModel(type: v, link: e.value);
+            return PoiContentSocialMediaModel(
+              type: v,
+              link: e.value,
+              displayText: e.displayText,
+            );
           }
           return null;
         })

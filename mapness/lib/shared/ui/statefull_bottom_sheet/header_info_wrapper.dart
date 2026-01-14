@@ -30,11 +30,16 @@ class HeaderInfoWrapper extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
-  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
+  Widget build(
+    BuildContext context,
+    PoiCardBottomSheetState state,
+    double interpolation,
+  ) {
     if (!isVisible) {
       return child;
     }
-    final backgroundColor = this.backgroundColor ?? context.colors.errorContainerDefault;
+    final backgroundColor =
+        this.backgroundColor ?? context.colors.errorContainerDefault;
     final textColor = this.textColor ?? context.colors.errorOnContainer;
     return Column(
       children: [
@@ -61,21 +66,23 @@ class HeaderInfoWrapper extends SheetAnimatedWidget<PoiCardBottomSheetState> {
             ),
           ),
         ),
-        ColoredBox(
-          color: backgroundColor,
-          child: ClipRRect(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(borderRadius),
-            ),
-            child: child,
+        ClipRRect(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(borderRadius),
           ),
+          child: child,
         ),
       ],
     );
   }
 
-  double _interpolation(PoiCardBottomSheetState state, double interpolation, double maxValue) {
-    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
+  double _interpolation(
+    PoiCardBottomSheetState state,
+    double interpolation,
+    double maxValue,
+  ) {
+    if (state == PoiCardBottomSheetState.open ||
+        state == PoiCardBottomSheetState.expanded) {
       return 0;
     }
     if (state == PoiCardBottomSheetState.hidden) {

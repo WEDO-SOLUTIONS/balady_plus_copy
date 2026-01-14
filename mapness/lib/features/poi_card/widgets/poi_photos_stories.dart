@@ -2,7 +2,7 @@ import 'dart:math' as math;
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
 import 'package:mapness/features/stories/ui/frame/story_frame_widget.dart';
@@ -25,7 +25,8 @@ class PoiPhotosStories extends StatefulWidget {
   State<PoiPhotosStories> createState() => _PoiPhotosStoriesState();
 }
 
-class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _PoiPhotosStoriesState extends State<PoiPhotosStories>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   int currentIndex = 0;
   double screenWidth = 1;
   int itemCount = 0;
@@ -138,10 +139,12 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
       children: [
         widget.builder(
           _scrollController,
-          widget.state == PoiCardBottomSheetState.open ? const NeverScrollableScrollPhysics() : null,
+          widget.state == PoiCardBottomSheetState.open
+              ? const NeverScrollableScrollPhysics()
+              : null,
         ),
         IgnorePointer(
-          ignoring: widget.state==PoiCardBottomSheetState.halfOpen,
+          ignoring: widget.state == PoiCardBottomSheetState.halfOpen,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -178,7 +181,16 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
                   ),
                 ),
               ),
-              const Flexible(flex: 2, child: SizedBox()),
+              // Center tap area - next photo
+              Flexible(
+                flex: 2,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: _onNext,
+                  child: const SizedBox.expand(),
+                ),
+              ),
+              // Right tap area - next photo
               Flexible(
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
@@ -201,40 +213,78 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
         ),
         Opacity(
           opacity: opacity ?? 1,
-          child: Padding(
-            // $4x - is padding for hidden part of photo and $4x - is padding from top of header
-            // You can find first padding as [topHeaderOffset]
-            padding: const EdgeInsetsDirectional.only(bottom: Spacing.$8x, start: Spacing.$3x, end: Spacing.$3x),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      widget.itemCount.toString(),
-                      style: context.textStyles.captionLargeSemiBold.copyWith(color: context.colors.staticWhite),
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              // Gradient overlay below progress bar (107px height) - only in open/expanded states
+              if (widget.state == PoiCardBottomSheetState.open ||
+                  widget.state == PoiCardBottomSheetState.expanded)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: IgnorePointer(
+                    child: Opacity(
+                      opacity: 0.2,
+                      child: Container(
+                        height: 107,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withOpacity(0),
+                              Colors.black.withOpacity(0.8),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: Spacing.$1x),
-                    Icon(
-                      General16Icons.photoSolid,
-                      size: 16,
-                      color: context.colors.staticWhite,
-                    )
-                  ],
-                ),
-                const SizedBox(height: Spacing.$2x),
-                FrameProgressIndicator(
-                  frameIndex: currentIndex,
-                  framesLength: itemCount,
-                  animation: _progress,
-                  trackTheme: StoryTrackThemeData(
-                    backgroundColor: const Color(0xFFFFFFFF).withOpacity(0.3),
-                    color: const Color(0xFFFFFFFF),
                   ),
                 ),
-              ],
-            ),
+              Padding(
+                // $4x - is padding for hidden part of photo and $4x - is padding from top of header
+                // You can find first padding as [topHeaderOffset]
+                padding: const EdgeInsetsDirectional.only(
+                  bottom: Spacing.$8x,
+                  start: Spacing.$3x,
+                  end: Spacing.$3x,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          widget.itemCount.toString(),
+                          style: context.textStyles.captionLargeSemiBold
+                              .copyWith(color: context.colors.staticWhite),
+                        ),
+                        const SizedBox(width: Spacing.$1x),
+                        Icon(
+                          General16Icons.photoSolid,
+                          size: 16,
+                          color: context.colors.staticWhite,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: Spacing.$2x),
+                    FrameProgressIndicator(
+                      frameIndex: currentIndex,
+                      framesLength: itemCount,
+                      animation: _progress,
+                      trackTheme: StoryTrackThemeData(
+                        backgroundColor: const Color(
+                          0xFFFFFFFF,
+                        ).withOpacity(0.3),
+                        color: const Color(0xFFFFFFFF),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -256,7 +306,8 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
       return initialValue;
     }
 
-    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open ||
+        state == PoiCardBottomSheetState.expanded) {
       return expandedValue ?? finalValue;
     }
 

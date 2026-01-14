@@ -16,7 +16,7 @@ class TitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) => Text(
         title,
-        style: context.textStyles.h2SemiBold.copyWith(
+        style: context.textStyles.h4SemiBold.copyWith(
           color: context.colors.foregroundDefault,
         ),
         overflow: TextOverflow.ellipsis,

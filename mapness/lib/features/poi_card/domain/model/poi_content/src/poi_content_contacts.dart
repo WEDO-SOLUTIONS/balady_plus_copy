@@ -35,12 +35,17 @@ class PoiContentSocialMediaModel {
   /// Type of the social media
   final PoiContentSocialMediaTypes type;
 
+  
+  /// Display text (username, website address, etc.)
+  final String? displayText;
+
   /// Link to the social media
   final String link;
 
   const PoiContentSocialMediaModel({
     required this.type,
     required this.link,
+    this.displayText,
   });
 }
 

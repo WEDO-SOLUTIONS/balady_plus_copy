@@ -28,6 +28,8 @@ class _PoiCardNoInfo extends HookConsumerWidget {
       backgroundColor: context.colors.backgroundSurface2,
       dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
       header: PoiHeader(
+        bottomSheetController: null,
+        toggleSheetController: scrollController,
         title: '${closestPoint?.longitude.roundDecimal(places: 6)}, ${closestPoint?.latitude.roundDecimal(places: 6)}',
         subTitle: context.l10n.poi,
         poiCardState: poiCardState,

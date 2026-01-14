@@ -39,10 +39,7 @@ class PoiContentFloorModel {
   /// Count of floors
   final int floors;
 
-  const PoiContentFloorModel({
-    required this.title,
-    required this.floors,
-  });
+  const PoiContentFloorModel({required this.title, required this.floors});
 }
 
 /// Model for entrances content. It is used in the address card

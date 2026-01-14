@@ -22,12 +22,12 @@ class PhotoViewPager extends StatefulWidget {
   const PhotoViewPager({
     required this.pageController,
     required this.scrollPhysics,
+    required this.imageSource,
+    required this.imagePreviews,
     Key? key,
     this.doubleTapZoomable = false,
     this.showTitleBar,
     this.infinitelyScrollable = false,
-    required this.imageSource,
-    required this.imagePreviews,
   }) : super(key: key);
 
   @override
@@ -50,9 +50,11 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
 
     return CachedNetworkImage(
       imageUrl: imageUrl,
-      placeholder: (_, __) => previewUrl != null
-          ? Image(image: CachedNetworkImageProvider(previewUrl))
-          : const Center(child: CircularProgressIndicator.adaptive()),
+      placeholder:
+          (_, __) =>
+              previewUrl != null
+                  ? Image(image: CachedNetworkImageProvider(previewUrl))
+                  : const Center(child: CircularProgressIndicator.adaptive()),
     );
   }
 
@@ -94,17 +96,18 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
       key: const PageStorageKey('photo_pager'),
       itemCount: widget.infinitelyScrollable ? null : widget.imageSource.length,
       controller: widget.pageController,
-      itemBuilder: (context, index) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () {
-          // Обработка чистого тапа
-          setState(() {
-            imageIndex = index;
-            widget.showTitleBar?.call(false);
-          });
-        },
-        child: _buildPageImage(index),
-      ),
+      itemBuilder:
+          (context, index) => GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              // Обработка чистого тапа
+              setState(() {
+                imageIndex = index;
+                widget.showTitleBar?.call(false);
+              });
+            },
+            child: _buildPageImage(index),
+          ),
     );
   }
 }

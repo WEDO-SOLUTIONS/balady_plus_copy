@@ -26,7 +26,8 @@ class FeedbackFormContainer extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context, WidgetRef ref) =>
+      AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Material(
           color: context.colors.backgroundSurface4,
@@ -38,27 +39,33 @@ class FeedbackFormContainer extends ConsumerWidget {
                   icon: SystemIcons.arrowCornerLeftLarge,
                   onPressed: onBack ?? context.router.popForced,
                 ),
-                trailing: isSendVisible
-                    ? ActionModel(
-                        text: context.l10n.send,
-                        isEnabled: isSendEnabled,
-                        onPressed: isSendEnabled ? onSend : null,
-                      )
-                    : null,
-                colorDisabled: context.colors.foregroundMuted,
-                colorEnabled: context.colors.foregroundDefault,
-                textStyle: context.textStyle.footNoteBold.copyWith(
-                  color: context.colors.foregroundDefault,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-
-                /// changes in model ignored for some reason even with == and hashCode overriden
-                key: ValueKey(isSendEnabled),
               ),
-              body: Padding(
-                padding: const EdgeInsets.all(Spacing.$4x),
-                child: child,
+              body: Column(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(Spacing.$4x),
+                      child: child,
+                    ),
+                  ),
+                  if (isSendVisible)
+                    Padding(
+                      padding: const EdgeInsets.all(Spacing.$4x),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: AppButton(
+                          buttonState:
+                              isSendEnabled
+                                  ? ButtonState.defaultState
+                                  : ButtonState.disabled,
+                          buttonColorScheme: ButtonColorScheme.accentSecondary,
+                          size: ButtonSize.large,
+                          onTap: isSendEnabled ? onSend : null,
+                          primaryLabel: context.l10n.send,
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),

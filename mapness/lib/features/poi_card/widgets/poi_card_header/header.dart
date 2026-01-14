@@ -7,6 +7,7 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
+import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/subtitle.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/tab.dart';
@@ -18,6 +19,7 @@ import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:mapness/widgets/search/ui/working_hours_colors.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
+import 'package:sheetify/sheetify.dart' hide DraggerContainer;
 
 class PoiHeader extends ConsumerWidget {
   static const poiHeaderHeight = 210.0;
@@ -30,6 +32,9 @@ class PoiHeader extends ConsumerWidget {
   final TabController? tabController;
   final ParkingInfoMessage? parkingInfo;
   final DirectoryObjectMessage? data;
+  final MultiStateSheetController<PoiCardBottomSheetState>?
+  bottomSheetController;
+  final ToggleSheetController? toggleSheetController;
 
   final Function()? onTapClose;
 
@@ -41,6 +46,8 @@ class PoiHeader extends ConsumerWidget {
     this.parkingInfo,
     this.data,
     this.subTitleExtraInlineSpans = const [],
+    this.bottomSheetController,
+    this.toggleSheetController,
     super.key,
     this.poiCardState,
   });
@@ -76,38 +83,113 @@ class PoiHeader extends ConsumerWidget {
       backgroundColor: closedStatusColors?.background,
       textColor: closedStatusColors?.text,
       isVisible: closedStatus.isNotEmpty,
-      child: ColoredBox(
-        color: context.colors.backgroundSurface2,
-        child: Padding(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              DraggerContainer(color: context.colors.backgroundSurface2),
-              CardHeader(
-                title: CardHeaderWidget(child: TitleComponent(title: title)),
-                onTapClose: onTapClose,
-                subTitle: CardHeaderWidget(
-                  child: SubtitleComponent(
-                    subtitle: _subTitle,
-                    routeInfo: _data?.routeInfos,
-                    inlineSpans: subTitleExtraInlineSpans,
-                    title: _data?.title,
-                  ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          final multiStateController = bottomSheetController;
+          if (multiStateController != null) {
+            final currentState = multiStateController.state;
+            switch (currentState) {
+              case PoiCardBottomSheetState.hidden:
+                multiStateController.setState(PoiCardBottomSheetState.halfOpen);
+                break;
+              case PoiCardBottomSheetState.halfOpen:
+                multiStateController.setState(PoiCardBottomSheetState.open);
+                break;
+              case PoiCardBottomSheetState.open:
+                multiStateController.setState(PoiCardBottomSheetState.halfOpen);
+                break;
+              case PoiCardBottomSheetState.expanded:
+                multiStateController.setState(PoiCardBottomSheetState.open);
+                break;
+            }
+            return;
+          }
+
+          final toggleController = toggleSheetController;
+          if (toggleController != null) {
+            if (toggleController.isClosed) {
+              toggleController.open();
+            } else {
+              toggleController.close();
+            }
+          }
+        },
+        child: AnimatedBuilder(
+          animation: bottomSheetController ?? const _DummyAnimation(),
+          builder: (context, _) {
+            final state = bottomSheetController?.state;
+            final shouldUseSurface1 =
+                state != null &&
+                state != PoiCardBottomSheetState.open &&
+                state != PoiCardBottomSheetState.halfOpen;
+            return ColoredBox(
+              color:
+                  shouldUseSurface1
+                      ? context.colors.backgroundSurface1
+                      : context.colors.backgroundSurface2,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  left: Spacing.$4x,
+                  right: Spacing.$4x,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DraggerContainer(color: context.colors.backgroundSurface2),
+                    CardHeader(
+                      title: CardHeaderWidget(
+                        child: TitleComponent(title: title),
+                      ),
+                      onTapClose: onTapClose,
+                      subTitle: CardHeaderWidget(
+                        child: SubtitleComponent(
+                          subtitle: _subTitle,
+                          routeInfo: _data?.routeInfos,
+                          inlineSpans: subTitleExtraInlineSpans,
+                          title: _data?.title,
+                        ),
+                      ),
+                    ),
+                    if (_parkingObjectId) Spacing.$4x.heightBox,
+                    if (_tabController != null && !_parkingObjectId) ...[
+                      const SizedBox(height: Spacing.$1x),
+                      TabComponent(
+                        tabController: _tabController,
+                        objectId: _data?.id?.objectId ?? 0,
+                        poiCardState: poiCardState,
+                      ),
+                    ],
+                  ],
                 ),
               ),
-              if (_parkingObjectId) Spacing.$4x.heightBox,
-              if (_tabController != null && !_parkingObjectId)
-                TabComponent(
-                  tabController: _tabController,
-                  objectId: _data?.id?.objectId ?? 0,
-                  poiCardState: poiCardState,
-                ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
   }
+}
+
+class _DummyAnimation extends Animation<double> {
+  const _DummyAnimation();
+
+  @override
+  void addListener(VoidCallback listener) {}
+
+  @override
+  void addStatusListener(AnimationStatusListener listener) {}
+
+  @override
+  void removeListener(VoidCallback listener) {}
+
+  @override
+  void removeStatusListener(AnimationStatusListener listener) {}
+
+  @override
+  AnimationStatus get status => AnimationStatus.completed;
+
+  @override
+  double get value => 1.0;
 }

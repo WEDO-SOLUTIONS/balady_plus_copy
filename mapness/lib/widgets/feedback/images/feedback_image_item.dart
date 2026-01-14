@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackImageItem extends StatelessWidget {
@@ -15,7 +14,7 @@ class FeedbackImageItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.l),
+        borderRadius: BorderRadius.circular(21),
         child: Image(
           image: FileImage(File(imagePath)),
           fit: BoxFit.cover,

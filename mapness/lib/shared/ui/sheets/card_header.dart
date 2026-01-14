@@ -2,7 +2,6 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
-import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -15,15 +14,35 @@ class CardHeaderText extends CardHeaderData {
   final TextStyle style;
   final int maxLines;
 
-  CardHeaderText({required this.text, required this.style, required this.maxLines});
+  CardHeaderText({
+    required this.text,
+    required this.style,
+    required this.maxLines,
+  });
 
-  CardHeaderText.title({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
-        maxLines = maxLines ?? 2;
+  CardHeaderText.title({
+    required this.text,
+    required BuildContext context,
+    TextStyle? style,
+    int? maxLines,
+  }) : style =
+           style ??
+           context.textStyles.h4SemiBold.copyWith(
+             color: context.colors.foregroundDefault,
+           ),
+       maxLines = maxLines ?? 2;
 
-  CardHeaderText.subTitle({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-        maxLines = maxLines ?? 1;
+  CardHeaderText.subTitle({
+    required this.text,
+    required BuildContext context,
+    TextStyle? style,
+    int? maxLines,
+  }) : style =
+           style ??
+           context.textStyles.bodySmallRegular.copyWith(
+             color: context.colors.foregroundSoft,
+           ),
+       maxLines = maxLines ?? 1;
 
   @override
   Widget get build => _HeaderText(text: text, maxLines: maxLines, style: style);
@@ -56,13 +75,12 @@ class CardHeader extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
-  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
+  Widget build(
+    BuildContext context,
+    PoiCardBottomSheetState state,
+    double interpolation,
+  ) {
     final hideSubtitle = state.index > PoiCardBottomSheetState.halfOpen.index;
-    var scale = interpolation;
-
-    if (state == PoiCardBottomSheetState.halfOpen) {
-      scale = Curves.easeInQuart.transform(1 - interpolation);
-    }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: Spacing.$2x),
@@ -80,12 +98,9 @@ class CardHeader extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               children: [
                 title.build,
                 if (subTitle != null && !hideSubtitle)
-                  ContentTransition(
-                    interpolation: scale,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: Spacing.$2x),
-                      child: subTitle!.build,
-                    ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: Spacing.$2x),
+                    child: subTitle!.build,
                   ),
               ],
             ),
@@ -111,10 +126,10 @@ class _HeaderText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        text,
-        style: style,
-        overflow: TextOverflow.ellipsis,
-        maxLines: maxLines,
-        textAlign: TextAlign.start,
-      );
+    text,
+    style: style,
+    overflow: TextOverflow.ellipsis,
+    maxLines: maxLines,
+    textAlign: TextAlign.start,
+  );
 }

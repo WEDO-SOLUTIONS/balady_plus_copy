@@ -27,6 +27,7 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:shimmer/shimmer.dart';
@@ -35,34 +36,50 @@ class PoiContentSliver extends ConsumerWidget {
   final PoiCardState? poiCardState;
   final void Function()? onEntrancesTap;
 
-  const PoiContentSliver({
-    this.poiCardState,
-    this.onEntrancesTap,
-    super.key,
-  });
+  const PoiContentSliver({this.poiCardState, this.onEntrancesTap, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = poiCardState?.gisObjectIdMessage;
-    const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
+    const itemPadding = EdgeInsets.only(
+      left: Spacing.$4x,
+      right: Spacing.$4x,
+      bottom: Spacing.$3x,
+    );
 
     final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
+    final hasOffers = offers.containsKey(
+      poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim(),
+    );
 
-    final finishPoint = data != null
-        ? RouteSearchPoint(
-            coordinates: data.markerPosition?.toGeoPointMessage() ??
-                GeoPointMessage(
-                  latitude: 0,
-                  longitude: 0,
-                ),
-            dgisObjectId: data.id!,
-          )
-        : null;
+    final finishPoint =
+        data != null
+            ? RouteSearchPoint(
+              coordinates:
+                  data.markerPosition?.toGeoPointMessage() ??
+                  GeoPointMessage(latitude: 0, longitude: 0),
+              dgisObjectId: data.id!,
+            )
+            : null;
+
+    // Get user's current location to use as startPoint for route calculation
+    final userLocation = ref.watch(locationProvider);
+    RouteSearchPoint? startPoint;
+    if (userLocation != null) {
+      startPoint = RouteSearchPoint(
+        coordinates: GeoPointMessage(
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+        ),
+        dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
+      );
+    }
+
     final briefInfo = ref.watch(
       briefRouteInfoProvider(
         finishPoint: finishPoint,
         navType: RouteSearchOptionsMessage.car,
+        startPoint: startPoint,
       ),
     );
 
@@ -72,11 +89,15 @@ class PoiContentSliver extends ConsumerWidget {
     const colorShimmer = Color(0xFFE3E3E3);
 
     final mainLines = data?.routeInfos.map((e) => e.name).toList() ?? [];
-    poiSearchObjectFuture?.removeWhere((element) => mainLines.contains(element.title));
+    poiSearchObjectFuture?.removeWhere(
+      (element) => mainLines.contains(element.title),
+    );
 
     final entrancesWidget = Padding(
       padding: itemPadding,
-      child: PoiEntrancesMetro(entrancesDirectoryObject: poiSearchByObjectEntrances),
+      child: PoiEntrancesMetro(
+        entrancesDirectoryObject: poiSearchByObjectEntrances,
+      ),
     );
 
     return SliverPadding(
@@ -89,7 +110,10 @@ class PoiContentSliver extends ConsumerWidget {
           final about = data.getAbout(context.l10n);
           final workingHours = data.openingHours?.toWorkingHours();
 
-          Future<void> bssOnContactTap(BssContactType type, String value) async {
+          Future<void> bssOnContactTap(
+            BssContactType type,
+            String value,
+          ) async {
             await BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
@@ -100,10 +124,7 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
                 payload: BssPayload(
                   placeItem: data.toBss(),
-                  contact: BssContact(
-                    type: type,
-                    value: value,
-                  ),
+                  contact: BssContact(type: type, value: value),
                 ),
               ),
             );
@@ -134,12 +155,16 @@ class PoiContentSliver extends ConsumerWidget {
           final license = data.getLicense(context.l10n);
 
           // Accessibility info
-          final accessibilityInfo = data.getAccessibility(context.l10n, poiCardState?.qrTradeLicense);
+          final accessibilityInfo = data.getAccessibility(
+            context.l10n,
+            poiCardState?.qrTradeLicense,
+          );
 
           // Platforms lines info
           final routeInfos = data.routeInfos;
           final transportDirectoryRouteInfo = data.routeInfos.firstOrNull;
-          final currentRouteTransition = transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
+          final currentRouteTransition =
+              transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
                   .firstWhereOrNull((e) => e.name == data.title)
                   ?.transitions ??
               [];
@@ -155,7 +180,11 @@ class PoiContentSliver extends ConsumerWidget {
 
             context.router.push(const FavouritesRoute());
           };
-          final favourites = data.getFavourites(favouritesState, context.l10n, onFavouritePressed);
+          final favourites = data.getFavourites(
+            favouritesState,
+            context.l10n,
+            onFavouritePressed,
+          );
 
           // Feedback
           final feedback = PoiContentDataIncorrectModel(
@@ -180,25 +209,36 @@ class PoiContentSliver extends ConsumerWidget {
 
           return Column(
             children: [
-              PoiContentFeedbackCard(
-                onTap: () {
-                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
-                  if (objectIdInt == null) {
-                    return;
-                  }
-
-                  context.router.push(QuickFeedbackRoute(
-                    type: QuickFeedbackType.editCompany,
-                    params: FeedbackObjectIdParams(objectIdInt),
-                  ));
-                },
-                data: PoiContentFeedbackType.cityExpert,
+              Padding(
                 padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  onTap: () {
+                    final objectIdInt = int.tryParse(
+                      data.id!.objectId.toString(),
+                    );
+                    if (objectIdInt == null) {
+                      return;
+                    }
+
+                    context.router.push(
+                      QuickFeedbackRoute(
+                        type: QuickFeedbackType.editCompany,
+                        params: FeedbackObjectIdParams(objectIdInt),
+                      ),
+                    );
+                  },
+                  data: PoiContentFeedbackType.cityExpert,
+                  padding: EdgeInsets.zero,
+                ),
               ),
               Padding(
                 padding: itemPadding,
                 child: PoiContentFullAddressCard(
-                  data: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap),
+                  data: data.getFullAddress(
+                    briefInfo,
+                    context.l10n,
+                    onEntrancesTap,
+                  ),
                 ),
               ),
               if (about != null)
@@ -209,7 +249,10 @@ class PoiContentSliver extends ConsumerWidget {
               if (workingHours != null) //
                 Padding(
                   padding: itemPadding,
-                  child: PoiContentWorkingHoursCard(workingHours: workingHours, workStatusMessage: data.workStatus),
+                  child: PoiContentWorkingHoursCard(
+                    workingHours: workingHours,
+                    workStatusMessage: data.workStatus,
+                  ),
                 ),
               if (contacts != null) //
                 Padding(
@@ -228,7 +271,13 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               if (hasOffers)
                 PoiContentOffersCard(
-                  offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
+                  offers:
+                      offers[poiCardState
+                          ?.gisObjectIdMessage
+                          ?.tradeLicense
+                          ?.license
+                          .trim()] ??
+                      [],
                   contentPadding: itemPadding,
                 ),
               if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
@@ -239,15 +288,18 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
               ...routeInfos
-                  .map((e) => Padding(
-                        padding: itemPadding,
-                        child: PoiLinesMetro(
-                          transportDirectoryRouteInfo: e,
-                          address: data.title,
-                        ),
-                      ))
+                  .map(
+                    (e) => Padding(
+                      padding: itemPadding,
+                      child: PoiLinesMetro(
+                        transportDirectoryRouteInfo: e,
+                        address: data.title,
+                      ),
+                    ),
+                  )
                   .toList(),
-              if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
+              if (searchObjectFuture.isLoading &&
+                  currentRouteTransition.isNotEmpty)
                 Shimmer.fromColors(
                   baseColor: colorShimmer,
                   highlightColor: Colors.white,

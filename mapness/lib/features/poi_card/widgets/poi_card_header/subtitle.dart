@@ -29,12 +29,14 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
-    final subTitleTextStyle = context.textStyle.footNote.copyWith(
+    final subTitleTextStyle = context.textStyles.bodySmallRegular.copyWith(
       color: context.colors.foregroundSoft,
     );
 
     var scale = interpolation;
-    if (state.index >= PoiCardBottomSheetState.halfOpen.index) {
+    if (state == PoiCardBottomSheetState.hidden) {
+      scale = 1.0;
+    } else if (state.index >= PoiCardBottomSheetState.halfOpen.index) {
       scale = 1;
     }
 
