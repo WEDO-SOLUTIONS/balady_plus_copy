@@ -1,75 +1,58 @@
 import 'dart:convert' show base64, base64Decode, base64Encode, jsonDecode, utf8;
 import 'dart:io' show File, Platform;
-import 'dart:typed_data' show Uint8List;
-import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
+import 'dart:typed_data' show Uint8List;
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
-import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:dgis_map/library.dart';
-import 'package:huawei_location/huawei_location.dart' as hms;
-import 'package:geolocator/geolocator.dart' as geo_locator;
-
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
+import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:hijri/hijri_calendar.dart';
+import 'package:http/http.dart' as http;
+import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/export/mapness_functions.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart'
     show getExternalStorageDirectory, getTemporaryDirectory;
-
-import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
 
-import '../../../mini_apps_engine/data/models/mini_app_model.dart';
 import '../../app.dart';
+import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
-import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
-import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
-import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
-import '../../features/entry_point/domain/use_cases/get_cookie.dart';
-import '../../features/notifications/manager/notification_manager.dart';
-import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
-
-import '../errors/exceptions.dart';
-import './utils_exports.dart'
-    show
-        AppColor,
-        AppLanguage,
-        EnvType,
-        GeneralKey,
-        MimeType,
-        RouteName,
-        UIHelper,
-        WithDelay;
-import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
+import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
+import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show
         AuthData,
@@ -81,25 +64,23 @@ import '../../features/_shared_feature_/shared_feature_exports.dart'
 import '../../features/entry_point/domain/entities/sso_user_info.dart'
     show SsoUserInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart';
+import '../../features/entry_point/domain/use_cases/get_cookie.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
+import '../../features/notifications/manager/notification_manager.dart';
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../services/services_exports.dart'
+import '../errors/exceptions.dart';
+import './utils_exports.dart'
     show
-        AppInterceptors,
-        EntryPointBridge,
-        NavigationService,
-        NoParams,
-        WebService;
-import 'constants/apis/api_headers.dart';
+        AppColor,
+        AppLanguage,
+        EnvType,
+        GeneralKey,
+        MimeType,
+        RouteName,
+        UIHelper,
+        WithDelay;
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
-import 'enums/enums.dart';
-
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
-import 'package:http/http.dart' as http;
-
-import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -1952,3 +1933,53 @@ class CommonProperties {
   sub: "",
   nationality: "سعودي",
 );*/
+
+/// Safely shares text content, handling iOS sharePositionOrigin requirement
+///
+/// This function wraps Share.share() and handles the iOS requirement for
+/// sharePositionOrigin. It requires a BuildContext to determine the position
+/// origin for the share sheet.
+///
+/// [text] - The text content to share
+/// [context] - Required BuildContext to determine share position origin
+Future<void> safeShareText(String text, {required BuildContext context}) async {
+  try {
+    if (Platform.isIOS) {
+      // Try to get the RenderBox from the context to determine position
+      final RenderBox? box = context.findRenderObject() as RenderBox?;
+      if (box != null &&
+          box.hasSize &&
+          box.size.width > 0 &&
+          box.size.height > 0) {
+        final size = box.size;
+        final position = box.localToGlobal(Offset.zero);
+        final rect = Rect.fromLTWH(
+          position.dx,
+          position.dy,
+          size.width,
+          size.height,
+        );
+        // Only use position origin if it's valid (non-zero size)
+        if (rect.width > 0 && rect.height > 0) {
+          await Share.share(text, sharePositionOrigin: rect);
+          return;
+        }
+      }
+    }
+    // Fallback: share without position origin
+    // This works on Android and iOS contexts where position cannot be determined
+    await Share.share(text);
+  } catch (e) {
+    // If sharing with position origin fails, retry without it
+    // This handles cases where position origin is invalid
+    if (e.toString().contains('sharePositionOrigin')) {
+      try {
+        await Share.share(text);
+      } catch (_) {
+        rethrow;
+      }
+    } else {
+      rethrow;
+    }
+  }
+}
