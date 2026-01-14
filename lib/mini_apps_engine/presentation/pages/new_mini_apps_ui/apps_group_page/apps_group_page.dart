@@ -9,6 +9,8 @@ import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_larg_more_apps.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_sub_category.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
@@ -263,6 +265,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                   CategoryGroup categoryGroup = appGroup
                                       .subCategoryGroup!.values
                                       .toList()[index];
+                                  final groupName = CommonFunctions.isAppAR ? categoryGroup.nameAr : categoryGroup.nameEn;
                                   return StaggeredAppear(
                                     initialDelay:
                                         const Duration(milliseconds: 150),
@@ -271,23 +274,21 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     itemDelay:
                                         const Duration(milliseconds: 200),
                                     children: [
-                                      InkWell(
-                                        child: Card(
-                                          child: Text(categoryGroup.nameAr),
-                                        ),
-                                        onTap: () {
-                                          Navigator.of(context).push(
+                                      CustomSubCategory(
+                                        text: groupName,
+                                        apps: categoryGroup.apps,
+                                        totalAppCount: categoryGroup.appCount,
+                                        onTap: () => Navigator.of(context).push(
                                             PageRouteBuilder(
                                               opaque: false,
-                                              barrierColor: Colors.transparent,
+                                              barrierColor:
+                                              Colors.transparent,
                                               pageBuilder: (_, __, ___) =>
                                                   AppsGroupPage(
-                                                appGroup: categoryGroup,
-                                              ),
+                                                      appGroup: categoryGroup),
                                             ),
-                                          );
-                                        },
-                                      ),
+                                          ),
+                                      )
                                     ],
                                   );
                                 }
