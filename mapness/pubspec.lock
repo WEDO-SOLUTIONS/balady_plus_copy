@@ -894,7 +894,7 @@ packages:
     source: hosted
     version: "1.10.2"
   fixnum:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: fixnum
       sha256: b6dc7065e46c974bc7c5f143080a6764ec7a4be6da1285ececdc37be96de53be
@@ -1013,11 +1013,12 @@ packages:
   flutter_hms_gms_availability:
     dependency: transitive
     description:
-      name: flutter_hms_gms_availability
-      sha256: e10cf8692d6265524ede42f2f0f22af66254dd34860b59491b22b34c0327f892
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.10.0"
+      path: "."
+      ref: cfc1bd0dc1006717e8fa0dd24c6f6c4b5c889032
+      resolved-ref: cfc1bd0dc1006717e8fa0dd24c6f6c4b5c889032
+      url: "https://github.com/vant3ch/flutter_hms_gms_availability"
+    source: git
+    version: "3.7.0"
   flutter_hooks:
     dependency: "direct main"
     description:
@@ -1625,6 +1626,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  home_widget:
+    dependency: transitive
+    description:
+      name: home_widget
+      sha256: "908d033514a981f829fd98213909e11a428104327be3b422718aa643ac9d084a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.1"
   hooks_riverpod:
     dependency: "direct main"
     description:
