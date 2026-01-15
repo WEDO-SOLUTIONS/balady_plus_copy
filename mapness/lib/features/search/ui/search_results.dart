@@ -3,6 +3,8 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_pagination.dart';
@@ -15,9 +17,9 @@ class SearchResults extends ConsumerStatefulWidget {
   final SearchResultMessage results;
   final ScrollController bottomSheetContentScrollController;
   final Widget Function(BuildContext) loaderBuilder;
-  final Widget Function(BuildContext, DirectoryObjectMessage, int) itemBuilder;
   final bool showAddPlace;
   final bool showSearchMore;
+  final Widget Function(BuildContext, DirectoryObjectMessage, int, List<Offer>) itemBuilder;
 
   const SearchResults({
     required this.results,
@@ -76,6 +78,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   @override
   Widget build(BuildContext context) {
     final results = ref.watch(searchPaginationProvider(widget.results));
+    final offers = ref.watch(poiOffersProvider);
     if (results.isEmpty) {
       return MapSearchEmpty(showAddPlaceButton: widget.showAddPlace);
     }
@@ -88,7 +91,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
         bottom: Spacing.$4x,
       ),
       physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => _itemBuilder(context: context, index: index, results: results),
+      itemBuilder: (context, index) => _itemBuilder(context: context, index: index, results: results, offers: offers)!,
       itemCount: _calculateTotalItemCount(results.length),
       separatorBuilder: (context, index) => const SizedBox(height: 12),
     );
@@ -98,6 +101,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
     required BuildContext context,
     required int index,
     required List<DirectoryObjectMessage> results,
+    required Map<String, List<Offer>> offers,
   }) {
     void _onAlternativeSearchPressed() {
       final scope = context.read<SearchScope>();
@@ -148,7 +152,8 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       return const SizedBox.shrink();
     }
 
-    return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex);
+    return widget.itemBuilder(context, results[actualResultIndex], actualResultIndex,
+        offers[results[actualResultIndex].tradeLicense?.license.trim()] ?? []);
   }
 
   int _calculateTotalItemCount(int resultsLength) {

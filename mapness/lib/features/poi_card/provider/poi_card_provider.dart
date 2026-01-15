@@ -11,6 +11,7 @@ import 'package:mapness/features/poi_card/domain/model/organizations_response.da
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -130,6 +131,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     final cachedData = await loadCacheData(poiBox, poiCardStateKey);
 
     if (cachedData != null) {
+      await _loadOffers(cachedData.gisObjectIdMessage, cachedData.organizations);
       return cachedData;
     } else {
       final qrLicenseRepository = ref.watch(qrLicenseRepositoryProvider.notifier);
@@ -144,6 +146,8 @@ class PoiCardProvider extends _$PoiCardProvider {
           qrLicense = await qrLicenseRepository.getLicenseInfo(license);
         }
       }
+
+      await _loadOffers(result, organizationsResponse);
 
       final poiCardState = PoiCardState(
         organizations: organizationsResponse,
@@ -190,6 +194,16 @@ class PoiCardProvider extends _$PoiCardProvider {
       logger.log('Error fetching organizations data', logLevel: MapnessLogLevel.critical);
       return null;
     }
+  }
+
+  Future<void> _loadOffers(DirectoryObjectMessage? poi, OrganizationsMessage? organizations) async {
+    final tradeLicense = poi?.tradeLicense;
+    final organizationsLicenses = organizations?.items.map((e) => e.tradeLicense?.license).nonNulls;
+    final allLicenses = {
+      if (tradeLicense != null) tradeLicense.license,
+      if (organizationsLicenses != null) ...organizationsLicenses
+    };
+    await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
   }
 
   Future<PoiCardState?> loadCacheData(Box<dynamic> box, String key) async {

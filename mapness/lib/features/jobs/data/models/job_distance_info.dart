@@ -1,7 +1,6 @@
 import 'package:dgis_map/library.dart';
 
 class JobDistanceInfo {
-
   JobDistanceInfo({
     this.point,
     this.briefMessages,

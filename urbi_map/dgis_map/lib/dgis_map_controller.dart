@@ -17,13 +17,16 @@ class DgisMapController {
   final _instance = DgisMapPlugin();
 
   /// Zoom controls availability
-  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents => _instance.zoomControlEnabledEvents;
+  Stream<ZoomControlEnabledEvent> get zoomControlEnabledEvents =>
+      _instance.zoomControlEnabledEvents;
 
   /// Compass bearing
-  Stream<CompassBearingEvent> get compassBearingEvents => _instance.compassBearingEvents;
+  Stream<CompassBearingEvent> get compassBearingEvents =>
+      _instance.compassBearingEvents;
 
   /// Location control availability
-  Stream<LocationEnabledEvent> get locationEnabledEvents => _instance.locationEnabledEvents;
+  Stream<LocationEnabledEvent> get locationEnabledEvents =>
+      _instance.locationEnabledEvents;
 
   /// Location follow state
   Stream<LocationFollowType> get locationFollowEvents =>
@@ -33,29 +36,35 @@ class DgisMapController {
   Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
 
   /// Indoor levels hiding events.
-  Stream<HideIndoorLevelsEvent> get hideIndoorLevels => _instance.hideIndoorLevels;
+  Stream<HideIndoorLevelsEvent> get hideIndoorLevels =>
+      _instance.hideIndoorLevels;
 
   /// Getting the IndoorLevelNames latest record values from a stream
   IndoorLevelsEvent? get lastIndoorLevelNames => _instance.lastIndoorLevelNames;
 
   /// Getting the IndoorActiveLevel latest record values from a stream
-  IndoorActiveLevelEvent? get lastIndoorActiveLevel => _instance.lastIndoorActiveLevel;
+  IndoorActiveLevelEvent? get lastIndoorActiveLevel =>
+      _instance.lastIndoorActiveLevel;
 
   /// Selected indoor level index in [IndoorLevelsEvent::levelNames] list
-  Stream<IndoorActiveLevelEvent> get indoorActiveIndex => _instance.indoorActiveIndex;
+  Stream<IndoorActiveLevelEvent> get indoorActiveIndex =>
+      _instance.indoorActiveIndex;
 
   /// Map tap events for all types of objects, that do not have specific stream
   /// (e.g. [markerWithPhotoTapEvents])
   Stream<TapEvent> get objectTapEvents => _instance.objectTapEvents;
 
   /// User taps route when there are several of them available.
-  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents => _instance.activeRouteChangedEvents;
+  Stream<ActiveRouteChangedEvent> get activeRouteChangedEvents =>
+      _instance.activeRouteChangedEvents;
 
   /// Available routes update.
-  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents => _instance.routesInfoChangedEvents;
+  Stream<RoutesInfoChangedEvent> get routesInfoChangedEvents =>
+      _instance.routesInfoChangedEvents;
 
   /// Better route availability update.
-  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _instance.betterRouteInfoEvents;
+  Stream<BetterRouteInfoEvent> get betterRouteInfoEvents =>
+      _instance.betterRouteInfoEvents;
 
   /// Android Auto/CarPlay connection state.
   Stream<bool> get carConnectionEvents => _instance.androidAutoConnectionEvents;
@@ -70,27 +79,33 @@ class DgisMapController {
   Stream<VisibleRectEvent> get visibleRectEvents => _instance.visibleRectEvents;
 
   /// Events of camera position changes.
-  Stream<CameraPositionMessage> get cameraPositionEvents => _instance.cameraPositionEvents;
+  Stream<CameraPositionMessage> get cameraPositionEvents =>
+      _instance.cameraPositionEvents;
 
   /// Events of camera state changes.
   Stream<CameraStateEvent> get cameraStateEvents => _instance.cameraStateEvents;
 
   /// Tap events for panorama markers.
-  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents => _instance.markerWithPhotoTapEvents;
+  Stream<MarkerWithPhotoTapEvent> get markerWithPhotoTapEvents =>
+      _instance.markerWithPhotoTapEvents;
 
   /// Public transport routes changed events.
-  Stream<PublicTransportRoutesChangedEvent> get publicTransportRoutesChangedEvents =>
-      _instance.publicTransportRoutesChangedEvents;
+  Stream<PublicTransportRoutesChangedEvent>
+      get publicTransportRoutesChangedEvents =>
+          _instance.publicTransportRoutesChangedEvents;
 
   /// Public transport active route changed events.
-  Stream<PublicTransportActiveRouteChanged> get publicTransportActiveRouteChangedEvents =>
-      _instance.publicTransportActiveRouteChangedEvents;
+  Stream<PublicTransportActiveRouteChanged>
+      get publicTransportActiveRouteChangedEvents =>
+          _instance.publicTransportActiveRouteChangedEvents;
 
   /// Package progress events.
-  Stream<PackageProgressEvent> get packageProgressEvents => _instance.packageProgressEvents;
+  Stream<PackageProgressEvent> get packageProgressEvents =>
+      _instance.packageProgressEvents;
 
   /// Package info changed events.
-  Stream<PackageInfoChangedEvent> get packagesInfoChangedEvents => _instance.packageInfoChangedEvents;
+  Stream<PackageInfoChangedEvent> get packagesInfoChangedEvents =>
+      _instance.packageInfoChangedEvents;
 
   /// Navi speed controller events.
   late NaviSpeedController naviSpeedController = NaviSpeedController(
@@ -120,7 +135,8 @@ class DgisMapController {
   )..init();
 
   /// Navi traffic and parking controller
-  late NaviTrafficParkingController naviTrafficParkingController = NaviTrafficParkingController(
+  late NaviTrafficParkingController naviTrafficParkingController =
+      NaviTrafficParkingController(
     parkingStateEvents: _instance.parkingStateEvents.asBroadcastStream(),
     trafficStateEvents: _instance.trafficStateEvents.asBroadcastStream(),
     onAttached: _instance.onTrafficAndParkingAttached,
@@ -141,10 +157,12 @@ class DgisMapController {
   );
 
   /// Navi dashboard Events
-  Stream<NaviDashboardEvent> get naviDashboardEvents => _instance.naviDashboardEvents;
+  Stream<NaviDashboardEvent> get naviDashboardEvents =>
+      _instance.naviDashboardEvents;
 
   /// Route options events
-  Stream<RouteOptionsEvent> get routeOptionEvents => _instance.routeOptionsEvent;
+  Stream<RouteOptionsEvent> get routeOptionEvents =>
+      _instance.routeOptionsEvent;
 
   /// Must be called **once** when controller becomes available to initialize plugin.
   Future<InitializeMessage> initialize() async => _instance.initialize(_viewId);
@@ -159,7 +177,8 @@ class DgisMapController {
   Future<void> loadStyles(String asset) async => _instance.loadStyles(asset);
 
   /// Override locale for map. Uses string format "en-US", "ar-SA".
-  Future<void> overrideLocales(List<String> locales) => _instance.overrideLocales(locales);
+  Future<void> overrideLocales(List<String> locales) =>
+      _instance.overrideLocales(locales);
 
   /// Changes state of location follow. Observe state listening to [locationFollowEvents].
   Future<void> toggleFollowState() => _instance.toggleFollowState();
@@ -174,53 +193,72 @@ class DgisMapController {
   Future<void> startFollowNavigation() => _instance.startFollowNavigation();
 
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
-  Future<void> selectIndoorLevel(IndoorLevel level) => _instance.selectIndoorLevel(level.levelIndex);
+  Future<void> selectIndoorLevel(IndoorLevel level) =>
+      _instance.selectIndoorLevel(level.levelIndex);
 
   /// Changes map camera position immediately without animation.
-  Future<void> setCameraPosition(CameraPositionMessage cameraPosition) => _instance.setCameraPosition(cameraPosition);
+  Future<void> setCameraPosition(CameraPositionMessage cameraPosition) =>
+      _instance.setCameraPosition(cameraPosition);
 
   /// The intersection area between the camera's visibility pyramid and the map surface.
-  Future<PolygonGeometryMessage> getVisibleArea() => _instance.getCameraVisibleArea();
+  Future<PolygonGeometryMessage> getVisibleArea() =>
+      _instance.getCameraVisibleArea();
 
   /// Changes map camera position point
-  Future<void> setCameraPositionPoint(CameraPositionPointMessage cameraPosition) =>
+  Future<void> setCameraPositionPoint(
+          CameraPositionPointMessage cameraPosition) =>
       _instance.setCameraPositionPoint(cameraPosition);
 
   /// Changes map camera padding immediately without animation.
-  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) => _instance.setCameraPadding(cameraPadding);
+  Future<void> setCameraPadding(CameraSetPaddingMessage cameraPadding) =>
+      _instance.setCameraPadding(cameraPadding);
 
   /// Smoothly changes camera positions
-  Future<void> moveCamera(
-          CameraPositionMessage cameraPosition, double duration, CameraAnimationTypeMessage animationType) =>
+  Future<void> moveCamera(CameraPositionMessage cameraPosition, double duration,
+          CameraAnimationTypeMessage animationType) =>
       _instance.moveCamera(cameraPosition, duration, animationType);
 
   /// Calculates camera position for route in navigation mode
-  Future<CameraPositionMessage> calcPositionForRoute(CalcPositionOptionsMessage options) =>
+  Future<CameraPositionMessage> calcPositionForRoute(
+          CalcPositionOptionsMessage options) =>
       _instance.calcPositionForRoute(options);
 
   /// Calculates camera position for given list of markers to be visible
-  Future<CameraPositionMessage> calcPositionForMarkers(List<String> markers, CalcPositionOptionsMessage options) =>
+  Future<CameraPositionMessage> calcPositionForMarkers(
+          List<String> markers, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForMarkers(markers, options);
 
   /// Calculates camera position for given list of polygons to be visible
-  Future<CameraPositionMessage> calcPositionForPolygons(List<String> polygons, CalcPositionOptionsMessage options) =>
+  Future<CameraPositionMessage> calcPositionForPolygons(
+          List<String> polygons, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForPolygons(polygons, options);
 
   /// Calculates camera position for given list of polylines to be visible
-  Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options) =>
+  Future<CameraPositionMessage> calcPositionForPolylines(
+          List<String> polylines, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForPolylines(polylines, options);
+
+  /// Calculates camera position for given list of polylines to be visible
+  Future<CameraPositionMessage> calcPositionForGeoPoints(List<GeoPointMessage> points, CalcPositionOptionsMessage options) =>
+      _instance.calcPositionForGeoPoints(points, options);
 
   /// Animation of the camera to the representative area (or out view port) of the search.
   /// Search returns a Geometry that represents the best area to show.
-  Future<void> animateToRepresentativeArea(GeometryMessage area, CalcPositionOptionsMessage options, double duration,
+  Future<void> animateToRepresentativeArea(
+          GeometryMessage area,
+          CalcPositionOptionsMessage options,
+          double duration,
           CameraAnimationTypeMessage animationType) =>
-      _instance.animateToRepresentativeArea(area, options, duration, animationType);
+      _instance.animateToRepresentativeArea(
+          area, options, duration, animationType);
 
   /// Returns map camera position.
-  Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
+  Future<CameraPositionMessage> getCameraPosition() =>
+      _instance.getCameraPosition();
 
   /// Returns nearest objects to camera position.
-  Future<List<RenderedObjectMessage>> getNearestObjects() => _instance.getNearestObjects();
+  Future<List<RenderedObjectMessage>> getNearestObjects() =>
+      _instance.getNearestObjects();
 
   /// Set panoramas paddings.
   Future<void> setPanoramasPaddings({
@@ -239,7 +277,8 @@ class DgisMapController {
       );
 
   /// Center camera on selected panorama marker.
-  Future<void> moveCameraToSelectedPanorama() => _instance.moveCameraToSelectedPanorama();
+  Future<void> moveCameraToSelectedPanorama() =>
+      _instance.moveCameraToSelectedPanorama();
 
   /// Resets selected panorama.
   Future<void> unselectPanorama() => _instance.unselectPanorama();
@@ -249,13 +288,16 @@ class DgisMapController {
       _instance.setPanoramaMarkerAzimuth(MapDirectionMessage(degree: degree));
 
   /// Returns directory object info by it's id.
-  Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId) => _instance.searchByObjectId(objectId);
+  Future<DirectoryObjectMessage> searchByObjectId(
+          DgisObjectIdMessage objectId) =>
+      _instance.searchByObjectId(objectId);
 
   /// Returns distance in meters from current location to every point in [points] list.
   /// Works offline. Doesn't require network access.
   ///
   /// Returns null when last location is unavailable, e.g. location is disabled on device.
-  Future<List<DistanceResponseMessage>?> getDistanceTo(List<DistanceRequestMessage> points) async {
+  Future<List<DistanceResponseMessage>?> getDistanceTo(
+      List<DistanceRequestMessage> points) async {
     try {
       final response = await _instance.getDistanceTo(points);
 
@@ -341,27 +383,33 @@ class DgisMapController {
   }
 
   /// Fetches next page for given page
-  Future<PageMessage> fetchPrevPage(PageMessage page) => _instance.fetchPrevPage(page.id);
+  Future<PageMessage> fetchPrevPage(PageMessage page) =>
+      _instance.fetchPrevPage(page.id);
 
   /// Fetches prev page for given page
-  Future<PageMessage> fetchNextPage(PageMessage page) => _instance.fetchNextPage(page.id);
+  Future<PageMessage> fetchNextPage(PageMessage page) =>
+      _instance.fetchNextPage(page.id);
 
   /// Releases page from memory
   Future<void> releasePage(PageMessage page) => _instance.releasePage(page.id);
 
   /// Add marker to map.
-  Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) => _instance.addMarker(marker, toManager);
+  Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) =>
+      _instance.addMarker(marker, toManager);
 
   /// Change marker options.
-  Future<void> setMarkerOptions(String id, ChangeMarkerOptionsMessage options) =>
+  Future<void> setMarkerOptions(
+          String id, ChangeMarkerOptionsMessage options) =>
       _instance.setMarkerOptions(id, options);
 
   /// Add several markers to map.
-  Future<void> addMarkers(List<Marker> markers, {MapObjectManagerMessage? toManager}) =>
+  Future<void> addMarkers(List<Marker> markers,
+          {MapObjectManagerMessage? toManager}) =>
       _instance.addMarkers(markers, toManager);
 
   /// Remove marker by id.
-  Future<void> removeMarker(String id, {MapObjectManagerMessage? fromManager}) =>
+  Future<void> removeMarker(String id,
+          {MapObjectManagerMessage? fromManager}) =>
       _instance.removeMarker(id, fromManager);
 
   /// Creates [MapObjectManagerMessage] with clustering.
@@ -376,14 +424,18 @@ class DgisMapController {
       _instance.createMapObjectManager(layerId: layerId);
 
   /// Removes [MapObjectManagerMessage].
-  Future<void> removeMapObjectManager(MapObjectManagerMessage manager) => _instance.removeMapObjectManager(manager);
+  Future<void> removeMapObjectManager(MapObjectManagerMessage manager) =>
+      _instance.removeMapObjectManager(manager);
 
   /// Changes [MapObjectManagerMessage] visibility
-  Future<void> setMapObjectManagerIsVisible({required bool isVisible, MapObjectManagerMessage? manager}) =>
-      _instance.setMapObjectManagerIsVisible(isVisible: isVisible, manager: manager);
+  Future<void> setMapObjectManagerIsVisible(
+          {required bool isVisible, MapObjectManagerMessage? manager}) =>
+      _instance.setMapObjectManagerIsVisible(
+          isVisible: isVisible, manager: manager);
 
   /// Remove all markers added with [addMarker].
-  Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) => _instance.removeAllMarkers(fromManager);
+  Future<void> removeAllMarkers({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllMarkers(fromManager);
 
   /// Remove all markers, polygons, polylines
   /// that were added with [addMarker], [addPolygons], [addPolyline].
@@ -395,33 +447,41 @@ class DgisMapController {
   }
 
   /// Add circle to map
-  Future<void> addCircle(Circle circle, {MapObjectManagerMessage? toManager}) => _instance.addCircle(circle, toManager);
+  Future<void> addCircle(Circle circle, {MapObjectManagerMessage? toManager}) =>
+      _instance.addCircle(circle, toManager);
 
   /// Add several circles to map.
-  Future<void> addCircles(List<Circle> circles, {MapObjectManagerMessage? toManager}) =>
+  Future<void> addCircles(List<Circle> circles,
+          {MapObjectManagerMessage? toManager}) =>
       _instance.addCircles(circles, toManager);
 
   /// Remove circle by id.
-  Future<void> removeCircle(String id, {MapObjectManagerMessage? fromManager}) =>
+  Future<void> removeCircle(String id,
+          {MapObjectManagerMessage? fromManager}) =>
       _instance.removeCircle(id, fromManager);
 
   /// Remove all circles added with [addCircle].
-  Future<void> removeAllCircles({MapObjectManagerMessage? fromManager}) => _instance.removeAllCircles(fromManager);
+  Future<void> removeAllCircles({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllCircles(fromManager);
 
   /// Add polygon to map.
-  Future<void> addPolygon(Polygon polygon, {MapObjectManagerMessage? toManager}) =>
+  Future<void> addPolygon(Polygon polygon,
+          {MapObjectManagerMessage? toManager}) =>
       _instance.addPolygon(polygon, toManager);
 
   /// Add several polygons to map.
-  Future<void> addPolygons(List<Polygon> polygons, {MapObjectManagerMessage? toManager}) =>
+  Future<void> addPolygons(List<Polygon> polygons,
+          {MapObjectManagerMessage? toManager}) =>
       _instance.addPolygons(polygons, toManager);
 
   /// Remove polygon by id.
-  Future<void> removePolygon(String id, {MapObjectManagerMessage? fromManager}) =>
+  Future<void> removePolygon(String id,
+          {MapObjectManagerMessage? fromManager}) =>
       _instance.removePolygon(id, fromManager);
 
   /// Remove all polygons added with [addPolygon].
-  Future<void> removeAllPolygons({MapObjectManagerMessage? fromManager}) => _instance.removeAllPolygons(fromManager);
+  Future<void> removeAllPolygons({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllPolygons(fromManager);
 
   /// Add polyline to map.
   Future<void> addPolyline(
@@ -445,10 +505,12 @@ class DgisMapController {
       _instance.removePolyline(id, fromManager);
 
   /// Remove all polyline added with [addPolyline].
-  Future<void> removeAllPolylines({MapObjectManagerMessage? fromManager}) => _instance.removeAllPolylines(fromManager);
+  Future<void> removeAllPolylines({MapObjectManagerMessage? fromManager}) =>
+      _instance.removeAllPolylines(fromManager);
 
   /// Highlights objects by it's id.
-  Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) => _instance.setHighlighted(objectIds);
+  Future<void> setHighlighted(List<DgisObjectIdMessage> objectIds) =>
+      _instance.setHighlighted(objectIds);
 
   /// Remove all objects highlighted with [setHighlighted].
   Future<void> removeAllHighlights() => setHighlighted([]);
@@ -465,7 +527,9 @@ class DgisMapController {
       _instance.fetchSuggests(
         queryText,
         searchRect: searchRect,
-        allowedResultTypes: allowedResultTypes?.map((e) => SuggestedTypeMessage_(type: e)).toList(),
+        allowedResultTypes: allowedResultTypes
+            ?.map((e) => SuggestedTypeMessage_(type: e))
+            .toList(),
         locale: locale,
         suggestorType: suggestorType,
         limit: limit,
@@ -539,34 +603,39 @@ class DgisMapController {
   }
 
   /// Starts navigation
-  Future<void> startNavigation(List<SpeedRangeZoom> speedRangeZoom) => _instance.startNavigation(speedRangeZoom);
+  Future<void> startNavigation(List<SpeedRangeZoom> speedRangeZoom) =>
+      _instance.startNavigation(speedRangeZoom);
 
   /// Starts navigation simulation.
   Future<void> startNavigationSimulation(List<SpeedRangeZoom> speedRangeZoom) =>
       _instance.startNavigationSimulation(speedRangeZoom);
 
   /// Starts navigation simulation settings.
-  Future<void> simulationSpeed(double speed) => _instance.simulationSpeed(speed);
+  Future<void> simulationSpeed(double speed) =>
+      _instance.simulationSpeed(speed);
 
   /// Starts navigation state.
   Future<Uint8List> saveNavigationState() => _instance.saveNavigationState();
 
   /// Restores navigation state.
-  Future<void> restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom) =>
+  Future<void> restoreNavigationState(
+          Uint8List state, List<SpeedRangeZoom> speedRangeZoom) =>
       _instance.restoreNavigationState(state, speedRangeZoom);
 
   /// Stops navigation. To hide navigation overlay call [hideNativeNavigationOverlay].
   Future<void> stopNavigation() => _instance.stopNavigation();
 
   /// Current navigation state
-  Future<NavigationStateMessage> getCurrentNavigationState() => _instance.getCurrentNavigationState();
+  Future<NavigationStateMessage> getCurrentNavigationState() =>
+      _instance.getCurrentNavigationState();
 
   /// Controls sounds in navigation.
   Future<void> toggleVoiceInstruction({required SoundToggleType toggleType}) =>
       _instance.toggleVoiceInstruction(toggleType: toggleType);
 
   /// Notifies CarPlay and Android Auto about favourites state changes.
-  Future<void> favouritesUpdateNotification(FavouritesStateMessage favouritesState) =>
+  Future<void> favouritesUpdateNotification(
+          FavouritesStateMessage favouritesState) =>
       _instance.favouritesUpdateNotification(favouritesState);
 
   /// Notifies CarPlay and Android Auto about authorization state changes.
@@ -586,22 +655,27 @@ class DgisMapController {
       _instance.toggleOverSpeeding(overSpeeding: overSpeeding);
 
   /// Controls sounds Cameras in navigation.
-  Future<void> toggleRoadCameras({required bool roadCameras}) => _instance.toggleRoadCameras(roadCameras: roadCameras);
+  Future<void> toggleRoadCameras({required bool roadCameras}) =>
+      _instance.toggleRoadCameras(roadCameras: roadCameras);
 
   /// Mute other apps sounds when navigation notification received.
-  Future<void> muteOtherSounds({required bool mute}) => _instance.muteOtherSounds(mute: mute);
+  Future<void> muteOtherSounds({required bool mute}) =>
+      _instance.muteOtherSounds(mute: mute);
 
   /// Set navigator volume.
-  Future<void> setNavigatorVolume({required int volume}) => _instance.setNavigatorVolume(volume: volume);
+  Future<void> setNavigatorVolume({required int volume}) =>
+      _instance.setNavigatorVolume(volume: volume);
 
   /// Add panorama markers to map.
   Future<void> addPanoramasMarkers(List<MarkerWithPhotoMessage> markers) {
-    return _instance.addPanoramasMarkers(AddMarkersWithPhotoMessage(markers: markers));
+    return _instance
+        .addPanoramasMarkers(AddMarkersWithPhotoMessage(markers: markers));
   }
 
   /// Add IO Layer to map.
   Future<void> addIOLayerObjects(List<LayerPointObjectMessage> objects) {
-    return _instance.showEsriIOLayer(AddLayerPointObjectsMessage(objects: objects));
+    return _instance
+        .showEsriIOLayer(AddLayerPointObjectsMessage(objects: objects));
   }
 
   /// Remove Esri IO Layer from map.
@@ -645,12 +719,19 @@ class DgisMapController {
     required RouteSearchOptionsMessage options,
     required RouteSearchPointMessage startPoint,
     required RouteSearchPointMessage finishPoint,
+    List<RouteSearchPointMessage>? intermediatePoints,
   }) {
-    return _instance.findRoute(startPoint, finishPoint, options);
+    return _instance.findRoute(
+      startPoint,
+      finishPoint,
+      options,
+      intermediatePoints: intermediatePoints,
+    );
   }
 
   ///toggle heatmap
-  Future<bool> toggleHeatmap({required WeatherMapMessage message}) => _instance.toggleHeatmap(message);
+  Future<bool> toggleHeatmap({required WeatherMapMessage message}) =>
+      _instance.toggleHeatmap(message);
 
   ///list packages
   Future<List<PackageMessage?>> listPackages() => _instance.listPackages();
@@ -671,16 +752,20 @@ class DgisMapController {
   Future<void> setNavigatorVoice(String id) => _instance.setNavigatorVoice(id);
 
   ///Set better route response
-  Future<void> betterRouteResponse(BetterRouteResponseMessage response) => _instance.betterRouteResponse(response);
+  Future<void> betterRouteResponse(BetterRouteResponseMessage response) =>
+      _instance.betterRouteResponse(response);
 
   ///Get better route settings
-  Future<BetterRouteSettingsMessage> getBetterRouteSettings() => _instance.getBetterRouteSettings();
+  Future<BetterRouteSettingsMessage> getBetterRouteSettings() =>
+      _instance.getBetterRouteSettings();
 
   ///Set better route settings
-  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) => _instance.setBetterRouteSettings(message);
+  Future<void> setBetterRouteSettings(BetterRouteSettingsMessage message) =>
+      _instance.setBetterRouteSettings(message);
 
   ///Set better route enabled
-  Future<void> setBetterRouteEnabled({required bool enabled}) => _instance.setBetterRouteEnabled(enabled: enabled);
+  Future<void> setBetterRouteEnabled({required bool enabled}) =>
+      _instance.setBetterRouteEnabled(enabled: enabled);
 
   ///Set map attribute bool
   Future<void> setMapAttributeBool(String name, {required bool value}) =>
@@ -703,7 +788,8 @@ extension WeekTimeFactory on WeekTimeSearchMessage {
   ///
   /// Returns:
   /// - [WeekTimeSearchMessage]: An instance of `WeekTimeSearchMessage` with `isOpenNow` set to `true`.
-  static WeekTimeSearchMessage openNow() => WeekTimeSearchMessage(isOpenNow: true);
+  static WeekTimeSearchMessage openNow() =>
+      WeekTimeSearchMessage(isOpenNow: true);
 }
 
 /// An enumeration representing different working hours filters.

@@ -395,6 +395,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func calcPositionForPolylines(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
     }
+    
+    func calcPositionForGeoPoints(points: [GeoPointMessage], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
+        self.objectTapHandler?.calcPosition(points: points, options: options, completion: completion)
+    }
 
     func animateToRepresentativeArea(area: GeometryMessage, options: CalcPositionOptionsMessage, duration: Double, animationType: CameraAnimationTypeMessage,  completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(area: area, options: options) { positionResult in
@@ -1130,7 +1134,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
 
-    func findRoute(startPoint: RouteSearchPointMessage, finishPoint: RouteSearchPointMessage, navType: RouteSearchOptionsMessage, completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void) {
+    func findRoute(startPoint: RouteSearchPointMessage, finishPoint: RouteSearchPointMessage, navType: RouteSearchOptionsMessage,
+                   intermediatePoints: [RouteSearchPointMessage]?, completion: @escaping (Result<FindRouteResultMessage, any Error>) -> Void) {
         let routeSearchOptions = navType.toRouteSearchOptions()
         
         let startSearchPoint = startPoint.toRouteSearchPoint()
@@ -1140,6 +1145,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             startPoint: startSearchPoint,
             finishPoint: finishSearchPoint,
             routeSearchOptions: routeSearchOptions,
+            intermediatePoints: intermediatePoints?.map { $0.toRouteSearchPoint() },
             completion: completion
         )
     }

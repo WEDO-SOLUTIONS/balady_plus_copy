@@ -962,6 +962,33 @@ class ObjectTapHandler {
             completion(Result.success(position))
     }
     
+    func calcPosition(points: [GeoPointMessage], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
+        if (points.isEmpty) {
+            completion(
+                Result.success(
+                CameraPositionMessage(
+                    point: map.camera.position.point.toMessage(),
+                    zoom:  Double(map.camera.position.zoom.value),
+                    tilt:  Double(map.camera.position.tilt.value),
+                    bearing:  map.camera.position.bearing.value
+                ))
+            )
+            return
+        }
+
+        let polylineOptions =
+            PolylineOptions(
+                points: points.map { $0.geoPoint }
+            )
+        
+        let circleOptions = CircleOptions(position: points.first!.geoPoint, radius: Meter(500.0))
+        
+        // if there is only one point creating a polyline throws so we treat it as a circle
+        let objects = [points.count > 1 ? try! Polyline(options: polylineOptions) : try! Circle(options: circleOptions)]
+
+        calcPosition(objects: objects, options: options, completion: completion)
+    }
+    
     private func calcPosition(objects: [SimpleMapObject], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         let cameraPosition = DGis.calcPosition(
             camera: map.camera,

@@ -111,8 +111,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   void _startNavigation(RouteInfo info) {
     final _routeType = widget.navType.toRouteType();
 
-    final startPoint = widget.points[0];
-    final finishPoint = widget.points[1];
+    final startPoint = widget.points.first;
+    final finishPoint = widget.points.last;
 
     final location = ref.read(locationProvider);
     if (location == null && startPoint?.etaPoint == null) {

@@ -2,7 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity_variant.dart';
 
 class IwishEntity {
-
   IwishEntity({
     required this.parkSize,
     required this.metadata,
@@ -46,7 +45,6 @@ enum IwishCategory {
 }
 
 class IwishMetadata {
-
   const IwishMetadata({
     required this.areaName,
     required this.typeName,

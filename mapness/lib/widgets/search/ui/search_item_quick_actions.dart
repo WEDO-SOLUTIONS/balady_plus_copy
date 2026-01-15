@@ -20,6 +20,9 @@ import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
+const _buttonColorScheme = ButtonColorScheme.accentSecondary;
+
+
 class SearchItemQuickActions extends HookConsumerWidget {
   final DirectoryObjectMessage directoryObject;
 
@@ -69,7 +72,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: TransportIcons.locationDirectionNavigator,
         buttonType: ButtonType.secondary,
-        colorScheme: ButtonColorScheme.accent,
+        colorScheme: _buttonColorScheme,
         label: context.l10n.poiCardDirections,
         innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
         onPressed: () {
@@ -92,7 +95,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       ItemActionBar(
         icon: iconData,
         buttonType: ButtonType.secondary,
-        colorScheme: ButtonColorScheme.accent,
+        colorScheme: _buttonColorScheme,
         onPressed: () {
           _onFavoriteTap(
             context: context,
@@ -117,7 +120,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
         resetAfterFutureCompleted: true,
         builder: (context, throttledShare) => ItemActionBar(
           icon: SystemIcons.share,
-          colorScheme: ButtonColorScheme.accent,
+          colorScheme: _buttonColorScheme,
           buttonType: ButtonType.secondary,
           onPressed: throttledShare,
         ),
@@ -125,7 +128,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (phoneNumber != null)
         ItemActionBar(
           icon: GeneralIcons.phoneLTR,
-          colorScheme: ButtonColorScheme.accent,
+          colorScheme: _buttonColorScheme,
           buttonType: ButtonType.secondary,
           onPressed: () {
             BssService.instance.trackCallTap(directoryObject, phoneNumber);
@@ -135,7 +138,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
       if (website != null)
         ItemActionBar(
           icon: GeneralIcons.web,
-          colorScheme: ButtonColorScheme.accent,
+          colorScheme: _buttonColorScheme,
           buttonType: ButtonType.secondary,
           onPressed: () {
             BssService.instance.trackLinkTap(directoryObject, BssContactType.website, website);

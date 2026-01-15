@@ -1,5 +1,4 @@
 class IwishFeedbackTag {
-
   const IwishFeedbackTag({
     required this.id,
     required this.displayName,

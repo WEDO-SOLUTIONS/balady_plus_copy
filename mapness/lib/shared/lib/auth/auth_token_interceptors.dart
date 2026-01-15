@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/shared/utils/logger/talker_logger.dart';
@@ -63,14 +62,7 @@ class AuthTokenInterceptor {
             }
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
-            if (e is DioException && e.response?.statusCode == 401) {
-              // LogOut and Redirect to login
-              // TODO: remove this crunch
-              if (!e.requestOptions.uri.origin.contains('momrah-balady.public-poc.urbi.ae')) {
-                await ref.read(authProvider.notifier).tokenExpireLogout();
-                await ref.read(authProvider.notifier).doAuth();
-              }
-            } else if (e is DioException) {
+            if (e is DioException) {
               handler.reject(e);
             } else {
               handler.reject(error);

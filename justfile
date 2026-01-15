@@ -29,6 +29,7 @@ pubget:
     fvm flutter pub get
     cd mapness
     fvm flutter pub get
+    cd ..
 
 clean:
     #!/bin/bash
@@ -94,6 +95,13 @@ build_pigeon:
     mkdir -p mkdir lib/src/pigeons/ ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/
     fvm dart pub run pigeon --input pigeons/messages.dart
     print_style '' 'yellow' '< pigeons ready'
+
+build_apk_qa:
+    #!/bin/bash
+    set -euo pipefail
+    print_style '' 'yellow' '> build apk...'
+    fvm flutter build apk --flavor stg --target lib/main_stg.dart --release  {{ dart_define }}
+    print_style '' 'yellow' '< build ready'
 
 run:
     fvm flutter run --target lib/main_dev.dart

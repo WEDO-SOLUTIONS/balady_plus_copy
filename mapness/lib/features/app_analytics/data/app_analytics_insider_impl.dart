@@ -100,9 +100,7 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   void categorySelected(String category) {
-    FlutterInsider.Instance.tagEvent('category_selected')
-        .addParameterWithString('category', category)
-        .build();
+    FlutterInsider.Instance.tagEvent('category_selected').addParameterWithString('category', category).build();
   }
 
   @override
@@ -112,9 +110,7 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   void quickActionSelected(String action) {
-    FlutterInsider.Instance.tagEvent('quick_action_used')
-        .addParameterWithString('action', action)
-        .build();
+    FlutterInsider.Instance.tagEvent('quick_action_used').addParameterWithString('action', action).build();
   }
 
   @override
@@ -160,16 +156,16 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
 
   @override
   Future<void> deviceTypeDetected() async {
-    final androidInfo = await DeviceInfoPlugin().androidInfo;
-    final iOSInfo = await DeviceInfoPlugin().iosInfo;
+    final isAndroid =Platform.isAndroid;
+    final androidInfo = isAndroid?await DeviceInfoPlugin().androidInfo:null;
+    final iOSInfo = isAndroid?null:await DeviceInfoPlugin().iosInfo;
 
-    final androidModel = androidInfo.data['model'];
-    final iosModel = iOSInfo.data['machine'];
+    final androidModel = androidInfo?.data['model'];
+    final iosModel = iOSInfo?.data['machine'];
 
     await FlutterInsider.Instance.tagEvent('device_type_detected')
         .addParameterWithString('event_name', 'device_type_detected')
-        .addParameterWithString(
-            'device_type', Platform.isAndroid ? androidModel : iosModel)
+        .addParameterWithString('device_type', isAndroid ? androidModel : iosModel)
         .addParameterWithString('platform', Platform.operatingSystem)
         .addParameterWithString('timestamp', now)
         .build();
@@ -185,14 +181,12 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   }
 
   @override
-  void userMovementDetected(
-      {required String destinationCity, required String originCity}) {
+  void userMovementDetected({required String destinationCity, required String originCity}) {
     FlutterInsider.Instance.tagEvent('user_movement_detected')
         .addParameterWithString('event_name', 'user_movement_detected')
         .addParameterWithString('origin', originCity)
         .addParameterWithString('destination', destinationCity)
-        .addParameterWithString(
-            'value', originCity == destinationCity ? 'Yes' : 'No')
+        .addParameterWithString('value', originCity == destinationCity ? 'Yes' : 'No')
         .addParameterWithString('timestamp', now)
         .build();
   }

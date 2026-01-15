@@ -48,7 +48,8 @@ class AppRouter extends RootStackRouter {
               path: 'service_available',
               page: ServiceNotAvailableSheetRoute.page,
               opaque: false,
-              customRouteBuilder: <T>(context, child, page) => RouteBuilders.modalSheetBuilder(
+              customRouteBuilder: <T>(context, child, page) =>
+                  RouteBuilders.modalSheetBuilder(
                 context,
                 child,
                 page,
@@ -241,6 +242,63 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
+              path: 'saudi_pass_offers_screen',
+              page: OffersScreenViewRoute.page,
+            ),
+            AppRoute(
+              path: 'saudi_pass_favourite_offers_screen',
+              page: FavouriteOffersScreenViewRoute.page,
+            ),
+            AppRoute(
+              path: 'saudi_pass_profile_preferences_screen',
+              page: ProfilePreferencesRoute.page,
+            ),
+            AppRoute(
+              path: 'saudi_pass_offers_on_map_screen',
+              page: OffersOnMapRoute.page,
+            ),
+            CustomRoute(
+              page: CitySelectionDialogViewRoute.page,
+              path: 'saudi_pass_city_selection_dialog',
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_type_selection_dialog',
+              page: TypeSelectionDialogViewRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_all_categories_selection_dialog',
+              page: AllCategoriesSelectionDialogViewRoute.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_sorting_selection_dialog',
+              page: SortingSelectionDialogRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            AppRoute(
+              path: 'saudi_pass_settings_screen',
+              page: SettingsScreenViewRoute.page,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_offer_page',
+              page: OfferRoute.page,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_offer_feedback',
+              page: AppFeedbackSheet.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_offer_favorites_removing_sheet',
+              page: OfferFavoritesRemovingSheetRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
               path: 'quickFeedback',
               page: QuickFeedbackRoute.page,
               customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
@@ -333,6 +391,10 @@ class AppRouter extends RootStackRouter {
               page: FeedbackAddressSuggester.page,
               opaque: false,
               transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            AppRoute(
+              path: 'profile_preferences',
+              page: ProfilePreferencesRoute.page,
             ),
           ],
         ),

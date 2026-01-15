@@ -6,9 +6,10 @@ import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class IwishAboutPark extends StatelessWidget {
-
   const IwishAboutPark({
-    required this.metadata, required this.parkSize, super.key,
+    required this.metadata,
+    required this.parkSize,
+    super.key,
   });
   final IwishMetadata metadata;
   final ParkSize parkSize;
@@ -22,8 +23,7 @@ class IwishAboutPark extends StatelessWidget {
 
     final showSize = parkSize != ParkSize.unknown;
     final showArea = metadata.areaSize != 0;
-    final showOpeningDate =
-        metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0);
+    final showOpeningDate = metadata.openingDate != DateTime.fromMillisecondsSinceEpoch(0);
     final showAmanah = metadata.areaName != '';
 
     return Column(

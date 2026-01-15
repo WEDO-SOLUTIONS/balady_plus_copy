@@ -4,9 +4,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
@@ -62,7 +63,8 @@ class AppFeedbackMain extends HookConsumerWidget {
             alignment: AlignmentDirectional.centerEnd,
             child: CustomCloseButton(
               onClose: () {
-                if (rating.value == (initialRating ?? 0)) {
+                if (rating.value == (initialRating ?? 0) ||
+                    onNeedPopConfirm == null) {
                   context.router.popForced();
                 } else {
                   onNeedPopConfirm?.call();
@@ -74,9 +76,12 @@ class AppFeedbackMain extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Text(
-            source == FeedbackSource.navi
-                ? context.l10n.appFeedbackNavigationExperience
-                : context.l10n.appFeedbackAppExperience,
+            switch (source) {
+              FeedbackSourceMain() => context.l10n.appFeedbackAppExperience,
+              FeedbackSourceNavi() =>
+                context.l10n.appFeedbackNavigationExperience,
+              FeedbackSourceOffer() => context.l10n.doYouLikeOffer,
+            },
             textAlign: TextAlign.center,
             style: context.textStyles.h3SemiBold.copyWith(
               color: context.colors.foregroundDefault,
@@ -84,43 +89,50 @@ class AppFeedbackMain extends HookConsumerWidget {
           ),
         ),
         const SizedBox(height: Spacing.$4x),
-        Directionality(
-          textDirection: TextDirection.ltr,
-          child: ValueListenableBuilder(
-            valueListenable: rating,
-            builder: (context, ratingValue, _) => RatingBar(
-              rating: ratingValue,
-              onRatingChanged: (value) {
-                rating.value = value;
-              },
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(Spacing.$4x),
-          child: ValueListenableBuilder(
-            valueListenable: rating,
-            builder: (context, ratingValue, _) => Text(
-              _ratingText(context.l10n, rating.value),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              style: context.textStyles.bodyLargeRegular.copyWith(
-                color: context.colors.foregroundSoft,
-              ),
-            ),
+        ValueListenableBuilder(
+          valueListenable: rating,
+          builder: (context, ratingValue, _) => RatingBar(
+            rating: ratingValue,
+            onRatingChanged: (value) {
+              rating.value = value;
+            },
           ),
         ),
         ValueListenableBuilder(
           valueListenable: rating,
+          builder: (context, ratingValue, _) =>
+              source is! FeedbackSourceOffer || ratingValue == 0
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                          left: Spacing.$4x,
+                          top: Spacing.$4x,
+                          right: Spacing.$4x),
+                      child: Text(
+                        _feedbackSubtitleText(
+                            context.l10n, rating.value, source),
+                        textAlign: TextAlign.center,
+                        style: context.textStyles.bodyLargeRegular.copyWith(
+                          color: context.colors.foregroundSoft,
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+        ),
+        ValueListenableBuilder(
+          valueListenable: rating,
           builder: (context, ratingValue, _) => AnimatedSwitcher(
-              duration: Durations.short3,
-              child: ratingValue > 0
-                  ? TagCloud(
+            duration: Durations.short3,
+            child: ratingValue > 0 && source is! FeedbackSourceOffer
+                ? Padding(
+                    padding: const EdgeInsets.only(top: Spacing.$4x),
+                    child: TagCloud(
                       key: ValueKey(ratingValue),
                       rating: ratingValue,
                       onTagsChanged: (tags) => selectedTags.value = tags,
-                    )
-                  : const SizedBox.shrink()),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ),
         ValueListenableBuilder(
           valueListenable: rating,
@@ -130,13 +142,15 @@ class AppFeedbackMain extends HookConsumerWidget {
             }
             return Padding(
               key: const ValueKey('app-feedback-balady-input'),
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+              padding: const EdgeInsets.only(
+                  left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   /// change feedback text
-                  final result =
-                      await context.router.push(AppFeedbackInputSheet(initialText: feedbackTextController.text));
+                  final result = await context.router.push(
+                      AppFeedbackInputSheet(
+                          initialText: feedbackTextController.text));
                   if (result != null && result is String) {
                     feedbackTextController.text = result;
                   }
@@ -146,8 +160,8 @@ class AppFeedbackMain extends HookConsumerWidget {
                     inputState: BaladyInputState.readOnly,
                     controller: feedbackTextController,
                     config: BaladyInputConfig(
-                      hintText: context.l10n.appFeedbackHintText,
                       background: BaladyInputBackground.color,
+                      hintText: context.l10n.appFeedbackHintText,
                       maxLines: 4,
                       isDisposed: false,
                       onChanged: (_) {},
@@ -162,37 +176,66 @@ class AppFeedbackMain extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: ValueListenableBuilder(
-              valueListenable: rating,
-              builder: (context, ratingValue, _) {
-                final canSend = ratingValue > 0;
-                final buttonState = !canSend ? ButtonState.disabled : ButtonState.defaultState;
-                return SizedBox(
-                  width: double.infinity,
-                  child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
-                    buttonState: buttonState,
-                    size: ButtonSize.large,
-                    onTap: !canSend
-                        ? null
-                        : () async {
-                            final text = feedbackTextController.text;
-                            await collectFeedback.collectFeedback(
-                              stars: ratingValue,
-                              // Convert tag labels to source tags
-                              tags:
-                                  selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
-                              text: text.isEmpty ? null : feedbackTextController.text,
-                              source: source,
-                            );
-                          },
-                    primaryLabel: context.l10n.appFeedbackSubmitButton,
-                  ),
-                );
-              }),
+            valueListenable: rating,
+            builder: (context, ratingValue, _) {
+              final canSend = ratingValue > 0;
+              final buttonState =
+                  !canSend ? ButtonState.disabled : ButtonState.defaultState;
+              return SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  buttonState: buttonState,
+                  size: ButtonSize.large,
+                  onTap: !canSend
+                      ? null
+                      : () async {
+                          final text = feedbackTextController.text;
+                          await collectFeedback.collectFeedback(
+                            stars: ratingValue,
+                            source: source,
+                            // Convert tag labels to source tags
+                            tags: selectedTags.value
+                                .map((tag) =>
+                                    AppFeedbackTagMapper.getSourceTagText(tag))
+                                .toList(),
+                            text: text.isEmpty
+                                ? null
+                                : feedbackTextController.text,
+                          );
+                          await openInAppReviewRating(ratingValue);
+                        },
+                  primaryLabel: context.l10n.appFeedbackSubmitButton,
+                ),
+              );
+            },
+          ),
         ),
         const SizedBox(height: Spacing.$4x),
       ],
     );
+  }
+
+  String _feedbackSubtitleText(
+          AppLocalizations l10n, int rating, FeedbackSource source) =>
+      source is FeedbackSourceOffer
+          ? l10n.offerFeedbackMessage
+          : _ratingText(l10n, rating);
+
+  Future<void> openInAppReviewRating(ratingValue) async {
+    if (ratingValue > 3) {
+      final InAppReview inAppReview = InAppReview.instance;
+      try {
+        final available = await inAppReview.isAvailable();
+        if (available) {
+          await inAppReview.requestReview();
+        } else {
+          // await inAppReview.openStoreListing();
+        }
+      } catch (e) {
+        // await inAppReview.openStoreListing();
+      }
+    }
   }
 
   String _ratingText(AppLocalizations l10n, int rating) => switch (rating) {

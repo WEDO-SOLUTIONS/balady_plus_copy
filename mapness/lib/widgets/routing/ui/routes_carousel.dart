@@ -43,14 +43,16 @@ class RoutesCarousel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (navType == RouteSearchOptionsMessage.publicTransport) {
-      final startPoint = points.firstOrNull?.value;
-      final finishPoint = points.lastOrNull?.value;
+      final startPoint = points.first?.value;
+      final finishPoint = points.last?.value;
+      final intermediatePoints = points.getIntermediatePointsWithLabels();
 
       final publicTransportRoutes = ref.watch(
         publicTransportRoutesProvider(
           startPoint: startPoint,
           finishPoint: finishPoint,
           navType: navType,
+          intermediatePoints: intermediatePoints,
         ),
       );
 

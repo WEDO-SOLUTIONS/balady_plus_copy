@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
@@ -30,6 +31,7 @@ class Routes extends _$Routes {
     required RouteParamsPoint? finishPoint,
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     final online = ref.watch(networkStatusProvider);
     await AdvancedMetrics.instance.startRouteCalculation(
@@ -40,12 +42,15 @@ class Routes extends _$Routes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
+
     unawaited(dgisController.value?.hideRoutes());
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      intermediatePoints: intermediatePoints,
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
@@ -120,6 +125,7 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
     Duration? timeout,
+    RouteParamsPointList? intermediatePoints,
   }) async {
     final online = ref.watch(networkStatusProvider);
     await AdvancedMetrics.instance.startRouteCalculation(
@@ -130,11 +136,14 @@ class PublicTransportRoutes extends _$PublicTransportRoutes {
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
+    final intermediatePoints = this.intermediatePoints?.points.map((e) => e.value?.pointMessage).nonNulls.toList();
+
     final params = RouteEditorRouteParamsMessage(
       startPoint: startPoint?.pointMessage,
       finishPoint: finishPoint?.pointMessage,
       options: navType,
       showOnlyActiveRoute: showOnlyActiveRoute,
+      intermediatePoints: intermediatePoints,
       searchParams: CarRouteSearchOptionParamsMessage(
         avoidTollRoads: searchOptions.avoidTollRoads,
         avoidUnpavedRoads: searchOptions.avoidUnpavedRoads,
@@ -285,3 +294,5 @@ class BetterRouteSettings extends _$BetterRouteSettings {
     state = AsyncData(updatedSettings);
   }
 }
+
+final currentNavigationDestinationProvider = StateProvider<RouteParamsPoint?>((ref) => null);

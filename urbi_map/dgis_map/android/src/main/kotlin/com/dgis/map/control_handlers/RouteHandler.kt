@@ -22,6 +22,7 @@ import ru.dgis.sdk.map.Source
 import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.map.calcPosition
 import ru.dgis.sdk.routing.*
+import kotlin.collections.mutableListOf
 
 class RouteHandler(
         private val map: DgisMap,
@@ -88,6 +89,23 @@ class RouteHandler(
         closeables.clear()
     }
 
+    private fun createRouteSearchPoint(point: RouteEditorRoutePointMessage): RouteSearchPoint {
+        return RouteSearchPoint(
+            coordinates =
+                GeoPoint(
+                    point.point.latitude,
+                    point.point.longitude
+                ),
+            objectId =
+                DgisObjectId(
+                    objectId = point.objectId?.objectId ?: 0,
+                    entranceId = point.objectId?.entranceId
+                        ?: 0,
+                ),
+            levelId = point.levelId?.let { LevelId(it) }
+        )
+    }
+
     private fun getCurrentLevelId(): LevelId? {
         return indoorControlHandler?.currentLevelId
     }
@@ -102,20 +120,7 @@ class RouteHandler(
                         )
                     }
                 } else {
-                    RouteSearchPoint(
-                            coordinates =
-                                    GeoPoint(
-                                            params.startPoint.point.latitude,
-                                            params.startPoint.point.longitude
-                                    ),
-                            objectId =
-                                    DgisObjectId(
-                                            objectId = params.startPoint.objectId?.objectId ?: 0,
-                                            entranceId = params.startPoint.objectId?.entranceId
-                                                            ?: 0,
-                                    ),
-                            levelId = params.startPoint!!.levelId?.let { LevelId(it) }
-                    )
+                    createRouteSearchPoint(params.startPoint!!)
                 }
         val finishPoint =
                 if (params.finishPoint == null) {
@@ -126,20 +131,7 @@ class RouteHandler(
                         )
                     }
                 } else {
-                    RouteSearchPoint(
-                            coordinates =
-                                    GeoPoint(
-                                            params.finishPoint.point.latitude,
-                                            params.finishPoint.point.longitude
-                                    ),
-                            objectId =
-                                    DgisObjectId(
-                                            objectId = params.finishPoint.objectId?.objectId ?: 0,
-                                            entranceId = params.finishPoint.objectId?.entranceId
-                                                            ?: 0,
-                                    ),
-                            levelId = params.finishPoint.levelId?.let { LevelId(it) }
-                    )
+                    createRouteSearchPoint(params.finishPoint!!)
                 }
 
         if (startPoint == null || finishPoint == null) {
@@ -149,8 +141,15 @@ class RouteHandler(
         this.options = getRouteSearchOptions(params.options, params.searchParams)
         this.finishPoint = finishPoint
 
+        val intermediatePoints = params.intermediatePoints?.map { it ->
+            createRouteSearchPoint(it)
+        }
         val routeEditorParams =
-                RouteEditorRouteParams(startPoint, finishPoint, options!!, mutableListOf())
+                RouteEditorRouteParams(
+                    startPoint,
+                    finishPoint,
+                    options!!,
+                    intermediatePoints ?: mutableListOf())
         routesEditor.setRouteParams(routeEditorParams)
         setShowOnlyActiveRoute(params.showOnlyActiveRoute ?: true)
     }
@@ -323,12 +322,14 @@ class RouteHandler(
         startPoint: RouteSearchPoint,
         finishPoint: RouteSearchPoint,
         routeSearchOptions: RouteSearchOptions,
+        intermediatePoints: List<RouteSearchPoint>?,
         callback: (Result<FindRouteResultMessage>)->Unit
     ) {
         val routesFuture =  trafficRouter.findRoute(
             startPoint = startPoint,
             finishPoint = finishPoint,
-            routeSearchOptions = routeSearchOptions
+            routeSearchOptions = routeSearchOptions,
+            intermediatePoints = intermediatePoints ?: listOf(),
         )
 
 

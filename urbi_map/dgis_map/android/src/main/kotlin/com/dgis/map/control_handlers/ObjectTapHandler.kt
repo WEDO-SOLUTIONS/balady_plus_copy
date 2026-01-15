@@ -859,6 +859,42 @@ class ObjectTapHandler(
         )
     }
 
+    fun calcPositionForGeoPoints(
+            points: List<GeoPointMessage>,
+            options: CalcPositionOptionsMessage,
+            callback: (Result<CameraPositionMessage>) -> Unit
+    ) {
+        if (points.isEmpty()) {
+            callback(
+                Result.success(
+                    CameraPositionMessage(
+                        point = map.camera.position.point.toMessage(),
+                        zoom = map.camera.position.zoom.value.toDouble(),
+                        tilt = map.camera.position.tilt.value.toDouble(),
+                        bearing = map.camera.position.bearing.value,
+                    )
+                )
+            )
+            return
+        }
+
+        val polylineOptions =
+            PolylineOptions(
+                points = points.map { it.toGeoPoint() },
+            )
+
+        val circleOptions = CircleOptions(points.first().toGeoPoint(), Meter(500.0f))
+
+        // if there is only one point creating a polyline throws so we treat it as a circle
+        val objects = listOf(if (points.size > 1) Polyline(polylineOptions) else Circle(circleOptions))
+
+        calcPositionForObjects(
+                objects = objects,
+                options = options,
+                callback = callback
+        )
+    }
+
     fun calcPositionForPoints(
         area: GeometryMessage,
         options: CalcPositionOptionsMessage,

@@ -614,7 +614,8 @@ class PublicTransportDirectoryRouteInfoMessage {
   final DgisObjectIdMessage id;
   final String name;
   final int? color;
-  final PublicTransportDirectoryRouteDirectionNamesInfoMessage? fromToStationNames;
+  final PublicTransportDirectoryRouteDirectionNamesInfoMessage?
+      fromToStationNames;
   final List<PublicTransportRouteDirectionMessage> directions;
 }
 
@@ -757,6 +758,7 @@ class RouteEditorRouteParamsMessage {
     this.options,
     this.searchParams,
     this.showOnlyActiveRoute,
+    this.intermediatePoints,
   );
 
   final RouteEditorRoutePointMessage? startPoint;
@@ -765,6 +767,7 @@ class RouteEditorRouteParamsMessage {
   final RouteSearchOptionsMessage options;
   final CarRouteSearchOptionParamsMessage? searchParams;
   final bool? showOnlyActiveRoute;
+  final List<RouteEditorRoutePointMessage>? intermediatePoints;
 }
 
 class CarRouteSearchOptionParamsMessage {
@@ -914,7 +917,8 @@ class MarkerTextStyleMessage {
 
 /// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection,
+      this.iconOpacity, this.pngData, this.pngPath);
 
   final String? svgPath;
   final Uint8List? pngData;
@@ -1116,7 +1120,8 @@ class FlagFilterMessage {
 }
 
 class RangeFilterMessage {
-  RangeFilterMessage(this.tagName, this.displayName, this.minValue, this.maxValue);
+  RangeFilterMessage(
+      this.tagName, this.displayName, this.minValue, this.maxValue);
 
   final String tagName;
   final String displayName;
@@ -1299,7 +1304,8 @@ class SuggestResultMessage {
 
 /// We created this for convenience, but now we don't have to use this class
 /// You can find all information about rubric ids inside [QuickFilter] class
-@Deprecated("We don't have to use this class because we have to send rubricIds and keep this ids on Flutter side")
+@Deprecated(
+    "We don't have to use this class because we have to send rubricIds and keep this ids on Flutter side")
 enum SearchCategoryMessage {
   mousques,
   gasStations,
@@ -1384,7 +1390,8 @@ class LogOptionsMessage {
 }
 
 class RouteSearchPointMessage {
-  RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
+  RouteSearchPointMessage(
+      this.coordinates, this.course, this.objectId, this.levelId);
 
   final GeoPointMessage coordinates;
   final BearingMessage? course;
@@ -1454,8 +1461,8 @@ class PackageMessage {
 }
 
 class PackageInfoMessage {
-  PackageInfoMessage(this.name, this.installed, this.incomplete, this.preinstalled, this.compatible, this.hasUpdate,
-      this.updateStatus);
+  PackageInfoMessage(this.name, this.installed, this.incomplete,
+      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
 
   final String name;
   final bool installed;
@@ -1597,6 +1604,7 @@ class BetterRouteSettingsMessage {
 
 class VendorConfigContentMessage {
   const VendorConfigContentMessage(this.content);
+
   final String content;
 }
 
@@ -1656,7 +1664,8 @@ class FavouriteItemMessage {
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
     swiftOut: '../dgis_map/ios/Classes/Messages.swift',
-    kotlinOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
+    kotlinOut:
+        '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
     kotlinOptions: KotlinOptions(
       package: 'com.dgis.map.map_api',
     ),
@@ -1743,6 +1752,12 @@ abstract class MapApi {
   );
 
   @async
+  CameraPositionMessage calcPositionForGeoPoints(
+    List<GeoPointMessage> points,
+    CalcPositionOptionsMessage options,
+  );
+
+  @async
   void animateToRepresentativeArea(
     GeometryMessage area,
     CalcPositionOptionsMessage options,
@@ -1754,7 +1769,8 @@ abstract class MapApi {
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
-  List<DistanceResponseMessage> getDistanceTo(List<DistanceRequestMessage> points);
+  List<DistanceResponseMessage> getDistanceTo(
+      List<DistanceRequestMessage> points);
 
   @async
   SearchResultMessage search(
@@ -1973,7 +1989,8 @@ abstract class MapApi {
   NavigationStateMessage getCurrentNavigationState();
 
   @async
-  void restoreNavigationState(Uint8List state, List<SpeedRangeZoom> speedRangeZoom);
+  void restoreNavigationState(
+      Uint8List state, List<SpeedRangeZoom> speedRangeZoom);
 
   @async
   void setPanoramaMarkerAzimuth(MapDirectionMessage message);
@@ -2051,8 +2068,9 @@ abstract class MapApi {
   FindRouteResultMessage findRoute(
     RouteSearchPointMessage startPoint,
     RouteSearchPointMessage finishPoint,
-    RouteSearchOptionsMessage navType,
-  );
+    RouteSearchOptionsMessage navType, {
+    List<RouteSearchPointMessage>? intermediatePoints,
+  });
 
   @async
   List<PackageMessage> listPackages();
@@ -2125,5 +2143,7 @@ abstract class HostFlutterApi {
 abstract class PluginApi {
   @async
   void initialize(
-      LogOptionsMessage? message, VendorConfigMessage? configMessage, VendorConfigContentMessage? contentMessage);
+      LogOptionsMessage? message,
+      VendorConfigMessage? configMessage,
+      VendorConfigContentMessage? contentMessage);
 }

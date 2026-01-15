@@ -1,10 +1,8 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/public_transport_visibility.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -49,20 +47,11 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
           constraints: const BoxConstraints(minHeight: Spacing.$12x),
           child: Row(
             children: [
-              _buildSettingsButton(context),
               if (!_isCarConnected && !_isNavigationLocked) _buildRouteOptionsWidget(context),
               if (!_isCarConnected && _isNavigationLocked) _buildLockedNavTypeWidget(context),
             ].insertBetween(Spacing.$2x.widthBox).toList(),
           ),
         ),
-      );
-
-  Widget _buildSettingsButton(BuildContext context) => AppButton(
-        onTap: () => context.router.push(const NavigatorSettingsRoute()),
-        buttonColorScheme: ButtonColorScheme.neutral,
-        buttonType: ButtonType.secondary,
-        size: ButtonSize.small,
-        primaryIcon: SystemIcons.tuning,
       );
 
   Widget _buildLockedNavTypeWidget(BuildContext context) => Expanded(

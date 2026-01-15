@@ -4,18 +4,23 @@ import 'dart:async';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
+// ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
+import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -32,6 +37,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
+import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
@@ -47,6 +53,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
+import 'package:mapness/pages/landing/landing_page.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -64,6 +71,7 @@ import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -82,6 +90,7 @@ import 'package:sheetify/sheetify.dart';
 import 'features/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
+import 'features/wrc/wrc.dart';
 
 Mixpanel? mixpanel;
 
@@ -109,7 +118,12 @@ class MapnessProviderScope extends StatelessWidget {
               final language = ref.watch(appLanguageProvider);
               final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
               // Initialize Saudi National Day provider to start the timer
-              ref.watch(saudiNationalDayProvider);
+              ref
+                ..watch(saudiNationalDayProvider)
+                // Initialize Cityscape provider to listen remote config
+                ..watch(cityscapeProvider)
+                // Initialize WRC provider to listen remote config
+                ..watch(wRCProvider);
 
               return provider.MultiProvider(
                 providers: [
@@ -173,7 +187,22 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
       await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
+      await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
+      await ref.read(wRCProvider.notifier).initializeGlobalMarkers();
     });
+
+    // call the openAppLink when user click on notification have deep link
+    FirebaseMessaging.instance.getInitialMessage().then(
+      (message) {
+        if (message != null && message.data.containsKey('url')) {
+          final url = message.data['url'];
+          openAppLink(url);
+          return;
+        }
+      },
+    );
+
+    initInsider();
   }
 
   Future<void> checkConnection() async {
@@ -270,11 +299,64 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
+    final cityscapeEnabled = ref.read(cityscapeProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(cityscapeProvider.notifier);
+
+    if (cityscapeEnabled && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
+  Future<void> _updateSpecificMarkerWRC(WidgetRef ref, Marker? previousMarker, Marker? marker) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    // hide previous marker if there was one
+    if (previousMarker != null) {
+      await notifier.showSpecificMarker(previousMarker);
+    }
+
+    // show new marker if there is one
+    if (marker != null) {
+      await notifier.hideSpecificMarker(marker);
+    }
+  }
+
+  Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    if (wrcEnabled) {
+      await notifier.showAllMarkers();
+    } else {
+      await notifier.hideAllMarkers();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+
+    ref.listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
+      if (next == null) return;
+      if (prev?.zoom == next.zoom) return;
+      _updateGlobalMarkerCityscape(ref);
+    });
+
+    // listen cityscapeProvider and selectedMarkerProvider for other updates
+    ref.listen<bool>(cityscapeProvider, (prev, next) {
+      _updateGlobalMarkerCityscape(ref);
+    });
+    ref.listen<bool>(wRCProvider, (prev, next) {
+      _updateAllMarkersWRC(ref, next);
+    });
+
+    ref.listen<Marker?>(selectedMarkerProvider, (prev, next) {
+      _updateGlobalMarkerCityscape(ref);
+      _updateSpecificMarkerWRC(ref, prev, next);
+    });
 
     ref
       // listen for changes in car connection state. But do not rebuild widget
@@ -425,6 +507,37 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  // implement insider deep link for ios
+
+  Future initInsider() async {
+    if (!mounted) return;
+    // FIXME-INSIDER: Please change with your partner name and app group.
+    await FlutterInsider.Instance.init('baladyapp', 'group.movingViolations', (int type, data) {
+      switch (type) {
+        case InsiderCallbackAction.NOTIFICATION_OPEN:
+          // if(Platform.isIOS) {
+          if (data != null && data.containsKey('url')) {
+            final url = Uri.parse(data['url']);
+            openAppLink(url);
+            return;
+          }
+
+          //  }
+          break;
+        case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+          break;
+        default:
+          print('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
+          break;
+      }
+    });
+
+    // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
+    await FlutterInsider.Instance.setActiveForegroundPushView();
+    await FlutterInsider.Instance.registerWithQuietPermission(false);
+  }
+
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
     final decodeFull = Uri.decodeFull(uri.toString());
@@ -439,6 +552,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
     final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
+    final serviceKey = url.path; //queryParameters[BaldayDeeplink.serviceKey];
+    final path = url.queryParameters[BaldayDeeplink.miniAppPath];
+    final dtId = url.queryParameters[BaldayDeeplink.miniAppItemId];
+    final cityEventName = url.queryParameters[BaldayDeeplink.cityEvent];
 
     double? latitude;
     double? longitude;
@@ -490,6 +607,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (homeWidget != null) {
       await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
+    } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
+      MiniAppModel app = MiniAppModel();
+      String? subPath;
+      if (dtId != null && path != null) {
+        subPath = '#$path/$dtId';
+      } else if (path != null) {
+        subPath = '#$path';
+      }
+
+      app = app.copyWith(serviceKey: serviceKey.replaceAll('/app/', ''), path: subPath);
+
+      CommonFunctions.openMiniApp(app);
+    } else if (cityEventName != null) {
+      await _handleCityEvent(cityEventName);
     } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
@@ -519,6 +650,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else {
         await router.pushNamed(url.toString());
       }
+    }
+  }
+
+  Future<void> _handleCityEvent(String cityEventName) async {
+    var eventHandled = true;
+    // check here for other city events if they come up in the future
+    switch (cityEventName) {
+      case WRC.deeplinkEventValue:
+        await ref.read(wRCProvider.notifier).moveCameraToEventArea();
+      default:
+        eventHandled = false;
+    }
+
+    final AppRouter router = await ref.read(appRouterProvider);
+    final areStoriesOpen = ref.read(storiesOpenStateProvider);
+    // if we come from stories we must close them for nice user experience
+    if (eventHandled && areStoriesOpen && router.canPop()) {
+      await router.topMostRouter().maybePop();
+      ref.read(landingPageBottomSheetControllerProvider)?.setState(ThreeStateSheet.hidden);
     }
   }
 
@@ -559,20 +709,33 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+
+    await sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: 'islamicservice',
+      path: '#Quran_Show_All_Surahs_Page',
+    );
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+    // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+
+    await sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: 'islamicservice',
+      path: '#Athkar_Page',
+    );
   }
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
-
-    await NavigationService.navigatorKey.currentState!.pushNamed(
-      RouteName.vDAllTypesScreen,
+    await sl<HomeMiniAppsListCubit>().openMiniApp(
+      serviceKey: 'snapandsend',
     );
+
+    // await NavigationService.navigatorKey.currentState!.pushNamed(
+    //   RouteName.vDAllTypesScreen,
+    // );
   }
 
   Future<void> _openQuickFilter(String filter) async {
@@ -836,7 +999,7 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void analyticsTrack(String event) {
-    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    analyticsClient.track(event, properties: {'app_run': isAppRun});
   }
 
   @override

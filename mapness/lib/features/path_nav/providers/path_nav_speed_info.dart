@@ -8,16 +8,14 @@ part 'path_nav_speed_info.g.dart';
 class _PathNavSpeedInfo extends _$PathNavSpeedInfo {
   @override
   PathNavSpeedInfo build() {
-    final speedController =
-        ref.watch(dgisControllerProvider).value?.naviSpeedController;
+    final speedController = ref.watch(dgisControllerProvider).value?.naviSpeedController;
     final camerasSub = speedController?.cameraEvents.listen((event) {
       state = state.copyWith(direction: event.direction);
     });
     final currentSpeedSub = speedController?.currentSpeedEvents.listen((event) {
       state = state.copyWith(speed: event);
     });
-    final exceededSpeedSub =
-        speedController?.exceedSpeedLimitEvents.listen((event) {
+    final exceededSpeedSub = speedController?.exceedSpeedLimitEvents.listen((event) {
       state = state.copyWith(speedExceed: event);
     });
     final speedLimitSub = speedController?.speedLimitEvents.listen((event) {

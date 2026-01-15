@@ -19,6 +19,9 @@ import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 import 'package:sheetify/sheetify.dart';
 
+part 'landing_page_bottom_sheet_controller.dart';
+
+
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
   const LandingPage({super.key});
@@ -58,6 +61,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _bottomSheetController.addListener(_calculatePadding);
 
     _setupTapListener();
+    ref.read(_bottomSheetControllerProvider).controller = _bottomSheetController;
   }
 
   Future<void> _setupTapListener() async {
@@ -80,6 +84,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void dispose() {
     _bottomSheetController.removeListener(_calculatePadding);
+    ref.read(_bottomSheetControllerProvider).controller = null;
 
     WidgetsBinding.instance.removeObserver(this);
 

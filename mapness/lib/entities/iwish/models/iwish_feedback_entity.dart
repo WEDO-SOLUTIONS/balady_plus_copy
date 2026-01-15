@@ -1,7 +1,6 @@
 import 'package:mapness/widgets/iwish/ui/iwish_feedback_mood.dart';
 
 class IwishFeedbackEntity {
-
   IwishFeedbackEntity({
     required this.tags,
     required this.comment,
@@ -15,9 +14,10 @@ class IwishFeedbackEntity {
     Set<String>? tags,
     String? comment,
     IwishFeedbackMoodType? mood,
-  }) => IwishFeedbackEntity(
-      tags: tags ?? this.tags,
-      comment: comment ?? this.comment,
-      mood: mood ?? this.mood,
-    );
+  }) =>
+      IwishFeedbackEntity(
+        tags: tags ?? this.tags,
+        comment: comment ?? this.comment,
+        mood: mood ?? this.mood,
+      );
 }
