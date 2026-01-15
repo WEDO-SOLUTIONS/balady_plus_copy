@@ -12,7 +12,6 @@ import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart'
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/balady_uikit/components/stateful_bottom_sheet/bottom_sheet_snapping/bottom_sheet_state_mapper.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
@@ -75,14 +74,14 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
       return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
     },
   );
-  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(
+  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateSheet>(
     function: (controller) {
       final state = controller.state;
 
-      if (state == ThreeStateBottomSheet.expanded) {
+      if (state == ThreeStateSheet.expanded) {
         return Colors.black.withOpacity(.4);
       }
-      if (state == ThreeStateBottomSheet.open) {
+      if (state == ThreeStateSheet.open) {
         return Colors.black.withOpacity(.4 * controller.interpolation);
       }
       return null;
