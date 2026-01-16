@@ -78,9 +78,13 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   /// We can't control [borderRadius] or [padding]s here. But this is the simple and robust solution
   ///
   /// This method should return [bool] value to show if the item should be deleted or not
-  Future<bool?> _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) async => showCupertinoModalPopup<bool>(
-        context: ctx,
-        builder: (context) => CupertinoActionSheet(
+  Future<bool?> _onDeleteConfirmation(
+    FavouriteItem item,
+    BuildContext ctx,
+  ) async => showCupertinoModalPopup<bool>(
+    context: ctx,
+    builder:
+        (context) => CupertinoActionSheet(
           message: Padding(
             padding: const EdgeInsets.only(top: 8, bottom: 8),
             child: Text(
@@ -118,27 +122,27 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             ),
           ),
         ),
-      );
+  );
 
   @override
   Widget build(BuildContext ctx) {
     final asyncState = ref.watch(favouriteCacheProvider);
     return asyncState.map(
-      error: (error) => ErrorSheetWidget(
-        buttonLabel: context.l10n.tryAgain,
-        onRetry: () {
-          ref.invalidate(favouriteCacheProvider);
-        },
-        onClose: (_) => context.router.pop(),
-      ),
-      loading: (_) => Material(
-        color: ctx.colors.backgroundSurface1,
-        child: Center(
-          child: CircularProgressIndicator(
-            color: ctx.colors.accentDefault,
+      error:
+          (error) => ErrorSheetWidget(
+            buttonLabel: context.l10n.tryAgain,
+            onRetry: () {
+              ref.invalidate(favouriteCacheProvider);
+            },
+            onClose: (_) => context.router.pop(),
           ),
-        ),
-      ),
+      loading:
+          (_) => Material(
+            color: ctx.colors.backgroundSurface1,
+            child: Center(
+              child: CircularProgressIndicator(color: ctx.colors.accentDefault),
+            ),
+          ),
       data: (data) {
         final state = data.value;
         return Scaffold(
@@ -181,17 +185,23 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
               children: [
                 if (isEditing)
                   InkWell(
-                    onTap: selectedItems.isEmpty
-                        ? null
-                        : () async {
-                            await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
-                            setState(() {
-                              selectedItems.clear();
-                            });
-                          },
+                    onTap:
+                        selectedItems.isEmpty
+                            ? null
+                            : () async {
+                              await ref
+                                  .read(favouriteCacheProvider.notifier)
+                                  .deleteItems(selectedItems.values.toList());
+                              setState(() {
+                                selectedItems.clear();
+                              });
+                            },
                     child: Icon(
                       GeneralIcons.trash,
-                      color: selectedItems.isEmpty ? ctx.colors.foregroundMuted : ctx.colors.errorDefault,
+                      color:
+                          selectedItems.isEmpty
+                              ? ctx.colors.foregroundMuted
+                              : ctx.colors.errorDefault,
                     ),
                   )
                 else
@@ -220,74 +230,91 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             ),
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(child: FavouritesToggle(isEditing: isEditing)),
+                SliverToBoxAdapter(
+                  child: FavouritesToggle(isEditing: isEditing),
+                ),
                 SliverToBoxAdapter(child: Spacing.$4x.heightBox),
                 SliverToBoxAdapter(
                   child: Row(
                     children: [
-                      Builder(builder: (context) {
-                        final home = state.home;
-                        final entity = home?.entity;
-                        final homeTitle = ctx.l10n.home;
-                        final coordinates = home?.coordinates;
-                        final id = entity?.id ?? '';
-                        return Expanded(
-                          child: PinnedPlaceCard(
-                            key: Key('home${home?.id}'),
-                            title: homeTitle,
-                            address: home?.title ?? ctx.l10n.addAddress,
-                            iconData: GeneralIcons.home,
-                            isEditing: isEditing && home != null,
-                            isAdded: home != null,
-                            onDelete: () => _deleteItem(home, ctx),
-                            onTapRoute: () {
-                              ctx.router.push(
-                                RoutingRoutesRoute(
-                                  points: [
-                                    RouteParamsPointWithLabel(
-                                      value: null,
-                                      label: context.l10n.myLocation,
-                                    ),
-                                    RouteParamsPointWithLabel(
-                                      value: coordinates?.latitude != null && coordinates?.longitude != null
-                                          ? RouteParamsPoint(
-                                              latitude: coordinates!.latitude,
-                                              longitude: coordinates.longitude,
-                                              objectId: int.tryParse(id),
-                                            )
-                                          : null,
-                                      label: homeTitle,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            onTapShare: () => ShareUtil.share(entity?.id),
-                            onTapChange: () {
-                              context.router.push(
-                                FavouritesSearchRoute(
-                                  markerType: FavouriteItemMarkerType.home,
-                                ),
-                              );
-                            },
-                            onTap: home == null
-                                ? () => context.router.push(
-                                      FavouritesSearchRoute(
-                                        markerType: FavouriteItemMarkerType.home,
+                      Builder(
+                        builder: (context) {
+                          final home = state.home;
+                          final entity = home?.entity;
+                          final homeTitle = ctx.l10n.home;
+                          final coordinates = home?.coordinates;
+                          final id = entity?.id ?? '';
+                          return Expanded(
+                            child: PinnedPlaceCard(
+                              key: Key('home${home?.id}'),
+                              title: homeTitle,
+                              address: home?.title ?? ctx.l10n.addAddress,
+                              iconData: GeneralIcons.home,
+                              isEditing: isEditing && home != null,
+                              isAdded: home != null,
+                              onDelete: () => _deleteItem(home, ctx),
+                              onTapRoute: () {
+                                ctx.router.push(
+                                  RoutingRoutesRoute(
+                                    points: [
+                                      RouteParamsPointWithLabel(
+                                        value: null,
+                                        label: context.l10n.myLocation,
                                       ),
-                                    )
-                                : () => ctx.router.replaceOrPush(
-                                      route: PoiCardWidgetRoute(
-                                        objectId: DgisObjectIdMessage(
-                                          objectId: int.parse(id),
-                                          entranceId: 0,
+                                      RouteParamsPointWithLabel(
+                                        value:
+                                            coordinates?.latitude != null &&
+                                                    coordinates?.longitude !=
+                                                        null
+                                                ? RouteParamsPoint(
+                                                  latitude:
+                                                      coordinates!.latitude,
+                                                  longitude:
+                                                      coordinates.longitude,
+                                                  objectId: int.tryParse(id),
+                                                )
+                                                : null,
+                                        label: homeTitle,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                              onTapShare:
+                                  () => ShareUtil.share(
+                                    entity?.id,
+                                    context: context,
+                                  ),
+                              onTapChange: () {
+                                context.router.push(
+                                  FavouritesSearchRoute(
+                                    markerType: FavouriteItemMarkerType.home,
+                                  ),
+                                );
+                              },
+                              onTap:
+                                  home == null
+                                      ? () => context.router.push(
+                                        FavouritesSearchRoute(
+                                          markerType:
+                                              FavouriteItemMarkerType.home,
                                         ),
+                                      )
+                                      : () => ctx.router.replaceOrPush(
+                                        route: PoiCardWidgetRoute(
+                                          objectId: DgisObjectIdMessage(
+                                            objectId: int.parse(id),
+                                            entranceId: 0,
+                                          ),
+                                        ),
+                                        toCompareRoutes: [
+                                          PoiCardWidgetRoute.page,
+                                        ],
                                       ),
-                                      toCompareRoutes: [PoiCardWidgetRoute.page],
-                                    ),
-                          ),
-                        );
-                      }),
+                            ),
+                          );
+                        },
+                      ),
                       Spacing.$4x.widthBox,
                       Builder(
                         builder: (context) {
@@ -314,20 +341,31 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                         label: context.l10n.myLocation,
                                       ),
                                       RouteParamsPointWithLabel(
-                                        value: coordinates?.latitude != null && coordinates?.longitude != null
-                                            ? RouteParamsPoint(
-                                                latitude: coordinates!.latitude,
-                                                longitude: coordinates.longitude,
-                                                objectId: int.tryParse(entity!.id),
-                                              )
-                                            : null,
+                                        value:
+                                            coordinates?.latitude != null &&
+                                                    coordinates?.longitude !=
+                                                        null
+                                                ? RouteParamsPoint(
+                                                  latitude:
+                                                      coordinates!.latitude,
+                                                  longitude:
+                                                      coordinates.longitude,
+                                                  objectId: int.tryParse(
+                                                    entity!.id,
+                                                  ),
+                                                )
+                                                : null,
                                         label: workTitle,
                                       ),
                                     ],
                                   ),
                                 );
                               },
-                              onTapShare: () => ShareUtil.share(entity?.id),
+                              onTapShare:
+                                  () => ShareUtil.share(
+                                    entity?.id,
+                                    context: context,
+                                  ),
                               onTapChange: () {
                                 context.router.push(
                                   FavouritesSearchRoute(
@@ -335,20 +373,24 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   ),
                                 );
                               },
-                              onTap: work == null
-                                  ? () => context.router.push(
+                              onTap:
+                                  work == null
+                                      ? () => context.router.push(
                                         FavouritesSearchRoute(
-                                          markerType: FavouriteItemMarkerType.work,
+                                          markerType:
+                                              FavouriteItemMarkerType.work,
                                         ),
                                       )
-                                  : () => ctx.router.replaceOrPush(
+                                      : () => ctx.router.replaceOrPush(
                                         route: PoiCardWidgetRoute(
                                           objectId: DgisObjectIdMessage(
                                             objectId: int.parse(id),
                                             entranceId: 0,
                                           ),
                                         ),
-                                        toCompareRoutes: [PoiCardWidgetRoute.page],
+                                        toCompareRoutes: [
+                                          PoiCardWidgetRoute.page,
+                                        ],
                                       ),
                             ),
                           );
@@ -357,48 +399,66 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     ],
                   ),
                 ),
-                SliverToBoxAdapter(
-                  child: Spacing.$4x.heightBox,
-                ),
+                SliverToBoxAdapter(child: Spacing.$4x.heightBox),
                 if (state.items.isEmpty)
                   SliverToBoxAdapter(
                     child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: context.colors.accentDefault,
-                        ),
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(Spacing.$4x),
-                              child: Text(
-                                context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
-                                textAlign: TextAlign.center,
-                                style: context.textStyle.text.copyWith(
-                                  color: context.staticColor.textAndIconsBaseInversePrimary,
-                                ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: context.colors.accentDefault,
+                      ),
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(Spacing.$4x),
+                            child: Text(
+                              context
+                                  .l10n
+                                  .toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
+                              textAlign: TextAlign.center,
+                              style: context.textStyle.text.copyWith(
+                                color:
+                                    context
+                                        .staticColor
+                                        .textAndIconsBaseInversePrimary,
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Image.asset(
-                                fit: BoxFit.fitWidth,
-                                ref.read(appLanguageProvider) == Language.arabic
-                                    ? SaudiNationalDay.isNow()
-                                        ? Assets.images.favoritesExampleArabicSaudiday.keyName
-                                        : Assets.images.favoritesExampleArabic.keyName
-                                    : SaudiNationalDay.isNow()
-                                        ? Assets.images.favoritesExampleEnglishSaudiday.keyName
-                                        : Assets.images.favoritesExampleEnglish.keyName,
-                              ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.all(
+                              Spacing.$4x,
+                            ).copyWith(top: 0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ],
-                        )),
+                            child: Image.asset(
+                              fit: BoxFit.fitWidth,
+                              ref.read(appLanguageProvider) == Language.arabic
+                                  ? SaudiNationalDay.isNow()
+                                      ? Assets
+                                          .images
+                                          .favoritesExampleArabicSaudiday
+                                          .keyName
+                                      : Assets
+                                          .images
+                                          .favoritesExampleArabic
+                                          .keyName
+                                  : SaudiNationalDay.isNow()
+                                  ? Assets
+                                      .images
+                                      .favoritesExampleEnglishSaudiday
+                                      .keyName
+                                  : Assets
+                                      .images
+                                      .favoritesExampleEnglish
+                                      .keyName,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 SliverList.separated(
                   itemCount: state.items.length,
@@ -412,7 +472,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         color: context.colors.backgroundSurface4,
                         borderRadius: BorderRadius.vertical(
                           top: index == 0 ? radius : Radius.zero,
-                          bottom: index == state.items.length - 1 ? radius : Radius.zero,
+                          bottom:
+                              index == state.items.length - 1
+                                  ? radius
+                                  : Radius.zero,
                         ),
                       ),
                       child: FavouriteItemWidget(
@@ -429,7 +492,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             }
                           });
                         },
-                        onShareTap: () => ShareUtil.share(item.entity?.id),
+                        onShareTap:
+                            () => ShareUtil.share(
+                              item.entity?.id,
+                              context: context,
+                            ),
                         onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
                           context.router.push(
@@ -451,15 +518,16 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             ),
                           );
                         },
-                        onTap: () => ctx.router.replaceOrPush(
-                          route: PoiCardWidgetRoute(
-                            objectId: DgisObjectIdMessage(
-                              objectId: int.parse(item.entity!.id),
-                              entranceId: 0,
+                        onTap:
+                            () => ctx.router.replaceOrPush(
+                              route: PoiCardWidgetRoute(
+                                objectId: DgisObjectIdMessage(
+                                  objectId: int.parse(item.entity!.id),
+                                  entranceId: 0,
+                                ),
+                              ),
+                              toCompareRoutes: [PoiCardWidgetRoute.page],
                             ),
-                          ),
-                          toCompareRoutes: [PoiCardWidgetRoute.page],
-                        ),
                         isEditing: isEditing,
                         item: item,
                       ),

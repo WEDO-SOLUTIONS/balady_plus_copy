@@ -730,7 +730,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     if (checkAppRequirement(serviceKey, RequirementEnum.share.name) == true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
-        safeShareText(msg);
+        final context = NavigationService.navigatorKey.currentContext;
+        if (context != null) {
+          safeShareText(msg, context: context);
+        }
         response = BaseResponse(
           code: 200,
           eventName: "openShare",
