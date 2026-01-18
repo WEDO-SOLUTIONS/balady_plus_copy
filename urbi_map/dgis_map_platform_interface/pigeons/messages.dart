@@ -1688,6 +1688,9 @@ abstract class MapApi {
   void moveCameraToActiveRoute(int index);
 
   @async
+  void setActiveRouteIndex(int index);
+
+  @async
   void followNavigation();
 
   @async

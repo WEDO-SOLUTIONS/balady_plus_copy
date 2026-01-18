@@ -213,6 +213,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
     
+    func setActiveRouteIndex(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.routeHandler?.setActiveRouteIndex(UInt64(index))
+        completion(Result.success(()))
+    }
+    
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         let assetKey = self.registrar.lookupKey(forAsset: asset)
         

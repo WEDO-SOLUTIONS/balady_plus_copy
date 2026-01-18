@@ -239,7 +239,8 @@ class DgisMapController {
       _instance.calcPositionForPolylines(polylines, options);
 
   /// Calculates camera position for given list of polylines to be visible
-  Future<CameraPositionMessage> calcPositionForGeoPoints(List<GeoPointMessage> points, CalcPositionOptionsMessage options) =>
+  Future<CameraPositionMessage> calcPositionForGeoPoints(
+          List<GeoPointMessage> points, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForGeoPoints(points, options);
 
   /// Animation of the camera to the representative area (or out view port) of the search.
@@ -600,6 +601,11 @@ class DgisMapController {
   /// Move camera to active route.
   Future<void> moveCameraToActiveRoute(int index) {
     return _instance.moveCameraToActiveRoute(index);
+  }
+
+  /// Set active route index.
+  Future<void> setActiveRouteIndex(int index) {
+    return _instance.setActiveRouteIndex(index);
   }
 
   /// Starts navigation

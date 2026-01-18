@@ -426,7 +426,8 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Calculate [CameraPositionMessage] for the specified points.
-  Future<CameraPositionMessage> calcPositionForGeoPoints(List<GeoPointMessage> points, CalcPositionOptionsMessage options) {
+  Future<CameraPositionMessage> calcPositionForGeoPoints(
+      List<GeoPointMessage> points, CalcPositionOptionsMessage options) {
     return _api.calcPositionForGeoPoints(points, options);
   }
 
@@ -908,6 +909,11 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Move camera to active route.
   Future<void> moveCameraToActiveRoute(int index) {
     return _api.moveCameraToActiveRoute(index);
+  }
+
+  /// Set active route index.
+  Future<void> setActiveRouteIndex(int index) {
+    return _api.setActiveRouteIndex(index);
   }
 
   /// Contains
