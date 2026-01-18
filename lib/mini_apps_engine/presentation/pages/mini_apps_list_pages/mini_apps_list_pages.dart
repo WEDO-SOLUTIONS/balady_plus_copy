@@ -180,85 +180,86 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                           // letterSpacing: -0.24,
                                                         ),
                                                       ),
-                                                      InkWell(
-                                                        onTap: () {
-                                                          context
-                                                              .read<
-                                                                  NewMiniAppLogicCubit>()
-                                                              .openMiniApp(
-                                                                  dashboard);
-                                                        },
-                                                        child: Container(
-                                                          // width: 117,
-                                                          // height: 33,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal: 3,
-                                                                  vertical: 4),
-                                                          decoration: BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          18.5)),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        8,
-                                                                    vertical:
-                                                                        4),
-                                                                decoration: BoxDecoration(
-                                                                    color: const Color(
-                                                                        0XFFE5EBED),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            13.5)),
-                                                                child:
-                                                                    CustomNetworkImageWidget(
-                                                                  dashboard
-                                                                      .iconPath,
-                                                                  isVerifyingKey:
-                                                                      true,
-                                                                  imageWidth:
-                                                                      context.w(
-                                                                          24),
-                                                                  imageHeight:
-                                                                      context.h(
-                                                                          24),
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: context
-                                                                    .w(8),
-                                                              ),
-                                                              Text(
-                                                                "dashboard"
-                                                                    .tr(),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontFamily:
-                                                                      'Frutiger',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: context
-                                                                    .w(9),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
+
+                                                      // InkWell(
+                                                      //   onTap: () {
+                                                      //     context
+                                                      //         .read<
+                                                      //             NewMiniAppLogicCubit>()
+                                                      //         .openMiniApp(
+                                                      //             dashboard);
+                                                      //   },
+                                                      //   child: Container(
+                                                      //     // width: 117,
+                                                      //     // height: 33,
+                                                      //     padding:
+                                                      //         const EdgeInsets
+                                                      //             .symmetric(
+                                                      //             horizontal: 3,
+                                                      //             vertical: 4),
+                                                      //     decoration: BoxDecoration(
+                                                      //         color:
+                                                      //             Colors.white,
+                                                      //         borderRadius:
+                                                      //             BorderRadius
+                                                      //                 .circular(
+                                                      //                     18.5)),
+                                                      //     child: Row(
+                                                      //       children: [
+                                                      //         Container(
+                                                      //           padding: const EdgeInsets
+                                                      //               .symmetric(
+                                                      //               horizontal:
+                                                      //                   8,
+                                                      //               vertical:
+                                                      //                   4),
+                                                      //           decoration: BoxDecoration(
+                                                      //               color: const Color(
+                                                      //                   0XFFE5EBED),
+                                                      //               borderRadius:
+                                                      //                   BorderRadius.circular(
+                                                      //                       13.5)),
+                                                      //           child:
+                                                      //               CustomNetworkImageWidget(
+                                                      //             dashboard
+                                                      //                 .iconPath,
+                                                      //             isVerifyingKey:
+                                                      //                 true,
+                                                      //             imageWidth:
+                                                      //                 context.w(
+                                                      //                     24),
+                                                      //             imageHeight:
+                                                      //                 context.h(
+                                                      //                     24),
+                                                      //           ),
+                                                      //         ),
+                                                      //         SizedBox(
+                                                      //           width: context
+                                                      //               .w(8),
+                                                      //         ),
+                                                      //         Text(
+                                                      //           "dashboard"
+                                                      //               .tr(),
+                                                      //           textAlign:
+                                                      //               TextAlign
+                                                      //                   .center,
+                                                      //           style:
+                                                      //               const TextStyle(
+                                                      //             fontFamily:
+                                                      //                 'Frutiger',
+                                                      //             fontWeight:
+                                                      //                 FontWeight
+                                                      //                     .w400,
+                                                      //           ),
+                                                      //         ),
+                                                      //         SizedBox(
+                                                      //           width: context
+                                                      //               .w(9),
+                                                      //         ),
+                                                      //       ],
+                                                      //     ),
+                                                      //   ),
+                                                      // )
 
                                                       // Expanded(
                                                       //   child: RichText(
