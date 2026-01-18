@@ -35,6 +35,55 @@ final GlobalKey<NavigatorState> servicesNavigatorKey =
 
 class HomeMiniAppsListPages extends StatefulWidget {
   const HomeMiniAppsListPages({super.key});
+
+  @override
+  State<HomeMiniAppsListPages> createState() => _HomeMiniAppsListPagesState();
+}
+
+class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
+  // final dashboardMinApp = MiniApp.fromJson(
+  //   {
+  //     "id": "b5a665f6-41ce-4761-ad49-08de2db254c5",
+  //     "serviceName": "لوحة البيانات",
+  //     "description": "لوحة البيانات",
+  //     "entity": "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
+  //     "logoKey":
+  //         "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
+  //     "serviceKey": "Dashboard",
+  //     "cdnLogoRef": "logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
+  //     "attachmentConfiguration": "CDN",
+  //     "serviceOrder": null,
+  //     "portNumber": "7408",
+  //     "haveChilds": false,
+  //     "isChild": true,
+  //     "nafathLogin": true,
+  //     "otpLogin": false,
+  //     "requirements": [
+  //       {"requirementKey": "checkPermission", "name": "التحقق من الأذونات"}
+  //     ],
+  //     "entryPoints": [],
+  //     "categories": [
+  //       {
+  //         "id": "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
+  //         "name": "تطبيقات بلدية للأفراد",
+  //         "categoryOrder": null,
+  //         "serviceOrderByCategory": null
+  //       },
+  //       {
+  //         "id": "6f736c81-c998-4c3e-09ea-08de2cce6088",
+  //         "name": "تطبيقات بلدية للأعمال",
+  //         "categoryOrder": null,
+  //         "serviceOrderByCategory": null
+  //       }
+  //     ],
+  //     "childDeepLinkUrl": "DashbordDataPage",
+  //     "latestVersion": null,
+  //     "childServices": null,
+  //     "serviceCategoryOrder": 0,
+  //     "serviceEntryPointOrder": 0
+  //   },
+  // );
+
   MiniApp getMiniAppByServiceId(String serviceKey) {
     final miniAppsCubit = sl<NewMiniAppLogicCubit>();
     try {
@@ -46,55 +95,8 @@ class HomeMiniAppsListPages extends StatefulWidget {
   }
 
   @override
-  State<HomeMiniAppsListPages> createState() => _HomeMiniAppsListPagesState();
-}
-
-class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
-  final dashboardMinApp = MiniApp.fromJson(
-    {
-      "id": "b5a665f6-41ce-4761-ad49-08de2db254c5",
-      "serviceName": "لوحة البيانات",
-      "description": "لوحة البيانات",
-      "entity": "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
-      "logoKey":
-          "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
-      "serviceKey": "Dashboard",
-      "cdnLogoRef": "logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
-      "attachmentConfiguration": "CDN",
-      "serviceOrder": null,
-      "portNumber": "7408",
-      "haveChilds": false,
-      "isChild": true,
-      "nafathLogin": true,
-      "otpLogin": false,
-      "requirements": [
-        {"requirementKey": "checkPermission", "name": "التحقق من الأذونات"}
-      ],
-      "entryPoints": [],
-      "categories": [
-        {
-          "id": "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
-          "name": "تطبيقات بلدية للأفراد",
-          "categoryOrder": null,
-          "serviceOrderByCategory": null
-        },
-        {
-          "id": "6f736c81-c998-4c3e-09ea-08de2cce6088",
-          "name": "تطبيقات بلدية للأعمال",
-          "categoryOrder": null,
-          "serviceOrderByCategory": null
-        }
-      ],
-      "childDeepLinkUrl": "DashbordDataPage",
-      "latestVersion": null,
-      "childServices": null,
-      "serviceCategoryOrder": 0,
-      "serviceEntryPointOrder": 0
-    },
-  );
-
-  @override
   Widget build(BuildContext context) {
+    MiniApp dashboard = getMiniAppByServiceId("Dashboard");
     return Navigator(
       key: servicesNavigatorKey,
       initialRoute: '/',
@@ -184,8 +186,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                               .read<
                                                                   NewMiniAppLogicCubit>()
                                                               .openMiniApp(
-                                                                dashboardMinApp,
-                                                              );
+                                                                  dashboard);
                                                         },
                                                         child: Container(
                                                           // width: 117,
@@ -219,7 +220,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                             13.5)),
                                                                 child:
                                                                     CustomNetworkImageWidget(
-                                                                  dashboardMinApp
+                                                                  dashboard
                                                                       .iconPath,
                                                                   isVerifyingKey:
                                                                       true,
@@ -451,95 +452,120 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                         state.favoriteApps[
                                                                             index];
 
-                                                    return Padding(
-                                                      key: Key(favMiniApp.id),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                        horizontal: context
-                                                                .screenWidth *
-                                                            0.03,
-                                                      ),
-                                                      child: CustomMiniAppsCard(
-                                                        key: Key(favMiniApp.id),
-                                                        width: context
-                                                                .screenWidth *
-                                                            0.14,
-                                                        onTap: () {
-                                                          context
-                                                              .read<
-                                                                  NewMiniAppLogicCubit>()
-                                                              .openMiniApp(
-                                                                  favMiniApp);
-                                                        },
-                                                        text: favMiniApp.name,
-                                                        maxLines: 2,
-                                                        maxFontSize: 20,
-                                                        minFontSize: 9,
-                                                        miniAppIcon:
-                                                            favMiniApp.iconPath,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(8.0),
-                                                          child:
-                                                              CustomNetworkImageWidget(
-                                                            favMiniApp.iconPath,
-                                                            isVerifyingKey:
-                                                                true,
-                                                            imageFit:
-                                                                BoxFit.contain,
-                                                          ),
+                                                                    return Padding(
+                                                                      key: Key(
+                                                                          favMiniApp
+                                                                              .id),
+                                                                      padding:
+                                                                          EdgeInsets
+                                                                              .symmetric(
+                                                                        horizontal:
+                                                                            context.screenWidth *
+                                                                                0.03,
+                                                                      ),
+                                                                      child:
+                                                                          CustomMiniAppsCard(
+                                                                        key: Key(
+                                                                            favMiniApp.id),
+                                                                        width: context.screenWidth *
+                                                                            0.14,
+                                                                        onTap:
+                                                                            () {
+                                                                          context
+                                                                              .read<NewMiniAppLogicCubit>()
+                                                                              .openMiniApp(favMiniApp);
+                                                                        },
+                                                                        text: favMiniApp
+                                                                            .name,
+                                                                        maxLines:
+                                                                            2,
+                                                                        maxFontSize:
+                                                                            20,
+                                                                        minFontSize:
+                                                                            9,
+                                                                        miniAppIcon:
+                                                                            favMiniApp.iconPath,
+                                                                        child:
+                                                                            Padding(
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              8.0),
+                                                                          child:
+                                                                              CustomNetworkImageWidget(
+                                                                            favMiniApp.iconPath,
+                                                                            isVerifyingKey:
+                                                                                true,
+                                                                            imageFit:
+                                                                                BoxFit.contain,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            )
+                                                          ],
                                                         ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                            height:
-                                                context.screenHeight * 0.01),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            left: CommonFunctions.isAppAR
-                                                ? context.screenWidth * 0.04
-                                                : context.screenWidth * 0.00,
-                                            right: CommonFunctions.isAppAR
-                                                ? context.screenWidth * 0.00
-                                                : context.screenWidth * 0.04,
-                                          ),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              context
-                                                  .read<NewMiniAppLogicCubit>()
-                                                  .openMiniApp(
-                                                    getMiniAppByServiceId(
-                                                        "BaladyUrbiImtithal"),
-                                                  );
-                                            },
-                                            child: Image.asset(
-                                                "assets/icons/png/${CommonFunctions.isAppAR ? 'promoAr.png' : 'promoEn.png'}"),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                            //!
-                            SizedBox(height: context.screenHeight * 0.02),
-                            // const CustomDashedLineWidget(),
-                            // SizedBox(height: context.screenHeight * 0.02),
-                            //! Most used apps section
-                            BlocBuilder<NewMiniAppLogicCubit,
-                                NewMiniAppLogicState>(
-                              builder: (context, state) {
-                                if (state.isEntryPointsLoading) {
-                                  return const MiniAppsMostUsedSectionShimmerWidget();
-                                }
+                                                        SizedBox(
+                                                            height: context
+                                                                    .screenHeight *
+                                                                0.01),
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                            left: CommonFunctions
+                                                                    .isAppAR
+                                                                ? context
+                                                                        .screenWidth *
+                                                                    0.04
+                                                                : context
+                                                                        .screenWidth *
+                                                                    0.00,
+                                                            right: CommonFunctions
+                                                                    .isAppAR
+                                                                ? context
+                                                                        .screenWidth *
+                                                                    0.00
+                                                                : context
+                                                                        .screenWidth *
+                                                                    0.04,
+                                                          ),
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              context
+                                                                  .read<
+                                                                      NewMiniAppLogicCubit>()
+                                                                  .openMiniApp(
+                                                                    getMiniAppByServiceId(
+                                                                        "BaladyUrbiImtithal"),
+                                                                  );
+                                                            },
+                                                            child: Image.asset(
+                                                                "assets/icons/png/${CommonFunctions.isAppAR ? 'promoAr.png' : 'promoEn.png'}"),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                            //!
+                                            SizedBox(
+                                                height: context.screenHeight *
+                                                    0.02),
+                                            // const CustomDashedLineWidget(),
+                                            // SizedBox(height: context.screenHeight * 0.02),
+                                            //! Most used apps section
+                                            BlocBuilder<NewMiniAppLogicCubit,
+                                                NewMiniAppLogicState>(
+                                              builder: (context, state) {
+                                                if (state
+                                                    .isEntryPointsLoading) {
+                                                  return const MiniAppsMostUsedSectionShimmerWidget();
+                                                }
 
                                                 if (state.entryPoints.isEmpty) {
                                                   return const SizedBox
@@ -740,13 +766,12 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                 }
 
                                                 // Separate regular groups from "Other Services"
-                                                final regularGroups = state
-                                                    .appGroups
-                                                    ;
+                                                final regularGroups =
+                                                    state.appGroups;
 
-
-                                                CategoryGroup? otherServicesGroup =
-                                                    state.appGroups?.firstOrNull;
+                                                CategoryGroup?
+                                                    otherServicesGroup = state
+                                                        .appGroups?.firstOrNull;
 
                                                 return StaggeredAppear(
                                                   children: [
@@ -822,8 +847,9 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
                                                         // Show dashed line and "Other Services" only if it exists
                                                         if (otherServicesGroup
-                                                            ?.apps
-                                                            .isNotEmpty ?? false) ...[
+                                                                ?.apps
+                                                                .isNotEmpty ??
+                                                            false) ...[
                                                           SizedBox(
                                                               height: context
                                                                       .screenHeight *
@@ -858,9 +884,10 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                     index) {
                                                               final groupName = CommonFunctions
                                                                       .isAppAR
-                                                                  ? otherServicesGroup!.nameAr
-                                                                  : otherServicesGroup
-                                                                      !.nameEn;
+                                                                  ? otherServicesGroup!
+                                                                      .nameAr
+                                                                  : otherServicesGroup!
+                                                                      .nameEn;
 
                                                               return CustomLargMoreApps(
                                                                 withCardEffect:
