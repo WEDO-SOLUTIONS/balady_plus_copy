@@ -27,7 +27,6 @@ import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
-import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
@@ -526,7 +525,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     } catch (_) {}
 
     // Clear route state regardless of the finish source
-    ref.read(currentRouteProvider.notifier).clearRoute();
 
     // Remove route from the map for public transport
     if (widget.navType == RouteSearchOptionsMessage.publicTransport) {
@@ -733,7 +731,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
   void _finishNavigation() {
-    print('amr finish Navigation');
     ref.read(urbiAnalyticsProvider).track('tripCompleted');
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
     ref.read(advertMetricsProvider.notifier).sendEvent(
@@ -743,7 +740,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _navigationState.value = PathNavState.finished;
     ref.read(layersControlsProvider.notifier).hideParking();
     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-    ref.read(currentRouteProvider.notifier).clearRoute();
 
     sheetController.close();
     unawaited(clearNavigationState());
@@ -753,6 +749,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> _checkAndSwitchToPedestrian() async {
     isSwitchingToFoot.value = true;
+
     try {
       final finishPoint = ref.read(currentNavigationDestinationProvider);
       final location = ref.read(locationProvider);
