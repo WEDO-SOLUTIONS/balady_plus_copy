@@ -45,7 +45,6 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
   final ToggleSheetController sheetController;
   final bool isLandscape;
   final bool isHomeOrWork;
-  final ValueNotifier<bool> isSwitchingToFoot;
 
   const NaviSheetPanel({
     required this.navType,
@@ -63,7 +62,6 @@ class NaviSheetPanel extends ConsumerStatefulWidget {
     required this.sheetController,
     required this.isLandscape,
     required this.isHomeOrWork,
-    required this.isSwitchingToFoot,
     super.key,
   });
 
@@ -178,7 +176,6 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               onContinuePressed: widget.onContinuePressed,
               onTapRoute: widget.onTapRoute,
               state: state,
-              isSwitchingToFoot: widget.isSwitchingToFoot,
             ),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$4x),

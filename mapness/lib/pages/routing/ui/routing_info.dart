@@ -319,7 +319,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
         'distance': route.distance,
       },
     ));
-    ref.read(currentNavigationDestinationProvider.notifier).state = widget.pointsWithLabel.lastOrNull?.value;
 
     await context.router.pushAndPopUntil(
         PathNavRoute(
