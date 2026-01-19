@@ -1,2 +1,0 @@
-/Users/amrbakr/StudioProjects/baladi/android/app/.cxx/Debug/6g5k523j/x86_64/CMakeFiles/edit_cache.dir
-/Users/amrbakr/StudioProjects/baladi/android/app/.cxx/Debug/6g5k523j/x86_64/CMakeFiles/rebuild_cache.dir
