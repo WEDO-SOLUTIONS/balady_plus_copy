@@ -166,7 +166,10 @@ dependencies:
   # Mapness
 # todo todo
   balady_uikit:
-    path: ../balady_uikit
+#    path: ../balady_uikit
+    git:
+      url: git@github.com:URBI-service/balady_uikit.git
+      ref: flutter-upgrade/3.38.5
 #    hosted: https://baladyapp-unpub.urbi.ae/
 #    version: 4.1.6
 
@@ -197,7 +200,10 @@ dependencies:
   ############################################################
   # todo todo
   balady_authorization:
-    path: ../balady_authorization
+#    path: ../balady_authorization
+    git:
+      url: git@github.com:URBI-service/balady_authorization.git
+      ref: flutter-upgrade/3.38.5
 #    hosted: https://baladyapp-unpub.urbi.ae/
 #    version: ^0.0.69
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization

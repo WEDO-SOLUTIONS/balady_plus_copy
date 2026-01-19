@@ -40,7 +40,10 @@ dependencies:
     path: ..
 # todo todo
   balady_uikit:
-    path: ../../balady_uikit
+#    path: ../../balady_uikit
+    git:
+      url: git@github.com:URBI-service/balady_uikit.git
+      ref: flutter-upgrade/3.38.5
 #    hosted: https://baladyapp-unpub.urbi.ae/
 #    version: 4.1.6
 
