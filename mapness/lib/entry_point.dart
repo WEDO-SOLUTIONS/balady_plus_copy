@@ -600,6 +600,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openQuickFilter(filter!);
       } else if (url.path == '/quickFeedback') {
         await router.push(QuickFeedbackRoute());
+      }else if(url.path == '/search'){
+        await router.push(SearchRoute());
       } else if (url.path == '/freeRoam') {
         await _freeRoam();
       } else if (url.path == '/qibla') {
