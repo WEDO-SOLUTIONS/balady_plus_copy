@@ -38,17 +38,24 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
                   );
                   allMiniAppsUI.add(typeChild);
                   mapOnMiniAppEntryPoint(mapEntryPoints, typeChild);
-                  mapOnAppCategoryGroup(mapAppCategoryGroup, typeChild);
+                  mapOnAppCategoryGroup(
+                    mapAppCategoryGroup,
+                    typeChild,
+                    typeChild.categories,
+                  );
                 }
               }
             }
           } else {
             allMiniAppsUI.add(item);
             mapOnMiniAppEntryPoint(mapEntryPoints, item);
-            mapOnAppCategoryGroup(mapAppCategoryGroup, item);
+            mapOnAppCategoryGroup(
+              mapAppCategoryGroup,
+              item,
+              item.categories,
+            );
           }
         }
-
         return Right(
           NewMiniAppsLogicEntity(
             parentMiniApp: parentMiniApp,
@@ -81,14 +88,26 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
   }
 
   Map<String, CategoryGroup> mapOnAppCategoryGroup(
-      Map<String, CategoryGroup> mapAppCategoryGroup, MiniApp item) {
-    for (var category in item.categories) {
-      if (mapAppCategoryGroup[category.id] == null) {
-        mapAppCategoryGroup[category.id] = CategoryGroup(
+      Map<String, CategoryGroup> mapAppCategoryGroup,
+      MiniApp item,
+      List<MiniAppCategory> listMiniAppCategory) {
+    for (var category in listMiniAppCategory) {
+      CategoryGroup? mainCategoryGroup = mapAppCategoryGroup[category.id];
+      if (mainCategoryGroup == null) {
+        mainCategoryGroup = CategoryGroup(
           id: category.id,
           nameAr: category.name,
           nameEn: category.name,
-          apps: [item],
+          apps: [],
+        );
+        mapAppCategoryGroup[category.id] = mainCategoryGroup;
+      }
+      if (category.subCategories?.isNotEmpty ?? false) {
+        /// Fix It : add  copyWith
+        mainCategoryGroup.subCategoryGroup = mapOnAppCategoryGroup(
+          mainCategoryGroup.subCategoryGroup ?? {},
+          item,
+          category.subCategories!,
         );
       } else {
         mapAppCategoryGroup[category.id]!.apps.add(item);

@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
@@ -6,6 +7,7 @@ import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/general_error_widget.dart';
@@ -20,22 +22,70 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/fav_section_widgets/custom_mini_apps_card.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_dashed_line_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/dashboard_button.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter/src/material/theme.dart';
+import 'package:collection/collection.dart';
 
 final GlobalKey<NavigatorState> servicesNavigatorKey =
     GlobalKey<NavigatorState>();
 
-class HomeMiniAppsListPages extends StatelessWidget {
+class HomeMiniAppsListPages extends StatefulWidget {
   const HomeMiniAppsListPages({super.key});
 
-  MiniApp getMiniAppByServiceId(BuildContext context, String serviceKey) {
-    final miniAppsCubit = context.read<NewMiniAppLogicCubit>();
+  @override
+  State<HomeMiniAppsListPages> createState() => _HomeMiniAppsListPagesState();
+}
+
+class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
+  // final dashboardMinApp = MiniApp.fromJson(
+  //   {
+  //     "id": "b5a665f6-41ce-4761-ad49-08de2db254c5",
+  //     "serviceName": "لوحة البيانات",
+  //     "description": "لوحة البيانات",
+  //     "entity": "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
+  //     "logoKey":
+  //         "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
+  //     "serviceKey": "Dashboard",
+  //     "cdnLogoRef": "logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
+  //     "attachmentConfiguration": "CDN",
+  //     "serviceOrder": null,
+  //     "portNumber": "7408",
+  //     "haveChilds": false,
+  //     "isChild": true,
+  //     "nafathLogin": true,
+  //     "otpLogin": false,
+  //     "requirements": [
+  //       {"requirementKey": "checkPermission", "name": "التحقق من الأذونات"}
+  //     ],
+  //     "entryPoints": [],
+  //     "categories": [
+  //       {
+  //         "id": "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
+  //         "name": "تطبيقات بلدية للأفراد",
+  //         "categoryOrder": null,
+  //         "serviceOrderByCategory": null
+  //       },
+  //       {
+  //         "id": "6f736c81-c998-4c3e-09ea-08de2cce6088",
+  //         "name": "تطبيقات بلدية للأعمال",
+  //         "categoryOrder": null,
+  //         "serviceOrderByCategory": null
+  //       }
+  //     ],
+  //     "childDeepLinkUrl": "DashbordDataPage",
+  //     "latestVersion": null,
+  //     "childServices": null,
+  //     "serviceCategoryOrder": 0,
+  //     "serviceEntryPointOrder": 0
+  //   },
+  // );
+
+  MiniApp getMiniAppByServiceId(String serviceKey) {
+    final miniAppsCubit = sl<NewMiniAppLogicCubit>();
     try {
       return miniAppsCubit.state.allMiniApps
           .firstWhere((miniApp) => miniApp.serviceKey == serviceKey);
@@ -44,51 +94,9 @@ class HomeMiniAppsListPages extends StatelessWidget {
     }
   }
 
-  /*MiniApp.fromJson(
-    {
-      "id": "b5a665f6-41ce-4761-ad49-08de2db254c5",
-      "serviceName": "لوحة البيانات",
-      "description": "لوحة البيانات",
-      "entity": "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
-      "logoKey":
-          "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
-      "serviceKey": "Dashboard",
-      "cdnLogoRef": "logo_3556806f-9335-4ef3-8fd0-cb8ec5d919f5.png",
-      "attachmentConfiguration": "CDN",
-      "serviceOrder": null,
-      "portNumber": "7408",
-      "haveChilds": false,
-      "isChild": true,
-      "nafathLogin": true,
-      "otpLogin": false,
-      "requirements": [
-        {"requirementKey": "checkPermission", "name": "التحقق من الأذونات"}
-      ],
-      "entryPoints": [],
-      "categories": [
-        {
-          "id": "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
-          "name": "تطبيقات بلدية للأفراد",
-          "categoryOrder": null,
-          "serviceOrderByCategory": null
-        },
-        {
-          "id": "6f736c81-c998-4c3e-09ea-08de2cce6088",
-          "name": "تطبيقات بلدية للأعمال",
-          "categoryOrder": null,
-          "serviceOrderByCategory": null
-        }
-      ],
-      "childDeepLinkUrl": "DashbordDataPage",
-      "latestVersion": null,
-      "childServices": null,
-      "serviceCategoryOrder": 0,
-      "serviceEntryPointOrder": 0
-    },
-  );*/
-
   @override
   Widget build(BuildContext context) {
+    MiniApp dashboard = getMiniAppByServiceId("Dashboard");
     return Navigator(
       key: servicesNavigatorKey,
       initialRoute: '/',
@@ -172,12 +180,86 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                           // letterSpacing: -0.24,
                                                         ),
                                                       ),
-                                                      DashboardButton(
-                                                        dashboardMinApp:
-                                                            getMiniAppByServiceId(
-                                                                context,
-                                                                "Dashboard"),
-                                                      )
+
+                                                      // InkWell(
+                                                      //   onTap: () {
+                                                      //     context
+                                                      //         .read<
+                                                      //             NewMiniAppLogicCubit>()
+                                                      //         .openMiniApp(
+                                                      //             dashboard);
+                                                      //   },
+                                                      //   child: Container(
+                                                      //     // width: 117,
+                                                      //     // height: 33,
+                                                      //     padding:
+                                                      //         const EdgeInsets
+                                                      //             .symmetric(
+                                                      //             horizontal: 3,
+                                                      //             vertical: 4),
+                                                      //     decoration: BoxDecoration(
+                                                      //         color:
+                                                      //             Colors.white,
+                                                      //         borderRadius:
+                                                      //             BorderRadius
+                                                      //                 .circular(
+                                                      //                     18.5)),
+                                                      //     child: Row(
+                                                      //       children: [
+                                                      //         Container(
+                                                      //           padding: const EdgeInsets
+                                                      //               .symmetric(
+                                                      //               horizontal:
+                                                      //                   8,
+                                                      //               vertical:
+                                                      //                   4),
+                                                      //           decoration: BoxDecoration(
+                                                      //               color: const Color(
+                                                      //                   0XFFE5EBED),
+                                                      //               borderRadius:
+                                                      //                   BorderRadius.circular(
+                                                      //                       13.5)),
+                                                      //           child:
+                                                      //               CustomNetworkImageWidget(
+                                                      //             dashboard
+                                                      //                 .iconPath,
+                                                      //             isVerifyingKey:
+                                                      //                 true,
+                                                      //             imageWidth:
+                                                      //                 context.w(
+                                                      //                     24),
+                                                      //             imageHeight:
+                                                      //                 context.h(
+                                                      //                     24),
+                                                      //           ),
+                                                      //         ),
+                                                      //         SizedBox(
+                                                      //           width: context
+                                                      //               .w(8),
+                                                      //         ),
+                                                      //         Text(
+                                                      //           "dashboard"
+                                                      //               .tr(),
+                                                      //           textAlign:
+                                                      //               TextAlign
+                                                      //                   .center,
+                                                      //           style:
+                                                      //               const TextStyle(
+                                                      //             fontFamily:
+                                                      //                 'Frutiger',
+                                                      //             fontWeight:
+                                                      //                 FontWeight
+                                                      //                     .w400,
+                                                      //           ),
+                                                      //         ),
+                                                      //         SizedBox(
+                                                      //           width: context
+                                                      //               .w(9),
+                                                      //         ),
+                                                      //       ],
+                                                      //     ),
+                                                      //   ),
+                                                      // )
 
                                                       // Expanded(
                                                       //   child: RichText(
@@ -453,115 +535,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                           child:
                                                               GestureDetector(
                                                             onTap: () {
-                                                              //todo: open promo mini app from static data
-                                                              final miniApp =
-                                                                  MiniApp
-                                                                      .fromJson({
-                                                                "id":
-                                                                    "76fdfee4-4086-436c-2e59-08de371bca28",
-                                                                "serviceName": CommonFunctions
-                                                                        .isAppAR
-                                                                    ? "خريطة الامتثال"
-                                                                    : "Compliance Map",
-                                                                "description":
-                                                                    "BaladyUrbiImtithal",
-                                                                "entity":
-                                                                    "0d75ade9-62b9-450b-c606-08dd8d47ec0f",
-                                                                "logoKey":
-                                                                    "https://apiservicesstg.balady.gov.sa/v1/balady-mini-apps/download/logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
-                                                                "serviceKey":
-                                                                    "BaladyUrbiImtithal",
-                                                                "parentServiceKey":
-                                                                    null,
-                                                                "cdnLogoRef":
-                                                                    "logo_c96414fc-6578-407b-a2c3-6b2ae1cf1bbc.png",
-                                                                "attachmentConfiguration":
-                                                                    "CDN",
-                                                                "serviceOrder":
-                                                                    null,
-                                                                "portNumber":
-                                                                    2546,
-                                                                "haveChilds":
-                                                                    false,
-                                                                "isChild":
-                                                                    false,
-                                                                "requirements":
-                                                                    [],
-                                                                "entryPoints":
-                                                                    [],
-                                                                "categories": [
-                                                                  {
-                                                                    "id":
-                                                                        "6f736c81-c998-4c3e-09ea-08de2cce6088",
-                                                                    "name":
-                                                                        "Business Municipal Apps",
-                                                                    "categoryOrder":
-                                                                        null,
-                                                                    "serviceOrderByCategory":
-                                                                        null
-                                                                  },
-                                                                  {
-                                                                    "id":
-                                                                        "124a4dd1-7a7b-47f1-09eb-08de2cce6088",
-                                                                    "name":
-                                                                        "Individual Municipal Apps",
-                                                                    "categoryOrder":
-                                                                        null,
-                                                                    "serviceOrderByCategory":
-                                                                        null
-                                                                  }
-                                                                ],
-                                                                "childDeepLinkUrl":
-                                                                    null,
-                                                                "latestVersion":
-                                                                    {
-                                                                  "id":
-                                                                      "b9d25306-522a-4bc3-9b79-08de371b7e8c",
-                                                                  "versionDescription":
-                                                                      "EMTITHAL MAP",
-                                                                  "versionNumber":
-                                                                      "v1.0.4",
-                                                                  "serviceUrl":
-                                                                      "https://gisappstg.momra.gov.sa/BaladyUrbiImtithal",
-                                                                  "nafathLogin":
-                                                                      false,
-                                                                  "otpLogin":
-                                                                      false,
-                                                                  "forceUpdate":
-                                                                      false,
-                                                                  "status": 3,
-                                                                  "packageMetaDataDto":
-                                                                      null,
-                                                                  "webPackageMetaDataDto":
-                                                                      null,
-                                                                  "androidPackageMetaDataDto":
-                                                                      null,
-                                                                  "iosPackageMetaDataDto":
-                                                                      null,
-                                                                  "deepLinkDto":
-                                                                      null,
-                                                                  "type": 1,
-                                                                  "notes": null
-                                                                },
-                                                                "childServices":
-                                                                    null,
-                                                                "parentService":
-                                                                    null,
-                                                                "serviceCategoryOrder":
-                                                                    0,
-                                                                "serviceEntryPointOrder":
-                                                                    0,
-                                                                "nafathLogin":
-                                                                    false,
-                                                                "otpLogin":
-                                                                    false
-                                                              });
-
                                                               context
                                                                   .read<
                                                                       NewMiniAppLogicCubit>()
                                                                   .openMiniApp(
-                                                                    miniApp,
+                                                                    getMiniAppByServiceId(
+                                                                        "BaladyUrbiImtithal"),
                                                                   );
                                                             },
                                                             child: Image.asset(
@@ -788,19 +767,12 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                 }
 
                                                 // Separate regular groups from "Other Services"
-                                                final regularGroups = state
-                                                    .appGroups
-                                                    .where((group) =>
-                                                        group.id !=
-                                                        'other_services_group')
-                                                    .toList();
+                                                final regularGroups =
+                                                    state.appGroups;
 
-                                                final otherServicesGroup =
-                                                    state.appGroups.firstWhere(
-                                                  (group) =>
-                                                      group.id ==
-                                                      'other_services_group',
-                                                );
+                                                CategoryGroup?
+                                                    otherServicesGroup = state
+                                                        .appGroups?.firstOrNull;
 
                                                 return StaggeredAppear(
                                                   children: [
@@ -876,8 +848,9 @@ class HomeMiniAppsListPages extends StatelessWidget {
 
                                                         // Show dashed line and "Other Services" only if it exists
                                                         if (otherServicesGroup
-                                                            .apps
-                                                            .isNotEmpty) ...[
+                                                                ?.apps
+                                                                .isNotEmpty ??
+                                                            false) ...[
                                                           SizedBox(
                                                               height: context
                                                                       .screenHeight *
@@ -912,9 +885,9 @@ class HomeMiniAppsListPages extends StatelessWidget {
                                                                     index) {
                                                               final groupName = CommonFunctions
                                                                       .isAppAR
-                                                                  ? otherServicesGroup
+                                                                  ? otherServicesGroup!
                                                                       .nameAr
-                                                                  : otherServicesGroup
+                                                                  : otherServicesGroup!
                                                                       .nameEn;
 
                                                               return CustomLargMoreApps(

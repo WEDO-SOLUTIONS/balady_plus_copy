@@ -1,24 +1,16 @@
 import 'dart:io';
 
 import 'package:balady_authorization/auth_package.dart';
+import 'package:balady_design_system/theme/app_theme.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-
+import 'package:balady_plus/app/features/accecipilities/accessibility_controller.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
-import 'package:balady_plus/app_theme_colors.dart';
-import 'package:balady_uikit/core/colors/app_colors_theme.dart';
-import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
-import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
-import 'package:balady_uikit/core/colorsV2/app_theme.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
-import 'package:bot_toast/bot_toast.dart'
-    show BotToastInit, BotToastNavigatorObserver;
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -27,16 +19,14 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
-import './core/utils/utils_exports.dart'
-    show AppColor, AppConfig, RouteName, BaladyRouteObserver;
+import './core/utils/utils_exports.dart' show AppColor, AppConfig, RouteName;
 import 'core/utils/routes.dart';
 import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
-
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
@@ -57,16 +47,18 @@ class App extends StatelessWidget {
       FlutterUxcam.optIntoSchematicRecordings();
       FlutterUxcam.startWithConfiguration(config);
     }
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeController()),
-
         BlocProvider.value(value: sl<LocationCubit>()),
         BlocProvider.value(value: sl<SplashCubit>()),
-        // BlocProvider.value(value: sl<HomeMiniAppsListCubit>()),
         BlocProvider<NewMiniAppLogicCubit>.value(
           value: sl<NewMiniAppLogicCubit>(),
-        )
+        ),
+        // Add AccessibilityController to providers
+        ChangeNotifierProvider(
+          create: (_) => AccessibilityController(),
+        ),
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
@@ -99,52 +91,56 @@ class AppWidgetState extends State<AppWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final themeController = context.watch<ThemeController>();
+    return Consumer<AccessibilityController>(
+      builder: (context, controller, child) {
+        final grayscaleFilter = controller.grayscale
+            ? const ColorFilter.matrix([
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0.2126, 0.7152, 0.0722, 0, 0,
+          0, 0, 0, 1, 0,
+        ])
+            : null;
 
-    return GestureDetector(
-      onTap: () {
-        // When running in iOS, dismiss the keyboard when any Tap happens outside a TextField
-        if (Platform.isIOS) hideKeyboard(context);
-      },
-      child: Directionality(
-        textDirection: translator.activeLanguageCode == "ar"
-            ? TextDirection.rtl
-            : TextDirection.ltr,
-        child: MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(textScaler: const TextScaler.linear(1.0)),
-          child: MaterialApp(
-            title: 'appNameWord'.tr(),
-            debugShowCheckedModeBanner: false,
-            navigatorKey: NavigationService.navigatorKey,
-            theme:
-                AppThemeColors.buildLightTheme(translator.activeLanguageCode),
-
-            darkTheme:
-                AppThemeColors.buildDarkTheme(translator.activeLanguageCode),
-
-            themeMode: themeController.themeMode,
-
-            builder: EasyLoading.init(builder: BotToastInit()),
-            navigatorObservers: [
-              SentryNavigatorObserver(),
-              BotToastNavigatorObserver(),
-              FlutterUxcamNavigatorObserver(),
-              MapnessRouteObserver(),
-              BaladyRouteObserver(),
-            ],
-            localizationsDelegates: translator.delegates.toList()
-              ..add(CountryLocalizations.delegate),
-            // Android + iOS Delegates
-            locale: translator.activeLocale,
-            // Active locale
-            supportedLocales: translator.locals(),
-            // Locals list
-            initialRoute: RouteName.bottomNavigation,
-            routes: Routes.routes(),
+        return ColorFiltered(
+          colorFilter: grayscaleFilter ?? const ColorFilter.mode(Colors.transparent, BlendMode.srcOver),
+          child: Directionality(
+            textDirection: translator.activeLanguageCode == "ar"
+                ? TextDirection.rtl
+                : TextDirection.ltr,
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                textScaler: TextScaler.linear(controller.textScale),
+              ),
+              child: MaterialApp(
+                title: 'appNameWord'.tr(),
+                debugShowCheckedModeBanner: false,
+                navigatorKey: NavigationService.navigatorKey,
+                theme: myLightTheme,
+                darkTheme: myDarkTheme,
+                themeMode: controller.darkMode ? ThemeMode.dark : ThemeMode.light,
+                builder: (context, child) {
+                  final botToastBuilder = BotToastInit();
+                  final easyLoadingBuilder = EasyLoading.init(builder: botToastBuilder);
+                  return easyLoadingBuilder(context, child);
+                },
+                navigatorObservers: [
+                  SentryNavigatorObserver(),
+                  BotToastNavigatorObserver(),
+                  FlutterUxcamNavigatorObserver(),
+                  MapnessRouteObserver(),
+                ],
+                localizationsDelegates: translator.delegates.toList()
+                  ..add(CountryLocalizations.delegate),
+                locale: translator.activeLocale,
+                supportedLocales: translator.locals(),
+                initialRoute: RouteName.bottomNavigation,
+                routes: Routes.routes(),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -153,158 +149,5 @@ class AppWidgetState extends State<AppWidget> {
     if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
-  }
-}
-
-class AppTheme {
-  static ThemeData light = ThemeData(
-    brightness: Brightness.light,
-    useMaterial3: false,
-    fontFamily: AppConfig.appFontType,
-    primaryColor: CommonFunctions.isTodayInRanges
-        ? AppColor.primary900LightEvent
-        : AppColor.primary900Light,
-    scaffoldBackgroundColor: AppColor.scaffoldBackground,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColor.primary900Light,
-      centerTitle: true,
-    ),
-    dropdownMenuTheme: const DropdownMenuThemeData(
-      inputDecorationTheme: InputDecorationTheme(),
-      menuStyle: MenuStyle(),
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      counterStyle: const TextStyle(
-        fontSize: 16,
-        color: Colors.black,
-      ),
-      hintStyle: const TextStyle(
-        fontSize: 16,
-        color: Color(0xff71717A),
-        fontWeight: FontWeight.normal,
-      ),
-      errorStyle: const TextStyle(color: AppColor.error),
-      contentPadding: const EdgeInsets.symmetric(
-        vertical: 12,
-        horizontal: 16,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(
-          color: Color(0xffD4D4D8),
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(
-          color: AppColor.primary800Light,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(
-          color: AppColor.error,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      focusedErrorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(
-          color: AppColor.error,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(6),
-      ),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.primary800Light,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
-        minimumSize: const Size(double.infinity, 34),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    ),
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        foregroundColor: AppColor.primary900Light,
-      ),
-    ),
-    outlinedButtonTheme: OutlinedButtonThemeData(
-      style: OutlinedButton.styleFrom(
-        foregroundColor: AppColor.primary900Light,
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
-        ),
-        minimumSize: const Size(double.infinity, 34),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
-        side: const BorderSide(
-          width: .8,
-          color: AppColor.primary900Light,
-        ),
-      ),
-    ),
-  );
-
-  static ThemeData dark = ThemeData(
-    brightness: Brightness.dark,
-    useMaterial3: false,
-    fontFamily: AppConfig.appFontType,
-    scaffoldBackgroundColor: const Color(0xFF0F172A),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF020617),
-      centerTitle: true,
-    ),
-    colorScheme: const ColorScheme.dark(
-      primary: AppColor.primary800Light,
-      error: AppColor.error,
-    ),
-    inputDecorationTheme: InputDecorationTheme(
-      hintStyle: const TextStyle(
-        fontSize: 16,
-        color: Color(0xffA1A1AA),
-      ),
-      errorStyle: const TextStyle(color: AppColor.error),
-      enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(
-          color: Color(0xff3F3F46),
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(
-          color: AppColor.primary800Light,
-          width: 1.5,
-        ),
-        borderRadius: BorderRadius.circular(6),
-      ),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.primary800Light,
-      ),
-    ),
-  );
-}
-
-class ThemeController extends ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.light;
-
-  ThemeMode get themeMode => _themeMode;
-
-  bool get isDark => _themeMode == ThemeMode.dark;
-
-  void toggleTheme(bool isDark) {
-    _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
   }
 }

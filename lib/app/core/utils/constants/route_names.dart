@@ -399,6 +399,8 @@ class RouteName {
   static String VolunteerProfile = "VolunteerProfile";
   static String VolunteerEditProfile="VolunteerEditProfile";
 
+  static String accessibilitySettingsPage="accessibilitySettingsPage";
+  static String textSizePage="textSizePage";
 
 }
 

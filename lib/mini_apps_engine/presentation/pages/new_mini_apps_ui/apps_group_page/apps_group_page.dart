@@ -9,6 +9,8 @@ import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_larg_more_apps.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_sub_category.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
@@ -70,7 +72,6 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                 ),
               ),
             ),
-
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -121,9 +122,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 child: IconButton(
                                   onPressed: () => Navigator.pop(context),
                                   icon: const Icon(Icons.close,
-                                      color: Color(0XFF242424) ),),
+                                      color: Color(0XFF242424)),
                                 ),
-
+                              ),
                             ),
 
                             // spacing between close & search
@@ -193,10 +194,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                           )
                                         : const SizedBox(),
                                     suffixIcon: value.text.isEmpty
-                                        ? SvgPicture.asset( Theme.of(context).brightness ==
-                                        Brightness.dark
-                                        ? IconPath.searchSVG2
-                                        : IconPath.searchSVG)
+                                        ? SvgPicture.asset(
+                                            Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? IconPath.searchSVG2
+                                                : IconPath.searchSVG)
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();
@@ -254,9 +256,46 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 mainAxisSpacing: 16,
                                 childAspectRatio: 0.8,
                               ),
-                              itemCount: sortedApps.length,
+                              itemCount:
+                                  (appGroup.subCategoryGroup?.length ?? 0) +
+                                      sortedApps.length,
                               itemBuilder: (context, index) {
-                                final miniApp = sortedApps[index];
+                                if (appGroup.subCategoryGroup != null &&
+                                    index < appGroup.subCategoryGroup!.length) {
+                                  CategoryGroup categoryGroup = appGroup
+                                      .subCategoryGroup!.values
+                                      .toList()[index];
+                                  final groupName = CommonFunctions.isAppAR ? categoryGroup.nameAr : categoryGroup.nameEn;
+                                  return StaggeredAppear(
+                                    initialDelay:
+                                        const Duration(milliseconds: 150),
+                                    itemDuration:
+                                        const Duration(milliseconds: 150),
+                                    itemDelay:
+                                        const Duration(milliseconds: 200),
+                                    children: [
+                                      CustomSubCategory(
+                                        text: groupName,
+                                        apps: categoryGroup.apps,
+                                        totalAppCount: categoryGroup.appCount,
+                                        onTap: () => Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              opaque: false,
+                                              barrierColor:
+                                              Colors.transparent,
+                                              pageBuilder: (_, __, ___) =>
+                                                  AppsGroupPage(
+                                                      appGroup: categoryGroup),
+                                            ),
+                                          ),
+                                      )
+                                    ],
+                                  );
+                                }
+
+                                int newIndex = index -
+                                    (appGroup.subCategoryGroup?.length ?? 0);
+                                final miniApp = sortedApps[newIndex];
                                 return StaggeredAppear(
                                   initialDelay:
                                       const Duration(milliseconds: 150),
@@ -343,18 +382,17 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors:
-                    Theme.of(context).brightness == Brightness.dark
+                    colors: Theme.of(context).brightness == Brightness.dark
                         ? [
-                      Colors.black.withOpacity(0.0),
-                      Colors.black.withOpacity(0.6),
-                      Colors.black,
-                    ]
+                            Colors.black.withOpacity(0.0),
+                            Colors.black.withOpacity(0.6),
+                            Colors.black,
+                          ]
                         : [
-                      Colors.white.withOpacity(0.0),
-                      Colors.white.withOpacity(0.6),
-                      Colors.white,
-                    ],
+                            Colors.white.withOpacity(0.0),
+                            Colors.white.withOpacity(0.6),
+                            Colors.white,
+                          ],
                     stops: const [0.0, 0.45, 1.0],
                   ),
                 ),
