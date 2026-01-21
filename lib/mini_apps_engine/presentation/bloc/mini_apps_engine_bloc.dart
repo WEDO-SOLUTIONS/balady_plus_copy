@@ -17,7 +17,8 @@ import 'package:path_provider/path_provider.dart';
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
-class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
+class MiniAppsEngineBloc
+    extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniApp miniApp;
 
   CustomInAppLocalhostServer? localhostServer;
@@ -30,7 +31,7 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
   MiniAppsEngineBloc({
     required this.miniApp,
   }) //required this.serverPath
-      : super(const MiniAppsEngineInitialState()) {
+  : super(const MiniAppsEngineInitialState()) {
     on<CheckMiniAppsEngineEvent>(_checkMiniAppsEngine);
 
     on<DownloadMiniAppsEngineEvent>(_downloadMiniAppsEngine);
@@ -39,7 +40,8 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
     add(CheckMiniAppsEngineEvent(miniApp: miniApp));
   }
 
-  void _checkMiniAppsEngine(CheckMiniAppsEngineEvent event, Emitter emit) async {
+  void _checkMiniAppsEngine(
+      CheckMiniAppsEngineEvent event, Emitter emit) async {
     if (event.miniApp.latestVersion?.serviceUrl != null) {
       if (event.miniApp.nafathLogin) {
         GetCookie getCookie = GetCookie(repository: sl());
@@ -52,8 +54,10 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
         ),
       );
     } else {
-      basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
-      String dir = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      basePathService =
+          "${(await getApplicationDocumentsDirectory()).path}/www/";
+      String dir =
+          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       File file = File('$dir/index.html');
       bool exists = await file.exists();
       if (exists) {
@@ -67,7 +71,8 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
     return;
   }
 
-  void _downloadMiniAppsEngine(DownloadMiniAppsEngineEvent event, Emitter emit) async {
+  void _downloadMiniAppsEngine(
+      DownloadMiniAppsEngineEvent event, Emitter emit) async {
     emit(const MiniAppsEngineLoadingState(progress: '0'));
 
     serviceDownloadPath = "$basePathService${event.miniApp.serviceKey}";
@@ -76,11 +81,13 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
     // chick if have old version of the app delete it
     if (exists) {
       await directoryApp.delete(recursive: true);
-      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      serviceDownloadPath =
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     } else {
-      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      serviceDownloadPath =
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     }
@@ -119,12 +126,14 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
       if (state is MiniAppsEngineLoadingState) {
-        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
+        MiniAppsEngineLoadingState tempState =
+            state as MiniAppsEngineLoadingState;
         if (!tempState.progress.contains("100")) {
           return;
         }
       }
-      String pathService = '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      String pathService =
+          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       CommonProperties.currentLocalServerDirectory = pathService;
 
       /// Testing implementation
@@ -141,7 +150,8 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
           );
 
       if (PortHelper.isPortUnsafe(portToUse)) {
-        portToUse = PortHelper.generateRandomPort(portToUse, event.miniApp.name, event.miniApp.serviceKey);
+        portToUse = PortHelper.generateRandomPort(
+            portToUse, event.miniApp.name, event.miniApp.serviceKey);
       }
 
       if (localhostServer == null || localhostServer!.port != portToUse) {
@@ -175,22 +185,23 @@ class MiniAppsEngineBloc extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> 
       print('Error in _openLocalHostServer: ${e.toString()}');
       add(OpenServerEngineEvent(
           miniApp: event.miniApp.copyWith(
-              portNumber: PortHelper.generateRandomPort(portNumber, event.miniApp.name, event.miniApp.serviceKey))));
+              portNumber: PortHelper.generateRandomPort(
+                  portNumber, event.miniApp.name, event.miniApp.serviceKey))));
     }
   }
 
   Future<File?> _downloadFile(
-      String urlDownload,
-      String downloadPath,
-      String serviceKey,
-      Emitter emitter, {
-        int retryCounter = 0,
-      }) async {
+    String urlDownload,
+    String downloadPath,
+    String serviceKey,
+    Emitter emitter, {
+    int retryCounter = 0,
+  }) async {
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
-        // urlDownload,
-        "https://drive.usercontent.google.com/download?id=1nC1zR8cuIl6i6uBpvnO-vMKwhj3B0kv0&export=download&authuser=0&confirm=t&uuid=b7976914-b291-4b41-a4b9-38ad1200a404&at=ANTm3czE5Cl5y-4kNQ4TmYFJA97o:1768127493910",
+        urlDownload,
+        // "https://drive.usercontent.google.com/download?id=1nC1zR8cuIl6i6uBpvnO-vMKwhj3B0kv0&export=download&authuser=0&confirm=t&uuid=b7976914-b291-4b41-a4b9-38ad1200a404&at=ANTm3czE5Cl5y-4kNQ4TmYFJA97o:1768127493910",
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
