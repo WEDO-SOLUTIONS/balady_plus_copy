@@ -156,6 +156,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               outside: NaviSearchSheetControls(_multiStateSheetController),
               safeAreaColor: context.colors.backgroundSurface2,
               dragger: null,
+              useSafeArea: false,
               backgroundColor: context.colors.backgroundSurface4,
               key: const ValueKey('NAVI SEARCH SHEET'),
               header: NaviSearchHeader(

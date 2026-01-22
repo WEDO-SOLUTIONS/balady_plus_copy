@@ -53,7 +53,9 @@ class Dashboard extends ConsumerStatefulWidget {
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+// Using TickerProviderStateMixin here as SingleTickerProviderStateMixin throws,
+// probably because DashboardHeaderDelegate is recreated
+class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateMixin, WidgetsBindingObserver {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   late FreeRoamStartState freeRoamState;

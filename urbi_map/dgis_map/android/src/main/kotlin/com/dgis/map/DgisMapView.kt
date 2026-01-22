@@ -160,6 +160,12 @@ class DgisMapView(
         callback(Result.success(Unit))
     }
 
+    override fun setActiveRouteIndex(index: Long, callback: (Result<Unit>) -> Unit) {
+        routeHandler?.setActiveRouteIndex(index)
+
+        callback(Result.success(Unit))
+    }
+
     override fun loadStyles(asset: String, callback: (Result<Unit>) -> Unit) {
         val styleAsset = FlutterInjector.instance().flutterLoader().getLookupKeyForAsset(asset)
 

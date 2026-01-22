@@ -97,14 +97,15 @@ class ShareMyLocationPage extends HookConsumerWidget {
         );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
+        context.router.popUntilRouteWithName(BottomMenuRoute.name);
 
         if (closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
-          ..setLatitude(closestPoint!.latitude)
-          ..setLongitude(closestPoint!.longitude);
+          ..setLatitude(closestPoint.latitude)
+          ..setLongitude(closestPoint.longitude);
       }
     });
 
