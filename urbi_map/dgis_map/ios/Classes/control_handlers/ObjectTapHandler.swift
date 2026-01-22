@@ -1137,8 +1137,8 @@ class ObjectTapHandler {
             )))
             return
         }
-    
-        
+
+
         self.cancelable.append(
             map.getRenderedObjects(centerPoint: screenPoint, radius: ScreenDistance(value: 1)).sink { renderedObjects in
                 let objects = renderedObjects.filter {
@@ -1146,10 +1146,11 @@ class ObjectTapHandler {
                 }.map {
                     RenderedObjectMessage(
                         objectId: ($0.item.item as! DgisMapObject).id.toMessage(),
-                        closestMapPoint: $0.closestMapPoint.toMessage()
+                        closestMapPoint: $0.closestMapPoint.toMessage(),
+                        levelId: $0.item.levelId.map { Int64($0.value) }
                     )
                 }
-                
+
                 completion(Result.success(objects))
             } failure: { _ in
                 completion(Result.failure( FlutterError(

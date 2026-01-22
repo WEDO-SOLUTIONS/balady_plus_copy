@@ -30,6 +30,7 @@ class RouteHandler(
         private val eventSink: EventChannel.EventSink,
         private val locationSource: FusedLocationSource,
         private val navigationHandler: NavigationHandler,
+        private val indoorControlHandler: IndoorControlHandler? = null,
 ) : AutoCloseable {
     private val closeables = mutableListOf<AutoCloseable>()
 
@@ -105,11 +106,18 @@ class RouteHandler(
         )
     }
 
+    private fun getCurrentLevelId(): LevelId? {
+        return indoorControlHandler?.currentLevelId
+    }
+
     fun setRouteParams(params: RouteEditorRouteParamsMessage) {
         val startPoint =
                 if (params.startPoint == null) {
                     locationSource.lastLocation?.let {
-                        RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+                        RouteSearchPoint(
+                            coordinates = GeoPoint(it.latitude, it.longitude),
+                            levelId = getCurrentLevelId()
+                        )
                     }
                 } else {
                     createRouteSearchPoint(params.startPoint!!)
@@ -117,7 +125,10 @@ class RouteHandler(
         val finishPoint =
                 if (params.finishPoint == null) {
                     locationSource.lastLocation?.let {
-                        RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+                        RouteSearchPoint(
+                            coordinates = GeoPoint(it.latitude, it.longitude),
+                            levelId = getCurrentLevelId()
+                        )
                     }
                 } else {
                     createRouteSearchPoint(params.finishPoint!!)

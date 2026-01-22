@@ -13,10 +13,12 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/routing/lib/active_navigation_helper.dart';
 import 'package:mapness/features/routing/providers/routes_helper.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/ui/routing_change_path_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_info.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
@@ -273,9 +275,9 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     context.router.pop();
   }
 
-  void _onClose() {
+  Future<void> _onClose() async {
     final mapSetting = MapObjectManagerSettings.search();
-    ref
+    await ref
         .read(
           mapObjectManagerProvider(
             named: mapSetting.name,
@@ -290,6 +292,23 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       action: MetricAction.tap.toString(),
     );
 
-    context.router.pop();
+    final navState = await ActiveNavigationHelper.getState(
+      ref.read(dgisControllerProvider).value,
+    );
+
+    if (navState.isActive && context.mounted) {
+      await context.router.pushAndPopUntil(
+        PathNavRoute(
+          navType: navState.navType!,
+          initAction: PathNavPageInitAction.restoreFromState,
+        ),
+        predicate: (route) => route.settings.name == BottomMenuRoute.name,
+      );
+      return;
+    }
+
+    if (context.mounted) {
+      context.router.pop();
+    }
   }
 }

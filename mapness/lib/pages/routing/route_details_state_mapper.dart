@@ -5,10 +5,10 @@ final class RouteDetailsStateMapper implements SheetStateMapper<ThreeStateSheet>
 
   @override
   ThreeStateSheet state(int state) => switch (state) {
-    0 => ThreeStateSheet.hidden,
-    1 => ThreeStateSheet.open,
-    _ => ThreeStateSheet.expanded,
-  };
+        0 => ThreeStateSheet.hidden,
+        1 => ThreeStateSheet.open,
+        _ => ThreeStateSheet.expanded,
+      };
 
   @override
   int index(ThreeStateSheet state) => state.index.clamp(0, 2);

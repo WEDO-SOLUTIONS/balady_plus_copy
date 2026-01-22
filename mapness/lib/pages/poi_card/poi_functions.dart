@@ -1,5 +1,38 @@
 part of 'poi_card_widget_page.dart';
 
+Future<void> closePoiCard(
+  BuildContext context,
+  WidgetRef ref,
+) async {
+  Metrics.logEventAdvanced(
+    MetricsConstants.poiKeys.exitButton,
+    group: MetricsConstants.poiTag,
+    action: MetricAction.tap.toString(),
+  );
+
+  await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+  await ref.read(parkingManageProvider.notifier).restoreMarker();
+
+  final navState = await ActiveNavigationHelper.getState(
+    ref.read(dgisControllerProvider).value,
+  );
+
+  if (navState.isActive && context.mounted) {
+    await context.router.pushAndPopUntil(
+      PathNavRoute(
+        navType: navState.navType!,
+        initAction: PathNavPageInitAction.restoreFromState,
+      ),
+      predicate: (route) => route.settings.name == BottomMenuRoute.name,
+    );
+    return;
+  }
+
+  if (context.mounted) {
+    context.router.pop();
+  }
+}
+
 void openRoutingRoutes(
   BuildContext context,
   int objectId,

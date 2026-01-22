@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -49,7 +49,9 @@ class Dashboard extends ConsumerStatefulWidget {
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+// Using TickerProviderStateMixin here as SingleTickerProviderStateMixin throws,
+// probably because DashboardHeaderDelegate is recreated
+class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateMixin, WidgetsBindingObserver {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   late FreeRoamStartState freeRoamState;

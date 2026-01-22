@@ -112,6 +112,17 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       // may be mem overflow, but esimate as impossible
       ..keepAliveForAWhile();
 
+    /// If the feedback was sent from POI page, we replace the current route
+    /// with the FeedbackSentPage to avoid poping back from the POI page and deleting the marker.
+    if (context.router.stack.any((r) => r.name?.toLowerCase() == 'poi')) {
+      context.router.replace(
+        FeedbackSentRoute(
+          payloadId: payloadId,
+        ),
+      );
+      return;
+    }
+
     context.router.pushAndPopUntil(
       FeedbackSentRoute(
         payloadId: payloadId,

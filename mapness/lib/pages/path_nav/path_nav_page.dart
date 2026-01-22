@@ -499,6 +499,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
     final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
 
+    await ref.read(dgisControllerProvider).value?.hideRoutes();
+
     ref.read(appAnalyticsProvider).navigationCompleted(
           origin: route.startPoint?.analyticsLabel ?? '',
           destination: route.endPoint?.analyticsLabel ?? '',
@@ -700,6 +702,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.value = null;
     _navigationState.value = PathNavState.paused;
     await ref.read(cameraPositionProvider.notifier).animateToRoute();
+    await ref.read(dgisControllerProvider).value?.showRoutes();
   }
 
   // Continue the trip after the pause state
@@ -708,6 +711,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final dgisController = await ref.read(dgisControllerProvider.future);
     await _moveCameraToUser();
     await dgisController.followNavigation();
+    await dgisController.hideRoutes();
   }
 
   // Notify the listeners about the end of the trip

@@ -13,6 +13,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
+import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -75,21 +76,24 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   final sheetKey = GlobalKey();
 
   late final shapeDelegate = ToggleSheetDelegateFunction<ShapeBorder?>(
-    function: (controller) => SmoothRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: const Radius.circular(RadiusBorder.xl),
-        bottom: Radius.circular(RadiusBorder.xl * controller.interpolation),
-      ),
-    ),
+    function:
+        (controller) => SmoothRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: const Radius.circular(RadiusBorder.xl),
+            bottom: Radius.circular(RadiusBorder.xl * controller.interpolation),
+          ),
+        ),
   );
-  late final paddingDelegate = ToggleSheetDelegateFunction<EdgeInsets?>(function: (controller) {
-    final padding = MediaQuery.viewPaddingOf(context);
-    return EdgeInsets.only(
-      bottom: ((widget.isLandscape ? 0.0 : Spacing.$3x) + padding.bottom) * (controller.interpolation),
-      left: Spacing.$4x * controller.interpolation,
-      right: Spacing.$4x * controller.interpolation,
-    );
-  });
+  late final paddingDelegate = ToggleSheetDelegateFunction<EdgeInsets?>(
+    function: (controller) {
+      final padding = MediaQuery.viewPaddingOf(context);
+      return EdgeInsets.only(
+        bottom: ((widget.isLandscape ? 0.0 : Spacing.$3x) + padding.bottom) * (controller.interpolation),
+        left: Spacing.$4x * controller.interpolation,
+        right: Spacing.$4x * controller.interpolation,
+      );
+    },
+  );
   late final barrierDelegate = ToggleSheetDelegateFunction<Color?>(
     function: (controller) {
       if (widget.isLandscape) {
@@ -119,14 +123,17 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
     final colors = context.colors;
     final textStyles = context.textStyles;
 
+    final currentRoute = ref.watch(currentRouteProvider);
     final eta = ref.watch(pathNavEtaProvider);
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
     final voiceName = soundSettingsModel.voiceName;
-    final _voiceInstructionTypeTitle =
-        soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(context);
+    final _voiceInstructionTypeTitle = soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(
+      context,
+    );
     final _subtitleVoiceInstruction =
         voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
+    final hasIntermediateRoutePoints = (currentRoute?.points.length ?? 0) > 2;
 
     return Padding(
       padding: EdgeInsetsDirectional.only(start: MediaQuery.paddingOf(context).left),
@@ -149,68 +156,63 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
           barrierColorDelegate: barrierDelegate,
           topHeader: ValueListenableBuilder(
             valueListenable: widget.betterRouteDurationProfit,
-            builder: (context, duration, child) => duration != null
-                ? Padding(
-                    padding: const EdgeInsets.only(
-                      left: Spacing.$4x,
-                      right: Spacing.$4x,
-                      bottom: Spacing.$3x,
-                    ),
-                    child: BetterRouteButton(
-                      title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
-                      onTap: () => widget.acceptBetterRoute(context),
-                      onCloseTap: () => widget.rejectBetterRoute(context),
-                    ),
-                  )
-                : ParkingBanner(
-                    navigatorType: widget.navType,
-                    navigationState: widget.navigationState,
-                    isHomeOrWork: widget.isHomeOrWork,
-                    bottomSheetController: widget.sheetController,
-                  ),
+            builder:
+                (context, duration, child) =>
+                    duration != null
+                        ? Padding(
+                          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+                          child: BetterRouteButton(
+                            title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
+                            onTap: () => widget.acceptBetterRoute(context),
+                            onCloseTap: () => widget.rejectBetterRoute(context),
+                          ),
+                        )
+                        : ParkingBanner(
+                          navigatorType: widget.navType,
+                          navigationState: widget.navigationState,
+                          isHomeOrWork: widget.isHomeOrWork,
+                          bottomSheetController: widget.sheetController,
+                        ),
           ),
           header: ValueListenableBuilder<PathNavState>(
             valueListenable: widget.navigationState,
-            builder: (context, state, child) => EtaHeader(
-              sheetController: widget.sheetController,
-              onEndTripPressed: widget.onEndTripPressed,
-              onSearchPressed: () => widget.onSearchPressed(context),
-              onContinuePressed: widget.onContinuePressed,
-              onTapRoute: widget.onTapRoute,
-              state: state,
-              isSwitchingToFoot: widget.isSwitchingToFoot,
-            ),
+            builder:
+                (context, state, child) => EtaHeader(
+                  sheetController: widget.sheetController,
+                  onEndTripPressed: widget.onEndTripPressed,
+                  onSearchPressed: () => widget.onSearchPressed(context),
+                  onContinuePressed: widget.onContinuePressed,
+                  onTapRoute: widget.onTapRoute,
+                  state: state,
+                  isSwitchingToFoot: widget.isSwitchingToFoot,
+                ),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$4x),
           content: [
-            ShareEtaBtn(
-              durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: Spacing.$3x,
-              ),
-              child: ContentWrapper.single(
-                color: colors.staticWhite,
-                child: ContentRow(
-                  onTap: () => widget.onTapRoute.call(),
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  text: ContentRowTextOptions(
-                    title: l10n.route,
-                  ),
-                  trailing: ContentRowCustomTrailingOptions(
-                    builder: (_) => Padding(
-                      padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
-                      child: ContentRowAction(
-                        actionOptions: ContentRowActionOptions(
-                          actionIcon: AppIcons(
-                            iconData: GeneralIcons.routeStroke,
-                            color: context.colors.foregroundMuted,
+            // hide share button for multilocation route because sharing is broken for such routes
+            if (!hasIntermediateRoutePoints) ...[
+              ShareEtaBtn(durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0),
+              Spacing.$3x.heightBox,
+            ],
+            ContentWrapper.single(
+              color: colors.staticWhite,
+              child: ContentRow(
+                onTap: () => widget.onTapRoute.call(),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                text: ContentRowTextOptions(title: l10n.route),
+                trailing: ContentRowCustomTrailingOptions(
+                  builder:
+                      (_) => Padding(
+                        padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
+                        child: ContentRowAction(
+                          actionOptions: ContentRowActionOptions(
+                            actionIcon: AppIcons(
+                              iconData: GeneralIcons.routeStroke,
+                              color: context.colors.foregroundMuted,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
                 ),
               ),
             ),
@@ -223,29 +225,32 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                   text: ContentRowTextOptions(
                     title: l10n.voiceInstruction,
                     titleOptions: ContentRowTextOption(
-                      isBold: textStyles.bodyLargeRegular.fontWeight?.value != null &&
+                      isBold:
+                          textStyles.bodyLargeRegular.fontWeight?.value != null &&
                           textStyles.bodyLargeRegular.fontWeight!.value >= FontWeight.w500.value,
                       baseColor: colors.foregroundDefault,
                     ),
                     subtitle: _subtitleVoiceInstruction,
                     subtitleOptions: ContentRowTextOption(
-                      isBold: textStyles.bodySmallRegular.fontWeight?.value != null &&
+                      isBold:
+                          textStyles.bodySmallRegular.fontWeight?.value != null &&
                           textStyles.bodySmallRegular.fontWeight!.value >= FontWeight.w500.value,
                       baseColor: colors.foregroundSoft,
                     ),
                   ),
                   trailing: ContentRowCustomTrailingOptions(
-                    builder: (_) => Padding(
-                      padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
-                      child: ContentRowAction(
-                        actionOptions: ContentRowActionOptions(
-                          actionIcon: AppIcons(
-                            iconData: SystemIcons.arrowCornerRightLarge,
-                            color: context.colors.foregroundMuted,
+                    builder:
+                        (_) => Padding(
+                          padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
+                          child: ContentRowAction(
+                            actionOptions: ContentRowActionOptions(
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: context.colors.foregroundMuted,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
                   ),
                 ),
                 Padding(
@@ -270,16 +275,11 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             ContentRow(
               onTap: () => context.router.push(NavigatorSettingsRoute()),
               options: ContentRowOptions(
-                titleStyle: textStyles.bodyLargeRegular.copyWith(
-                  color: colors.foregroundDefault,
-                ),
+                titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
                 wrapperColor: context.colors.staticWhite,
                 wrapperEnabled: true,
                 title: l10n.navigatorSettings,
-                leadingIcon: Icon(
-                  SystemIcons.settings,
-                  color: colors.foregroundSoft,
-                ),
+                leadingIcon: Icon(SystemIcons.settings, color: colors.foregroundSoft),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,

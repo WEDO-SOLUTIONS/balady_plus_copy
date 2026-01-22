@@ -97,6 +97,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
         );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
+        context.router.popUntilRouteWithName(BottomMenuRoute.name);
 
         if (closestPoint == null) {
           return;
