@@ -47,7 +47,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
     } else {
       return ErrorSheetWidget(
         onRetry: () => ref.invalidate(forecastWeatherProvider),
-        onClose: (_) => context.router.popForced(),
+        onClose: (_) => context.router.pop(),
         buttonLabel: context.l10n.tryAgain,
       );
     }

@@ -49,7 +49,7 @@ class FavouritesSearch extends ConsumerWidget {
     },
     onClose: () {
       FocusScope.of(context).unfocus();
-      context.router.popForced();
+      context.router.pop();
     },
     onChanged: (value) {
       if (value.isEmpty) {

@@ -144,7 +144,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       unawaited(mapObjectManager.removeAllMarkers());
       // hide routes
       final dgisController = ref.read(dgisControllerProvider);
-      unawaited(dgisController.valueOrNull?.hideRoutes());
+      unawaited(dgisController.value?.hideRoutes());
 
       _removeFinishPin();
     }
@@ -383,7 +383,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         showOnlyActiveRoute: true,
       ),
       (_, current) async {
-        if (current.valueOrNull?.isEmpty ?? false) {
+        if (current.value?.isEmpty ?? false) {
           _isRoutePresent = false;
           return;
         } else {

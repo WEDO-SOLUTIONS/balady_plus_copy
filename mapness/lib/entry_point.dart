@@ -24,7 +24,7 @@ import 'package:flutter_insider/flutter_insider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -648,7 +648,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else if (url.path == '/parking') {
         _openParking();
       } else {
-        await router.pushNamed(url.toString());
+        await router.pushPath(url.toString());
       }
     }
   }

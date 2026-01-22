@@ -30,7 +30,6 @@ class _FreeRoamStarter extends _$FreeRoamStarter {
     final isAutorun = autostartState == AutostartState.always;
 
     void update(Position? _, Position? event) {
-      final autostartState = ref.read(freeRoamAutostartSettingsProvider);
       if (autostartState == AutostartState.declined || _isShown) {
         return;
       }

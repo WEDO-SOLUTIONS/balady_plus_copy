@@ -14,7 +14,7 @@ Future<void> closePoiCard(
   await ref.read(parkingManageProvider.notifier).restoreMarker();
 
   final navState = await ActiveNavigationHelper.getState(
-    ref.read(dgisControllerProvider).valueOrNull,
+    ref.read(dgisControllerProvider).value,
   );
 
   if (navState.isActive && context.mounted) {
@@ -29,7 +29,7 @@ Future<void> closePoiCard(
   }
 
   if (context.mounted) {
-    context.router.popForced();
+    context.router.pop();
   }
 }
 
@@ -74,7 +74,7 @@ void toggleFavoriteDirectoryObject({
   required DirectoryObjectMessage data,
   required FavouriteItem? favouriteItem,
 }) {
-  final favState = ref.read(favouriteCacheProvider).valueOrNull;
+  final favState = ref.read(favouriteCacheProvider).value;
   final favRepo = ref.read(favouriteCacheProvider.notifier);
 
   /// if already in favourites - remove

@@ -18,7 +18,7 @@ class SaudiPassImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final repository = ref.watch(saudiPassRepositoryProvider).valueOrNull;
+    final repository = ref.watch(saudiPassRepositoryProvider).value;
     if (repository == null) {
       return const SizedBox.shrink();
     }

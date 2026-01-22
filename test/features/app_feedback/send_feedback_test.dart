@@ -14,8 +14,6 @@ class MockAppFeedbackPayload extends Mock implements AppFeedbackPayload {
   Map<String, dynamic> toJson() => {};
 }
 
-class MockCollectFeedback extends AutoDisposeNotifier<AppFeedbackPayload?> with Mock implements CollectFeedback {}
-
 void main() {
   group('Send feedback tests', () {
     late ProviderContainer container;

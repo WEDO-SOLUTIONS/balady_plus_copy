@@ -41,7 +41,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
     final entityNotifier = ref.watch(iwishEntityProvider(iwishId).notifier);
 
     final controlsBottomExtent =
-        MediaQuery.of(context).size.height * (entity.valueOrNull?.photos.isEmpty == false ? minSizeInPhoto : minSize);
+        MediaQuery.of(context).size.height * (entity.value?.photos.isEmpty == false ? minSizeInPhoto : minSize);
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -116,7 +116,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
                                     IwishInfo(
                                       iwish: entity,
                                       distance: distance,
-                                      onClose: () => context.router.popForced(),
+                                      onClose: () => context.router.pop(),
                                     ),
                                     const SizedBox(height: 8),
                                     IwishStateLabel(state: entity.state),

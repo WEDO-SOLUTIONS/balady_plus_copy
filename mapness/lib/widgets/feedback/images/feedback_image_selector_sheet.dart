@@ -21,7 +21,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final sheetController = useToggleSheetController(
-      onClose: (_) => onSelect != null ? onSelect?.call(null) : context.router.popForced,
+      onClose: (_) => onSelect != null ? onSelect?.call(null) : context.router.pop,
     );
 
     return ToggleSheet(
@@ -42,7 +42,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
               ),
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
-                onTap: context.router.popForced,
+                onTap: context.router.pop,
               ),
             ),
           ),

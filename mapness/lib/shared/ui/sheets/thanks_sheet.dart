@@ -28,7 +28,7 @@ class ThanksSheet extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: AppCloseButton(
-                  onPressed: onClose ?? () => context.router.popForced(),
+                  onPressed: onClose ?? () => context.router.pop(),
                 ),
               ),
               SvgPicture.asset(

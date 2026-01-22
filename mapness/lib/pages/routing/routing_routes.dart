@@ -258,7 +258,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         // We need to pass the points and labels as copy (List.of) to manipulate the data and
         // change original data only when user confirms
         points: List.of(points),
-        onClose: () => context.router.popForced(),
+        onClose: () => context.router.pop(),
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
         externalContext: context,
       ),
@@ -272,7 +272,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     setState(() {
       this.points = points;
     });
-    context.router.popForced();
+    context.router.pop();
   }
 
   Future<void> _onClose() async {
@@ -293,7 +293,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     );
 
     final navState = await ActiveNavigationHelper.getState(
-      ref.read(dgisControllerProvider).valueOrNull,
+      ref.read(dgisControllerProvider).value,
     );
 
     if (navState.isActive && context.mounted) {
@@ -308,7 +308,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     }
 
     if (context.mounted) {
-      context.router.popForced();
+      context.router.pop();
     }
   }
 }

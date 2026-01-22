@@ -28,11 +28,11 @@ class ProfileImageWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileImage = ref.watch(profileImageProvider);
-    final value = profileImage.valueOrNull;
+    final value = profileImage.value;
     if (value != null && value.imageBase64.isNotEmpty) {
       final imageBytes = base64Decode(value.imageBase64);
       return Avatar(
-        key: ValueKey(profileImage.valueOrNull!.imageBase64),
+        key: ValueKey(profileImage.value!.imageBase64),
         size: dimension,
         data: AvatarBytes(imageBytes),
       );

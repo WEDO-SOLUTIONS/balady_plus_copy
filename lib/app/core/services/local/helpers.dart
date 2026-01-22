@@ -87,7 +87,7 @@ class Helpers {
     );
   }
 
- 
+
 
 
 
@@ -299,8 +299,11 @@ class Helpers {
       SentryRequest request = SentryRequest(
         url: url,
         queryString: qeuryParms,
-        data: body != null ? body.toString() : "",
-        other: {"StatusCode": (statusCode ?? 0).toString()},
+        data: {
+          if (body != null)
+            'body': body != null ? body.toString() : "",
+            "StatusCode": (statusCode ?? 0).toString(),
+        },
       );
       SentryMessage sentryMessage = SentryMessage(
         data != null ? data.toString() : "",

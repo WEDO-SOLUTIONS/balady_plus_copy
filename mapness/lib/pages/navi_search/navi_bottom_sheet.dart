@@ -61,7 +61,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       ]);
     }
 
-    ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
+    ref.read(dgisControllerProvider).value?.stopFollowNavigation();
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
 
     _multiStateSheetController = MultiStateSheetController<ThreeStateSheet>(
@@ -94,7 +94,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
   @override
   void deactivate() {
-    ref.read(dgisControllerProvider).valueOrNull?.startFollowNavigation();
+    ref.read(dgisControllerProvider).value?.startFollowNavigation();
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
     super.deactivate();
   }
@@ -162,7 +162,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               header: NaviSearchHeader(
                 backgroundColor: context.colors.backgroundSurface2,
                 requestFocus: false,
-                onClose: () => context.router.popForced(),
+                onClose: () => context.router.pop(),
               ),
               sliver: NaviSearchContent(
                 bottomSheetContentScrollController: _multiStateSheetController,
@@ -255,7 +255,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         )
         .removeAllMarkers();
     ref.read(searchInRectProvider(_scope).notifier).update();
-    context.router.popForced();
+    context.router.pop();
   }
 
   void _collapseBottomSheet() {

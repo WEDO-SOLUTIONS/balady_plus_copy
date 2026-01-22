@@ -134,7 +134,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             onRetry: () {
               ref.invalidate(favouriteCacheProvider);
             },
-            onClose: (_) => context.router.popForced(),
+            onClose: (_) => context.router.pop(),
           ),
       loading:
           (_) => Material(
@@ -151,7 +151,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             leading: InkWell(
               onTap: () {
                 if (!isEditing) {
-                  context.router.popForced();
+                  context.router.pop();
                 } else {
                   toggleEditing();
                 }

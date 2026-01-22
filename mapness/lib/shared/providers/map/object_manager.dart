@@ -168,7 +168,7 @@ class MapObjectManager extends _$MapObjectManager {
               fromManager: manager,
             ),
       );
-    } catch (ex, __) {
+    } catch (ex, _) {
       logger.log('Error removing marker: ${ex.toString()}');
     }
   }

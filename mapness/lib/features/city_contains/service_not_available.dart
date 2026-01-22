@@ -44,7 +44,7 @@ class ServiceNotAvailable extends _$ServiceNotAvailable {
     final location = ref.watch(locationProvider);
 
     if (isShown) {
-      return state.valueOrNull ?? true;
+      return state.value ?? true;
     }
 
     if (location == null) {

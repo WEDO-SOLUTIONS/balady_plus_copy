@@ -50,7 +50,7 @@ class LanguagePickSheetPage extends StatelessWidget {
                     ),
                     AppButton.close(
                       padding: EdgeInsets.zero,
-                      onTap: () => context.router.popForced(),
+                      onTap: () => context.router.pop(),
                       color: colors.neutralDefault.withOpacity(0.12),
                       iconColor: colors.foregroundSoft,
                       innerPadding: const EdgeInsets.all(Spacing.$2x),

@@ -40,4 +40,4 @@ class _IwishFeedback extends _$IwishFeedback {
   }
 }
 
-const iwishFeedbackProvider = _iwishFeedbackProvider;
+final iwishFeedbackProvider = _iwishFeedbackProvider;

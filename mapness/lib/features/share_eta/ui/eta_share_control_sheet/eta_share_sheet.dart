@@ -52,7 +52,7 @@ class EtaShareSheet extends StatelessWidget {
                     color: context.colors.foregroundDefault,
                   ),
                   customActionWidget: AppButton.close(
-                    onTap: () => context.router.popForced(),
+                    onTap: () => context.router.pop(),
                     padding: EdgeInsets.zero,
                     textColor: context.colors.neutralOnContainer,
                     color: context.colors.neutralContainerDefault,

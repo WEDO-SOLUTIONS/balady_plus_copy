@@ -35,7 +35,7 @@ class SearchItemQuickActions extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final objectId = directoryObject.id?.objectId;
 
-    ref.watch(favouriteCacheProvider).valueOrNull;
+    ref.watch(favouriteCacheProvider).value;
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
     final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;

@@ -23,7 +23,7 @@ part 'free_roam_manager.g.dart';
 
 const _navigatorOn = 'navigatorOn';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class _FreeRoamManager extends _$FreeRoamManager {
   @override
   void build() {}

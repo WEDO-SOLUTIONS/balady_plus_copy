@@ -30,7 +30,7 @@ class MyLocationImageWidget extends ConsumerWidget {
       orElse: () => const AvatarDataEmpty(value: ''),
     );
     return Avatar(
-      key: ValueKey(profileImage.valueOrNull?.imageBase64 ?? ''),
+      key: ValueKey(profileImage.value?.imageBase64 ?? ''),
       size: AvatarSize.$48,
       data: data,
     );

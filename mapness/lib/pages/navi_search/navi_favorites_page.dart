@@ -31,7 +31,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
         onRetry: () {
           ref.invalidate(favouriteCacheProvider);
         },
-        onClose: (_) => context.router.popForced(),
+        onClose: (_) => context.router.pop(),
       ),
       loading: (_) => Material(
         color: context.colors.backgroundSurface1,
@@ -55,7 +55,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
             title: context.l10n.favorites,
             leading: ActionModel(
               icon: SystemIcons.arrowCornerLeftLarge,
-              onPressed: () => context.router.popForced(),
+              onPressed: () => context.router.pop(),
             ),
           ),
           backgroundColor: context.colors.backgroundSurface4,

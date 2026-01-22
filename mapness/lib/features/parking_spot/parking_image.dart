@@ -20,7 +20,7 @@ class _ParkingImage extends _$ParkingImage {
       return stateOrNull ?? <XFile>[];
     }
 
-    final data = ref.read(parkingManageProvider).valueOrNull;
+    final data = ref.read(parkingManageProvider).value;
 
     return data?.imagesPaths.map((e) => XFile(e)).toList() ?? <XFile>[];
   }
@@ -78,4 +78,4 @@ class _ParkingImage extends _$ParkingImage {
   }
 }
 
-const parkingImageProvider = _parkingImageProvider;
+final parkingImageProvider = _parkingImageProvider;

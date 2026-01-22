@@ -70,7 +70,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   Future<void> _initialize() async {
     final navState = await ActiveNavigationHelper.getState(
-      ref.read(dgisControllerProvider).valueOrNull,
+      ref.read(dgisControllerProvider).value,
     );
 
     if (navState.isActive) {
@@ -97,7 +97,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     if (location == null) {
       final isGranted = await Permission.location.isGranted;
       if (!isGranted) {
-        context.router.popForced();
+        context.router.pop();
         return;
       }
       location = await Geolocator.getCurrentPosition();
@@ -159,7 +159,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   Future<void> _calculateNavigationType(Position? location) async {
     var navType = _defaultNavType;
-    final dgisController = ref.read(dgisControllerProvider).valueOrNull;
+    final dgisController = ref.read(dgisControllerProvider).value;
     final carConnected = await ref.read(carConnectionProvider.future);
 
     final pointCount = widget.points.length;
@@ -240,7 +240,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     ref
       ..watch(activePublicTransportRouteProvider)
       ..listen(carConnectionProvider, (_, next) {
-        final connected = next.valueOrNull ?? false;
+        final connected = next.value ?? false;
         if (connected) {
           _navType.value = RouteSearchOptionsMessage.car;
         }
@@ -324,7 +324,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     // Stop current navigation if it's active before starting a new one
     // This prevents route duplication on the map
     if (_lockedNavType != null) {
-      await ref.read(dgisControllerProvider).valueOrNull?.stopNavigation();
+      await ref.read(dgisControllerProvider).value?.stopNavigation();
     }
 
     final mapSetting = MapObjectManagerSettings.search();

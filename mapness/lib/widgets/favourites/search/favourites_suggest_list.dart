@@ -59,7 +59,7 @@ class FavouritesSuggestList extends ConsumerWidget {
           FavouriteItemMarkerType.work => repo.setWork(favItem),
         });
         if (context.mounted && context.router.canPop()) {
-          context.router.popForced();
+          context.router.pop();
         }
       }
     }

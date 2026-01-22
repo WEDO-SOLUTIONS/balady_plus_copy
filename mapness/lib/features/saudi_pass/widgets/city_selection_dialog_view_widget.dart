@@ -21,7 +21,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = useToggleSheetController(
-      onClose: (_) => context.router.popForced(),
+      onClose: (_) => context.router.pop(),
       heightModel: ToggleSheetHeightModel.fraction(0.99),
     );
 
@@ -54,7 +54,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
                 context.l10n.saudiPassCitySelectionPageTitle,
                 style: context.textStyles.h2SemiBold,
               ),
-              CustomCloseButton(onClose: context.router.popForced),
+              CustomCloseButton(onClose: context.router.pop),
             ],
           ),
         ),

@@ -210,7 +210,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
     } catch (e) {
       await clearNavigationState();
-      context.router.popForced();
+      context.router.pop();
     }
   }
 
@@ -327,7 +327,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             : _betterRouteDurationProfit.value = next.durationProfit,
       )
       ..listen(carConnectionProvider, (_, next) {
-        final connected = next.valueOrNull ?? false;
+        final connected = next.value ?? false;
         final shouldEndTrip = connected &&
             widget.navType != RouteSearchOptionsMessage.car &&
             _navigationState.value != PathNavState.finished;
@@ -622,7 +622,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
+    final parkingManage = ref.read(parkingManageProvider).value == null;
     final position = ref.read(locationProvider);
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
@@ -759,7 +759,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       final finishPoint = ref.read(currentNavigationDestinationProvider);
       final location = ref.read(locationProvider);
-      final dgisController = ref.read(dgisControllerProvider).valueOrNull;
+      final dgisController = ref.read(dgisControllerProvider).value;
 
       if (finishPoint == null || location == null || dgisController == null) {
         _finishNavigation();

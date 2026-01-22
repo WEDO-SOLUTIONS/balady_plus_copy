@@ -6,7 +6,7 @@ part 'metro_line_model.freezed.dart';
 part 'metro_line_model.g.dart';
 
 @freezed
-class MetroLineModel with _$MetroLineModel {
+abstract class MetroLineModel with _$MetroLineModel {
   @JsonSerializable(explicitToJson: true)
   const factory MetroLineModel({
     final String? color,
@@ -17,7 +17,7 @@ class MetroLineModel with _$MetroLineModel {
 }
 
 @freezed
-class MetroLinePoint with _$MetroLinePoint {
+abstract class MetroLinePoint with _$MetroLinePoint {
   const factory MetroLinePoint({
     final double? lat,
     final double? lon,

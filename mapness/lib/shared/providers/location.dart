@@ -27,12 +27,29 @@ class _Location extends _$Location {
       if (!permitted) {
         return;
       }
+      final isGmsAvailable = await CommonFunctions.isGmsAvailable();
       final isHMS = await CommonFunctions.isHuaweiDevice();
-      if (isHMS) {
+
+      if (isGmsAvailable) {
         try {
-          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen(
-            (event) async {
-              state = await _getLocation(Position(
+          const locationSettings = LocationSettings();
+
+          final locationSubscription = Geolocator.getPositionStream(locationSettings: locationSettings).listen((
+            event,
+          ) async {
+            state = await _getLocation(event);
+          });
+          ref.onDispose(locationSubscription.cancel);
+
+          return null;
+        } catch (ex) {
+          logger.log('Error listening to Geolocator stream: ${ex.toString()}');
+        }
+      } else if (isHMS) {
+        try {
+          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen((event) async {
+            state = await _getLocation(
+              Position(
                 longitude: event.longitude!,
                 latitude: event.latitude!,
                 timestamp: DateTime.now(),
@@ -43,31 +60,14 @@ class _Location extends _$Location {
                 headingAccuracy: event.bearingAccuracyDegrees ?? 0,
                 speed: event.speed ?? 0,
                 speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
-              ));
-            },
-          );
+              ),
+            );
+          });
           if (locationSubscription != null) {
             ref.onDispose(locationSubscription.cancel);
           }
         } catch (ex) {
           logger.log('Error listening to HMS stream: ${ex.toString()}');
-        }
-      } else {
-        try {
-          const locationSettings = LocationSettings();
-
-          final locationSubscription = Geolocator.getPositionStream(
-            locationSettings: locationSettings,
-          ).listen(
-            (event) async {
-              state = await _getLocation(event);
-            },
-          );
-          ref.onDispose(locationSubscription.cancel);
-
-          return null;
-        } catch (ex) {
-          logger.log('Error listening to Geolocator stream: ${ex.toString()}');
         }
       }
     });
@@ -88,27 +88,31 @@ class _Location extends _$Location {
         final status = await perm.Permission.location.request();
         if (status == perm.PermissionStatus.granted) {
           if (state == null) {
+            final isGmsAvailable = await CommonFunctions.isGmsAvailable();
             final isHuawei = await CommonFunctions.isHuaweiDevice();
             Position? userLocation;
 
-            if (isHuawei) {
-              userLocation = await CommonFunctions.getLastLocationHuawei();
-            } else {
+            if (isGmsAvailable) {
               userLocation = await Geolocator.getLastKnownPosition();
+            } else if (isHuawei) {
+              userLocation = await CommonFunctions.getLastLocationHuawei();
             }
-            state = await _getLocation(userLocation != null
-                ? Position(
-                    latitude: userLocation.latitude,
-                    longitude: userLocation.longitude,
-                    timestamp: userLocation.timestamp,
-                    accuracy: userLocation.accuracy,
-                    altitude: userLocation.altitude,
-                    altitudeAccuracy: userLocation.altitudeAccuracy,
-                    heading: userLocation.heading,
-                    headingAccuracy: userLocation.headingAccuracy,
-                    speed: userLocation.speed,
-                    speedAccuracy: userLocation.speedAccuracy)
-                : null);
+            state = await _getLocation(
+              userLocation != null
+                  ? Position(
+                      latitude: userLocation.latitude,
+                      longitude: userLocation.longitude,
+                      timestamp: userLocation.timestamp,
+                      accuracy: userLocation.accuracy,
+                      altitude: userLocation.altitude,
+                      altitudeAccuracy: userLocation.altitudeAccuracy,
+                      heading: userLocation.heading,
+                      headingAccuracy: userLocation.headingAccuracy,
+                      speed: userLocation.speed,
+                      speedAccuracy: userLocation.speedAccuracy,
+                    )
+                  : null,
+            );
           }
 
           return true;
@@ -151,11 +155,7 @@ class _Location extends _$Location {
 
     if (status.isGranted) {
       final dgisController = await ref.read(dgisControllerProvider.future);
-      unawaited(
-        dgisController.onLocationPermissionGranted(
-          desiredAccuracy: DesiredAccuracyMessage.high,
-        ),
-      );
+      unawaited(dgisController.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high));
 
       CommonFunctions.locationDialogShowed = false;
       ref.invalidateSelf();
@@ -179,11 +179,9 @@ class _Location extends _$Location {
     }
     final controller = await ref.read(dgisControllerProvider.future);
     final isLocationInsideKSA = await controller.contains(
-        _saRect,
-        GeoPointMessage(
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-        ));
+      _saRect,
+      GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
+    );
     return isLocationInsideKSA
         ? userLocation
         : Position(
@@ -196,6 +194,7 @@ class _Location extends _$Location {
             heading: userLocation.heading,
             headingAccuracy: userLocation.headingAccuracy,
             speed: userLocation.speed,
-            speedAccuracy: userLocation.speedAccuracy);
+            speedAccuracy: userLocation.speedAccuracy,
+          );
   }
 }

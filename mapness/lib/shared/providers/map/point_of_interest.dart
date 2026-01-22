@@ -26,8 +26,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   DgisObjectId objectId,
   LatLng? closestPoint,
 ) async {
-  final selectedMarker = ref.read(selectedMarkerProvider.notifier);
-  final parkingManager = ref.read(parkingManageProvider.notifier);
+  final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
+  final parkingManager = ref.watch(parkingManageProvider.notifier);
 
   ref.onDispose(() {
     selectedMarker.removeMarker(poiPinId);
@@ -49,7 +49,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final cleanupRubrics = directoryObject.rubricIds.nonNulls;
   final rubrics = Set<int>.from(cleanupRubrics);
   final mapMarkerMapper = await ref
-      .read(rubricMarkerMapperProvider.notifier)
+      .watch(rubricMarkerMapperProvider.notifier)
       .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
   final bigIconPath = mapMarkerMapper.$2;
 
@@ -63,7 +63,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   );
 
   final dark = await ref.watch(darkModeProvider.future);
-  final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+  final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
 
   final title = directoryObject.title;
   final textStyle = MarkerTextStyleMessage(
@@ -93,7 +93,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     objectId: objectId.objectId,
   );
 
-  final highlightController = ref.read(highlightProvider.notifier);
+  final highlightController = ref.watch(highlightProvider.notifier);
   await highlightController.removeAll();
   await highlightController.addHighlight(objectId.toMessage());
 
