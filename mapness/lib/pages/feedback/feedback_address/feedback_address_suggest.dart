@@ -74,7 +74,7 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
                     return;
                   }
                   final address = object.makeFullAddress();
-                  context.router.popForced(
+                  context.router.pop(
                     RoutePointCoordinates(GeoPointMessage(latitude: latitude, longitude: longitude), address, null),
                   );
                 },

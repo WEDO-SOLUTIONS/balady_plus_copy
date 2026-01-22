@@ -65,12 +65,11 @@ class ParkingDetails extends _$ParkingDetails {
   }
 
   Future<void> setParkingFilter(ParkingFilter parkingFilter) async {
-    await _applyAttribute(parkingFilter);
-
     final prefs = ref.read(sharedPrefsProvider);
     await prefs.setString(parkingTypeKey, parkingFilter.name);
 
     update(parkingFilter);
+    await _applyAttribute(parkingFilter);
   }
 
   Future<void> _applyAttribute(ParkingFilter parkingFilter) async {

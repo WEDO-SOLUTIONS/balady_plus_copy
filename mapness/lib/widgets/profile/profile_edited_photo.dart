@@ -11,14 +11,19 @@ import 'package:mapness/widgets/profile/profile_image/profile_image_widget.dart'
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileEditablePhoto extends StatelessWidget {
-  const ProfileEditablePhoto({super.key});
+  final String? abbreviatedName;
+  const ProfileEditablePhoto({super.key, this.abbreviatedName});
 
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: () => _showBottomSheet(context),
         child: Stack(
           children: [
-            const ProfileImageWidget(dimension: 2 * AppSizes.m),
+            ProfileImageWidget(
+              dimension: AvatarSize.$80,
+              abbreviatedName: abbreviatedName,
+              style: AvatarEmptyStyle.accentSecondary,
+            ),
             PositionedDirectional(
               start: Spacing.none,
               bottom: Spacing.none,

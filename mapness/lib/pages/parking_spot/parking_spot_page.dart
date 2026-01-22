@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -23,7 +24,6 @@ import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
-import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
@@ -58,7 +58,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     final supportingText = useState<String?>(null);
 
     void checkDirty() {
-      final stored = ref.read(parkingManageProvider).valueOrNull;
+      final stored = ref.read(parkingManageProvider).value;
       final images = ref.read(parkingImageProvider(isEdit: isEdit));
 
       final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
@@ -72,7 +72,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     }
 
     useEffect(() {
-      final stored = ref.read(parkingManageProvider).valueOrNull;
+      final stored = ref.read(parkingManageProvider).value;
       if (isEdit && stored != null) {
         textController.text = stored.comment;
         addressNotifier.value = stored.address;
@@ -126,7 +126,7 @@ class ParkingSpotPage extends HookConsumerWidget {
           alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
           child: const Icon(SystemIcons.arrowCornerLeftLarge),
         ),
-        onLeadingPressed: () => context.router.popForced(),
+        onLeadingPressed: () => context.router.pop(),
       ),
       body: SafeArea(
         child: Padding(
@@ -303,7 +303,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     ));
 
     callToast(context, latLng);
-    context.router.popUntilRouteWithName(BottomMenuRoute.name);
+    await context.router.maybePop();
   }
 
   void callToast(
@@ -332,8 +332,13 @@ class ParkingSpotPage extends HookConsumerWidget {
             query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
             query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
 
-            await Share.share(
-                '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
+            final context = rootNavigatorKey.currentContext;
+            if (context != null) {
+              await safeShareText(
+                '${context.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',
+                context: context,
+              );
+            }
           },
         ),
       ],

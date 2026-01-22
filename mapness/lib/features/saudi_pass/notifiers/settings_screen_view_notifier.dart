@@ -88,7 +88,7 @@ class SettingsScreenViewNotifier extends ChangeNotifier
   }
 
   @override
-  void tapBack(BuildContext context) => context.router.popForced();
+  void tapBack(BuildContext context) => context.router.pop();
 
   @override
   String get cityTitle => citySelected.name;
@@ -143,6 +143,6 @@ class SettingsScreenViewNotifier extends ChangeNotifier
   void tapSave(BuildContext context) {
     parent.applySettings(
         citySelected, recommendedTypesSelected, categoriesSelected);
-    context.router.popForced();
+    context.router.pop();
   }
 }

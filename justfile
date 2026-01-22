@@ -29,6 +29,7 @@ pubget:
     fvm flutter pub get
     cd mapness
     fvm flutter pub get
+    cd ..
 
 clean:
     #!/bin/bash

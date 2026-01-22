@@ -1514,10 +1514,11 @@ class WeatherMapMessage {
 }
 
 class RenderedObjectMessage {
-  RenderedObjectMessage(this.objectId, this.closestMapPoint);
+  RenderedObjectMessage(this.objectId, this.closestMapPoint, this.levelId);
 
   final DgisObjectIdMessage objectId;
   final GeoPointWithElevationMessage closestMapPoint;
+  final int? levelId;
 }
 
 enum VendorConfigMessage {
@@ -1686,6 +1687,9 @@ abstract class MapApi {
 
   @async
   void moveCameraToActiveRoute(int index);
+
+  @async
+  void setActiveRouteIndex(int index);
 
   @async
   void followNavigation();

@@ -60,7 +60,7 @@ class _CurrentRoute extends _$CurrentRoute {
 }
 
 @freezed
-class CurrentRouteState with _$CurrentRouteState {
+abstract class CurrentRouteState with _$CurrentRouteState {
   const factory CurrentRouteState({
     required List<RouteParamsPointWithLabel> points,
     required RouteSearchOptionsMessage navType,

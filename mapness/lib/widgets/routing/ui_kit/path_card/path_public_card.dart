@@ -111,7 +111,7 @@ class PathPublicCard extends ConsumerWidget {
                   destination: destination,
                   startPoint: startPoint,
                   onPressed: () async => onStartNavigation?.call(),
-                  onClose: () async => context.router.popForced(),
+                  onClose: () async => context.router.pop(),
                   buttonLabel: context.l10n.go.toUpperCase(),
                   publicTransportRoutes: publicTransportRoutes ?? [],
                   initialIndex: activeIndex,

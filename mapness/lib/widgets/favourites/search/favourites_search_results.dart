@@ -81,7 +81,7 @@ class FavouritesSearchResults extends ConsumerWidget {
       },
     );
     if (context.mounted && context.router.canPop()) {
-      context.router.popForced();
+      context.router.pop();
     }
   }
 }

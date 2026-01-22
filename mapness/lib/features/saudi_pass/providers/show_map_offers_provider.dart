@@ -24,11 +24,11 @@ class ShowMapOffers extends _$ShowMapOffers {
   MapObjectManager? mapObjectManager;
 
   MapObjectManager get selectPinMapObjectManager => ref.read(
-        mapObjectManagerProvider(
-          named: _settings.name,
-          layerId: _settings.layerId,
-        ).notifier,
-      );
+    mapObjectManagerProvider(
+      named: _settings.name,
+      layerId: _settings.layerId,
+    ).notifier,
+  );
 
   @override
   List<Offer> build() {
@@ -95,7 +95,8 @@ class ShowMapOffers extends _$ShowMapOffers {
     await mapObjectManager?.setMarkerOptions(
       marker.id,
       ChangeMarkerOptionsMessage(
-          isVisible: marker.options.isVisible = isVisible),
+        isVisible: marker.options.isVisible = isVisible,
+      ),
     );
   }
 
@@ -118,8 +119,9 @@ class ShowMapOffers extends _$ShowMapOffers {
       return;
     }
 
-    final saudiPassRepository =
-        await ref.read(saudiPassRepositoryProvider.future);
+    final saudiPassRepository = await ref.read(
+      saudiPassRepositoryProvider.future,
+    );
     Preferences? preferences;
     try {
       preferences = await saudiPassRepository.getPreferences();
@@ -134,14 +136,16 @@ class ShowMapOffers extends _$ShowMapOffers {
       final subCategories =
           preferences?.subCategoriesOnly.toSet() ?? subCategory ?? {};
 
-      final cities = isAll
-          ? {
-              cityId,
-            }
-          : {
-              if (preferences?.cities.isNotEmpty ?? false)
-                ...preferences!.cities.map((city) => city.id),
-            };
+      final cities =
+          isAll
+              ? {cityId}
+              : {
+                // If user has cities in preferences, use them; otherwise fall back to cityId
+                if (preferences?.cities.isNotEmpty ?? false)
+                  ...preferences!.cities.map((city) => city.id),
+                if (preferences?.cities.isEmpty ?? true)
+                  cityId, // Fall back to location-based city if no city in preferences
+              };
       final updatedState = List<Offer>.from([]);
       final Promotions promotions;
       if (visibleRect != null) {

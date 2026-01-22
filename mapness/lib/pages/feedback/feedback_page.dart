@@ -77,7 +77,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
   void _collectForm({required String categoryId, int? objectId}) {
     if (widget.objectId != null) {
-      context.router.popForced();
+      context.router.pop();
     }
     final formState = _formKey.currentState;
     if (formState == null) {
@@ -111,6 +111,17 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       // probably for thousands of filled form within this time window
       // may be mem overflow, but esimate as impossible
       ..keepAliveForAWhile();
+
+    /// If the feedback was sent from POI page, we replace the current route
+    /// with the FeedbackSentPage to avoid poping back from the POI page and deleting the marker.
+    if (context.router.stack.any((r) => r.name?.toLowerCase() == 'poi')) {
+      context.router.replace(
+        FeedbackSentRoute(
+          payloadId: payloadId,
+        ),
+      );
+      return;
+    }
 
     context.router.pushAndPopUntil(
       FeedbackSentRoute(

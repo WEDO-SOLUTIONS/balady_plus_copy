@@ -91,7 +91,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
 
     // Get viewports: visible (whole screen) and tappable (area of the screen where marker will not overlap on other elements)
     CustomRect? visibleRect;
-    final dgisControllerValue = dgisController.valueOrNull;
+    final dgisControllerValue = dgisController.value;
     if (dgisControllerValue != null) {
       final visibleArea = await ref.read(dgisControllerProvider.notifier).getVisibleArea(dgisControllerValue);
       visibleRect = CustomRect.fromArea(
@@ -142,7 +142,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
   }
 }
 
-const paddingConfigProvider = _poiPaddingConfigProvider;
+final paddingConfigProvider = _poiPaddingConfigProvider;
 
 /// Check if the point is in the rectangle
 bool _isInRectZone(CustomRect? rect, GeoPointMessage markerPoint) {

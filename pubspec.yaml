@@ -17,10 +17,11 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 #version: 3.30.3+425
-version: 3.12.21+417
+version: 3.121.21+417
 
 environment:
-  sdk: ">=3.5.0 <4.0.0"
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,11 +30,10 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
 
-  async: ^2.11.0
   # Localization app to support multiple languages
   localize_and_translate:
     git:
@@ -41,155 +41,123 @@ dependencies:
       ref: 4.1.2-dev-fixes
   ##! Logic
   # To manage state and separate business logic from UI
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^9.1.1
   # Extension methods on Stream adding common transform operators
-  stream_transform: ^2.0.0
+  stream_transform: ^2.1.1
   # Functional programming in Dart e.g. Either<Left,Right>
   dartz: ^0.10.1
   # Form representation and validation in a generic way
-  formz: ^0.6.0
+  formz: ^0.8.0
   # Equality Comparisons among objects
-  equatable: 2.0.7
+  equatable: ^2.0.8
   # Dependency Injection Service Locator
-  get_it: ^7.2.0
+  get_it: ^9.2.0
   ##! Internet
   # Checks for an Active Internet connection
-  internet_connection_checker: ^1.0.0+1
+  internet_connection_checker_plus: ^2.9.1+2
   # Http client for Dart, which supports Interceptors, Global configuration and others
-  dio: 5.7.0
-  pretty_dio_logger: ^1.3.1
-  dio_smart_retry: ^7.0.1
+  dio: ^5.9.0
+  pretty_dio_logger: ^1.4.0
   ##! Local Storage
   # Store sensitive data in secure storage
-  flutter_secure_storage: ^6.0.0
+  flutter_secure_storage: ^10.0.0
   # Lightweight fast key-value database
-  hive_flutter: ^1.1.0
+  hive_ce_flutter: ^2.3.4
   ##! Actions
   # A package that allows you to use a native file explorer
-  file_picker: 8.1.4
+  file_picker: ^10.3.8
   # picking images and taking new pictures with the camera.
-  image_picker: ^1.1.2
+  image_picker: ^1.2.1
   # Native APP to open files with string result
-  open_file_plus:
-    git:
-      url: https://github.com/urbi-ae/open_file_plus
+  open_filex: ^4.7.0
   # for getting commonly used locations on host platform file
-  path_provider: ^2.0.11
+  path_provider: ^2.1.5
   # Launching a URL, Open contacts and others.
-  url_launcher: ^6.3.0
+  url_launcher: ^6.3.2
   ##! UI
   # Automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0
   # To deal with svg icons
-  flutter_svg: 2.0.16
+  flutter_svg: ^2.2.3
   # A Flutter widget that can be expanded or collapsed by the user.
   expandable: ^5.0.1
   # Shimmer effect, useful for loading
   shimmer: ^3.0.0
   # flutter toast
-  bot_toast: ^4.0.3
+  bot_toast: ^4.1.3
   # loading animation
-  loading_animation_widget: ^1.2.0+3
+  loading_animation_widget: ^1.3.0
   # Date and number formatting
-  intl: ^0.19.0
+  intl: ^0.20.2
   # A flutter package to select a country from a list of countries.
-  country_picker: ^2.0.16
+  country_picker: ^2.0.27
   camera: any
   # Hashing
-  crypto: ^3.0.1
+  crypto: ^3.0.7
   # A universal barcode and QR code scanner
   #mobile_scanner: ^2.1.0
   # Location
-  geolocator: ^13.0.1
-  geolocator_android: 4.6.1
+  geolocator: ^14.0.2
   # Permissions
-  permission_handler: 12.0.0+1
+  permission_handler: ^12.0.1
   # Get current device information
-  device_info_plus: 11.1.1
+  device_info_plus: ^12.3.0
   # API for querying information about an application package
-  package_info_plus: ^8.1.0
-  # parses Adobe After Effects animations
-  lottie: ^2.2.0
+  package_info_plus: ^9.0.0
   # Generate Unique ID
-  uuid: ^4.5.1
+  uuid: ^4.5.2
   hijri: ^3.0.0
-  # swiper/carousel for flutter, with multiple layouts,
-  flutter_card_swiper: ^6.0.0
-  # QR.Flutter is a Flutter library for simple and fast QR code rendering.
-  qr_flutter: ^4.1.0
   # A cross platform plugin for displaying and scheduling local notifications
-  flutter_local_notifications: ^18.0.1
+  flutter_local_notifications: ^19.5.0
   # A flutter plugin for getting the local timezone of the device.
-  flutter_timezone: ^1.0.7
-  youtube_player_flutter: ^9.1.0
-  launch_review: ^3.0.1
+  flutter_timezone: ^5.0.1
+  # launch_review: ^3.0.1  # Replaced with store_redirect due to Registrar compatibility issues
   mocktail: ^1.0.4
-  flutter_riverpod: ^2.4.1
-  battery_plus: ^6.0.4
-  app_tracking_transparency: ^2.0.6
-  adjust_sdk: 5.1.1
-  flutter_appauth: ^9.0.0
+  flutter_riverpod: ^3.1.0
+  app_tracking_transparency: ^2.0.6+1
+  adjust_sdk: ^5.5.0
+  flutter_appauth: ^11.0.0
 
-  webview_flutter: 4.10.0
+  webview_flutter: ^4.13.1
   flutter_inappwebview: ^6.1.5
 
-  version: ^2.0.0
+  version: ^3.0.2
   #google_maps_flutter: ^2.5.3
-  share_plus: ^10.0.2
-  pinput: ^2.2.31
-  pin_code_fields: ^8.0.1
-  cached_network_image: ^3.2.2
-  mime: ^1.0.4
+  share_plus: ^12.0.1
+  cached_network_image: ^3.4.1
+  mime: ^2.0.0
   jwt_decoder:
   photo_view: ^0.15.0
-  flutter_rating_bar: ^4.0.0
-  tuple: ^2.0.0
-  flutter_easyloading: ^3.0.3
-  connectivity_plus: ^6.1.5
-  qr_code_scanner_plus: ^2.0.14
-  # scan: ^1.6.0
-  sms_user_consent:
-    git:
-      url: https://github.com/ctnataman/sms_user_consent
-      ref: ab6b82c6754ba4103aa019f3f445de4b582c6655
+  flutter_rating_bar: ^4.0.1
+  flutter_easyloading: ^3.0.5
+  connectivity_plus: ^7.0.0
+  # scan: ^1.6.0  # Removed: unused and has Registrar compatibility issues with Flutter 3.29.1
   #  flutter_google_places:
   #    git:
   #      url: https://github.com/MahmoudBaha/flutter_google_places
   flutter_picker_plus:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: ^1.5.4
-  percent_indicator: ^4.2.3
-  flutter_staggered_grid_view: ^0.7.0
+  percent_indicator: ^4.2.5
   # flutter_cached_pdfview: ^0.4.2
-  network_info_plus: ^6.1.3
-  dart_ipify: ^1.1.1
-  timelines: ^0.1.0
-  pdfx: 2.8.0
-  archive: ^3.3.7
-  bottom_picker: ^2.0.4
-  page_view_dot_indicator: ^2.3.0
-  firebase_core: ^3.1.0
+  pdfx: ^2.9.2
+  archive: ^4.0.7
+  firebase_core: ^4.3.0
   # eliminate this after lazy-ass author update the package
-  firebase_messaging: 15.1.5
-  firebase_analytics: ^11.0.1
-  flutter_uxcam: ^2.4.7
-  card_swiper: ^3.0.1
-  carousel_slider: ^5.0.0
+  firebase_messaging: ^16.1.0
+  firebase_analytics: ^12.1.0
+  flutter_uxcam: ^2.7.6
+  carousel_slider: ^5.1.1
   add_2_calendar: ^3.0.1
   flutter_svg_provider:
-  app_settings: 5.1.1
-  dotted_border: ^2.0.0+3
-  linkable: ^3.0.0
-  flutter_hms_gms_availability: ^3.10.0
-  huawei_push: ^6.12.0+303
-  encrypt: ^5.0.0
-  printing: ^5.14.2
-
-
-
+  app_settings: ^7.0.0
+  flutter_hms_gms_availability:
+    git:
+      url: https://github.com/vant3ch/flutter_hms_gms_availability
+      ref: cfc1bd0dc1006717e8fa0dd24c6f6c4b5c889032
+  huawei_push: ^6.14.0+300
+  encrypt: ^5.0.3
   dsbridge_flutter: ^1.2.0
-  flutter_archive: ^6.0.3
-
 
   # Map urbi SDK
   dgis_map:
@@ -198,49 +166,36 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 4.1.6
+    version: 5.0.0
 
-  sheetify: 1.1.1
-
-  smooth_corner: ^1.0.0
+  sheetify: ^1.1.3
 
   mapness:
     path: mapness
 
-
-  wakelock_plus: 1.2.8
-  provider: ^6.0.5
-  flutter_compass: ^0.8.0
+  provider: ^6.1.5+1
 
   flutter_html:
-  curl_logger_dio_interceptor: ^1.0.0
-  mixpanel_flutter: ^2.2.0
-  rate_my_app: ^2.0.0
-  flutter_datetime_picker_plus: ^2.1.0
-  background_location: ^0.13.0
-  preload_page_view: ^0.2.0
+  curl_logger_dio_interceptor: ^1.0.1
+  mixpanel_flutter: ^2.4.4
   flutter_linkify: ^6.0.0
-  screenshot: ^3.0.0
   #flutter_typeahead: ^5.2.0
-  flutter_animate: ^4.3.0
-  # To scroll list to specific index and do not calculate width and height by ourselves
-  scrollable_positioned_list: ^0.3.8
 
   #  Show App Popup Menu form button in poiation
   app_popup_menu: ^1.0.0
 
   jiffy:
   gif: ^2.3.0
-  bloc: ^8.1.4
-  http_certificate_pinning: ^2.1.3
+  bloc: ^9.2.0
+  http_certificate_pinning: ^3.0.1
 
-  syncfusion_flutter_pdfviewer:
+  syncfusion_flutter_pdfviewer: ^32.1.22
 
 
   ############################################################
   balady_authorization:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.69
+    version: ^1.0.0
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -248,52 +203,38 @@ dependencies:
   #      path: packages/firebase_messaging/firebase_messaging
   ############################################################
 
-  syncfusion_localizations:
-  huawei_location: 6.14.2+300
+  huawei_location: ^6.16.0+300
 
-  home_widget: ^0.7.0
+  home_widget: ^0.8.1
 
   cached_network_svg_image: any
 
   #  For Load the variable from local file  .env
-  flutter_dotenv: ^5.2.1
-  pdf: ^3.11.3
-  flutter_launcher_icons: ^0.14.4
-  visibility_detector: ^0.4.0+2
-  in_app_review: ^2.0.10
+  flutter_dotenv: ^6.0.0
   external_app_launcher: ^4.0.3
   store_redirect: ^2.0.4
-
-dependency_overrides:
-  # for dio_http_cache
-  dio: 5.7.0
-  json_serializable: 6.8.0
-  device_info_plus: 11.1.1
-  google_api_headers: ^4.2.4
-  rxdart: 0.28.0
-  collection: 1.19.0
-  # https://github.com/flutter/flutter/issues/162437#issuecomment-2661727397
-  # https://github.com/flutter/packages/pull/8656
-  # Because of this issue, we have to downgrade the version of webview_flutter
-  webview_flutter_wkwebview: 3.17.0
-  flutter_insider: 3.15.1
-  geolocator_android: 4.6.1
-  sentry_flutter: 8.14.2
-  sentry_dio: 8.14.2
-  # flutter_pdfview: ^1.4.3
-  flutter_spinkit: 5.2.1
-  mocktail: ^1.0.4
+  shared_preferences: ^2.5.4
+  sentry_flutter: ^9.9.2
+  collection: ^1.19.1
+  image: ^4.7.2
+  http: ^1.6.0
+  flutter_insider: ^4.0.6+nh
+  sentry_dio: ^9.9.2
+  shelf: ^1.4.2
+  timezone: ^0.10.0
 
 dev_dependencies:
-  build_runner: ^2.4.12
-  flutter_lints: ^2.0.1
+  build_runner: ^2.10.3
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
-  json_serializable: 6.8.0
-  very_good_analysis: ^5.1.0
+  json_serializable: ^6.11.2
+  very_good_analysis: ^10.0.0
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
+  generate: true
   shaders:
     - shaders/radar.frag
   assets:

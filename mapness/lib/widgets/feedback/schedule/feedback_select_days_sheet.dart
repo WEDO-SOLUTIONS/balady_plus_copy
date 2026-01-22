@@ -76,7 +76,7 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
                   ),
                 ],
               ),
-              uikit.AppButton.close(onTap: () => context.router.popForced()),
+              uikit.AppButton.close(onTap: () => context.router.pop()),
             ],
           ),
           const SizedBox(height: Spacing.$3x),

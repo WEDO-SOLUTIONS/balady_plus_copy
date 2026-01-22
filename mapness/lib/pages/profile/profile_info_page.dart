@@ -15,7 +15,7 @@ class ProfileInfoPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(authProvider).valueOrNull;
+    final userData = ref.watch(authProvider).value;
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -33,7 +33,7 @@ class ProfileInfoPage extends ConsumerWidget {
                 colorEnabled: context.colors.accentDefault,
                 leading: ActionModel(
                   text: context.l10n.back,
-                  onPressed: () => context.router.popForced(),
+                  onPressed: () => context.router.pop(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),

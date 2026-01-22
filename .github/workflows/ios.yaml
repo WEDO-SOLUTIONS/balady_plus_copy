@@ -73,7 +73,7 @@ jobs:
 
       - name: Setup Flutter
         run: |
-          fvm use 3.24.3
+          fvm use 3.38.5
 
       - name: "Setup just"
         uses: extractions/setup-just@v2

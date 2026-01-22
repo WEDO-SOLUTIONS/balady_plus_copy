@@ -13,7 +13,7 @@ class AppFeedbackCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final env = ref.watch(dgisEnvironmentProvider).valueOrNull;
+    final env = ref.watch(dgisEnvironmentProvider).value;
 
     return env?.appFeedbackEnable == true
         ? GestureDetector(

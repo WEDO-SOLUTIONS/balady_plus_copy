@@ -50,7 +50,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
                   child: Text(context.l10n.appFeedbackLeave),
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    context.router.popForced();
+                    context.router.pop();
                   },
                 ),
               ],
@@ -70,7 +70,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
       final isInitial = ref.read(sendFeedbackProvider) == AppFeedbackState.initial;
 
       if (feedbackCanpop || !isInitial) {
-        context.router.popForced();
+        context.router.pop();
       } else {
         controller.open();
         _showConfirmDialog(context);

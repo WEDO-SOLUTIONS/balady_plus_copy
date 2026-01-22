@@ -1,4 +1,4 @@
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'network_status.g.dart';
@@ -8,7 +8,7 @@ class NetworkStatus extends _$NetworkStatus {
   @override
   bool build() {
     update();
-    final checker = InternetConnectionChecker.createInstance(
+    final checker = InternetConnection.createInstance(
       checkInterval: const Duration(seconds: 5),
     );
     final connectivitySubscription = checker.onStatusChange.listen(_connectivityListener);
@@ -19,10 +19,10 @@ class NetworkStatus extends _$NetworkStatus {
   }
 
   Future<void> update() async {
-    state = await InternetConnectionChecker().hasConnection;
+    state = await InternetConnection().hasInternetAccess;
   }
 
-  void _connectivityListener(InternetConnectionStatus event) {
-    state = event == InternetConnectionStatus.connected;
+  void _connectivityListener(InternetStatus event) {
+    state = event == InternetStatus.connected;
   }
 }

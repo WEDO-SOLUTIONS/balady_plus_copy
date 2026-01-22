@@ -43,7 +43,7 @@ class RoutingFavouritesPage extends ConsumerWidget {
                           action: MetricAction.tap.toString(),
                         );
 
-                        context.router.popForced();
+                        context.router.pop();
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Padding(

@@ -9,4 +9,4 @@ class _IwishDistance extends _$IwishDistance {
   String build(IwishEntity entity) => '10 km';
 }
 
-const iwishDistanceProvider = _iwishDistanceProvider;
+final iwishDistanceProvider = _iwishDistanceProvider;

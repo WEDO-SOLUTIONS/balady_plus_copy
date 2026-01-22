@@ -53,7 +53,7 @@ class OfferPage extends HookConsumerWidget {
               color: colors.foregroundDefault,
             ),
             leading: ActionModel(
-              onPressed: () => context.router.popForced(),
+              onPressed: () => context.router.pop(),
               icon: SystemIcons.arrowCornerLeftLarge,
             ),
           ),
@@ -91,7 +91,7 @@ class ErrorWidget extends StatelessWidget {
               child: AppButton(
                 buttonColorScheme: ButtonColorScheme.primary,
                 primaryLabel: context.l10n.goBack,
-                onTap: () => context.router.popForced(),
+                onTap: () => context.router.pop(),
               ),
             ),
           )

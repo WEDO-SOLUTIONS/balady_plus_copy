@@ -49,7 +49,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                   TextButton(
                     child: Text(context.l10n.feedbackBreaksSheetClose),
                     onPressed: () {
-                      context.router.popForced();
+                      context.router.pop();
                     },
                   ),
                   const Spacer(),
@@ -78,7 +78,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                     child: const Text('Accept'),
                     onPressed: () async {
                       final image = await controller.onCropImage();
-                      context.router.popForced(image?.bytes);
+                      context.router.pop(image?.bytes);
                     },
                   ),
                   const Spacer(),

@@ -3,20 +3,17 @@ description: A common platform interface for the dgis_map plugin.
 version: 0.1.0+1
 
 environment:
-  sdk: ">=2.18.6 <3.0.0"
-  flutter: ">=3.3.10"
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  intl: 0.19.0
+  intl: ^0.20.2
   analyzer:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_lints: 5.0.0
-
-  # TODO: update pigeon
-  pigeon: 22.6.2
+  flutter_lints: ^6.0.0
+  pigeon: ^26.1.5

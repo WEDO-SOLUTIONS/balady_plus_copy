@@ -60,6 +60,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import com.dgis.map.control_handlers.IndoorControlHandler
 
 class CarMapController(
     private val sharedPrefs: SharedPrefs,
@@ -93,6 +94,8 @@ class CarMapController(
 
     private val parkingAttrName = "parkingOn"
 
+    private var indoorControlHandler: IndoorControlHandler? = null
+
     init {
         closeables.add(
             routeEditor.routesInfoChannel.connect(::onRoutesInfoChanged)
@@ -103,6 +106,8 @@ class CarMapController(
         this.map = map
 
         val locale = getLocale()
+
+        indoorControlHandler = IndoorControlHandler(map)
 
         val mapSource = MyLocationMapObjectSource(
             sdkContext, MyLocationControllerSettings(bearingSource = BearingSource.AUTO)
@@ -408,7 +413,10 @@ class CarMapController(
 
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
         val startPoint = locationSource.lastLocation?.let {
-            RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
+            RouteSearchPoint(
+                coordinates = GeoPoint(it.latitude, it.longitude),
+                levelId = indoorControlHandler?.currentLevelId
+            )
         } ?: return
 
         val finishPoint = if (objectId != null) RouteSearchPoint(
@@ -552,6 +560,7 @@ class CarMapController(
     override fun close() {
         closeables.forEach(AutoCloseable::close)
         paddingFlowJob?.cancel()
+        indoorControlHandler?.close()
     }
 }
 

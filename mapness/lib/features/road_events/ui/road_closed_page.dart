@@ -181,6 +181,6 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
 
   Future<void> _onClose() async {
     await removeSelection();
-    context.router.popForced();
+    context.router.pop();
   }
 }

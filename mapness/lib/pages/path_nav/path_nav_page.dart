@@ -212,7 +212,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
     } catch (e) {
       await clearNavigationState();
-      context.router.popForced();
+      context.router.pop();
     }
   }
 
@@ -339,7 +339,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             : _betterRouteDurationProfit.value = next.durationProfit,
       )
       ..listen(carConnectionProvider, (_, next) {
-        final connected = next.valueOrNull ?? false;
+        final connected = next.value ?? false;
         final shouldEndTrip = connected &&
             widget.navType != RouteSearchOptionsMessage.car &&
             _navigationState.value != PathNavState.finished;
@@ -513,6 +513,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final originCity = await location.getCityByLatLng(lat: route.startPoint?.lat, lng: route.startPoint?.lon);
     final destinationCity = await location.getCityByLatLng(lat: route.endPoint?.lat, lng: route.endPoint?.lon);
 
+    await ref.read(dgisControllerProvider).value?.hideRoutes();
+
     ref.read(appAnalyticsProvider).navigationCompleted(
           origin: route.startPoint?.analyticsLabel ?? '',
           destination: route.endPoint?.analyticsLabel ?? '',
@@ -634,7 +636,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
+    final parkingManage = ref.read(parkingManageProvider).value == null;
     final position = ref.read(locationProvider);
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
@@ -714,6 +716,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.value = null;
     _navigationState.value = PathNavState.paused;
     await ref.read(cameraPositionProvider.notifier).animateToRoute();
+    await ref.read(dgisControllerProvider).value?.showRoutes();
   }
 
   // Continue the trip after the pause state
@@ -722,6 +725,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final dgisController = await ref.read(dgisControllerProvider.future);
     await _moveCameraToUser();
     await dgisController.followNavigation();
+    await dgisController.hideRoutes();
   }
 
   // Notify the listeners about the end of the trip
@@ -769,7 +773,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     try {
       final finishPoint = ref.read(currentNavigationDestinationProvider);
       final location = ref.read(locationProvider);
-      final dgisController = ref.read(dgisControllerProvider).valueOrNull;
+      final dgisController = ref.read(dgisControllerProvider).value;
 
       if (finishPoint == null || location == null || dgisController == null) {
         _finishNavigation();
@@ -817,17 +821,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             latitude: location.latitude,
             longitude: location.longitude,
           );
-          // Calculate route (keep minimal to reduce lag)
-          try {
-            await ref.read(routesProvider(
-              startPoint: startPoint,
-              finishPoint: finishPoint,
-              navType: RouteSearchOptionsMessage.pedestrian,
-              showOnlyActiveRoute: true,
-            ).future);
-          } on WalkingDistanceException catch (ex) {
-            logger.log(ex.toString(), logLevel: MapnessLogLevel.warning);
-          }
+          final points = [startPoint, finishPoint];
+          final intermediatePoints = points.getIntermediatePoints();
+
+          ref.read(routesProvider(
+            startPoint: startPoint,
+            finishPoint: finishPoint,
+            navType: RouteSearchOptionsMessage.pedestrian,
+            intermediatePoints: intermediatePoints,
+            showOnlyActiveRoute: true,
+          ));
 
           // Navigate to new navigation session
           if (mounted) {

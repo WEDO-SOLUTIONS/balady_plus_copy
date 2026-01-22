@@ -27,7 +27,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = useToggleSheetController(
-      onClose: (_) => context.router.popForced(),
+      onClose: (_) => context.router.pop(),
       heightModel: ToggleSheetHeightModel.fraction(0.99),
     );
 

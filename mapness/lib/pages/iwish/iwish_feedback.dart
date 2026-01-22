@@ -52,7 +52,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     final isLoading = entityState.isLoading || feedbackState.isLoading;
     final didSentFeedback = entityState.value?.feedbackSent ?? false;
     final isFeedbackComplited = entityState.value?.state == IwishState.completed;
-    final isSetMood = feedbackState.valueOrNull?.mood != null;
+    final isSetMood = feedbackState.value?.mood != null;
     final hasFeedback = entityState.hasValue && entityState.requireValue.feedbackSent;
 
     if (isLoading && (!didSentFeedback || !isSetMood) && !isFeedbackComplited) {
@@ -76,7 +76,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
             isLoading: entityState.isLoading || feedbackState.isLoading,
             onComplete: widget.onFeedbackSent,
             showValuableOpinionMessage: true,
-            triggerOnComplete: feedbackState.valueOrNull?.mood == IwishFeedbackMoodType.happy,
+            triggerOnComplete: feedbackState.value?.mood == IwishFeedbackMoodType.happy,
             onClose: () {
               if (mounted) {
                 context.router.replace(IwishPlaceCardRoute(iwishId: widget.iwishId));
@@ -102,7 +102,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     };
 
     return LabeledDraggableSheet(
-      onClose: context.router.popForced,
+      onClose: context.router.pop,
       title: title,
       child: SafeArea(
         top: false,

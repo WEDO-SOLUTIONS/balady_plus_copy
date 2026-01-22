@@ -17,13 +17,13 @@ part 'saudi_pass_dio_riverpod_v1.g.dart';
 
 final saudiPassDioProviderV1 = _saudiPassDioRiverpodProvider;
 
-@riverpod
+@Riverpod(keepAlive: true)
 class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
   final _dioCacheManager = DioCacheManager(CacheConfig());
 
   @override
   Future<Dio> build() async {
-    final env = await ref.read(dgisEnvironmentProvider.future);
+    final env = await ref.watch(dgisEnvironmentProvider.future);
     final url = env.url;
     const timeout = Duration(seconds: 5);
     final appLanguage = ref.watch(appLanguageProvider);

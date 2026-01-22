@@ -324,17 +324,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           poiCardState: poiCardState,
           tabController: _tabController,
           data: widget.data,
-          onTapClose: () {
-            Metrics.logEventAdvanced(
-              MetricsConstants.poiKeys.exitButton,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-            );
-
-            ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-            ref.read(parkingManageProvider.notifier).restoreMarker();
-            ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
-            context.router.popForced();
+          onTapClose: () async {
+            await ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
+            await closePoiCard(context, ref);
           },
         ),
         sliver: ValueListenableBuilder(

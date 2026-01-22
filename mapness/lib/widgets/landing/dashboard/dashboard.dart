@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -39,11 +39,7 @@ import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 import 'package:sheetify/sheetify.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
-  const Dashboard({
-    required this.bottomSheetController,
-    required this.fireworksController,
-    super.key,
-  });
+  const Dashboard({required this.bottomSheetController, required this.fireworksController, super.key});
 
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
@@ -53,7 +49,9 @@ class Dashboard extends ConsumerStatefulWidget {
   ConsumerState<Dashboard> createState() => _DashboardState();
 }
 
-class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin, WidgetsBindingObserver {
+// Using TickerProviderStateMixin here as SingleTickerProviderStateMixin throws,
+// probably because DashboardHeaderDelegate is recreated
+class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateMixin, WidgetsBindingObserver {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   late FreeRoamStartState freeRoamState;
@@ -70,24 +68,27 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
       final isSheetStateOpen = state == ThreeStateSheet.open;
       final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
-      final isFull = isGoToNavigatorShown ||
+      final isFull =
+          isGoToNavigatorShown ||
           (!controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
           isSheetCoversHalfOfTheScreen;
 
       return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
     },
   );
-  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateBottomSheet>(function: (controller) {
-    final state = controller.state;
+  final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateSheet>(
+    function: (controller) {
+      final state = controller.state;
 
-    if (state == ThreeStateBottomSheet.expanded) {
-      return Colors.black.withOpacity(.4);
-    }
-    if (state == ThreeStateBottomSheet.open) {
-      return Colors.black.withOpacity(.4 * controller.interpolation);
-    }
-    return null;
-  });
+      if (state == ThreeStateSheet.expanded) {
+        return Colors.black.withOpacity(.4);
+      }
+      if (state == ThreeStateSheet.open) {
+        return Colors.black.withOpacity(.4 * controller.interpolation);
+      }
+      return null;
+    },
+  );
 
   final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
 
@@ -157,10 +158,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white.withOpacity(0),
-                              Colors.white.withOpacity(0.8),
-                            ],
+                            colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
                           ),
                         ),
                       ),
@@ -168,8 +166,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   ),
                 ),
                 barrierColorDelegate: barrierColorDelegate,
-                outside:
-                    MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
+                outside: MapDashboardControls(
+                  widget.bottomSheetController,
+                  key: const ValueKey('MapDashboardControls'),
+                ),
                 outsideOpacityDelegate: outsideOpacityDelegate,
                 sliver: SliverPersistentHeader(
                   delegate: DashboardHeaderDelegate(vsync: this),
@@ -187,14 +187,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                       context.router.push(const ContributeRoute());
                     },
                     gradientColors: isNationalDay
-                        ? [
-                            const Color(0xFF014850),
-                            const Color(0xFF00343A),
-                          ]
-                        : [
-                            const Color(0xFF4EC9C0),
-                            const Color(0xFF2AB3A9),
-                          ],
+                        ? [const Color(0xFF014850), const Color(0xFF00343A)]
+                        : [const Color(0xFF4EC9C0), const Color(0xFF2AB3A9)],
                     title: context.l10n.contribute,
                     subtitle: context.l10n.buildBaladyTogether,
                   ),
@@ -279,10 +273,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                         gradient: const LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Color(0xff00343A),
-                          ],
+                          colors: [Colors.transparent, Color(0xff00343A)],
                         ),
                         image: DecorationImage(
                           image: Assets.images.backgroundOrnamentSaudiday.provider(),
@@ -328,8 +319,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     scaleValue = 0.0;
                   }
 
-                  final double _baseBottom =
-                      (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(0.0, double.infinity);
+                  final double _baseBottom = (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(
+                    0.0,
+                    double.infinity,
+                  );
                   return Positioned(
                     bottom: _baseBottom,
                     child: scaleValue <= 0.0
@@ -380,18 +373,12 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Quran_Show_All_Surahs_Page",
-    );
+    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "islamicservice", path: "#Quran_Show_All_Surahs_Page");
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Athkar_Page",
-    );
+    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "islamicservice", path: "#Athkar_Page");
   }
 
   void _openFreeRoam() {
@@ -422,11 +409,12 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   void _openSnapAndSend() {
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
-    Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
-        action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
-    sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "snapandsend",
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
+      action: MetricAction.tap.name,
+      group: MetricsConstants.exploreTag,
     );
+    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "snapandsend");
   }
 
   void _scrollListenHandler() {
@@ -434,13 +422,9 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
     Future.delayed(Duration.zero, () {
       if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
-        ref.read(mapControlsProvider.notifier).update(
-              MapControlsStateDashboard(),
-            );
+        ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
       } else {
-        ref.read(mapControlsProvider.notifier).update(
-              MapControlsStateIdle(),
-            );
+        ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
       }
     });
   }

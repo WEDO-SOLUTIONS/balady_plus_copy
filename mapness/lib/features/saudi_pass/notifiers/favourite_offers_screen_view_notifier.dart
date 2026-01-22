@@ -15,7 +15,7 @@ class FavouriteOffersScreenViewNotifier extends OffersViewNotifier implements Fa
   bool get isFavoritesOnly => true;
 
   @override
-  void tapBack(BuildContext context) => context.router.popForced();
+  void tapBack(BuildContext context) => context.router.pop();
 
   @override
   Future<T?> tapGotoAllOffers<T>(BuildContext context) async => context.router.push(OffersScreenViewRoute());

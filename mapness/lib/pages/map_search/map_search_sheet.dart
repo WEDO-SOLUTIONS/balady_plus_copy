@@ -310,7 +310,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         )
         .removeAllMarkers();
     ref.read(searchInRectProvider(_scope).notifier).update();
-    context.router.popForced();
+    context.router.pop();
   }
 
   void _collapseBottomSheet() {

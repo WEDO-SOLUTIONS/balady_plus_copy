@@ -108,7 +108,7 @@ class RoutingSearchResults extends ConsumerWidget {
           ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(item),
               );
-          context.router.popForced(RoutePointDirectoryObject(item));
+          context.router.pop(RoutePointDirectoryObject(item));
         },
       ),
     );

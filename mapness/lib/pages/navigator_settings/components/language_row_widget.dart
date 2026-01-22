@@ -24,7 +24,7 @@ class LanguageRowWidget extends ConsumerWidget {
     return ContentRow(
       onTap: () {
         ref.read(soundSettingsProvider.notifier).switchLanguage(currentVoiceLanguage: languageCode);
-        context.router.popForced();
+        context.router.pop();
       },
       options: ContentRowOptions(
         title: _getTitle(context, currentLanguage),

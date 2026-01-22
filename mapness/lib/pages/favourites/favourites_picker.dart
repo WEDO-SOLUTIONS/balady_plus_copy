@@ -32,7 +32,7 @@ class FavouritesPickerPage extends ConsumerWidget {
       return ErrorSheetWidget(
         buttonLabel: context.l10n.tryAgain,
         onRetry: () => ref.invalidate(favouriteCacheProvider),
-        onClose: (_) => context.router.popForced(),
+        onClose: (_) => context.router.pop(),
       );
     }
     final state = asyncState.requireValue;
@@ -68,7 +68,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          context.router.popForced();
+                          context.router.pop();
                         },
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
@@ -120,7 +120,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                                 index == (state.items.length - 1) ? const EdgeInsets.only(bottom: 8) : EdgeInsets.zero,
                             child: FavouriteItemWidget(
                               key: ValueKey(item.id),
-                              onTap: () => context.router.popForced(item),
+                              onTap: () => context.router.pop(item),
                               isEditing: false,
                               isDeletable: false,
                               isLongPressEnabled: false,

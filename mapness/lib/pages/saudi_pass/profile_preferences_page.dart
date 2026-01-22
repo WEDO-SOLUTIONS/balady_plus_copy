@@ -36,7 +36,7 @@ class ProfilePreferencesPage extends ConsumerWidget {
     final colors = context.colors;
 
     void popWithPreferences() {
-      context.router.popForced(ref.read(getProfilePreferencesProvider.future));
+      context.router.pop(ref.read(getProfilePreferencesProvider.future));
     }
 
     ref.listen(setProfilePreferencesProvider, (prev, next) {

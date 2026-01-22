@@ -73,10 +73,10 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
     }
 
     if (context.router.canPop()) {
-      context.router.popForced();
+      context.router.pop();
     }
 
-    context.router.navigateNamed(location);
+    context.router.navigatePath(location);
   }
 
   /// Handles the network link action by opening the specified URL.

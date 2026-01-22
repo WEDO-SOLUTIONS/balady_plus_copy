@@ -62,7 +62,7 @@ class ParkingDialogPage extends HookConsumerWidget {
               AppButton(
                 buttonColorScheme: ButtonColorScheme.neutral,
                 primaryIcon: SystemIcons.close,
-                onTap: () => context.router.popForced(),
+                onTap: () => context.router.pop(),
               ),
             ],
           ),

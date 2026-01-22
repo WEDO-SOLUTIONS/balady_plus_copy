@@ -64,7 +64,7 @@ class Auth extends _$Auth {
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
       // TODO: When authorized send it to [authorizedNotifier]
-      final previousUserInfo = state.valueOrNull;
+      final previousUserInfo = state.value;
       final newUserInfo = event.userInfo;
 
       // Check if authorization state changed
