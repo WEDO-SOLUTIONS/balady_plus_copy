@@ -47,7 +47,7 @@ class DgisMapInitializer {
                 customSink: nil
             ),
             httpOptions: HttpOptions(useCache: true),
-            vendorConfig: sdkVendorConfig
+            // vendorConfig: sdkVendorConfig
         )
     }
     
