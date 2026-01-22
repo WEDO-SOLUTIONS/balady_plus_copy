@@ -34,11 +34,10 @@ class ParkingLotRow extends ConsumerWidget {
     final isSelected = type == state.parkingFilter;
     return ContentRow(
       onTap: () async {
-        if (ref.read(activeLayerProvider) != LayerType.parkingLots) {
-          layersControls.handleTap(LayerType.parkingLots);
-        }
-
         await parkingDetailsNotifier.setParkingFilter(type);
+        if (ref.read(activeLayerProvider) != LayerType.parkingLots) {
+          await layersControls.enableParking();
+        }
       },
       options: ContentRowOptions(
         padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),

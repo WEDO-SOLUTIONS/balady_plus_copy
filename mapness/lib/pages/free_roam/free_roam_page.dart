@@ -236,7 +236,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> with WidgetsBindingO
                     alignment: isPortrait ? AlignmentDirectional.center : AlignmentDirectional.bottomStart,
                     child: RoadPanel(
                       isLoading: isLoading,
-                      onSearch: () => context.router.push(NaviSearchRoute()),
+                      onSearch: isPortrait ? () => context.router.push(NaviSearchRoute()) : null,
                       onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
                       onOpenSheet: () => context.router.push(const RoadPanelSheetRoute()),
                     ),

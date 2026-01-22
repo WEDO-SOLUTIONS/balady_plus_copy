@@ -126,7 +126,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             map: map,
             sdk: self.sdk,
             eventChannel: eventChannel,
-            navigationHandler: navigationHandler!
+            navigationHandler: navigationHandler!,
+            indoorControlHandler: indoorControlHandler
         )
         
         self.searchHandler = SearchHandler(
