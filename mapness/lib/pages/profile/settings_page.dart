@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_features/auth_quick_access_biometric_widget/widgets/auth_quick_access_biometric_widget.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
-import 'package:balady_plus/app/features/accecipilities/accessibility_controller.dart';
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/accecipilities/presentation/pages/accessibility_settings_page.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -33,7 +33,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final controller = p.Provider.of<AccessibilityController>(context);
+    final themeController = p.Provider.of<BaladyThemeNotifier>(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -101,7 +101,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       children: [
                         ContentRow(
                           onTap: () =>
-                              controller.toggleDarkMode(!controller.darkMode),
+                              themeController.toggleTheme(!themeController.isDarkMode),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.brightness_2_rounded,
@@ -113,9 +113,9 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               customToggleBuilder: (
                                       {required onToggle, bool? initial}) =>
                                   CupertinoSwitch(
-                                value: controller.darkMode ?? false,
+                                value: themeController.isDarkMode,
                                 onChanged: (value) {
-                                  controller.toggleDarkMode(value);
+                                  themeController.toggleTheme(value);
                                   onToggle?.call(value);
                                 },
                                 activeColor: context.colors.accentDefault,

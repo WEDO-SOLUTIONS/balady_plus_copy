@@ -96,7 +96,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
 
   @override
   Widget build(BuildContext context) {
-    MiniApp dashboard = getMiniAppByServiceId("Dashboard");
+    // MiniApp dashboard = getMiniAppByServiceId("Dashboard");
     return Navigator(
       key: servicesNavigatorKey,
       initialRoute: '/',

@@ -15,7 +15,6 @@ class AccessibilityController extends ChangeNotifier {
   // Visual
   bool highContrast = false;
   bool grayscale = false;
-  bool darkMode = false;
   bool reduceAnimations = false;
   bool reduceTransparency = false;
 
@@ -80,7 +79,6 @@ class AccessibilityController extends ChangeNotifier {
 
       highContrast = prefs.getBool('highContrast') ?? false;
       grayscale = prefs.getBool('grayscale') ?? false;
-      darkMode = prefs.getBool('darkMode') ?? false;
       reduceAnimations = prefs.getBool('reduceAnimations') ?? false;
       reduceTransparency = prefs.getBool('reduceTransparency') ?? false;
 
@@ -116,7 +114,6 @@ class AccessibilityController extends ChangeNotifier {
 
       await prefs.setBool('highContrast', highContrast);
       await prefs.setBool('grayscale', grayscale);
-      await prefs.setBool('darkMode', darkMode);
       await prefs.setBool('reduceAnimations', reduceAnimations);
       await prefs.setBool('reduceTransparency', reduceTransparency);
 
@@ -173,12 +170,6 @@ class AccessibilityController extends ChangeNotifier {
 
   void toggleGrayscale(bool value) {
     grayscale = value;
-    _saveSettings();
-    notifyListeners();
-  }
-
-  void toggleDarkMode(bool value) {
-    darkMode = value;
     _saveSettings();
     notifyListeners();
   }
@@ -291,7 +282,6 @@ class AccessibilityController extends ChangeNotifier {
 
     highContrast = false;
     grayscale = false;
-    darkMode = false;
     reduceAnimations = false;
     reduceTransparency = false;
 
