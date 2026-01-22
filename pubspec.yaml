@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 #version: 3.30.3+425
-version: 3.12.21+417
+version: 3.121.21+417
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -164,14 +164,9 @@ dependencies:
     path: urbi_map/dgis_map
 
   # Mapness
-# todo todo
   balady_uikit:
-#    path: ../balady_uikit
-    git:
-      url: git@github.com:URBI-service/balady_uikit.git
-      ref: flutter-upgrade/3.38.5
-#    hosted: https://baladyapp-unpub.urbi.ae/
-#    version: 4.1.6
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 5.0.0
 
   sheetify: ^1.1.3
 
@@ -198,14 +193,9 @@ dependencies:
 
 
   ############################################################
-  # todo todo
   balady_authorization:
-#    path: ../balady_authorization
-    git:
-      url: git@github.com:URBI-service/balady_authorization.git
-      ref: flutter-upgrade/3.38.5
-#    hosted: https://baladyapp-unpub.urbi.ae/
-#    version: ^0.0.69
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: ^1.0.0
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
