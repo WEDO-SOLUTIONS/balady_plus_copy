@@ -123,6 +123,17 @@ apply-patches:
     print_style '' 'yellow' 'remove splash screen to speed up development'
     git apply mapness/scripts/disable-splash-screen.patch || print_style '' 'red' 'could not remove splash screen appearance'
 
+apply-patches-ios:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    # print_style '' 'yellow' 'add abi filter'
+    # git apply .github/workflows/abi_filter.patch || print_style '' 'red' 'could not apply abi filter patch' #NOT USED ON IOS
+    print_style '' 'yellow' 'remove app version force update'
+    git apply mapness/scripts/disable-force-update.patch || print_style '' 'red' 'could not remove app version force update'
+    print_style '' 'yellow' 'remove splash screen to speed up development'
+    git apply mapness/scripts/disable-splash-screen.patch || print_style '' 'red' 'could not remove splash screen appearance'
+
 unapply-patches:
     #!/usr/bin/env bash
     set -euo pipefail

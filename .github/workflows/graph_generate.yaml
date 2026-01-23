@@ -3,7 +3,7 @@ name: Lakos graph generate
 on:
   push:
     branches:
-      - 'urbi-release-*'
+      - 'urbi-service/release-*'
 
 permissions:
   contents: write
