@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/features/poi_card/data/qr_license_repository.dart';
@@ -108,7 +108,7 @@ class PoiCardProvider extends _$PoiCardProvider {
         .timeout(
       const Duration(minutes: 1),
       onTimeout: () {
-        ref.read(appRouterProvider).popForced();
+        ref.read(appRouterProvider).pop();
         return null;
       },
     );

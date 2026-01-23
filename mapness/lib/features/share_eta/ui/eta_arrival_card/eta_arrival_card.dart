@@ -118,7 +118,7 @@ class EtaArrivalCard extends HookConsumerWidget {
 
   Future<void> _cancelEta(BuildContext context, WidgetRef ref) async {
     await ref.read(etaGeoSubscriberProvider.notifier).stopStreaming();
-    context.router.popForced();
+    context.router.pop();
   }
 
   double _getProgress(EtaInfoModel<dynamic>? streamData, ValueNotifier<int?> startDistance) {

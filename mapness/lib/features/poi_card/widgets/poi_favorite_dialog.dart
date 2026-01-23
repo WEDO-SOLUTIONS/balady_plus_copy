@@ -30,12 +30,12 @@ class PoiFavoriteDialogPage extends ConsumerStatefulWidget {
 
 class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
   late final scrollController = ToggleSheetController(
-    onClose: (_) => context.router.popForced(),
+    onClose: (_) => context.router.pop(),
   );
 
   void _withPop(Future<void> future) {
     unawaited(future);
-    context.router.popForced();
+    context.router.pop();
   }
 
   @override

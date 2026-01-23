@@ -58,7 +58,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     final supportingText = useState<String?>(null);
 
     void checkDirty() {
-      final stored = ref.read(parkingManageProvider).valueOrNull;
+      final stored = ref.read(parkingManageProvider).value;
       final images = ref.read(parkingImageProvider(isEdit: isEdit));
 
       final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
@@ -72,7 +72,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     }
 
     useEffect(() {
-      final stored = ref.read(parkingManageProvider).valueOrNull;
+      final stored = ref.read(parkingManageProvider).value;
       if (isEdit && stored != null) {
         textController.text = stored.comment;
         addressNotifier.value = stored.address;
@@ -126,7 +126,7 @@ class ParkingSpotPage extends HookConsumerWidget {
           alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
           child: const Icon(SystemIcons.arrowCornerLeftLarge),
         ),
-        onLeadingPressed: () => context.router.popForced(),
+        onLeadingPressed: () => context.router.pop(),
       ),
       body: SafeArea(
         child: Padding(
@@ -303,7 +303,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     ));
 
     callToast(context, latLng);
-    context.router.popUntilRouteWithName(BottomMenuRoute.name);
+    await context.router.maybePop();
   }
 
   void callToast(

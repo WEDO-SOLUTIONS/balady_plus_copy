@@ -19,7 +19,7 @@ class DefaultProfileImage extends ConsumerWidget {
       );
     }
     final userData = ref.read(authProvider);
-    final name = getFirstLetters(userData.valueOrNull);
+    final name = getFirstLetters(userData.value);
 
     return Container(
       width: dimension,

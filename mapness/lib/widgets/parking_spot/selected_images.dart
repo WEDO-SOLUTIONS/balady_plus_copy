@@ -52,6 +52,7 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
             if (_images.length < maxImages)
               AddImageButton(
                 onTap: () async {
+                  FocusManager.instance.primaryFocus?.unfocus();
                   final picked = await context.pushRoute<List<XFile>>(const AddPhotoRoute());
                   await imageProvider.onAddImages(picked);
                 },

@@ -208,4 +208,22 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
         .addParameterWithInt('result_count', resultCount)
         .build();
   }
+
+  @override
+  void isNavigationUser({bool isNavUser=false}) {
+    FlutterInsider.Instance.tagEvent('is_navigation_user')
+        .addParameterWithString('is_navigation_user', isNavUser?'1':'0')
+        .build();
+  }
+
+  @override
+  void poiContributionUsed({required String type})
+  {
+    FlutterInsider.Instance.tagEvent('contribution_used')
+        .addParameterWithString('event_name', 'poi_contribution_used')
+        .addParameterWithString('contribution_type', type)
+        .addParameterWithString('source', 'community')
+        .addParameterWithString('timestamp', now)
+        .build();
+  }
 }

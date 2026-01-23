@@ -36,7 +36,7 @@ class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
                   color: colors.foregroundDefault,
                 ),
                 leading: ActionModel(
-                  onPressed: () => context.router.popForced(),
+                  onPressed: () => context.router.pop(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),

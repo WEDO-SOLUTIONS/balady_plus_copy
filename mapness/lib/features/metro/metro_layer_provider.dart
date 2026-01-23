@@ -61,7 +61,7 @@ class MetroLayer extends _$MetroLayer {
   }
 
   Future<void> showMetro() async {
-    if (state.hasValue == false || state.valueOrNull == null || state.valueOrNull?.isEmpty == true) {
+    if (state.hasValue == false || state.value == null || state.value?.isEmpty == true) {
       return;
     }
 

@@ -1,15 +1,25 @@
 # yamllint disable rule:line-length
 ---
-name: 🔨🤖 Android Manual Build
+name: 🔨🤖 Android Build
 
 permissions: write-all
 
 concurrency:
-  # Ensure only one manual run per (branch + environment), cancel older ones
-  group: android-manual-${{ github.event.inputs.branch }}-${{ github.event.inputs.environment }}
+  # Ensure only one run per (branch + environment), cancel older ones
+  group: android-${{ github.event_name }}-${{ github.head_ref || github.ref_name || inputs.branch }}-${{ inputs.environment || 'auto' }}
   cancel-in-progress: true
 
 on:
+  pull_request:
+    types: [closed]
+    branches:
+      - "urbi"
+      - "urbi-service/release-*"
+    paths-ignore:
+      - "**.md"
+      - "doc/**"
+      - ".git/"
+      - ".vscode/"
   workflow_dispatch:
     inputs:
       branch:
@@ -21,47 +31,64 @@ on:
         description: "Environment / flavor"
         required: true
         type: choice
-        options:
-          - stg
-          - prod
-          - pre
+        options: [stg, prod, pre]
 
 jobs:
   build:
-    name: Build Android (manual)
-    runs-on: ubuntu-latest
-    # For self-hosted Linux runner, uncomment the line below and comment ubuntu-latest
-    # runs-on: [self-hosted, Linux]
+    name: Build Android (manual or PR merged)
+    runs-on: [self-hosted, macOS, ARM64]
     timeout-minutes: 60
 
+    # For PR: run only when merged. For manual: always.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true }}
+
     steps:
+      - name: Resolve build context (branch/env/ref)
+        id: ctx
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            BRANCH="${{ inputs.branch }}"
+            ENVIRONMENT="${{ inputs.environment }}"
+            CHECKOUT_REF="${{ inputs.branch }}"
+            BASE_BRANCH=""
+            HEAD_BRANCH=""
+          else
+          # pull_request closed + merged == true (guarded by job.if)
+          BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
+          HEAD_BRANCH="${{ github.event.pull_request.head.ref }}"
+          BRANCH="$HEAD_BRANCH"
+        
+          # Build merged result (exact commit that got merged into base)
+          CHECKOUT_REF="${{ github.event.pull_request.merge_commit_sha }}"
+        
+          # Temporary: always build stg
+          ENVIRONMENT="stg"
+          fi
+
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+          echo "environment=$ENVIRONMENT" >> "$GITHUB_OUTPUT"
+          echo "checkout_ref=$CHECKOUT_REF" >> "$GITHUB_OUTPUT"
+          echo "base_branch=$BASE_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "head_branch=$HEAD_BRANCH" >> "$GITHUB_OUTPUT"
+
+          echo "Resolved:"
+          echo "  event        = ${{ github.event_name }}"
+          echo "  checkout_ref = $CHECKOUT_REF"
+          echo "  branch       = $BRANCH"
+          echo "  environment  = $ENVIRONMENT"
+          [ -n "$BASE_BRANCH" ] && echo "  base_branch  = $BASE_BRANCH" || true
+          [ -n "$HEAD_BRANCH" ] && echo "  head_branch  = $HEAD_BRANCH" || true
+
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
         with:
-          # Checkout the branch selected in the manual trigger
-          ref: ${{ github.event.inputs.branch }}
-
-      - name: 🧹 Free disk space (aggressive)
-        run: |
-          echo "Before cleanup:"
-          df -h
-
-          # Remove large SDKs and tools that are not required for this build
-          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/share/boost /opt/hostedtoolcache/CodeQL
-
-          # Remove large Android SDK components we don't use here
-          sudo rm -rf /usr/local/lib/android/sdk/emulator || true
-          sudo rm -rf /usr/local/lib/android/sdk/system-images || true
-          sudo rm -rf /usr/local/lib/android/sdk/ndk || true
-          sudo rm -rf /usr/local/lib/android/sdk/cmdline-tools || true
-
-          # Clean up Docker images
-          docker image prune -f || true
-
-          echo "After cleanup:"
-          df -h
+          ref: ${{ steps.ctx.outputs.checkout_ref }}
 
       - name: Inject git variables
+        shell: bash
         run: |
           # Store last commit message as CI_GIT_COMMIT (used as "commit" info)
           echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
@@ -69,9 +96,15 @@ jobs:
           # Current date suffix used in artifact naming
           export CI_DATE=$(date '+%Y-%m-%d-%H-%M-%S')
 
-          # For manual workflow, branch comes from input
-          export CI_GIT_BRANCH="${{ github.event.inputs.branch }}"
-          export CI_IS_PR=""
+          # Branch (manual: input branch, PR: head branch)
+          export CI_GIT_BRANCH="${{ steps.ctx.outputs.branch }}"
+
+          # For manual workflow, CI_IS_PR empty; for PR build, set prefix
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            export CI_IS_PR="pr-"
+          else
+            export CI_IS_PR=""
+          fi
 
           # Load release version components from .release_version file
           source .release_version
@@ -82,95 +115,69 @@ jobs:
           echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
 
           # Generate a safe slug from branch name (replace non-alnum with '-')
-          CI_GIT_BRANCH_SLUG=$(echo -n ${CI_GIT_BRANCH} | tr --complement --squeeze-repeats '[:alnum:]' '-')
-
+          CI_GIT_BRANCH_SLUG=$(printf '%s' "$CI_GIT_BRANCH" | sed 's/[^[:alnum:]]\+/-/g; s/^-//; s/-$//')
           # Artifact suffix: [optional pr-] + branch slug + timestamp
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
+          echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
 
-      # Example: if you need SSH deploy keys for internal dependencies, uncomment this block
-      # - name: Setup requirements
-      #   env: # Use secrets as environment variables
-      #     BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
-      #     BALADY_AUTHORIZATION_DEPLOY_KEY: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY }}
-      #   run: |
-      #     # Decode and save UIKIT deploy key
-      #     echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
-      #     chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
-      #
-      #     # Decode and save AUTHORIZATION deploy key
-      #     echo "${BALADY_AUTHORIZATION_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-authorization.key
-      #     chmod 600 ${GITHUB_WORKSPACE}/.balady-authorization.key
+      - name: Setup Flutter
+        run: |
+          fvm use 3.38.5
 
-      - name: ⚙️ Setup Flutter
-        uses: subosito/flutter-action@v2
+      - name: "Setup just"
+        uses: extractions/setup-just@v2
         with:
-          flutter-version: "3.29.1"
-          channel: "stable"
-          cache: true
+          just-version: "1.25.2"
+
+      - name: "Prebuild"
+        env:
+          GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+        run: |
+          just locale_gen
 
       - name: ⚙️ Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
           java-version: "17.x"
-          cache: "gradle"
+          #cache: "gradle"
         id: java
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: 🤖🔨 Download strings from Localazy
-        uses: localazy/download@v1
-        with:
-          read_key: ${{ secrets.LOCALAZY_READ_KEY }}
-          write_key: ${{ secrets.LOCALAZY_WRITE_KEY }}
-
-      - name: 🤖🔨 Generate dart locale bindings
-        run: |
-          cd mapness
-          # Workaround for Localazy permissions issue on CI
-          sudo chown $(whoami):$(whoami) -R lib/l10n
-          mkdir -p lib/l10n/generated
-          flutter gen-l10n
-
       - name: 🤖🔨 Development setup dgis_map_platform_interface
         run: |
           cd urbi_map/dgis_map_platform_interface
-
-          # Ensure required directories for generated Pigeon code exist
           mkdir -p lib/src/pigeons/
           mkdir -p ../dgis_map/android/src/main/kotlin/com/dgis/map/map_api
-
-          # Get dependencies and generate Pigeon interfaces
-          flutter pub get
-          flutter pub run pigeon --input pigeons/messages.dart
+          fvm flutter pub get
+          fvm flutter pub run pigeon --input pigeons/messages.dart
 
       - name: 🤖🔨 Development setup dgis_map
         env:
-          # Secret used during build_runner or private access if required
           BALADY_DEVELOPERS_PASS: ${{ secrets.BALADY_DEVELOPERS_PASS }}
         run: |
           cd urbi_map/dgis_map
-          flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          fvm flutter pub get
+          fvm flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: 🤖🔨 Development setup mapness
         env:
-          # Allow cloning private repos without strict host key checking
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
         run: |
           cd mapness
-          flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          fvm flutter pub get
+          fvm flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Select Android build params
         id: select
+        shell: bash
         run: |
-          ENVIRONMENT="${{ github.event.inputs.environment }}"
+          ENVIRONMENT="${{ steps.ctx.outputs.environment }}"
           echo "Selected environment: ${ENVIRONMENT}"
 
-          # Map environment to flavor, entrypoint target, vendor config and build name prefix
           if [ "$ENVIRONMENT" = "stg" ]; then
             echo "flavor=stg" >> "$GITHUB_OUTPUT"
             echo "target=lib/main_stg.dart" >> "$GITHUB_OUTPUT"
@@ -196,6 +203,11 @@ jobs:
           echo "Vendor config: $(grep '^vendor_config=' $GITHUB_OUTPUT | cut -d= -f2)"
           echo "Build name prefix: $(grep '^build_name_prefix=' $GITHUB_OUTPUT | cut -d= -f2)"
 
+      - name: Ensure Flutter engine artifacts (Android) are present
+        shell: bash
+        run: |
+          fvm flutter precache --android --force
+
       - name: 🤖🔨 Build Android app
         env:
           FLAVOR: ${{ steps.select.outputs.flavor }}
@@ -208,7 +220,7 @@ jobs:
           echo "Vendor config: ${VENDOR_CONFIG}"
           echo "Build name prefix: ${BUILD_NAME_PREFIX}"
 
-          flutter build apk \
+          fvm flutter build apk \
             --target-platform android-arm64 \
             --flavor "${FLAVOR}" \
             --target "${TARGET}" \
@@ -218,18 +230,120 @@ jobs:
             --dart-define=GIT_COMMIT="${CI_GIT_COMMIT}" \
             --dart-define=VENDOR_CONFIG="${VENDOR_CONFIG}"
 
-          # Rename output APK to include environment-specific name and artifact suffix
           mv "build/app/outputs/flutter-apk/app-${FLAVOR}-release.apk" \
              "build/app/outputs/flutter-apk/${BUILD_NAME_PREFIX}-${CI_ARTIFACT_SUFFIX}.apk"
 
-      - name: 🤖🔨 Upload Android apk
+      - name: Get Graph access token (client_credentials)
+        id: token
+        run: |
+          set -euo pipefail
+          RESP="$(curl -sS -X POST \
+            -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "client_id=${{ secrets.SHAREPOINT_CLIENT_ID }}&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&client_secret=${{ secrets.SHAREPOINT_CLIENT_SECRET }}&grant_type=client_credentials" \
+            "https://login.microsoftonline.com/${{ secrets.SHAREPOINT_TENANT_ID }}/oauth2/v2.0/token")"
+          TOKEN="$(echo "$RESP" | python3 -c "import sys,json; print(json.loads(sys.stdin.read())['access_token'])")"
+          echo "token=$TOKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Upload large file to SharePoint (Graph upload session, chunked)
         id: upload_apk
-        uses: actions/upload-artifact@v4
-        with:
-          # Artifact name matches the final APK file name
-          name: ${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          compression-level: 0
-          path: build/app/outputs/flutter-apk/${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+        env:
+          TOKEN: ${{ steps.token.outputs.token }}
+          SITE_HOST: urbiae.sharepoint.com
+          SITE_PATH: /sites/DevArtifacts
+          DRIVE_NAME: Documents
+          DEST_FOLDER: android
+          LOCAL_FILE: build/app/outputs/flutter-apk/${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+          DEST_NAME: ${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
+          CHUNK_MB: "10"
+        run: |
+          set -euo pipefail
+
+          if [ ! -f "$LOCAL_FILE" ]; then
+            echo "LOCAL_FILE not found: $LOCAL_FILE"
+            exit 1
+          fi
+
+          echo "1) Resolve Site ID..."
+          SITE_JSON="$(curl -sS -H "Authorization: Bearer $TOKEN" \
+            "https://graph.microsoft.com/v1.0/sites/$SITE_HOST:$SITE_PATH")"
+          SITE_ID="$(echo "$SITE_JSON" | python3 -c "import sys,json; print(json.loads(sys.stdin.read())['id'])")"
+          echo "SITE_ID=$SITE_ID"
+
+          echo "2) Resolve Drive ID (document library) by name..."
+          DRIVES_JSON="$(curl -sS -H "Authorization: Bearer $TOKEN" \
+            "https://graph.microsoft.com/v1.0/sites/$SITE_ID/drives")"
+          DRIVE_ID="$(echo "$DRIVES_JSON" | python3 -c "import sys,json; data=json.loads(sys.stdin.read())['value']; name='$DRIVE_NAME'; matches=[d['id'] for d in data if d.get('name')==name]; print(matches[0] if matches else '')")"
+
+          if [ -z "$DRIVE_ID" ]; then
+            echo "Drive '$DRIVE_NAME' not found. Available drives:"
+            echo "$DRIVES_JSON" | python3 -c "import sys,json; print([d.get('name') for d in json.loads(sys.stdin.read()).get('value',[])])"
+            exit 1
+          fi
+
+          echo "DRIVE_ID=$DRIVE_ID"
+
+          FILE_SIZE="$(python3 -c "import os; print(os.path.getsize('$LOCAL_FILE'))")"
+          CHUNK_SIZE="$((CHUNK_MB * 1024 * 1024))"
+
+          echo "3) Create upload session..."
+          SESSION_JSON="$(curl -sS -X POST \
+            -H "Authorization: Bearer $TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"item\":{\"@microsoft.graph.conflictBehavior\":\"replace\",\"name\":\"$DEST_NAME\"}}" \
+            "https://graph.microsoft.com/v1.0/drives/$DRIVE_ID/root:/$DEST_FOLDER/$DEST_NAME:/createUploadSession")"
+
+          UPLOAD_URL="$(echo "$SESSION_JSON" | python3 -c "import sys,json; print(json.loads(sys.stdin.read()).get('uploadUrl',''))")"
+          if [ -z "$UPLOAD_URL" ]; then
+            echo "Failed to create upload session. Response:"
+            echo "$SESSION_JSON"
+            exit 1
+          fi
+
+          echo "4) Uploading $FILE_SIZE bytes in chunks of $CHUNK_SIZE bytes..."
+          OFFSET=0
+          PART=0
+
+          while [ "$OFFSET" -lt "$FILE_SIZE" ]; do
+            PART="$((PART + 1))"
+            END="$((OFFSET + CHUNK_SIZE - 1))"
+            if [ "$END" -ge "$FILE_SIZE" ]; then
+              END="$((FILE_SIZE - 1))"
+            fi
+
+            LEN="$((END - OFFSET + 1))"
+            echo "Chunk $PART: bytes $OFFSET-$END (len=$LEN)"
+
+            python3 -c "import sys; f=open('$LOCAL_FILE','rb'); f.seek($OFFSET); sys.stdout.buffer.write(f.read($LEN))" \
+              | curl -sS --http1.1 -X PUT \
+                  -H "Content-Length: $LEN" \
+                  -H "Content-Range: bytes $OFFSET-$END/$FILE_SIZE" \
+                  --data-binary @- \
+                  "$UPLOAD_URL" \
+              > /tmp/upload_resp.json
+
+            python3 -c "import json; d=json.load(open('/tmp/upload_resp.json','r',encoding='utf-8')); \
+              print('✅ Upload completed, item id:', d['id']) if 'id' in d else \
+              print('→ nextExpectedRanges:', d.get('nextExpectedRanges', [])[:2]) if 'nextExpectedRanges' in d else \
+              print('Response:', d)"
+
+            OFFSET="$((END + 1))"
+          done
+
+          ITEM_ID="$(python3 -c "import json; d=json.load(open('/tmp/upload_resp.json','r',encoding='utf-8')); print(d.get('id',''))")"
+          ARTIFACT_URL="$(python3 -c "import json; d=json.load(open('/tmp/upload_resp.json','r',encoding='utf-8')); print(d.get('webUrl',''))")"
+
+          if [ -z "$ITEM_ID" ] || [ -z "$ARTIFACT_URL" ]; then
+            echo "Upload finished but could not read final item id/webUrl."
+            echo "Last response:"
+            cat /tmp/upload_resp.json
+            exit 1
+          fi
+
+          echo "item-id=$ITEM_ID" >> "$GITHUB_OUTPUT"
+          echo "artifact-url=$ARTIFACT_URL" >> "$GITHUB_OUTPUT"
+
+          echo "Done."
+          echo "artifact-url=$ARTIFACT_URL"
 
       - name: 🔔 Send link to Microsoft Teams
         if: ${{ success() }}
@@ -241,22 +355,22 @@ jobs:
           ACTOR: ${{ github.actor }}
           BRANCH: ${{ env.CI_GIT_BRANCH }}
           GITHUB_EVENT_NAME: ${{ github.event_name }}
-          PR_TITLE: ""  # No PR context for manual workflow; keep empty
+          # PR title only exists on PR event
+          PR_TITLE: ${{ github.event.pull_request.title || '' }}
           ARTIFACT_NAME: ${{ steps.select.outputs.build_name_prefix }}-${{ env.CI_ARTIFACT_SUFFIX }}.apk
-          # Direct artifact URL from upload-artifact v4 (requires GitHub login to download)
           ARTIFACT_URL: ${{ steps.upload_apk.outputs.artifact-url }}
         run: |
-          # Use blue color for success, orange-red for non-success
           COLOR="0076D7"; [ "$JOB_STATUS" != "success" ] && COLOR="D83B01"
 
-          # No PR line for manual workflow, leave empty
           PR_LINE=""
+          if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+            PR_URL="${{ github.event.pull_request.html_url }}"
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+            PR_LINE="**Pull request**: [#${PR_NUMBER}](${PR_URL})\n\n"
+          fi
 
-          # ---- Extract task id (e.g. UBS-23) from branch name or PR title ----
           TASK_ID=""
-          # Try to extract task id from branch name (supports slashes)
           TASK_ID=$(echo "$BRANCH"   | grep -oE '[A-Z]+-[0-9]+' | head -n1 || true)
-          # Fallback: extract task id from PR title (will usually be empty here)
           if [ -z "$TASK_ID" ] && [ -n "$PR_TITLE" ]; then
             TASK_ID=$(echo "$PR_TITLE" | grep -oE '[A-Z]+-[0-9]+' | head -n1 || true)
           fi
@@ -266,26 +380,23 @@ jobs:
             TASK_URL="https://urbi-flutter-team.youtrack.cloud/issue/${TASK_ID}"
             TASK_LINE="**Task**: [${TASK_ID}](${TASK_URL})\n"
           fi
-          # -------------------------------------------------------------------
 
-          # Teams MessageCard payload with placeholders to replace
           PAYLOAD="$(cat <<'EOF'
           {
             "@type": "MessageCard",
             "@context": "https://schema.org/extensions",
             "themeColor": "__COLOR__",
-            "summary": "Android manual build",
-            "title": "📦 Android manual build — __STATUS__",
+            "summary": "Android build",
+            "title": "📦 Android build — __STATUS__",
             "sections": [
               {
-                "text": "__PR_LINE____TASK_LINE__**Branch**: [__BRANCH__](__REPO_URL__/tree/__BRANCH__)\n**Author**: __ACTOR__\n**Artifact**: [__ARTIFACT_NAME__](__ARTIFACT_URL__)\n**Run**: [Open run](__RUN_URL__)"
+                "text": "__PR_LINE____TASK_LINE__**Branch**: [__BRANCH__](__REPO_URL__/tree/__BRANCH__)\n\n**Author**: __ACTOR__\n\n**Artifact**: [__ARTIFACT_NAME__](__ARTIFACT_URL__)\n\n**Run**: [Open run](__RUN_URL__)"
               }
             ]
           }
           EOF
           )"
 
-          # Replace placeholders in the JSON payload
           PAYLOAD="${PAYLOAD/__COLOR__/$COLOR}"
           PAYLOAD="${PAYLOAD/__STATUS__/$JOB_STATUS}"
           PAYLOAD="${PAYLOAD/__PR_LINE__/$PR_LINE}"
@@ -297,13 +408,11 @@ jobs:
           PAYLOAD="${PAYLOAD/__ARTIFACT_NAME__/$ARTIFACT_NAME}"
           PAYLOAD="${PAYLOAD/__ARTIFACT_URL__/$ARTIFACT_URL}"
 
-          # Send message to Microsoft Teams incoming webhook
           curl -sS -H 'Content-Type: application/json' -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL"
 
       - name: 🧹 Cleanup workspace
         if: ${{ success() }}
         run: |
-          # Clean project build outputs and Gradle caches to free disk space
           rm -rf build/* || true
           rm -rf ~/.gradle/caches/build-cache-* || true
           df -h

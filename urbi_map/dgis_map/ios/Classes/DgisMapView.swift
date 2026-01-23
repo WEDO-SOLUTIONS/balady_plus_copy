@@ -126,7 +126,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             map: map,
             sdk: self.sdk,
             eventChannel: eventChannel,
-            navigationHandler: navigationHandler!
+            navigationHandler: navigationHandler!,
+            indoorControlHandler: indoorControlHandler
         )
         
         self.searchHandler = SearchHandler(
@@ -211,6 +212,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func moveCameraToActiveRoute(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
       self.routeHandler?.moveCameraToActiveRouteIndex(UInt64(index))
          completion(Result.success(()))
+    }
+    
+    func setActiveRouteIndex(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.routeHandler?.setActiveRouteIndex(UInt64(index))
+        completion(Result.success(()))
     }
     
     func loadStyles(asset: String, completion: @escaping (Result<Void, any Error>) -> Void) {

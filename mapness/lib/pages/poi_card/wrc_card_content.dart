@@ -190,7 +190,7 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
             ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
             ref.read(parkingManageProvider.notifier).restoreMarker();
             ref.read(highlightProvider.notifier).removeHighlight(wrcDirectoryObject.id!);
-            context.router.popForced();
+            context.router.pop();
           },
           subTitleExtraInlineSpans: [
             if (poiHeaderSubTitle != null) ...[
@@ -230,12 +230,10 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(wrcDirectoryObject.title, style: context.textStyles.bodyLargeSemiBold),
-                              if (address != null) ...[
-                                Text(
-                                  address,
-                                  style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
-                                ),
-                              ],
+                              Text(
+                                address,
+                                style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
+                              ),
                               const SizedBox(height: Spacing.$1_5x),
                             ],
                           ),

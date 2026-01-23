@@ -191,7 +191,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
           markerType: FavouriteItemMarkerType.home,
         ),
       );
-      return ref.refresh(favouriteCacheProvider).valueOrNull?.home;
+      return ref.refresh(favouriteCacheProvider).value?.home;
     }
     return home;
   }
@@ -224,7 +224,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     RouteParamsPoint startLocation,
     RouteParamsPoint finishLocation,
   ) async {
-    final routes = current.valueOrNull;
+    final routes = current.value;
     final route = routes?.firstOrNull;
     if (route == null) {
       return;

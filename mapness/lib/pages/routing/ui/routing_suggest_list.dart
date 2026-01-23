@@ -63,7 +63,7 @@ class RoutingSuggestList extends ConsumerWidget {
                       'item': object.id?.objectId,
                     });
 
-                context.router.popForced(RoutePointDirectoryObject(object));
+                context.router.pop(RoutePointDirectoryObject(object));
               },
             ),
             itemCount: suggests.length,

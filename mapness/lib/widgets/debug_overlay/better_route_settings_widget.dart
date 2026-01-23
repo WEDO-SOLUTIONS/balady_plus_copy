@@ -9,7 +9,7 @@ class BetterRouteSettingsWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(betterRouteSettingsProvider).valueOrNull;
+    final settings = ref.watch(betterRouteSettingsProvider).value;
     if (settings == null) {
       return const SizedBox.shrink();
     }

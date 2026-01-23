@@ -1,0 +1,3 @@
+# Gemfile
+gem "adsedare", path: "#{ENV['HOME']}/adsedare_libraries/AdSedare"
+gem "adsedare_mattermost", path: "#{ENV['HOME']}/adsedare_libraries/AdSedareMattermost"

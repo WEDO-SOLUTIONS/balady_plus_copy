@@ -10,9 +10,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 part 'ab_route_add_point.dart';
-
 part 'ab_route_model.dart';
-
 part 'ab_route_row_decoration.dart';
 
 /// A widget for displaying a list of items with drag-and-drop reordering functionality.
@@ -56,27 +54,32 @@ class _ABRouteState extends State<ABRoute> {
 
   @override
   Widget build(BuildContext context) {
-    final color = widget.backgroundColor ??
-        (isReordering ? context.colors.backgroundSurface5 : context.colors.backgroundSurface1);
+    final color =
+        widget.backgroundColor ??
+        (isReordering
+            ? context.colors.backgroundSurface5
+            : context.colors.backgroundSurface1);
 
     final children = <Widget>[];
     for (var i = 0; i < widget.items.length; i++) {
       final isLast = i == widget.items.length - 1;
       children.add(
         _ABElement(
-          key: ValueKey(widget.items[i].title),
+          key: ValueKey('${widget.items[i].title}_$i'),
           backgroundColor: color,
           index: i,
           item: widget.items[i],
           onTap: () => widget.onTap(i),
-          onDeletePressed: widget.onDeletePressed == null ? null : () => widget.onDeletePressed?.call(i),
+          onDeletePressed: widget.onDeletePressed == null
+              ? null
+              : () => widget.onDeletePressed?.call(i),
           isDragged: false,
           isLast: isLast,
           subtitle: isLast
               ? widget.arrivalPointSubtitle
               : i == 0
-                  ? widget.startPointSubtitle
-                  : null,
+              ? widget.startPointSubtitle
+              : null,
         ),
       );
     }
@@ -118,10 +121,14 @@ class _ABRouteState extends State<ABRoute> {
                           decoration: BoxDecoration(
                             boxShadow: Shadows.s,
                             color: context.colors.foregroundSurfacePush,
-                            borderRadius: BorderRadius.circular(RadiusBorder.ml),
+                            borderRadius: BorderRadius.circular(
+                              RadiusBorder.ml,
+                            ),
                           ),
                           child: _ABElement(
-                            key: ValueKey(widget.items[index].title),
+                            key: ValueKey(
+                              '${widget.items[index].title}_$index',
+                            ),
                             index: index,
                             item: widget.items[index],
                             onTap: () => widget.onTap(index),
@@ -131,8 +138,8 @@ class _ABRouteState extends State<ABRoute> {
                             subtitle: isLast
                                 ? widget.arrivalPointSubtitle
                                 : index == 0
-                                    ? widget.startPointSubtitle
-                                    : null,
+                                ? widget.startPointSubtitle
+                                : null,
                           ),
                         ),
                       );
@@ -181,12 +188,32 @@ class _ABElement extends StatelessWidget {
     final Widget iconWidget;
 
     if (index == 0 || isLast) {
-      final color = isLast ? context.colors.extra01Default : context.colors.accentDefault;
-      final icon = item.isMyLocation ? TransportIcons.locationFullLTR : GeneralIcons.bulletCircleSolid;
+      final color = isLast
+          ? context.colors.extra01Default
+          : context.colors.accentDefault;
+      final icon = item.isMyLocation
+          ? TransportIcons.locationFullLTR
+          : GeneralIcons.bulletCircleSolid;
 
       iconWidget = Icon(icon, color: color, size: 24);
     } else {
-      iconWidget = Icon(StopNumbersIcons.fromIndex(index), color: context.colors.extra01Default, size: 24);
+      // For intermediate points, the icon number should match the intermediate point position (1-10)
+      // Index 1 = first intermediate point (icon 1), index 2 = second intermediate point (icon 2), etc.
+      final iconData = StopNumbersIcons.fromIndex(index);
+      if (iconData != null) {
+        iconWidget = Icon(
+          iconData,
+          color: context.colors.extra01Default,
+          size: 24,
+        );
+      } else {
+        // Fallback: use a default icon if the index is out of range
+        iconWidget = Icon(
+          GeneralIcons.bulletCircleSolid,
+          color: context.colors.extra01Default,
+          size: 24,
+        );
+      }
     }
 
     return AnimatedSize(

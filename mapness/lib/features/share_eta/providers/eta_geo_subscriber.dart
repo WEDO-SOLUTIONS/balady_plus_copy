@@ -51,23 +51,18 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   bool _lastConnectionStatus = true;
   bool _isRoutePresent = false;
   bool _isStreamStopped = false;
-  EtaRoute? _lastActiveRoute;
   Timer? _routeZoomingTimer;
   Timer? _lastActiveMessageReceiverTimer;
 
   DateTime? _lastActiveMessageTime;
+  ProviderSubscription? _routeSubscription;
 
   @override
   (EtaInfoModel<dynamic>?, EtaInfoModel<EtaRoutePayload?>?) build() {
     final settings = MapObjectManagerSettings.eta();
 
     ref
-      ..watch(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-        ),
-      )
+      ..watch(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId))
       ..listen(websocketErrorHandlerProvider, (_, current) async {
         final (code, reason) = current;
         await _onErrorStatus(code, reason);
@@ -118,8 +113,6 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     } catch (e) {
       logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
     } finally {
-      _lastActiveRoute = null;
-
       // Stop active timers
       _routeZoomingTimer?.cancel();
       _routeZoomingTimer = null;
@@ -127,18 +120,19 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       _lastActiveMessageReceiverTimer?.cancel();
       _lastActiveMessageReceiverTimer = null;
       _lastActiveMessageTime = null;
+      _routeSubscription?.close();
+      _routeSubscription = null;
+
+      _isRoutePresent = false;
 
       final settings = MapObjectManagerSettings.eta();
       final mapObjectManager = ref.read(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-        ).notifier,
+        mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier,
       );
       unawaited(mapObjectManager.removeAllMarkers());
       // hide routes
       final dgisController = ref.read(dgisControllerProvider);
-      unawaited(dgisController.valueOrNull?.hideRoutes());
+      unawaited(dgisController.value?.hideRoutes());
 
       _removeFinishPin();
     }
@@ -156,11 +150,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     final envProvider = await ref.read(dgisEnvironmentProvider.future);
 
     try {
-      await EtaWebsocket().start(
-        streamId: streamId,
-        token: tokenId,
-        shareEtaApiUrl: envProvider.shareEtaApi,
-      );
+      await EtaWebsocket().start(streamId: streamId, token: tokenId, shareEtaApiUrl: envProvider.shareEtaApi);
       ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
 
       _routeZoomingTimer?.cancel();
@@ -173,7 +163,12 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
         if (payload?.route?.routeIndex != null && _isRoutePresent) {
           final index = payload!.route!.routeIndex!;
-          await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(index);
+          final dgisController = ref.read(dgisControllerProvider).value;
+          if (dgisController != null) {
+            // Set the active route index first, then move camera to it
+            await dgisController.setActiveRouteIndex(index);
+            await dgisController.moveCameraToActiveRoute(index);
+          }
         }
       });
 
@@ -218,22 +213,14 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     if (isAvailable) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await _processDrawMarker(
-          GeoPointWithElevationMessage(
-            latitude: payload.lat!,
-            longitude: payload.lon!,
-            elevation: 0,
-          ),
+          GeoPointWithElevationMessage(latitude: payload.lat!, longitude: payload.lon!, elevation: 0),
           _metaInfo?.payload?.user,
         );
       });
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await _processDrawUnavailableMarker(
-          GeoPointWithElevationMessage(
-            latitude: payload.lat!,
-            longitude: payload.lon!,
-            elevation: 0,
-          ),
+          GeoPointWithElevationMessage(latitude: payload.lat!, longitude: payload.lon!, elevation: 0),
           _metaInfo?.payload?.user,
         );
       });
@@ -279,7 +266,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     }
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        await ref.read(cameraPositionProvider.notifier).animateTo(
+        await ref
+            .read(cameraPositionProvider.notifier)
+            .animateTo(
               CameraPositionMessage(
                 point: GeoPointMessage(latitude: payload.lat!, longitude: payload.lon!),
                 zoom: 17,
@@ -336,36 +325,31 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
     _addFinishPin(finishPoint);
 
-    if (_lastActiveRoute == route) {
-      return;
-    }
-
-    _lastActiveRoute = route;
-
-    ref.listen(
-        routesProvider(
-          startPoint: startPoint,
-          finishPoint: finishPoint,
-          navType: type,
-          showOnlyActiveRoute: true,
-        ), (_, current) async {
-      if (current.valueOrNull?.isEmpty ?? false) {
-        _isRoutePresent = false;
-        return;
-      } else {
-        _isRoutePresent = true;
-        await ref.read(dgisControllerProvider).value?.moveCameraToActiveRoute(activeIndex);
-      }
-    });
+    _routeSubscription?.close();
+    _routeSubscription = ref.listen(
+      routesProvider(startPoint: startPoint, finishPoint: finishPoint, navType: type, showOnlyActiveRoute: true),
+      (_, current) async {
+        if (current.valueOrNull?.isEmpty ?? false) {
+          _isRoutePresent = false;
+          return;
+        } else {
+          _isRoutePresent = true;
+          final dgisController = ref.read(dgisControllerProvider).value;
+          if (dgisController != null) {
+            // Set the active route index first, then move camera to it
+            // activeIndex is guaranteed to be non-null due to check above
+            await dgisController.setActiveRouteIndex(activeIndex);
+            await dgisController.moveCameraToActiveRoute(activeIndex);
+          }
+        }
+      },
+    );
   }
 
   Future<void> _processDrawMarker(GeoPointWithElevationMessage point, User? user) async {
     final settings = MapObjectManagerSettings.eta();
     final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier,
     );
 
     final marker = await _getMarker(point, user);
@@ -377,10 +361,7 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   Future<void> _processDrawUnavailableMarker(GeoPointWithElevationMessage point, User? user) async {
     final settings = MapObjectManagerSettings.eta();
     final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier,
     );
 
     final marker = await _getUnavailableMarker(point, user);
@@ -526,32 +507,14 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   void _removeFinishPin() {
     final settings = MapObjectManagerSettings.selectedMarker();
-    ref
-        .read(
-          mapObjectManagerProvider(
-            named: settings.name,
-            layerId: settings.layerId,
-          ).notifier,
-        )
-        .removeAllMarkers();
+    ref.read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier).removeAllMarkers();
   }
 
   void _addFinishPin(RouteParamsPoint finishPoint) {
     final settings = MapObjectManagerSettings.selectedMarker();
     final marker = Markers.pinMarker(
-      GeoPointWithElevationMessage(
-        latitude: finishPoint.latitude,
-        longitude: finishPoint.longitude,
-        elevation: 1,
-      ),
+      GeoPointWithElevationMessage(latitude: finishPoint.latitude, longitude: finishPoint.longitude, elevation: 1),
     );
-    ref
-        .read(
-          mapObjectManagerProvider(
-            named: settings.name,
-            layerId: settings.layerId,
-          ).notifier,
-        )
-        .addMarker(marker);
+    ref.read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier).addMarker(marker);
   }
 }

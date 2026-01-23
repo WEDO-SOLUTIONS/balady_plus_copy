@@ -62,7 +62,7 @@ class ErrorSheetV2 extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: CustomCloseButton(
-                onClose: onClose ?? () => context.router.popForced(),
+                onClose: onClose ?? () => context.router.pop(),
               ),
             ),
             const SizedBox(height: 16),

@@ -59,7 +59,7 @@ class ErrorSheetWidget extends HookConsumerWidget {
           if (onBarrierTap != null) {
             onBarrierTap!.call();
           } else {
-            context.router.popForced();
+            context.router.pop();
           }
         },
         child: const SizedBox(

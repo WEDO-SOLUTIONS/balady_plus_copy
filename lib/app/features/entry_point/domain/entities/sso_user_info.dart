@@ -133,6 +133,14 @@ class SsoUserInfo extends Equatable {
     }
   }
 
+  /// This method returns the first letter of the first name and the last name
+  /// We need this method to display the abbreviated name in the profile image
+  String getAbbreviatedName() {
+    var firstName = CommonFunctions.isAppAR ? getFirstName() : getFirstNameEn();
+    var lastName = CommonFunctions.isAppAR ? getLastName() : getLastNameEn();
+    return '${firstName.isNotEmpty ? firstName[0] : ''}${lastName.isNotEmpty ? lastName[0] : ''}';
+  }
+
   String getIdType() {
     if (idNo != null) {
       if (idNo?.startsWith("1") ?? false) {

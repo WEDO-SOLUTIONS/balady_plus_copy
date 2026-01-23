@@ -35,7 +35,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
         durationMultiplier: 2,
         onClose: (_) {
           if (_parkingLotsController.isClosed) {
-            context.router.popForced();
+            context.router.pop();
           }
         });
     _parkingLotsController = ToggleSheetController(
@@ -78,7 +78,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
             barrierColorDelegate: barrierColorDelegate,
             sliver: LayersSheetContent(
               tapOnParkingLotsMenu: () => _showParkingLotsPanel(),
-              onClose: () => context.router.popForced(),
+              onClose: () => context.router.pop(),
             ),
           ),
           ToggleSheet(

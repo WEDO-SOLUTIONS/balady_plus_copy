@@ -39,7 +39,7 @@ class _StoriesScreenState extends ConsumerState<StoriesPage> {
     ref.read(storyServiceProvider.notifier).resumeUpdate();
 
     if (context.router.canPop()) {
-      context.router.popForced();
+      context.router.pop();
     }
   }
 

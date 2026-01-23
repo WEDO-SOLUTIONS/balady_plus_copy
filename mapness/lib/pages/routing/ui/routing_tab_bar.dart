@@ -16,6 +16,7 @@ class RouteTabBar extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
   final AsyncValue<PublicTransportVisibilityResult> publicTransportVisibility;
   final AsyncValue<List<RouteInfo>> routes;
+  final RouteSearchOptionsMessage? lockedNavType;
 
   const RouteTabBar({
     required this.onChanged,
@@ -23,6 +24,7 @@ class RouteTabBar extends ConsumerStatefulWidget {
     required this.points,
     required this.publicTransportVisibility,
     required this.routes,
+    this.lockedNavType,
     super.key,
   });
 
@@ -31,31 +33,48 @@ class RouteTabBar extends ConsumerStatefulWidget {
 }
 
 class _RouteTabBarState extends ConsumerState<RouteTabBar> {
-  @override
-  Widget build(BuildContext context) {
-    final carConnected = ref.watch(carConnectionProvider).maybeWhen(
-          data: (connected) => connected,
-          orElse: () => false,
-        );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minHeight: Spacing.$12x),
-        child: Row(
-          children: [
-            // when car connected, choice of route search options shouldn't be available to user
-            if (!carConnected) _getRouteSearchOptionsWidgets(context, widget.publicTransportVisibility),
-          ].insertBetween(Spacing.$2x.widthBox).toList(),
-        ),
-      ),
-    );
-  }
+  bool get _isCarConnected => ref.watch(carConnectionProvider).maybeWhen(
+        data: (connected) => connected,
+        orElse: () => false,
+      );
 
-  Widget _getRouteSearchOptionsWidgets(
-    BuildContext context,
-    AsyncValue<PublicTransportVisibilityResult> publicTransportRoutes,
-  ) {
-    final chips = [
+  bool get _isNavigationLocked => widget.lockedNavType != null;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: Spacing.$12x),
+          child: Row(
+            children: [
+              if (!_isCarConnected && !_isNavigationLocked) _buildRouteOptionsWidget(context),
+              if (!_isCarConnected && _isNavigationLocked) _buildLockedNavTypeWidget(context),
+            ].insertBetween(Spacing.$2x.widthBox).toList(),
+          ),
+        ),
+      );
+
+  Widget _buildLockedNavTypeWidget(BuildContext context) => Expanded(
+        child: TabsRow.v2(
+          onIndexChanged: (_) {},
+          tabsContent: [
+            TabsRowV2Content(
+              leadingIcon: TabsV2IconData(
+                widget.lockedNavType!.icon(
+                  context,
+                  hasPublicTransportData: false,
+                  isPedestrianBlocked: false,
+                  isOffline: false,
+                ),
+              ),
+              onTap: () {},
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildRouteOptionsWidget(BuildContext context) {
+    const chips = [
       RouteSearchOptionsMessage.car,
       RouteSearchOptionsMessage.publicTransport,
       RouteSearchOptionsMessage.pedestrian,
@@ -63,18 +82,19 @@ class _RouteTabBarState extends ConsumerState<RouteTabBar> {
 
     final errorPedestrian = widget.routes.error is WalkingDistanceException;
     final noInternetException = widget.routes.error is NoInternetException;
+    final hasPublicTransport = widget.publicTransportVisibility.asData?.value.hasPublicTransportRoutes ?? false;
 
     return Expanded(
       child: TabsRow.v2(
         initialIndex: chips.indexOf(widget.active),
-        onIndexChanged: (index) => {},
+        onIndexChanged: (_) {},
         tabsContent: chips
             .map(
               (chip) => TabsRowV2Content(
                 leadingIcon: TabsV2IconData(
                   chip.icon(
                     context,
-                    hasPublicTransportData: !(publicTransportRoutes.asData?.value.hasPublicTransportRoutes ?? false),
+                    hasPublicTransportData: !hasPublicTransport,
                     isPedestrianBlocked: errorPedestrian,
                     isOffline: noInternetException,
                   ),

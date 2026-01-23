@@ -3,7 +3,7 @@ name: Generate Changelog on Release Branch
 on:
   push:
     branches:
-      - 'urbi-release-*'
+      - 'urbi-service/release-*'
 
 permissions:
   contents: write

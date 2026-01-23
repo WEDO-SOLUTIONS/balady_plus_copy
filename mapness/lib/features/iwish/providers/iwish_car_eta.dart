@@ -9,4 +9,4 @@ class _IwishCarEta extends _$IwishCarEta {
   String build(IwishEntity iwish) => '17 min';
 }
 
-const iwishCarEtaProvider = _iwishCarEtaProvider;
+final iwishCarEtaProvider = _iwishCarEtaProvider;

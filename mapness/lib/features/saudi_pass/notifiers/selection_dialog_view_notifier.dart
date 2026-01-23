@@ -32,11 +32,11 @@ abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier
   @override
   void tapSave(BuildContext context) {
     selectionDialogApply(selected);
-    context.router.popForced();
+    context.router.pop();
   }
 
   @override
-  void tapCross(BuildContext context) => context.router.popForced();
+  void tapCross(BuildContext context) => context.router.pop();
 }
 
 abstract class BaseSelectionView<T, S> extends ChangeNotifier

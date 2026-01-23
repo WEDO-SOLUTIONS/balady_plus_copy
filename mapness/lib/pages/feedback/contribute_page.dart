@@ -21,7 +21,7 @@ class _ContributePageState extends State<ContributePage> {
         appBar: BaladyTopBar.iconAndText(
           leading: ActionModel(
             icon: SystemIcons.arrowCornerLeftLarge,
-            onPressed: () => context.router.popForced(),
+            onPressed: () => context.router.pop(),
           ),
           title: context.l10n.contributePageTitle,
         ),
