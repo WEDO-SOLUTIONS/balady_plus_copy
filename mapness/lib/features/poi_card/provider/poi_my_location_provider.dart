@@ -71,11 +71,11 @@ class PoiMyLocation extends _$PoiMyLocation {
         String? address = data.firstPage!.items.firstOrNull?.makeAddress();
         address ??= coordinatesAddress;
 
-        state = AsyncValue.data(state.valueOrNull?.copyWith(address: address));
+        state = AsyncValue.data(state.value?.copyWith(address: address));
       }
     }));
 
-    final userData = ref.watch(authProvider).valueOrNull;
+    final userData = ref.watch(authProvider).value;
 
     final language = ref.read(appLanguageProvider);
     final title = userData?.getLocalizedFirstAndLastName(language);

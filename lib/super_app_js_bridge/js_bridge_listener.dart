@@ -25,6 +25,8 @@ import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachmen
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_preferences_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/location_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
 import 'package:dgis_map/library.dart';
@@ -47,10 +49,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   MiniAppsEngineBloc miniAppsEngineBloc;
   ValueNotifier<bool> isLoading;
 
-  JsBridgeListener({
-    required this.miniAppsEngineBloc,
-    required this.isLoading,
-  }) : super();
+  JsBridgeListener({required this.miniAppsEngineBloc, required this.isLoading})
+    : super();
 
   @override
   void register() {
@@ -154,8 +154,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             await sl<NewMiniAppLogicCubit>()
                 .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
                 .then((result) {
-              response = result!;
-            });
+                  response = result!;
+                });
           } else {
             response = BaseResponse(
               code: 401,
@@ -175,9 +175,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
     } else if (miniAppsEngineBloc.miniApp.latestVersion?.otpLogin == true &&
         !CommonProperties.isLoggedIn) {
-      CommonFunctions.onLogin(
-        mainPage: RouteName.miniAppsMainScreen,
-      );
+      CommonFunctions.onLogin(mainPage: RouteName.miniAppsMainScreen);
       response = BaseResponse(
         code: 401,
         eventName: "getAccessToken",
@@ -188,8 +186,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       await sl<NewMiniAppLogicCubit>()
           .getMiniAppAcessToken(miniAppsEngineBloc.miniApp)
           .then((result) {
-        response = result!;
-      });
+            response = result!;
+          });
     }
     handler.complete(response.jsonEncodeModel());
   }
@@ -274,9 +272,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               code: 200,
               eventName: "getCookies",
               message: "success",
-              data: CookiesModel(
-                cookies: r,
-              ),
+              data: CookiesModel(cookies: r),
             );
             handler.complete(response.jsonEncodeModel());
           },
@@ -289,9 +285,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                 code: 200,
                 message: "success",
                 eventName: "getCookies",
-                data: AccessTokenModel(
-                  accessToken: CommonProperties.token,
-                ),
+                data: AccessTokenModel(accessToken: CommonProperties.token),
               );
             }
           },
@@ -357,7 +351,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(
-            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
+          serviceKey,
+          RequirementEnum.navigateToSuperAppScreen.name,
+        ) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String && msg.isNotEmpty) {
@@ -399,7 +395,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
 
     if (checkAppRequirement(
-            serviceKey, RequirementEnum.navigateToSuperAppScreen.name) ==
+          serviceKey,
+          RequirementEnum.navigateToSuperAppScreen.name,
+        ) ==
         true) {
       late BaseResponse response;
       if (msg != null && msg is String) {
@@ -566,10 +564,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           final fileBytes = await File(path).readAsBytes();
           String base64File = base64Encode(fileBytes);
           JsFilesModel file = JsFilesModel(
-              fileBase64: base64File,
-              fileName: fileName,
-              // fileBytes:fileBytes,
-              filePath: path);
+            fileBase64: base64File,
+            fileName: fileName,
+            // fileBytes:fileBytes,
+            filePath: path,
+          );
           response = BaseResponse(
             code: 200,
             eventName: "openImagePicker",
@@ -603,10 +602,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.camera.name) == true) {
       late BaseResponse response;
-      var fileData =
-          await NavigationService.navigatorKey.currentState!.pushNamed(
-        RouteName.vdCameraPage,
-      );
+      var fileData = await NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.vdCameraPage);
       if (fileData != null) {
         response = BaseResponse(
           code: 200,
@@ -659,11 +656,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     final String serviceKey =
         data["serviceKey"]?.toString() ?? "municipalservice";
     final String? attachmentSource = data["attachmentSource"]?.toString();
-    final List<String> attachmentExtension = data["attachmentExtension"] != null
-        ? (data["attachmentExtension"] as List<dynamic>)
-            .map((e) => e.toString())
-            .toList()
-        : [];
+    final List<String> attachmentExtension =
+        data["attachmentExtension"] != null
+            ? (data["attachmentExtension"] as List<dynamic>)
+                .map((e) => e.toString())
+                .toList()
+            : [];
 
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
@@ -684,9 +682,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName = path.isNotEmpty
-                  ? path.split('/').last
-                  : ('attachment_name').tr();
+              String fileName =
+                  path.isNotEmpty
+                      ? path.split('/').last
+                      : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
 
@@ -818,19 +817,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               MaterialPageRoute(
                 builder: (_) {
                   return Scaffold(
-                    appBar: AppBar(
-                      title: const Text(""),
-                    ),
-                    body: SfPdfViewer.network(
-                      data["url"],
-                    ),
+                    appBar: AppBar(title: const Text("")),
+                    body: SfPdfViewer.network(data["url"]),
                   );
                 },
               ),
             );
           } else {
-            CommonFunctions.openBaladyWebView(data["url"],
-                needLogin: data["needLogin"] ?? true);
+            CommonFunctions.openBaladyWebView(
+              data["url"],
+              needLogin: data["needLogin"] ?? true,
+            );
           }
         } else {
           BaseResponse response = BaseResponse(
@@ -864,9 +861,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         NavigationService.navigatorKey.currentState!.push(
           MaterialPageRoute(
             builder: (_) {
-              return PdfViewerScreen(
-                pdfData: JsPdfModel.fromJson(data),
-              );
+              return PdfViewerScreen(pdfData: JsPdfModel.fromJson(data));
             },
           ),
         );
@@ -995,10 +990,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
         CommonFunctions.launchMap(
-          LatLng(
-            latitude: data["latitude"],
-            longitude: data["longitude"],
-          ),
+          LatLng(latitude: data["latitude"], longitude: data["longitude"]),
         );
         handler.complete(response.jsonEncodeModel());
       } else {
@@ -1107,9 +1099,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             final notificationsForType = entry.value;
             // Sort notifications by date (ascending)
             notificationsForType.sort((a, b) {
-              final dateA = DateTime.tryParse(a['scheduled_date'] ?? '') ??
+              final dateA =
+                  DateTime.tryParse(a['scheduled_date'] ?? '') ??
                   DateTime(2000);
-              final dateB = DateTime.tryParse(b['scheduled_date'] ?? '') ??
+              final dateB =
+                  DateTime.tryParse(b['scheduled_date'] ?? '') ??
                   DateTime(2000);
               return dateA.compareTo(dateB);
             });
@@ -1131,9 +1125,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               }
             }
             // If no future notification found, use the first one (for tomorrow)
-            nextNotification ??= notificationsForType.isNotEmpty
-                ? notificationsForType.first
-                : null;
+            nextNotification ??=
+                notificationsForType.isNotEmpty
+                    ? notificationsForType.first
+                    : null;
             // Schedule or cancel the notification
             if (nextNotification != null) {
               final int id = nextNotification['id'] ?? 0;
@@ -1146,7 +1141,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                   final scheduledDate = DateTime.parse(scheduledDateStr);
                   // Schedule notification using NotificationService
                   NotificationService.showScheduledNotification(
-                      id: id, title: title, scheduledDate: scheduledDate);
+                    id: id,
+                    title: title,
+                    scheduledDate: scheduledDate,
+                  );
                 } catch (e) {
                   debugPrint('Error parsing date: $e');
                 }
@@ -1187,11 +1185,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void downloadAndExtractInAssets(
-      dynamic data, CompletionHandler handler) async {
+    dynamic data,
+    CompletionHandler handler,
+  ) async {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(
-            serviceKey, RequirementEnum.downloadAndExtractInAssets.name) ==
+          serviceKey,
+          RequirementEnum.downloadAndExtractInAssets.name,
+        ) ==
         true) {
       if (data != null && data is Map) {
         try {
@@ -1213,11 +1215,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               },
               //Received data with List<int>
               options: Options(
-                  responseType: ResponseType.bytes,
-                  followRedirects: false,
-                  validateStatus: (status) {
-                    return (status ?? 501) < 500;
-                  }),
+                responseType: ResponseType.bytes,
+                followRedirects: false,
+                validateStatus: (status) {
+                  return (status ?? 501) < 500;
+                },
+              ),
             );
 
             File file = File(fullPath);
@@ -1250,7 +1253,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   unarchiveAndSave(
-      String? extractPath, var zippedFile, CompletionHandler handler) async {
+    String? extractPath,
+    var zippedFile,
+    CompletionHandler handler,
+  ) async {
     try {
       extractPath ??= "assets/quran";
       var bytes = zippedFile.readAsBytesSync();
@@ -1260,7 +1266,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       for (var file in archive) {
         if (file.isFile && !file.name.contains("__MACOSX")) {
           var outFile = File(
-              '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
+            '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}',
+          );
           outFile = await outFile.create(recursive: true);
           if (counter == 0) {
             filesPath = outFile.path;
@@ -1272,7 +1279,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
       if (filesPath != null) {
         filesPath = filesPath.replaceAll(
-            "${CommonProperties.currentLocalServerDirectory}/assets/", "");
+          "${CommonProperties.currentLocalServerDirectory}/assets/",
+          "",
+        );
         final lastIndex = filesPath.lastIndexOf('/');
         if (lastIndex != -1) {
           filesPath = filesPath.substring(0, lastIndex);

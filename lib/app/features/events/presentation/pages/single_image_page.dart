@@ -13,12 +13,14 @@ import 'package:balady_plus/app/features/home_page/home_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as svgProvider;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../_shared_feature_/presentation/widgets/retry_widget.dart';
 
 class SingleEventDescriptionPage extends StatefulWidget {
-  const SingleEventDescriptionPage({Key? key}) : super(key: key);
+  const SingleEventDescriptionPage({super.key});
 
   @override
   State<SingleEventDescriptionPage> createState() =>
@@ -50,11 +52,13 @@ class _SingleEventDescriptionPageState
               return const Center(child: CustomCircularLoadingWidget());
 
             if (state.status == BlocStatus.failure)
-              return Center(child: RetryWidget(
-                onRetry: () {
-                  context.read<EventsBloc>().add(GetEventsDetails(id: id));
-                },
-              ));
+              return Center(
+                child: RetryWidget(
+                  onRetry: () {
+                    context.read<EventsBloc>().add(GetEventsDetails(id: id));
+                  },
+                ),
+              );
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -103,8 +107,9 @@ class _SingleEventDescriptionPageState
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).padding.top,
-                                    left: 16),
+                                  top: MediaQuery.of(context).padding.top,
+                                  left: 16,
+                                ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -115,8 +120,8 @@ class _SingleEventDescriptionPageState
                                         iconSize: 24,
                                         circleSize: 36,
                                         icon: Icons.close,
-                                        backgroundColor:
-                                            Colors.white.withOpacity(0.7),
+                                        backgroundColor: Colors.white
+                                            .withOpacity(0.7),
                                       ),
                                       onTap: () {
                                         Navigator.of(context).pop();
@@ -138,12 +143,15 @@ class _SingleEventDescriptionPageState
                                           if (state.eventDetails.ticketUrl !=
                                               null)
                                             safeShareText(
-                                                state.eventDetails.ticketUrl ??
-                                                    "",
-                                                context: context);
+                                              state.eventDetails.ticketUrl ??
+                                                  "",
+                                              context: context,
+                                            );
 
-                                          CommonFunctions.sendUXCamEvent(UXCamEvents
-                                              .Events_List_Click_Item_Share_Event);
+                                          CommonFunctions.sendUXCamEvent(
+                                            UXCamEvents
+                                                .Events_List_Click_Item_Share_Event,
+                                          );
                                         },
                                         child: Container(
                                           width: 36,
@@ -160,7 +168,7 @@ class _SingleEventDescriptionPageState
                                             IconPath.export,
                                           ),
                                         ),
-                                      )
+                                      ),
                                   ],
                                 ),
                               ),
@@ -190,18 +198,14 @@ class _SingleEventDescriptionPageState
                             title: state.eventDetails.name ?? '',
                             city: state.eventDetails.city ?? '',
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          const SizedBox(height: 16),
                           EventCategoryWidget(
                             category: [
                               state.eventDetails.season ?? '',
-                              state.eventDetails.category ?? ''
+                              state.eventDetails.category ?? '',
                             ],
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          const SizedBox(height: 16),
                           EventsDetailsWidget(
                             feesType: state.eventDetails.getFess(),
                             date: state.eventDetails.getDate(),
@@ -212,31 +216,28 @@ class _SingleEventDescriptionPageState
                             category: state.eventDetails.category ?? "",
                             season: state.eventDetails.season ?? "",
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          const SizedBox(height: 16),
                           EventsDescriptionWidget(
-                              description:
-                                  state.eventDetails.description ?? ''),
-                          const SizedBox(
-                            height: 16,
+                            description: state.eventDetails.description ?? '',
                           ),
+                          const SizedBox(height: 16),
                           EventMapWidget(
                             location: state.eventDetails.getLocation(),
                             name: state.eventDetails.name,
                           ),
-                          const SizedBox(
-                            height: 16,
-                          ),
+                          const SizedBox(height: 16),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: ElevatedIconButtonWidget.export(
                               onPressed: () {
                                 CommonFunctions.externalLaunch(
-                                    state.eventDetails.ticketUrl);
+                                  state.eventDetails.ticketUrl,
+                                );
 
-                                CommonFunctions.sendUXCamEvent(UXCamEvents
-                                    .Events_List_Click_Item_Move_To_Details_Event);
+                                CommonFunctions.sendUXCamEvent(
+                                  UXCamEvents
+                                      .Events_List_Click_Item_Move_To_Details_Event,
+                                );
                               },
                             ),
                           ),

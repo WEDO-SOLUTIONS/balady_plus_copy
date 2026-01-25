@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide TransportIcons, StopNumbersIcons;
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,9 +10,15 @@ import 'package:mapness/balady_uikit/core/icons/transport_icons.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
+import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
+import 'package:mapness/features/poi_card/extensions/poi_content/src/poi_content_contacts.dart';
+import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/features/routing/providers/current_route.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/analytic/bss_service.dart';
+import 'package:mapness/shared/providers/analytic/extension/bss_ext.dart';
+import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
@@ -54,7 +61,8 @@ class PoiCardFooter extends HookConsumerWidget {
     if (bottomSheetController != null) {
       useEffect(() {
         void updateShadow() {
-          final isHidden = bottomSheetController.state == PoiCardBottomSheetState.hidden &&
+          final isHidden =
+              bottomSheetController.state == PoiCardBottomSheetState.hidden &&
               bottomSheetController.interpolation == 0.0;
           if (!isHidden != displayShadow.value) {
             displayShadow.value = !isHidden;
@@ -69,7 +77,7 @@ class PoiCardFooter extends HookConsumerWidget {
 
     final objectId = data?.id?.objectId;
 
-    ref.watch(favouriteCacheProvider).valueOrNull;
+    ref.watch(favouriteCacheProvider).value;
     final currentRoute = ref.watch(currentRouteProvider);
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
@@ -84,10 +92,17 @@ class PoiCardFooter extends HookConsumerWidget {
     final onEntranceTap = this.onEntranceTap;
 
     final type = data?.types.firstOrNull?.type;
-    final hasMetro = type == ObjectTypeMessage.stationMetro ||
+    final hasMetro =
+        type == ObjectTypeMessage.stationMetro ||
         type == ObjectTypeMessage.station ||
         type == ObjectTypeMessage.stationPlatform ||
         type == ObjectTypeMessage.stationEntrance;
+
+    final website = data?.getContactsInfoModels
+        .firstWhereOrNull((element) => element.type == ContactsInfoType.website)
+        ?.value;
+
+    final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final parkingPoi = objectId == parkingObjectId;
 
@@ -136,6 +151,16 @@ class PoiCardFooter extends HookConsumerWidget {
               colorScheme: ButtonColorScheme.accent,
               onPressed: onEntranceTap,
             ),
+          if (website != null && data != null)
+            ItemActionBar(
+              icon: GeneralIcons.web,
+              colorScheme: ButtonColorScheme.accent,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                BssService.instance.trackLinkTap(data!, BssContactType.website, website);
+                poiActions.launch(website);
+              },
+            ),
           if (!parkingPoi)
             ItemActionBar(
               icon: iconData,
@@ -176,7 +201,7 @@ class PoiCardFooter extends HookConsumerWidget {
   }
 
   void _onParkingTab(WidgetRef ref, BuildContext context) {
-    final hasParking = ref.read(parkingManageProvider).valueOrNull != null;
+    final hasParking = ref.read(parkingManageProvider).value != null;
     if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
@@ -185,7 +210,7 @@ class PoiCardFooter extends HookConsumerWidget {
           onAcceptTab: () async {
             // BSA-2734: popAndPush have a bug when we have a bottom sheet open
             // We need to make it consistent with popForced
-            context.router.popForced();
+            context.router.pop();
             await Future.delayed(Duration.zero);
             await context.router.push(
               ParkingSpotRoute(
@@ -200,7 +225,7 @@ class PoiCardFooter extends HookConsumerWidget {
               ),
             );
           },
-          onCancelTab: context.router.popForced,
+          onCancelTab: context.router.pop,
         ),
       );
     } else {
@@ -225,13 +250,10 @@ class PoiCardFooter extends HookConsumerWidget {
         title: context.l10n.youSureWantDelete,
         onAcceptTab: () {
           ref.read(parkingManageProvider.notifier).clearStore();
-          ToastOverlay.of(context).show(
-            title: context.l10n.parkingSpotDeleted,
-            icon: const ToastIconAsset(iconAsset),
-          );
+          ToastOverlay.of(context).show(title: context.l10n.parkingSpotDeleted, icon: const ToastIconAsset(iconAsset));
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },
-        onCancelTab: context.router.popForced,
+        onCancelTab: context.router.pop,
       ),
     );
   }

@@ -17,7 +17,7 @@ part 'saudi_pass_dio_riverpod_v2.g.dart';
 
 final saudiPassDioProviderV2 = _saudiPassDioRiverpodProvider;
 
-@riverpod
+@Riverpod(keepAlive: true)
 class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
   final _dioCacheManager = DioCacheManager(CacheConfig());
 

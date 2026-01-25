@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
-import 'package:dgis_map_platform_interface/src/events/models/simple_map_object_model.dart';
 
 typedef OnObjectTap = void Function();
 typedef ClusterRenderer = SimpleClusterOptionsMessage Function(int objectCount);

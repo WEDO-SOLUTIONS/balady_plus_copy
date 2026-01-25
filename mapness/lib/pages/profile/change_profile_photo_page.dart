@@ -44,7 +44,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
               ),
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
-                onTap: context.router.popForced,
+                onTap: context.router.pop,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
               ),
             ),
@@ -57,10 +57,10 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
                   if (isPermanentlyDenied) {
                     // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
                     // permissions"
-                    context.router.popForced(true);
+                    context.router.pop(true);
                   } else {
                     await updateAvatar(ref, context);
-                    context.router.popForced();
+                    context.router.pop();
                   }
                 },
                 options: ContentRowOptions(

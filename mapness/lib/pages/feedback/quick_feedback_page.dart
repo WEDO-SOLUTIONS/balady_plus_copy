@@ -68,7 +68,7 @@ class _QuickFeedbackScreen extends ConsumerWidget {
       );
     }
 
-    if (categories.hasValue && (categories.valueOrNull?.isEmpty ?? true)) {
+    if (categories.hasValue && (categories.value?.isEmpty ?? true)) {
       return FeedbackFailureWidget(
         onRetry: () {
           ref.invalidate(provider);
@@ -78,7 +78,7 @@ class _QuickFeedbackScreen extends ConsumerWidget {
 
     switch (type) {
       case QuickFeedbackType.newCompany:
-        final category = categories.valueOrNull?.firstOrNull;
+        final category = categories.value?.firstOrNull;
         if (category == null) {
           return FeedbackFailureWidget(
             onRetry: () {
@@ -90,7 +90,7 @@ class _QuickFeedbackScreen extends ConsumerWidget {
           category: category,
         );
       case QuickFeedbackType.addPhoto:
-        final category = categories.valueOrNull?.firstOrNull;
+        final category = categories.value?.firstOrNull;
         if (category == null || params is! FeedbackObjectIdParams) {
           return FeedbackFailureWidget(
             onRetry: () {

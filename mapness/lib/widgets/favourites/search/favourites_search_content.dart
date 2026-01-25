@@ -10,11 +10,11 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
-import 'package:mapness/pages/map_search/ui/map_search_history.dart';
-import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/widgets/favourites/search/favourites_search_history.dart';
 import 'package:mapness/widgets/favourites/search/favourites_search_results.dart';
+import 'package:mapness/widgets/favourites/search/favourites_suggest_list.dart';
 import 'package:provider/provider.dart';
 
 class FavouritesSearchContent extends ConsumerStatefulWidget {
@@ -28,10 +28,12 @@ class FavouritesSearchContent extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<FavouritesSearchContent> createState() => _FavouritesSearchContentState();
+  ConsumerState<FavouritesSearchContent> createState() =>
+      _FavouritesSearchContentState();
 }
 
-class _FavouritesSearchContentState extends ConsumerState<FavouritesSearchContent> {
+class _FavouritesSearchContentState
+    extends ConsumerState<FavouritesSearchContent> {
   bool _hasConnection = true;
   Timer? _debounceTimer;
 
@@ -69,20 +71,14 @@ class _FavouritesSearchContentState extends ConsumerState<FavouritesSearchConten
     ref
       ..listen(searchProvider(scope.value), (_oldState, newState) {
         if (newState is SearchStateEmpty) {
-          ref.read(urbiAnalyticsProvider).track(
-            'searchFailed',
-            properties: {
-              'text': newState.searchText,
-            },
-          );
+          ref
+              .read(urbiAnalyticsProvider)
+              .track('searchFailed', properties: {'text': newState.searchText});
         }
       })
-      ..listen(
-        networkStatusProvider,
-        (_, hasConnection) {
-          _debouncedUpdate(context, hasConnection);
-        },
-      );
+      ..listen(networkStatusProvider, (_, hasConnection) {
+        _debouncedUpdate(context, hasConnection);
+      });
 
     if (!_hasConnection) {
       return SliverToBoxAdapter(
@@ -102,57 +98,63 @@ class _FavouritesSearchContentState extends ConsumerState<FavouritesSearchConten
     }
 
     return searchState.map(
-      empty: () => const SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: MapSearchEmpty(),
-        ),
-      ),
-      history: () => const SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSearchHistory(),
-        ),
-      ),
-      loading: () => const SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: Center(
-            child: Loading(
-              orientation: Axis.vertical,
-              size: LoaderSize.large,
+      empty:
+          () => const SliverFillRemaining(
+            hasScrollBody: false,
+            child: SafeArea(top: false, child: MapSearchEmpty()),
+          ),
+      history:
+          () => SliverToBoxAdapter(
+            child: SafeArea(
+              top: false,
+              child: FavouritesSearchHistory(markerType: widget.markerType),
             ),
           ),
-        ),
-      ),
-      suggest: (suggest) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSuggestList(
-            suggest: suggest,
+      loading:
+          () => const SliverFillRemaining(
+            hasScrollBody: false,
+            child: SafeArea(
+              top: false,
+              child: Center(
+                child: Loading(
+                  orientation: Axis.vertical,
+                  size: LoaderSize.large,
+                ),
+              ),
+            ),
           ),
-        ),
-      ),
-      results: (results) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: FavouritesSearchResults(
-            markerType: widget.markerType,
-            results: results,
-            scrollController: widget.scrollController,
+      suggest:
+          (suggest) => SliverToBoxAdapter(
+            child: SafeArea(
+              top: false,
+              child: FavouritesSuggestList(
+                suggest: suggest,
+                markerType: widget.markerType,
+              ),
+            ),
           ),
-        ),
-      ),
-      failure: (query, errorMessage) => SliverToBoxAdapter(
-        child: BaseErrorWidget(
-          errorLabel: errorMessage,
-          onRetry: () {
-            ref.read(searchProvider(scope.value).notifier).searchByText(query);
-          },
-        ),
-      ),
+      results:
+          (results) => SliverToBoxAdapter(
+            child: SafeArea(
+              top: false,
+              child: FavouritesSearchResults(
+                markerType: widget.markerType,
+                results: results,
+                scrollController: widget.scrollController,
+              ),
+            ),
+          ),
+      failure:
+          (query, errorMessage) => SliverToBoxAdapter(
+            child: BaseErrorWidget(
+              errorLabel: errorMessage,
+              onRetry: () {
+                ref
+                    .read(searchProvider(scope.value).notifier)
+                    .searchByText(query);
+              },
+            ),
+          ),
     );
   }
 }

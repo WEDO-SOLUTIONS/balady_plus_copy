@@ -219,7 +219,7 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
             ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
             ref.read(parkingManageProvider.notifier).restoreMarker();
             ref.read(highlightProvider.notifier).removeHighlight(customCityscapeData.id!);
-            context.router.popForced();
+            context.router.pop();
           },
         ),
         sliver: DecoratedSliver(

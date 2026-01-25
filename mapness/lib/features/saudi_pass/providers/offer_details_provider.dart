@@ -16,7 +16,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'offer_details_provider.g.dart';
 
-const offerDetailsProvider = _offerDetailsProvider;
+final offerDetailsProvider = _offerDetailsProvider;
 
 @riverpod
 class _OfferDetails extends _$OfferDetails {
@@ -42,7 +42,7 @@ class _OfferDetails extends _$OfferDetails {
         },
       );
 
-    final repository = await ref.read(saudiPassRepositoryProvider.future);
+    final repository = await ref.watch(saudiPassRepositoryProvider.future);
     final offerDetails = await repository.getOfferDetails(offerId: offerId);
     final location = ref.refresh(locationProvider);
 

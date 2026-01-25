@@ -39,7 +39,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               streetName: selectedPoint?.streetName,
                               parcelNo: selectedPoint?.parcelCode,
                               stageNo: selectedPoint?.phase,
-                              onClose: () => context.router.popForced(),
+                              onClose: () => context.router.pop(),
                             ),
                           );
                         case final InvestmentSites? selectedPoint:
@@ -57,7 +57,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               opportunityNumber: selectedPoint?.opportunityNumber,
                               subMunicipality: selectedPoint?.subMunicipalityId,
                               mainActivity: selectedPoint?.mainActivityName,
-                              onClose: () => context.router.popForced(),
+                              onClose: () => context.router.pop(),
                             ),
                           );
                         case final BuildingComplianceCertificate? selectedPoint:
@@ -69,7 +69,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               targetBuildingType: selectedPoint?.targetBuildingType,
                               streetName: selectedPoint?.streetName,
                               stageNo: selectedPoint?.stageno,
-                              onClose: () => context.router.popForced(),
+                              onClose: () => context.router.pop(),
                             ),
                           );
                         default:
@@ -77,7 +77,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                       }
                     },
                     error: (error) {
-                      context.router.popForced();
+                      context.router.pop();
                       return buildShimmer();
                     },
                     loading: (_) => buildShimmer(),

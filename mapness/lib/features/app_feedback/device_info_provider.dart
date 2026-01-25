@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -34,7 +35,7 @@ class DeviceInfo extends _$DeviceInfo {
     final deviceInfo = DeviceInfoPlugin();
     if (platform == TargetPlatform.android) {
       final androidInfo = await deviceInfo.androidInfo;
-      return 'android::${androidInfo.serialNumber}::${androidInfo.id}::${androidInfo.model}';
+      return 'android::${androidInfo.id}::${androidInfo.model}';
     } else if (platform == TargetPlatform.iOS) {
       final iosInfo = await deviceInfo.iosInfo;
       return iosInfo.identifierForVendor;
@@ -46,4 +47,18 @@ class DeviceInfo extends _$DeviceInfo {
     final packageInfo = await PackageInfo.fromPlatform();
     return packageInfo.version;
   }
+}
+
+// ignore: prefer_mixin
+class MockDeviceInfoProvider extends _$DeviceInfo with Mock implements DeviceInfo {
+  @override
+  Future<AppFeedbackContext> build() => Future.value(
+    AppFeedbackContext(
+      locale: AppFeedbackLocale.en,
+      appVersion: '1.0.0',
+      mobileOS: AppFeedbackMobileOs.android,
+      authId: '123',
+      deviceId: 'android::serial123::id123::Pixel 4',
+    ),
+  );
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
@@ -225,10 +226,7 @@ class BetterRoute extends _$BetterRoute {
     if (suggestBetterRoute) {
       betterRouteSubscription ??= dgisController.value?.betterRouteInfoEvents.listen((event) {
         state = event.route != null
-            ? PathNavBetterRoute(
-                route: event.route!,
-                durationProfit: event.durationProfit,
-              )
+            ? PathNavBetterRoute(route: event.route!, durationProfit: event.durationProfit)
             : null;
       });
       state = null;
@@ -293,3 +291,5 @@ class BetterRouteSettings extends _$BetterRouteSettings {
     state = AsyncData(updatedSettings);
   }
 }
+
+final currentNavigationDestinationProvider = StateProvider<RouteParamsPoint?>((ref) => null);

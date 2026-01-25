@@ -5,20 +5,6 @@ import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
-import 'package:mocktail/mocktail.dart';
-
-class MockDeviceInfoProvider extends AutoDisposeAsyncNotifier<AppFeedbackContext> with Mock implements DeviceInfo {
-  @override
-  Future<AppFeedbackContext> build() => Future.value(
-        AppFeedbackContext(
-          locale: AppFeedbackLocale.en,
-          appVersion: '1.0.0',
-          mobileOS: AppFeedbackMobileOs.android,
-          authId: '123',
-          deviceId: 'android::serial123::id123::Pixel 4',
-        ),
-      );
-}
 
 void main() {
   group('CollectFeedback Tests', () {

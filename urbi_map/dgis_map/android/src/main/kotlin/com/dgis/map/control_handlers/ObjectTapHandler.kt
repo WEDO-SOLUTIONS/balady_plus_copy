@@ -1076,6 +1076,7 @@ class ObjectTapHandler(
                                                                             .id.toMessage(),
                                                             closestMapPoint =
                                                                     it.closestMapPoint.toMessage(),
+                                                            levelId = it.item.levelId?.value?.toLong(),
                                                     )
                                                 }
                                                 .toList()

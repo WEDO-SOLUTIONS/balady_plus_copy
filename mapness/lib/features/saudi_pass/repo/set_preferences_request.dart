@@ -6,7 +6,7 @@ part 'set_preferences_request.g.dart';
 // ignore_for_file: invalid_annotation_target
 
 @Freezed(toJson: true, fromJson: false)
-class SetPreferencesRequest with _$SetPreferencesRequest {
+abstract class SetPreferencesRequest with _$SetPreferencesRequest {
   factory SetPreferencesRequest({
     final String? mobile,
     final String? birthDate,
@@ -20,7 +20,7 @@ class SetPreferencesRequest with _$SetPreferencesRequest {
 }
 
 @Freezed(toJson: true, fromJson: false)
-class CategoryRequest with _$CategoryRequest {
+abstract class CategoryRequest with _$CategoryRequest {
   factory CategoryRequest({
     required final String id,
     @Default([]) final List<String> subCategories,

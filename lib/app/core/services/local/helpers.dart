@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as devtools show log;
 import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart'
@@ -9,14 +10,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:geolocator/geolocator.dart' as geo_locator;
+import 'package:geolocator/geolocator.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator, Translation;
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
-
-import 'dart:developer' as devtools show log;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -55,11 +54,12 @@ class Helpers {
 
   static void backNavigationToHomeScreen({int index = 0}) {
     sl<BottomNavBarCubit>().onChangeBottomNavBar(index);
-    NavigationService.navigatorKey.currentState!
-        .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
+    NavigationService.navigatorKey.currentState!.popUntil(
+      ModalRoute.withName(RouteName.bottomNavigation),
+    );
   }
 
-/*
+  /*
   static void backNavigationToSpecificScreen({
     String? navigationKey,
     Object? arguments,
@@ -87,7 +87,7 @@ class Helpers {
     );
   }
 
- 
+
 
 
 
@@ -106,12 +106,15 @@ class Helpers {
 
   static Future<LatLng?> getMapLocation() async {
     return await getCurrentLocation(
-        accuracy: geo_locator.LocationAccuracy.medium,
-        duration: const Duration(seconds: 5));
+      accuracy: geo_locator.LocationAccuracy.medium,
+      duration: const Duration(seconds: 5),
+    );
   }
 
-  static Future<LatLng?> getCurrentLocation(
-      {geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
+  static Future<LatLng?> getCurrentLocation({
+    geo_locator.LocationAccuracy? accuracy,
+    Duration? duration,
+  }) async {
     try {
       bool isHuawei = await CommonFunctions.isHuaweiDevice();
       if (isHuawei) {
@@ -119,11 +122,12 @@ class Helpers {
         return latLng;
       }
       //  EasyLoading.show();
-      geo_locator.Position position =
-          await geo_locator.Geolocator.getCurrentPosition(
+      geo_locator.Position position = await geo_locator
+          .Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
-            accuracy: accuracy ?? geo_locator.LocationAccuracy.high,
-            timeLimit: duration ?? const Duration(seconds: 13)),
+          accuracy: accuracy ?? geo_locator.LocationAccuracy.high,
+          timeLimit: duration ?? const Duration(seconds: 13),
+        ),
       );
       //    EasyLoading.dismiss();
       return LatLng(latitude: position.latitude, longitude: position.longitude);
@@ -137,7 +141,9 @@ class Helpers {
 
     if (status == PermissionStatus.permanentlyDenied) {
       showDialog(
-          context: context, builder: (ctx) => const PhotoPermissionDialog());
+        context: context,
+        builder: (ctx) => const PhotoPermissionDialog(),
+      );
       return false;
     } else if (status != PermissionStatus.granted) {
       Permission.photos.request();
@@ -226,7 +232,8 @@ class Helpers {
 
   static String? validateEmail(String? email) {
     RegExp emailPattern = RegExp(
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+    );
     String e = email ?? "";
     e = e.replaceAll("\u200e", '').replaceAll("\u200f", '').trim();
     if (e.isEmpty) {
@@ -280,22 +287,27 @@ class Helpers {
     return newStr.isEmpty ? value : newStr;
   }
 
-  static void sendLog(
-      {String? url,
-      String? qeuryParms,
-      dynamic data,
-      dynamic body,
-      int? statusCode,
-      String? errorMsg}) async {
+  static void sendLog({
+    String? url,
+    String? qeuryParms,
+    dynamic data,
+    dynamic body,
+    int? statusCode,
+    String? errorMsg,
+  }) async {
     try {
       SentryRequest request = SentryRequest(
         url: url,
         queryString: qeuryParms,
-        data: body != null ? body.toString() : "",
-        unknown: {"StatusCode": (statusCode ?? 0).toString()},
+        data: {
+          if (body != null)
+            'body': body != null ? body.toString() : "",
+            "StatusCode": (statusCode ?? 0).toString(),
+        },
       );
-      SentryMessage sentryMessage =
-          SentryMessage(data != null ? data.toString() : "");
+      SentryMessage sentryMessage = SentryMessage(
+        data != null ? data.toString() : "",
+      );
 
       SentryUser sentryUser = SentryUser(
         id: CommonProperties.userInfo?.idNo,
@@ -326,12 +338,13 @@ class Helpers {
           FlutterUxcam.logEventWithProperties(url ?? "Error", {
             "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
             "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-            "QueryString": queryString.length <= 1024
-                ? queryString
-                : queryString.substring(0, 1023),
+            "QueryString":
+                queryString.length <= 1024
+                    ? queryString
+                    : queryString.substring(0, 1023),
             "Message":
                 message.length <= 1024 ? message : message.substring(0, 1023),
-            "Environment": sl<EnvType>().name
+            "Environment": sl<EnvType>().name,
           });
         }
       }
@@ -449,7 +462,7 @@ class Helpers {
             "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
 
-        OpenFile.open(filetemp.path);
+        OpenFilex.open(filetemp.path);
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -502,7 +515,7 @@ class Helpers {
                 "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
             await filetemp.writeAsBytes(bytes);
             //print(filetemp.path);
-            OpenFile.open(filetemp.path);
+            OpenFilex.open(filetemp.path);
           }
         } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -550,15 +563,17 @@ class Helpers {
 
   static openFile(Uint8List bytes, {String? contentType}) async {
     String extension =
-        contentType != null ? ("." + contentType.split("/").last) : "";
+        contentType != null ? (".${contentType.split("/").last}") : "";
     try {
       if (extension.isNotEmpty) {
         String dir = (await getTemporaryDirectory()).path;
-        File filetemp = File("$dir/" +
-            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
+        File filetemp = File(
+          "$dir/"
+          "${DateTime.now().millisecondsSinceEpoch.toString()}$extension",
+        );
         await filetemp.writeAsBytes(bytes);
         //print(filetemp.path);
-        OpenFile.open(filetemp.path);
+        OpenFilex.open(filetemp.path);
         //  Share.shareFiles([filetemp.path]);
       }
     } catch (error, stackTrace) {

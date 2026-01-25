@@ -21,7 +21,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final sheetController = useToggleSheetController(
-      onClose: (_) => onSelect != null ? onSelect?.call(null) : context.router.popForced,
+      onClose: (_) => onSelect != null ? onSelect?.call(null) : context.router.pop,
     );
 
     return ToggleSheet(
@@ -29,6 +29,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
       safeAreaColor: context.colors.backgroundSurface4,
       backgroundColor: context.colors.backgroundSurface4,
       dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+      resizeToAvoidBottomPadding: false,
       content: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
@@ -41,7 +42,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
               ),
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
-                onTap: context.router.popForced,
+                onTap: context.router.pop,
               ),
             ),
           ),
@@ -94,6 +95,9 @@ class FeedbackImageSelectorSheet extends HookWidget {
             ),
           ]),
         ),
+
+        /// TODO: remove then https://github.com/urbi-ae/baladi/pull/2292 merged
+        const SizedBox(height: Spacing.$5x),
       ],
     );
   }

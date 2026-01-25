@@ -12,7 +12,7 @@ class GetAllOffersIds extends _$GetAllOffersIds {
     final offers = (await Future.wait(
       ids.map((id) async {
         try {
-          return await ref.read(offerDetailsProvider(id).future);
+          return await ref.watch(offerDetailsProvider(id).future);
         } catch (e, _) {
           return null;
         }

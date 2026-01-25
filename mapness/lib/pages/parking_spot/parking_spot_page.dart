@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -54,29 +54,25 @@ class ParkingSpotPage extends HookConsumerWidget {
     );
 
     final maxLines = useState<int>(3);
-    final inputState =
-        useState<BaladyInputState>(BaladyInputState.defaultValue);
+    final inputState = useState<BaladyInputState>(BaladyInputState.defaultValue);
     final supportingText = useState<String?>(null);
 
     void checkDirty() {
-      final stored = ref.read(parkingManageProvider).valueOrNull;
+      final stored = ref.read(parkingManageProvider).value;
       final images = ref.read(parkingImageProvider(isEdit: isEdit));
 
-      final imagesDirty = !const ListEquality().equals(
-          images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
+      final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
       final textDirty = textController.text != stored?.comment;
       final addressDirty = addressNotifier.value != stored?.address;
       final latDirty = latLng.value?.latitude != stored?.lat;
       final lonDirty = latLng.value?.longitude != stored?.lon;
 
-      final dirty = isEdit
-          ? (textDirty || addressDirty || latDirty || lonDirty || imagesDirty)
-          : latLng.value != null;
+      final dirty = isEdit ? (textDirty || addressDirty || latDirty || lonDirty || imagesDirty) : latLng.value != null;
       isDirty.value = dirty;
     }
 
     useEffect(() {
-      final stored = ref.read(parkingManageProvider).valueOrNull;
+      final stored = ref.read(parkingManageProvider).value;
       if (isEdit && stored != null) {
         textController.text = stored.comment;
         addressNotifier.value = stored.address;
@@ -96,19 +92,14 @@ class ParkingSpotPage extends HookConsumerWidget {
     useEffect(() {
       void calculateMaxLines() {
         const averageCharWidth = 10.0;
-        final textFieldWidth =
-            MediaQuery.sizeOf(context).width - (Spacing.$4x * 2);
+        final textFieldWidth = MediaQuery.sizeOf(context).width - (Spacing.$4x * 2);
         final charsPerLine = (textFieldWidth / averageCharWidth).floor();
         final lines = (textController.text.length / charsPerLine).ceil();
         maxLines.value = lines.clamp(3, 7);
 
         final isValidLength = textController.text.length <= 225;
-        inputState.value = isValidLength
-            ? BaladyInputState.defaultValue
-            : BaladyInputState.error;
-        supportingText.value = isValidLength
-            ? null
-            : context.l10n.appFeedbackCharacterLimitReached;
+        inputState.value = isValidLength ? BaladyInputState.defaultValue : BaladyInputState.error;
+        supportingText.value = isValidLength ? null : context.l10n.appFeedbackCharacterLimitReached;
         isValid.value = isValidLength;
       }
 
@@ -128,16 +119,14 @@ class ParkingSpotPage extends HookConsumerWidget {
       backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-        textStyle: context.textStyles.bodyLargeSemiBold
-            .copyWith(color: context.colors.foregroundDefault),
+        textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
         title: isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
           padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-          alignment:
-              context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+          alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
           child: const Icon(SystemIcons.arrowCornerLeftLarge),
         ),
-        onLeadingPressed: () => context.router.popForced(),
+        onLeadingPressed: () => context.router.pop(),
       ),
       body: SafeArea(
         child: Padding(
@@ -149,16 +138,13 @@ class ParkingSpotPage extends HookConsumerWidget {
               SizedBox(
                 height: 108,
                 child: ClipRRect(
-                  borderRadius:
-                      const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                   child: UrbiMap(
                     onMapCreated: (controller) async {
-                      final dgisMapController =
-                          ref.read(parkingSpotMapProvider.notifier);
+                      final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
                       await dgisMapController.onMapCreated(controller);
                       if (latLng.value != null) {
-                        await dgisMapController
-                            .setCameraPosition(GeoPointWithElevationMessage(
+                        await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
                           latitude: latLng.value!.latitude,
                           longitude: latLng.value!.longitude,
                           elevation: 0,
@@ -172,11 +158,8 @@ class ParkingSpotPage extends HookConsumerWidget {
                               elevation: 0,
                             ),
                             icon: SaudiNationalDay.isNow()
-                                ? Assets.icons.svg.placesNewSaudiDay.icParking
-                                    .keyName
-                                    .markerIcon()
-                                : Assets.icons.svg.placesNew.icParking.keyName
-                                    .markerIcon(),
+                                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+                                : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
                           ),
                         ));
                       }
@@ -189,8 +172,7 @@ class ParkingSpotPage extends HookConsumerWidget {
               if (addressNotifier.value.isNotEmpty)
                 Text(
                   addressNotifier.value,
-                  style: context.textStyles.captionLargeRegular
-                      .copyWith(color: context.colors.foregroundSoft),
+                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
               Spacing.$3x.heightBox,
               SizedBox(
@@ -202,8 +184,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                   size: ButtonSize.large,
                   primaryIcon: GeneralIcons.location,
                   primaryLabel: context.l10n.changeLocation,
-                  onTap: () => _handleChangeLocation(
-                      context, ref, latLng, addressNotifier),
+                  onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
                 ),
               ),
               Spacing.$4x.heightBox,
@@ -212,8 +193,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 inputState: inputState.value,
                 label: BaladyInputLabel(
                   text: context.l10n.comment,
-                  style: context.textStyles.captionMediumRegular
-                      .copyWith(color: context.colors.foregroundDefault),
+                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                 ),
                 config: BaladyInputConfig(
                   autofocus: true,
@@ -232,8 +212,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 width: double.infinity,
                 child: AppButton(
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonState:
-                      canSave ? ButtonState.defaultState : ButtonState.disabled,
+                  buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
                   primaryLabel: context.l10n.save,
                   size: ButtonSize.large,
                   onTap: canSave
@@ -252,8 +231,7 @@ class ParkingSpotPage extends HookConsumerWidget {
               Center(
                 child: Text(
                   context.l10n.dataStoredFor,
-                  style: context.textStyles.captionMediumRegular
-                      .copyWith(color: context.colors.foregroundSoft),
+                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
               ),
             ],
@@ -272,12 +250,10 @@ class ParkingSpotPage extends HookConsumerWidget {
   ) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
     if (result is RoutePoint) {
-      latLng.value =
-          LatLng(latitude: result.latitude!, longitude: result.longitude!);
-      addressNotifier.value =
-          result is RoutePointCoordinates && result.label != null
-              ? result.label!
-              : 'latitude: ${result.latitude}, longitude:${result.longitude}';
+      latLng.value = LatLng(latitude: result.latitude!, longitude: result.longitude!);
+      addressNotifier.value = result is RoutePointCoordinates && result.label != null
+          ? result.label!
+          : 'latitude: ${result.latitude}, longitude:${result.longitude}';
 
       final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
       await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
@@ -295,8 +271,7 @@ class ParkingSpotPage extends HookConsumerWidget {
             elevation: 0,
           ),
           icon: SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName
-                  .markerIcon()
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
               : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
       ));
@@ -328,7 +303,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     ));
 
     callToast(context, latLng);
-    context.router.popUntilRouteWithName(BottomMenuRoute.name);
+    await context.router.maybePop();
   }
 
   void callToast(
@@ -354,15 +329,16 @@ class ParkingSpotPage extends HookConsumerWidget {
 
             query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
 
-            query[BaldayDeeplink.latitudeKey] =
-                latLng.value!.latitude.toString();
-            query[BaldayDeeplink.longitudeKey] =
-                latLng.value!.longitude.toString();
+            query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
+            query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
 
-            await balady_utils.safeShareText(
-              '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',
-              context: context,
-            );
+            final context = rootNavigatorKey.currentContext;
+            if (context != null) {
+              await safeShareText(
+                '${context.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',
+                context: context,
+              );
+            }
           },
         ),
       ],

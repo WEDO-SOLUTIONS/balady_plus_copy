@@ -67,8 +67,8 @@ class PoiContentSliver extends ConsumerWidget {
     );
 
     final searchObjectFuture = ref.watch(poiSearchByObjectProvider(data));
-    final poiSearchObjectFuture = searchObjectFuture.valueOrNull?.$1;
-    final poiSearchByObjectEntrances = searchObjectFuture.valueOrNull?.$2 ?? [];
+    final poiSearchObjectFuture = searchObjectFuture.value?.$1;
+    final poiSearchByObjectEntrances = searchObjectFuture.value?.$2 ?? [];
     const colorShimmer = Color(0xFFE3E3E3);
 
     final mainLines = data?.routeInfos.map((e) => e.name).toList() ?? [];

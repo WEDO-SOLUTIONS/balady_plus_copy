@@ -14,6 +14,7 @@ class AuthorizedWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var name = userData.getFirstAndLastName().trim();
+    final abbreviatedName = userData.getAbbreviatedName();
     if (name.isEmpty) {
       name = userData.getPhone().trim();
     }
@@ -39,7 +40,7 @@ class AuthorizedWidget extends ConsumerWidget {
               ),
             ),
           ),
-          const ProfileEditablePhoto(),
+          ProfileEditablePhoto(abbreviatedName: abbreviatedName),
         ],
       ),
     );

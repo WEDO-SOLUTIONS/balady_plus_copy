@@ -157,7 +157,7 @@ class _RouteDetailsPageState extends ConsumerState<RouteDetailsPage> {
               size: ui_kit.ButtonSize.large,
               primaryLabel: widget.buttonLabel,
               onTap: () {
-                context.router.popForced();
+                context.router.pop();
                 widget.onPressed?.call();
               },
             ),

@@ -31,7 +31,7 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
 
   late final ToggleSheetController sheetController = ToggleSheetController(onClose: (_) {
     ref.read(freeRoamStarterProvider.notifier).setShown();
-    context.router.popForced();
+    context.router.pop();
   });
 
   @override

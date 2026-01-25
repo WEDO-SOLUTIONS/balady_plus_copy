@@ -44,7 +44,7 @@ class OffersScreenViewWidgetState
                 : null,
             onBackButton: () {
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.router.popForced(_hasChangeFavorites);
+                context.router.pop(_hasChangeFavorites);
               });
             },
             title: context.l10n.saudiPassOffersPageTitle,

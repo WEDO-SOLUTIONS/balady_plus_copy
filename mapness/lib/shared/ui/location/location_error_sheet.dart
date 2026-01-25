@@ -51,7 +51,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
 
     if (result && mounted) {
       if (context.router.stack.length != 1) {
-        context.router.popForced(result);
+        context.router.pop(result);
       } else {
         unawaited(context.router.navigate(const BottomMenuRoute()));
         CommonFunctions.locationDialogShowed = false;
@@ -77,12 +77,12 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
                       {
                         await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                         CommonFunctions.locationDialogShowed = false;
-                        context.router.popForced(widget.routeOnClose);
+                        context.router.pop(widget.routeOnClose);
                       }
                     default:
                       {
                         if (context.router.stack.length != 1) {
-                          context.router.popForced();
+                          context.router.pop();
                         } else {
                           await context.router.navigate(const BottomMenuRoute());
                           CommonFunctions.locationDialogShowed = false;

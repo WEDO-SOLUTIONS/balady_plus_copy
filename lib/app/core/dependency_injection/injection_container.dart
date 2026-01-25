@@ -24,8 +24,8 @@ import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     show FlutterSecureStorage;
 import 'package:get_it/get_it.dart' show GetIt;
-import 'package:internet_connection_checker/internet_connection_checker.dart'
-    show InternetConnectionChecker;
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart'
+    show InternetConnection;
 import '../../features/_shared_feature_/balady_features/services/services.dart';
 import '../../features/_shared_feature_/balady_features/widgets/UrbiMap/search_provider.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
@@ -135,7 +135,7 @@ void initialize() {
 
   //! External
   sl.registerLazySingleton(() => const FlutterSecureStorage());
-  sl.registerLazySingleton(() => InternetConnectionChecker());
+  sl.registerLazySingleton(() => InternetConnection());
   sl.registerLazySingleton(() => Dio());
 
   sl.registerLazySingleton(() => BaladyServices(webService: sl()));

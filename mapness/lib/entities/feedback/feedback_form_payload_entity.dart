@@ -6,7 +6,7 @@ import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
 part 'feedback_form_payload_entity.freezed.dart';
 
 @freezed
-class FeedbackFormPayloadEntity with _$FeedbackFormPayloadEntity {
+abstract class FeedbackFormPayloadEntity with _$FeedbackFormPayloadEntity {
   const factory FeedbackFormPayloadEntity({
     required String category,
     required IList<FeedbackFieldPayloadDto> fields,

@@ -18,7 +18,7 @@ final class SaudiDaySplashGuard extends AutoRouteGuard {
     // Check if Saudi Day splash has been shown
     if (!ref.read(saudiDaySplashProvider)) {
       // Show Saudi Day splash
-      resolver.redirect(
+      resolver.redirectUntil(
         SaudiDaySplashRoute(
           onClose: () {
             ref.read(saudiDaySplashProvider.notifier).setIsSaudiDayShown(isSaudiDayShown: true);

@@ -20,8 +20,9 @@ class PoiCardActions extends _$PoiCardActions {
   @override
   void build() {}
 
-  void onError() => Future(() =>
-      ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()));
+  void onError() => Future(
+    () => ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()),
+  );
 
   Future<void> onEntranceTap(DirectoryObjectMessage? objectMessage) async {
     final controller = await ref.read(dgisControllerProvider.future);
@@ -56,14 +57,12 @@ class PoiCardActions extends _$PoiCardActions {
     );
   }
 
-  String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(
-        BaldayDeeplink.basePoiUri,
-        {
-          BaldayDeeplink.latitudeKey: location.latitude.toString(),
-          BaldayDeeplink.longitudeKey: location.longitude.toString(),
-          BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
-        },
-      );
+  String _myLocationDeeplink(LatLng location) =>
+      BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
+        BaldayDeeplink.latitudeKey: location.latitude.toString(),
+        BaldayDeeplink.longitudeKey: location.longitude.toString(),
+        BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
+      });
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
@@ -90,11 +89,7 @@ class PoiCardActions extends _$PoiCardActions {
 
   Future<void> sendEmail(String value) async {
     await launchUrl(
-      Uri(
-        scheme: 'mailto',
-        path: value,
-        queryParameters: {'subject': ''},
-      ),
+      Uri(scheme: 'mailto', path: value, queryParameters: {'subject': ''}),
     );
   }
 
@@ -110,20 +105,20 @@ class PoiCardActions extends _$PoiCardActions {
   }
 
   void resetMapControlsState() {
-    ref.read(mapControlsProvider.notifier).update(
-          MapControlsStateIdle(),
-        );
+    ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
   }
 
-  Future<void> toggleEntrances(DirectoryObjectMessage data,
-      VoidCallback callBack, LatLng? closestPoint) async {
-    Metrics.logEventAdvanced(MetricsConstants.poiKeys.entrances,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {
-          'poi_id': data.id?.objectId,
-          'show_entrances': true,
-        });
+  Future<void> toggleEntrances(
+    DirectoryObjectMessage data,
+    VoidCallback callBack,
+    LatLng? closestPoint,
+  ) async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.entrances,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {'poi_id': data.id?.objectId, 'show_entrances': true},
+    );
 
     final highlightController = ref.watch(highlightProvider.notifier);
 
@@ -143,7 +138,9 @@ class PoiCardActions extends _$PoiCardActions {
   }
 
   Future<void> _animateToEntrance(
-      List<GeoPointMessage?> data, LatLng? closestPoint) async {
+    List<GeoPointMessage?> data,
+    LatLng? closestPoint,
+  ) async {
     if (data.isEmpty) {
       return;
     }

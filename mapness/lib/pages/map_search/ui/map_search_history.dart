@@ -61,9 +61,9 @@ class MapSearchHistory extends ConsumerWidget {
             final result = await context.router.push(
               ErrorSheetDialogRoute(
                 buttonLabel: context.l10n.tryAgain,
-                onRetry: () => context.router.popForced(true),
-                onClose: (_) => context.router.popForced(true),
-                onBarrierTap: () => context.router.popForced(true),
+                onRetry: () => context.router.pop(true),
+                onClose: (_) => context.router.pop(true),
+                onBarrierTap: () => context.router.pop(true),
               ),
             );
             await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);

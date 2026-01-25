@@ -62,7 +62,7 @@ class DarkMode extends _$DarkMode {
   void changeDarkModeState(DarkMapStateEnum currentMapMode) {
     final isDark = _getIsDarkFromMode(currentMapMode);
 
-    final stateData = state.valueOrNull;
+    final stateData = state.value;
     if (stateData == null) {
       state = AsyncData(DarkMapStateModel(
         isDark: isDark,

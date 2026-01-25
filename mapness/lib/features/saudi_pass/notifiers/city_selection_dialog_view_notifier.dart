@@ -11,7 +11,7 @@ class CitySelectionDialogViewNotifier extends ChangeNotifier
   CitySelectionDialogViewNotifier(this.cities);
 
   void onCityTap(City city, BuildContext context) =>
-      context.router.popForced(city);
+      context.router.pop(city);
 
   late final Iterable<SearchView> _all =
       cities.map((city) => CitySearchView(city, this)).toList();

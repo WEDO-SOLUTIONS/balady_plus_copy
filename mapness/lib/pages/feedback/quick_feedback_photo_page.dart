@@ -37,7 +37,7 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
         child: FeedbackImageSelectorSheet(
           onSelect: (type) async {
             if (type == null) {
-              context.router.popForced();
+              context.router.pop();
               return;
             } else {
               final provider = quickFeedbackProvider(QuickFeedbackType.addPhoto, params);
@@ -45,7 +45,7 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
                 final categories = await ref.read(provider.future);
 
                 if (categories.isEmpty) {
-                  context.router.popForced();
+                  context.router.pop();
                   return;
                 }
 
@@ -53,13 +53,13 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
                 final firstImageField = categories.first.fields.firstOrNull;
 
                 if (firstImageField == null || firstImageField is! FeedbackImageInputEntity) {
-                  context.router.popForced();
+                  context.router.pop();
                   return;
                 }
 
                 await _handleCategories(ref, type, firstImageField, context);
               } catch (e) {
-                context.router.popForced();
+                context.router.pop();
               }
             }
           },
@@ -87,7 +87,7 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
           ),
         );
       } else {
-        context.router.popForced();
+        context.router.pop();
       }
     } catch (e) {
       await _handleError(e, context, ref, firstImageField);

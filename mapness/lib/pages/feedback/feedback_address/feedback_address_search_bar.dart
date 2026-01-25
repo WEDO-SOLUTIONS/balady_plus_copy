@@ -68,7 +68,7 @@ class _FeedbackAddressSearchBarState extends ConsumerState<FeedbackAddressSearch
         text: context.l10n.cancel,
         onPressed: () {
           FocusScope.of(context).unfocus();
-          context.router.popForced();
+          context.router.pop();
         },
       ),
     );

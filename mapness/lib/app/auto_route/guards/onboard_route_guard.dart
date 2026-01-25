@@ -15,7 +15,7 @@ final class OnboardRouteGuard extends AutoRouteGuard {
       resolver.next();
     } else {
       ref.read(appAnalyticsProvider).onboardingFlowStarted();
-      resolver.redirect(
+      resolver.redirectUntil(
         OnboardRoute(
           onClose: () {
             ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);

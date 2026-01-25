@@ -66,7 +66,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
       ),
     );
 
-    final value = data.valueOrNull;
+    final value = data.value;
 
     final isAuthorized = value?.isAuthorized ?? false;
 
@@ -83,7 +83,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
       }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
-        context.router.popForced();
+        context.router.pop();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
           actions: [
@@ -97,14 +97,15 @@ class ShareMyLocationPage extends HookConsumerWidget {
         );
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
+        context.router.popUntilRouteWithName(BottomMenuRoute.name);
 
         if (closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
-          ..setLatitude(closestPoint!.latitude)
-          ..setLongitude(closestPoint!.longitude);
+          ..setLatitude(closestPoint.latitude)
+          ..setLongitude(closestPoint.longitude);
       }
     });
 
@@ -193,7 +194,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    context.router.popForced();
+    context.router.pop();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }

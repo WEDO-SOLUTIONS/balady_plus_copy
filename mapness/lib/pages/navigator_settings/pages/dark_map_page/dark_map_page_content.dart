@@ -25,7 +25,7 @@ class DarkMapPageContent extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(RadiusBorder.xl),
               child: Image.asset(
-                dark.valueOrNull?.isDark ?? false
+                dark.value?.isDark ?? false
                     ? Assets.images.darkMapPreview.keyName
                     : Assets.images.lightMapPreview.keyName,
                 fit: BoxFit.cover,

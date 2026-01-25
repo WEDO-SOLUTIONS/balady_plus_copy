@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'highlight.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Highlight extends _$Highlight {
   @override
   List<DgisObjectIdMessage> build() => [];

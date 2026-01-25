@@ -180,7 +180,7 @@ class _StoryVideoPlayerState extends ConsumerState<StoryVideoPlayer> {
               _loadVideo();
             },
             onClose: () {
-              context.router.popForced();
+              context.router.pop();
             },
           );
         }
@@ -262,7 +262,7 @@ class _StoryVideoPlayerState extends ConsumerState<StoryVideoPlayer> {
                                         const SizedBox(width: Spacing.$3x),
                                         AppButton.close(
                                           onTap: () {
-                                            context.router.popForced();
+                                            context.router.pop();
                                           },
                                           innerPadding: const EdgeInsets.all(Spacing.$2x),
                                           padding: EdgeInsets.zero,

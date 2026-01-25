@@ -22,7 +22,7 @@ class DarkMapPage extends StatelessWidget {
               color: context.colors.foregroundDefault,
             ),
             leading: ActionModel(
-              onPressed: () => context.router.popForced(),
+              onPressed: () => context.router.pop(),
               icon: SystemIcons.arrowCornerLeftLarge,
             ),
           ),

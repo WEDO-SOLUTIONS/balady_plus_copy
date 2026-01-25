@@ -41,7 +41,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   void initState() {
     super.initState();
     scrollController = ToggleSheetController(
-      onClose: (_) => context.router.popForced(),
+      onClose: (_) => context.router.pop(),
       heightModel: ToggleSheetHeightModel.fraction(1),
     );
     rating.value = widget.rating ?? 0;
@@ -77,7 +77,7 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
         trailing: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: CustomCloseButton(
-            onClose: () => context.router.popForced(),
+            onClose: () => context.router.pop(),
           ),
         ),
       ),

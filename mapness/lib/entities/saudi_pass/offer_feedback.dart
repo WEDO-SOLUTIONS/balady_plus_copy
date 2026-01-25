@@ -8,7 +8,7 @@ part 'offer_feedback.g.dart';
 enum OfferFeedbackType { rate, note, redeem, view, favorite }
 
 @freezed
-class OfferFeedback with _$OfferFeedback {
+abstract class OfferFeedback with _$OfferFeedback {
   factory OfferFeedback({
     required final OfferFeedbackType typeId,
     required final OfferLocation location,

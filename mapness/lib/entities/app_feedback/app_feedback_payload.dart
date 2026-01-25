@@ -12,7 +12,7 @@ enum AppFeedbackLocale { en, ar }
 enum AppFeedbackMobileOs { android, ios }
 
 @freezed
-class AppFeedbackPayload with _$AppFeedbackPayload {
+abstract class AppFeedbackPayload with _$AppFeedbackPayload {
   @JsonSerializable(explicitToJson: true)
   factory AppFeedbackPayload({
     required final AppFeedbackReview review,
@@ -23,7 +23,7 @@ class AppFeedbackPayload with _$AppFeedbackPayload {
 }
 
 @freezed
-class AppFeedbackReview with _$AppFeedbackReview {
+abstract class AppFeedbackReview with _$AppFeedbackReview {
   @JsonSerializable(explicitToJson: true)
   factory AppFeedbackReview({
     required final int stars,
@@ -35,7 +35,7 @@ class AppFeedbackReview with _$AppFeedbackReview {
 }
 
 @freezed
-class AppFeedbackContext with _$AppFeedbackContext {
+abstract class AppFeedbackContext with _$AppFeedbackContext {
   factory AppFeedbackContext({
     final String? appVersion,
     final AppFeedbackMobileOs? mobileOS,

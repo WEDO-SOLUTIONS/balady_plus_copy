@@ -45,7 +45,7 @@ class FeedbackScheduleWidget extends ConsumerWidget {
           final sourceWorkingHours = objectId != null
               ? ref
                   .read(directoryObjectFromDgisIdProvider(DgisObjectId(objectId: objectId!, entranceId: 0)))
-                  .valueOrNull
+                  .value
                   ?.openingHours
               : null;
           final days = FeedbackSchedulePayloadDto.fromDomain(value, sourceWorkingHours);

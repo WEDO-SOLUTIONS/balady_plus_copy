@@ -40,7 +40,7 @@ class LoadingSheet extends StatelessWidget {
                 right: 16,
                 top: 16,
                 child: CustomCloseButton(
-                  onClose: onClose ?? () => context.router.popForced(),
+                  onClose: onClose ?? () => context.router.pop(),
                 ),
               ),
               Center(

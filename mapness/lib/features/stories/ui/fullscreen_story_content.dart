@@ -31,7 +31,7 @@ class _FullscreenErrorContent extends StatelessWidget {
                     buttonType: BaladyButtonType.secondary,
                     buttonColorScheme: BaladyButtonColorScheme.neutral,
                     primaryIcon: SystemIcons.close,
-                    onTap: () => context.router.popForced(),
+                    onTap: () => context.router.pop(),
                   ),
                 ),
               ),

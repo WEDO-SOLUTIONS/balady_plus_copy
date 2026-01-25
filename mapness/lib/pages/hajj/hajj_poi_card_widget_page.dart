@@ -68,7 +68,7 @@ class _HajjPoiCardPageState extends ConsumerState<HajjPoiCardPage> with SingleTi
             poiMarkerRcmc: widget.poiMarkerRcmc,
             onTapClose: () {
               ref.read(selectedMarkerProvider.notifier).removeMarker(hajjPoiPinId);
-              context.router.popForced();
+              context.router.pop();
             },
           ),
           footer: HajjPoiCardFooter(

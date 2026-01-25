@@ -37,7 +37,7 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
                   color: colors.foregroundDefault,
                 ),
                 leading: ActionModel(
-                  onPressed: () => context.router.popForced(),
+                  onPressed: () => context.router.pop(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),

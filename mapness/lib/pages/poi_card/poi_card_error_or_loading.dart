@@ -40,7 +40,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
         (data as PoiError).onClose!.call();
       } else {
         ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-        context.router.popForced();
+        context.router.pop();
       }
     };
     final scrollController = useToggleSheetController(

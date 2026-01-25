@@ -37,7 +37,7 @@ class ProfilePage extends HookConsumerWidget {
           size: 24,
         );
     final userData = ref.watch(authProvider);
-    final isAuth = userData.valueOrNull != null;
+    final isAuth = userData.value != null;
     final backgroundColor = isAuth ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
 
     final overlay =

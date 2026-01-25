@@ -31,7 +31,7 @@ class RoutingSearchHistory extends ConsumerWidget {
         RoutingFavourites(
           showBookmark: false,
           onFavouriteTap: (point) {
-            context.router.popForced(RoutePointFavouriteItem(point));
+            context.router.pop(RoutePointFavouriteItem(point));
           },
         ),
         Spacing.$4x.heightBox,
@@ -49,7 +49,7 @@ class RoutingSearchHistory extends ConsumerWidget {
                   text: ContentRowTextOptions(
                     title: context.l10n.myLocation,
                   ),
-                  onTap: () => context.router.popForced(RoutePointMyLocation()),
+                  onTap: () => context.router.pop(RoutePointMyLocation()),
                 ),
               ContentRow(
                 leading: Icon(
@@ -77,7 +77,7 @@ class RoutingSearchHistory extends ConsumerWidget {
         Spacing.$4x.heightBox,
         RoutingHistory(
           updatePoint: (point) {
-            context.router.popForced(point);
+            context.router.pop(point);
           },
           searchByQuery: (query) {
             ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(query);
@@ -96,7 +96,7 @@ class RoutingSearchHistory extends ConsumerWidget {
     final result = await context.router.push(const RoutingMapSelectRoute());
 
     if (result != null) {
-      context.router.popForced(result);
+      context.router.pop(result);
     }
   }
 
@@ -108,7 +108,7 @@ class RoutingSearchHistory extends ConsumerWidget {
           final result = await context.router.push(const FavouritesPickerRoute());
 
           if (result != null) {
-            context.router.popForced(
+            context.router.pop(
               RoutePointFavouriteItem(result as FavouriteItem?),
             );
           }

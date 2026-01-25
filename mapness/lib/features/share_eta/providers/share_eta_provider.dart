@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady_utils;
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -48,115 +48,123 @@ class ShareEta extends _$ShareEta {
   @override
   EtaStreamType build() {
     _websocketStatusSubscription?.close();
-    _websocketStatusSubscription =
-        ref.listen<bool>(etaWebsocketStatusProvider, (_, status) {
-      _locationSubscription?.cancel();
+    _websocketStatusSubscription = ref.listen<bool>(
+      etaWebsocketStatusProvider,
+      (_, status) {
+        _locationSubscription?.cancel();
 
-      final isSharingType =
-          ref.read(websocketTypeProvider) == SubscriptionType.share;
+        final isSharingType =
+            ref.read(websocketTypeProvider) == SubscriptionType.share;
 
-      if (status && isSharingType) {
-        final durationInMinutes = EtaStreamStorage().state.durationInMinutes;
+        if (status && isSharingType) {
+          final durationInMinutes = EtaStreamStorage().state.durationInMinutes;
 
-        if (durationInMinutes != null) {
-          ref
-              .read(etaTimerIndicatorProvider.notifier)
-              .startTimer(durationInMinutes);
-        }
-
-        final state = EtaStreamStorage().state;
-
-        if (state.streamId == null || state.streamToken == null) {
-          return;
-        }
-
-        if (_streamType == EtaStreamType.geo) {
-          if (durationInMinutes == null) {
-            return;
-          }
-          _shareLiveLocationDialog(
-            state.streamToken!,
-            state.streamId!,
-            durationInMinutes,
-          );
-        } else if (_streamType == EtaStreamType.eta) {
-          final eta = ref.read(pathNavEtaProvider);
-          if (eta == null) {
-            return;
-          }
-
-          final DateFormat formatter = DateFormat('HH:mm');
-          final arrivalDate =
-              DateTime.now().add(Duration(seconds: eta.durationInSeconds));
-          _shareEtaDialog(
-            state.streamToken!,
-            state.streamId!,
-            formatter.format(arrivalDate),
-          );
-        }
-
-        _locationSubscription = Timer.periodic(
-            const Duration(seconds: sendLocationIntervalSeconds), (_) async {
-          final location = ref.read(locationProvider);
-          final eta = ref.read(pathNavEtaProvider);
-
-          final arrivalAt = DateTime.now()
-              .toUtc()
-              .add(Duration(seconds: eta?.durationInSeconds ?? 0));
-          final distance = eta?.rawDistance ?? 0;
-          final isGranded =
-              await ref.read(locationProvider.notifier).checkLocationStatus();
-
-          if (location != null && isGranded) {
-            // If location is back after lost, remove the error status
-            if (ref.read(websocketErrorHandlerProvider).$1 ==
-                EtaErrorStatusCodes.noLocation) {
-              ref
-                  .read(websocketErrorHandlerProvider.notifier)
-                  .setStatus(null, null);
-            }
-
-            int heading = location.heading.toInt();
-
-            if (heading < 0) {
-              heading = 0;
-            } else if (heading > 360) {
-              heading = 360;
-            }
-
-            try {
-              await EtaWebsocket().pushEtaInfo(
-                EtaInfoModel<EtaInfoPayload>(
-                  type: EtaType.geolocation,
-                  payload: EtaInfoPayload(
-                    period: sendLocationIntervalSeconds * 1000, // in ms
-                    direction: heading,
-                    speed: location.speed,
-                    lat: location.latitude,
-                    lon: location.longitude,
-                    eta: _streamType == EtaStreamType.eta
-                        ? Eta(
-                            arrivalAt: arrivalAt.toIso8601String(),
-                            distance: distance.toInt(),
-                          )
-                        : null,
-                  ),
-                ),
-              );
-            } catch (e) {
-              logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
-            }
-          } else {
-            // If location lost, set error status to 4002
+          if (durationInMinutes != null) {
             ref
-                .read(websocketErrorHandlerProvider.notifier)
-                .setStatus(EtaErrorStatusCodes.noLocation, 'Lost location');
+                .read(etaTimerIndicatorProvider.notifier)
+                .startTimer(durationInMinutes);
           }
-        });
-      } else {
-        ref.read(websocketTypeProvider.notifier).setType();
-      }
-    });
+
+          final state = EtaStreamStorage().state;
+
+          if (state.streamId == null || state.streamToken == null) {
+            return;
+          }
+
+          if (_streamType == EtaStreamType.geo) {
+            if (durationInMinutes == null) {
+              return;
+            }
+            _shareLiveLocationDialog(
+              state.streamToken!,
+              state.streamId!,
+              durationInMinutes,
+            );
+          } else if (_streamType == EtaStreamType.eta) {
+            final eta = ref.read(pathNavEtaProvider);
+            if (eta == null) {
+              return;
+            }
+
+            final DateFormat formatter = DateFormat('HH:mm');
+            final arrivalDate = DateTime.now().add(
+              Duration(seconds: eta.durationInSeconds),
+            );
+            _shareEtaDialog(
+              state.streamToken!,
+              state.streamId!,
+              formatter.format(arrivalDate),
+            );
+          }
+
+          _locationSubscription = Timer.periodic(
+            const Duration(seconds: sendLocationIntervalSeconds),
+            (_) async {
+              final location = ref.read(locationProvider);
+              final eta = ref.read(pathNavEtaProvider);
+
+              final arrivalAt = DateTime.now().toUtc().add(
+                Duration(seconds: eta?.durationInSeconds ?? 0),
+              );
+              final distance = eta?.rawDistance ?? 0;
+              final isGranded =
+                  await ref
+                      .read(locationProvider.notifier)
+                      .checkLocationStatus();
+
+              if (location != null && isGranded) {
+                // If location is back after lost, remove the error status
+                if (ref.read(websocketErrorHandlerProvider).$1 ==
+                    EtaErrorStatusCodes.noLocation) {
+                  ref
+                      .read(websocketErrorHandlerProvider.notifier)
+                      .setStatus(null, null);
+                }
+
+                int heading = location.heading.toInt();
+
+                if (heading < 0) {
+                  heading = 0;
+                } else if (heading > 360) {
+                  heading = 360;
+                }
+
+                try {
+                  await EtaWebsocket().pushEtaInfo(
+                    EtaInfoModel<EtaInfoPayload>(
+                      type: EtaType.geolocation,
+                      payload: EtaInfoPayload(
+                        period: sendLocationIntervalSeconds * 1000, // in ms
+                        direction: heading,
+                        speed: location.speed,
+                        lat: location.latitude,
+                        lon: location.longitude,
+                        eta:
+                            _streamType == EtaStreamType.eta
+                                ? Eta(
+                                  arrivalAt: arrivalAt.toIso8601String(),
+                                  distance: distance.toInt(),
+                                )
+                                : null,
+                      ),
+                    ),
+                  );
+                } catch (e) {
+                  logger.log(e.toString(), logLevel: MapnessLogLevel.critical);
+                }
+              } else {
+                // If location lost, set error status to 4002
+                ref
+                    .read(websocketErrorHandlerProvider.notifier)
+                    .setStatus(EtaErrorStatusCodes.noLocation, 'Lost location');
+              }
+            },
+          );
+        } else {
+          ref.read(websocketTypeProvider.notifier).setType();
+        }
+      },
+    );
 
     ref
       ..listen(websocketErrorHandlerProvider, (_, current) async {
@@ -180,8 +188,12 @@ class ShareEta extends _$ShareEta {
         _lastConnectionStatus = current;
         final status = current;
         if (!status) {
-          ref.read(websocketErrorHandlerProvider.notifier).setStatus(
-              EtaErrorStatusCodes.connectionLost, 'Network status: $status');
+          ref
+              .read(websocketErrorHandlerProvider.notifier)
+              .setStatus(
+                EtaErrorStatusCodes.connectionLost,
+                'Network status: $status',
+              );
         }
       })
       ..listen(pathNavMessageProvider, (prev, current) {
@@ -194,11 +206,15 @@ class ShareEta extends _$ShareEta {
           }
 
           if (location != null) {
-            ref.read(etaRouteInfoProvider.notifier).setRoute(
+            ref
+                .read(etaRouteInfoProvider.notifier)
+                .setRoute(
                   route.copyWith(
                     routeIndex: 0,
                     startPoint: EtaRoutePoint(
-                        lat: location.latitude, lon: location.longitude),
+                      lat: location.latitude,
+                      lon: location.longitude,
+                    ),
                     createdAt: DateTime.now().toUtc().toIso8601String(),
                   ),
                 );
@@ -209,7 +225,7 @@ class ShareEta extends _$ShareEta {
         if (!next.hasValue ||
             next.isLoading ||
             next.hasError ||
-            next.valueOrNull == null) {
+            next.value == null) {
           return;
         }
         final streamId = next.value!.streamId;
@@ -268,8 +284,10 @@ class ShareEta extends _$ShareEta {
         _reconnectingInProgress = false;
       }
     } else if (statusCode == EtaErrorStatusCodes.endConnection &&
-        [WebsocketReason.expired, WebsocketReason.manual]
-            .contains(reasonData)) {
+        [
+          WebsocketReason.expired,
+          WebsocketReason.manual,
+        ].contains(reasonData)) {
       final isSharing =
           ref.read(websocketTypeProvider) == SubscriptionType.share;
       if (isSharing) {
@@ -286,7 +304,10 @@ class ShareEta extends _$ShareEta {
         shareCurrentStream(EtaStreamType.eta);
       } else {
         _shareLiveLocationDialog(
-            existingToken, existingStreamId, durationInMinutes);
+          existingToken,
+          existingStreamId,
+          durationInMinutes,
+        );
       }
       return;
     }
@@ -345,10 +366,13 @@ class ShareEta extends _$ShareEta {
     final xStreamData = EtaStreamStorage().state.xStreamData;
 
     if (tokenId != null && xStreamData != null) {
-      await ref.read(etaServiceProvider.notifier).updateEtaStream(
-          EtaRouteMetadataPayload(route: route),
-          xStreamData: xStreamData,
-          tokenId: tokenId);
+      await ref
+          .read(etaServiceProvider.notifier)
+          .updateEtaStream(
+            EtaRouteMetadataPayload(route: route),
+            xStreamData: xStreamData,
+            tokenId: tokenId,
+          );
     }
   }
 
@@ -379,7 +403,10 @@ class ShareEta extends _$ShareEta {
   }
 
   Future<void> startWebsocketStream(
-      String streamId, String token, String xStreamData) async {
+    String streamId,
+    String token,
+    String xStreamData,
+  ) async {
     final envProvider = await ref.read(dgisEnvironmentProvider.future);
 
     try {
@@ -401,7 +428,10 @@ class ShareEta extends _$ShareEta {
   }
 
   void _shareLiveLocationDialog(
-      String tokenId, String streamId, int durationInMinutes) {
+    String tokenId,
+    String streamId,
+    int durationInMinutes,
+  ) {
     final query = <String, String>{};
     final context = rootNavigatorKey.currentContext;
     if (context == null) {
@@ -423,12 +453,15 @@ class ShareEta extends _$ShareEta {
     final inHour = durationInMinutes ~/ 60;
     final inMinutes = durationInMinutes % 60;
 
-    final duration = inHour > 0
-        ? context.l10n
-            .seeLiveLocationHrMin(inHour.toString(), inMinutes.toString())
-        : context.l10n.seeLiveLocationMin(inMinutes.toString());
+    final duration =
+        inHour > 0
+            ? context.l10n.seeLiveLocationHrMin(
+              inHour.toString(),
+              inMinutes.toString(),
+            )
+            : context.l10n.seeLiveLocationMin(inMinutes.toString());
 
-    balady_utils.safeShareText('$duration\n$shareUrl', context: context);
+    safeShareText('$duration\n$shareUrl', context: context);
   }
 
   void shareCurrentStream(EtaStreamType type) {
@@ -448,15 +481,19 @@ class ShareEta extends _$ShareEta {
       final eta = ref.read(pathNavEtaProvider);
       if (eta != null) {
         final formatter = DateFormat('HH:mm');
-        final arrivalDate =
-            DateTime.now().add(Duration(seconds: eta.durationInSeconds));
+        final arrivalDate = DateTime.now().add(
+          Duration(seconds: eta.durationInSeconds),
+        );
         _shareEtaDialog(tokenId, streamId, formatter.format(arrivalDate));
       }
     }
   }
 
   Future<void> _shareEtaDialog(
-      String tokenId, String streamId, String arrivalAt) async {
+    String tokenId,
+    String streamId,
+    String arrivalAt,
+  ) async {
     final query = <String, String>{};
     final context = rootNavigatorKey.currentContext;
     if (context == null) {
@@ -480,10 +517,12 @@ class ShareEta extends _$ShareEta {
       return;
     }
 
-    final address = await _makeAddress(EtaStreamStorage().state.latitude!,
-        EtaStreamStorage().state.longitude!);
+    final address = await _makeAddress(
+      EtaStreamStorage().state.latitude!,
+      EtaStreamStorage().state.longitude!,
+    );
 
-    await balady_utils.safeShareText(
+    await safeShareText(
       context.l10n
           .iWillArriveAtTimeToDestinationLink(
             address ?? '',

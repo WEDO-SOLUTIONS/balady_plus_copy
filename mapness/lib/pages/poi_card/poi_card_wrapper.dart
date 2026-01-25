@@ -71,9 +71,9 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
         }
       });
 
-    final poiCardState = state.valueOrNull;
+    final poiCardState = state.value;
     final storeParking = ref.read(parkingManageProvider.notifier);
-    final storeParkingData = ref.read(parkingManageProvider).valueOrNull?.convertToDirectoryObject(context);
+    final storeParkingData = ref.read(parkingManageProvider).value?.convertToDirectoryObject(context);
     final isParkingPoi = widget.objectId.objectId == parkingObjectId;
     final data = isParkingPoi ? storeParkingData : poiCardState?.gisObjectIdMessage;
 
@@ -127,10 +127,10 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
             onClose: () async {
               await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
               await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-              context.router.popForced();
+              context.router.pop();
             },
             onRetry: () {
-              context.router.popForced();
+              context.router.pop();
             },
           );
         }
@@ -138,7 +138,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
           errorTitle: context.l10n.somethingWentWrong,
           errorContent: context.l10n.saudiPassSomethingWentWrongHint,
           buttonLabel: context.l10n.complete,
-          onRetry: () => context.router.popForced(),
+          onRetry: () => context.router.pop(),
         );
       }
     }();
