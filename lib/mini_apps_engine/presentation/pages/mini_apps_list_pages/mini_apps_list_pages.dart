@@ -84,19 +84,20 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
   //   },
   // );
 
-  MiniApp getMiniAppByServiceId(String serviceKey) {
+  MiniApp? getMiniAppByServiceId(String serviceKey) {
     final miniAppsCubit = sl<NewMiniAppLogicCubit>();
     try {
-      return miniAppsCubit.state.allMiniApps
-          .firstWhere((miniApp) => miniApp.serviceKey == serviceKey);
+      return miniAppsCubit.state.allMiniApps.firstWhere(
+        (miniApp) => miniApp.serviceKey == serviceKey,
+      );
     } catch (e) {
-      throw Exception('MiniApp with serviceId $serviceKey not found');
+      return null;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    MiniApp dashboard = getMiniAppByServiceId("Dashboard");
+    MiniApp? dashboard = getMiniAppByServiceId("Dashboard");
     return Navigator(
       key: servicesNavigatorKey,
       initialRoute: '/',
@@ -112,7 +113,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                       const Positioned(top: 0, child: OverlayBlurCircle()),
                       BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                         builder: (context, state) {
-                          final hasError = state.entryPointsError != null &&
+                          final hasError =
+                              state.entryPointsError != null &&
                               state.favError != null;
 
                           if (hasError) {
@@ -132,14 +134,17 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                               child: SafeArea(
                                 child: Padding(
                                   padding: EdgeInsets.only(
-                                      top: context.screenWidth * 0.04),
+                                    top: context.screenWidth * 0.04,
+                                  ),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       //! Page bar section (Title & Text field widgets) ....
-                                      BlocBuilder<NewMiniAppLogicCubit,
-                                          NewMiniAppLogicState>(
+                                      BlocBuilder<
+                                        NewMiniAppLogicCubit,
+                                        NewMiniAppLogicState
+                                      >(
                                         builder: (context, state) {
                                           if (state.isFavLoading) {
                                             return const PageBarShimmerLoadingWidget();
@@ -148,9 +153,10 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                             children: [
                                               Padding(
                                                 padding: EdgeInsets.symmetric(
-                                                    horizontal:
-                                                        context.screenWidth *
-                                                            0.04),
+                                                  horizontal:
+                                                      context.screenWidth *
+                                                      0.04,
+                                                ),
                                                 child: SizedBox(
                                                   child: Row(
                                                     crossAxisAlignment:
@@ -160,97 +166,103 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      InkWell(
-                                                        onTap: () {
-                                                          context
-                                                              .read<
-                                                                  NewMiniAppLogicCubit>()
-                                                              .openMiniApp(
-                                                                  dashboard);
-                                                        },
-                                                        child: Container(
-                                                          // width: 117,
-                                                          // height: 33,
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal: 3,
-                                                                  vertical: 4),
-                                                          decoration: BoxDecoration(
-                                                              color:
-                                                                  Colors.white,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          18.5)),
-                                                          child: Row(
-                                                            children: [
-                                                              Container(
-                                                                padding: const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        8,
-                                                                    vertical:
-                                                                        4),
+                                                      dashboard != null
+                                                          ? InkWell(
+                                                              onTap: () {
+                                                                context
+                                                                    .read<
+                                                                      NewMiniAppLogicCubit
+                                                                    >()
+                                                                    .openMiniApp(
+                                                                      dashboard,
+                                                                    );
+                                                              },
+                                                              child: Container(
+                                                                // width: 117,
+                                                                // height: 33,
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          3,
+                                                                      vertical:
+                                                                          4,
+                                                                    ),
                                                                 decoration: BoxDecoration(
-                                                                    color: const Color(
-                                                                        0XFFE5EBED),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            13.5)),
-                                                                child:
-                                                                    CustomNetworkImageWidget(
-                                                                  dashboard
-                                                                      .iconPath,
-                                                                  isVerifyingKey:
-                                                                      true,
-                                                                  imageWidth:
-                                                                      context.w(
-                                                                          24),
-                                                                  imageHeight:
-                                                                      context.h(
-                                                                          24),
+                                                                  color: Colors
+                                                                      .white,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        18.5,
+                                                                      ),
+                                                                ),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Container(
+                                                                      padding: const EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            8,
+                                                                        vertical:
+                                                                            4,
+                                                                      ),
+                                                                      decoration: BoxDecoration(
+                                                                        color: const Color(
+                                                                          0XFFE5EBED,
+                                                                        ),
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(
+                                                                              13.5,
+                                                                            ),
+                                                                      ),
+                                                                      child: CustomNetworkImageWidget(
+                                                                        dashboard
+                                                                            .iconPath,
+                                                                        isVerifyingKey:
+                                                                            true,
+                                                                        imageWidth:
+                                                                            context.w(
+                                                                              24,
+                                                                            ),
+                                                                        imageHeight:
+                                                                            context.h(
+                                                                              24,
+                                                                            ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: context
+                                                                          .w(8),
+                                                                    ),
+                                                                    Text(
+                                                                      "dashboard"
+                                                                          .tr(),
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      style: const TextStyle(
+                                                                        fontFamily:
+                                                                            'Frutiger',
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: context
+                                                                          .w(9),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
-                                                              SizedBox(
-                                                                width: context
-                                                                    .w(8),
-                                                              ),
-                                                              Text(
-                                                                "dashboard"
-                                                                    .tr(),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center,
-                                                                style:
-                                                                    const TextStyle(
-                                                                  fontFamily:
-                                                                      'Frutiger',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w400,
-                                                                ),
-                                                              ),
-                                                              SizedBox(
-                                                                width: context
-                                                                    .w(9),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
+                                                            )
+                                                          : const SizedBox(),
                                                       Expanded(
                                                         child: RichText(
                                                           textAlign:
                                                               CommonFunctions
-                                                                      .isAppAR
-                                                                  ? TextAlign
-                                                                      .right
-                                                                  : TextAlign
-                                                                      .left,
+                                                                  .isAppAR
+                                                              ? TextAlign.right
+                                                              : TextAlign.left,
                                                           text: TextSpan(
-                                                            style:
-                                                                const TextStyle(
+                                                            style: const TextStyle(
                                                               fontSize: 24,
                                                               height: 28 / 24,
                                                               fontWeight:
@@ -260,19 +272,23 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                   GeneralKey
                                                                       .appFontType,
                                                               color: Color(
-                                                                  0xFF1CA9A6),
+                                                                0xFF1CA9A6,
+                                                              ),
                                                             ),
                                                             children: [
                                                               TextSpan(
-                                                                  text:
-                                                                      "quick_apps"
-                                                                          .tr()),
+                                                                text:
+                                                                    "quick_apps"
+                                                                        .tr(),
+                                                              ),
                                                               const TextSpan(
-                                                                  text: '\n'),
+                                                                text: '\n',
+                                                              ),
                                                               TextSpan(
-                                                                  text:
-                                                                      "one_place"
-                                                                          .tr()),
+                                                                text:
+                                                                    "one_place"
+                                                                        .tr(),
+                                                              ),
                                                             ],
                                                           ),
                                                         ),
@@ -286,11 +302,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                         },
                                       ),
                                       //!
-                                      SizedBox(
-                                        height: context.h(
-                                          14,
-                                        ),
-                                      ),
+                                      SizedBox(height: context.h(14)),
                                       MiniAppsCustomTextField(
                                         onTap: () {
                                           Navigator.of(context).push(
@@ -311,36 +323,42 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                         suffixString: Text(
                                           "search2".tr(),
                                           style: TextStyle(
-                                            color: const Color(0xff1B153D)
-                                                .withOpacity(0.55),
+                                            color: const Color(
+                                              0xff1B153D,
+                                            ).withOpacity(0.55),
                                             // color: Colors.black,
                                             fontFamily: GeneralKey.appFontType,
                                           ),
                                         ),
                                         suffixIcon: SvgPicture.asset(
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? IconPath.searchSVG2
-                                                : IconPath.searchSVG),
+                                          Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? IconPath.searchSVG2
+                                              : IconPath.searchSVG,
+                                        ),
                                       ),
                                       Padding(
                                         padding: EdgeInsets.only(
-                                            left: CommonFunctions.isAppAR
-                                                ? context.screenWidth * 0.00
-                                                : context.screenWidth * 0.04,
-                                            right: CommonFunctions.isAppAR
-                                                ? context.screenWidth * 0.04
-                                                : context.screenWidth * 0.00),
+                                          left: CommonFunctions.isAppAR
+                                              ? context.screenWidth * 0.00
+                                              : context.screenWidth * 0.04,
+                                          right: CommonFunctions.isAppAR
+                                              ? context.screenWidth * 0.04
+                                              : context.screenWidth * 0.00,
+                                        ),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
                                             SizedBox(
-                                                height: context.screenHeight *
-                                                    0.02),
+                                              height:
+                                                  context.screenHeight * 0.02,
+                                            ),
                                             //! Fav apps section (Fav title & show and add fav apps) ....
-                                            BlocBuilder<NewMiniAppLogicCubit,
-                                                NewMiniAppLogicState>(
+                                            BlocBuilder<
+                                              NewMiniAppLogicCubit,
+                                              NewMiniAppLogicState
+                                            >(
                                               builder: (context, state) {
                                                 if (state.isFavLoading) {
                                                   return const MiniAppsFavSectionShimmerWidget();
@@ -364,11 +382,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                     .ellipsis,
                                                             textAlign:
                                                                 CommonFunctions
-                                                                        .isAppAR
-                                                                    ? TextAlign
-                                                                        .right
-                                                                    : TextAlign
-                                                                        .left,
+                                                                    .isAppAR
+                                                                ? TextAlign
+                                                                      .right
+                                                                : TextAlign
+                                                                      .left,
                                                             style: TextStyle(
                                                               fontSize: 18,
                                                               fontWeight:
@@ -377,20 +395,24 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                               fontFamily:
                                                                   GeneralKey
                                                                       .appFontType,
-                                                              color: Theme.of(context)
-                                                                          .brightness ==
+                                                              color:
+                                                                  Theme.of(
+                                                                        context,
+                                                                      ).brightness ==
                                                                       Brightness
                                                                           .dark
                                                                   ? Colors.white
                                                                   : Colors
-                                                                      .black,
+                                                                        .black,
                                                             ),
                                                           ),
                                                         ),
                                                         SizedBox(
-                                                            height: context
-                                                                    .screenHeight *
-                                                                0.02),
+                                                          height:
+                                                              context
+                                                                  .screenHeight *
+                                                              0.02,
+                                                        ),
                                                         Row(
                                                           crossAxisAlignment:
                                                               CrossAxisAlignment
@@ -398,134 +420,143 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                           children: [
                                                             const CustomDashedAddMiniAppFav(),
                                                             SizedBox(
-                                                                width: context
-                                                                        .screenWidth *
-                                                                    0.04),
+                                                              width:
+                                                                  context
+                                                                      .screenWidth *
+                                                                  0.04,
+                                                            ),
                                                             Expanded(
                                                               child: SizedBox(
-                                                                height: context
+                                                                height:
+                                                                    context
                                                                         .screenHeight *
                                                                     0.13,
-                                                                child:
-                                                                    ReorderableListView
-                                                                        .builder(
+                                                                child: ReorderableListView.builder(
                                                                   scrollDirection:
                                                                       Axis.horizontal,
                                                                   itemCount: state
                                                                       .favoriteApps
                                                                       .length,
                                                                   onReorder:
-                                                                      (oldIndex,
-                                                                          newIndex) {
-                                                                    context
-                                                                        .read<
-                                                                            NewMiniAppLogicCubit>()
-                                                                        .reorderFavoriteApps(
-                                                                          oldIndex,
-                                                                          newIndex,
-                                                                        );
-                                                                  },
+                                                                      (
+                                                                        oldIndex,
+                                                                        newIndex,
+                                                                      ) {
+                                                                        context
+                                                                            .read<
+                                                                              NewMiniAppLogicCubit
+                                                                            >()
+                                                                            .reorderFavoriteApps(
+                                                                              oldIndex,
+                                                                              newIndex,
+                                                                            );
+                                                                      },
                                                                   itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                    final favMiniApp =
-                                                                        state.favoriteApps[
-                                                                            index];
+                                                                      (
+                                                                        context,
+                                                                        index,
+                                                                      ) {
+                                                                        final favMiniApp =
+                                                                            state.favoriteApps[index];
 
-                                                                    return Padding(
-                                                                      key: Key(
-                                                                          favMiniApp
-                                                                              .id),
-                                                                      padding:
-                                                                          EdgeInsets
-                                                                              .symmetric(
-                                                                        horizontal:
-                                                                            context.screenWidth *
-                                                                                0.03,
-                                                                      ),
-                                                                      child:
-                                                                          CustomMiniAppsCard(
-                                                                        key: Key(
-                                                                            favMiniApp.id),
-                                                                        width: context.screenWidth *
-                                                                            0.14,
-                                                                        onTap:
-                                                                            () {
-                                                                          context
-                                                                              .read<NewMiniAppLogicCubit>()
-                                                                              .openMiniApp(favMiniApp);
-                                                                        },
-                                                                        text: favMiniApp
-                                                                            .name,
-                                                                        maxLines:
-                                                                            2,
-                                                                        maxFontSize:
-                                                                            20,
-                                                                        minFontSize:
-                                                                            9,
-                                                                        miniAppIcon:
-                                                                            favMiniApp.iconPath,
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              8.0),
-                                                                          child:
-                                                                              CustomNetworkImageWidget(
-                                                                            favMiniApp.iconPath,
-                                                                            isVerifyingKey:
-                                                                                true,
-                                                                            imageFit:
-                                                                                BoxFit.contain,
+                                                                        return Padding(
+                                                                          key: Key(
+                                                                            favMiniApp.id,
                                                                           ),
-                                                                        ),
-                                                                      ),
-                                                                    );
-                                                                  },
+                                                                          padding: EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                context.screenWidth *
+                                                                                0.03,
+                                                                          ),
+                                                                          child: CustomMiniAppsCard(
+                                                                            key: Key(
+                                                                              favMiniApp.id,
+                                                                            ),
+                                                                            width:
+                                                                                context.screenWidth *
+                                                                                0.14,
+                                                                            onTap: () {
+                                                                              context
+                                                                                  .read<
+                                                                                    NewMiniAppLogicCubit
+                                                                                  >()
+                                                                                  .openMiniApp(
+                                                                                    favMiniApp,
+                                                                                  );
+                                                                            },
+                                                                            text:
+                                                                                favMiniApp.name,
+                                                                            maxLines:
+                                                                                2,
+                                                                            maxFontSize:
+                                                                                20,
+                                                                            minFontSize:
+                                                                                9,
+                                                                            miniAppIcon:
+                                                                                favMiniApp.iconPath,
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(
+                                                                                8.0,
+                                                                              ),
+                                                                              child: CustomNetworkImageWidget(
+                                                                                favMiniApp.iconPath,
+                                                                                isVerifyingKey: true,
+                                                                                imageFit: BoxFit.contain,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                      },
                                                                 ),
                                                               ),
-                                                            )
+                                                            ),
                                                           ],
                                                         ),
                                                         SizedBox(
-                                                            height: context
-                                                                    .screenHeight *
-                                                                0.01),
-                                                        Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                            left: CommonFunctions
-                                                                    .isAppAR
-                                                                ? context
-                                                                        .screenWidth *
-                                                                    0.04
-                                                                : context
-                                                                        .screenWidth *
-                                                                    0.00,
-                                                            right: CommonFunctions
-                                                                    .isAppAR
-                                                                ? context
-                                                                        .screenWidth *
-                                                                    0.00
-                                                                : context
-                                                                        .screenWidth *
-                                                                    0.04,
-                                                          ),
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () {
+                                                          height:
                                                               context
-                                                                  .read<
-                                                                      NewMiniAppLogicCubit>()
-                                                                  .openMiniApp(
-                                                                    getMiniAppByServiceId(
-                                                                        "BaladyUrbiImtithal"),
+                                                                  .screenHeight *
+                                                              0.01,
+                                                        ),
+                                                        Padding(
+                                                          padding: EdgeInsets.only(
+                                                            left:
+                                                                CommonFunctions
+                                                                    .isAppAR
+                                                                ? context.screenWidth *
+                                                                      0.04
+                                                                : context.screenWidth *
+                                                                      0.00,
+                                                            right:
+                                                                CommonFunctions
+                                                                    .isAppAR
+                                                                ? context.screenWidth *
+                                                                      0.00
+                                                                : context.screenWidth *
+                                                                      0.04,
+                                                          ),
+                                                          child: GestureDetector(
+                                                            onTap: () {
+                                                              MiniApp? miniApp =
+                                                                  getMiniAppByServiceId(
+                                                                    "BaladyUrbiImtithal",
                                                                   );
+                                                              if (miniApp !=
+                                                                  null) {
+                                                                context
+                                                                    .read<
+                                                                      NewMiniAppLogicCubit
+                                                                    >()
+                                                                    .openMiniApp(
+                                                                      miniApp,
+                                                                    );
+                                                              }
                                                             },
                                                             child: Image.asset(
-                                                                "assets/icons/png/${CommonFunctions.isAppAR ? 'promoAr.png' : 'promoEn.png'}"),
+                                                              "assets/icons/png/${CommonFunctions.isAppAR ? 'promoAr.png' : 'promoEn.png'}",
+                                                            ),
                                                           ),
-                                                        )
+                                                        ),
                                                       ],
                                                     ),
                                                   ],
@@ -534,13 +565,16 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                             ),
                                             //!
                                             SizedBox(
-                                                height: context.screenHeight *
-                                                    0.02),
+                                              height:
+                                                  context.screenHeight * 0.02,
+                                            ),
                                             // const CustomDashedLineWidget(),
                                             // SizedBox(height: context.screenHeight * 0.02),
                                             //! Most used apps section
-                                            BlocBuilder<NewMiniAppLogicCubit,
-                                                NewMiniAppLogicState>(
+                                            BlocBuilder<
+                                              NewMiniAppLogicCubit,
+                                              NewMiniAppLogicState
+                                            >(
                                               builder: (context, state) {
                                                 if (state
                                                     .isEntryPointsLoading) {
@@ -548,8 +582,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                 }
 
                                                 if (state.entryPoints.isEmpty) {
-                                                  return const SizedBox
-                                                      .shrink();
+                                                  return const SizedBox.shrink();
                                                 }
 
                                                 return StaggeredAppear(
@@ -563,35 +596,35 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                           shrinkWrap: true,
                                                           physics:
                                                               const NeverScrollableScrollPhysics(),
-                                                          separatorBuilder: (context,
-                                                                  index) =>
-                                                              SizedBox(
-                                                                  height: context
-                                                                          .screenHeight *
-                                                                      0.02),
+                                                          separatorBuilder:
+                                                              (
+                                                                context,
+                                                                index,
+                                                              ) => SizedBox(
+                                                                height:
+                                                                    context
+                                                                        .screenHeight *
+                                                                    0.02,
+                                                              ),
                                                           itemCount: state
                                                               .entryPoints
                                                               .length,
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            final section =
-                                                                state.entryPoints[
-                                                                    index];
+                                                          itemBuilder: (context, index) {
+                                                            final section = state
+                                                                .entryPoints[index];
                                                             final apps =
                                                                 section.apps;
 
                                                             if (apps.isEmpty) {
-                                                              return const SizedBox
-                                                                  .shrink();
+                                                              return const SizedBox.shrink();
                                                             }
 
                                                             final title =
                                                                 CommonFunctions
-                                                                        .isAppAR
-                                                                    ? section
-                                                                        .arName
-                                                                    : section
-                                                                        .enName;
+                                                                    .isAppAR
+                                                                ? section.arName
+                                                                : section
+                                                                      .enName;
 
                                                             return Column(
                                                               crossAxisAlignment:
@@ -604,13 +637,14 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
-                                                                  textAlign: CommonFunctions.isAppAR
+                                                                  textAlign:
+                                                                      CommonFunctions
+                                                                          .isAppAR
                                                                       ? TextAlign
-                                                                          .right
+                                                                            .right
                                                                       : TextAlign
-                                                                          .left,
-                                                                  style:
-                                                                      TextStyle(
+                                                                            .left,
+                                                                  style: TextStyle(
                                                                     fontSize:
                                                                         18,
                                                                     fontWeight:
@@ -619,104 +653,119 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                     fontFamily:
                                                                         GeneralKey
                                                                             .appFontType,
-                                                                    color: Theme.of(context).brightness ==
-                                                                            Brightness
-                                                                                .dark
+                                                                    color:
+                                                                        Theme.of(
+                                                                              context,
+                                                                            ).brightness ==
+                                                                            Brightness.dark
                                                                         ? Colors
-                                                                            .white
+                                                                              .white
                                                                         : Colors
-                                                                            .black,
+                                                                              .black,
                                                                   ),
                                                                 ),
                                                                 SizedBox(
-                                                                    height: context
-                                                                            .screenHeight *
-                                                                        0.01),
+                                                                  height:
+                                                                      context
+                                                                          .screenHeight *
+                                                                      0.01,
+                                                                ),
                                                                 SizedBox(
-                                                                    height: context
-                                                                            .screenHeight *
-                                                                        0.01),
+                                                                  height:
+                                                                      context
+                                                                          .screenHeight *
+                                                                      0.01,
+                                                                ),
                                                                 SizedBox(
-                                                                  height: context
+                                                                  height:
+                                                                      context
                                                                           .screenHeight *
                                                                       0.2,
                                                                   width: context
                                                                       .screenWidth,
-                                                                  child: ListView
-                                                                      .separated(
+                                                                  child: ListView.separated(
                                                                     scrollDirection:
                                                                         Axis.horizontal,
                                                                     separatorBuilder:
-                                                                        (context,
-                                                                                i) =>
-                                                                            SizedBox(
-                                                                      width: context
-                                                                              .screenWidth *
-                                                                          0.02,
-                                                                    ),
+                                                                        (
+                                                                          context,
+                                                                          i,
+                                                                        ) => SizedBox(
+                                                                          width:
+                                                                              context.screenWidth *
+                                                                              0.02,
+                                                                        ),
                                                                     padding:
-                                                                        const EdgeInsets
-                                                                            .all(
-                                                                            2),
+                                                                        const EdgeInsets.all(
+                                                                          2,
+                                                                        ),
                                                                     itemCount: apps
                                                                         .length,
                                                                     itemBuilder:
-                                                                        (context,
-                                                                            appIndex) {
-                                                                      final miniApp =
-                                                                          apps[
-                                                                              appIndex];
+                                                                        (
+                                                                          context,
+                                                                          appIndex,
+                                                                        ) {
+                                                                          final miniApp =
+                                                                              apps[appIndex];
 
-                                                                      return CustomMiniAppsCard(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(28),
-                                                                        width: context
-                                                                            .h(104),
-                                                                        height:
-                                                                            context.h(104),
-                                                                        iconHeight:
-                                                                            context.h(64),
-                                                                        iconWidth:
-                                                                            context.w(64),
-                                                                        titlesWidth:
-                                                                            context.screenWidth /
+                                                                          return CustomMiniAppsCard(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              28,
+                                                                            ),
+                                                                            width: context.h(
+                                                                              104,
+                                                                            ),
+                                                                            height: context.h(
+                                                                              104,
+                                                                            ),
+                                                                            iconHeight: context.h(
+                                                                              64,
+                                                                            ),
+                                                                            iconWidth: context.w(
+                                                                              64,
+                                                                            ),
+                                                                            titlesWidth:
+                                                                                context.screenWidth /
                                                                                 3.8,
-                                                                        maxLines:
-                                                                            2,
-                                                                        maxFontSize:
-                                                                            20,
-                                                                        minFontSize:
-                                                                            8,
-                                                                        withCardEffect:
-                                                                            true,
-                                                                        text: miniApp
-                                                                            .name,
-                                                                        miniAppIcon:
-                                                                            miniApp.iconPath,
-                                                                        onTap:
-                                                                            () {
-                                                                          context
-                                                                              .read<NewMiniAppLogicCubit>()
-                                                                              .openMiniApp(miniApp);
-                                                                        },
-                                                                        child:
-                                                                            Padding(
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              16.0),
-                                                                          child:
-                                                                              CustomNetworkImageWidget(
-                                                                            miniApp.iconPath,
-                                                                            isVerifyingKey:
+                                                                            maxLines:
+                                                                                2,
+                                                                            maxFontSize:
+                                                                                20,
+                                                                            minFontSize:
+                                                                                8,
+                                                                            withCardEffect:
                                                                                 true,
-                                                                            imageWidth:
-                                                                                context.w(30),
-                                                                            imageHeight:
-                                                                                context.h(30),
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    },
+                                                                            text:
+                                                                                miniApp.name,
+                                                                            miniAppIcon:
+                                                                                miniApp.iconPath,
+                                                                            onTap: () {
+                                                                              context
+                                                                                  .read<
+                                                                                    NewMiniAppLogicCubit
+                                                                                  >()
+                                                                                  .openMiniApp(
+                                                                                    miniApp,
+                                                                                  );
+                                                                            },
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(
+                                                                                16.0,
+                                                                              ),
+                                                                              child: CustomNetworkImageWidget(
+                                                                                miniApp.iconPath,
+                                                                                isVerifyingKey: true,
+                                                                                imageWidth: context.w(
+                                                                                  30,
+                                                                                ),
+                                                                                imageHeight: context.h(
+                                                                                  30,
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        },
                                                                   ),
                                                                 ),
                                                               ],
@@ -731,15 +780,19 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                             ),
                                             //!
                                             SizedBox(
-                                                height: context.screenHeight *
-                                                    0.02),
+                                              height:
+                                                  context.screenHeight * 0.02,
+                                            ),
                                             const CustomDashedLineWidget(),
                                             SizedBox(
-                                                height: context.screenHeight *
-                                                    0.02),
+                                              height:
+                                                  context.screenHeight * 0.02,
+                                            ),
                                             //! Apps group section
-                                            BlocBuilder<NewMiniAppLogicCubit,
-                                                NewMiniAppLogicState>(
+                                            BlocBuilder<
+                                              NewMiniAppLogicCubit,
+                                              NewMiniAppLogicState
+                                            >(
                                               builder: (context, state) {
                                                 if (state.isAppsGroupLoading) {
                                                   return const AppsGroupSectionShimmerWidget();
@@ -750,8 +803,9 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                     state.appGroups;
 
                                                 CategoryGroup?
-                                                    otherServicesGroup = state
-                                                        .appGroups?.firstOrNull;
+                                                otherServicesGroup = state
+                                                    .appGroups
+                                                    ?.firstOrNull;
 
                                                 return StaggeredAppear(
                                                   children: [
@@ -768,30 +822,29 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                           itemCount:
                                                               regularGroups
                                                                   .length,
-                                                          gridDelegate:
-                                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                             crossAxisCount: 2,
                                                             mainAxisSpacing:
-                                                                context.screenHeight *
-                                                                    0.02,
+                                                                context
+                                                                    .screenHeight *
+                                                                0.02,
                                                             crossAxisSpacing:
-                                                                context.screenWidth *
-                                                                    0.04,
+                                                                context
+                                                                    .screenWidth *
+                                                                0.04,
                                                             childAspectRatio:
                                                                 0.8,
                                                           ),
-                                                          itemBuilder:
-                                                              (context, index) {
+                                                          itemBuilder: (context, index) {
                                                             final appGroup =
-                                                                regularGroups[
-                                                                    index];
+                                                                regularGroups[index];
                                                             final groupName =
                                                                 CommonFunctions
-                                                                        .isAppAR
-                                                                    ? appGroup
-                                                                        .nameAr
-                                                                    : appGroup
-                                                                        .nameEn;
+                                                                    .isAppAR
+                                                                ? appGroup
+                                                                      .nameAr
+                                                                : appGroup
+                                                                      .nameEn;
 
                                                             return CustomLargMoreApps(
                                                               withCardEffect:
@@ -804,20 +857,23 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                       .appCount,
                                                               onTap: () {
                                                                 Navigator.of(
-                                                                        context)
-                                                                    .push(
+                                                                  context,
+                                                                ).push(
                                                                   PageRouteBuilder(
                                                                     opaque:
                                                                         false,
                                                                     barrierColor:
                                                                         Colors
                                                                             .transparent,
-                                                                    pageBuilder: (_,
-                                                                            __,
-                                                                            ___) =>
-                                                                        AppsGroupPage(
-                                                                            appGroup:
-                                                                                appGroup),
+                                                                    pageBuilder:
+                                                                        (
+                                                                          _,
+                                                                          __,
+                                                                          ___,
+                                                                        ) => AppsGroupPage(
+                                                                          appGroup:
+                                                                              appGroup,
+                                                                        ),
                                                                   ),
                                                                 );
                                                               },
@@ -831,14 +887,18 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                 .isNotEmpty ??
                                                             false) ...[
                                                           SizedBox(
-                                                              height: context
-                                                                      .screenHeight *
-                                                                  0.02),
+                                                            height:
+                                                                context
+                                                                    .screenHeight *
+                                                                0.02,
+                                                          ),
                                                           const CustomDashedLineWidget(),
                                                           SizedBox(
-                                                              height: context
-                                                                      .screenHeight *
-                                                                  0.02),
+                                                            height:
+                                                                context
+                                                                    .screenHeight *
+                                                                0.02,
+                                                          ),
 
                                                           // "Other Services" group
                                                           GridView.builder(
@@ -847,27 +907,27 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                             shrinkWrap: true,
                                                             itemCount: 1,
                                                             // Only "Other Services" group
-                                                            gridDelegate:
-                                                                SliverGridDelegateWithFixedCrossAxisCount(
+                                                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                                               crossAxisCount: 2,
                                                               mainAxisSpacing:
-                                                                  context.screenHeight *
-                                                                      0.02,
+                                                                  context
+                                                                      .screenHeight *
+                                                                  0.02,
                                                               crossAxisSpacing:
-                                                                  context.screenWidth *
-                                                                      0.04,
+                                                                  context
+                                                                      .screenWidth *
+                                                                  0.04,
                                                               childAspectRatio:
                                                                   0.8,
                                                             ),
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              final groupName = CommonFunctions
+                                                            itemBuilder: (context, index) {
+                                                              final groupName =
+                                                                  CommonFunctions
                                                                       .isAppAR
                                                                   ? otherServicesGroup!
-                                                                      .nameAr
+                                                                        .nameAr
                                                                   : otherServicesGroup!
-                                                                      .nameEn;
+                                                                        .nameEn;
 
                                                               return CustomLargMoreApps(
                                                                 withCardEffect:
@@ -881,19 +941,23 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                         .appCount,
                                                                 onTap: () {
                                                                   Navigator.of(
-                                                                          context)
-                                                                      .push(
+                                                                    context,
+                                                                  ).push(
                                                                     PageRouteBuilder(
                                                                       opaque:
                                                                           false,
                                                                       barrierColor:
                                                                           Colors
                                                                               .transparent,
-                                                                      pageBuilder: (_,
-                                                                              __,
-                                                                              ___) =>
-                                                                          AppsGroupPage(
-                                                                              appGroup: otherServicesGroup),
+                                                                      pageBuilder:
+                                                                          (
+                                                                            _,
+                                                                            __,
+                                                                            ___,
+                                                                          ) => AppsGroupPage(
+                                                                            appGroup:
+                                                                                otherServicesGroup,
+                                                                          ),
                                                                     ),
                                                                   );
                                                                 },
@@ -909,7 +973,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                             ),
                                           ],
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
