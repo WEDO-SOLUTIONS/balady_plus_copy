@@ -419,6 +419,14 @@ class DgisMapView(
         objectTapHandler?.calcPositionForPolylines(polylines, options, callback)
     }
 
+    override fun calcPositionForGeoPoints(
+        points: List<GeoPointMessage>,
+        options: CalcPositionOptionsMessage,
+        callback: (Result<CameraPositionMessage>) -> Unit
+    ) {
+        objectTapHandler?.calcPositionForGeoPoints(points, options, callback)
+    }
+
     override fun animateToRepresentativeArea(
             area: GeometryMessage,
             options: CalcPositionOptionsMessage,

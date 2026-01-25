@@ -219,6 +219,10 @@ class CommonFunctions {
 
   static final locationService = hms.FusedLocationProviderClient();
 
+  static Future<bool> isGmsAvailable() async {
+    return await FlutterHmsGmsAvailability.isGmsAvailable;
+  }
+
   static Stream<hms.Location>? listenToHMSStream() {
     return locationService.onLocationData;
   }

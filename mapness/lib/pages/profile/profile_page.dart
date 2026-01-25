@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_authorization/src/web/global/remote_config.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -228,20 +228,6 @@ class ProfilePage extends HookConsumerWidget {
                                             ),
                                           ],
                                         ),
-                                ),
-                                const SizedBox(height: Spacing.$16x),
-                                InkWell(
-                                  onTap: () => CommonFunctions.openBaladyWebView(
-                                      "${BaladyAuthorizationRemoteConfig.baladyWebsite}${"locale".tr()}/privacy-policy",
-                                      needLogin: false,
-                                    ),
-                                  child: Text(
-                                    'privacy_policy'.tr(),
-                                    style: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
                                 ),
                               ],
                             ),

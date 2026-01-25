@@ -45,11 +45,13 @@ class CustomDashedAddMiniAppFav extends StatelessWidget {
             width: width ?? context.w(53.95),
             height: height ?? context.h(53.95),
             child: DottedBorder(
-              radius: const Radius.circular(16),
-              borderType: BorderType.RRect,
-              color: const Color(0XFF809AA4),
-              strokeWidth: 2,
-              dashPattern: const [2.2084856033325195, 2.2084856033325195],
+              options: RectDottedBorderOptions(
+                // radius: const Radius.circular(16),
+                // borderType: BorderType.RRect,
+                color: const Color(0XFF809AA4),
+                strokeWidth: 2,
+                dashPattern: const [2.2084856033325195, 2.2084856033325195],
+              ),
               child: const Center(
                 child: Icon(
                   Icons.add,

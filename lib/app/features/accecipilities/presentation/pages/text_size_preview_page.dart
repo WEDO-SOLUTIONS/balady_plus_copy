@@ -39,7 +39,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
         leading: ActionModel(
           onPressed: () {
             controller.setTextScale(_fontSize / 16);
-            context.router.popForced();
+            context.router.pop();
           },
           icon: SystemIcons.arrowCornerLeftLarge,
         ),

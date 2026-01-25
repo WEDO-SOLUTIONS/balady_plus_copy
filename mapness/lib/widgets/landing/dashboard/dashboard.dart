@@ -1,8 +1,7 @@
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -373,12 +372,12 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
 
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "islamicservice", path: "#Quran_Show_All_Surahs_Page");
+    CommonFunctions.openMiniApp(serviceKey: "Quran");
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "islamicservice", path: "#Athkar_Page");
+    CommonFunctions.openMiniApp(serviceKey: "Athkar");
   }
 
   void _openFreeRoam() {
@@ -414,7 +413,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
       action: MetricAction.tap.name,
       group: MetricsConstants.exploreTag,
     );
-    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "snapandsend");
+    CommonFunctions.openMiniApp(serviceKey: "snapandsend");
   }
 
   void _scrollListenHandler() {

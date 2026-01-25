@@ -11,11 +11,13 @@ import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/dashboard/cityscape_background.dart';
 import 'package:mapness/widgets/landing/dashboard/cityscape_logo.dart';
 import 'package:mapness/widgets/landing/dashboard/national_flag.dart';
+import 'package:mapness/widgets/landing/dashboard/wrc_background.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -78,6 +80,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     final uiDirection = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
     final isCityscapeDay = ref.watch(cityscapeProvider);
+    final isWRCActive = ref.watch(wRCProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
       if (widget.controller.state == ThreeStateSheet.expanded) {
@@ -98,6 +101,7 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       children: [
         Stack(
           alignment: Alignment.bottomCenter,
+          clipBehavior: Clip.none,
           children: [
             Padding(
               padding: EdgeInsets.only(bottom: isNationalDay ? Spacing.$4x : 0.0),
@@ -168,7 +172,14 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 onTap: () {
                   ref.read(cityscapeProvider.notifier).openThePlace();
                 },
-              )
+              ),
+            if (isWRCActive)
+              WRCBackground(
+                controller: widget.controller,
+                onTap: () {
+                  ref.read(wRCProvider.notifier).moveCameraToEventArea();
+                },
+              ),
           ],
         )
       ],

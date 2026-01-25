@@ -5,6 +5,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entities/search/models/rubric_marker_info.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
+import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -88,6 +89,10 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
     final cityscapeNotifier = ref.watch(cityscapeProvider.notifier);
     if (cityscapeNotifier.showCustomPin(objectId)) {
       return (cityscapeNotifier.customMarker, cityscapeNotifier.customPinPath);
+    }
+    final wrcNotifier = ref.watch(wRCProvider.notifier);
+    if (wrcNotifier.isWRCEventObject(objectId, closestPoint)) {
+      return (wrcNotifier.getSearchMarkerPath(objectId), wrcNotifier.getPinPath(objectId));
     }
     final markerType = await getMarkerType(rubricIds);
     return (markerType?.iconPath, markerType?.iconPath.bigIconPath);
