@@ -254,6 +254,7 @@ dependencies:
   external_app_launcher: ^4.0.3
   store_redirect: ^2.0.4
   dotted_line: ^3.2.3
+  shorebird_code_push: ^1.0.0
 
   ############################################################
   balady_design_system:
