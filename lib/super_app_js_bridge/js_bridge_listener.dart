@@ -25,8 +25,6 @@ import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachmen
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_pdf_model.dart';
-import 'package:balady_plus/super_app_js_bridge/model/js_preferences_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/location_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
 import 'package:dgis_map/library.dart';

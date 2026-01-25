@@ -32,7 +32,7 @@ import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/export/mapness_functions.dart';
 import 'package:mime/mime.dart' as mime;
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart'
     show getExternalStorageDirectory, getTemporaryDirectory;
 import 'package:permission_handler/permission_handler.dart';
@@ -406,7 +406,7 @@ class CommonFunctions {
     file.writeAsBytesSync(bytes);
 
     // Open File From file path
-    OpenFile.open(tempDocumentPath);
+    OpenFilex.open(tempDocumentPath);
   }
 
   static Future<void> createOpenTempBytesFile(
@@ -420,13 +420,13 @@ class CommonFunctions {
     file.writeAsBytesSync(bytes);
 
     // Open File From file path
-    OpenFile.open(tempDocumentPath);
+    OpenFilex.open(tempDocumentPath);
   }
 
   static Future<void> openFile(File file) async {
     final url = file.path;
 
-    await OpenFile.open(url);
+    await OpenFilex.open(url);
   }
 
   static String getDayName(String? dateStr) {
@@ -1539,7 +1539,7 @@ class CommonFunctions {
                           title: fileName,
                         )));
           } else {*/
-          OpenFile.open(fileDownloaded.path);
+          OpenFilex.open(fileDownloaded.path);
           //  }
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
