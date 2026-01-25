@@ -101,7 +101,12 @@ class AppLanguage extends _$AppLanguage {
     // Update cached text for the favourites items
     unawaited(ref.read(favouriteCacheProvider.notifier).forceRefresh());
     // Update condition text for the weather texts
-    unawaited(ref.read(forecastWeatherProvider.notifier).forceRefresh());
+    try {
+      /// Need Fix It
+      unawaited(ref.read(forecastWeatherProvider.notifier).forceRefresh());
+    } catch(e) {
+      print(e);
+    }
 
     state = value;
   }
