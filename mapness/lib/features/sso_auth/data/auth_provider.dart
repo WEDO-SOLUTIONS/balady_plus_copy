@@ -31,7 +31,12 @@ class Auth extends _$Auth {
     Metrics.logEvent('Auth/logOut');
     mixpanel?.timeEvent('Auth: logOut');
     await ref.read(profileImageProvider.notifier).clear();
-    await ref.read(favouriteCacheProvider.notifier).clear();
+    /// Urbi Tame Need Fix It
+    try {
+      await ref.read(favouriteCacheProvider.notifier).clear();
+    } catch (e) {
+      print(e.toString());
+    }
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logOut');
