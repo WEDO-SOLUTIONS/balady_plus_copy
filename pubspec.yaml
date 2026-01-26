@@ -164,9 +164,11 @@ dependencies:
     path: urbi_map/dgis_map
 
   # Mapness
+  # balady_uikit:
+  #   hosted: https://baladyapp-unpub.urbi.ae/
+  #   version: 5.0.0
   balady_uikit:
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.0
+    path: /Users/strozer/Flutter/Packages/balady_uikit
 
   sheetify: ^1.1.3
 

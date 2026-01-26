@@ -22,16 +22,16 @@ class AppRoute<T> extends CustomRoute<T> {
     int? reverseDurationInMilliseconds,
     RouteTransitionsBuilder? transitionsBuilder,
   }) : super(
-          page: page,
-          customRouteBuilder: <T>(context, child, page) => CustomModalRoute<T>(
-            page: page,
-            routeType: CustomRouteType(
-              transitionsBuilder: transitionsBuilder,
-              durationInMilliseconds: durationInMilliseconds,
-              reverseDurationInMilliseconds: reverseDurationInMilliseconds,
-            ),
-          ),
-        );
+         page: page,
+         customRouteBuilder: <T>(context, child, page) => CustomModalRoute<T>(
+           page: page,
+           routeType: CustomRouteType(
+             transitionsBuilder: transitionsBuilder,
+             durationInMilliseconds: durationInMilliseconds,
+             reverseDurationInMilliseconds: reverseDurationInMilliseconds,
+           ),
+         ),
+       );
 }
 
 enum RouteBarrierColor {
@@ -50,7 +50,7 @@ enum RouteBarrierColor {
       case RouteBarrierColor.dimming60:
         return context.colors.screenOverlayDimming60;
       case RouteBarrierColor.dimming90:
-        return context.colors.screenOverlayDimming90;
+        return context.colors.screenOverlayDimming80;
     }
   }
 }
@@ -75,14 +75,13 @@ class RouteBuilders {
     Widget child,
     AutoRoutePage<T> page, {
     RouteBarrierColor background = RouteBarrierColor.dimming40,
-  }) =>
-      ModalBottomSheetRoute(
-        settings: page,
-        builder: (context) => child,
-        isScrollControlled: true,
-        modalBarrierColor: background.getColor(context),
-        backgroundColor: Colors.transparent,
-      );
+  }) => ModalBottomSheetRoute(
+    settings: page,
+    builder: (context) => child,
+    isScrollControlled: true,
+    modalBarrierColor: background.getColor(context),
+    backgroundColor: Colors.transparent,
+  );
 
   /// Creates a custom modal route (CustomModalRoute) that removes the navigation barrier,
   /// allowing access to routes behind the modal window.
@@ -93,18 +92,10 @@ class RouteBuilders {
   ///
   /// This method sets up a route without a barrier, allowing the user
   /// to interact with navigation elements or other routes behind the modal window.
-  static Route<T> customModalSheetBuilder<T>(
-    BuildContext context,
-    Widget child,
-    AutoRoutePage<T> page,
-  ) =>
+  static Route<T> customModalSheetBuilder<T>(BuildContext context, Widget child, AutoRoutePage<T> page) =>
       CustomModalRoute(page: page);
 
-  static Route<T> customBarrierDismissibleBuilder<T>(
-    BuildContext context,
-    Widget child,
-    AutoRoutePage<T> page,
-  ) =>
+  static Route<T> customBarrierDismissibleBuilder<T>(BuildContext context, Widget child, AutoRoutePage<T> page) =>
       RawDialogRoute(
         settings: page,
         pageBuilder: (context, animation, secondaryAnimation) => child,
