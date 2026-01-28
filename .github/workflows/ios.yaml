@@ -9,10 +9,6 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - "urbi"
-      - "urbi-service/release-*"
   pull_request:
     types: [closed]
     branches:
