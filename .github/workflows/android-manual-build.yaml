@@ -115,7 +115,8 @@ jobs:
           echo "CI_GIT_BRANCH=${CI_GIT_BRANCH}" >> ${GITHUB_ENV}
 
           # Generate a safe slug from branch name (replace non-alnum with '-')
-          CI_GIT_BRANCH_SLUG=$(printf '%s' "$CI_GIT_BRANCH" | sed 's/[^[:alnum:]]\+/-/g; s/^-//; s/-$//')
+          CI_GIT_BRANCH_SLUG=$(printf '%s' "$CI_GIT_BRANCH" \
+            | sed -E 's/[^[:alnum:]]+/-/g; s/^-+//; s/-+$//')
           # Artifact suffix: [optional pr-] + branch slug + timestamp
           echo "CI_ARTIFACT_SUFFIX=${CI_IS_PR}${CI_GIT_BRANCH_SLUG}-${CI_DATE}" >> ${GITHUB_ENV}
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
@@ -203,10 +204,12 @@ jobs:
           echo "Vendor config: $(grep '^vendor_config=' $GITHUB_OUTPUT | cut -d= -f2)"
           echo "Build name prefix: $(grep '^build_name_prefix=' $GITHUB_OUTPUT | cut -d= -f2)"
 
-      - name: Ensure Flutter engine artifacts (Android) are present
+      - name: Ensure Flutter engine artifacts (Android) and packages are present
         shell: bash
         run: |
           fvm flutter precache --android --force
+          fvm flutter pub cache repair
+          fvm flutter pub get
 
       - name: 🤖🔨 Build Android app
         env:
@@ -221,7 +224,6 @@ jobs:
           echo "Build name prefix: ${BUILD_NAME_PREFIX}"
 
           fvm flutter build apk \
-            --target-platform android-arm64 \
             --flavor "${FLAVOR}" \
             --target "${TARGET}" \
             --dart-define=CI_RELEASE_VERSION="${CI_RELEASE_VERSION}" \
