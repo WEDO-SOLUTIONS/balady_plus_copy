@@ -157,144 +157,148 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                       context.screenWidth *
                                                       0.04,
                                                 ),
-                                                child: SizedBox(
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      dashboard != null
-                                                          ? InkWell(
-                                                              onTap: () {
-                                                                context
-                                                                    .read<
-                                                                      NewMiniAppLogicCubit
-                                                                    >()
-                                                                    .openMiniApp(
-                                                                      dashboard,
-                                                                    );
-                                                              },
-                                                              child: Container(
-                                                                // width: 117,
-                                                                // height: 33,
-                                                                padding:
-                                                                    const EdgeInsets.symmetric(
+                                                child: Row(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: RichText(
+                                                        textAlign:
+                                                            CommonFunctions
+                                                                .isAppAR
+                                                            ? TextAlign.right
+                                                            : TextAlign.left,
+                                                        text: TextSpan(
+                                                          style: const TextStyle(
+                                                            fontSize: 24,
+                                                            height: 28 / 24,
+                                                            fontWeight:
+                                                                FontWeight.w900,
+                                                            fontFamily:
+                                                                GeneralKey
+                                                                    .appFontType,
+                                                            color: Color(
+                                                              0xFF1CA9A6,
+                                                            ),
+                                                          ),
+                                                          children: [
+                                                            TextSpan(
+                                                              text: "quick_apps"
+                                                                  .tr(),
+                                                            ),
+                                                            const TextSpan(
+                                                              text: '\n',
+                                                            ),
+                                                            TextSpan(
+                                                              text: "one_place"
+                                                                  .tr(),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    Spacer(),
+
+                                                    dashboard != null
+                                                        ? InkWell(
+                                                            onTap: () {
+                                                              context
+                                                                  .read<
+                                                                    NewMiniAppLogicCubit
+                                                                  >()
+                                                                  .openMiniApp(
+                                                                    dashboard,
+                                                                  );
+                                                            },
+                                                            child: Container(
+                                                              // width: 117,
+                                                              // height: 33,
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        3,
+                                                                    vertical: 4,
+                                                                  ),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          18.5,
+                                                                        ),
+                                                                  ),
+                                                              child: Row(
+                                                                children: [
+                                                                  Container(
+                                                                    padding: const EdgeInsets.symmetric(
                                                                       horizontal:
-                                                                          3,
+                                                                          8,
                                                                       vertical:
                                                                           4,
                                                                     ),
-                                                                decoration: BoxDecoration(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        18.5,
+                                                                    decoration: BoxDecoration(
+                                                                      color: const Color(
+                                                                        0XFFE5EBED,
                                                                       ),
-                                                                ),
-                                                                child: Row(
-                                                                  children: [
-                                                                    Container(
-                                                                      padding: const EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            8,
-                                                                        vertical:
-                                                                            4,
-                                                                      ),
-                                                                      decoration: BoxDecoration(
-                                                                        color: const Color(
-                                                                          0XFFE5EBED,
-                                                                        ),
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(
-                                                                              13.5,
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            13.5,
+                                                                          ),
+                                                                    ),
+                                                                    child: CustomNetworkImageWidget(
+                                                                      dashboard
+                                                                          .iconPath,
+                                                                      isVerifyingKey:
+                                                                          true,
+                                                                      imageWidth:
+                                                                          context.w(
+                                                                            24,
+                                                                          ),
+                                                                      imageHeight:
+                                                                          context.h(
+                                                                            24,
+                                                                          ),
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width:
+                                                                        context
+                                                                            .w(
+                                                                              8,
                                                                             ),
-                                                                      ),
-                                                                      child: CustomNetworkImageWidget(
-                                                                        dashboard
-                                                                            .iconPath,
-                                                                        isVerifyingKey:
-                                                                            true,
-                                                                        imageWidth:
-                                                                            context.w(
-                                                                              24,
+                                                                  ),
+                                                                  Text(
+                                                                    "dashboard"
+                                                                        .tr(),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: const TextStyle(
+                                                                      fontFamily:
+                                                                          'Frutiger',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width:
+                                                                        context
+                                                                            .w(
+                                                                              9,
                                                                             ),
-                                                                        imageHeight:
-                                                                            context.h(
-                                                                              24,
-                                                                            ),
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: context
-                                                                          .w(8),
-                                                                    ),
-                                                                    Text(
-                                                                      "dashboard"
-                                                                          .tr(),
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .center,
-                                                                      style: const TextStyle(
-                                                                        fontFamily:
-                                                                            'Frutiger',
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                      ),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: context
-                                                                          .w(9),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            )
-                                                          : const SizedBox(),
-                                                      Expanded(
-                                                        child: RichText(
-                                                          textAlign:
-                                                              CommonFunctions
-                                                                  .isAppAR
-                                                              ? TextAlign.right
-                                                              : TextAlign.left,
-                                                          text: TextSpan(
-                                                            style: const TextStyle(
-                                                              fontSize: 24,
-                                                              height: 28 / 24,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w900,
-                                                              fontFamily:
-                                                                  GeneralKey
-                                                                      .appFontType,
-                                                              color: Color(
-                                                                0xFF1CA9A6,
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ),
-                                                            children: [
-                                                              TextSpan(
-                                                                text:
-                                                                    "quick_apps"
-                                                                        .tr(),
-                                                              ),
-                                                              const TextSpan(
-                                                                text: '\n',
-                                                              ),
-                                                              TextSpan(
-                                                                text:
-                                                                    "one_place"
-                                                                        .tr(),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                                                          )
+                                                        : const SizedBox(),
+                                                  ],
                                                 ),
                                               ),
                                             ],
@@ -803,9 +807,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                     state.appGroups;
 
                                                 CategoryGroup?
-                                                otherServicesGroup = state
-                                                    .appGroups
-                                                    ?.firstOrNull;
+                                                otherServicesGroup =
+                                                    state.appGroups.firstOrNull;
 
                                                 return StaggeredAppear(
                                                   children: [
@@ -871,8 +874,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                           __,
                                                                           ___,
                                                                         ) => AppsGroupPage(
-                                                                          appGroup:
-                                                                              appGroup,
+                                                                          groupId:
+                                                                              appGroup.id,
                                                                         ),
                                                                   ),
                                                                 );
@@ -955,8 +958,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                             __,
                                                                             ___,
                                                                           ) => AppsGroupPage(
-                                                                            appGroup:
-                                                                                otherServicesGroup,
+                                                                            groupId:
+                                                                                otherServicesGroup.id,
                                                                           ),
                                                                     ),
                                                                   );
@@ -995,7 +998,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
           case '/group':
             final args = settings.arguments as Map<String, dynamic>;
             return MaterialPageRoute(
-              builder: (_) => AppsGroupPage(appGroup: args['appGroup']),
+              builder: (_) => AppsGroupPage(groupId: args['groupId'] as String),
             );
           default:
             return MaterialPageRoute(

@@ -26,13 +26,8 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
   bool _isSearching = false;
   final TextEditingController _searchController = TextEditingController();
 
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
   void _startSearch(BuildContext context) {
+
     setState(() {
       _isSearching = true;
     });
