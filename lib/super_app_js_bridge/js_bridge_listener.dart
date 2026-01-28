@@ -317,16 +317,30 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         eventName: "AppPreferences",
         data: AppThemeConfig(
           language: 'locale'.tr(),
-          themeType: Theme.of(NavigationService.navigatorKey!.currentContext!,).brightness.name,
+          themeType: Theme.of(
+            NavigationService.navigatorKey!.currentContext!,
+          ).brightness.name,
           colorSchemeDark: ColorSchemeModel(
-            colorScheme: Theme.of(NavigationService.navigatorKey!.currentContext!,).colorScheme,
-            cardColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).cardColor,
-            scaffoldBackgroundColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).scaffoldBackgroundColor,
+            colorScheme: Theme.of(
+              NavigationService.navigatorKey!.currentContext!,
+            ).colorScheme,
+            cardColor: Theme.of(
+              NavigationService.navigatorKey!.currentContext!,
+            ).cardColor,
+            scaffoldBackgroundColor: Theme.of(
+              NavigationService.navigatorKey!.currentContext!,
+            ).scaffoldBackgroundColor,
           ),
           colorSchemeLight: ColorSchemeModel(
-            colorScheme: Theme.of(NavigationService.navigatorKey!.currentContext!,).colorScheme,
-            cardColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).cardColor,
-            scaffoldBackgroundColor: Theme.of(NavigationService.navigatorKey!.currentContext!,).scaffoldBackgroundColor,
+            colorScheme: Theme.of(
+              NavigationService.navigatorKey!.currentContext!,
+            ).colorScheme,
+            cardColor: Theme.of(
+              NavigationService.navigatorKey!.currentContext!,
+            ).cardColor,
+            scaffoldBackgroundColor: Theme.of(
+              NavigationService.navigatorKey!.currentContext!,
+            ).scaffoldBackgroundColor,
           ),
         ),
       );
@@ -541,6 +555,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     String serviceKey = "municipalservice"; //for testing only
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.camera.name) == true) {
+      isLoading.value = true;
       final XFile? image = await ImagePicker().pickImage(
         source: ImageSource.camera,
       );
@@ -557,8 +572,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           );
         } else {
           String path = image.path;
-          String fileName =
-              path.isNotEmpty ? path.split('/').last : ('attachment_name').tr();
+          String fileName = path.isNotEmpty
+              ? path.split('/').last
+              : ('attachment_name').tr();
           final fileBytes = await File(path).readAsBytes();
           String base64File = base64Encode(fileBytes);
           JsFilesModel file = JsFilesModel(
@@ -582,6 +598,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: null,
         );
       }
+      isLoading.value = false;
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -591,6 +608,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: null,
       );
       handler.complete(response.jsonEncodeModel());
+      isLoading.value = false;
     }
   }
 
@@ -600,6 +618,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     //String serviceKey =  msg["serviceKey"];
     if (checkAppRequirement(serviceKey, RequirementEnum.camera.name) == true) {
       late BaseResponse response;
+      isLoading.value = true;
+      FocusManager.instance.primaryFocus?.unfocus();
       var fileData = await NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.vdCameraPage);
       if (fileData != null) {
@@ -618,6 +638,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         );
       }
       // String data = response.jsonEncodeModel();
+      isLoading.value = false;
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(
@@ -626,6 +647,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         eventName: "openCameraWithUI",
         data: null,
       );
+      isLoading.value = false;
       handler.complete(response.jsonEncodeModel());
     }
   }
@@ -654,21 +676,22 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     final String serviceKey =
         data["serviceKey"]?.toString() ?? "municipalservice";
     final String? attachmentSource = data["attachmentSource"]?.toString();
-    final List<String> attachmentExtension =
-        data["attachmentExtension"] != null
-            ? (data["attachmentExtension"] as List<dynamic>)
-                .map((e) => e.toString())
-                .toList()
-            : [];
+    final List<String> attachmentExtension = data["attachmentExtension"] != null
+        ? (data["attachmentExtension"] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+        : [];
 
     if (checkAppRequirement(serviceKey, RequirementEnum.filePicker.name) ==
         true) {
       var file = await FilePicker.platform.pickFiles(
-        type:
-            (attachmentSource == "gallery" ? FileType.image : FileType.custom),
+        type: (attachmentSource == "gallery"
+            ? FileType.image
+            : FileType.custom),
         allowMultiple: false,
-        allowedExtensions:
-            attachmentSource == "gallery" ? [] : attachmentExtension,
+        allowedExtensions: attachmentSource == "gallery"
+            ? []
+            : attachmentExtension,
       );
 
       late BaseResponse response;
@@ -680,10 +703,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             if (platformFile.size > 25000000) {
               CommonFunctions.showError(('file_size_error').tr());
             } else {
-              String fileName =
-                  path.isNotEmpty
-                      ? path.split('/').last
-                      : ('attachment_name').tr();
+              String fileName = path.isNotEmpty
+                  ? path.split('/').last
+                  : ('attachment_name').tr();
               final fileBytes = await File(path).readAsBytes();
               String base64File = base64Encode(fileBytes);
 
@@ -901,10 +923,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         if (data['type'] == "marketing") {
           FlutterUxcam.logEventWithProperties(data['event_name'], miniAppData);
           Sentry.addBreadcrumb(
-            Breadcrumb(
-              message: data['event_name'],
-              data: miniAppData,
-            ),
+            Breadcrumb(message: data['event_name'], data: miniAppData),
           );
         } else if (data['type'] == "exception") {
           data.addAll(miniAppData);
@@ -1123,10 +1142,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               }
             }
             // If no future notification found, use the first one (for tomorrow)
-            nextNotification ??=
-                notificationsForType.isNotEmpty
-                    ? notificationsForType.first
-                    : null;
+            nextNotification ??= notificationsForType.isNotEmpty
+                ? notificationsForType.first
+                : null;
             // Schedule or cancel the notification
             if (nextNotification != null) {
               final int id = nextNotification['id'] ?? 0;
