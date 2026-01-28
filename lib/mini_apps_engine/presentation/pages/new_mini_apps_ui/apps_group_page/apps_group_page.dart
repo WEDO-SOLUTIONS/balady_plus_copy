@@ -9,13 +9,13 @@ import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_larg_more_apps.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/apps_group_section_widgets/custom_sub_category.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/apps_group_mini_apps_card_widgets.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/filter_buttom_sheet.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,12 +24,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class AppsGroupPage extends StatefulWidget {
-  final CategoryGroup appGroup;
+  final String groupId;
 
-  const AppsGroupPage({
-    super.key,
-    required this.appGroup,
-  });
+  const AppsGroupPage({super.key, required this.groupId});
 
   @override
   State<AppsGroupPage> createState() => _AppsGroupPageState();
@@ -52,7 +49,31 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
 
   @override
   Widget build(BuildContext context) {
-    final appGroup = widget.appGroup;
+    final cubit = context.watch<NewMiniAppLogicCubit>();
+
+    //! Fetch the app group that matches the ID that the user should pass...
+    CategoryGroup? appGroup = cubit.state.appGroups.firstWhereOrNull(
+      (g) => g.id == widget.groupId,
+    );
+    //! HELPER function: Some groups contains sub group (group inside group)
+    //! 1 - Loops through current groups
+    //! 2 - If current group g matches the id return it
+    //! 3 - Otherwise, it gets its children (subs) and searches inside them recursively
+    //! 4 - If found in children, returns it
+    //! 5 - If nothing found, returns null
+    CategoryGroup? findGroupById(List<CategoryGroup> groups, String id) {
+      for (final g in groups) {
+        if (g.id == id) return g;
+        final subs =
+            g.subCategoryGroup?.values.toList() ?? const <CategoryGroup>[];
+        final found = findGroupById(subs, id);
+        if (found != null) return found;
+      }
+      return null;
+    }
+
+    //! Fall back to recursive search
+    appGroup ??= findGroupById(cubit.state.appGroups, widget.groupId);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -90,8 +111,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           width: context.screenWidth,
                           height: context.h(35),
                           text: CommonFunctions.isAppAR
-                              ? appGroup.nameAr
-                              : appGroup.nameEn,
+                              ? appGroup!.nameAr
+                              : appGroup!.nameEn,
                           fontColor: const Color(0XFF242424),
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
@@ -121,8 +142,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 ),
                                 child: IconButton(
                                   onPressed: () => Navigator.pop(context),
-                                  icon: const Icon(Icons.close,
-                                      color: Color(0XFF242424)),
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Color(0XFF242424),
+                                  ),
                                 ),
                               ),
                             ),
@@ -143,8 +166,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 ),
                                 child: IconButton(
                                   onPressed: () async {
-                                    final cubit =
-                                        context.read<NewMiniAppLogicCubit>();
+                                    final cubit = context
+                                        .read<NewMiniAppLogicCubit>();
                                     final result = await FilterButtomSheet.show(
                                       context,
                                       initialSelectedType:
@@ -198,7 +221,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                             Theme.of(context).brightness ==
                                                     Brightness.dark
                                                 ? IconPath.searchSVG2
-                                                : IconPath.searchSVG)
+                                                : IconPath.searchSVG,
+                                          )
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();
@@ -206,7 +230,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                                   .read<NewMiniAppLogicCubit>()
                                                   .searchMiniApp(
                                                     '',
-                                                    source: appGroup.apps,
+                                                    source: appGroup!.apps,
                                                   );
                                             },
                                             icon: const Icon(
@@ -219,7 +243,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                           .read<NewMiniAppLogicCubit>()
                                           .searchMiniApp(
                                             query,
-                                            source: appGroup.apps,
+                                            source: appGroup!.apps,
                                           );
                                     },
                                   );
@@ -234,73 +258,82 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                     SizedBox(height: context.screenHeight * 0.04),
 
                     Expanded(
-                      child: BlocBuilder<NewMiniAppLogicCubit,
-                          NewMiniAppLogicState>(
+                      child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                         builder: (context, state) {
-                          final isInitial = controller.text.isEmpty &&
+                          final isInitial =
+                              controller.text.isEmpty &&
                               state.searchResults.isEmpty &&
                               !state.isSearching;
 
                           if (isInitial) {
                             final cubit = context.read<NewMiniAppLogicCubit>();
                             final sortedApps = cubit.sortApps(
-                              appGroup.apps,
+                              appGroup!.apps,
                               state.selectedSortType,
                             );
                             return GridView.builder(
                               physics: const BouncingScrollPhysics(),
                               gridDelegate:
                                   const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                crossAxisSpacing: 16,
-                                mainAxisSpacing: 16,
-                                childAspectRatio: 0.8,
-                              ),
+                                    crossAxisCount: 3,
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 16,
+                                    childAspectRatio: 0.8,
+                                  ),
                               itemCount:
                                   (appGroup.subCategoryGroup?.length ?? 0) +
-                                      sortedApps.length,
+                                  sortedApps.length,
                               itemBuilder: (context, index) {
-                                if (appGroup.subCategoryGroup != null &&
+                                if (appGroup!.subCategoryGroup != null &&
                                     index < appGroup.subCategoryGroup!.length) {
                                   CategoryGroup categoryGroup = appGroup
-                                      .subCategoryGroup!.values
+                                      .subCategoryGroup!
+                                      .values
                                       .toList()[index];
-                                  final groupName = CommonFunctions.isAppAR ? categoryGroup.nameAr : categoryGroup.nameEn;
+                                  final groupName = CommonFunctions.isAppAR
+                                      ? categoryGroup.nameAr
+                                      : categoryGroup.nameEn;
                                   return StaggeredAppear(
-                                    initialDelay:
-                                        const Duration(milliseconds: 150),
-                                    itemDuration:
-                                        const Duration(milliseconds: 150),
-                                    itemDelay:
-                                        const Duration(milliseconds: 200),
+                                    initialDelay: const Duration(
+                                      milliseconds: 150,
+                                    ),
+                                    itemDuration: const Duration(
+                                      milliseconds: 150,
+                                    ),
+                                    itemDelay: const Duration(
+                                      milliseconds: 200,
+                                    ),
                                     children: [
                                       CustomSubCategory(
                                         text: groupName,
                                         apps: categoryGroup.apps,
                                         totalAppCount: categoryGroup.appCount,
                                         onTap: () => Navigator.of(context).push(
-                                            PageRouteBuilder(
-                                              opaque: false,
-                                              barrierColor:
-                                              Colors.transparent,
-                                              pageBuilder: (_, __, ___) =>
-                                                  AppsGroupPage(
-                                                      appGroup: categoryGroup),
-                                            ),
+                                          PageRouteBuilder(
+                                            opaque: false,
+                                            barrierColor: Colors.transparent,
+                                            pageBuilder: (_, __, ___) =>
+                                                AppsGroupPage(
+                                                  groupId: categoryGroup.id,
+                                                ),
                                           ),
-                                      )
+                                        ),
+                                      ),
                                     ],
                                   );
                                 }
 
-                                int newIndex = index -
+                                int newIndex =
+                                    index -
                                     (appGroup.subCategoryGroup?.length ?? 0);
                                 final miniApp = sortedApps[newIndex];
                                 return StaggeredAppear(
-                                  initialDelay:
-                                      const Duration(milliseconds: 150),
-                                  itemDuration:
-                                      const Duration(milliseconds: 150),
+                                  initialDelay: const Duration(
+                                    milliseconds: 150,
+                                  ),
+                                  itemDuration: const Duration(
+                                    milliseconds: 150,
+                                  ),
                                   itemDelay: const Duration(milliseconds: 200),
                                   children: [
                                     AppsGroupMiniAppsCardWidgets(
@@ -346,11 +379,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                             physics: const BouncingScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.8,
-                            ),
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 16,
+                                  mainAxisSpacing: 16,
+                                  childAspectRatio: 0.8,
+                                ),
                             itemCount: sortedResults.length,
                             itemBuilder: (context, index) {
                               final miniApp = sortedResults[index];
