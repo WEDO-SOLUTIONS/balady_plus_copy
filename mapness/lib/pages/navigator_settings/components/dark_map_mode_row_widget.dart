@@ -18,13 +18,13 @@ class DarkMapModeRowWidget extends ConsumerWidget {
     final darModeState = ref.watch(darkModeProvider);
 
     return ContentRow(
-      onTap: () {
+      onTap: () async {
         ref.read(darkModeProvider.notifier).changeDarkModeState(currentMode);
         if (darModeState.value != null) {
           if (darModeState.value!.isDark) {
-            context.read<ThemeController>().currentTheme = BaladyAppThemes.light;
+            await context.read<ThemeController>().setTheme(BaladyAppThemes.light);
           } else {
-            context.read<ThemeController>().currentTheme = BaladyAppThemes.dark;
+            await context.read<ThemeController>().setTheme(BaladyAppThemes.dark);
           }
         }
       },

@@ -58,81 +58,74 @@ class PathCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PathCardWrapper(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(duration, style: context.textStyles.bodyLargeSemiBold),
-                      Row(
-                        children: <Widget>[
-                          Text(
-                            distance,
-                            style: context.textStyles.captionMediumRegular,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    duration,
+                    style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        distance,
+                        style: context.textStyles.captionMediumRegular.copyWith(
+                          color: context.colors.foregroundDefault,
+                        ),
+                      ),
+                      if (additionalInfo != null) ...[
+                        Text(
+                          '·',
+                          style: context.textStyles.captionMediumRegular.copyWith(
+                            color: context.colors.foregroundDefault,
                           ),
-                          if (additionalInfo != null) ...[
-                            Text(
-                              '·',
-                              style: context.textStyles.captionMediumRegular,
-                            ),
-                            PathBadge(additionalInfo!),
-                          ],
-                        ]
-                            .insertBetween(
-                              Spacing.$1x.widthBox,
-                            )
-                            .toList(),
-                      )
-                    ],
+                        ),
+                        PathBadge(additionalInfo!),
+                      ],
+                    ].insertBetween(Spacing.$1x.widthBox).toList(),
                   ),
-                ),
-                AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  onTap: onStartTap,
-                  primaryLabel: localizations.go.toUpperCase(),
-                  innerPadding: const EdgeInsets.symmetric(
-                    horizontal: Spacing.$5x,
-                  ),
-                )
-              ],
-            ),
-            if (isPedestrian && (calories != null || steps != null)) ...[
-              Spacing.$2x.heightBox,
-              SizedBox(
-                height: 24,
-                child: Row(
-                  children: <Widget>[
-                    if (calories != null) ...[
-                      _IconAndTextBlock(
-                        icon: EventsOnTheRoute.callories,
-                        value: calories!.toInt(),
-                        label: localizations.calories,
-                      ),
-                    ],
-                    if (steps != null) ...[
-                      _IconAndTextBlock(
-                        icon: getStepIcon(context),
-                        value: steps!.toInt(),
-                        label: localizations.steps,
-                      ),
-                    ],
-                  ]
-                      .insertBetween(
-                        Spacing.$2x.widthBox,
-                      )
-                      .toList(),
-                ),
+                ],
               ),
-            ],
+            ),
+            AppButton(
+              buttonColorScheme: ButtonColorScheme.accentSecondary,
+              onTap: onStartTap,
+              primaryLabel: localizations.go.toUpperCase(),
+              innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$5x),
+            ),
           ],
         ),
-      );
+        if (isPedestrian && (calories != null || steps != null)) ...[
+          Spacing.$2x.heightBox,
+          SizedBox(
+            height: 24,
+            child: Row(
+              children: <Widget>[
+                if (calories != null) ...[
+                  _IconAndTextBlock(
+                    icon: EventsOnTheRoute.callories,
+                    value: calories!.toInt(),
+                    label: localizations.calories,
+                  ),
+                ],
+                if (steps != null) ...[
+                  _IconAndTextBlock(icon: getStepIcon(context), value: steps!.toInt(), label: localizations.steps),
+                ],
+              ].insertBetween(Spacing.$2x.widthBox).toList(),
+            ),
+          ),
+        ],
+      ],
+    ),
+  );
 
   IconData getStepIcon(BuildContext context) {
     if (Directionality.of(context) == TextDirection.ltr) {

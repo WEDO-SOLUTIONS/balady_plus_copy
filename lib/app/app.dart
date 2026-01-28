@@ -46,7 +46,7 @@ class App extends StatelessWidget {
     }
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeController()),
+        ChangeNotifierProvider(create: (_) => ThemeController()..init()),
         // ChangeNotifierProvider(
         //   create: (BuildContext context) =>
         //       MapViewModel(layersRepositories: sl()),

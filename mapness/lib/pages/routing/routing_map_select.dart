@@ -81,9 +81,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
           const RoutingMapControls(),
           Center(
             child: Padding(
-              padding: EdgeInsets.only(
-                bottom: additionPadding,
-              ),
+              padding: EdgeInsets.only(bottom: additionPadding),
               child: SvgPicture.asset(SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew),
             ),
           ),
@@ -100,14 +98,12 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                 children: [
                   Text(
                     context.l10n.pointToMap,
-                    style: context.textStyles.h4SemiBold,
+                    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
                   ),
                   Spacing.$1x.heightBox,
                   Text(
                     context.l10n.moveMap,
-                    style: context.textStyles.bodySmallRegular.copyWith(
-                      color: context.colors.foregroundSoft,
-                    ),
+                    style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ],
               ),
@@ -117,16 +113,9 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
         ),
       ),
       content: [
-        _NearestObject(
-          nearestObject: nearestObject,
-        ),
+        _NearestObject(nearestObject: nearestObject),
         Padding(
-          padding: const EdgeInsets.only(
-            left: Spacing.$4x,
-            right: Spacing.$4x,
-            top: Spacing.$3x,
-            bottom: Spacing.$3x,
-          ),
+          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x, bottom: Spacing.$3x),
           child: AnimatedSwitcher(
             duration: Durations.medium1,
             child: nearestObject.when(
@@ -183,12 +172,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
           // We need to pass the coordinates of the nearest point
           // because coordinates of object like street or districts are so far from the selected point
           RoutePointCoordinates(
-              nearestPoint.geoPoint, nearestObject.object.title, nearestObject.object.levelId ?? nearestObject.levelId),
+            nearestPoint.geoPoint,
+            nearestObject.object.title,
+            nearestObject.object.levelId ?? nearestObject.levelId,
+          ),
         );
       case CooridnatesNearestObject(geoPoint: final geoPoint):
-        context.router.pop(
-          RoutePointCoordinates(geoPoint, null, null),
-        );
+        context.router.pop(RoutePointCoordinates(geoPoint, null, null));
     }
   }
 
@@ -234,11 +224,7 @@ class _NearestObject extends StatelessWidget {
             key: ValueKey(title),
             width: double.infinity,
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: Spacing.$4x,
-                right: Spacing.$4x,
-                top: Spacing.$3x,
-              ),
+              padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x),
               child: ContentRow(
                 options: ContentRowOptions(
                   wrapperEnabled: true,
@@ -256,11 +242,13 @@ class _NearestObject extends StatelessWidget {
   }
 
   String _buildTitle(NearestObject object) => switch (object) {
-        DGisNearestObject() => object.object.title,
-        CooridnatesNearestObject() =>
-          '${object.geoPoint.latitude.toStringAsFixed(5)}, ${object.geoPoint.longitude.toStringAsFixed(5)}'
-      };
+    DGisNearestObject() => object.object.title,
+    CooridnatesNearestObject() =>
+      '${object.geoPoint.latitude.toStringAsFixed(5)}, ${object.geoPoint.longitude.toStringAsFixed(5)}',
+  };
 
-  String? _buildSubtitle(NearestObject object) =>
-      switch (object) { DGisNearestObject() => object.object.subtitle, CooridnatesNearestObject() => null };
+  String? _buildSubtitle(NearestObject object) => switch (object) {
+    DGisNearestObject() => object.object.subtitle,
+    CooridnatesNearestObject() => null,
+  };
 }

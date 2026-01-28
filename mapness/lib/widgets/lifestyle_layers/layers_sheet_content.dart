@@ -14,11 +14,7 @@ class LayersSheetContent extends ConsumerWidget {
   final Function() tapOnParkingLotsMenu;
   final Function() onClose;
 
-  const LayersSheetContent({
-    required this.tapOnParkingLotsMenu,
-    required this.onClose,
-    super.key,
-  });
+  const LayersSheetContent({required this.tapOnParkingLotsMenu, required this.onClose, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +30,10 @@ class LayersSheetContent extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: Spacing.$5x),
               child: Row(
                 children: [
-                  Text(context.l10n.layersOnTheMap, style: context.textStyles.h4SemiBold),
+                  Text(
+                    context.l10n.layersOnTheMap,
+                    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+                  ),
                   const Spacer(),
                   AppButton.close(
                     onTap: () {

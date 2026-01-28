@@ -21,21 +21,11 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
   final GlobalKey cardKey;
 
-  const WeatherCardHeaderDelegate({
-    required this.bottomSheetController,
-    required this.cardKey,
-  });
+  const WeatherCardHeaderDelegate({required this.bottomSheetController, required this.cardKey});
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) =>
-      DashboardHeader(
-        cardKey: cardKey,
-        bottomSheetController: bottomSheetController,
-      );
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) =>
+      DashboardHeader(cardKey: cardKey, bottomSheetController: bottomSheetController);
 
   @override
   double get maxExtent => weatherHeaderSize;
@@ -51,11 +41,7 @@ class DashboardHeader extends ConsumerWidget {
   final MultiStateSheetController bottomSheetController;
   final GlobalKey cardKey;
 
-  const DashboardHeader({
-    required this.bottomSheetController,
-    required this.cardKey,
-    super.key,
-  });
+  const DashboardHeader({required this.bottomSheetController, required this.cardKey, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -120,15 +106,12 @@ class Data extends ConsumerWidget {
     final condition = allWeatherInfo?.current?.condition?.text ?? '';
     final placeName = allWeatherInfo?.location?.name ?? '';
 
-    final textStyle = context.textStyle.caption.copyWith(
-      height: 1.4,
-      color: context.colors.foregroundDefault,
-    );
+    final textStyle = context.textStyle.caption.copyWith(height: 1.4, color: context.colors.foregroundDefault);
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: context.colors.backgroundSurface1,
+        borderRadius: const BorderRadius.only(
           topRight: Radius.circular(RadiusBorder.xl),
           topLeft: Radius.circular(RadiusBorder.xl),
         ),
@@ -144,7 +127,7 @@ class Data extends ConsumerWidget {
               ///cityname
               Text(
                 placeName,
-                style: context.textStyle.heading2.copyWith(fontSize: 19, color: Colors.black),
+                style: context.textStyle.heading2.copyWith(fontSize: 19, color: context.colors.foregroundDefault),
               ),
 
               ///close
@@ -201,10 +184,7 @@ class Data extends ConsumerWidget {
                                 textDirection: TextDirection.ltr,
                                 children: [
                                   ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      maxHeight: 70,
-                                      minHeight: 65,
-                                    ),
+                                    constraints: const BoxConstraints(maxHeight: 70, minHeight: 65),
                                     child: Text(
                                       tempC,
                                       style: context.textStyle.heading2.copyWith(
@@ -262,27 +242,15 @@ class Data extends ConsumerWidget {
                     child: Row(
                       children: [
                         buildButton(
-                          desc: Text(
-                            '${windMph}Mph',
-                            style: textStyle,
-                            maxLines: 1,
-                          ),
+                          desc: Text('${windMph}Mph', style: textStyle, maxLines: 1),
                           assetName: Assets.icons.svg.weather.wind.keyName,
                         ),
                         buildButton(
-                          desc: Text(
-                            '${pressureMb}Mb',
-                            style: textStyle,
-                            maxLines: 1,
-                          ),
+                          desc: Text('${pressureMb}Mb', style: textStyle, maxLines: 1),
                           assetName: Assets.icons.svg.weather.pressure.keyName,
                         ),
                         buildButton(
-                          desc: Text(
-                            '$humidity%',
-                            style: textStyle,
-                            maxLines: 1,
-                          ),
+                          desc: Text('$humidity%', style: textStyle, maxLines: 1),
                           assetName: Assets.icons.svg.weather.humidity.keyName,
                         ),
                       ],
@@ -304,48 +272,38 @@ class Data extends ConsumerWidget {
     Color? colorIcon,
     Color? colorButton,
     int flex = 1,
-  }) =>
-      Builder(
-        builder: (context) => Flexible(
-          flex: flex,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$1x),
-            child: Container(
-              alignment: Alignment.center,
-              constraints: const BoxConstraints(
-                minHeight: 40,
-                maxHeight: 40,
-                minWidth: 52,
+  }) => Builder(
+    builder: (context) => Flexible(
+      flex: flex,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$1x),
+        child: Container(
+          alignment: Alignment.center,
+          constraints: const BoxConstraints(minHeight: 40, maxHeight: 40, minWidth: 52),
+          decoration: BoxDecoration(
+            color: context.colors.backgroundSurface1,
+            borderRadius: BorderRadius.circular(RadiusBorder.m),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (desc != null) ...[desc, const SizedBox(width: 2)],
+              SvgPicture.asset(
+                key: ValueKey(assetName),
+                assetName,
+                height: 24,
+                width: 24,
+                colorFilter: ColorFilter.mode(
+                  colorIcon ?? context.colors.foregroundDefault.withOpacity(0.7),
+                  BlendMode.srcIn,
+                ),
+                matchTextDirection: true,
               ),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(RadiusBorder.m),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (desc != null) ...[
-                    desc,
-                    const SizedBox(
-                      width: 2,
-                    ),
-                  ],
-                  SvgPicture.asset(
-                    key: ValueKey(assetName),
-                    assetName,
-                    height: 24,
-                    width: 24,
-                    colorFilter: ColorFilter.mode(
-                      colorIcon ?? context.colors.foregroundDefault.withOpacity(0.7),
-                      BlendMode.srcIn,
-                    ),
-                    matchTextDirection: true,
-                  ),
-                ],
-              ),
-            ),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
