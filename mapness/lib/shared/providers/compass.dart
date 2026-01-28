@@ -18,7 +18,7 @@ class Compass extends _$Compass {
     // update subscription if no data received after 10 seconds
     _timer?.cancel();
     _timer = Timer(const Duration(seconds: 10), () {
-      final updatedBearing = ref.read(compassProvider);
+      final updatedBearing = state;
       if (updatedBearing == null) {
         _compassSubscription?.cancel();
         _compassSubscription = FlutterCompass.events?.listen(_updateState);
