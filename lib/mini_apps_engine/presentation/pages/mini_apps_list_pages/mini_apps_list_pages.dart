@@ -89,7 +89,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       child: ListView.separated(
         padding: const EdgeInsets.only(top: 20, left: 12, right: 12),
         itemCount: state.miniAppsList.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           return MiniAppsItemWidget(miniApp: state.miniAppsList[index], isEvent: CommonFunctions.isTodayInRanges);
         },

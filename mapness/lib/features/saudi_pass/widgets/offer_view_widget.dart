@@ -18,9 +18,13 @@ class OfferViewWidget extends ConsumerWidget {
   const OfferViewWidget(this.offerView, {super.key});
 
   String formatDistance({required String? metersString, required BuildContext context}) {
-    if (metersString == null) return '—';
+    if (metersString == null) {
+      return '—';
+    }
     final meters = double.tryParse(metersString);
-    if (meters == null) return '—';
+    if (meters == null) {
+      return '—';
+    }
 
     if (meters >= 1000) {
       final km = meters / 1000;

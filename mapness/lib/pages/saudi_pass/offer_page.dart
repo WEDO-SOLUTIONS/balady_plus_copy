@@ -360,6 +360,7 @@ class _Content extends HookConsumerWidget {
   }
 }
 
+// ignore: avoid_positional_boolean_parameters
 void changeFavorite(BuildContext context, WidgetRef ref, bool favorite, String offerId) {
   ref
       .read(authMethodsProvider.notifier)
@@ -395,6 +396,7 @@ class _OfferPreviewByGroup extends StatelessWidget {
   final TextSpan? discount;
   final String? companyLogoId;
 
+  // ignore: unused_element_parameter
   const _OfferPreviewByGroup({required this.offersGroup, required this.title, this.discount, this.companyLogoId});
 
   @override

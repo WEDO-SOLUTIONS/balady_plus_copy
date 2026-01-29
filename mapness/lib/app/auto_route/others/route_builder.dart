@@ -23,6 +23,7 @@ class AppRoute<T> extends CustomRoute<T> {
     RouteTransitionsBuilder? transitionsBuilder,
   }) : super(
          page: page,
+         // ignore: avoid_types_as_parameter_names
          customRouteBuilder: <T>(context, child, page) => CustomModalRoute<T>(
            page: page,
            routeType: CustomRouteType(
