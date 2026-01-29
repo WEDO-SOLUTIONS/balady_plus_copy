@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,9 +8,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/providers/map/bearing_state.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
+import 'package:provider/provider.dart';
 
 class CompassControl extends HookConsumerWidget {
   const CompassControl({super.key});
+
+  String compass(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.icons.svg.icDarkCompass.keyName,
+    BaladyAppThemes.light => Assets.icons.svg.icControlCompass.keyName,
+    BaladyAppThemes.saudiDay => Assets.icons.svg.icControlCompass.keyName,
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,10 +51,7 @@ class CompassControl extends HookConsumerWidget {
               onTap: bearingNotifier.onCompassTap,
               child: Transform.rotate(
                 angle: bearingState.angle - pi - pi / 4,
-                child: SvgPicture.asset(
-                  Assets.icons.svg.icControlCompass.keyName,
-                  semanticsLabel: 'MinApps Screen',
-                ),
+                child: SvgPicture.asset(compass(context), semanticsLabel: 'MinApps Screen'),
               ),
             ),
           ),

@@ -82,9 +82,9 @@ class SuggestItem extends ConsumerWidget {
         final objectItem = object.item;
         final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);
         ref.read(searchHistoryProvider(scope.value).notifier).put(historyItem);
-        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
-              '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
-            );
+        ref
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}');
         handlingType = BssHistoryHandlingType.openRecord;
         onObjectTap(objectItem);
       }
@@ -113,13 +113,9 @@ class SuggestItem extends ConsumerWidget {
       leading: SystemIcons.search.icon(color: iconColor ?? context.colors.foregroundSoft),
       text: ContentRowTextOptions(
         title: suggest.title.text,
-        titleOptions: ContentRowTextOption(
-          matchedParts: _getSpans(suggest.title),
-        ),
+        titleOptions: ContentRowTextOption(matchedParts: _getSpans(suggest.title)),
         subtitle: subtitle,
-        subtitleOptions: ContentRowTextOption(
-          matchedParts: _getSpans(suggest.subtitle),
-        ),
+        subtitleOptions: ContentRowTextOption(matchedParts: _getSpans(suggest.subtitle)),
       ),
       trailing: distanceKm != null
           ? ContentRowTextTrailingOptions(
@@ -133,14 +129,8 @@ class SuggestItem extends ConsumerWidget {
   }
 }
 
-List<UIMarkedUpTextSpan> _getSpans(MarkedUpTextMessage message) => message.matchedParts.nonNulls
-    .map(
-      (e) => UIMarkedUpTextSpan(
-        length: e.length,
-        offset: e.offset,
-      ),
-    )
-    .toList();
+List<UIMarkedUpTextSpan> _getSpans(MarkedUpTextMessage message) =>
+    message.matchedParts.nonNulls.map((e) => UIMarkedUpTextSpan(length: e.length, offset: e.offset)).toList();
 
 String _brunchFromString(String engString, BuildContext context) {
   final subtitleSplit = engString.split(' ');

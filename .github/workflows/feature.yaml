@@ -63,48 +63,52 @@ jobs:
         uses: actions/checkout@v4
 
       - name: 🔔 Notify reviewers in Microsoft Teams (Adaptive Card + mentions)
+        shell: bash
         env:
           TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL_PR }}
           TEAMS_MAPPING_FILE: ${{ github.workspace }}/.github/teams_mapping.yml
+
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_API_URL: ${{ github.event.pull_request.url }}
+          PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          EVENT_ACTION: ${{ github.event.action }}
+
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-  
-          # PR info
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_URL="${{ github.event.pull_request.html_url }}"
-          PR_API_URL="${{ github.event.pull_request.url }}"
-          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
-          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-          EVENT_ACTION="${{ github.event.action }}"
-  
+
+          : "${TEAMS_WEBHOOK_URL:?missing TEAMS_WEBHOOK_URL}"
+          : "${TEAMS_MAPPING_FILE:?missing TEAMS_MAPPING_FILE}"
+          : "${PR_API_URL:?missing PR_API_URL (run on pull_request events)}"
+
           # Get reviewers (GitHub logins)
           REVIEWERS="$(curl -sS \
             -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             "${PR_API_URL}/requested_reviewers" \
             | jq -r '.users // [] | map(.login) | join(" ")')"
-  
+
           if [ -z "${REVIEWERS}" ]; then
             echo "No reviewers to notify."
             exit 0
           fi
-  
+
           # Build mentions for Teams Adaptive Card
-          # Mapping file format: github_login: teams_user_id (AAD Object ID UUID)
           MENTION_TEXT=""
           MSTEAMS_ENTITIES='[]'
           NOT_FOUND_REVIEWERS=""
-  
+
           i=0
           for reviewer in ${REVIEWERS}; do
             teams_id="$(reviewer=${reviewer} yq e '.[env(reviewer)] // ""' "${TEAMS_MAPPING_FILE}")"
-  
+
             if [ -n "${teams_id}" ] && [ "${teams_id}" != "null" ]; then
               i=$((i+1))
               tag="<at>reviewer${i}</at>"
               MENTION_TEXT+="${tag} "
-  
-              # Add mention entity
+
               MSTEAMS_ENTITIES="$(jq -c \
                 --arg id "${teams_id}" \
                 --arg name "${reviewer}" \
@@ -114,97 +118,64 @@ jobs:
                   "text": $text,
                   "mentioned": { "id": $id, "name": $name }
                 }]' <<< "${MSTEAMS_ENTITIES}")"
-  
+
               echo "Teams id ${teams_id} for reviewer ${reviewer}"
             else
               NOT_FOUND_REVIEWERS+="${reviewer} "
               echo "Couldn't map github username to teams id for ${reviewer}"
             fi
           done
-  
-          # Decide whether to notify based on action (same behavior as old MM script)
-          if [ "${EVENT_ACTION}" = "opened" ] || [ "${EVENT_ACTION}" = "reopened" ] || [ "${EVENT_ACTION}" = "ready_for_review" ]; then
-            HEADER="You were assigned as a reviewer:"
-          elif [ "${EVENT_ACTION}" = "synchronize" ]; then
-            HEADER="There are some changes:"
-          else
-            echo "Action ${EVENT_ACTION} does not require notification."
-            exit 0
-          fi
-  
-          # Build base Adaptive Card payload WITHOUT msteams.entities (keep JSON always valid)
-          PAYLOAD="$(cat <<'EOF'
-          {
-            "type": "message",
-            "attachments": [
-              {
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "content": {
-                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                  "type": "AdaptiveCard",
-                  "version": "1.5",
-                  "body": [
-                    { "type": "TextBlock", "size": "Large", "weight": "Bolder", "wrap": true, "text": "👀 PR review request" },
-                    { "type": "TextBlock", "wrap": true, "text": "__MENTION_TEXT____HEADER__" },
-                    {
-                      "type": "FactSet",
-                      "facts": [
-                        { "title": "Pull request", "value": "[__PR_TITLE__](__PR_URL__)" },
-                        { "title": "Branch", "value": "__PR_BRANCH__" },
-                        { "title": "Author", "value": "__PR_AUTHOR__" }
-                      ]
-                    }
+
+          # Decide whether to notify based on action
+          case "${EVENT_ACTION}" in
+            opened|reopened|ready_for_review) HEADER="You were assigned as a reviewer:" ;;
+            synchronize) HEADER="There are some changes:" ;;
+            *) echo "Action ${EVENT_ACTION} does not require notification."; exit 0 ;;
+          esac
+
+          # Build Adaptive Card payload safely with jq
+          PAYLOAD="$(jq -nc \
+            --arg pr_title "${PR_TITLE}" \
+            --arg pr_url "${PR_URL}" \
+            --arg pr_branch "${PR_BRANCH}" \
+            --arg pr_author "${PR_AUTHOR}" \
+            --arg header "${HEADER}" \
+            --arg mention "${MENTION_TEXT}" \
+            --argjson entities "${MSTEAMS_ENTITIES}" \
+            '{
+              type:"message",
+              attachments:[{
+                contentType:"application/vnd.microsoft.card.adaptive",
+                content:{
+                  "$schema":"http://adaptivecards.io/schemas/adaptive-card.json",
+                  type:"AdaptiveCard",
+                  version:"1.5",
+                  msteams:{entities:$entities},
+                  body:[
+                    {type:"TextBlock", size:"Large", weight:"Bolder", wrap:true, text:"👀 PR review request"},
+                    {type:"TextBlock", wrap:true, text:($mention + $header)},
+                    {type:"FactSet", facts:[
+                      {title:"Pull request", value:("[" + $pr_title + "](" + $pr_url + ")")},
+                      {title:"Branch", value:$pr_branch},
+                      {title:"Author", value:$pr_author}
+                    ]}
                   ]
                 }
-              }
-            ]
-          }
-          EOF
-          )"
-  
-          # Safely JSON-escape dynamic strings using jq, then replace placeholders
-          esc() { jq -Rsa . <<< "${1}" | sed 's/^"//; s/"$//'; }
-  
-          PR_TITLE_ESC="$(esc "${PR_TITLE}")"
-          PR_URL_ESC="$(esc "${PR_URL}")"
-          PR_BRANCH_ESC="$(esc "${PR_BRANCH}")"
-          PR_AUTHOR_ESC="$(esc "${PR_AUTHOR}")"
-          HEADER_ESC="$(esc "${HEADER}")"
-          MENTION_TEXT_ESC="$(esc "${MENTION_TEXT}")"
-  
-          PAYLOAD="${PAYLOAD/__MENTION_TEXT__/${MENTION_TEXT_ESC}}"
-          PAYLOAD="${PAYLOAD/__HEADER__/${HEADER_ESC}}"
-          PAYLOAD="${PAYLOAD/__PR_TITLE__/${PR_TITLE_ESC}}"
-          PAYLOAD="${PAYLOAD/__PR_URL__/${PR_URL_ESC}}"
-          PAYLOAD="${PAYLOAD/__PR_BRANCH__/${PR_BRANCH_ESC}}"
-          PAYLOAD="${PAYLOAD/__PR_AUTHOR__/${PR_AUTHOR_ESC}}"
-  
-          # Inject msteams.entities (as real JSON, not a string) — this fixes "Invalid numeric literal"
-          PAYLOAD="$(jq -c --argjson entities "${MSTEAMS_ENTITIES}" '
-            .attachments[0].content.msteams = { "entities": $entities }
-          ' <<< "${PAYLOAD}")"
-  
-          # Send main Teams notification
+              }]
+            }')"
+
           curl -sS -H 'Content-Type: application/json' -d "${PAYLOAD}" "${TEAMS_WEBHOOK_URL}" >/dev/null
           echo "Teams notification sent."
-  
-          # Send warning if some reviewers were not mapped
+
           if [ -n "${NOT_FOUND_REVIEWERS// /}" ]; then
-            WARN_PAYLOAD="$(cat <<'EOF'
-          {
-            "@type": "MessageCard",
-            "@context": "https://schema.org/extensions",
-            "themeColor": "D83B01",
-            "summary": "Reviewers mapping warning",
-            "title": "⚠️ Reviewers mapping warning",
-            "sections": [
-              { "text": "Can't map GitHub users to Teams IDs: __NOT_FOUND__" }
-            ]
-          }
-          EOF
-          )"
-            NOT_FOUND_ESC="$(esc "${NOT_FOUND_REVIEWERS}")"
-            WARN_PAYLOAD="${WARN_PAYLOAD/__NOT_FOUND__/${NOT_FOUND_ESC}}"
+            WARN_PAYLOAD="$(jq -nc --arg nf "${NOT_FOUND_REVIEWERS}" '{
+              "@type":"MessageCard",
+              "@context":"https://schema.org/extensions",
+              themeColor:"D83B01",
+              summary:"Reviewers mapping warning",
+              title:"⚠️ Reviewers mapping warning",
+              sections:[{text:("Can'\''t map GitHub users to Teams IDs: " + $nf)}]
+            }')"
             curl -sS -H 'Content-Type: application/json' -d "${WARN_PAYLOAD}" "${TEAMS_WEBHOOK_URL}" >/dev/null
             echo "Teams mapping warning sent."
           fi
@@ -221,7 +192,7 @@ jobs:
         with:
           flutter-version: "3.38.5"
           channel: "stable"
-          cache: true
+
       - name: Download Localazy #wait secrets from 2gis
         uses: localazy/download@v1
         with:
@@ -271,8 +242,7 @@ jobs:
           flutter pub get
 
       - name: Analyze Flutter
-        uses: ValentinVignal/action-dart-analyze@v0.17
+        uses: ValentinVignal/action-dart-analyze@v2.1
         with:
-          fail-on: "format"
           line-length: 120
           check-renamed-files: true

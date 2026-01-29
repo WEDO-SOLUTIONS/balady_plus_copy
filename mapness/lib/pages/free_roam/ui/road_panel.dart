@@ -20,73 +20,71 @@ class RoadPanel extends ConsumerWidget {
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        child: SizedBox(
-          height: 56,
-          width: MediaQuery.orientationOf(context) == Orientation.portrait
-              ? double.infinity
-              : FreeRoamPage.landscapeWidth,
-          child: Material(
-            color: Colors.transparent,
-            child: isLoading
-                ? DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: context.colors.backgroundSurface1,
-                      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+    padding: const EdgeInsets.all(Spacing.$4x),
+    child: SizedBox(
+      height: 56,
+      width: MediaQuery.orientationOf(context) == Orientation.portrait ? double.infinity : FreeRoamPage.landscapeWidth,
+      child: Material(
+        color: Colors.transparent,
+        child: isLoading
+            ? DecoratedBox(
+                decoration: BoxDecoration(
+                  color: context.colors.backgroundSurface1,
+                  borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                ),
+                child: Center(child: Loading.small()),
+              )
+            : Row(
+                children: [
+                  if (onSearch != null)
+                    GestureDetector(
+                      onTap: onSearch,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: context.colors.backgroundSurface1,
+                          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(Spacing.$4x),
+                          child: Icon(SystemIcons.search, color: context.colors.foregroundDefault),
+                        ),
+                      ),
                     ),
-                    child: Center(child: Loading.small()))
-                : Row(
-                    children: [
-                      if (onSearch != null)
-                        GestureDetector(
-                          onTap: onSearch,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: context.colors.backgroundSurface1,
-                              borderRadius:
-                                  BorderRadius.circular(RadiusBorder.xl),
-                            ),
-                            child: const Padding(
-                              padding: EdgeInsets.all(Spacing.$4x),
-                              child: Icon(SystemIcons.search),
-                            ),
-                          ),
+                  if (onSearch != null) const SizedBox(width: Spacing.$2x),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: onEndTrip,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: context.colors.backgroundSurface1,
+                          borderRadius: BorderRadius.circular(RadiusBorder.xl),
                         ),
-                      if (onSearch != null) const SizedBox(width: Spacing.$2x),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: onEndTrip,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: context.colors.backgroundSurface1,
-                              borderRadius:
-                                  BorderRadius.circular(RadiusBorder.xl),
-                            ),
-                            child: Center(
-                              child: Text(context.l10n.endTrip,
-                                  style: context.textStyles.h4Medium),
-                            ),
+                        child: Center(
+                          child: Text(
+                            context.l10n.endTrip,
+                            style: context.textStyles.h4Medium.copyWith(color: context.colors.foregroundDefault),
                           ),
                         ),
                       ),
-                      const SizedBox(width: Spacing.$2x),
-                      GestureDetector(
-                        onTap: onOpenSheet,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: context.colors.backgroundSurface1,
-                            borderRadius:
-                                BorderRadius.circular(RadiusBorder.xl),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(Spacing.$4x),
-                            child: Icon(SystemIcons.menu),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-          ),
-        ),
-      );
+                  const SizedBox(width: Spacing.$2x),
+                  GestureDetector(
+                    onTap: onOpenSheet,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: context.colors.backgroundSurface1,
+                        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(Spacing.$4x),
+                        child: Icon(SystemIcons.menu, color: context.colors.foregroundDefault),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+      ),
+    ),
+  );
 }
