@@ -16,17 +16,19 @@ class DarkMapModeRowWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final darModeState = ref.watch(darkModeProvider);
+    ref.listen(darkModeProvider, (prev, next) {
+      final themeController = context.read<ThemeController>();
+
+      if (next.value?.isDark == true) {
+        themeController.setTheme(BaladyAppThemes.dark);
+      } else {
+        themeController.setTheme(BaladyAppThemes.light);
+      }
+    });
 
     return ContentRow(
-      onTap: () async {
+      onTap: () {
         ref.read(darkModeProvider.notifier).changeDarkModeState(currentMode);
-        if (darModeState.value != null) {
-          if (darModeState.value!.isDark) {
-            await context.read<ThemeController>().setTheme(BaladyAppThemes.light);
-          } else {
-            await context.read<ThemeController>().setTheme(BaladyAppThemes.dark);
-          }
-        }
       },
       options: ContentRowOptions(
         padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
