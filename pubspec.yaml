@@ -166,9 +166,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.1
-  # balady_uikit:
-  #   path: /Users/strozer/Flutter/Packages/balady_uikit
+    version: 5.0.2
 
   sheetify: ^1.1.3
 

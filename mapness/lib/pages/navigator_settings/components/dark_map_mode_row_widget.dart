@@ -1,12 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:provider/provider.dart';
 
 class DarkMapModeRowWidget extends ConsumerWidget {
   final DarkMapStateEnum currentMode;
@@ -16,15 +14,6 @@ class DarkMapModeRowWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final darModeState = ref.watch(darkModeProvider);
-    ref.listen(darkModeProvider, (prev, next) {
-      final themeController = context.read<ThemeController>();
-
-      if (next.value?.isDark == true) {
-        themeController.setTheme(BaladyAppThemes.dark);
-      } else {
-        themeController.setTheme(BaladyAppThemes.light);
-      }
-    });
 
     return ContentRow(
       onTap: () {

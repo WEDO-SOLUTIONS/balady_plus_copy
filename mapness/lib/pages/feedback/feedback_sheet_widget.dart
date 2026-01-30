@@ -120,7 +120,7 @@ class FeedbackSheetWidget extends HookWidget {
                             padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
                             child: Text(
                               context.l10n.feedbackSuccessTitle,
-                              style: context.textStyles.h3SemiBold,
+                              style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
                               textAlign: TextAlign.center,
                             ),
                           ),

@@ -68,6 +68,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
 
   @override
   Widget build(BuildContext context) => ContentWrapper.single(
+    color: context.colors.backgroundSurface1,
     child: LayoutBuilder(
       builder: (context, constraints) {
         if (_maxWidth != constraints.maxWidth) {
@@ -75,6 +76,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
           _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
         }
         return ContentRow(
+          backgroundColor: context.colors.backgroundSurface1,
           text: ContentRowTextOptions(
             title: widget.data.aboutTitle,
             titleOptions: const ContentRowTextOption(isBold: true),

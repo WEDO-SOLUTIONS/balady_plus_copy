@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -35,11 +36,7 @@ class PoiContentSliver extends ConsumerWidget {
   final PoiCardState? poiCardState;
   final void Function()? onEntrancesTap;
 
-  const PoiContentSliver({
-    this.poiCardState,
-    this.onEntrancesTap,
-    super.key,
-  });
+  const PoiContentSliver({this.poiCardState, this.onEntrancesTap, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,25 +48,17 @@ class PoiContentSliver extends ConsumerWidget {
 
     final finishPoint = data != null
         ? RouteSearchPoint(
-            coordinates: data.markerPosition?.toGeoPointMessage() ??
-                GeoPointMessage(
-                  latitude: 0,
-                  longitude: 0,
-                ),
+            coordinates: data.markerPosition?.toGeoPointMessage() ?? GeoPointMessage(latitude: 0, longitude: 0),
             dgisObjectId: data.id!,
           )
         : null;
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-      ),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car),
     );
 
     final searchObjectFuture = ref.watch(poiSearchByObjectProvider(data));
     final poiSearchObjectFuture = searchObjectFuture.value?.$1;
     final poiSearchByObjectEntrances = searchObjectFuture.value?.$2 ?? [];
-    const colorShimmer = Color(0xFFE3E3E3);
 
     final mainLines = data?.routeInfos.map((e) => e.name).toList() ?? [];
     poiSearchObjectFuture?.removeWhere((element) => mainLines.contains(element.title));
@@ -100,10 +89,7 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
                 payload: BssPayload(
                   placeItem: data.toBss(),
-                  contact: BssContact(
-                    type: type,
-                    value: value,
-                  ),
+                  contact: BssContact(type: type, value: value),
                 ),
               ),
             );
@@ -139,7 +125,8 @@ class PoiContentSliver extends ConsumerWidget {
           // Platforms lines info
           final routeInfos = data.routeInfos;
           final transportDirectoryRouteInfo = data.routeInfos.firstOrNull;
-          final currentRouteTransition = transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
+          final currentRouteTransition =
+              transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
                   .firstWhereOrNull((e) => e.name == data.title)
                   ?.transitions ??
               [];
@@ -169,10 +156,7 @@ class PoiContentSliver extends ConsumerWidget {
               }
 
               context.router.push(
-                QuickFeedbackRoute(
-                  type: QuickFeedbackType.editCompany,
-                  params: FeedbackObjectIdParams(objectIdInt),
-                ),
+                QuickFeedbackRoute(type: QuickFeedbackType.editCompany, params: FeedbackObjectIdParams(objectIdInt)),
               );
             },
             title: context.l10n.dataIsIncorrect,
@@ -187,19 +171,19 @@ class PoiContentSliver extends ConsumerWidget {
                     return;
                   }
 
-                  context.router.push(QuickFeedbackRoute(
-                    type: QuickFeedbackType.editCompany,
-                    params: FeedbackObjectIdParams(objectIdInt),
-                  ));
+                  context.router.push(
+                    QuickFeedbackRoute(
+                      type: QuickFeedbackType.editCompany,
+                      params: FeedbackObjectIdParams(objectIdInt),
+                    ),
+                  );
                 },
                 data: PoiContentFeedbackType.cityExpert,
                 padding: itemPadding,
               ),
               Padding(
                 padding: itemPadding,
-                child: PoiContentFullAddressCard(
-                  data: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap),
-                ),
+                child: PoiContentFullAddressCard(data: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap)),
               ),
               if (about != null)
                 Padding(
@@ -233,34 +217,30 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
                 Shimmer.fromColors(
-                  baseColor: colorShimmer,
-                  highlightColor: Colors.white,
+                  baseColor: context.colors.backgroundSurface1,
+                  highlightColor: context.colors.backgroundSurface1,
                   child: entrancesWidget,
                 ),
               if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
               ...routeInfos
-                  .map((e) => Padding(
-                        padding: itemPadding,
-                        child: PoiLinesMetro(
-                          transportDirectoryRouteInfo: e,
-                          address: data.title,
-                        ),
-                      ))
+                  .map(
+                    (e) => Padding(
+                      padding: itemPadding,
+                      child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
+                    ),
+                  )
                   .toList(),
               if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
                 Shimmer.fromColors(
-                  baseColor: colorShimmer,
-                  highlightColor: Colors.white,
+                  baseColor: context.colors.backgroundSurface1,
+                  highlightColor: context.colors.backgroundSurface1,
                   child: entrancesWidget,
                 ),
               ...?poiSearchObjectFuture
                   ?.map(
                     (e) => Padding(
                       padding: itemPadding,
-                      child: PoiLinesMetro(
-                        transportDirectoryRouteInfo: e.routeInfos.first,
-                        address: data.title,
-                      ),
+                      child: PoiLinesMetro(transportDirectoryRouteInfo: e.routeInfos.first, address: data.title),
                     ),
                   )
                   .toList(),
