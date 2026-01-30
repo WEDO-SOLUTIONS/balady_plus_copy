@@ -40,7 +40,7 @@ dependencies:
     path: ..
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.1
+    version: 5.0.2
   # balady_uikit:
   #   path: /Users/strozer/Flutter/Packages/balady_uikit
 

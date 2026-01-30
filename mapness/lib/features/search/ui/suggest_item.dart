@@ -113,9 +113,17 @@ class SuggestItem extends ConsumerWidget {
       leading: SystemIcons.search.icon(color: iconColor ?? context.colors.foregroundSoft),
       text: ContentRowTextOptions(
         title: suggest.title.text,
-        titleOptions: ContentRowTextOption(matchedParts: _getSpans(suggest.title)),
+        titleOptions: ContentRowTextOption(
+          baseColor: context.colors.foregroundDefault,
+          // Have error to change colors in library
+          // matchedParts: _getSpans(suggest.title),
+        ),
         subtitle: subtitle,
-        subtitleOptions: ContentRowTextOption(matchedParts: _getSpans(suggest.subtitle)),
+        subtitleOptions: ContentRowTextOption(
+          baseColor: context.colors.foregroundDefault,
+          // Have error to change colors in library
+          // matchedParts: _getSpans(suggest.subtitle),
+        ),
       ),
       trailing: distanceKm != null
           ? ContentRowTextTrailingOptions(

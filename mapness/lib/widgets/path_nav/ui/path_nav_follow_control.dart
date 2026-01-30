@@ -10,9 +10,7 @@ import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class PathNavFollowControl extends ConsumerWidget {
-  const PathNavFollowControl({
-    super.key,
-  });
+  const PathNavFollowControl({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
