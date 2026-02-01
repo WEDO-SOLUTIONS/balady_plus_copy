@@ -23,6 +23,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_dashed_line_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/mini_apps_search_page/mini_apps_search_page.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -108,8 +109,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
               builder: (_) => BlocProvider<NewMiniAppLogicCubit>.value(
                 value: sl<NewMiniAppLogicCubit>()..loadMiniApps(),
                 child: Scaffold(
-        backgroundColor: context.colors.backgroundSurface4,
-        body: Stack(
+                  backgroundColor: context.colors.backgroundSurface4,
+                  body: Stack(
                     children: [
                       const Positioned(top: 0, child: OverlayBlurCircle()),
                       BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(

@@ -15,6 +15,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
 import 'package:provider/provider.dart' as p; // Add this import
 
@@ -34,6 +35,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final themeController = p.Provider.of<BaladyThemeNotifier>(context);
+    final darModeState = ref.watch(darkModeProvider);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -116,6 +118,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 value: themeController.isDarkMode,
                                 onChanged: (value) {
                                   themeController.toggleTheme(value);
+                                  /// Just For Can Test The Dark Theme With Urib
+                                  if(value) {
+                                    ref.read(darkModeProvider.notifier).changeDarkModeState(DarkMapStateEnum.alwaysEnabled);
+                                  } else {
+                                    ref.read(darkModeProvider.notifier).changeDarkModeState(DarkMapStateEnum.off);
+                                  }
                                   onToggle?.call(value);
                                 },
                                 activeColor: context.colors.accentDefault,

@@ -17,7 +17,11 @@ class MiniAppsItemWidget extends StatelessWidget {
   final MiniAppModel miniApp;
   final bool isEvent;
 
-  const MiniAppsItemWidget({super.key, required this.miniApp, required this.isEvent});
+  const MiniAppsItemWidget({
+    super.key,
+    required this.miniApp,
+    required this.isEvent,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,48 +33,54 @@ class MiniAppsItemWidget extends StatelessWidget {
             child: Card(
               color: context.colors.backgroundSurface1,
               elevation: 0.5,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: ImageIconBasedTypeWidget(
-                          icon: miniApp.logoKey!,
-                          type: miniApp.cdnLogoRef?.split(".").last,
-                          iconSize: 40,
-                          iconColor: isEvent
-                              ? AppColor.primary900LightEvent
-                              : AppColor.primary900Light,
-                        ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 24,
+                  horizontal: 18,
+                ),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: ImageIconBasedTypeWidget(
+                        icon: miniApp.logoKey!,
+                        type: miniApp.cdnLogoRef?.split(".").last,
+                        iconSize: 40,
+                        iconColor: isEvent
+                            ? AppColor.primary900LightEvent
+                            : AppColor.primary900Light,
                       ),
-                      const SizedBox(height: 24),
-                      Text(
-                        miniApp.serviceName ?? '',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17,
-                            fontFamily: 'packages/balady_uikit/Frutiger',
-                          color: context.colors.foregroundDefault,
-                        maxLines: 1,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      miniApp.serviceName ?? '',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 17,
+                        fontFamily: 'packages/balady_uikit/Frutiger',
+                        color: context.colors.foregroundDefault,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        miniApp.description?.isNotEmpty == true
-                            ? miniApp.description!
-                            : '',
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: Colors.grey[600],
-                              fontSize: 13,
-                              fontFamily: 'packages/balady_uikit/Frutiger',
-                            ),
-                        textAlign: TextAlign.center,
+                      maxLines: 1,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      miniApp.description?.isNotEmpty == true
+                          ? miniApp.description!
+                          : '',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Colors.grey[600],
+                        fontSize: 13,
+                        fontFamily: 'packages/balady_uikit/Frutiger',
                       ),
-                    ],
-                  )),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
   }
@@ -84,19 +94,23 @@ class MiniAppsItemWidget extends StatelessWidget {
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
-              NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
+              NavigationService.pushNamed(
+                routeName: RouteName.miniAppsMainScreen,
+                args: miniApp,
+              );
             }
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel == null) {
+    } else if (miniApp.latestVersion?.otpLogin == true &&
+        miniApp.latestVersion?.deepLinkModel == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
         context.read<NewMiniAppLogicCubit>().openMiniAppByServiceKey(
-              serviceKey: "municipalservice",
-              path: "#Volunteer_Home_Screen",
-            );
+          serviceKey: "municipalservice",
+          path: "#Volunteer_Home_Screen",
+        );
       } else {
         if (miniApp.latestVersion?.deepLinkModel != null) {
           try {
@@ -108,7 +122,10 @@ class MiniAppsItemWidget extends StatelessWidget {
             CommonFunctions.showError('launch_failed'.tr());
           }
         } else {
-          NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
+          NavigationService.pushNamed(
+            routeName: RouteName.miniAppsMainScreen,
+            args: miniApp,
+          );
         }
       }
     }
