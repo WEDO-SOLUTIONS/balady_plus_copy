@@ -88,7 +88,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                   child: Container(
-                    color: const Color.fromARGB(81, 255, 255, 255),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? const Color.fromARGB(139, 0, 0, 0)
+                        : const Color.fromARGB(81, 255, 255, 255),
                   ),
                 ),
               ),
@@ -102,9 +104,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                   children: [
                     // STICKY HEADER (always visible)
                     StaggeredAppear(
-                      initialDelay: const Duration(milliseconds: 320),
-                      itemDuration: const Duration(milliseconds: 420),
-                      itemDelay: const Duration(milliseconds: 290),
+                      initialDelay: const Duration(milliseconds: 300),
+                      itemDuration: const Duration(milliseconds: 400),
+                      itemDelay: const Duration(milliseconds: 200),
                       children: [
                         CustomSubHeadingText(
                           isTextCenter: true,
@@ -113,7 +115,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           text: CommonFunctions.isAppAR
                               ? appGroup!.nameAr
                               : appGroup!.nameEn,
-                          fontColor: const Color(0XFF242424),
+                          fontColor: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
                         ),
@@ -133,18 +135,20 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               height: context.h(49),
                               child: DecoratedBox(
                                 decoration: BoxDecoration(
-                                  color: const Color(0XFFFFFFFF),
+                                  color: Theme.of(context).colorScheme.surface,
                                   borderRadius: BorderRadius.circular(100),
                                   border: Border.all(
-                                    color: const Color(0xFFEDEDED),
+                                    color: Theme.of(context).cardColor,
                                     width: 1,
                                   ),
                                 ),
                                 child: IconButton(
                                   onPressed: () => Navigator.pop(context),
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.close,
-                                    color: Color(0XFF242424),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -157,10 +161,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               height: context.h(49),
                               child: DecoratedBox(
                                 decoration: BoxDecoration(
-                                  color: const Color(0XFFFFFFFF),
+                                  color: Theme.of(context).colorScheme.surface,
                                   borderRadius: BorderRadius.circular(100),
                                   border: Border.all(
-                                    color: const Color(0xFFEDEDED),
+                                    color: Theme.of(context).cardColor,
                                     width: 1,
                                   ),
                                 ),
@@ -178,6 +182,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     }
                                   },
                                   icon: Image.asset(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface,
                                     ImagePath.sortDescending,
                                     width: context.w(24),
                                     height: context.h(24),
@@ -211,8 +218,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     suffixString: value.text.isEmpty
                                         ? Text(
                                             "search2".tr(),
-                                            style: const TextStyle(
-                                              color: Colors.black,
+                                            style: TextStyle(
+                                              color: Theme.of(
+                                                context,
+                                              ).disabledColor,
                                             ),
                                           )
                                         : const SizedBox(),
@@ -366,8 +375,10 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                             return Center(
                               child: Text(
                                 "no_results_found".tr(),
-                                style: const TextStyle(
-                                  color: Color(0xFF242424),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
                                   fontSize: 25,
                                   fontFamily: GeneralKey.appFontType,
                                 ),

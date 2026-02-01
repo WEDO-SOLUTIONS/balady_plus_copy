@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MiniAppsCustomTextField extends StatelessWidget {
   final String? hintText;
@@ -76,8 +75,8 @@ class MiniAppsCustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const textColor = Colors.black;
-    const hintColor = Color(0x8C1B153D);
+    Color textColor = Theme.of(context).colorScheme.onSurface;
+    Color hintColor = Theme.of(context).disabledColor;
 
     return SizedBox(
       width: width ?? 700,
@@ -90,8 +89,9 @@ class MiniAppsCustomTextField extends StatelessWidget {
             absorbing: !isEnabled,
             child: SizedBox.expand(
               child: TextFormField(
-                textAlign:
-                    CommonFunctions.isAppAR ? TextAlign.right : TextAlign.left,
+                textAlign: CommonFunctions.isAppAR
+                    ? TextAlign.right
+                    : TextAlign.left,
                 textDirection: CommonFunctions.isAppAR
                     ? TextDirection.rtl
                     : TextDirection.ltr,
@@ -101,7 +101,8 @@ class MiniAppsCustomTextField extends StatelessWidget {
                 maxLines: 1,
                 textInputAction: textInputAction,
                 onFieldSubmitted: onFieldSubmitted,
-                inputFormatters: inputFormatters ??
+                inputFormatters:
+                    inputFormatters ??
                     [
                       if (isDigitsOnly) FilteringTextInputFormatter.digitsOnly,
                       if (allowedInputPattern != null)
@@ -113,36 +114,46 @@ class MiniAppsCustomTextField extends StatelessWidget {
                 focusNode: focusNode,
                 autofocus: autofocus ?? false,
                 cursorColor: const Color(0XFF2AB3A9),
-                style: const TextStyle(color: textColor),
+                style: TextStyle(color: textColor),
                 decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                  contentPadding: const EdgeInsets.symmetric(
+                    vertical: 0,
+                    horizontal: 16,
+                  ),
                   filled: true,
-                  fillColor: backgroundColor ?? const Color(0xFFF5F7FA),
+                  fillColor:
+                      backgroundColor ?? Theme.of(context).colorScheme.surface,
                   errorStyle: const TextStyle(color: Colors.red),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(50),
+                    borderSide: BorderSide(color: const Color(0xFFCED8DC)),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: borderColor ?? const Color(0xFFCED8DC),
-                    ),
+                    borderSide: BorderSide(color: const Color(0xFFCED8DC)),
                     borderRadius: BorderRadius.circular(50),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: borderColor ?? const Color(0xFF2AB3A9),
+                      color: Theme.of(context).colorScheme.primary,
                       width: 1,
                     ),
                     borderRadius: BorderRadius.circular(50),
                   ),
+
+                  disabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Theme.of(context).disabledColor,
+                    ),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+
                   hintText: hintText,
                   hintStyle: TextStyle(
-                    //  color: hintColor,
+                    color: hintColor,
                     fontSize: hintTextSize ?? 15,
                   ),
                   prefixIcon: icon,
-                  suffixIcon: _buildSuffix(),
+                  suffixIcon: _buildSuffix(context),
                 ),
                 obscureText: obscureText ?? false,
                 keyboardType: keyboardType,
@@ -155,7 +166,7 @@ class MiniAppsCustomTextField extends StatelessWidget {
     );
   }
 
-  Widget? _buildSuffix() {
+  Widget? _buildSuffix(BuildContext context) {
     if (suffixIcon == null && suffixString == null) return null;
 
     return Padding(
@@ -165,10 +176,21 @@ class MiniAppsCustomTextField extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          if (suffixString != null) suffixString!,
+          if (suffixString != null)
+            DefaultTextStyle.merge(
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              child: suffixString!,
+            ),
           if (suffixString != null && suffixIcon != null)
             const SizedBox(width: 20),
-          if (suffixIcon != null) suffixIcon!,
+          if (suffixIcon != null)
+            ColorFiltered(
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
+                BlendMode.srcIn,
+              ),
+              child: suffixIcon!,
+            ),
         ],
       ),
     );

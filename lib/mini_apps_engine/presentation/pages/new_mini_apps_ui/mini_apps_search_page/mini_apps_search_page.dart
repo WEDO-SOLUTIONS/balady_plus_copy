@@ -35,7 +35,9 @@ class MiniAppsSearchPage extends StatelessWidget {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                   child: Container(
-                    color: const Color.fromARGB(81, 255, 255, 255),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? const Color.fromARGB(139, 0, 0, 0)
+                        : const Color.fromARGB(81, 255, 255, 255),
                   ),
                 ),
               ),
@@ -65,8 +67,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                       children: [
                         //! Main content - takes available space and scrolls
                         Expanded(
-                          child: BlocBuilder<NewMiniAppLogicCubit,
-                              NewMiniAppLogicState>(
+                          child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                             builder: (context, state) {
                               if (controller.text.isEmpty &&
                                   state.searchResults.isEmpty &&
@@ -97,8 +98,11 @@ class MiniAppsSearchPage extends StatelessWidget {
                                           maxLines: 2,
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.visible,
-                                          style: const TextStyle(
-                                            color: Color.fromARGB(161, 0, 0, 0),
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withAlpha(400),
                                             fontWeight: FontWeight.w400,
                                             fontSize: 15,
                                             fontFamily: GeneralKey.appFontType,
@@ -138,23 +142,27 @@ class MiniAppsSearchPage extends StatelessWidget {
                                 //! Results section - FIXED SCROLLING ISSUE
                                 return SingleChildScrollView(
                                   padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom >
+                                    bottom:
+                                        MediaQuery.of(
+                                              context,
+                                            ).viewInsets.bottom >
                                             0
-                                        ? MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom +
-                                            100
+                                        ? MediaQuery.of(
+                                                context,
+                                              ).viewInsets.bottom +
+                                              100
                                         : 100,
                                   ),
                                   child: StaggeredAppear(
-                                    initialDelay:
-                                        const Duration(milliseconds: 200),
-                                    itemDuration:
-                                        const Duration(milliseconds: 450),
-                                    itemDelay:
-                                        const Duration(milliseconds: 130),
+                                    initialDelay: const Duration(
+                                      milliseconds: 200,
+                                    ),
+                                    itemDuration: const Duration(
+                                      milliseconds: 450,
+                                    ),
+                                    itemDelay: const Duration(
+                                      milliseconds: 130,
+                                    ),
                                     children: [
                                       GridView.builder(
                                         shrinkWrap: true,
@@ -162,11 +170,11 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             const NeverScrollableScrollPhysics(),
                                         gridDelegate:
                                             const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 16,
-                                          mainAxisSpacing: 16,
-                                          childAspectRatio: 0.8,
-                                        ),
+                                              crossAxisCount: 3,
+                                              crossAxisSpacing: 16,
+                                              mainAxisSpacing: 16,
+                                              childAspectRatio: 0.8,
+                                            ),
                                         itemCount: state.searchResults.length,
                                         itemBuilder: (context, index) {
                                           final miniApp =
@@ -199,10 +207,12 @@ class MiniAppsSearchPage extends StatelessWidget {
                                 height: context.h(49),
                                 child: DecoratedBox(
                                   decoration: BoxDecoration(
-                                    color: const Color(0XFFFFFFFF),
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surface,
                                     borderRadius: BorderRadius.circular(100),
                                     border: Border.all(
-                                      color: const Color(0xFFEDEDED),
+                                      color: Theme.of(context).cardColor,
                                       width: 1,
                                     ),
                                   ),
@@ -210,8 +220,12 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    icon: const Icon(Icons.arrow_back,
-                                        color: Color(0XFFB2B2B2)),
+                                    icon: Icon(
+                                      Icons.arrow_back,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface.withAlpha(400),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -225,9 +239,11 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     height: context.h(49),
                                     suffixPadding: hasText
                                         ? const EdgeInsets.symmetric(
-                                            horizontal: 8)
+                                            horizontal: 8,
+                                          )
                                         : const EdgeInsets.symmetric(
-                                            horizontal: 20),
+                                            horizontal: 20,
+                                          ),
                                     autoFocus: true,
                                     autofocus: true,
                                     controller: controller,
@@ -235,12 +251,16 @@ class MiniAppsSearchPage extends StatelessWidget {
                                     keyboardType: TextInputType.text,
                                     isReadOnly: false,
                                     hintText: "search2".tr(),
+
                                     suffixIcon: value.text.isEmpty
                                         ? SvgPicture.asset(
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
-                                                ? IconPath.searchSVG2
-                                                : IconPath.searchSVG,
+                                            colorFilter: ColorFilter.mode(
+                                              Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
+                                              BlendMode.srcIn,
+                                            ),
+                                            IconPath.searchSVG,
                                           )
                                         : IconButton(
                                             onPressed: () {
@@ -251,11 +271,9 @@ class MiniAppsSearchPage extends StatelessWidget {
                                             },
                                             icon: Icon(
                                               Icons.close_rounded,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.black
-                                                  : Color(0XFFB2B2B2),
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                             ),
                                           ),
                                     onChanged: (query) {

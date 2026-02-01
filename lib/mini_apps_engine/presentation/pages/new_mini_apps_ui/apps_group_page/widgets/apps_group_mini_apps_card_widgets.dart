@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
@@ -44,7 +43,8 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(
-                      horizontal: context.screenWidth * 0.01),
+                    horizontal: context.screenWidth * 0.01,
+                  ),
                   child: SizedBox(
                     width: width ?? context.w(87.12268829345703),
                     height: height ?? context.h(87.12268829345703),
@@ -63,8 +63,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                           isVerifyingKey: true,
                           imageWidth: iconWidth ?? context.w(60),
                           imageHeight: iconHeight ?? context.h(60),
-                          placeHolderWidget:
-                              SvgPicture.asset(ImagePath.calendarBackground),
+                          placeHolderWidget: SvgPicture.asset(
+                            ImagePath.calendarBackground,
+                          ),
                         ),
                         // SvgPicture.asset(
                         //   IconPath.defaultMiniAppIcon,
@@ -85,7 +86,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
-                   //   color: Color(0XFF1E2A36),
+                      //   color: Color(0XFF1E2A36),
                       fontFamily: GeneralKey.appFontType,
                       height: 1.4,
                     ),
@@ -96,8 +97,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
               ],
             )
           : Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: context.screenWidth * 0.01),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.screenWidth * 0.01,
+              ),
               child: SizedBox(
                 width: width ?? context.w(87.12268829345703),
                 height: height ?? context.h(87.12268829345703),
@@ -116,8 +118,9 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                       isVerifyingKey: true,
                       imageWidth: iconWidth ?? context.w(60),
                       imageHeight: iconHeight ?? context.h(60),
-                      placeHolderWidget:
-                          SvgPicture.asset(ImagePath.calendarBackground),
+                      placeHolderWidget: SvgPicture.asset(
+                        ImagePath.calendarBackground,
+                      ),
                     ),
                   ),
                 ),
