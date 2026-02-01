@@ -45,10 +45,7 @@ class ParkingDialogPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
-                      style: context.textStyles.h4SemiBold,
-                    ),
+                    Text(title, style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundSoft)),
                     if (desc != null) Spacing.$1x.heightBox,
                     if (desc != null)
                       Text(
@@ -84,7 +81,7 @@ class ParkingDialogPage extends HookConsumerWidget {
             onTap: onCancelTab,
           ),
         ),
-        bottomPadding.heightBox
+        bottomPadding.heightBox,
       ],
     );
   }

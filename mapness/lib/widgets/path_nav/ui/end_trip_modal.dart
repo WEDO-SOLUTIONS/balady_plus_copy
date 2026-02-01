@@ -20,9 +20,7 @@ class EndTripModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomsheetController = useToggleSheetController(
-      onClose: (_) => Navigator.of(context).pop(),
-    );
+    final bottomsheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
 
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
     final leftPadding = MediaQuery.viewPaddingOf(context).left + (isLandscape ? Spacing.$4x : 0.0);
@@ -32,8 +30,9 @@ class EndTripModal extends HookWidget {
       child: Padding(
         padding: EdgeInsets.only(left: leftPadding),
         child: ConstrainedBox(
-          constraints:
-              BoxConstraints(maxWidth: isLandscape ? NaviSheetPanel.landscapeWidth - Spacing.$4x * 2 : double.infinity),
+          constraints: BoxConstraints(
+            maxWidth: isLandscape ? NaviSheetPanel.landscapeWidth - Spacing.$4x * 2 : double.infinity,
+          ),
           child: ToggleSheet(
             backgroundColor: context.colors.backgroundSurface1,
             safeAreaColor: context.colors.backgroundSurface1,
@@ -44,10 +43,13 @@ class EndTripModal extends HookWidget {
               Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(
-                      Spacing.$2x,
+                    padding: const EdgeInsets.all(Spacing.$2x),
+                    child: Center(
+                      child: Text(
+                        context.l10n.endTrip,
+                        style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+                      ),
                     ),
-                    child: Center(child: Text(context.l10n.endTrip, style: context.textStyles.h3SemiBold)),
                   ),
                   PositionedDirectional(
                     end: Spacing.$4x,

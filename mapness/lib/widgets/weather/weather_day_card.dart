@@ -34,10 +34,7 @@ class WeatherDayCard extends ConsumerWidget {
     final isToday = WeatherDateFormatter.isToday(forecastDay?.date ?? '2022-01-01', locale);
     final dayText = isToday
         ? context.l10n.today
-        : WeatherDateFormatter.getDay(
-            forecastDay?.date ?? '2022-01-01',
-            locale,
-          );
+        : WeatherDateFormatter.getDay(forecastDay?.date ?? '2022-01-01', locale);
     final conditionIconPath = forecastDay?.day?.condition?.iconPath ?? '';
     final conditionText = forecastDay?.day?.condition?.text ?? '';
 
@@ -47,17 +44,9 @@ class WeatherDayCard extends ConsumerWidget {
 
     return CustomExpansionTile(
       collapsedBackgroundColor: context.colors.backgroundSurface4,
-      backgroundColor: NonThemeColor.color9,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          RadiusBorder.l,
-        ),
-      ),
-      collapsedShape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          RadiusBorder.l,
-        ),
-      ),
+      backgroundColor: context.colors.backgroundSurface4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(RadiusBorder.l)),
+      collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(RadiusBorder.l)),
       key: UniqueKey(),
       hasIcon: false,
       onExpansionChanged: onExpansionChanged,
@@ -68,29 +57,17 @@ class WeatherDayCard extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text(
-                dayText,
-                style: style.callout.copyWith(
-                  color: context.colors.foregroundDefault,
-                ),
-                maxLines: 1,
-              ),
+              child: Text(dayText, style: style.callout.copyWith(color: context.colors.foregroundDefault), maxLines: 1),
             ),
             Expanded(
               child: Row(
                 children: [
-                  CustomSvgIconWidget(
-                    conditionIconPath,
-                    iconSize: 16,
-                    iconColor: context.colors.accentOnContainer,
-                  ),
+                  CustomSvgIconWidget(conditionIconPath, iconSize: 16, iconColor: context.colors.accentOnContainer),
                   const SizedBox(width: 8),
                   Expanded(
                     child: AutoSizeText(
                       conditionText,
-                      style: style.callout.copyWith(
-                        color: context.colors.foregroundDefault,
-                      ),
+                      style: style.callout.copyWith(color: context.colors.foregroundDefault),
                       maxLines: 1,
                     ),
                   ),
@@ -104,20 +81,14 @@ class WeatherDayCard extends ConsumerWidget {
                   Text(
                     maxTemp,
                     textDirection: TextDirection.ltr,
-                    style: style.footNoteBold.copyWith(
-                      color: context.colors.foregroundDefault,
-                    ),
+                    style: style.footNoteBold.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                   ),
-                  const SizedBox(
-                    width: 8,
-                  ),
+                  const SizedBox(width: 8),
                   Text(
                     minTemp,
                     textDirection: TextDirection.ltr,
-                    style: style.caption.copyWith(
-                      color: context.colors.foregroundDefault,
-                    ),
+                    style: style.caption.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                   ),
                 ],
@@ -135,68 +106,62 @@ class WeatherDayCard extends ConsumerWidget {
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
               children: [
-                ...?forecastDay?.hour?.where((hour) {
-                  if (isToday == false) {
-                    return true;
-                  }
-                  return DateTime.parse(hour.time ?? '').hour >= nowTime.hour;
-                }).map<Widget>((hour) {
-                  final dateTime = DateTime.parse(hour.time ?? '');
-                  final time = DateFormat('hh:mm').format(dateTime);
+                ...?forecastDay?.hour
+                    ?.where((hour) {
+                      if (isToday == false) {
+                        return true;
+                      }
+                      return DateTime.parse(hour.time ?? '').hour >= nowTime.hour;
+                    })
+                    .map<Widget>((hour) {
+                      final dateTime = DateTime.parse(hour.time ?? '');
+                      final time = DateFormat('hh:mm').format(dateTime);
 
-                  final formatter = NumberFormat()
-                    ..minimumFractionDigits = 0
-                    ..maximumFractionDigits = 1;
-                  final temperature = '${formatter.format(hour.tempC)}º';
+                      final formatter = NumberFormat()
+                        ..minimumFractionDigits = 0
+                        ..maximumFractionDigits = 1;
+                      final temperature = '${formatter.format(hour.tempC)}º';
 
-                  return Padding(
-                    padding: const EdgeInsets.only(left: Spacing.$3x),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Colors.white,
-                          ),
-                          child: FittedBox(
-                            fit: BoxFit.scaleDown,
-                            child: SvgPicture.asset(
-                              hour.condition?.iconPath ?? '',
-                              height: 24,
-                              width: 24,
-                              colorFilter: ColorFilter.mode(
-                                context.colors.accentOnContainer,
-                                BlendMode.srcIn,
+                      return Padding(
+                        padding: const EdgeInsets.only(left: Spacing.$3x),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 48,
+                              height: 48,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: context.colors.backgroundSurface1,
+                              ),
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: SvgPicture.asset(
+                                  hour.condition?.iconPath ?? '',
+                                  height: 24,
+                                  width: 24,
+                                  colorFilter: ColorFilter.mode(context.colors.accentOnContainer, BlendMode.srcIn),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        Spacing.$1x.heightBox,
-                        Center(
-                          child: Text(
-                            time,
-                            style: style.caption.copyWith(
-                              color: NonThemeColor.color10,
+                            Spacing.$1x.heightBox,
+                            Center(
+                              child: Text(time, style: style.caption.copyWith(color: NonThemeColor.color10)),
                             ),
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            temperature,
-                            style: style.footNoteBold.copyWith(
-                              color: context.colors.foregroundDefault,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
+                            Center(
+                              child: Text(
+                                temperature,
+                                style: style.footNoteBold.copyWith(
+                                  color: context.colors.foregroundDefault,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                textDirection: TextDirection.ltr,
+                              ),
                             ),
-                            textDirection: TextDirection.ltr,
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }),
+                      );
+                    }),
               ],
             ),
           ),

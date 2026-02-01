@@ -35,8 +35,8 @@ class _VoicePageContentState extends ConsumerState<VoicePageContent> {
 
     // This text does not require translation.
     final children = <int, Widget>{
-      0: const Text('العربية'),
-      1: const Text('English'),
+      0: Text('العربية', style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundDefault)),
+      1: Text('English', style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundDefault)),
     };
 
     return Padding(
@@ -51,6 +51,7 @@ class _VoicePageContentState extends ConsumerState<VoicePageContent> {
               children: children,
               onValueChanged: onValueChanged,
               groupValue: _currentSegment,
+              thumbColor: context.colors.backgroundSurface2,
             ),
           ),
           ContentWrapper(
@@ -58,13 +59,7 @@ class _VoicePageContentState extends ConsumerState<VoicePageContent> {
             children: (_currentSegment == 0 ? voicesArabic : voicesEnglish)
                 .map<Widget>((e) => VoiceRowWidget(package: e))
                 .insertBetween(
-                  Divider(
-                    height: 0.5,
-                    color: colors.borderSoft,
-                    thickness: 1,
-                    indent: Spacing.$4x,
-                    endIndent: 0,
-                  ),
+                  Divider(height: 0.5, color: colors.borderSoft, thickness: 1, indent: Spacing.$4x, endIndent: 0),
                 )
                 .toList(),
           ),

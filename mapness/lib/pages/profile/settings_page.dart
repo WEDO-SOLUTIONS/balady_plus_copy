@@ -40,7 +40,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
-          color: Colors.white,
+          color: context.colors.backgroundSurface4,
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
@@ -80,7 +80,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       builder: (context, ref, child) {
                         final language = ref.watch(appLanguageProvider);
                         return ContentWrapper(
-                          color: context.colors.backgroundSurface4,
+                          color: context.colors.backgroundSurface1,
                           children: [
                             ContentRowExpandable(
                               options: ContentRowOptions(
@@ -97,7 +97,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     Spacing.$2x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () =>
@@ -128,7 +128,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     Spacing.$2x.heightBox,
                     Spacing.$2x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () =>
@@ -153,7 +153,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     Spacing.$2x.heightBox,
                     Spacing.$2x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () =>
@@ -199,7 +199,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           width: 22,
         )
       : SvgPicture.asset(
-          color: context.colors.accentDefault,
+          colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
           Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,

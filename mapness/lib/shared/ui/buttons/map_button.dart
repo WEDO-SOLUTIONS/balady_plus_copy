@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
 class MapButton extends StatefulWidget {
@@ -13,8 +14,8 @@ class MapButton extends StatefulWidget {
     bool? disabled,
     BorderRadius? borderRadius,
     super.key,
-  })  : disabled = disabled ?? false,
-        borderRadius = borderRadius ?? BorderRadius.circular(10);
+  }) : disabled = disabled ?? false,
+       borderRadius = borderRadius ?? BorderRadius.circular(10);
   final Widget child;
   final bool disabled;
   final BorderRadius borderRadius;
@@ -29,43 +30,29 @@ class MapButton extends StatefulWidget {
 class _MapButtonState extends State<MapButton> {
   @override
   Widget build(BuildContext context) => Container(
-        constraints: const BoxConstraints(minWidth: MapButton.defaultSize),
-        height: widget.height,
-        decoration: BoxDecoration(
-          borderRadius: widget.borderRadius,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.07),
-              blurRadius: 1,
-            ),
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Material(
-          borderRadius: widget.borderRadius,
-          color: Colors.white,
-          child: InkWell(
-            customBorder: RoundedRectangleBorder(
-              borderRadius: widget.borderRadius,
-            ),
-            onTap: widget.onTap,
-            onTapUp: (details) {
-              widget.onTapUp?.call(details);
-            },
-            onTapDown: (details) {
-              widget.onTapDown?.call(details);
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                widget.child,
-              ],
-            ),
-          ),
-        ),
-      );
+    constraints: const BoxConstraints(minWidth: MapButton.defaultSize),
+    height: widget.height,
+    decoration: BoxDecoration(
+      borderRadius: widget.borderRadius,
+      boxShadow: [
+        BoxShadow(color: Colors.black.withOpacity(0.07), blurRadius: 1),
+        BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
+      ],
+    ),
+    child: Material(
+      borderRadius: widget.borderRadius,
+      color: context.colors.onMapSurfaceOnMap,
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(borderRadius: widget.borderRadius),
+        onTap: widget.onTap,
+        onTapUp: (details) {
+          widget.onTapUp?.call(details);
+        },
+        onTapDown: (details) {
+          widget.onTapDown?.call(details);
+        },
+        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [widget.child]),
+      ),
+    ),
+  );
 }

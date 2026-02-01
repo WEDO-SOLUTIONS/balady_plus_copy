@@ -5,28 +5,21 @@ import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.d
 
 class PoiContentDataIncorrectCard extends StatelessWidget {
   final PoiContentDataIncorrectModel data;
-  const PoiContentDataIncorrectCard({
-    required this.data,
-    super.key,
-  });
+  const PoiContentDataIncorrectCard({required this.data, super.key});
 
   @override
   Widget build(BuildContext context) => ContentWrapper(
-        children: [
-          ContentRow(
-            onTap: data.onFeedbackTap,
-            leading: AppIcons(
-              iconData: GeneralIcons.warning,
-              color: context.colors.accentDefault,
-            ),
-            text: ContentRowTextOptions(
-              title: data.title,
-            ),
-            trailing: ContentRowTextTrailingOptions(
-              icon: SystemIcons.arrowCornerRightSmall,
-              iconColor: context.colors.foregroundMuted,
-            ),
-          ),
-        ],
-      );
+    color: context.colors.backgroundSurface1,
+    children: [
+      ContentRow(
+        onTap: data.onFeedbackTap,
+        leading: AppIcons(iconData: GeneralIcons.warning, color: context.colors.accentDefault),
+        text: ContentRowTextOptions(title: data.title),
+        trailing: ContentRowTextTrailingOptions(
+          icon: SystemIcons.arrowCornerRightSmall,
+          iconColor: context.colors.foregroundMuted,
+        ),
+      ),
+    ],
+  );
 }

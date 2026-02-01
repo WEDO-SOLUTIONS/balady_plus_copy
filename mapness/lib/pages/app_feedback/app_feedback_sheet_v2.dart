@@ -22,10 +22,7 @@ import 'package:sheetify/sheetify.dart';
 class AppFeedbackSheetV2 extends ConsumerStatefulWidget {
   final int? rating;
 
-  const AppFeedbackSheetV2({
-    required this.rating,
-    super.key,
-  });
+  const AppFeedbackSheetV2({required this.rating, super.key});
 
   @override
   ConsumerState<AppFeedbackSheetV2> createState() => _AppFeedbackSheetV2State();
@@ -56,115 +53,98 @@ class _AppFeedbackSheetV2State extends ConsumerState<AppFeedbackSheetV2> {
   @override
   Widget build(BuildContext context) {
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
-    ref.listen(
-      sendFeedbackProvider,
-      (previous, next) {
-        scrollController.updateHeightModel(
-          ToggleSheetHeightModel.fraction(.5),
-        );
-      },
-    );
+    ref.listen(sendFeedbackProvider, (previous, next) {
+      scrollController.updateHeightModel(ToggleSheetHeightModel.fraction(.5));
+    });
 
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface4,
       safeAreaColor: context.colors.backgroundSurface4,
-      dragger: SheetDragger(
-        backgroundColor: context.colors.backgroundSurface4,
-      ),
+      dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
       header: BaladyTopBar(
         useSafeArea: false,
         trailing: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: CustomCloseButton(
-            onClose: () => context.router.pop(),
-          ),
+          child: CustomCloseButton(onClose: () => context.router.pop()),
         ),
       ),
       content: [
         switch (sendFeedbackState) {
           AppFeedbackState.initial => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              child: Column(
-                children: [
-                  const SizedBox(height: Spacing.$2x),
-                  ValueListenableBuilder(
-                    valueListenable: rating,
-                    builder: (context, value, _) => RatingBar(
-                      rating: value,
-                      onRatingChanged: (value) {
-                        setState(() {
-                          rating.value = value;
-                        });
-                      },
-                    ),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: Column(
+              children: [
+                const SizedBox(height: Spacing.$2x),
+                ValueListenableBuilder(
+                  valueListenable: rating,
+                  builder: (context, value, _) => RatingBar(
+                    rating: value,
+                    onRatingChanged: (value) {
+                      setState(() {
+                        rating.value = value;
+                      });
+                    },
                   ),
-                  const SizedBox(height: Spacing.$3x),
-                  Text(
-                    context.l10n.shareYourFeedback,
-                    style: context.textStyles.h3SemiBold,
+                ),
+                const SizedBox(height: Spacing.$3x),
+                Text(
+                  context.l10n.shareYourFeedback,
+                  style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+                ),
+                const SizedBox(height: Spacing.$2x),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: Text(
+                    context.l10n.yourOpinionHelpUsImproveUserExperience,
+                    style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: Spacing.$2x),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    child: Text(
-                      context.l10n.yourOpinionHelpUsImproveUserExperience,
-                      style: context.textStyles.bodySmallRegular.copyWith(
-                        color: context.colors.foregroundSoft,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+                ),
+                const SizedBox(height: Spacing.$8x),
+                ValueListenableBuilder(
+                  valueListenable: rating,
+                  builder: (context, value, _) => _FeedbackInput(
+                    rating: value,
+                    onTagsChanged: (tags) {
+                      selectedTags = tags;
+                    },
+                    onTextChanged: (text) {
+                      feedbackText = text;
+                    },
                   ),
-                  const SizedBox(height: Spacing.$8x),
-                  ValueListenableBuilder(
-                    valueListenable: rating,
-                    builder: (context, value, _) => _FeedbackInput(
-                      rating: value,
-                      onTagsChanged: (tags) {
-                        selectedTags = tags;
-                      },
-                      onTextChanged: (text) {
-                        feedbackText = text;
-                      },
-                    ),
+                ),
+                const SizedBox(height: Spacing.$8x),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    size: ButtonSize.large,
+                    primaryLabel: context.l10n.appFeedbackSubmitButton,
+                    onTap: () {
+                      ref
+                          .read(collectFeedbackProvider.notifier)
+                          .collectFeedback(
+                            stars: rating.value,
+                            tags: selectedTags.map((tag) => AppFeedbackTagMapperV2.getSourceTagText(tag)).toList(),
+                            text: feedbackText,
+                          );
+                    },
                   ),
-                  const SizedBox(height: Spacing.$8x),
-                  SizedBox(
-                    width: double.infinity,
-                    child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.accentSecondary,
-                      size: ButtonSize.large,
-                      primaryLabel: context.l10n.appFeedbackSubmitButton,
-                      onTap: () {
-                        ref.read(collectFeedbackProvider.notifier).collectFeedback(
-                              stars: rating.value,
-                              tags: selectedTags
-                                  .map(
-                                    (tag) => AppFeedbackTagMapperV2.getSourceTagText(
-                                      tag,
-                                    ),
-                                  )
-                                  .toList(),
-                              text: feedbackText,
-                            );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: Spacing.$4x),
-                ],
-              ),
+                ),
+                const SizedBox(height: Spacing.$4x),
+              ],
             ),
+          ),
           AppFeedbackState.loading => const AppFeedbackLoading(),
           AppFeedbackState.success => const Padding(
-              padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              child: AppFeedbackSuccess(),
-            ),
+            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: AppFeedbackSuccess(),
+          ),
           AppFeedbackState.error => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              child: AppFeedbackError(
-                onRetry: ref.read(sendFeedbackProvider.notifier).retry,
-              ),
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: AppFeedbackError(onRetry: ref.read(sendFeedbackProvider.notifier).retry),
+          ),
         },
       ],
     );
@@ -176,11 +156,7 @@ class _FeedbackInput extends ConsumerStatefulWidget {
   final Function(Set<TagV2>) onTagsChanged;
   final Function(String) onTextChanged;
 
-  const _FeedbackInput({
-    required this.rating,
-    required this.onTagsChanged,
-    required this.onTextChanged,
-  });
+  const _FeedbackInput({required this.rating, required this.onTagsChanged, required this.onTextChanged});
 
   @override
   ConsumerState<_FeedbackInput> createState() => _FeedbackInputState();
@@ -203,6 +179,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
     final tags = AppFeedbackTagMapperV2.getTags(widget.rating);
 
     return ContentWrapper(
+      color: context.colors.backgroundSurface1,
       children: [
         Padding(
           padding: const EdgeInsets.all(Spacing.$4x),
@@ -211,7 +188,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
             children: [
               Text(
                 widget.rating > 3 ? context.l10n.appFeedbackGoodRatingV2 : context.l10n.appFeedbackBadRatingV2,
-                style: context.textStyles.bodyLargeSemiBold,
+                style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
               const SizedBox(height: Spacing.$5x),
               for (final (index, tagGroup) in tags.indexed)
@@ -251,10 +228,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                             },
                             type: ChipsType.neutral,
                             options: ChipsLabelOptions(
-                              labelFirst: AppFeedbackTagMapperV2.getLocalizedText(
-                                context.l10n,
-                                tag,
-                              ),
+                              labelFirst: AppFeedbackTagMapperV2.getLocalizedText(context.l10n, tag),
                             ),
                           ),
                       ],
@@ -268,10 +242,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                 child: GestureDetector(
                   onTap: () async {
                     final result = await context.router.push(
-                      AppFeedbackInputSheet(
-                        initialText: feedbackTextController.text,
-                        maxCharsAllowed: 500,
-                      ),
+                      AppFeedbackInputSheet(initialText: feedbackTextController.text, maxCharsAllowed: 500),
                     );
 
                     if (result is String) {
@@ -284,10 +255,7 @@ class _FeedbackInputState extends ConsumerState<_FeedbackInput> {
                     child: BaladyTextInput(
                       inputStyle: BaladyInputStyle.multiline,
                       controller: feedbackTextController,
-                      config: BaladyInputConfig(
-                        maxLines: 4,
-                        hintText: context.l10n.appFeedbackHintText,
-                      ),
+                      config: BaladyInputConfig(maxLines: 4, hintText: context.l10n.appFeedbackHintText),
                     ),
                   ),
                 ),

@@ -14,9 +14,9 @@ class SortingSelectionDialogPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SelectionDialogViewWidget(
-        backgroundColor: context.colorsV3.backgroundSurface4,
-        selectionDialogView: selectionDialog,
-        title: context.l10n.saudiPassSortingTitle,
-        layoutBuilder: ContentRowLayout.new,
-      );
+    backgroundColor: context.colors.backgroundSurface4,
+    selectionDialogView: selectionDialog,
+    title: context.l10n.saudiPassSortingTitle,
+    layoutBuilder: ContentRowLayout.new,
+  );
 }

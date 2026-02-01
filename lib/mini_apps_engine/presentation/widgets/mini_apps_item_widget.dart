@@ -6,9 +6,10 @@ import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/widgets/network_icon_based_type_widget.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../app/core/utils/constants/app_colors.dart';
 
@@ -16,11 +17,7 @@ class MiniAppsItemWidget extends StatelessWidget {
   final MiniAppModel miniApp;
   final bool isEvent;
 
-  const MiniAppsItemWidget({
-    super.key,
-    required this.miniApp,
-    required this.isEvent,
-  });
+  const MiniAppsItemWidget({super.key, required this.miniApp, required this.isEvent});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +27,9 @@ class MiniAppsItemWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             onTap: () => _handleTap(context),
             child: Card(
+              color: context.colors.backgroundSurface1,
               elevation: 0.5,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
                   padding:
                       const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
@@ -56,7 +53,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             fontSize: 17,
                             fontFamily: 'packages/balady_uikit/Frutiger',
-                            color: const Color(0xFF003449)),
+                          color: context.colors.foregroundDefault,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -87,16 +84,12 @@ class MiniAppsItemWidget extends StatelessWidget {
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
-              NavigationService.pushNamed(
-                routeName: RouteName.miniAppsMainScreen,
-                args: miniApp,
-              );
+              NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
             }
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true &&
-        miniApp.latestVersion?.deepLinkModel == null) {
+    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
@@ -115,10 +108,7 @@ class MiniAppsItemWidget extends StatelessWidget {
             CommonFunctions.showError('launch_failed'.tr());
           }
         } else {
-          NavigationService.pushNamed(
-            routeName: RouteName.miniAppsMainScreen,
-            args: miniApp,
-          );
+          NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
         }
       }
     }

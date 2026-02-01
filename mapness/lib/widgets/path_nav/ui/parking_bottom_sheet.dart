@@ -19,14 +19,12 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final parkingSheetProvider = ref.read(parkingAutoenabledSheetProvider.notifier);
     final bottomSheetController = useToggleSheetController(
-        onClose: (controller) => parkingSheetProvider.showParkingAutoEnableSheet(value: false));
-
-    ref.listen(
-      parkingAutoenabledSheetProvider,
-      (_, value) {
-        value ? bottomSheetController.open() : bottomSheetController.close();
-      },
+      onClose: (controller) => parkingSheetProvider.showParkingAutoEnableSheet(value: false),
     );
+
+    ref.listen(parkingAutoenabledSheetProvider, (_, value) {
+      value ? bottomSheetController.open() : bottomSheetController.close();
+    });
 
     return Directionality(
       textDirection: ref.watch(uiDirectionProvider),
@@ -44,7 +42,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
               Expanded(
                 child: Text(
                   context.l10n.automaticallyEnableParkinglayer,
-                  style: context.textStyles.h3SemiBold,
+                  style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
                 ),
               ),
               Spacing.$3x.widthBox,
@@ -99,7 +97,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                     },
                   ),
                 ),
-                Spacing.$3x.heightBox
+                Spacing.$3x.heightBox,
               ],
             ),
           ),

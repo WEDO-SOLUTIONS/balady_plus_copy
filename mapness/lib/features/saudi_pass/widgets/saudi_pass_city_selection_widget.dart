@@ -8,22 +8,18 @@ class SaudiPassCitySelection extends StatelessWidget {
   final String? title;
   final VoidCallback onTap;
 
-  const SaudiPassCitySelection({
-    required this.title,
-    required this.onTap,
-    Key? key,
-  }) : super(key: key);
+  const SaudiPassCitySelection({required this.title, required this.onTap, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colorsV3;
+    final colors = context.colors;
     return Padding(
       padding: const EdgeInsets.only(top: Spacing.$3x),
       child: Container(
         padding: const EdgeInsets.all(Spacing.$4x),
         width: double.infinity,
         decoration: BoxDecoration(
-          color: context.colorsV3.backgroundSurface1,
+          color: context.colors.backgroundSurface1,
           borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
         ),
         child: Column(
@@ -52,13 +48,13 @@ class SaudiPassCitySelection extends StatelessWidget {
                           title != null ? title! : context.l10n.saudiPassCitySelectionPageSearchHint,
                           style: context.textStyleV3.bodySmallMedium.copyWith(color: colors.foregroundDefault),
                         ),
-                        const Icon(SystemIcons.arrowCornerDownSmall),
+                        Icon(SystemIcons.arrowCornerDownSmall, color: colors.foregroundDefault),
                       ],
                     ),
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -39,12 +39,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
-          enableAdvancedGestureRecognition: true,
-          enableCrashHandling: true,
-          enableMultiSessionRecord: true,
-          enableNetworkLogging: true,
-          userAppKey: RemoteConfig.uxCamKey,
-          enableAutomaticScreenNameTagging: false);
+        enableAdvancedGestureRecognition: true,
+        enableCrashHandling: true,
+        enableMultiSessionRecord: true,
+        enableNetworkLogging: true,
+        userAppKey: RemoteConfig.uxCamKey,
+        enableAutomaticScreenNameTagging: false,
+      );
       FlutterUxcam.optIntoSchematicRecordings();
       FlutterUxcam.startWithConfiguration(config);
     }
@@ -67,20 +68,14 @@ class App extends StatelessWidget {
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
-        child: BaladyAuthorizationBloc(
-          child: AppWidget(
-            key: materialAppKey,
-          ),
-        ),
+        child: BaladyAuthorizationBloc(child: AppWidget(key: materialAppKey)),
       ),
     );
   }
 }
 
 class AppWidget extends StatefulWidget {
-  const AppWidget({
-    super.key,
-  });
+  const AppWidget({super.key});
 
   @override
   State<AppWidget> createState() => AppWidgetState();

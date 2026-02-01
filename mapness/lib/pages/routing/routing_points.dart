@@ -35,15 +35,11 @@ class RoutingPointsPage extends StatelessWidget {
   const RoutingPointsPage({super.key});
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => const RoutingPointsSheet(),
-      );
+  Widget build(BuildContext context) => LayoutBuilder(builder: (context, constraints) => const RoutingPointsSheet());
 }
 
 class RoutingPointsSheet extends ConsumerStatefulWidget {
-  const RoutingPointsSheet({
-    super.key,
-  });
+  const RoutingPointsSheet({super.key});
 
   @override
   ConsumerState<RoutingPointsSheet> createState() => _RoutingPointsSheetState();
@@ -52,10 +48,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   static final _bottomSheetAspectRatios = {0.4, 0.931};
 
-  List<RoutePoint> points = [
-    RoutePointMyLocation(),
-    RoutePointDirectoryObject(null),
-  ];
+  List<RoutePoint> points = [RoutePointMyLocation(), RoutePointDirectoryObject(null)];
 
   /// Subscribes to object tap events on the map
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
@@ -65,7 +58,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
 
   final outsideOpacityDelegate = StatefulSheetDelegateFunction<double, ThreeStateSheet>(
-      function: (c) => c.fraction > 0.4 ? 1 - (c.fraction - 0.4) * 10 : 1.0);
+    function: (c) => c.fraction > 0.4 ? 1 - (c.fraction - 0.4) * 10 : 1.0,
+  );
 
   @override
   void initState() {
@@ -73,11 +67,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       behavior: MultiSnappingBehavior(
         models: [
           FractionSnappingModel(_bottomSheetAspectRatios),
-          ComponentsSnappingModel(
-            componentsDescriptions: [
-              const SnapComponentSize(component: Components.header),
-            ],
-          ),
+          ComponentsSnappingModel(componentsDescriptions: [const SnapComponentSize(component: Components.header)]),
         ],
       ),
       stateMapper: const LandingStateMapper(),
@@ -112,22 +102,19 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
-
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
     final aBRouteModels = points.mapIndexed((i, point) {
-      final title = point.title(context.l10n) ??
+      final title =
+          point.title(context.l10n) ??
           switch (i) {
             0 => context.l10n.from,
             1 => context.l10n.to,
             _ => context.l10n.to,
           };
-      return ABRouteModel(
-        title: title,
-        isMyLocation: point is RoutePointMyLocation,
-      );
+      return ABRouteModel(title: title, isMyLocation: point is RoutePointMyLocation);
     });
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -148,21 +135,12 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$4x),
-            child: ABRoute(
-              items: aBRouteModels.toList(),
-              onTap: (i) => _onTap(i, context, ref),
-              onReorder: _onReorder,
-            ),
+            child: ABRoute(items: aBRouteModels.toList(), onTap: (i) => _onTap(i, context, ref), onReorder: _onReorder),
           ),
         ),
         content: [
           Column(
-            children: [
-              RoutingHistory(
-                updatePoint: _updatePoint,
-                searchByQuery: _searchQuery,
-              ),
-            ],
+            children: [RoutingHistory(updatePoint: _updatePoint, searchByQuery: _searchQuery)],
           ),
         ],
         keepContentBehindFooter: true,
@@ -178,7 +156,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                    colors: [
+                      context.colors.backgroundSurface1.withOpacity(0),
+                      context.colors.backgroundSurface1.withOpacity(0.8),
+                    ],
                   ),
                 ),
               ),
@@ -191,18 +172,18 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   Future<void> _onTap(int index, BuildContext context, WidgetRef ref) async {
-    Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
-        group: MetricsConstants.routesTag,
-        action: MetricAction.tap.toString(),
-        props: {
-          'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation,
-        });
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.changeLocation,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+      props: {'isMyLocation': index == 0 && points[index] is! RoutePointMyLocation},
+    );
 
     ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
 
-    await ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
-          '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-        );
+    await ref
+        .read(urbiAnalyticsProvider.notifier)
+        .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}');
     final value = await context.router.push(
       RoutingSearchSheetRoute(
         placeholder: index == 0 ? context.l10n.from : context.l10n.to,
@@ -245,8 +226,9 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       props: {'id': point.entity?.id, 'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'},
     );
 
-    final index =
-        points.indexWhere((element) => element is RoutePointFavouriteItem || element is RoutePointDirectoryObject);
+    final index = points.indexWhere(
+      (element) => element is RoutePointFavouriteItem || element is RoutePointDirectoryObject,
+    );
     if (index.isNegative) {
       return;
     }
@@ -276,48 +258,49 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       final finish = points.last;
 
       context.router.push(
-        RoutingRoutesRoute(points: [
-          RouteParamsPointWithLabel(
-            value: start.latitude != null && start.longitude != null
-                ? RouteParamsPoint(
-                    latitude: start.latitude!,
-                    longitude: start.longitude!,
-                    objectId: start.objectId,
-                    entranceId: start.entranceId,
-                    levelId: start.levelId,
-                  )
-                : null,
-            label: start.title(context.l10n) ?? '',
-          ),
-          RouteParamsPointWithLabel(
-            value: finish.latitude != null && finish.longitude != null
-                ? RouteParamsPoint(
-                    latitude: finish.latitude!,
-                    longitude: finish.longitude!,
-                    objectId: finish.objectId,
-                    entranceId: finish.entranceId,
-                    levelId: finish.levelId,
-                  )
-                : null,
-            label: finish.title(context.l10n) ?? '',
-          ),
-        ]),
+        RoutingRoutesRoute(
+          points: [
+            RouteParamsPointWithLabel(
+              value: start.latitude != null && start.longitude != null
+                  ? RouteParamsPoint(
+                      latitude: start.latitude!,
+                      longitude: start.longitude!,
+                      objectId: start.objectId,
+                      entranceId: start.entranceId,
+                      levelId: start.levelId,
+                    )
+                  : null,
+              label: start.title(context.l10n) ?? '',
+            ),
+            RouteParamsPointWithLabel(
+              value: finish.latitude != null && finish.longitude != null
+                  ? RouteParamsPoint(
+                      latitude: finish.latitude!,
+                      longitude: finish.longitude!,
+                      objectId: finish.objectId,
+                      entranceId: finish.entranceId,
+                      levelId: finish.levelId,
+                    )
+                  : null,
+              label: finish.title(context.l10n) ?? '',
+            ),
+          ],
+        ),
       );
 
-      points = [
-        RoutePointMyLocation(),
-        RoutePointDirectoryObject(null),
-      ];
+      points = [RoutePointMyLocation(), RoutePointDirectoryObject(null)];
     }
   }
 
   Future<void> _searchQuery(String query) async {
     final index = points[0].isNotEmpty ? 1 : 0;
-    final value = await context.router.push(RoutingSearchSheetRoute(
-      placeholder: index == 0 ? context.l10n.from : context.l10n.to,
-      showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
-      initialQuery: query,
-    ));
+    final value = await context.router.push(
+      RoutingSearchSheetRoute(
+        placeholder: index == 0 ? context.l10n.from : context.l10n.to,
+        showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
+        initialQuery: query,
+      ),
+    );
 
     if (value != null && value is RoutePoint) {
       points[index] = value;
@@ -326,9 +309,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   void _setupTapListener() {
-    _objectTapStreamSubscription = ref.read(mapTapHandlerProvider.notifier).listen(
-          _tapListener,
-        );
+    _objectTapStreamSubscription = ref.read(mapTapHandlerProvider.notifier).listen(_tapListener);
   }
 
   void _tapListener(event) {

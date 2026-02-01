@@ -12,10 +12,7 @@ import 'package:mapness/widgets/lifestyle_layers/parking_lot_row.dart';
 class ParkingDetailsContent extends ConsumerWidget {
   final VoidCallback onPanelClose;
 
-  const ParkingDetailsContent({
-    required this.onPanelClose,
-    super.key,
-  });
+  const ParkingDetailsContent({required this.onPanelClose, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,7 +26,7 @@ class ParkingDetailsContent extends ConsumerWidget {
             children: [
               Text(
                 context.l10n.parkingLots,
-                style: context.textStyles.h4SemiBold,
+                style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
               const Spacer(),
               AppButton.close(
@@ -41,9 +38,7 @@ class ParkingDetailsContent extends ConsumerWidget {
                     action: MetricAction.tap.toString(),
                   );
 
-                  layersControlsProviderNotifier.update(
-                    layersWidgetType: LayersPanelType.layers,
-                  );
+                  layersControlsProviderNotifier.update(layersWidgetType: LayersPanelType.layers);
                 },
                 padding: EdgeInsets.zero,
               ),

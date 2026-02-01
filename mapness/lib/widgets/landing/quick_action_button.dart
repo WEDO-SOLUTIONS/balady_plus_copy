@@ -9,48 +9,39 @@ class QuickActionButton extends StatelessWidget {
 
   static const buttonSize = 73.0;
 
-  const QuickActionButton({
-    required this.text,
-    required this.icon,
-    required this.onTap,
-    super.key,
-  });
+  const QuickActionButton({required this.text, required this.icon, required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) => Column(
-        children: [
-          InkWell(
-            onTap: onTap,
-            child: SizedBox(
-              height: buttonSize,
-              width: buttonSize,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  color: context.colors.backgroundSurface1,
-                  boxShadow: Shadows.s,
-                ),
-                child: Center(
-                  child: Icon(
-                    icon,
-                    size: Spacing.$6x + Spacing.$1x,
-                    color: context.colors.accentDefault,
-                  ),
-                ),
-              ),
+    children: [
+      InkWell(
+        onTap: onTap,
+        child: SizedBox(
+          height: buttonSize,
+          width: buttonSize,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              color: context.colors.backgroundSurface1,
+              boxShadow: Shadows.s,
+            ),
+            child: Center(
+              child: Icon(icon, size: Spacing.$6x + Spacing.$1x, color: context.colors.accentDefault),
             ),
           ),
-          SizedBox(
-            width: buttonSize,
-            child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
-              child: Text(
-                text,
-                style: context.textStyles.captionSmallMedium,
-                textAlign: TextAlign.center,
-              ),
-            ),
+        ),
+      ),
+      SizedBox(
+        width: buttonSize,
+        child: Padding(
+          padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
+          child: Text(
+            text,
+            style: context.textStyles.captionSmallMedium.copyWith(color: context.colors.foregroundDefault),
+            textAlign: TextAlign.center,
           ),
-        ],
-      );
+        ),
+      ),
+    ],
+  );
 }

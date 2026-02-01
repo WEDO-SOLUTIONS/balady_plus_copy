@@ -108,7 +108,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
               builder: (_) => BlocProvider<NewMiniAppLogicCubit>.value(
                 value: sl<NewMiniAppLogicCubit>()..loadMiniApps(),
                 child: Scaffold(
-                  body: Stack(
+        backgroundColor: context.colors.backgroundSurface4,
+        body: Stack(
                     children: [
                       const Positioned(top: 0, child: OverlayBlurCircle()),
                       BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(

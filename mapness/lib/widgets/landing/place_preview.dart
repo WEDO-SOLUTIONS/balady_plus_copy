@@ -30,14 +30,14 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ref.watch(interestingPlacesProvider).when(
+    return ref
+        .watch(interestingPlacesProvider)
+        .when(
           data: (items) {
             final places = items
                 .where(
                   (e) =>
-                      e.tags.contains(
-                        proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
-                      ) &&
+                      e.tags.contains(proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL) &&
                       e.preview.image.url.isNotEmpty,
                 )
                 .toList();
@@ -57,19 +57,14 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
                   group: MetricsConstants.exploreTag,
                   props: {
                     'id': objectId,
-                    'title': item.titleOrFallback(
-                      locale: AppLocalizationsEn(),
-                    ),
+                    'title': item.titleOrFallback(locale: AppLocalizationsEn()),
                   },
                 );
 
                 context.router.replaceOrPush(
                   route: PoiCardWidgetRoute(
-                    objectId: DgisObjectIdMessage(
-                      objectId: objectId,
-                      entranceId: 0,
-                    ),
-                    cameraConfig: const PoiCameraConfig(zoom: 17),
+                    objectId: DgisObjectIdMessage(objectId: objectId, entranceId: 0),
+                    cameraConfig: const PoiCameraConfig(zoom: 20),
                   ),
                   toCompareRoutes: [PoiCardWidgetRoute.page],
                 );
@@ -99,53 +94,46 @@ class _PlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        child: Stack(
-          children: [
-            CachedNetworkImage(
-              height: kPlaceCardSize,
-              width: double.infinity,
-              imageUrl: item?.preview.image.url ?? '',
-              fit: BoxFit.cover,
-              imageBuilder: (context, imageProvider) => Stack(
-                children: [
-                  ShaderMask(
-                    blendMode: BlendMode.srcATop,
-                    shaderCallback: (bounds) => LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [const Color(0x00000000), Colors.black.withOpacity(0.6)],
-                    ).createShader(bounds),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints.expand(),
-                      child: Image(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: context.isLTR ? Alignment.bottomLeft : Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.$6x),
-                      child: Text(
-                        item?.titleOrFallback(locale: context.l10n) ?? '',
-                        style: context.textStyles.h2SemiBold.copyWith(
-                          color: context.colors.staticWhite,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+    child: Stack(
+      children: [
+        CachedNetworkImage(
+          height: kPlaceCardSize,
+          width: double.infinity,
+          imageUrl: item?.preview.image.url ?? '',
+          fit: BoxFit.cover,
+          imageBuilder: (context, imageProvider) => Stack(
+            children: [
+              ShaderMask(
+                blendMode: BlendMode.srcATop,
+                shaderCallback: (bounds) => LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [const Color(0x00000000), Colors.black.withOpacity(0.6)],
+                ).createShader(bounds),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints.expand(),
+                  child: Image(image: imageProvider, fit: BoxFit.cover),
+                ),
               ),
-              progressIndicatorBuilder: (context, url, progress) => _ImagePlaceholder(
-                progress: progress.progress,
+              Align(
+                alignment: context.isLTR ? Alignment.bottomLeft : Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(Spacing.$6x),
+                  child: Text(
+                    item?.titleOrFallback(locale: context.l10n) ?? '',
+                    style: context.textStyles.h2SemiBold.copyWith(color: context.colors.staticWhite),
+                  ),
+                ),
               ),
-              errorWidget: (context, error, _) => const _ImagePlaceholder(),
-            ),
-          ],
+            ],
+          ),
+          progressIndicatorBuilder: (context, url, progress) => _ImagePlaceholder(progress: progress.progress),
+          errorWidget: (context, error, _) => const _ImagePlaceholder(),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 class _ImagePlaceholder extends StatelessWidget {

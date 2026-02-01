@@ -41,10 +41,7 @@ class ShareEtaBtn extends HookConsumerWidget {
       }
     });
 
-    final bool isEtaStreamLoading = streamService.maybeWhen(
-      loading: () => true,
-      orElse: () => false,
-    );
+    final bool isEtaStreamLoading = streamService.maybeWhen(loading: () => true, orElse: () => false);
 
     return ContentRow(
       onTap: () async {
@@ -60,23 +57,19 @@ class ShareEtaBtn extends HookConsumerWidget {
         }
       },
       options: ContentRowOptions(
-        wrapperColor: context.colors.staticWhite,
+        wrapperColor: context.colors.backgroundSurface1,
         wrapperEnabled: true,
         titleBuilder: (context) => Row(
           children: [
             Text(
               isPulseactive || isEtaStreamLoading ? context.l10n.routeIsSharing : context.l10n.shareTripProgress,
-              style: context.textStyles.bodyLargeRegular.copyWith(
-                color: context.colors.foregroundDefault,
-              ),
+              style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
             ),
             if (isPulseactive)
               Padding(
                 padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
-                child: PulseIndicator(
-                  color: connectionCode != null ? context.colors.errorDefault : null,
-                ),
-              )
+                child: PulseIndicator(color: connectionCode != null ? context.colors.errorDefault : null),
+              ),
           ],
         ),
         customActionWidget: Padding(
@@ -85,8 +78,8 @@ class ShareEtaBtn extends HookConsumerWidget {
             type: isEtaStreamLoading
                 ? ShareEtaBtnActionType.loading
                 : isPulseactive
-                    ? ShareEtaBtnActionType.active
-                    : ShareEtaBtnActionType.stoped,
+                ? ShareEtaBtnActionType.active
+                : ShareEtaBtnActionType.stoped,
           ),
         ),
       ),
