@@ -5,25 +5,34 @@ name: Build iOS
 permissions: write-all
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || inputs.branch || github.ref_name }}
   cancel-in-progress: true
 
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - "urbi"
-      - "urbi-service/release-*"
-    paths-ignore:
-      - "**.md"
-      - "doc/**"
-      - ".git/"
-      - ".vscode/"
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Git branch to build"
+        required: true
+        default: "urbi"
+        type: string
+  # Automatic trigger on PR close (commented out - uncomment to enable automatic builds on PR merge)
+  # pull_request:
+  #   types: [closed]
+  #   branches:
+  #     - "urbi"
+  #     - "urbi-service/release-*"
+  #   paths-ignore:
+  #     - "**.md"
+  #     - "doc/**"
+  #     - ".git/"
+  #     - ".vscode/"
 
 jobs:
   build:
     name: Build iOS
-    if: github.event.pull_request.draft == false
+    # Condition for PR trigger (commented out - uncomment to enable automatic builds on PR merge)
+    # if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.event.pull_request.draft == false)
     runs-on: [self-hosted, macOS, ARM64]
     timeout-minutes: 60
     env:
@@ -31,15 +40,23 @@ jobs:
     steps:
       - name: ⬇️ Checkout repository
         uses: actions/checkout@v4
+        with:
+          # For manual dispatch: use input branch. For PR: use merge commit
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.branch || github.event.pull_request.merge_commit_sha || github.ref }}
 
       # GITHUB_REF_SLUG
       - name: Inject git variables
         run: |
           echo "CI_GIT_COMMIT=$(git --no-pager show -s --format='%s')" >> ${GITHUB_ENV}
-          export CI_GIT_BRANCH=${GITHUB_REF_NAME}
-          export CI_IS_PR=""
-          if [[ ${GITHUB_EVENT_NAME} == "pull_request" ]]; then
-            export CI_GIT_BRANCH=${GITHUB_HEAD_REF}
+
+          # Determine branch and PR prefix based on event type
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Manual dispatch: use input branch
+            export CI_GIT_BRANCH="${{ inputs.branch }}"
+            export CI_IS_PR=""
+          else
+            # PR event (commented out trigger - uncomment PR trigger above to use this)
+            export CI_GIT_BRANCH="${{ github.event.pull_request.head.ref }}"
             export CI_IS_PR="pr-"
           fi
           source .release_version
@@ -173,12 +190,15 @@ jobs:
           GITHUB_SERVER_URL: ${{ github.server_url }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_ACTOR: ${{ github.actor }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
 
           CI_GIT_BRANCH: ${{ env.CI_GIT_BRANCH }}
           CI_IS_PR: ${{ env.CI_IS_PR }}
 
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          # PR-related variables (only available when PR trigger is enabled)
+          # PR_TITLE: ${{ github.event.pull_request.title || '' }}
+          # PR_NUMBER: ${{ github.event.pull_request.number || '' }}
 
           BUILD_URL_PRE: ${{ env.BUILD_URL_PRE }}
           BUILD_URL_PROD: ${{ env.BUILD_URL_PROD }}
@@ -187,12 +207,18 @@ jobs:
         run: |
           # Color: blue = success, orange-red otherwise
           COLOR="0076D7"; [ "$JOB_STATUS" != "success" ] && COLOR="D83B01"
-          
-          PR_LINE=""
-          if [ -n "${CI_IS_PR}" ] && [ "${CI_IS_PR}" != "false" ] && [ -n "${PR_NUMBER}" ]; then
-            PR_LINE="**Pull Request**: [${PR_TITLE}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_NUMBER})\n\n"
-          fi
-          
+
+          # PR line for notification (commented out - uncomment PR trigger above to use this)
+          # PR_LINE=""
+          # if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+          #   PR_TITLE="${{ github.event.pull_request.title || '' }}"
+          #   PR_NUMBER="${{ github.event.pull_request.number || '' }}"
+          #   if [ -n "$PR_NUMBER" ]; then
+          #     PR_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_NUMBER}"
+          #     PR_LINE="**Pull Request**: [${PR_TITLE}](${PR_URL})\n\n"
+          #   fi
+          # fi
+
           PAYLOAD="$(cat <<'EOF'
           {
             "@type": "MessageCard",
@@ -202,7 +228,7 @@ jobs:
             "title": "🍏 iOS builds — __STATUS__",
             "sections": [
               {
-                "text": "__PR_LINE__**Branch**: [__BRANCH__](__REPO_URL__/tree/__BRANCH__)\n\n**Author**: __ACTOR__\n\n**iOS pre**: [Build](__BUILD_URL_PRE__)\n\n**iOS prod**: [Build](__BUILD_URL_PROD__)\n\n**iOS stage**: [Build](__BUILD_URL_STAGE__)"
+                "text": "__PR_LINE__**Branch**: [__BRANCH__](__REPO_URL__/tree/__BRANCH__)\n\n**Author**: __ACTOR__\n\n**Run**: [Open run](__RUN_URL__)\n\n**iOS pre**: [Build](__BUILD_URL_PRE__)\n\n**iOS prod**: [Build](__BUILD_URL_PROD__)\n\n**iOS stage**: [Build](__BUILD_URL_STAGE__)"
               }
             ]
           }
@@ -211,14 +237,16 @@ jobs:
 
           PAYLOAD="${PAYLOAD/__COLOR__/$COLOR}"
           PAYLOAD="${PAYLOAD/__STATUS__/$JOB_STATUS}"
-          PAYLOAD="${PAYLOAD/__PR_LINE__/$PR_LINE}"
+          # PR_LINE is empty for manual dispatch, uncomment above to populate for PR events
+          PAYLOAD="${PAYLOAD/__PR_LINE__/${PR_LINE:-}}"
           PAYLOAD="${PAYLOAD/__BRANCH__/$CI_GIT_BRANCH}"
           PAYLOAD="${PAYLOAD/__REPO_URL__/$GITHUB_SERVER_URL/$GITHUB_REPOSITORY}"
           PAYLOAD="${PAYLOAD/__ACTOR__/$GITHUB_ACTOR}"
+          PAYLOAD="${PAYLOAD/__RUN_URL__/$RUN_URL}"
           PAYLOAD="${PAYLOAD/__BUILD_URL_PRE__/$BUILD_URL_PRE}"
           PAYLOAD="${PAYLOAD/__BUILD_URL_PROD__/$BUILD_URL_PROD}"
           PAYLOAD="${PAYLOAD/__BUILD_URL_STAGE__/$BUILD_URL_STAGE}"
-    
+
           curl -sS -H 'Content-Type: application/json' -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL"
 
       - name: Cleanup keychain
