@@ -26,8 +26,7 @@ class FeedbackFormContainer extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Material(
           color: context.colors.backgroundSurface4,
@@ -54,10 +53,7 @@ class FeedbackFormContainer extends ConsumerWidget {
                       child: SizedBox(
                         width: double.infinity,
                         child: AppButton(
-                          buttonState:
-                              isSendEnabled
-                                  ? ButtonState.defaultState
-                                  : ButtonState.disabled,
+                          buttonState: isSendEnabled ? ButtonState.defaultState : ButtonState.disabled,
                           buttonColorScheme: ButtonColorScheme.accentSecondary,
                           size: ButtonSize.large,
                           onTap: isSendEnabled ? onSend : null,

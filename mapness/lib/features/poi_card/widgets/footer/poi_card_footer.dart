@@ -63,8 +63,7 @@ class PoiCardFooter extends HookConsumerWidget {
     if (bottomSheetController != null) {
       useEffect(() {
         void updateShadow() {
-          final isHidden =
-              bottomSheetController.state == PoiCardBottomSheetState.hidden &&
+          final isHidden = bottomSheetController.state == PoiCardBottomSheetState.hidden &&
               bottomSheetController.interpolation == 0.0;
           if (!isHidden != displayShadow.value) {
             displayShadow.value = !isHidden;
@@ -94,15 +93,13 @@ class PoiCardFooter extends HookConsumerWidget {
     final onEntranceTap = this.onEntranceTap;
 
     final type = data?.types.firstOrNull?.type;
-    final hasMetro =
-        type == ObjectTypeMessage.stationMetro ||
+    final hasMetro = type == ObjectTypeMessage.stationMetro ||
         type == ObjectTypeMessage.station ||
         type == ObjectTypeMessage.stationPlatform ||
         type == ObjectTypeMessage.stationEntrance;
 
-    final website = data?.getContactsInfoModels
-        .firstWhereOrNull((element) => element.type == ContactsInfoType.website)
-        ?.value;
+    final website =
+        data?.getContactsInfoModels.firstWhereOrNull((element) => element.type == ContactsInfoType.website)?.value;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 

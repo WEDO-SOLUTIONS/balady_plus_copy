@@ -52,15 +52,12 @@ class PoiContentSliver extends ConsumerWidget {
       poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim(),
     );
 
-    final finishPoint =
-        data != null
-            ? RouteSearchPoint(
-              coordinates:
-                  data.markerPosition?.toGeoPointMessage() ??
-                  GeoPointMessage(latitude: 0, longitude: 0),
-              dgisObjectId: data.id!,
-            )
-            : null;
+    final finishPoint = data != null
+        ? RouteSearchPoint(
+            coordinates: data.markerPosition?.toGeoPointMessage() ?? GeoPointMessage(latitude: 0, longitude: 0),
+            dgisObjectId: data.id!,
+          )
+        : null;
 
     // Get user's current location to use as startPoint for route calculation
     final userLocation = ref.watch(locationProvider);
@@ -163,8 +160,7 @@ class PoiContentSliver extends ConsumerWidget {
           // Platforms lines info
           final routeInfos = data.routeInfos;
           final transportDirectoryRouteInfo = data.routeInfos.firstOrNull;
-          final currentRouteTransition =
-              transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
+          final currentRouteTransition = transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
                   .firstWhereOrNull((e) => e.name == data.title)
                   ?.transitions ??
               [];
@@ -271,13 +267,7 @@ class PoiContentSliver extends ConsumerWidget {
                 ),
               if (hasOffers)
                 PoiContentOffersCard(
-                  offers:
-                      offers[poiCardState
-                          ?.gisObjectIdMessage
-                          ?.tradeLicense
-                          ?.license
-                          .trim()] ??
-                      [],
+                  offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
                   contentPadding: itemPadding,
                 ),
               if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
@@ -298,8 +288,7 @@ class PoiContentSliver extends ConsumerWidget {
                     ),
                   )
                   .toList(),
-              if (searchObjectFuture.isLoading &&
-                  currentRouteTransition.isNotEmpty)
+              if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
                 Shimmer.fromColors(
                   baseColor: colorShimmer,
                   highlightColor: Colors.white,

@@ -22,33 +22,31 @@ class _PoiPhotoMany extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PoiPhotosStories(
-    key: key,
-    itemCount: itemCount,
-    state: state,
-    interpolation: interpolation,
-    builder:
-        (scrollController, physics) => ListView.separated(
+        key: key,
+        itemCount: itemCount,
+        state: state,
+        interpolation: interpolation,
+        builder: (scrollController, physics) => ListView.separated(
           controller: scrollController,
           padding: EdgeInsets.symmetric(horizontal: padding),
-          itemBuilder:
-              (context, index) => ClipRRect(
-                borderRadius: borderRadius,
-                child: AspectRatio(
-                  key: ValueKey(itemCount),
-                  aspectRatio: _getPhotoAspectRatio(
-                    context,
-                    state,
-                    interpolation,
-                  ),
-                  child: itemBuilder(context, index),
-                ),
+          itemBuilder: (context, index) => ClipRRect(
+            borderRadius: borderRadius,
+            child: AspectRatio(
+              key: ValueKey(itemCount),
+              aspectRatio: _getPhotoAspectRatio(
+                context,
+                state,
+                interpolation,
               ),
+              child: itemBuilder(context, index),
+            ),
+          ),
           itemCount: min(itemCount, 10),
           scrollDirection: Axis.horizontal,
           physics: physics,
           separatorBuilder: (_, index) => SizedBox(width: separatorWidth),
         ),
-  );
+      );
 
   double _getPhotoAspectRatio(
     BuildContext context,
@@ -66,8 +64,7 @@ class _PoiPhotoMany extends StatelessWidget {
     final width = size.width;
     final finalAspectRatio = width / HeaderComponent.photosMaxHeight;
 
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return finalAspectRatio;
     }
 

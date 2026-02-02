@@ -27,10 +27,9 @@ class PoiPhotoButton extends StatelessWidget {
       buttonColorScheme: ButtonColorScheme.accent,
       buttonType: ButtonType.secondary,
       color: context.colors.backgroundSurface1,
-      onTap:
-          () => context.router.push(
-            QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId)),
-          ),
+      onTap: () => context.router.push(
+        QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId)),
+      ),
       size: ButtonSize.small,
       innerPadding: const EdgeInsetsDirectional.only(
         start: Spacing.$2x + Spacing.$0_5x,

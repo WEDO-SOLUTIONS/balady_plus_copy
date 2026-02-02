@@ -35,7 +35,6 @@ class PoiContentSocialMediaModel {
   /// Type of the social media
   final PoiContentSocialMediaTypes type;
 
-  
   /// Display text (username, website address, etc.)
   final String? displayText;
 

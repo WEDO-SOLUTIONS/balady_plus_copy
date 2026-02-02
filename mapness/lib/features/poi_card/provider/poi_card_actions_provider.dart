@@ -21,8 +21,8 @@ class PoiCardActions extends _$PoiCardActions {
   void build() {}
 
   void onError() => Future(
-    () => ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()),
-  );
+        () => ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()),
+      );
 
   Future<void> onEntranceTap(DirectoryObjectMessage? objectMessage) async {
     final controller = await ref.read(dgisControllerProvider.future);
@@ -57,8 +57,7 @@ class PoiCardActions extends _$PoiCardActions {
     );
   }
 
-  String _myLocationDeeplink(LatLng location) =>
-      BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
+  String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
         BaldayDeeplink.latitudeKey: location.latitude.toString(),
         BaldayDeeplink.longitudeKey: location.longitude.toString(),
         BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
@@ -127,11 +126,7 @@ class PoiCardActions extends _$PoiCardActions {
     }
 
     await _animateToEntrance(
-      data.entrances
-          .map((e) => e.geometry?.entrancePoints ?? [])
-          .toList()
-          .expand((element) => element)
-          .toList(),
+      data.entrances.map((e) => e.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
       closestPoint,
     );
     callBack.call();

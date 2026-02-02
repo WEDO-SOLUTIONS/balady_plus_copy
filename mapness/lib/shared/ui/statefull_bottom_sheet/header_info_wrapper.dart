@@ -38,8 +38,7 @@ class HeaderInfoWrapper extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     if (!isVisible) {
       return child;
     }
-    final backgroundColor =
-        this.backgroundColor ?? context.colors.errorContainerDefault;
+    final backgroundColor = this.backgroundColor ?? context.colors.errorContainerDefault;
     final textColor = this.textColor ?? context.colors.errorOnContainer;
     return Column(
       children: [
@@ -81,8 +80,7 @@ class HeaderInfoWrapper extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     double interpolation,
     double maxValue,
   ) {
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return 0;
     }
     if (state == PoiCardBottomSheetState.hidden) {

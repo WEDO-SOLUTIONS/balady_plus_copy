@@ -20,54 +20,53 @@ class PoiPhotoCardSliver extends ConsumerWidget {
   final int objectId;
 
   List<QuiltedGridTile> get _pattern2 => const [
-    QuiltedGridTile(6, 6),
-    QuiltedGridTile(6, 6),
-  ];
+        QuiltedGridTile(6, 6),
+        QuiltedGridTile(6, 6),
+      ];
   List<QuiltedGridTile> get _pattern3 => const [
-    QuiltedGridTile(6, 6),
-    QuiltedGridTile(3, 3),
-    QuiltedGridTile(3, 3),
-  ];
+        QuiltedGridTile(6, 6),
+        QuiltedGridTile(3, 3),
+        QuiltedGridTile(3, 3),
+      ];
 
   List<QuiltedGridTile> get _pattern5 => const [
-    QuiltedGridTile(6, 6),
-    QuiltedGridTile(4, 4),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(6, 6),
-  ];
+        QuiltedGridTile(6, 6),
+        QuiltedGridTile(4, 4),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(6, 6),
+      ];
   List<QuiltedGridTile> get _pattern6 => const [
-    QuiltedGridTile(6, 6),
-    QuiltedGridTile(3, 3),
-    QuiltedGridTile(3, 3),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(2, 2),
-  ];
+        QuiltedGridTile(6, 6),
+        QuiltedGridTile(3, 3),
+        QuiltedGridTile(3, 3),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+      ];
 
   List<QuiltedGridTile> get _pattern7 => const [
-    QuiltedGridTile(6, 6),
-    QuiltedGridTile(4, 4),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(2, 2),
-    QuiltedGridTile(2, 2),
-  ];
+        QuiltedGridTile(6, 6),
+        QuiltedGridTile(4, 4),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+        QuiltedGridTile(2, 2),
+      ];
 
   List<QuiltedGridTile> get _pattern14 => [
-    ..._pattern7,
-    const QuiltedGridTile(6, 6),
-    const QuiltedGridTile(2, 2),
-    const QuiltedGridTile(4, 4),
-    const QuiltedGridTile(2, 2),
-    const QuiltedGridTile(2, 2),
-    const QuiltedGridTile(2, 2),
-    const QuiltedGridTile(2, 2),
-  ];
+        ..._pattern7,
+        const QuiltedGridTile(6, 6),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(4, 4),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(2, 2),
+        const QuiltedGridTile(2, 2),
+      ];
 
-  List<QuiltedGridTile> _calcPattern(int picturesAmount) =>
-      switch (picturesAmount) {
+  List<QuiltedGridTile> _calcPattern(int picturesAmount) => switch (picturesAmount) {
         1 || 2 => _pattern2,
         3 => _pattern3,
         4 || 5 => _pattern5,
@@ -76,22 +75,22 @@ class PoiPhotoCardSliver extends ConsumerWidget {
         8 || 9 => [..._pattern7, ..._pattern2],
         10 => [..._pattern7, ..._pattern3],
         11 => [
-          ..._pattern7,
-          const QuiltedGridTile(6, 6),
-          const QuiltedGridTile(4, 4),
-          const QuiltedGridTile(2, 2),
-          const QuiltedGridTile(2, 2),
-        ],
+            ..._pattern7,
+            const QuiltedGridTile(6, 6),
+            const QuiltedGridTile(4, 4),
+            const QuiltedGridTile(2, 2),
+            const QuiltedGridTile(2, 2),
+          ],
         12 => [..._pattern7, ..._pattern5],
         13 => [..._pattern7, ..._pattern6],
         14 => _pattern14,
         15 => [..._pattern14, const QuiltedGridTile(6, 6)],
         // 16 and more
         _ => [
-          ..._pattern14,
-          const QuiltedGridTile(3, 3),
-          const QuiltedGridTile(3, 3),
-        ],
+            ..._pattern14,
+            const QuiltedGridTile(3, 3),
+            const QuiltedGridTile(3, 3),
+          ],
       };
 
   @override
@@ -132,22 +131,15 @@ class PoiPhotoCardSliver extends ConsumerWidget {
         delegate: SliverChildBuilderDelegate(
           childCount: photoItems.length,
           (context, index) => LoadingShimmerImage(
-            imageUrl:
-                photoItems[index].previewUrls?.mediumByWidth ??
-                photosUrls[index],
+            imageUrl: photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index],
             fit: BoxFit.cover,
-            onImageTap:
-                (name, {isAsset}) => context.router.push(
-                  PhotoViewerRoute(
-                    photoPaths: photosUrls,
-                    previewUrls:
-                        photoItems
-                            .map((e) => e.previewUrls?.mediumByWidth)
-                            .nonNulls
-                            .toList(),
-                    currentPhotoIndex: index,
-                  ),
-                ),
+            onImageTap: (name, {isAsset}) => context.router.push(
+              PhotoViewerRoute(
+                photoPaths: photosUrls,
+                previewUrls: photoItems.map((e) => e.previewUrls?.mediumByWidth).nonNulls.toList(),
+                currentPhotoIndex: index,
+              ),
+            ),
           ),
         ),
         gridDelegate: SliverQuiltedGridDelegate(
@@ -179,12 +171,11 @@ class PoiPhotoCardSliver extends ConsumerWidget {
                   padding: const EdgeInsets.only(top: Spacing.$4x),
                   child: PoiContentFeedbackCard(
                     data: PoiContentFeedbackType.addPhoto,
-                    onTap:
-                        () => context.router.push(
-                          QuickFeedbackPhotoRoute(
-                            params: FeedbackObjectIdParams(objectId),
-                          ),
-                        ),
+                    onTap: () => context.router.push(
+                      QuickFeedbackPhotoRoute(
+                        params: FeedbackObjectIdParams(objectId),
+                      ),
+                    ),
                   ),
                 ),
               ),

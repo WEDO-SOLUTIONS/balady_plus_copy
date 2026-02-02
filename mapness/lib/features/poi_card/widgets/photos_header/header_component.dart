@@ -39,8 +39,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     final showPhotos = !photosEmpty || photosAreLoading || isItParkingSpot;
 
     return Directionality(
-      textDirection:
-          photosEmpty ? TextDirection.ltr : Directionality.of(context),
+      textDirection: photosEmpty ? TextDirection.ltr : Directionality.of(context),
       child: Opacity(
         opacity: _resolveOpacity(state, interpolation),
         child: Padding(
@@ -53,10 +52,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
             builder: (context) {
               if (showPhotos) {
                 return SizedBox(
-                  height:
-                      photosSizeTransform > 0
-                          ? photosSizeTransform
-                          : photosMinHeight,
+                  height: photosSizeTransform > 0 ? photosSizeTransform : photosMinHeight,
                   child: PoiPhotosRow(
                     objectId: objectId,
                     state: state,
@@ -77,12 +73,11 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
                     ),
                     buttonColorScheme: ButtonColorScheme.accent,
                     buttonType: ButtonType.secondary,
-                    onTap:
-                        () => context.router.push(
-                          QuickFeedbackPhotoRoute(
-                            params: FeedbackObjectIdParams(objectId),
-                          ),
-                        ),
+                    onTap: () => context.router.push(
+                      QuickFeedbackPhotoRoute(
+                        params: FeedbackObjectIdParams(objectId),
+                      ),
+                    ),
                     primaryIcon: GeneralIcons.photoSolid,
                     primaryLabel: context.l10n.addPhoto,
                     color: context.colors.backgroundSurface2,
@@ -125,8 +120,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     }
 
     // Use max height when open or expanded
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return photosMaxHeight;
     }
 
@@ -144,8 +138,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     double interpolation, {
     bool showPhotos = true,
   }) {
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return EdgeInsets.zero;
     }
     if (state == PoiCardBottomSheetState.hidden) {

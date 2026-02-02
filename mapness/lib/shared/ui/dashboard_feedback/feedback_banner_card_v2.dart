@@ -25,32 +25,33 @@ class FeedbackBannerCardV2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-    child: GestureDetector(
-      onTap: onTap,
-      child: _FeedBackWidget(
-        asset: path,
-        title: title,
-        subTitle: subtitle,
-        gradientColors: gradientColors,
-        textDirection: Directionality.of(context),
-        child: Padding(
-          padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-          child: SizedBox(
-            width: Spacing.$6x,
-            height: Spacing.$6x,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                color: context.colors.staticWhite.withOpacity(0.2),
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: GestureDetector(
+          onTap: onTap,
+          child: _FeedBackWidget(
+            asset: path,
+            title: title,
+            subTitle: subtitle,
+            gradientColors: gradientColors,
+            textDirection: Directionality.of(context),
+            child: Padding(
+              padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
+              child: SizedBox(
+                width: Spacing.$6x,
+                height: Spacing.$6x,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Spacing.$1_5x),
+                    color: context.colors.staticWhite.withOpacity(0.2),
+                  ),
+                  child:
+                      Center(child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x)),
+                ),
               ),
-              child: Center(child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x)),
             ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 }
 
 class _FeedBackWidget extends SingleChildRenderObjectWidget {
@@ -71,19 +72,19 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
 
   @override
   _RenderFeedBack createRenderObject(BuildContext context) => _RenderFeedBack(
-    title: TextSpan(text: title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite)),
-    subTitle: TextSpan(
-      text: subTitle ?? '',
-      style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
-    ),
-    asset: asset,
-    gradientColors: gradientColors,
-    textDirection: textDirection,
-    minTextPadding: const EdgeInsets.only(top: 11.0, bottom: 15.0, right: 16.0, left: 16.0),
-    textGap: Spacing.$1x,
-    imageShift: 9.0,
-    designMinHeight: 96,
-  );
+        title: TextSpan(text: title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite)),
+        subTitle: TextSpan(
+          text: subTitle ?? '',
+          style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
+        ),
+        asset: asset,
+        gradientColors: gradientColors,
+        textDirection: textDirection,
+        minTextPadding: const EdgeInsets.only(top: 11.0, bottom: 15.0, right: 16.0, left: 16.0),
+        textGap: Spacing.$1x,
+        imageShift: 9.0,
+        designMinHeight: 96,
+      );
 
   @override
   void updateRenderObject(BuildContext context, covariant _RenderFeedBack renderObject) {
@@ -132,8 +133,8 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     required this.textGap,
     required this.imageShift,
     required this.designMinHeight,
-  }) : titlePainter = TextPainter(text: title, textDirection: textDirection),
-       subtitlePainter = TextPainter(text: subTitle, textDirection: textDirection) {
+  })  : titlePainter = TextPainter(text: title, textDirection: textDirection),
+        subtitlePainter = TextPainter(text: subTitle, textDirection: textDirection) {
     loadImage();
   }
 
@@ -235,8 +236,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
       canvas.drawPaint(painter);
 
       /// Calculate offsets for title and subtitle.
-      final heightOffset =
-          (size.height -
+      final heightOffset = (size.height -
               minTextPadding.top -
               minTextPadding.bottom -
               textGap -

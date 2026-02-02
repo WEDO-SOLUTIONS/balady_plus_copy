@@ -29,121 +29,104 @@ const _photoPadding = 8.0;
 class FeedbackImages extends StatelessWidget {
   final FeedbackImageInputEntity field;
 
-  final GlobalKey<FormFieldState<IList<FileUpload>>> fieldKey =
-      GlobalKey<FormFieldState<IList<FileUpload>>>();
+  final GlobalKey<FormFieldState<IList<FileUpload>>> fieldKey = GlobalKey<FormFieldState<IList<FileUpload>>>();
 
   FeedbackImages({required this.field, super.key});
 
   @override
   Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Consumer(
-        builder: (context, ref, _) {
-          ref.listen(feedbackImageSelectorProvider, (_, next) {
-            final oldValue =
-                fieldKey.currentState?.value ?? const IList.empty();
-            final newValue =
-                next.map((newXFile) {
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Consumer(
+            builder: (context, ref, _) {
+              ref.listen(feedbackImageSelectorProvider, (_, next) {
+                final oldValue = fieldKey.currentState?.value ?? const IList.empty();
+                final newValue = next.map((newXFile) {
                   final existing = oldValue.firstWhereOrNull(
                     (f) => f.srcPath == newXFile.path,
                   );
                   return existing ?? FileUpload.init(srcPath: newXFile.path);
                 }).toIList();
-            fieldKey.currentState?.didChange(newValue);
-          });
-          return FormBuilderField<IList<FileUpload>>(
-            key: fieldKey,
-            name: field.id,
-            initialValue:
-                ref
-                    .read(feedbackImageSelectorProvider)
-                    .map((e) => FileUpload.init(srcPath: e.path))
-                    .toIList(),
-            valueTransformer:
-                (value) =>
-                    value
-                        ?.map(
-                          (fileUpload) =>
-                              fileUpload is FileUploadSuccess
-                                  ? fileUpload.serverUrl
-                                  : null,
-                        )
-                        .nonNulls
-                        .toList(),
-            validator: (value) {
-              /// check does field has value
-              if (value == null || value.isEmpty) {
-                return field.isRequired ? 'NEED PHOTOS' : null;
-              }
+                fieldKey.currentState?.didChange(newValue);
+              });
+              return FormBuilderField<IList<FileUpload>>(
+                key: fieldKey,
+                name: field.id,
+                initialValue:
+                    ref.read(feedbackImageSelectorProvider).map((e) => FileUpload.init(srcPath: e.path)).toIList(),
+                valueTransformer: (value) => value
+                    ?.map(
+                      (fileUpload) => fileUpload is FileUploadSuccess ? fileUpload.serverUrl : null,
+                    )
+                    .nonNulls
+                    .toList(),
+                validator: (value) {
+                  /// check does field has value
+                  if (value == null || value.isEmpty) {
+                    return field.isRequired ? 'NEED PHOTOS' : null;
+                  }
 
-              /// check are all fields uploaded
-              if (value.every((fu) => fu is FileUploadSuccess)) {
-                return null;
-              }
-              return 'UPLOAD NOT FINISHED';
-            },
-            builder: (fieldState) {
-              final value = fieldState.value ?? const IList.empty();
+                  /// check are all fields uploaded
+                  if (value.every((fu) => fu is FileUploadSuccess)) {
+                    return null;
+                  }
+                  return 'UPLOAD NOT FINISHED';
+                },
+                builder: (fieldState) {
+                  final value = fieldState.value ?? const IList.empty();
 
-              // Recreate
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  final imagesInRow =
-                      ((constraints.maxWidth + _photoPadding) /
-                              (_minPhotoWidth + _photoPadding))
-                          .floor();
-                  final size =
-                      (constraints.maxWidth + _photoPadding) / imagesInRow -
-                      _photoPadding;
+                  // Recreate
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      final imagesInRow =
+                          ((constraints.maxWidth + _photoPadding) / (_minPhotoWidth + _photoPadding)).floor();
+                      final size = (constraints.maxWidth + _photoPadding) / imagesInRow - _photoPadding;
 
-                  return Wrap(
-                    spacing: _photoPadding,
-                    runSpacing: _photoPadding,
-                    children: [
-                      if (value.length < field.maxImages)
-                        AddImageButton(
-                          onTap: () => _showImageSelectorDialog(context, ref),
-                          size: size,
-                        ),
-                      ...value.indexed.map(
-                        (indexedUpload) => FeedbackImageWidget(
-                          key: ValueKey(indexedUpload),
-                          imagePath: indexedUpload.$2.srcPath,
-                          onRemove:
-                              () => fieldState.didChange(
+                      return Wrap(
+                        spacing: _photoPadding,
+                        runSpacing: _photoPadding,
+                        children: [
+                          if (value.length < field.maxImages)
+                            AddImageButton(
+                              onTap: () => _showImageSelectorDialog(context, ref),
+                              size: size,
+                            ),
+                          ...value.indexed.map(
+                            (indexedUpload) => FeedbackImageWidget(
+                              key: ValueKey(indexedUpload),
+                              imagePath: indexedUpload.$2.srcPath,
+                              onRemove: () => fieldState.didChange(
                                 value.removeAt(indexedUpload.$1),
                               ),
-                          onUploadStatusChange:
-                              (status) => fieldState.didChange(
+                              onUploadStatusChange: (status) => fieldState.didChange(
                                 value.replace(indexedUpload.$1, status),
                               ),
-                          imageSize: size,
-                        ),
-                      ),
-                    ],
+                              imageSize: size,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
               );
             },
-          );
-        },
-      ),
-      Spacing.$2x.heightBox,
-      Text(
-        context.l10n.feedbackImageVadidationDiscription(
-          field.maxImages,
-          _maxImageResolution,
-          _maxImageResolution,
-          field.maxSize.formatAsFileSize(),
-          field.acceptedFormats.formatAcceptedFormats(context.l10n),
-        ),
-        style: context.textStyles.captionMediumRegular.copyWith(
-          color: context.colors.foregroundSoft,
-        ),
-      ),
-    ],
-  );
+          ),
+          Spacing.$2x.heightBox,
+          Text(
+            context.l10n.feedbackImageVadidationDiscription(
+              field.maxImages,
+              _maxImageResolution,
+              _maxImageResolution,
+              field.maxSize.formatAsFileSize(),
+              field.acceptedFormats.formatAcceptedFormats(context.l10n),
+            ),
+            style: context.textStyles.captionMediumRegular.copyWith(
+              color: context.colors.foregroundSoft,
+            ),
+          ),
+        ],
+      );
 
   Future<void> _showImageSelectorDialog(
     BuildContext context,
@@ -167,13 +150,9 @@ class FeedbackImages extends StatelessWidget {
     try {
       // Get previous selected images
       final selectedImages =
-          (fieldKey.currentState?.value ?? const IList.empty())
-              .map((e) => XFile(e.srcPath))
-              .toList();
+          (fieldKey.currentState?.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
 
-      await ref
-          .read(feedbackImageSelectorProvider.notifier)
-          .pickImages(
+      await ref.read(feedbackImageSelectorProvider.notifier).pickImages(
             acceptedFormats: field.acceptedFormats,
             maxSize: field.maxSize,
             maxImages: field.maxImages,

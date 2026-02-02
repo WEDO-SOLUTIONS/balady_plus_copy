@@ -27,8 +27,7 @@ class TabComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
       return const SizedBox.shrink();
     }
     var scale = Curves.easeOutQuart.transform(interpolation);
-    if (state == PoiCardBottomSheetState.expanded ||
-        state == PoiCardBottomSheetState.open) {
+    if (state == PoiCardBottomSheetState.expanded || state == PoiCardBottomSheetState.open) {
       scale = 1;
     }
 

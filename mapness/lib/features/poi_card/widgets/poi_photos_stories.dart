@@ -25,8 +25,7 @@ class PoiPhotosStories extends StatefulWidget {
   State<PoiPhotosStories> createState() => _PoiPhotosStoriesState();
 }
 
-class _PoiPhotosStoriesState extends State<PoiPhotosStories>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProviderStateMixin, WidgetsBindingObserver {
   int currentIndex = 0;
   double screenWidth = 1;
   int itemCount = 0;
@@ -139,9 +138,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories>
       children: [
         widget.builder(
           _scrollController,
-          widget.state == PoiCardBottomSheetState.open
-              ? const NeverScrollableScrollPhysics()
-              : null,
+          widget.state == PoiCardBottomSheetState.open ? const NeverScrollableScrollPhysics() : null,
         ),
         IgnorePointer(
           ignoring: widget.state == PoiCardBottomSheetState.halfOpen,
@@ -217,8 +214,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories>
             alignment: Alignment.bottomCenter,
             children: [
               // Gradient overlay below progress bar (107px height) - only in open/expanded states
-              if (widget.state == PoiCardBottomSheetState.open ||
-                  widget.state == PoiCardBottomSheetState.expanded)
+              if (widget.state == PoiCardBottomSheetState.open || widget.state == PoiCardBottomSheetState.expanded)
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -258,8 +254,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories>
                       children: [
                         Text(
                           widget.itemCount.toString(),
-                          style: context.textStyles.captionLargeSemiBold
-                              .copyWith(color: context.colors.staticWhite),
+                          style: context.textStyles.captionLargeSemiBold.copyWith(color: context.colors.staticWhite),
                         ),
                         const SizedBox(width: Spacing.$1x),
                         Icon(
@@ -306,8 +301,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories>
       return initialValue;
     }
 
-    if (state == PoiCardBottomSheetState.open ||
-        state == PoiCardBottomSheetState.expanded) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return expandedValue ?? finalValue;
     }
 

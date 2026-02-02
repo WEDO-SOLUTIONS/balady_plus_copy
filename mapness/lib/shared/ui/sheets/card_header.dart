@@ -25,24 +25,22 @@ class CardHeaderText extends CardHeaderData {
     required BuildContext context,
     TextStyle? style,
     int? maxLines,
-  }) : style =
-           style ??
-           context.textStyles.h4SemiBold.copyWith(
-             color: context.colors.foregroundDefault,
-           ),
-       maxLines = maxLines ?? 2;
+  })  : style = style ??
+            context.textStyles.h4SemiBold.copyWith(
+              color: context.colors.foregroundDefault,
+            ),
+        maxLines = maxLines ?? 2;
 
   CardHeaderText.subTitle({
     required this.text,
     required BuildContext context,
     TextStyle? style,
     int? maxLines,
-  }) : style =
-           style ??
-           context.textStyles.bodySmallRegular.copyWith(
-             color: context.colors.foregroundSoft,
-           ),
-       maxLines = maxLines ?? 1;
+  })  : style = style ??
+            context.textStyles.bodySmallRegular.copyWith(
+              color: context.colors.foregroundSoft,
+            ),
+        maxLines = maxLines ?? 1;
 
   @override
   Widget get build => _HeaderText(text: text, maxLines: maxLines, style: style);
@@ -126,10 +124,10 @@ class _HeaderText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-    text,
-    style: style,
-    overflow: TextOverflow.ellipsis,
-    maxLines: maxLines,
-    textAlign: TextAlign.start,
-  );
+        text,
+        style: style,
+        overflow: TextOverflow.ellipsis,
+        maxLines: maxLines,
+        textAlign: TextAlign.start,
+      );
 }

@@ -23,8 +23,7 @@ class PoiContentAboutCard extends StatefulWidget {
   State<PoiContentAboutCard> createState() => _PoiContentAboutCardState();
 }
 
-class _PoiContentAboutCardState extends State<PoiContentAboutCard>
-    with SingleTickerProviderStateMixin {
+class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTickerProviderStateMixin {
   static const _heightOfGradient = 36.0;
 
   // This manages height and label "Show more"/"Show less"
@@ -39,9 +38,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard>
     linesCount: 0,
   );
 
-  bool get _showExpandButton =>
-      _textHeight.linesCount > widget.collapsedLinesCount &&
-      widget.isExpandable;
+  bool get _showExpandButton => _textHeight.linesCount > widget.collapsedLinesCount && widget.isExpandable;
 
   late final AnimationController _animationController;
   late final Animation<double> _animation;
@@ -80,136 +77,111 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard>
 
   @override
   Widget build(BuildContext context) => ContentWrapper.single(
-    child: LayoutBuilder(
-      builder: (context, constraints) {
-        if (_maxWidth != constraints.maxWidth) {
-          _maxWidth = constraints.maxWidth;
-          _textHeight = _calculateTextHeight(
-            context,
-            widget.data.text,
-            constraints.maxWidth,
-          );
-        }
-        return ContentRow(
-          text: ContentRowTextOptions(
-            title: widget.data.aboutTitle,
-            titleOptions: const ContentRowTextOption(isBold: true),
-            subtitleExtraOptions:
-                _showExpandButton
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (_maxWidth != constraints.maxWidth) {
+              _maxWidth = constraints.maxWidth;
+              _textHeight = _calculateTextHeight(
+                context,
+                widget.data.text,
+                constraints.maxWidth,
+              );
+            }
+            return ContentRow(
+              text: ContentRowTextOptions(
+                title: widget.data.aboutTitle,
+                titleOptions: const ContentRowTextOption(isBold: true),
+                subtitleExtraOptions: _showExpandButton
                     ? ContentRowTextOption(
-                      isBold: true,
-                      builder:
-                          (context) => GestureDetector(
-                            onTap: () {
-                              if (!isFullVisible) {
-                                _animationController.forward();
-                              } else {
-                                _animationController.reverse();
-                              }
-                            },
-                            child: AnimatedBuilder(
-                              animation: _animation,
-                              builder:
-                                  (context, child) => Stack(
-                                    children: [
-                                      Text(
-                                        maxLines: 1,
-                                        widget.data.showLessTitle,
-                                        style: context.textStyle.footNoteBold
-                                            .copyWith(
-                                              color: context
-                                                  .colors
-                                                  .accentDefault
-                                                  .withOpacity(
-                                                    _animation.value,
-                                                  ),
-                                            ),
-                                      ),
-                                      Text(
-                                        maxLines: 1,
-                                        widget.data.showMoreTitle,
-                                        style: context.textStyle.footNoteBold
-                                            .copyWith(
-                                              color: context
-                                                  .colors
-                                                  .accentDefault
-                                                  .withOpacity(
-                                                    1 - _animation.value,
-                                                  ),
-                                            ),
-                                      ),
-                                    ],
+                        isBold: true,
+                        builder: (context) => GestureDetector(
+                          onTap: () {
+                            if (!isFullVisible) {
+                              _animationController.forward();
+                            } else {
+                              _animationController.reverse();
+                            }
+                          },
+                          child: AnimatedBuilder(
+                            animation: _animation,
+                            builder: (context, child) => Stack(
+                              children: [
+                                Text(
+                                  maxLines: 1,
+                                  widget.data.showLessTitle,
+                                  style: context.textStyle.footNoteBold.copyWith(
+                                    color: context.colors.accentDefault.withOpacity(
+                                      _animation.value,
+                                    ),
                                   ),
+                                ),
+                                Text(
+                                  maxLines: 1,
+                                  widget.data.showMoreTitle,
+                                  style: context.textStyle.footNoteBold.copyWith(
+                                    color: context.colors.accentDefault.withOpacity(
+                                      1 - _animation.value,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                    )
+                        ),
+                      )
                     : null,
-            subtitleOptions: ContentRowTextOption(
-              builder:
-                  (context) => AnimatedBuilder(
+                subtitleOptions: ContentRowTextOption(
+                  builder: (context) => AnimatedBuilder(
                     animation: _animation,
-                    builder:
-                        (context, child) => Stack(
-                          alignment: AlignmentDirectional.bottomStart,
-                          children: [
-                            SizedBox(
-                              height:
-                                  widget.isExpandable
-                                      ? _textHeight.heightTruncated +
-                                          (_textHeight.height -
-                                                  _textHeight.heightTruncated) *
-                                              _animation.value
-                                      : null,
-                              width: _maxWidth,
-                              child: Text(
-                                widget.data.text,
-                                maxLines:
-                                    truncateText
-                                        ? widget.collapsedLinesCount
-                                        : 99,
-                                overflow: TextOverflow.ellipsis,
-                                style: context.textStyles.bodySmallRegular
-                                    .copyWith(
-                                      color: context.colors.foregroundSoft,
-                                    ),
+                    builder: (context, child) => Stack(
+                      alignment: AlignmentDirectional.bottomStart,
+                      children: [
+                        SizedBox(
+                          height: widget.isExpandable
+                              ? _textHeight.heightTruncated +
+                                  (_textHeight.height - _textHeight.heightTruncated) * _animation.value
+                              : null,
+                          width: _maxWidth,
+                          child: Text(
+                            widget.data.text,
+                            maxLines: truncateText ? widget.collapsedLinesCount : 99,
+                            overflow: TextOverflow.ellipsis,
+                            style: context.textStyles.bodySmallRegular.copyWith(
+                              color: context.colors.foregroundSoft,
+                            ),
+                          ),
+                        ),
+                        if (_showExpandButton)
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                // TODO: Change to gradientBackgroundSurface0 and gradientBackgroundSurface80
+                                // When this colors will be added to UIKit
+                                colors: [
+                                  context.colors.gradientBackgroundCardGradient0,
+                                  context.colors.gradientBackgroundCardGradient80,
+                                ],
                               ),
                             ),
-                            if (_showExpandButton)
-                              DecoratedBox(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    // TODO: Change to gradientBackgroundSurface0 and gradientBackgroundSurface80
-                                    // When this colors will be added to UIKit
-                                    colors: [
-                                      context
-                                          .colors
-                                          .gradientBackgroundCardGradient0,
-                                      context
-                                          .colors
-                                          .gradientBackgroundCardGradient80,
-                                    ],
-                                  ),
-                                ),
-                                child: SizedBox(
-                                  width: double.infinity,
-                                  height:
-                                      Curves.easeOutCubic.transform(
-                                        1 - _animation.value,
-                                      ) *
-                                      _heightOfGradient,
-                                ),
-                              ),
-                          ],
-                        ),
+                            child: SizedBox(
+                              width: double.infinity,
+                              height: Curves.easeOutCubic.transform(
+                                    1 - _animation.value,
+                                  ) *
+                                  _heightOfGradient,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
-            ),
-          ),
-        );
-      },
-    ),
-  );
+                ),
+              ),
+            );
+          },
+        ),
+      );
 
   _AboutTextModel _calculateTextHeight(
     BuildContext context,
@@ -223,8 +195,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard>
         color: context.colors.foregroundDefault,
       ),
     );
-    final painter = TextPainter(text: span, textDirection: textDirection)
-      ..layout(maxWidth: maxWidth);
+    final painter = TextPainter(text: span, textDirection: textDirection)..layout(maxWidth: maxWidth);
 
     final painterTruncated = TextPainter(
       text: span,

@@ -72,8 +72,7 @@ class PoiContentContactsCard extends StatelessWidget {
     );
   }
 
-  static IconData getIconData(PoiContentSocialMediaTypes type) =>
-      switch (type) {
+  static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
         PoiContentSocialMediaTypes.website => GeneralIcons.web,
         PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
         PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
@@ -343,21 +342,19 @@ class _SocialMediaItemWidget extends StatelessWidget {
       child: Wrap(
         spacing: Spacing.$2x,
         runSpacing: Spacing.$2x,
-        children:
-            socialMediaList
-                .map(
-                  (e) => _SocialMediaIconWidget(
-                    icon: _SocialMediaItemWidget.getIconData(e.type),
-                    onTap: () => onTap.call(e.link),
-                  ),
-                )
-                .toList(),
+        children: socialMediaList
+            .map(
+              (e) => _SocialMediaIconWidget(
+                icon: _SocialMediaItemWidget.getIconData(e.type),
+                onTap: () => onTap.call(e.link),
+              ),
+            )
+            .toList(),
       ),
     );
   }
 
-  static IconData getIconData(PoiContentSocialMediaTypes type) =>
-      switch (type) {
+  static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
         PoiContentSocialMediaTypes.website => GeneralIcons.web,
         PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
         PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
@@ -389,8 +386,7 @@ class _SocialMediaItemWidget extends StatelessWidget {
     String? username;
 
     // First, try to extract from displayText
-    if (socialMedia.displayText != null &&
-        socialMedia.displayText!.isNotEmpty) {
+    if (socialMedia.displayText != null && socialMedia.displayText!.isNotEmpty) {
       final displayText = socialMedia.displayText!;
 
       // If displayText is already a username (starts with @ or doesn't contain http)
@@ -464,14 +460,14 @@ class _SocialMediaItemWidget extends StatelessWidget {
   }
 
   String _getSocialMediaName(PoiContentSocialMediaTypes type) => switch (type) {
-    PoiContentSocialMediaTypes.website => 'Website',
-    PoiContentSocialMediaTypes.instagram => 'Instagram',
-    PoiContentSocialMediaTypes.facebook => 'Facebook',
-    PoiContentSocialMediaTypes.youtube => 'YouTube',
-    PoiContentSocialMediaTypes.linkedin => 'LinkedIn',
-    PoiContentSocialMediaTypes.whatsapp => 'WhatsApp',
-    PoiContentSocialMediaTypes.telegram => 'Telegram',
-  };
+        PoiContentSocialMediaTypes.website => 'Website',
+        PoiContentSocialMediaTypes.instagram => 'Instagram',
+        PoiContentSocialMediaTypes.facebook => 'Facebook',
+        PoiContentSocialMediaTypes.youtube => 'YouTube',
+        PoiContentSocialMediaTypes.linkedin => 'LinkedIn',
+        PoiContentSocialMediaTypes.whatsapp => 'WhatsApp',
+        PoiContentSocialMediaTypes.telegram => 'Telegram',
+      };
 }
 
 class _SocialMediaIconWidget extends StatelessWidget {
@@ -482,26 +478,22 @@ class _SocialMediaIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CupertinoButton(
-    onPressed: onTap,
-    padding: EdgeInsets.zero,
-    minSize: 0,
-    child: Container(
-      padding: const EdgeInsets.all(Spacing.$2x),
-      decoration: BoxDecoration(
-        color:
-            SaudiNationalDay.isNow()
+        onPressed: onTap,
+        padding: EdgeInsets.zero,
+        minSize: 0,
+        child: Container(
+          padding: const EdgeInsets.all(Spacing.$2x),
+          decoration: BoxDecoration(
+            color: SaudiNationalDay.isNow()
                 ? context.colors.accentContainerDefault
                 : context.colors.accentSecondaryContainerDefault,
-        borderRadius: BorderRadius.circular(Spacing.$2x),
-      ),
-      child: Icon(
-        icon,
-        color:
-            SaudiNationalDay.isNow()
-                ? context.colors.accentDefault
-                : context.colors.accentSecondaryDefault,
-        size: Spacing.$6x,
-      ),
-    ),
-  );
+            borderRadius: BorderRadius.circular(Spacing.$2x),
+          ),
+          child: Icon(
+            icon,
+            color: SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.accentSecondaryDefault,
+            size: Spacing.$6x,
+          ),
+        ),
+      );
 }

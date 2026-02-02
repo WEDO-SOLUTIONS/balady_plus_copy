@@ -121,8 +121,7 @@ class _OfferCard extends HookConsumerWidget {
                             offer.description,
                             overflow: TextOverflow.ellipsis,
                             maxLines: hasDiscount ? 2 : 5,
-                            style: context.textStyleV3.captionLargeRegular
-                                .copyWith(
+                            style: context.textStyleV3.captionLargeRegular.copyWith(
                               color: context.colorsV3.foregroundDefault,
                             ),
                           ),
@@ -148,21 +147,15 @@ class _OfferCard extends HookConsumerWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: offer.offerGroup.color,
-                        begin: context.isLTR
-                            ? Alignment.topLeft
-                            : Alignment.topRight,
-                        end: context.isLTR
-                            ? Alignment.bottomRight
-                            : Alignment.bottomLeft,
+                        begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+                        end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                       ),
                     ),
                     child: SizedBox(
                       height: 103,
                       child: Transform(
                         alignment: Alignment.center,
-                        transform: context.isLTR
-                            ? Matrix4.identity()
-                            : Matrix4.rotationY(pi),
+                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
                         child: Image.asset(
                           offer.offerGroup.imagePath,
                           fit: BoxFit.contain,

@@ -19,10 +19,9 @@ class IndoorControl extends ConsumerWidget {
     return indoorState == null
         ? const SizedBox.shrink()
         : _IndoorControl(
-          state: indoorState,
-          onSelect:
-              (level) => ref.read(indoorLevels.notifier).selectLevel(level),
-        );
+            state: indoorState,
+            onSelect: (level) => ref.read(indoorLevels.notifier).selectLevel(level),
+          );
   }
 }
 
@@ -34,9 +33,8 @@ class _IndoorControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-    mainAxisSize: MainAxisSize.min,
-    children:
-        state.levels.reversed
+        mainAxisSize: MainAxisSize.min,
+        children: state.levels.reversed
             .mapIndexed(
               (index, e) => MapButton(
                 onTap: () => onSelect(e),
@@ -53,14 +51,13 @@ class _IndoorControl extends StatelessWidget {
                 child: Text(
                   e.name,
                   style: context.textStyle.callout.copyWith(
-                    color:
-                        e.levelIndex == state.active
-                            ? context.colors.accentOnContainer
-                            : context.colors.foregroundDefault,
+                    color: e.levelIndex == state.active
+                        ? context.colors.accentOnContainer
+                        : context.colors.foregroundDefault,
                   ),
                 ),
               ),
             )
             .toList(),
-  );
+      );
 }

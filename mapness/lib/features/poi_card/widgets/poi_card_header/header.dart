@@ -32,8 +32,7 @@ class PoiHeader extends ConsumerWidget {
   final TabController? tabController;
   final ParkingInfoMessage? parkingInfo;
   final DirectoryObjectMessage? data;
-  final MultiStateSheetController<PoiCardBottomSheetState>?
-  bottomSheetController;
+  final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
   final ToggleSheetController? toggleSheetController;
 
   final Function()? onTapClose;
@@ -120,14 +119,9 @@ class PoiHeader extends ConsumerWidget {
           builder: (context, _) {
             final state = bottomSheetController?.state;
             final shouldUseSurface1 =
-                state != null &&
-                state != PoiCardBottomSheetState.open &&
-                state != PoiCardBottomSheetState.halfOpen;
+                state != null && state != PoiCardBottomSheetState.open && state != PoiCardBottomSheetState.halfOpen;
             return ColoredBox(
-              color:
-                  shouldUseSurface1
-                      ? context.colors.backgroundSurface1
-                      : context.colors.backgroundSurface2,
+              color: shouldUseSurface1 ? context.colors.backgroundSurface1 : context.colors.backgroundSurface2,
               child: Padding(
                 padding: const EdgeInsets.only(
                   left: Spacing.$4x,

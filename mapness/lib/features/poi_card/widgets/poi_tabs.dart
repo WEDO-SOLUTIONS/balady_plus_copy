@@ -44,8 +44,7 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
   Widget build(BuildContext context) {
     final photos = ref.watch(poiPhotoProvider(widget.objectId));
 
-    final photoCount =
-        photos.whenOrNull(data: (data) => data.items.length) ?? 0;
+    final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
     final organizationsCount = widget.poiCardState?.organizations?.count ?? 0;
 
     return Padding(
@@ -93,22 +92,20 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           ),
           Tab(
             iconMargin: EdgeInsets.zero,
-            child:
-                organizationsCount > 0
-                    ? _PoiTabItem(
-                      title: context.l10n.organizations,
-                      count: organizationsCount,
-                      onTap: () {
-                        if (organizationsCount == 0) {
-                          widget.tabController.index =
-                              widget.tabController.previousIndex;
-                          return;
-                        }
-                        widget.tabController.animateTo(2);
-                      },
-                      isActive: widget.tabController.index == 2,
-                    )
-                    : const SizedBox.shrink(),
+            child: organizationsCount > 0
+                ? _PoiTabItem(
+                    title: context.l10n.organizations,
+                    count: organizationsCount,
+                    onTap: () {
+                      if (organizationsCount == 0) {
+                        widget.tabController.index = widget.tabController.previousIndex;
+                        return;
+                      }
+                      widget.tabController.animateTo(2);
+                    },
+                    isActive: widget.tabController.index == 2,
+                  )
+                : const SizedBox.shrink(),
           ),
         ],
       ),
@@ -162,10 +159,7 @@ class _PoiTabItem extends StatelessWidget {
                       Text(
                         title,
                         style: context.textStyles.bodySmallMedium.copyWith(
-                          color:
-                              isActive
-                                  ? context.colors.foregroundDefault
-                                  : context.colors.foregroundSoft,
+                          color: isActive ? context.colors.foregroundDefault : context.colors.foregroundSoft,
                         ),
                       ),
                       if (hasCounter)
@@ -176,10 +170,7 @@ class _PoiTabItem extends StatelessWidget {
                           child: FittedBox(
                             child: Counter(
                               count: count,
-                              color:
-                                  isActive
-                                      ? context.colors.neutralDefault
-                                      : context.colors.neutralMuted,
+                              color: isActive ? context.colors.neutralDefault : context.colors.neutralMuted,
                             ),
                           ),
                         ),
