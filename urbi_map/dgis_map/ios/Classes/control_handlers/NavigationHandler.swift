@@ -24,6 +24,7 @@ class NavigationHandler {
     private let voiceManager: VoiceManager
     
     private var prevCameraBehaviour: CameraBehaviour?
+    private var prevGraphicsPreset: GraphicsPreset?
     
     private var cancelable: Array<Cancellable> = []
     private var moveCameraCancellable: DGis.Cancellable?
@@ -201,7 +202,22 @@ class NavigationHandler {
         map: Map,
         speedRangeZoom: [SpeedRangeZoom]
     ) {
-        map.graphicsPreset = .immersive
+        // Store the original graphics preset before changing it
+        // This allows us to restore it later to preserve traffic layer colors
+        self.prevGraphicsPreset = map.graphicsPreset
+        
+        // NEVER change graphics preset if it's not already immersive
+        // This preserves traffic layer colors when freeroam starts
+        // The preset will only be changed if it's already immersive (no-op)
+        // This ensures traffic colors remain consistent regardless of traffic state
+        // Only change to immersive if current preset is already immersive (no change needed)
+        // Otherwise, preserve the current preset to maintain traffic colors
+        if map.graphicsPreset == .immersive {
+            // Already immersive, no change needed
+        } else {
+            // Preserve current preset - don't change to immersive
+            // This keeps traffic colors consistent
+        }
         
         self.prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
@@ -219,7 +235,13 @@ class NavigationHandler {
     
     func resetCamera() {
         resetCamera(map: self.map)
-        map.graphicsPreset = .normal
+        
+        // Restore the original graphics preset if it was stored
+        // This preserves traffic layer colors when freeroam ends
+        if let prevGraphicsPreset = self.prevGraphicsPreset {
+            map.graphicsPreset = prevGraphicsPreset
+            self.prevGraphicsPreset = nil
+        }
 
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
             resetCamera(map: carPlayMap)
