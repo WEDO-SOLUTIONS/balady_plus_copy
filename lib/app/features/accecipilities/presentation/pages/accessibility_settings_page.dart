@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/accecipilities/accessibility_controller.dart';
+import 'package:balady_plus/app/features/accecipilities/presentation/pages/accessibility_info.dart';
 import 'package:balady_plus/app/features/accecipilities/presentation/pages/text_size_preview_page.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:provider/provider.dart' as p;
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class AccessibilitySettingsPage extends ConsumerStatefulWidget {
   const AccessibilitySettingsPage({super.key});
@@ -59,15 +61,15 @@ class _AccessibilitySettingsPageState
                         ContentRow(
                           onTap: () =>
                               Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => TextSizePreviewPage(),
-                          )),
+                                builder: (context) => const TextSizePreviewPage(),
+                              )),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: GeneralIcons.messageTextLTR,
                               color: context.colors.accentDefault,
                               size: 24,
                             ),
-                            title: 'context.l10n.fontSize',
+                            title: 'fontSize'.tr(),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: AppIcons(
                                 iconData: SystemIcons.arrowCornerRightLarge,
@@ -78,8 +80,7 @@ class _AccessibilitySettingsPageState
                         )
                       ],
                     ),
-                    Spacing.$2x.heightBox,
-                    Spacing.$2x.heightBox,
+                    Spacing.$4x.heightBox,
                     ContentWrapper(
                       color: context.colors.backgroundSurface4,
                       children: [
@@ -92,7 +93,7 @@ class _AccessibilitySettingsPageState
                               color: context.colors.accentDefault,
                               size: 24,
                             ),
-                            title: 'context.l10n.grayScaleMode',
+                            title: 'grayScaleMode'.tr(),
                             actionWidget: ContentRowActionOptions(
                               customToggleBuilder: (
                                   {required onToggle, bool? initial}) {
@@ -110,32 +111,33 @@ class _AccessibilitySettingsPageState
                         )
                       ],
                     ),
-                    Spacing.$2x.heightBox,
+                    Spacing.$4x.heightBox,
                     ContentWrapper(
                       color: context.colors.backgroundSurface4,
                       children: [
                         ContentRow(
-                          onTap: () => controller.toggleScreenReader(
-                              !controller.screenReaderEnabled),
+                          onTap: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => const AccessibilityInfo({
+                                  "0": "accessibilityStepOpenSettings",
+                                  "1": "accessibilityStepAccessibility",
+                                  "2": "accessibilityStepScreenReader",
+                                  "3": "accessibilityStepEnableReader",
+                                  "4": "accessibilityStepFinishSetup",
+                                }),
+                              )),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.record_voice_over_outlined,
                               color: context.colors.accentDefault,
                               size: 24,
                             ),
-                            title: 'context.l10n.voiceReader',
+                            title: 'voiceReader'.tr(),
                             actionWidget: ContentRowActionOptions(
-                              customToggleBuilder: (
-                                  {required onToggle, bool? initial}) {
-                                return CupertinoSwitch(
-                                  value: controller.screenReaderEnabled ?? false,
-                                  onChanged: (value) {
-                                    controller.toggleScreenReader(value);
-                                    onToggle?.call(value);
-                                  },
-                                  activeColor: context.colors.accentDefault,
-                                );
-                              },
+                              actionIcon: AppIcons(
+                                iconData: SystemIcons.arrowCornerRightLarge,
+                                color: context.colors.foregroundSoft,
+                              ),
                             ),
                           ),
                         )

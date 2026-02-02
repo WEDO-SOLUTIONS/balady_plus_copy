@@ -141,7 +141,14 @@ class AppWidgetState extends State<AppWidget> {
                     final botToastBuilder = BotToastInit();
                     final easyLoadingBuilder =
                         EasyLoading.init(builder: botToastBuilder);
-                    return easyLoadingBuilder(context, child);
+                    final builtChild = easyLoadingBuilder(context, child);
+
+                    if (grayscaleFilter == null) return builtChild;
+
+                    return ColorFiltered(
+                      colorFilter: grayscaleFilter,
+                      child: builtChild,
+                    );
                   },
                   navigatorObservers: [
                     SentryNavigatorObserver(),

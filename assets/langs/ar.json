@@ -4595,6 +4595,16 @@
   "search_for_mini_app": "ابحث عن التطبيقات المصغرة",
   "search_by_name_or_description": "ابحث بالاسم أو بالوصف الخاص بالتطبيق",
   "no_results_found":"لاتوجد نتائج",
-  "max_fav_apps_limit":"لا يمكنك إضافة أكثر من 10 تطبيقات إلى المفضلة."
+  "max_fav_apps_limit":"لا يمكنك إضافة أكثر من 10 تطبيقات إلى المفضلة.",
+  "accessibilityStepOpenSettings": "افتح إعدادات الهاتف",
+  "accessibilityStepAccessibility": "اضغط على خيار تسهيلات الاستخدام",
+  "accessibilityStepScreenReader": "اختر قارئ الشاشة أو تحويل النص إلى كلام",
+  "accessibilityStepEnableReader": "قم بتفعيل \"توك باك\" في أندرويد أو \"فويس أوفر\" في آيفون",
+  "accessibilityStepFinishSetup": "اتبع التعليمات الظاهرة على الشاشة لإكمال الإعداد",
+  "fontSize": "حجم الخط",
+  "navigate": "تنقل",
+  "grayScaleMode": "وضع التدرج الرمادي",
+  "stepsToAccessFeature": "خطوات تفعيل الميزة",
+  "voiceReader": "قارئ النصوص"
  
 }

@@ -1,0 +1,117 @@
+import 'package:app_settings/app_settings.dart';
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
+
+class AccessibilityInfo extends StatelessWidget {
+  final Map<String, String> settingsText;
+
+  const AccessibilityInfo(this.settingsText, {super.key});
+
+  @override
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+    value: SystemUiOverlayStyle.dark,
+    child: Material(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.only(top: Spacing.$4x),
+        child: Theme(
+          data:
+          Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: Scaffold(
+            persistentFooterButtons: [
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  primaryLabel: 'navigate'.tr(),
+                  size: ButtonSize.large,
+                  buttonColorScheme: ButtonColorScheme.accent,
+                  onTap: () => AppSettings.openAppSettings(
+                    type: AppSettingsType.accessibility,
+                  ),
+                ),
+              ),
+            ],
+            appBar: BaladyTopBar.iconAndText(
+              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+              title: 'voiceReader'.tr(),
+              colorEnabled: context.colors.accentDefault,
+              leading: ActionModel(
+                onPressed: () => context.router.pop(),
+                icon: SystemIcons.arrowCornerLeftLarge,
+              ),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.only(
+                  top: 12, left: 16, right: 16, bottom: 36),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Center(
+                      child: Image(
+                        image: AssetImage('assets/images/settings.png'),
+                      ),
+                    ),
+                    Spacing.$5x.heightBox,
+                    Text(
+                      'stepsToAccessFeature'.tr(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                    ),
+                    Spacing.$5x.heightBox,
+                    ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: settingsText.length,
+                      shrinkWrap: true,
+                      separatorBuilder: (_, __) => Spacing.$4x.heightBox,
+                      itemBuilder: (context, index) => Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            height: 24,
+                            width: 24,
+                            decoration: BoxDecoration(
+                                color: const Color(0xFF003449),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: Center(
+                              child: Text(
+                                '${index + 1}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Spacing.$4x.widthBox,
+                          Flexible(
+                              child: Text(
+                                settingsText.values.elementAt(index).tr(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                ),
+                              ))
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
