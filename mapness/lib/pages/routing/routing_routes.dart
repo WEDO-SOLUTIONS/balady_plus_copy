@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide StopNumbersIcons, BaladyInputAffixIcon;
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +29,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -37,11 +38,7 @@ class RoutingRoutesPage extends StatefulHookConsumerWidget {
   final List<RouteParamsPointWithLabel> points;
   final bool isHomeOrWork;
 
-  const RoutingRoutesPage({
-    required this.points,
-    this.isHomeOrWork = false,
-    super.key,
-  });
+  const RoutingRoutesPage({required this.points, this.isHomeOrWork = false, super.key});
 
   @override
   ConsumerState<RoutingRoutesPage> createState() => _RoutingRoutesPageState();
@@ -59,9 +56,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     if (!_permissionRequested && widget.points.any((p) => p.value == null)) {
       _permissionRequested = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(locationProvider.notifier).checkLocationPermission(
-              routeOnClose: RoutingRoutesRoute.name,
-            );
+        ref.read(locationProvider.notifier).checkLocationPermission(routeOnClose: RoutingRoutesRoute.name);
       });
     }
   }
@@ -83,36 +78,30 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
-
+    final colors = provider.Provider.of<ThemeController>(context, listen: false).colors;
     ref
       ..watch(layersControlsProvider)
       ..watch(routesHelperProvider)
       ..watch(locationProvider.select((_) => null))
       ..watch(favouriteMarkersProvider.select((value) => null))
-
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    final sheetController = useToggleSheetController(
-      isInteractive: false,
-    );
+    final sheetController = useToggleSheetController(isInteractive: false);
 
     return ToggleSheet(
       shouldPop: (_) => false,
-      backgroundColor: context.colors.backgroundSurface4,
-      safeAreaColor: context.colors.backgroundSurface4,
-      dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+      backgroundColor: colors.backgroundSurface4,
+      safeAreaColor: colors.backgroundSurface4,
+      dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
       scrollController: sheetController,
       outside: RoutingMapControls(onAddStop: _onAddStop(context)),
       header: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-              left: Spacing.$4x,
-              right: Spacing.$4x,
-            ),
+            padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -122,8 +111,8 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                     change: points.first.value == null
                         ? ABPointsChange.off
                         : points.last.value == null
-                            ? ABPointsChange.on
-                            : ABPointsChange.none,
+                        ? ABPointsChange.on
+                        : ABPointsChange.none,
                   ),
                 ),
                 AppButton(
@@ -143,10 +132,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
               ].insertBetween(Spacing.$3x.widthBox).toList(),
             ),
           ),
-          RoutingInfo(
-            pointsWithLabel: points,
-            isHomeOrWork: widget.isHomeOrWork,
-          ),
+          RoutingInfo(pointsWithLabel: points, isHomeOrWork: widget.isHomeOrWork),
         ],
       ),
     );
@@ -158,6 +144,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   VoidCallback? _onAddStop(BuildContext context) {
+    final colors = provider.Provider.of<ThemeController>(context, listen: false).colors;
     final l10n = context.l10n;
     final myLocation = ref.read(locationProvider);
 
@@ -177,10 +164,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       final value = await context.router.push(
         RoutingSearchSheetRoute(
           placeholder: l10n.intermediatePoint,
-          affixIcon: BaladyInputAffixIcon(
-            icon: icon,
-            iconColor: context.colors.extra01Default,
-          ),
+          affixIcon: BaladyInputAffixIcon(icon: icon, iconColor: colors.extra01Default),
           showMyLocation: !containsMyLocation,
         ),
       );
@@ -213,10 +197,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
   List<String> _abLocations(AppLocalizations l10n) {
     if (points.length > 2) {
-      return [
-        points.first.label,
-        l10n.stopCount(points.length - 1),
-      ];
+      return [points.first.label, l10n.stopCount(points.length - 1)];
     }
 
     return points.map((e) => e.label).toList();
@@ -237,20 +218,18 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   /// On tap of the ABPoints widget, show the bottom sheet to change the route
   void _changeRoute() {
     final myLocation = ref.watch(locationProvider);
-    const shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(Spacing.$4x),
-      ),
-    );
+    const shape = RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(Spacing.$4x)));
+    final colors = provider.Provider.of<ThemeController>(context, listen: false).colors;
     showModalBottomSheet(
-      backgroundColor: context.colors.backgroundSurface4,
+      backgroundColor: colors.backgroundSurface4,
       shape: shape,
       context: context,
       scrollControlDisabledMaxHeightRatio: 0.9,
-      builder: (context) => ChangePathSheet(
+      builder: (modalContext) => ChangePathSheet(
         onConfirm: _onConfirm,
-        myLocation:
-            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+        myLocation: myLocation == null
+            ? null
+            : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
         onTap: () {
           // Don't want to pass ref to the sheet, so we have to clear the search results here
           ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
@@ -258,17 +237,15 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         // We need to pass the points and labels as copy (List.of) to manipulate the data and
         // change original data only when user confirms
         points: List.of(points),
-        onClose: () => context.router.pop(),
+        onClose: () => modalContext.router.pop(),
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
-        externalContext: context,
+        externalContext: modalContext,
       ),
     );
   }
 
   /// Confirm the reordering of the points. Also close the bottom sheet
-  void _onConfirm(
-    List<RouteParamsPointWithLabel> points,
-  ) {
+  void _onConfirm(List<RouteParamsPointWithLabel> points) {
     setState(() {
       this.points = points;
     });
@@ -278,12 +255,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   Future<void> _onClose() async {
     final mapSetting = MapObjectManagerSettings.search();
     await ref
-        .read(
-          mapObjectManagerProvider(
-            named: mapSetting.name,
-            layerId: mapSetting.layerId,
-          ).notifier,
-        )
+        .read(mapObjectManagerProvider(named: mapSetting.name, layerId: mapSetting.layerId).notifier)
         .setMapObjectManagerIsVisible(isVisible: true);
 
     Metrics.logEventAdvanced(
@@ -292,16 +264,11 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       action: MetricAction.tap.toString(),
     );
 
-    final navState = await ActiveNavigationHelper.getState(
-      ref.read(dgisControllerProvider).value,
-    );
+    final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 
     if (navState.isActive && context.mounted) {
       await context.router.pushAndPopUntil(
-        PathNavRoute(
-          navType: navState.navType!,
-          initAction: PathNavPageInitAction.restoreFromState,
-        ),
+        PathNavRoute(navType: navState.navType!, initAction: PathNavPageInitAction.restoreFromState),
         predicate: (route) => route.settings.name == BottomMenuRoute.name,
       );
       return;

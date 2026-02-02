@@ -6,10 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 class FilterButtomSheet extends StatefulWidget {
   final FilterOptionType? initialSelectedType;
 
-  const FilterButtomSheet({
-    super.key,
-    this.initialSelectedType,
-  });
+  const FilterButtomSheet({super.key, this.initialSelectedType});
 
   static Future<FilterOptionType?> show(
     BuildContext context, {
@@ -22,9 +19,8 @@ class FilterButtomSheet extends StatefulWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => FilterButtomSheet(
-        initialSelectedType: initialSelectedType,
-      ),
+      builder: (context) =>
+          FilterButtomSheet(initialSelectedType: initialSelectedType),
     );
   }
 
@@ -68,14 +64,18 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: SafeArea(
         child: Padding(
-          padding:
-              const EdgeInsets.only(left: 16, right: 16, top: 20, bottom: 0),
+          padding: const EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 20,
+            bottom: 0,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,27 +87,27 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                   Text(
                     'sort_by'.tr(),
                     textAlign: TextAlign.right,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: GeneralKey.appFontType,
                       fontWeight: FontWeight.w400,
                       fontSize: 20,
                       height: 1.0,
                       letterSpacing: 0,
-                      color: Color(0xFF242424),
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                   Container(
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF5F5F5),
+                      color: Theme.of(context).cardColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(
                       padding: EdgeInsets.zero,
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.close,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.onSurface,
                         size: 20,
                       ),
                       onPressed: () => Navigator.of(context).pop(),
@@ -141,12 +141,13 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                               fontFamily: GeneralKey.appFontType,
                               fontWeight: FontWeight.w400,
                               fontSize: 16,
-                              height: 20 /
+                              height:
+                                  20 /
                                   16, // line-height: 20px / font-size: 16px
                               letterSpacing: 0,
                               color: isDisabled
-                                  ? Colors.grey
-                                  : const Color(0xFF242424),
+                                  ? Theme.of(context).disabledColor
+                                  : Theme.of(context).colorScheme.onSurface,
                               decoration: isDisabled
                                   ? TextDecoration.lineThrough
                                   : TextDecoration.none,
@@ -173,14 +174,14 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                               color: isDisabled
                                   ? Colors.transparent
                                   : (selectedOption == option.type
-                                      ? const Color(0xFF1CA9A6)
-                                      : Colors.transparent),
+                                        ? const Color(0xFF1CA9A6)
+                                        : Colors.transparent),
                               border: Border.all(
                                 color: isDisabled
                                     ? Colors.grey.withOpacity(0.5)
                                     : (selectedOption == option.type
-                                        ? AppColor.primary600Light
-                                        : const Color(0xFFE0E0E0)),
+                                          ? AppColor.primary600Light
+                                          : const Color(0xFFE0E0E0)),
                                 width: 2,
                               ),
                             ),
@@ -200,7 +201,7 @@ class _FilterButtomSheetState extends State<FilterButtomSheet> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
               const SizedBox(height: 20),
               // Confirm button
               SizedBox(

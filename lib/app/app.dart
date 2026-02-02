@@ -39,12 +39,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
-          enableAdvancedGestureRecognition: true,
-          enableCrashHandling: true,
-          enableMultiSessionRecord: true,
-          enableNetworkLogging: true,
-          userAppKey: RemoteConfig.uxCamKey,
-          enableAutomaticScreenNameTagging: false);
+        enableAdvancedGestureRecognition: true,
+        enableCrashHandling: true,
+        enableMultiSessionRecord: true,
+        enableNetworkLogging: true,
+        userAppKey: RemoteConfig.uxCamKey,
+        enableAutomaticScreenNameTagging: false,
+      );
       FlutterUxcam.optIntoSchematicRecordings();
       FlutterUxcam.startWithConfiguration(config);
     }
@@ -67,20 +68,14 @@ class App extends StatelessWidget {
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
-        child: BaladyAuthorizationBloc(
-          child: AppWidget(
-            key: materialAppKey,
-          ),
-        ),
+        child: BaladyAuthorizationBloc(child: AppWidget(key: materialAppKey)),
       ),
     );
   }
 }
 
 class AppWidget extends StatefulWidget {
-  const AppWidget({
-    super.key,
-  });
+  const AppWidget({super.key});
 
   @override
   State<AppWidget> createState() => AppWidgetState();
@@ -146,7 +141,14 @@ class AppWidgetState extends State<AppWidget> {
                     final botToastBuilder = BotToastInit();
                     final easyLoadingBuilder =
                         EasyLoading.init(builder: botToastBuilder);
-                    return easyLoadingBuilder(context, child);
+                    final builtChild = easyLoadingBuilder(context, child);
+
+                    if (grayscaleFilter == null) return builtChild;
+
+                    return ColorFiltered(
+                      colorFilter: grayscaleFilter,
+                      child: builtChild,
+                    );
                   },
                   navigatorObservers: [
                     SentryNavigatorObserver(),

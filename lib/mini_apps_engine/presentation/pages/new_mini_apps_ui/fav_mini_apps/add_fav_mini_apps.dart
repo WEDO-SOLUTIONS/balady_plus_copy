@@ -27,7 +27,6 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
   final TextEditingController _searchController = TextEditingController();
 
   void _startSearch(BuildContext context) {
-
     setState(() {
       _isSearching = true;
     });
@@ -54,7 +53,6 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
             CommonFunctions.showError("max_fav_apps_limit".tr());
           },
           child: Scaffold(
-            //   backgroundColor: Colors.white,
             body: SafeArea(
               child: Container(
                 height: context.screenHeight,
@@ -107,10 +105,14 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
                                             // color: Theme.of(context).colorScheme.surface,
-                                            borderRadius:
-                                                BorderRadius.circular(100),
+                                            borderRadius: BorderRadius.circular(
+                                              100,
+                                            ),
                                             border: Border.all(
-                                              color: const Color(0xFFEDEDED),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withAlpha(30),
                                               width: 1,
                                             ),
                                           ),
@@ -119,12 +121,15 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                               onPressed: () =>
                                                   _startSearch(context),
                                               icon: SvgPicture.asset(
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? IconPath.searchSVG2
-                                                    : IconPath.searchSVG,
+                                                IconPath.searchSVG,
                                                 width: context.w(20),
                                                 height: context.h(20),
+                                                colorFilter: ColorFilter.mode(
+                                                  Theme.of(
+                                                    context,
+                                                  ).colorScheme.onSurface,
+                                                  BlendMode.srcIn,
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -137,10 +142,14 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                         child: DecoratedBox(
                                           decoration: BoxDecoration(
                                             //  color: const Color(0XFFFFFFFF),
-                                            borderRadius:
-                                                BorderRadius.circular(100),
+                                            borderRadius: BorderRadius.circular(
+                                              100,
+                                            ),
                                             border: Border.all(
-                                              color: const Color(0xFFEDEDED),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurface
+                                                  .withAlpha(30),
                                               width: 1,
                                             ),
                                           ),
@@ -150,9 +159,9 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                             },
                                             icon: Icon(
                                               Icons.close,
-                                              color: Theme.of(context)
-                                                  .iconTheme
-                                                  .color,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                             ),
                                           ),
                                         ),
@@ -169,18 +178,20 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                     height: context.h(49),
                                     child: DecoratedBox(
                                       decoration: BoxDecoration(
-                                        color: const Color(0XFFFFFFFF),
-                                        borderRadius:
-                                            BorderRadius.circular(100),
+                                        // color: const Color(0XFFFFFFFF),
+                                        borderRadius: BorderRadius.circular(
+                                          100,
+                                        ),
                                         border: Border.all(
-                                          color: const Color(0xFFEDEDED),
+                                          color: Theme.of(context).cardColor,
                                           width: 1,
                                         ),
                                       ),
                                       child: IconButton(
                                         onPressed: () {
                                           if (_searchController
-                                              .text.isNotEmpty) {
+                                              .text
+                                              .isNotEmpty) {
                                             // _searchController.clear();
                                             // context
                                             //     .read<NewMiniAppLogicCubit>()
@@ -192,74 +203,88 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                         },
                                         icon: Icon(
                                           Icons.close,
-                                          color:
-                                              Theme.of(context).iconTheme.color,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
                                         ),
                                       ),
                                     ),
                                   ),
                                   SizedBox(width: context.w(10)),
                                   Expanded(
-                                    child: ValueListenableBuilder<
-                                        TextEditingValue>(
-                                      valueListenable: _searchController,
-                                      builder: (context, value, child) {
-                                        final hasText = value.text.isNotEmpty;
+                                    child:
+                                        ValueListenableBuilder<
+                                          TextEditingValue
+                                        >(
+                                          valueListenable: _searchController,
+                                          builder: (context, value, child) {
+                                            final hasText =
+                                                value.text.isNotEmpty;
 
-                                        return MiniAppsCustomTextField(
-                                          width: context.screenWidth * 0.75,
-                                          height: context.h(49),
-                                          suffixPadding: hasText
-                                              ? const EdgeInsets.symmetric(
-                                                  horizontal: 8,
-                                                ) // when user typed
-                                              : const EdgeInsets.symmetric(
-                                                  horizontal: 20,
-                                                ),
-                                          autoFocus: true,
-                                          autofocus: true,
-                                          controller: _searchController,
-                                          onTap: () {},
-                                          keyboardType: TextInputType.text,
-                                          isReadOnly: false,
-                                          suffixString: value.text.isEmpty
-                                              ? Text(
-                                                  "search2".tr(),
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                  ),
-                                                )
-                                              : const SizedBox(),
-                                          suffixIcon: value.text.isEmpty
-                                              ? SvgPicture.asset(
-                                                  Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.dark
-                                                      ? IconPath.searchSVG2
-                                                      : IconPath.searchSVG)
-                                              : IconButton(
-                                                  onPressed: () {
-                                                    _searchController.clear();
-                                                    context
-                                                        .read<
-                                                            NewMiniAppLogicCubit>()
-                                                        .searchMiniApp('');
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.close_rounded,
-                                                    color: Theme.of(context)
-                                                        .iconTheme
-                                                        .color,
-                                                  ),
-                                                ),
-                                          onChanged: (query) {
-                                            context
-                                                .read<NewMiniAppLogicCubit>()
-                                                .searchMiniApp(query);
+                                            return MiniAppsCustomTextField(
+                                              width: context.screenWidth * 0.75,
+                                              height: context.h(49),
+                                              suffixPadding: hasText
+                                                  ? const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                    ) // when user typed
+                                                  : const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                    ),
+                                              autoFocus: true,
+                                              autofocus: true,
+                                              controller: _searchController,
+                                              onTap: () {},
+                                              keyboardType: TextInputType.text,
+                                              isReadOnly: false,
+                                              suffixString: value.text.isEmpty
+                                                  ? Text(
+                                                      "search2".tr(),
+                                                      style: TextStyle(
+                                                        color: Theme.of(
+                                                          context,
+                                                        ).disabledColor,
+                                                      ),
+                                                    )
+                                                  : const SizedBox(),
+                                              suffixIcon: value.text.isEmpty
+                                                  ? SvgPicture.asset(
+                                                      colorFilter:
+                                                          ColorFilter.mode(
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .onSurface,
+                                                            BlendMode.srcIn,
+                                                          ),
+                                                      IconPath.searchSVG,
+                                                    )
+                                                  : IconButton(
+                                                      onPressed: () {
+                                                        _searchController
+                                                            .clear();
+                                                        context
+                                                            .read<
+                                                              NewMiniAppLogicCubit
+                                                            >()
+                                                            .searchMiniApp('');
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.close_rounded,
+                                                        color: Theme.of(
+                                                          context,
+                                                        ).colorScheme.onSurface,
+                                                      ),
+                                                    ),
+                                              onChanged: (query) {
+                                                context
+                                                    .read<
+                                                      NewMiniAppLogicCubit
+                                                    >()
+                                                    .searchMiniApp(query);
+                                              },
+                                            );
                                           },
-                                        );
-                                      },
-                                    ),
+                                        ),
                                   ),
                                 ],
                               ),
@@ -267,9 +292,7 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                         ),
                         SizedBox(height: context.screenHeight * 0.02),
                         if (_isSearching)
-                          const Expanded(
-                            child: SearchMiniAppsResultsList(),
-                          )
+                          const Expanded(child: SearchMiniAppsResultsList())
                         else
                           Expanded(
                             child: SingleChildScrollView(
@@ -279,7 +302,8 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                   // ! Fav apps
                                   state.favoriteApps.isNotEmpty
                                       ? const StaggeredAppear(
-                                          children: [GetAllFavMiniAppsWidget()])
+                                          children: [GetAllFavMiniAppsWidget()],
+                                        )
                                       : const SizedBox(),
 
                                   const SizedBox(height: 12),
@@ -287,12 +311,15 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                   //! All apps (unFavorite)
                                   state.unFavoriteApps.isNotEmpty
                                       ? StaggeredAppear(
-                                          initialDelay:
-                                              const Duration(milliseconds: 220),
-                                          itemDuration:
-                                              const Duration(milliseconds: 120),
-                                          itemDelay:
-                                              const Duration(milliseconds: 100),
+                                          initialDelay: const Duration(
+                                            milliseconds: 220,
+                                          ),
+                                          itemDuration: const Duration(
+                                            milliseconds: 120,
+                                          ),
+                                          itemDelay: const Duration(
+                                            milliseconds: 100,
+                                          ),
                                           children: [
                                             CustomSubHeadingText(
                                               width: context.w(144),
@@ -309,8 +336,9 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                                   const SizedBox(height: 12),
 
                                   const StaggeredAppear(
-                                      children: [GetAllUnFavMiniAppsWidget()]),
-                                  SizedBox(height: context.screenHeight * 0.08)
+                                    children: [GetAllUnFavMiniAppsWidget()],
+                                  ),
+                                  SizedBox(height: context.screenHeight * 0.08),
                                 ],
                               ),
                             ),
@@ -329,16 +357,16 @@ class _AddFavMiniAppsState extends State<AddFavMiniApps> {
                             end: Alignment.bottomCenter,
                             colors:
                                 Theme.of(context).brightness == Brightness.dark
-                                    ? [
-                                        Colors.black.withOpacity(0.0),
-                                        Colors.black.withOpacity(0.6),
-                                        Colors.black,
-                                      ]
-                                    : [
-                                        Colors.white.withOpacity(0.0),
-                                        Colors.white.withOpacity(0.6),
-                                        Colors.white,
-                                      ],
+                                ? [
+                                    Colors.black.withOpacity(0.0),
+                                    Colors.black.withOpacity(0.6),
+                                    Colors.black,
+                                  ]
+                                : [
+                                    Colors.white.withOpacity(0.0),
+                                    Colors.white.withOpacity(0.6),
+                                    Colors.white,
+                                  ],
                             stops: const [0.0, 0.45, 1.0],
                           ),
                         ),

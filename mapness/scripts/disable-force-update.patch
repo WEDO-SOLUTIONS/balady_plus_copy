@@ -2,7 +2,7 @@ diff --git a/lib/app/features/force_update/presentation/core/force_update_cubit.
 index 45f948096..aa4f77dc1 100644
 --- a/lib/app/features/force_update/presentation/core/force_update_cubit.dart
 +++ b/lib/app/features/force_update/presentation/core/force_update_cubit.dart
-@@ -112,14 +112,14 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
+@@ -55,13 +55,13 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
      if (currentVersionNo != null &&
          latestVersionNo != null &&
          forceUpdate != null) {
@@ -25,21 +25,3 @@ index 45f948096..aa4f77dc1 100644
      }
      emit(const NotHaveForceUpdateState());
      return false;
-
-diff --git a/lib/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart b/lib/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart
-index d63daf0c..9b3183d5 100644
---- a/lib/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart
-+++ b/lib/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart
-@@ -162,9 +162,9 @@ class EtmamEntryPointCubit extends Cubit<EtmamEntryPointState> {
-     final failureOrSuccessForProfile = await _getForceVersion(NoParams());
-     await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
-       print("SUCCCCCCCCESSSSSS ${success}");
--      if (success)
--        showUpdateAppPopUpWidget(
--            NavigationService.navigatorKey.currentContext!);
-+      // if (success)
-+      //   showUpdateAppPopUpWidget(
-+      //       NavigationService.navigatorKey.currentContext!);
-     });
-   }
- }

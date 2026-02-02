@@ -7,7 +7,7 @@ index ac176fc0d0..b874181df7 100644
  	<key>com.apple.security.application-groups</key>
  	<array>
 -		<string>group.movingViolations</string>
-+		<string>group.urbi.movingViolations</string>
++		<string>group.urbiMovingViolation</string>
  	</array>
  </dict>
  </plist>
@@ -20,7 +20,7 @@ index 1fe8d1f4c5..a4a9ccad0e 100644
  // FIXME: Please change with your app group.
  
 -let APP_GROUP = "group.movingViolations"
-+let APP_GROUP = "group.urbi.movingViolations"
++let APP_GROUP = "group.urbiMovingViolation"
  
  @objc(NotificationViewController)
  
@@ -33,7 +33,7 @@ index ac176fc0d0..b874181df7 100644
  	<key>com.apple.security.application-groups</key>
  	<array>
 -		<string>group.movingViolations</string>
-+		<string>group.urbi.movingViolations</string>
++		<string>group.urbiMovingViolation</string>
  	</array>
  </dict>
  </plist>
@@ -46,7 +46,7 @@ index afd05172a3..d8f7977e9a 100644
  
  // FIXME: Please change with your app group.
 -let APP_GROUP = "group.movingViolations"
-+let APP_GROUP = "group.urbi.movingViolations"
++let APP_GROUP = "group.urbiMovingViolation"
  
  class NotificationService: UNNotificationServiceExtension {
  
@@ -59,7 +59,7 @@ index ac176fc0d0..b874181df7 100644
  	<key>com.apple.security.application-groups</key>
  	<array>
 -		<string>group.movingViolations</string>
-+		<string>group.urbi.movingViolations</string>
++		<string>group.urbiMovingViolation</string>
  	</array>
  </dict>
  </plist>
@@ -72,20 +72,20 @@ index 8a9f21cd56..b05accfd4c 100644
  	<key>com.apple.security.application-groups</key>
  	<array>
 -		<string>group.movingViolations</string>
-+		<string>group.urbi.movingViolations</string>
++		<string>group.urbiMovingViolation</string>
  	</array>
  </dict>
  </plist>
-diff --git a/lib/app/app.dart b/lib/app/app.dart
-index c98a58cee7..dd843424eb 100644
---- a/lib/app/app.dart
-+++ b/lib/app/app.dart
-@@ -101,7 +101,7 @@ class AppWidgetState extends State<AppWidget> {
- 
- 
-             await FlutterInsider.Instance.init(
--        "baladyapp", "group.movingViolations",
-+        "baladyapp", "group.urbi.movingViolations",
-         (int type, dynamic data) {
-       switch (type) {
-             case InsiderCallbackAction.NOTIFICATION_OPEN:
+#diff --git a/lib/app/app.dart b/lib/app/app.dart
+#index c98a58cee7..dd843424eb 100644
+#--- a/lib/app/app.dart
+#+++ b/lib/app/app.dart
+#@@ -101,7 +101,7 @@ class AppWidgetState extends State<AppWidget> {
+#
+#
+#             await FlutterInsider.Instance.init(
+#-        "baladyapp", "group.movingViolations",
+#+        "baladyapp", "group.urbiMovingViolation",
+#         (int type, dynamic data) {
+#       switch (type) {
+#             case InsiderCallbackAction.NOTIFICATION_OPEN:

@@ -1,91 +1,203 @@
-name: Notify on review
+name: Notify on review (Teams)
 
 on:
   pull_request_review:
-    types:
-      - submitted
+    types: [submitted]
 
 jobs:
   notify-on-approvals:
     name: Notify when PR has 2 approvals
-    # runs-on: [misc]
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      pull-requests: write
+      pull-requests: read
+      contents: read
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - uses: octokit/request-action@v2.x
-        id: check_approvals
+
+      - name: Install yq
+        run: |
+          set -euo pipefail
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
+
+      - name: Fetch PR reviews
+        uses: octokit/request-action@v2.x
+        id: reviews
         with:
           route: GET /repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/reviews
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: test_variables
+
+      - name: Count unique approvals (latest review per user)
+        id: approvals
         run: |
-          JSON_RESPONSE='${{ steps.check_approvals.outputs.data }}'
-          CURRENT_APPROVALS_COUNT=$(echo $JSON_RESPONSE | jq -c '[.[] | select(.state | contains("APPROVED")) ] | length')
-          echo "approval=${CURRENT_APPROVALS_COUNT}" >> $GITHUB_OUTPUT
-          echo "Current approvals = ${CURRENT_APPROVALS_COUNT}"
-      - name: Send notification if PR has 2 approvals
-        if: steps.test_variables.outputs.approval >= 2
+          set -euo pipefail
+
+          JSON='${{ steps.reviews.outputs.data }}'
+
+          # Count APPROVED reviews by taking the latest review state per reviewer (GitHub shows multiple reviews per person)
+          APPROVALS=$(
+            echo "$JSON" | jq -r '
+              sort_by(.submitted_at)                                  # ensure chronological
+              | reduce .[] as $r ({}; .[$r.user.login] = $r.state)    # keep latest state per user
+              | to_entries
+              | map(select(.value == "APPROVED"))
+              | length
+            '
+          )
+
+          echo "approval=$APPROVALS" >> "$GITHUB_OUTPUT"
+          echo "Current unique approvals = $APPROVALS"
+
+      - name: Send Teams notification if PR has 2 approvals
+        if: steps.approvals.outputs.approval >= 2
         env:
-          MM_CHANNEL_ID: ${{ secrets.MM_REVIEWERS_CHANNEL_ID }}
-          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
-          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL_PR }}
         run: |
+          set -euo pipefail
+
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-          MM_MERGERS_FILE="${{ github.workspace }}/.github/mergers.yml"
+          APPROVALS="${{ steps.approvals.outputs.approval }}"
 
-          mergers=$(yq e '.mergers | join(", ")' "${MM_MERGERS_FILE}")
+          MERGERS_FILE="${{ github.workspace }}/.github/mergers.yml"
+          TEAMS_MAPPING_FILE="${{ github.workspace }}/.github/teams_mapping.yml"
+  
+          MENTION_TEXT=""
+          ENTITIES="[]"
 
-          MESSAGE="PR **[${PR_TITLE}](${PR_URL})** by **${PR_AUTHOR}** has received 2 or more approvals. ${mergers}, please review and merge it."
+          while IFS= read -r gh; do
+            [ -z "$gh" ] && continue
 
-          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
-            \"channel_id\": \"${MM_CHANNEL_ID}\", \
-            \"message\": \"${MESSAGE}\"\
-          }"
+            tid=$(yq -r ".\"$gh\" // \"\"" "$TEAMS_MAPPING_FILE" || true)
+            echo "merger='$gh' -> tid='$tid'"
+
+            if [ -n "$tid" ] && [ "$tid" != "null" ]; then
+              MENTION_TEXT="${MENTION_TEXT}<at>${gh}</at> "
+              ENTITIES=$(echo "$ENTITIES" | jq --arg id "$tid" --arg name "$gh" '
+                . + [{
+                  "type":"mention",
+                  "text":("<at>"+$name+"</at>"),
+                  "mentioned":{"id":$id,"name":$name}
+                }]
+              ')
+            else
+              # если нет id — хотя бы напишем именем
+              MENTION_TEXT="${MENTION_TEXT}${gh} "
+            fi
+          done < <(yq -r '.mergers[]' "$MERGERS_FILE")
+
+
+          MESSAGE="${MENTION_TEXT}PR **[${PR_TITLE}](${PR_URL})** by **${PR_AUTHOR}** has received **${APPROVALS}** approvals. Please review and merge it."
+
+          payload=$(jq -n \
+            --arg msg "$MESSAGE" \
+            --argjson entities "$ENTITIES" \
+            '{
+              "type":"message",
+              "attachments":[
+                {
+                  "contentType":"application/vnd.microsoft.card.adaptive",
+                  "content":{
+                    "$schema":"http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type":"AdaptiveCard",
+                    "version":"1.4",
+                    "msteams":{"entities": $entities},
+                    "body":[
+                      {"type":"TextBlock","wrap":true,"text":"👀 PR ready to merge"},
+                      {"type":"TextBlock","wrap":true,"text": $msg}
+                    ]
+                  }
+                }
+              ]
+            }')
+
+          curl -sS -X POST -H "Content-Type: application/json" --data "$payload" "$TEAMS_WEBHOOK_URL"
 
   notify-pr-author:
     name: Notify author of PR about new review
-    # runs-on: [misc]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Get Mattermost username for PR author
-        id: get_mm_username
+      - name: Install yq
         run: |
+          set -euo pipefail
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq --version
 
-          # Get info about PR
+      - name: Map PR author to Teams user id
+        id: map
+        run: |
+          set -euo pipefail
+
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          TEAMS_MAPPING_FILE="${{ github.workspace }}/.github/teams_mapping.yml"
 
-          MM_MAPPING_FILE="${{ github.workspace }}/.github/mm_mapping.yml"
-          mattermost_user=$(yq e ".${PR_AUTHOR} // \"\"" "${MM_MAPPING_FILE}")
-          echo "Mattermost user for PR author ${PR_AUTHOR} is ${mattermost_user}"
-          echo "mm_user=${mattermost_user}" >> $GITHUB_OUTPUT
-      - name: Send notification to PR author
-        if: steps.get_mm_username.outputs.mm_user != ''
+          teams_id=$(yq -r ".\"$PR_AUTHOR\" // \"\"" "$TEAMS_MAPPING_FILE" || true)
+
+          echo "PR author = $PR_AUTHOR"
+          echo "teams_id=$teams_id" >> "$GITHUB_OUTPUT"
+
+      - name: Send Teams notification to PR author
+        if: steps.map.outputs.teams_id != ''
         env:
-          MM_CHANNEL_ID: ${{ secrets.MM_REVIEWERS_CHANNEL_ID }}
-          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
-          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL_PR }}
         run: |
-          MM_USER="${{ steps.get_mm_username.outputs.mm_user }}"
+          set -euo pipefail
+
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          TEAMS_ID="${{ steps.map.outputs.teams_id }}"
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
+          REVIEW_STATE="${{ github.event.review.state }}"
+          REVIEWER="${{ github.event.review.user.login }}"
 
-          MESSAGE="@${MM_USER} Your PR **[${PR_TITLE}](${PR_URL})** got new review."
-          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
-            \"channel_id\": \"${MM_CHANNEL_ID}\", \
-            \"message\": \"${MESSAGE}\"\
-          }"
-      - name: Cant get PR author MM username
-        if: steps.get_mm_username.outputs.mm_user == ''
+          # Mention author
+          ENTITIES=$(jq -n --arg id "$TEAMS_ID" --arg name "$PR_AUTHOR" '
+            [{
+              "type":"mention",
+              "text":("<at>"+$name+"</at>"),
+              "mentioned":{"id":$id,"name":$name}
+            }]
+          ')
+
+          MSG="<at>${PR_AUTHOR}</at> Your PR **[${PR_TITLE}](${PR_URL})** got a new review (${REVIEW_STATE}) from **${REVIEWER}**."
+
+          payload=$(jq -n \
+            --arg msg "$MSG" \
+            --argjson entities "$ENTITIES" \
+            '{
+              "type":"message",
+              "attachments":[
+                {
+                  "contentType":"application/vnd.microsoft.card.adaptive",
+                  "content":{
+                    "$schema":"http://adaptivecards.io/schemas/adaptive-card.json",
+                    "type":"AdaptiveCard",
+                    "version":"1.4",
+                    "msteams":{"entities": $entities},
+                    "body":[
+                      {"type":"TextBlock","wrap":true,"text":"🔔 New PR review"},
+                      {"type":"TextBlock","wrap":true,"text": $msg}
+                    ]
+                  }
+                }
+              ]
+            }')
+
+          curl -sS -X POST -H "Content-Type: application/json" --data "$payload" "$TEAMS_WEBHOOK_URL"
+
+      - name: Can't map PR author to Teams
+        if: steps.map.outputs.teams_id == ''
         run: |
-          echo "Cant convert Github username ${PR_AUTHOR} to MM username"
+          echo "Can't convert GitHub username '${{ github.event.pull_request.user.login }}' to Teams user id (teams_mapping.yml missing?)"

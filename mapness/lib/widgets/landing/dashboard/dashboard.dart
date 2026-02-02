@@ -157,7 +157,10 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                            colors: [
+                              context.colors.backgroundSurface1.withOpacity(0),
+                              context.colors.backgroundSurface1.withOpacity(0.8),
+                            ],
                           ),
                         ),
                       ),

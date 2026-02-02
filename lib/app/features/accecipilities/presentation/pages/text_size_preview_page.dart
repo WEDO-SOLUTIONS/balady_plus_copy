@@ -5,8 +5,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TextSizePreviewPage extends StatefulWidget {
   const TextSizePreviewPage({super.key});
@@ -22,7 +22,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
   void initState() {
     super.initState();
     final controller =
-        Provider.of<AccessibilityController>(context, listen: false);
+    Provider.of<AccessibilityController>(context, listen: false);
     _fontSize = 16 * controller.textScale;
   }
 
@@ -34,7 +34,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
       backgroundColor: Colors.white,
       appBar: BaladyTopBar.iconAndText(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-        title: 'context.l10n.fontSize',
+        title: 'fontSize'.tr(),
         colorEnabled: context.colors.accentDefault,
         leading: ActionModel(
           onPressed: () {
@@ -60,7 +60,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
               ),
               child: Text(
                 'Main text will look like this.\n'
-                '1234567890!@#%&*()_+-=',
+                    '1234567890!@#%&*()_+-=',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: _fontSize,
@@ -90,7 +90,7 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                       ),
                       activeTickMarkColor: Colors.transparent,
                       inactiveTickMarkColor:
-                          const Color(0xFF4DB6AC).withOpacity(0.4),
+                      const Color(0xFF4DB6AC).withOpacity(0.4),
                     ),
                     child: Slider(
                       value: _fontSize,
@@ -110,11 +110,11 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text('12px', style: TextStyle(color: Colors.grey)),
                   Text('24px', style: TextStyle(color: Colors.grey)),
                 ],

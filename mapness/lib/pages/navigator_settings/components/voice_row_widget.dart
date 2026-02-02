@@ -11,10 +11,7 @@ import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 class VoiceRowWidget extends ConsumerWidget {
   final PackageMessage package;
 
-  const VoiceRowWidget({
-    required this.package,
-    super.key,
-  });
+  const VoiceRowWidget({required this.package, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,16 +37,11 @@ class VoiceRowWidget extends ConsumerWidget {
         }
       },
       options: ContentRowOptions(
-        padding: const EdgeInsets.symmetric(
-          vertical: Spacing.$2x,
-          horizontal: Spacing.$4x,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
         wrapperColor: context.colors.backgroundSurface1,
         wrapperEnabled: true,
         title: localizeVoicePackageName(context, packageInfo.name),
-        titleStyle: context.textStyles.bodyLargeRegular.copyWith(
-          color: context.colors.foregroundDefault,
-        ),
+        titleStyle: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
         customActionWidget: Builder(
           builder: (context) {
             if (packageInfo.updateStatus == PackageUpdateStatusMessage.inProgress) {
@@ -64,17 +56,11 @@ class VoiceRowWidget extends ConsumerWidget {
                 ],
               );
             } else if (selectedVoice == package.id) {
-              return Icon(
-                SystemIcons.checkmark,
-                color: context.colors.successDefault,
-              );
+              return Icon(SystemIcons.checkmark, color: context.colors.successDefault);
             } else if (packageInfo.installed) {
               return Spacing.$6x.heightBox;
             } else {
-              return Icon(
-                SystemIcons.download,
-                color: context.colors.accentDefault,
-              );
+              return Icon(SystemIcons.download, color: context.colors.accentDefault);
             }
           },
         ),

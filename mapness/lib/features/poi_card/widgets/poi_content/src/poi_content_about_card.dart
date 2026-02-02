@@ -43,12 +43,10 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this, duration: widget.animationDuration);
-    _animation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: widget.animationCurve,
-      ),
-    );
+    _animation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _animationController, curve: widget.animationCurve));
 
     _animationController.addListener(() {
       if (truncateText != (_animationController.value == 0)) {
@@ -70,114 +68,111 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
 
   @override
   Widget build(BuildContext context) => ContentWrapper.single(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            if (_maxWidth != constraints.maxWidth) {
-              _maxWidth = constraints.maxWidth;
-              _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
-            }
-            return ContentRow(
-              text: ContentRowTextOptions(
-                title: widget.data.aboutTitle,
-                titleOptions: const ContentRowTextOption(isBold: true),
-                subtitleExtraOptions: _showExpandButton
-                    ? ContentRowTextOption(
-                        isBold: true,
-                        builder: (context) => GestureDetector(
-                          onTap: () {
-                            if (!isFullVisible) {
-                              _animationController.forward();
-                            } else {
-                              _animationController.reverse();
-                            }
-                          },
-                          child: AnimatedBuilder(
-                            animation: _animation,
-                            builder: (context, child) => Stack(
-                              children: [
-                                Text(
-                                  maxLines: 1,
-                                  widget.data.showLessTitle,
-                                  style: context.textStyle.footNoteBold.copyWith(
-                                    color: context.colors.accentDefault.withOpacity(_animation.value),
-                                  ),
-                                ),
-                                Text(
-                                  maxLines: 1,
-                                  widget.data.showMoreTitle,
-                                  style: context.textStyle.footNoteBold.copyWith(
-                                    color: context.colors.accentDefault.withOpacity(1 - _animation.value),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    : null,
-                subtitleOptions: ContentRowTextOption(
-                  builder: (context) => AnimatedBuilder(
-                    animation: _animation,
-                    builder: (context, child) => Stack(
-                      alignment: AlignmentDirectional.bottomStart,
-                      children: [
-                        SizedBox(
-                          height: widget.isExpandable
-                              ? _textHeight.heightTruncated +
-                                  (_textHeight.height - _textHeight.heightTruncated) * _animation.value
-                              : null,
-                          width: _maxWidth,
-                          child: Text(
-                            widget.data.text,
-                            maxLines: truncateText ? widget.collapsedLinesCount : 99,
-                            overflow: TextOverflow.ellipsis,
-                            style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                          ),
-                        ),
-                        if (_showExpandButton)
-                          DecoratedBox(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                // TODO: Change to gradientBackgroundSurface0 and gradientBackgroundSurface80
-                                // When this colors will be added to UIKit
-                                colors: [
-                                  context.colors.gradientBackgroundCardGradient0,
-                                  context.colors.gradientBackgroundCardGradient80
-                                ],
+    color: context.colors.backgroundSurface1,
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        if (_maxWidth != constraints.maxWidth) {
+          _maxWidth = constraints.maxWidth;
+          _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
+        }
+        return ContentRow(
+          backgroundColor: context.colors.backgroundSurface1,
+          text: ContentRowTextOptions(
+            title: widget.data.aboutTitle,
+            titleOptions: const ContentRowTextOption(isBold: true),
+            subtitleExtraOptions: _showExpandButton
+                ? ContentRowTextOption(
+                    isBold: true,
+                    builder: (context) => GestureDetector(
+                      onTap: () {
+                        if (!isFullVisible) {
+                          _animationController.forward();
+                        } else {
+                          _animationController.reverse();
+                        }
+                      },
+                      child: AnimatedBuilder(
+                        animation: _animation,
+                        builder: (context, child) => Stack(
+                          children: [
+                            Text(
+                              maxLines: 1,
+                              widget.data.showLessTitle,
+                              style: context.textStyle.footNoteBold.copyWith(
+                                color: context.colors.accentDefault.withOpacity(_animation.value),
                               ),
                             ),
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: Curves.easeOutCubic.transform(1 - _animation.value) * _heightOfGradient,
+                            Text(
+                              maxLines: 1,
+                              widget.data.showMoreTitle,
+                              style: context.textStyle.footNoteBold.copyWith(
+                                color: context.colors.accentDefault.withOpacity(1 - _animation.value),
+                              ),
                             ),
-                          ),
-                      ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  )
+                : null,
+            subtitleOptions: ContentRowTextOption(
+              builder: (context) => AnimatedBuilder(
+                animation: _animation,
+                builder: (context, child) => Stack(
+                  alignment: AlignmentDirectional.bottomStart,
+                  children: [
+                    SizedBox(
+                      height: widget.isExpandable
+                          ? _textHeight.heightTruncated +
+                                (_textHeight.height - _textHeight.heightTruncated) * _animation.value
+                          : null,
+                      width: _maxWidth,
+                      child: Text(
+                        widget.data.text,
+                        maxLines: truncateText ? widget.collapsedLinesCount : 99,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                      ),
+                    ),
+                    if (_showExpandButton)
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            // TODO: Change to gradientBackgroundSurface0 and gradientBackgroundSurface80
+                            // When this colors will be added to UIKit
+                            colors: [
+                              context.colors.gradientBackgroundSurface1opacity0,
+                              context.colors.gradientBackgroundSurface1opacity80,
+                            ],
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: Curves.easeOutCubic.transform(1 - _animation.value) * _heightOfGradient,
+                        ),
+                      ),
+                  ],
                 ),
               ),
-            );
-          },
-        ),
-      );
+            ),
+          ),
+        );
+      },
+    ),
+  );
 
   _AboutTextModel _calculateTextHeight(BuildContext context, String text, double maxWidth) {
     final textDirection = Directionality.of(context);
     final span = TextSpan(
       text: text,
-      style: context.textStyles.bodySmallRegular.copyWith(
-        color: context.colors.foregroundDefault,
-      ),
+      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
     );
     final painter = TextPainter(text: span, textDirection: textDirection)..layout(maxWidth: maxWidth);
 
-    final painterTruncated = TextPainter(
-      text: span,
-      textDirection: textDirection,
-      maxLines: 3,
-    )..layout(maxWidth: maxWidth);
+    final painterTruncated = TextPainter(text: span, textDirection: textDirection, maxLines: 3)
+      ..layout(maxWidth: maxWidth);
 
     return _AboutTextModel(
       height: painter.height,
@@ -198,9 +193,5 @@ class _AboutTextModel {
   /// Number of lines in the text if it is not truncated
   final int linesCount;
 
-  const _AboutTextModel({
-    required this.height,
-    required this.heightTruncated,
-    required this.linesCount,
-  });
+  const _AboutTextModel({required this.height, required this.heightTruncated, required this.linesCount});
 }

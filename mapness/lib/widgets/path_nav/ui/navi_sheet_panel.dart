@@ -76,13 +76,12 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   final sheetKey = GlobalKey();
 
   late final shapeDelegate = ToggleSheetDelegateFunction<ShapeBorder?>(
-    function:
-        (controller) => SmoothRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: const Radius.circular(RadiusBorder.xl),
-            bottom: Radius.circular(RadiusBorder.xl * controller.interpolation),
-          ),
-        ),
+    function: (controller) => SmoothRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: const Radius.circular(RadiusBorder.xl),
+        bottom: Radius.circular(RadiusBorder.xl * controller.interpolation),
+      ),
+    ),
   );
   late final paddingDelegate = ToggleSheetDelegateFunction<EdgeInsets?>(
     function: (controller) {
@@ -131,8 +130,9 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
     final _voiceInstructionTypeTitle = soundSettingsNotifier.currentSoundToggleType.mapVoiceInstructionsToTitle(
       context,
     );
-    final _subtitleVoiceInstruction =
-        voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
+    final _subtitleVoiceInstruction = voiceName != null
+        ? '$_voiceInstructionTypeTitle • $voiceName'
+        : _voiceInstructionTypeTitle;
     final hasIntermediateRoutePoints = (currentRoute?.points.length ?? 0) > 2;
 
     return Padding(
@@ -156,36 +156,33 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
           barrierColorDelegate: barrierDelegate,
           topHeader: ValueListenableBuilder(
             valueListenable: widget.betterRouteDurationProfit,
-            builder:
-                (context, duration, child) =>
-                    duration != null
-                        ? Padding(
-                          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
-                          child: BetterRouteButton(
-                            title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
-                            onTap: () => widget.acceptBetterRoute(context),
-                            onCloseTap: () => widget.rejectBetterRoute(context),
-                          ),
-                        )
-                        : ParkingBanner(
-                          navigatorType: widget.navType,
-                          navigationState: widget.navigationState,
-                          isHomeOrWork: widget.isHomeOrWork,
-                          bottomSheetController: widget.sheetController,
-                        ),
+            builder: (context, duration, child) => duration != null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+                    child: BetterRouteButton(
+                      title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
+                      onTap: () => widget.acceptBetterRoute(context),
+                      onCloseTap: () => widget.rejectBetterRoute(context),
+                    ),
+                  )
+                : ParkingBanner(
+                    navigatorType: widget.navType,
+                    navigationState: widget.navigationState,
+                    isHomeOrWork: widget.isHomeOrWork,
+                    bottomSheetController: widget.sheetController,
+                  ),
           ),
           header: ValueListenableBuilder<PathNavState>(
             valueListenable: widget.navigationState,
-            builder:
-                (context, state, child) => EtaHeader(
-                  sheetController: widget.sheetController,
-                  onEndTripPressed: widget.onEndTripPressed,
-                  onSearchPressed: () => widget.onSearchPressed(context),
-                  onContinuePressed: widget.onContinuePressed,
-                  onTapRoute: widget.onTapRoute,
-                  state: state,
-                  isSwitchingToFoot: widget.isSwitchingToFoot,
-                ),
+            builder: (context, state, child) => EtaHeader(
+              sheetController: widget.sheetController,
+              onEndTripPressed: widget.onEndTripPressed,
+              onSearchPressed: () => widget.onSearchPressed(context),
+              onContinuePressed: widget.onContinuePressed,
+              onTapRoute: widget.onTapRoute,
+              state: state,
+              isSwitchingToFoot: widget.isSwitchingToFoot,
+            ),
           ),
           contentPadding: const EdgeInsets.symmetric(horizontal: Spacing.$3x, vertical: Spacing.$4x),
           content: [
@@ -195,30 +192,26 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               Spacing.$3x.heightBox,
             ],
             ContentWrapper.single(
-              color: colors.staticWhite,
+              color: colors.backgroundSurface1,
               child: ContentRow(
                 onTap: () => widget.onTapRoute.call(),
                 crossAxisAlignment: CrossAxisAlignment.start,
                 text: ContentRowTextOptions(title: l10n.route),
                 trailing: ContentRowCustomTrailingOptions(
-                  builder:
-                      (_) => Padding(
-                        padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
-                        child: ContentRowAction(
-                          actionOptions: ContentRowActionOptions(
-                            actionIcon: AppIcons(
-                              iconData: GeneralIcons.routeStroke,
-                              color: context.colors.foregroundMuted,
-                            ),
-                          ),
-                        ),
+                  builder: (_) => Padding(
+                    padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
+                    child: ContentRowAction(
+                      actionOptions: ContentRowActionOptions(
+                        actionIcon: AppIcons(iconData: GeneralIcons.routeStroke, color: context.colors.foregroundMuted),
                       ),
+                    ),
+                  ),
                 ),
               ),
             ),
             Spacing.$3x.heightBox,
             ContentWrapper(
-              color: colors.staticWhite,
+              color: colors.backgroundSurface1,
               children: [
                 ContentRow(
                   onTap: () => context.router.push(const SoundSettingsRoute()),
@@ -239,18 +232,17 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
                     ),
                   ),
                   trailing: ContentRowCustomTrailingOptions(
-                    builder:
-                        (_) => Padding(
-                          padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
-                          child: ContentRowAction(
-                            actionOptions: ContentRowActionOptions(
-                              actionIcon: AppIcons(
-                                iconData: SystemIcons.arrowCornerRightLarge,
-                                color: context.colors.foregroundMuted,
-                              ),
-                            ),
+                    builder: (_) => Padding(
+                      padding: ContentRow.verticalPadding + ContentRow.endPadding + ContentRow.startPadding,
+                      child: ContentRowAction(
+                        actionOptions: ContentRowActionOptions(
+                          actionIcon: AppIcons(
+                            iconData: SystemIcons.arrowCornerRightLarge,
+                            color: context.colors.foregroundMuted,
                           ),
                         ),
+                      ),
+                    ),
                   ),
                 ),
                 Padding(
@@ -276,7 +268,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               onTap: () => context.router.push(NavigatorSettingsRoute()),
               options: ContentRowOptions(
                 titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
-                wrapperColor: context.colors.staticWhite,
+                wrapperColor: context.colors.backgroundSurface1,
                 wrapperEnabled: true,
                 title: l10n.navigatorSettings,
                 leadingIcon: Icon(SystemIcons.settings, color: colors.foregroundSoft),

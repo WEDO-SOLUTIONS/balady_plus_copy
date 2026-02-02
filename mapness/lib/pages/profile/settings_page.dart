@@ -15,6 +15,7 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
 import 'package:provider/provider.dart' as p; // Add this import
 
@@ -40,7 +41,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
-          color: Colors.white,
+          color: context.colors.backgroundSurface4,
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
@@ -54,33 +55,25 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                 ),
               ),
               body: Padding(
-                padding: const EdgeInsets.only(
-                  top: 12,
-                  left: 12,
-                  right: 12,
-                ),
+                padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ContentWrapper(
                       color: context.colors.backgroundSurface4,
-                      children: const [
-                        NotificationsSettingCell(),
-                      ],
+                      children: const [NotificationsSettingCell()],
                     ),
                     const SizedBox(height: Spacing.$4x),
                     ContentWrapper(
                       color: context.colors.backgroundSurface4,
-                      children: const [
-                        AuthQuickAccessBiometricWidget(),
-                      ],
+                      children: const [AuthQuickAccessBiometricWidget()],
                     ),
                     const SizedBox(height: Spacing.$4x),
                     Consumer(
                       builder: (context, ref, child) {
                         final language = ref.watch(appLanguageProvider);
                         return ContentWrapper(
-                          color: context.colors.backgroundSurface4,
+                          color: context.colors.backgroundSurface1,
                           children: [
                             ContentRowExpandable(
                               options: ContentRowOptions(
@@ -97,11 +90,12 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                     ),
                     Spacing.$2x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () =>
-                              themeController.toggleTheme(!themeController.isDarkMode),
+                          onTap: () => themeController.toggleTheme(
+                            !themeController.isDarkMode,
+                          ),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.brightness_2_rounded,
@@ -110,25 +104,42 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                             ),
                             title: context.l10n.darkMode,
                             actionWidget: ContentRowActionOptions(
-                              customToggleBuilder: (
-                                      {required onToggle, bool? initial}) =>
-                                  CupertinoSwitch(
-                                value: themeController.isDarkMode,
-                                onChanged: (value) {
-                                  themeController.toggleTheme(value);
-                                  onToggle?.call(value);
-                                },
-                                activeColor: context.colors.accentDefault,
-                              ),
+                              customToggleBuilder:
+                                  ({
+                                    required onToggle,
+                                    initial,
+                                  }) => CupertinoSwitch(
+                                    value: themeController.isDarkMode,
+                                    onChanged: (value) {
+                                      themeController.toggleTheme(value);
+
+                                      /// Just For Can Test The Dark Theme With Urib
+                                      if (value) {
+                                        ref
+                                            .read(darkModeProvider.notifier)
+                                            .changeDarkModeState(
+                                              DarkMapStateEnum.alwaysEnabled,
+                                            );
+                                      } else {
+                                        ref
+                                            .read(darkModeProvider.notifier)
+                                            .changeDarkModeState(
+                                              DarkMapStateEnum.off,
+                                            );
+                                      }
+                                      onToggle?.call(value);
+                                    },
+                                    activeColor: context.colors.accentDefault,
+                                  ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$2x.heightBox,
                     Spacing.$2x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () =>
@@ -147,20 +158,21 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$2x.heightBox,
                     Spacing.$2x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () =>
-                              Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) =>
-                                const AccessibilitySettingsPage(),
-                          )),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const AccessibilitySettingsPage(),
+                            ),
+                          ),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: GeneralIcons.accessibilityWheels,
@@ -175,7 +187,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     Spacing.$2x.heightBox,
@@ -199,7 +211,10 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           width: 22,
         )
       : SvgPicture.asset(
-          color: context.colors.accentDefault,
+          colorFilter: ColorFilter.mode(
+            context.colors.accentDefault,
+            BlendMode.srcIn,
+          ),
           Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,

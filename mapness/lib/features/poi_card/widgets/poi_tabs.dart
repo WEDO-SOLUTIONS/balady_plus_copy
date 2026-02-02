@@ -14,12 +14,7 @@ class PoiTabs extends ConsumerStatefulWidget {
   final int objectId;
   final TabController tabController;
 
-  const PoiTabs({
-    required this.tabController,
-    required this.objectId,
-    super.key,
-    this.poiCardState,
-  });
+  const PoiTabs({required this.tabController, required this.objectId, super.key, this.poiCardState});
 
   @override
   ConsumerState<PoiTabs> createState() => _PoiTabsState();
@@ -59,12 +54,12 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
           child: _PoiTabItem(
             title: context.l10n.info,
             onTap: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {
-                    'tab': context.l10n.info,
-                  });
+              Metrics.logEventAdvanced(
+                MetricsConstants.poiKeys.tab,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {'tab': context.l10n.info},
+              );
               widget.tabController.animateTo(0);
             },
             isActive: widget.tabController.index == 0,
@@ -76,10 +71,12 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
             title: context.l10n.photos,
             count: photoCount,
             onTap: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {'tab': context.l10n.photos});
+              Metrics.logEventAdvanced(
+                MetricsConstants.poiKeys.tab,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {'tab': context.l10n.photos},
+              );
 
               widget.tabController.animateTo(1);
             },
@@ -114,12 +111,7 @@ class _PoiTabItem extends StatelessWidget {
   final String title;
   final int? count;
 
-  const _PoiTabItem({
-    required this.title,
-    this.isActive,
-    this.onTap,
-    this.count,
-  });
+  const _PoiTabItem({required this.title, this.isActive, this.onTap, this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +121,7 @@ class _PoiTabItem extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.px),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: isActive ? context.colors.staticWhite : Colors.transparent,
+          color: isActive ? context.colors.backgroundSurface1 : Colors.transparent,
           borderRadius: BorderRadius.circular(RadiusBorder.m),
           boxShadow: isActive ? Shadows.s : null,
         ),
@@ -166,7 +158,7 @@ class _PoiTabItem extends StatelessWidget {
                               color: isActive ? context.colors.neutralDefault : context.colors.neutralMuted,
                             ),
                           ),
-                        )
+                        ),
                     ],
                   ),
                 ),

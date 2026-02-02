@@ -36,8 +36,8 @@ class SearchMiniAppsResultsList extends StatelessWidget {
           return Center(
             child: Text(
               'no_results_found'.tr(),
-              style: const TextStyle(
-                color: Color(0xFF777777),
+              style: TextStyle(
+                color: Theme.of(context).disabledColor,
                 fontFamily: GeneralKey.appFontType,
                 fontSize: 30,
               ),
@@ -63,11 +63,9 @@ class SearchMiniAppsResultsList extends StatelessWidget {
                 height: context.h(64),
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    color: const Color(0XFFFFFFFF),
+                    color: Colors.transparent,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0XFFEFEEEE),
-                    ),
+                    border: Border.all(color: Theme.of(context).cardColor),
                   ),
                   child: Padding(
                     padding: EdgeInsets.symmetric(
@@ -86,14 +84,14 @@ class SearchMiniAppsResultsList extends StatelessWidget {
                               isTextRemove: true,
                               iconPath: app.iconPath,
                             ),
-                            SizedBox(
-                              width: context.screenWidth * 0.02,
-                            ),
+                            SizedBox(width: context.screenWidth * 0.02),
                             CustomSubHeadingText(
                               width: context.w(192),
                               height: context.h(30),
                               text: app.name,
-                              fontColor: const Color(0XFF1E2A36),
+                              fontColor: Theme.of(
+                                context,
+                              ).colorScheme.onSurface,
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
                             ),
