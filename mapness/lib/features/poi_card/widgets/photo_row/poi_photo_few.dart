@@ -22,32 +22,29 @@ class _PoiPhotoFew extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => PoiPhotosStories(
-          key: key,
-          itemCount: itemCount,
-          state: state,
-          interpolation: interpolation,
-          builder: (scrollController, physics) => ListView.separated(
-            controller: scrollController,
-            scrollDirection: Axis.horizontal,
-            key: ValueKey(itemCount),
-            padding: EdgeInsets.symmetric(horizontal: padding),
-            itemBuilder: (context, index) => ClipRRect(
-              borderRadius: borderRadius,
-              child: AspectRatio(
-                aspectRatio: _calculateAspectRatio(
-                  constraints.maxWidth,
-                  constraints.maxHeight,
-                ),
-                child: itemBuilder(context, index),
-              ),
-            ),
-            itemCount: itemCount,
-            physics: physics,
-            separatorBuilder: (context, index) => SizedBox(width: separatorWidth),
+    builder: (context, constraints) => PoiPhotosStories(
+      key: key,
+      itemCount: itemCount,
+      state: state,
+      interpolation: interpolation,
+      builder: (scrollController, physics) => ListView.separated(
+        controller: scrollController,
+        scrollDirection: Axis.horizontal,
+        key: ValueKey(itemCount),
+        padding: EdgeInsets.symmetric(horizontal: padding),
+        itemBuilder: (context, index) => ClipRRect(
+          borderRadius: borderRadius,
+          child: AspectRatio(
+            aspectRatio: _calculateAspectRatio(constraints.maxWidth, constraints.maxHeight),
+            child: itemBuilder(context, index),
           ),
         ),
-      );
+        itemCount: itemCount,
+        physics: physics,
+        separatorBuilder: (context, index) => SizedBox(width: separatorWidth),
+      ),
+    ),
+  );
 
   double _calculateAspectRatio(double width, double height) {
     var aspectRatio = (width - 2 * padding - separatorWidth * (itemCount - 1)) / height;

@@ -6,19 +6,16 @@ class _PoiCardNoInfo extends HookConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const _PoiCardNoInfo({
-    required this.objectId,
-    this.poiCardState,
-    this.closestPoint,
-    this.cameraConfig,
-  });
+  const _PoiCardNoInfo({required this.objectId, this.poiCardState, this.closestPoint, this.cameraConfig});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useToggleSheetController(onClose: (_) {
-      ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-      closePoiCard(context, ref);
-    });
+    final scrollController = useToggleSheetController(
+      onClose: (_) {
+        ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+        closePoiCard(context, ref);
+      },
+    );
     final l10n = context.l10n;
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
@@ -41,24 +38,22 @@ class _PoiCardNoInfo extends HookConsumerWidget {
         PoiContentFeedbackCard(
           data: PoiContentFeedbackType.cityExpert,
           onTap: () {
-            context.router.push(QuickFeedbackRoute(
-              type: QuickFeedbackType.editCompany,
-              params: FeedbackObjectIdParams(objectId),
-            ));
+            context.router.push(
+              QuickFeedbackRoute(type: QuickFeedbackType.editCompany, params: FeedbackObjectIdParams(objectId)),
+            );
           },
         ),
       ],
       footer: PoiCardFooter(
         share: () {
-          Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
-              group: MetricsConstants.poiTag,
-              action: MetricAction.tap.toString(),
-              props: {'object_id': objectId, 'closest_point': '${closestPoint?.latitude},${closestPoint?.longitude}'});
-
-          return poiActions.share(
-            objectId: objectId,
-            markerCoords: closestPoint,
+          Metrics.logEventAdvanced(
+            MetricsConstants.poiKeys.share,
+            group: MetricsConstants.poiTag,
+            action: MetricAction.tap.toString(),
+            props: {'object_id': objectId, 'closest_point': '${closestPoint?.latitude},${closestPoint?.longitude}'},
           );
+
+          return poiActions.share(objectId: objectId, markerCoords: closestPoint);
         },
         onTapCar: () {
           final closestPoint = this.closestPoint;
@@ -70,11 +65,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
             context,
             objectId,
             '',
-            RouteParamsPoint(
-              latitude: closestPoint.latitude,
-              longitude: closestPoint.longitude,
-              objectId: objectId,
-            ),
+            RouteParamsPoint(latitude: closestPoint.latitude, longitude: closestPoint.longitude, objectId: objectId),
             ref,
           );
         },

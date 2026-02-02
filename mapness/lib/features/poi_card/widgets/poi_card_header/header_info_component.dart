@@ -25,11 +25,7 @@ class HeaderInfoComponent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final finishPoint = RouteSearchPoint(
-      coordinates: data.markerPosition?.toGeoPointMessage() ??
-          GeoPointMessage(
-            latitude: 0,
-            longitude: 0,
-          ),
+      coordinates: data.markerPosition?.toGeoPointMessage() ?? GeoPointMessage(latitude: 0, longitude: 0),
       dgisObjectId: data.id!,
     );
 
@@ -38,20 +34,13 @@ class HeaderInfoComponent extends ConsumerWidget {
     RouteSearchPoint? startPoint;
     if (userLocation != null) {
       startPoint = RouteSearchPoint(
-        coordinates: GeoPointMessage(
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-        ),
+        coordinates: GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
         dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
       );
     }
 
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-        startPoint: startPoint,
-      ),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
     );
 
     final workTime = data.getOpeningHoursHeader(context);
@@ -59,11 +48,7 @@ class HeaderInfoComponent extends ConsumerWidget {
     final hasOffers = offers.containsKey(data.tradeLicense?.license.trim());
 
     final fullAddress = data.getFullAddress(briefInfo, context.l10n);
-    return _HeaderInfoWidget(
-      fullAddress: fullAddress,
-      workTime: workTime,
-      hasOffers: hasOffers,
-    );
+    return _HeaderInfoWidget(fullAddress: fullAddress, workTime: workTime, hasOffers: hasOffers);
   }
 }
 
@@ -72,13 +57,8 @@ class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final ContentWorkTimeModel? workTime;
   final bool hasOffers;
 
-  const _HeaderInfoWidget({
-    required this.fullAddress,
-    required this.workTime,
-    required this.hasOffers,
-  }) : super(
-          defaultState: PoiCardBottomSheetState.halfOpen,
-        );
+  const _HeaderInfoWidget({required this.fullAddress, required this.workTime, required this.hasOffers})
+    : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
@@ -98,10 +78,7 @@ class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     return ContentTransition(
       interpolation: scale,
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: Spacing.$3x,
-          bottom: Spacing.$3x,
-        ),
+        padding: const EdgeInsets.only(top: Spacing.$3x, bottom: Spacing.$3x),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -122,10 +99,10 @@ class _HeaderInfoWidget extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               Text(
                 workTime!.poiContentWorkTime.workHours,
                 style: context.textStyle.footNoteBold.copyWith(
-                    // This file will be deleted in the nearest future
-                    // color: worktime!.color,
-                    ),
-              )
+                  // This file will be deleted in the nearest future
+                  // color: worktime!.color,
+                ),
+              ),
 
             ///TODO: (ve) do not remove
             // if (showBadges)

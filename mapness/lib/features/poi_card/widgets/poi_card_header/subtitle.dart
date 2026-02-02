@@ -23,15 +23,11 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     this.subtitleIcon,
     this.inlineSpans = const [],
     super.key,
-  }) : super(
-          defaultState: PoiCardBottomSheetState.halfOpen,
-        );
+  }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
-    final subTitleTextStyle = context.textStyles.bodySmallRegular.copyWith(
-      color: context.colors.foregroundSoft,
-    );
+    final subTitleTextStyle = context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft);
 
     var scale = interpolation;
     if (state == PoiCardBottomSheetState.hidden) {
@@ -49,8 +45,10 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               (e) => Row(
                 children: [
                   Assets.icons.svg.icMetroMarker.svg(
-                    colorFilter:
-                        ColorFilter.mode(Color(e?.color ?? context.colorsV3.foregroundDefault.value), BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(
+                      Color(e?.color ?? context.colorsV3.foregroundDefault.value),
+                      BlendMode.srcIn,
+                    ),
                   ),
                   Spacing.$1x.widthBox,
                 ],
@@ -68,12 +66,8 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
           if (subtitleIcon != null)
             Padding(
               padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-              child: Icon(
-                subtitleIcon,
-                color: context.colors.foregroundSoft,
-                size: 24,
-              ),
-            )
+              child: Icon(subtitleIcon, color: context.colors.foregroundSoft, size: 24),
+            ),
         ],
       ),
     );

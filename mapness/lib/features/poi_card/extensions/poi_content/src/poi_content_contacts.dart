@@ -15,15 +15,11 @@ extension PoiContentContactsExt on DirectoryObjectMessage {
     }
 
     final phones = contactInfos
-        .where(
-          (e) => ContactsInfoTypeExt.fromString(e.type) == ContactsInfoType.phone,
-        )
+        .where((e) => ContactsInfoTypeExt.fromString(e.type) == ContactsInfoType.phone)
         .map((e) => e.displayText)
         .toList();
     final emails = contactInfos
-        .where(
-          (e) => ContactsInfoTypeExt.fromString(e.type) == ContactsInfoType.email,
-        )
+        .where((e) => ContactsInfoTypeExt.fromString(e.type) == ContactsInfoType.email)
         .map((e) => e.displayText)
         .toList();
     final socialMedias = contactInfos
@@ -31,11 +27,7 @@ extension PoiContentContactsExt on DirectoryObjectMessage {
           final type = ContactsInfoTypeExt.fromString(e.type);
           final v = type.poiContentSocialMediaType;
           if (v != null) {
-            return PoiContentSocialMediaModel(
-              type: v,
-              link: e.value,
-              displayText: e.displayText,
-            );
+            return PoiContentSocialMediaModel(type: v, link: e.value, displayText: e.displayText);
           }
           return null;
         })

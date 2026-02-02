@@ -11,11 +11,7 @@ class PoiPhotoButton extends StatelessWidget {
   final int objectId;
   final List<Item> photosItems;
 
-  const PoiPhotoButton({
-    required this.objectId,
-    required this.photosItems,
-    super.key,
-  });
+  const PoiPhotoButton({required this.objectId, required this.photosItems, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +23,7 @@ class PoiPhotoButton extends StatelessWidget {
       buttonColorScheme: ButtonColorScheme.accent,
       buttonType: ButtonType.secondary,
       color: context.colors.backgroundSurface1,
-      onTap: () => context.router.push(
-        QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId)),
-      ),
+      onTap: () => context.router.push(QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId))),
       size: ButtonSize.small,
       innerPadding: const EdgeInsetsDirectional.only(
         start: Spacing.$2x + Spacing.$0_5x,

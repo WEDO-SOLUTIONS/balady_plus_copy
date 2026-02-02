@@ -13,11 +13,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
   final WorkingHours workingHours;
   final WorkStatusMessage? workStatusMessage;
 
-  const PoiContentWorkingHoursCard({
-    required this.workingHours,
-    this.workStatusMessage,
-    super.key,
-  });
+  const PoiContentWorkingHoursCard({required this.workingHours, this.workStatusMessage, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +28,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
     String todayWorkingHours() {
       final hours = workingHours.isOpen24x7
           ? l10n.twentyFourSeven
-          : formatOpenClose(
-              workingHours.todayHours(DateTime.now().weekday),
-            );
+          : formatOpenClose(workingHours.todayHours(DateTime.now().weekday));
       final todayOrDaily = workingHours.isSameEveryDay ? l10n.daily : l10n.today;
       return '$todayOrDaily $hours';
     }
@@ -53,15 +47,11 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
         color: context.colors.backgroundSurface1,
         children: [
           ContentRow(
-            leading: GeneralIcons.timeQuarter.icon(
-              color: context.colors.accentDefault,
-            ),
+            leading: GeneralIcons.timeQuarter.icon(color: context.colors.accentDefault),
             text: ContentRowTextOptions(
               title: todayWorkingHours(),
               subtitle: todayBreaks(),
-              subtitleOptions: ContentRowTextOption(
-                baseColor: context.colors.foregroundSoft,
-              ),
+              subtitleOptions: ContentRowTextOption(baseColor: context.colors.foregroundSoft),
             ),
           ),
         ],
@@ -96,14 +86,8 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
         currentBreaks = breaks;
       } else {
         // Check if this day matches the current group by comparing periods and breaks
-        final periodsMatch = const DeepCollectionEquality().equals(
-          periods,
-          currentPeriods,
-        );
-        final breaksMatch = const DeepCollectionEquality().equals(
-          breaks,
-          currentBreaks,
-        );
+        final periodsMatch = const DeepCollectionEquality().equals(periods, currentPeriods);
+        final breaksMatch = const DeepCollectionEquality().equals(breaks, currentBreaks);
 
         if (periodsMatch && breaksMatch) {
           // Continue the current group
@@ -171,21 +155,14 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
-          padding: const EdgeInsets.symmetric(
-            vertical: Spacing.$3x,
-            horizontal: Spacing.$4x,
-          ),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
           expandIconColor: context.colors.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
             title: todayWorkingHours(),
             subtitle: todayBreaks(),
-            subtitleStyle: context.textStyles.bodySmallRegular.copyWith(
-              color: context.colors.foregroundSoft,
-            ),
-            leadingIcon: GeneralIcons.timeQuarter.icon(
-              color: context.colors.accentDefault,
-            ),
+            subtitleStyle: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+            leadingIcon: GeneralIcons.timeQuarter.icon(color: context.colors.accentDefault),
           ),
           content: Column(
             children: <Widget>[
@@ -193,9 +170,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
               if (workStatusMessage != null)
                 ContentRow(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  leading: GeneralIcons.infoSquare.icon(
-                    color: context.colors.foregroundMuted,
-                  ),
+                  leading: GeneralIcons.infoSquare.icon(color: context.colors.foregroundMuted),
                   text: ContentRowTextOptions(
                     title: context.l10n.extraInformation,
                     titleOptions: const ContentRowTextOption(maxLines: 99),
@@ -217,12 +192,7 @@ class _DayGroup {
   final String workHours;
   final String? breakHours;
 
-  const _DayGroup({
-    required this.startIndex,
-    required this.endIndex,
-    required this.workHours,
-    this.breakHours,
-  });
+  const _DayGroup({required this.startIndex, required this.endIndex, required this.workHours, this.breakHours});
 }
 
 class _WorkTimeItemWidget extends StatelessWidget {
@@ -240,51 +210,44 @@ class _WorkTimeItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsetsDirectional.only(
-          start: Spacing.$4x + AppSizes.xxs + Spacing.$3x,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-              child: Table(
-                columnWidths: const {0: FlexColumnWidth(6), 1: FlexColumnWidth(8)},
+    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x + AppSizes.xxs + Spacing.$3x),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+          child: Table(
+            columnWidths: const {0: FlexColumnWidth(6), 1: FlexColumnWidth(8)},
+            children: [
+              TableRow(
                 children: [
-                  TableRow(
-                    children: [
-                      Text(dayTitle, style: context.textStyles.bodyLargeRegular),
-                      Text(workHours, style: context.textStyles.bodyLargeRegular),
-                    ],
-                  ),
-                  if (breakHours != null)
-                    TableRow(
-                      children: [
-                        const SizedBox(),
-                        Text(
-                          breakHours!,
-                          style: context.textStyles.bodySmallRegular.copyWith(
-                            color: context.colors.foregroundSoft,
-                          ),
-                        ),
-                      ],
-                    ),
+                  Text(dayTitle, style: context.textStyles.bodyLargeRegular),
+                  Text(workHours, style: context.textStyles.bodyLargeRegular),
                 ],
               ),
-            ),
-            if (showDivider) const _Divider(),
-          ],
+              if (breakHours != null)
+                TableRow(
+                  children: [
+                    const SizedBox(),
+                    Text(
+                      breakHours!,
+                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    ),
+                  ],
+                ),
+            ],
+          ),
         ),
-      );
+        if (showDivider) const _Divider(),
+      ],
+    ),
+  );
 }
 
 class _Divider extends StatelessWidget {
   const _Divider();
 
   @override
-  Widget build(BuildContext context) => Divider(
-        color: context.colors.borderSoft.withOpacity(0.3),
-        height: 8,
-        thickness: 0.5,
-      );
+  Widget build(BuildContext context) =>
+      Divider(color: context.colors.borderSoft.withOpacity(0.3), height: 8, thickness: 0.5);
 }

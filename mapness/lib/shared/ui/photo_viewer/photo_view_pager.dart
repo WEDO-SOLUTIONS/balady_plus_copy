@@ -68,9 +68,7 @@ class _PhotoViewPagerState extends State<PhotoViewPager> {
           });
         },
         child: PhotoView(
-          imageProvider: CachedNetworkImageProvider(
-            widget.imageSource[imageIndex!],
-          ),
+          imageProvider: CachedNetworkImageProvider(widget.imageSource[imageIndex!]),
           minScale: .1,
           scaleStateChangedCallback: (value) {
             switch (value) {

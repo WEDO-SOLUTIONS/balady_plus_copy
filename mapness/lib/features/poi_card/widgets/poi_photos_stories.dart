@@ -13,13 +13,7 @@ class PoiPhotosStories extends StatefulWidget {
   final PoiCardBottomSheetState? state;
   final double? interpolation;
 
-  const PoiPhotosStories({
-    required this.builder,
-    required this.itemCount,
-    this.state,
-    this.interpolation,
-    super.key,
-  });
+  const PoiPhotosStories({required this.builder, required this.itemCount, this.state, this.interpolation, super.key});
 
   @override
   State<PoiPhotosStories> createState() => _PoiPhotosStoriesState();
@@ -48,10 +42,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
     super.initState();
     itemCount = math.min(widget.itemCount, 10);
     _scrollController = ScrollController();
-    _controller = AnimationController(
-      duration: const Duration(seconds: 5),
-      vsync: this,
-    );
+    _controller = AnimationController(duration: const Duration(seconds: 5), vsync: this);
     _progress = Tween<double>(begin: 0, end: 1).animate(_controller);
     _progress.addListener(_onProgressListener);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -109,12 +100,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
   @override
   void didUpdateWidget(covariant PoiPhotosStories oldWidget) {
     super.didUpdateWidget(oldWidget);
-    opacity = _interpolation(
-      initialValue: 0,
-      finalValue: 1,
-      state: widget.state,
-      interpolation: widget.interpolation,
-    );
+    opacity = _interpolation(initialValue: 0, finalValue: 1, state: widget.state, interpolation: widget.interpolation);
 
     setState(() {
       if (widget.interpolation != null &&
@@ -228,10 +214,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black.withOpacity(0),
-                              Colors.black.withOpacity(0.8),
-                            ],
+                            colors: [Colors.black.withOpacity(0), Colors.black.withOpacity(0.8)],
                           ),
                         ),
                       ),
@@ -241,11 +224,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
               Padding(
                 // $4x - is padding for hidden part of photo and $4x - is padding from top of header
                 // You can find first padding as [topHeaderOffset]
-                padding: const EdgeInsetsDirectional.only(
-                  bottom: Spacing.$8x,
-                  start: Spacing.$3x,
-                  end: Spacing.$3x,
-                ),
+                padding: const EdgeInsetsDirectional.only(bottom: Spacing.$8x, start: Spacing.$3x, end: Spacing.$3x),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -257,11 +236,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
                           style: context.textStyles.captionLargeSemiBold.copyWith(color: context.colors.staticWhite),
                         ),
                         const SizedBox(width: Spacing.$1x),
-                        Icon(
-                          General16Icons.photoSolid,
-                          size: 16,
-                          color: context.colors.staticWhite,
-                        ),
+                        Icon(General16Icons.photoSolid, size: 16, color: context.colors.staticWhite),
                       ],
                     ),
                     const SizedBox(height: Spacing.$2x),
@@ -270,9 +245,7 @@ class _PoiPhotosStoriesState extends State<PoiPhotosStories> with TickerProvider
                       framesLength: itemCount,
                       animation: _progress,
                       trackTheme: StoryTrackThemeData(
-                        backgroundColor: const Color(
-                          0xFFFFFFFF,
-                        ).withOpacity(0.3),
+                        backgroundColor: const Color(0xFFFFFFFF).withOpacity(0.3),
                         color: const Color(0xFFFFFFFF),
                       ),
                     ),

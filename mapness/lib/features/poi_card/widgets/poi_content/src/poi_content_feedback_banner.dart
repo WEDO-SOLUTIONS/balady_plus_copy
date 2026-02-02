@@ -20,17 +20,10 @@ class PoiContentFeedbackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final foregroundColor = context.colors.staticWhite;
-    final titleStyle = context.textStyles.h4SemiBold.copyWith(
-      color: foregroundColor,
-    );
-    final subtitleStyle = context.textStyles.captionMediumRegular.copyWith(
-      color: foregroundColor,
-    );
+    final titleStyle = context.textStyles.h4SemiBold.copyWith(color: foregroundColor);
+    final subtitleStyle = context.textStyles.captionMediumRegular.copyWith(color: foregroundColor);
 
-    const arrowPadding = EdgeInsetsDirectional.only(
-      end: Spacing.$4x,
-      bottom: Spacing.$4x,
-    );
+    const arrowPadding = EdgeInsetsDirectional.only(end: Spacing.$4x, bottom: Spacing.$4x);
     const contentPadding = EdgeInsetsDirectional.only(
       start: Spacing.$4x,
       top: Spacing.$4x - 1,
@@ -46,9 +39,7 @@ class PoiContentFeedbackCard extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: data.gradientColors),
-            ),
+            decoration: BoxDecoration(gradient: LinearGradient(colors: data.gradientColors)),
             child: IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -62,10 +53,7 @@ class PoiContentFeedbackCard extends StatelessWidget {
                         children: [
                           Text(data.title(context.l10n), style: titleStyle),
                           const SizedBox(height: Spacing.$1x),
-                          Text(
-                            data.subtitle(context.l10n),
-                            style: subtitleStyle,
-                          ),
+                          Text(data.subtitle(context.l10n), style: subtitleStyle),
                         ],
                       ),
                     ),
@@ -82,10 +70,7 @@ class PoiContentFeedbackCard extends StatelessWidget {
                       ),
                       child: const Align(
                         alignment: AlignmentDirectional.bottomEnd,
-                        child: Padding(
-                          padding: arrowPadding,
-                          child: _ArrowIcon(),
-                        ),
+                        child: Padding(padding: arrowPadding, child: _ArrowIcon()),
                       ),
                     ),
                   ),
@@ -104,20 +89,16 @@ class _ArrowIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        width: Spacing.$6x,
-        height: Spacing.$6x,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(RadiusBorder.s),
-            color: context.colors.staticWhite.withOpacity(0.2),
-          ),
-          child: Center(
-            child: Icon(
-              SystemIcons.arrowRight,
-              color: context.colors.staticWhite,
-              size: Spacing.$5x,
-            ),
-          ),
-        ),
-      );
+    width: Spacing.$6x,
+    height: Spacing.$6x,
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(RadiusBorder.s),
+        color: context.colors.staticWhite.withOpacity(0.2),
+      ),
+      child: Center(
+        child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x),
+      ),
+    ),
+  );
 }

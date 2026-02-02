@@ -12,16 +12,9 @@ extension PoiContentFullAddressExt on DirectoryObjectMessage {
     void Function()? onEntrancesTap,
   ]) {
     // Entrances
-    final entrancesCount = entrances.fold(
-      0,
-      (prev, e) => prev + (e.geometry?.entrancePoints.length ?? 0),
-    );
+    final entrancesCount = entrances.fold(0, (prev, e) => prev + (e.geometry?.entrancePoints.length ?? 0));
     final entrances_ = onEntrancesTap != null
-        ? PoiContentEntrancesModel(
-            title: l10n.exits,
-            onTap: onEntrancesTap,
-            count: entrancesCount,
-          )
+        ? PoiContentEntrancesModel(title: l10n.exits, onTap: onEntrancesTap, count: entrancesCount)
         : null;
 
     final floors = buildingLevels?.levels.length;

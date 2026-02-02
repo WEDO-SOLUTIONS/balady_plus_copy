@@ -21,16 +21,14 @@ class _PoiCardContent extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _ContentState();
 }
 
-class _ContentState extends ConsumerState<_PoiCardContent>
-    with SingleTickerProviderStateMixin {
+class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
   late final PoiCardState? poiCardState = widget.poiCardState;
   PoiCardBottomSheetState? _bottomSheetPreviousState;
   late final ValueNotifier<PoiCardBottomSheetState> _stateNotifier;
 
-  late final MultiStateSheetController<PoiCardBottomSheetState>
-  _bottomSheetController;
+  late final MultiStateSheetController<PoiCardBottomSheetState> _bottomSheetController;
 
   bool get isGooglePoi => widget.poiCardDataFromGoogle != null;
 
@@ -47,9 +45,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
   void initState() {
     super.initState();
 
-    _stateNotifier = ValueNotifier<PoiCardBottomSheetState>(
-      PoiCardBottomSheetState.halfOpen,
-    );
+    _stateNotifier = ValueNotifier<PoiCardBottomSheetState>(PoiCardBottomSheetState.halfOpen);
 
     // Check if photos are available (will be updated in build if needed)
     final photos = ref.read(poiPhotoProvider(widget.objectId));
@@ -57,10 +53,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
 
     final snappingModels = <SnappingModel>[
       FractionSnappingModel({0.0, 1.0}),
-      if (hasPhotos)
-        OffsetSnappingModel({
-          HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius,
-        }),
+      if (hasPhotos) OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
       ComponentsSnappingModel(
         componentsDescriptions: [
           SnapComponent.merge(
@@ -81,16 +74,10 @@ class _ContentState extends ConsumerState<_PoiCardContent>
     _tabController = TabController(length: 3, vsync: this);
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
-    _tabType = ValueNotifier(
-      _parkingObjectId ? PoiTabsType.parking : PoiTabsType.info,
-    );
+    _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
-        _bottomSheetController.position.animateTo(
-          0,
-          duration: Durations.medium1,
-          curve: Curves.easeInExpo,
-        );
+        _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
         switch (_tabController.index) {
           case 0:
             _tabType.value = PoiTabsType.info;
@@ -109,9 +96,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
       await BssService.instance.sendEvent(
         const BssRequest(
           eventType: BSSEventType.view,
-          uiElement: BssUIElement(
-            name: BssUIElementNames.directoryObjectCardScreen,
-          ),
+          uiElement: BssUIElement(name: BssUIElementNames.directoryObjectCardScreen),
         ),
       );
     });
@@ -140,10 +125,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
         BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.view,
-            uiElement: BssUIElement(
-              name: uiElementName,
-              ownerName: BssUIElementNames.directoryObjectCardScreen,
-            ),
+            uiElement: BssUIElement(name: uiElementName, ownerName: BssUIElementNames.directoryObjectCardScreen),
             payload: BssPayload(placeItem: widget.data.toBss()),
           ),
         );
@@ -180,9 +162,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
-    final name = isGooglePoi
-        ? widget.poiCardDataFromGoogle?.displayName
-        : widget.data.buildingInfo.buildingName;
+    final name = isGooglePoi ? widget.poiCardDataFromGoogle?.displayName : widget.data.buildingInfo.buildingName;
     if (name != null && parkingPoi == false) {
       widget.data.title = name;
     }
@@ -190,9 +170,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final photos = ref.watch(poiPhotoProvider(widget.objectId));
-    final isPhotosNotEmpty =
-        (!photos.hasValue || photos.requireValue.items.isEmpty) &&
-        !photos.isLoading;
+    final isPhotosNotEmpty = (!photos.hasValue || photos.requireValue.items.isEmpty) && !photos.isLoading;
 
     final finishPoint = RouteSearchPoint(
       coordinates: widget.data.markerPosition!.toGeoPointMessage(),
@@ -204,10 +182,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
     RouteSearchPoint? startPoint;
     if (userLocation != null) {
       startPoint = RouteSearchPoint(
-        coordinates: GeoPointMessage(
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-        ),
+        coordinates: GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
         dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
       );
     }
@@ -217,10 +192,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
       if (previous == null && next != null) {
         // Location just became available, create new startPoint and invalidate
         final newStartPoint = RouteSearchPoint(
-          coordinates: GeoPointMessage(
-            latitude: next.latitude,
-            longitude: next.longitude,
-          ),
+          coordinates: GeoPointMessage(latitude: next.latitude, longitude: next.longitude),
           dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
         );
         ref.invalidate(
@@ -234,11 +206,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
     });
 
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-        startPoint: startPoint,
-      ),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
     );
 
     final brief = briefInfo?.firstOrNull;
@@ -249,13 +217,9 @@ class _ContentState extends ConsumerState<_PoiCardContent>
         brief?.getBriefRouteDistanceDescription(context.l10n),
       ].where((e) => e != null && e.trim().isNotEmpty).join(' ');
 
-      final result = parkingPoi
-          ? carParkingLabel
-          : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n);
+      final result = parkingPoi ? carParkingLabel : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n);
 
-      logger.log(
-        '[PoiCardContent] createPoiHeaderSubTitle result: "$result" for POI: ${widget.data.title}',
-      );
+      logger.log('[PoiCardContent] createPoiHeaderSubTitle result: "$result" for POI: ${widget.data.title}');
 
       return result;
     }
@@ -268,9 +232,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
     );
 
     final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(
-      poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim(),
-    );
+    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
 
     return Directionality(
       textDirection: Directionality.of(context),
@@ -284,22 +246,16 @@ class _ContentState extends ConsumerState<_PoiCardContent>
         outside: PoiCardMapControlsWrapper(
           bottomSheetController: _bottomSheetController,
           // we should not use objectIdForIndoorLevels if POI has levelId
-          objectIdForIndoorLevels:
-              poiCardState?.gisObjectIdMessage?.levelId != null
-              ? null
-              : widget.objectId,
+          objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId,
         ),
 
-        topHeader: isGooglePoi
-            ? null
-            : PoiPhotosHeader(objectId: widget.objectId),
+        topHeader: isGooglePoi ? null : PoiPhotosHeader(objectId: widget.objectId),
         topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
         footer: ValueListenableBuilder<PoiCardBottomSheetState>(
           valueListenable: _stateNotifier,
           builder: (context, state, _) {
             final shouldUseSurface1 =
-                state != PoiCardBottomSheetState.open &&
-                state != PoiCardBottomSheetState.halfOpen;
+                state != PoiCardBottomSheetState.open && state != PoiCardBottomSheetState.halfOpen;
             final footerBackgroundColor = shouldUseSurface1
                 ? context.colors.backgroundSurface1
                 : context.colors.backgroundSurface2;
@@ -319,15 +275,11 @@ class _ContentState extends ConsumerState<_PoiCardContent>
                         action: MetricAction.tap.toString(),
                         props: {
                           'object_id': widget.data.id?.objectId,
-                          'closest_point':
-                              '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
+                          'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
                         },
                       );
 
-                      return poiActions.share(
-                        objectId: widget.objectId,
-                        markerCoords: widget.closestPoint,
-                      );
+                      return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
                     },
                     callPhone: () {
                       Metrics.logEventAdvanced(
@@ -337,10 +289,9 @@ class _ContentState extends ConsumerState<_PoiCardContent>
                         props: {'objectId': widget.objectId},
                       );
 
-                      final phoneNumber = widget.data.getContactsInfoModels
-                          .firstWhereOrNull(
-                            (element) => element.type == ContactsInfoType.phone,
-                          );
+                      final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
+                        (element) => element.type == ContactsInfoType.phone,
+                      );
                       _bssOnCallTap();
                       if (phoneNumber?.value != null) {
                         poiActions.callPhone(phoneNumber!.value!);
@@ -348,9 +299,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
                     },
                     onEntranceTap: () => poiActions.toggleEntrances(
                       widget.data,
-                      () => _bottomSheetController.setState(
-                        PoiCardBottomSheetState.halfOpen,
-                      ),
+                      () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
                       widget.closestPoint,
                     ),
                     onTapCar: () {
@@ -369,26 +318,11 @@ class _ContentState extends ConsumerState<_PoiCardContent>
                         ref,
                       );
                     },
-                    onAddPointToRoute: () => _onAddObjectPointToRoute(
-                      context,
-                      l10n,
-                      ref,
-                      widget.data,
-                    ),
-                    onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(
-                      context,
-                      l10n,
-                      ref,
-                      widget.data,
-                    ),
+                    onAddPointToRoute: () => _onAddObjectPointToRoute(context, l10n, ref, widget.data),
+                    onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, l10n, ref, widget.data),
                     onTapFavorite: (item) {
                       _bssOnFavouritesTap();
-                      _onFavoriteTap(
-                        context: context,
-                        ref: ref,
-                        data: widget.data,
-                        favouriteItem: item,
-                      );
+                      _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
                     },
                   ),
                 ],
@@ -398,22 +332,13 @@ class _ContentState extends ConsumerState<_PoiCardContent>
         ),
         header: PoiHeader(
           bottomSheetController: _bottomSheetController,
-          title:
-              widget.data.address?.buildingName ??
-              widget.poiCardDataFromGoogle?.displayName ??
-              widget.data.title,
-          subTitle:
-              _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ??
-              widget.data.subtitle,
+          title: widget.data.address?.buildingName ?? widget.poiCardDataFromGoogle?.displayName ?? widget.data.title,
+          subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
           subTitleExtraInlineSpans: [
             if (poiHeaderSubTitle != null) ...[
               const TextSpan(text: ' • '),
               WidgetSpan(
-                child: Icon(
-                  General16Icons.car,
-                  size: 16,
-                  color: context.colors.foregroundSoft,
-                ),
+                child: Icon(General16Icons.car, size: 16, color: context.colors.foregroundSoft),
                 baseline: TextBaseline.ideographic,
                 alignment: PlaceholderAlignment.middle,
               ),
@@ -423,9 +348,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
               child: Padding(
                 padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
                 child: Icon(
-                  (widget.data.parkingInfo?.isPaid ?? false)
-                      ? GeneralIcons.money
-                      : GeneralIcons.checkmarkCircle,
+                  (widget.data.parkingInfo?.isPaid ?? false) ? GeneralIcons.money : GeneralIcons.checkmarkCircle,
                   size: 16,
                   color: context.colors.foregroundSoft,
                 ),
@@ -436,19 +359,13 @@ class _ContentState extends ConsumerState<_PoiCardContent>
             if (hasOffers) ...[
               const TextSpan(text: ' • '),
               WidgetSpan(
-                child: Icon(
-                  General16Icons.offer,
-                  size: 16,
-                  color: context.colorsV3.warningOnContainer,
-                ),
+                child: Icon(General16Icons.offer, size: 16, color: context.colorsV3.warningOnContainer),
                 baseline: TextBaseline.ideographic,
                 alignment: PlaceholderAlignment.middle,
               ),
               TextSpan(
                 text: ' ${context.l10n.offer}',
-                style: context.textStyleV3.bodySmallRegular.copyWith(
-                  color: context.colorsV3.warningOnContainer,
-                ),
+                style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
               ),
             ],
           ],
@@ -457,9 +374,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
           tabController: _tabController,
           data: widget.data,
           onTapClose: () async {
-            await ref
-                .read(highlightProvider.notifier)
-                .removeHighlight(widget.data.id!);
+            await ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
             await closePoiCard(context, ref);
           },
         ),
@@ -468,9 +383,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
           builder: (context, tabType, _) => DecoratedSliver(
             decoration: BoxDecoration(
               color: context.colors.backgroundSurface4,
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(PoiHeader.poiHeaderBorderRadius),
-              ),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(PoiHeader.poiHeaderBorderRadius)),
             ),
             sliver: SliverFillAfter(
               sliver: SliverAnimatedSwitcher(
@@ -481,21 +394,16 @@ class _ContentState extends ConsumerState<_PoiCardContent>
                     onEntrancesTap: () {
                       poiActions.toggleEntrances(
                         widget.data,
-                        () => _bottomSheetController.setState(
-                          PoiCardBottomSheetState.halfOpen,
-                        ),
+                        () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
                         widget.closestPoint,
                       );
                     },
                   ),
-                  PoiTabsType.photos => PoiPhotoCardSliver(
-                    objectId: widget.data.id?.objectId ?? 0,
-                  ),
+                  PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                   PoiTabsType.organizations => PoiOrganizationsSliver(
                     state: poiCardState,
                     objectId: widget.data.id!,
-                    bottomTabsHeight:
-                        PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                    bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
                   ),
                   PoiTabsType.parking => const SliverPadding(
                     padding: EdgeInsets.all(Spacing.$4x),
@@ -513,10 +421,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
   /// This is temporary solution. We need to show text for parking info
   /// If parking is not presented for this POI we return null
   /// Should work for all poi because only parking lots have parking info
-  String? _getParkingSubtitle(
-    ParkingInfoMessage? parkingInfo,
-    AppLocalizations l10n,
-  ) {
+  String? _getParkingSubtitle(ParkingInfoMessage? parkingInfo, AppLocalizations l10n) {
     if (parkingInfo == null) {
       return null;
     }
@@ -534,10 +439,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
       BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.buildRoute,
-          ownerName: BssUIElementNames.actionBar,
-        ),
+        uiElement: const BssUIElement(name: BssUIElementNames.buildRoute, ownerName: BssUIElementNames.actionBar),
         payload: BssPayload(placeItem: widget.data.toBss()),
       ),
     );
@@ -548,10 +450,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
       BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.contact,
-          ownerName: BssUIElementNames.actionBar,
-        ),
+        uiElement: const BssUIElement(name: BssUIElementNames.contact, ownerName: BssUIElementNames.actionBar),
         payload: BssPayload(placeItem: widget.data.toBss()),
       ),
     );
@@ -562,10 +461,7 @@ class _ContentState extends ConsumerState<_PoiCardContent>
       BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.bookmark,
-          ownerName: BssUIElementNames.actionBar,
-        ),
+        uiElement: const BssUIElement(name: BssUIElementNames.bookmark, ownerName: BssUIElementNames.actionBar),
         payload: BssPayload(placeItem: widget.data.toBss()),
       ),
     );

@@ -44,23 +44,10 @@ class PoiContentContactsCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (hasPhones)
-          _PhoneItemWidget(
-            phones: data.phones!,
-            onTap: data.onPhoneTap,
-            showFullWidth: shouldShowFullWidth,
-          ),
-        if (hasPhones && hasEmails)
-          Divider(
-            color: context.colors.borderDefault,
-            indent: Spacing.$12x,
-            height: 1,
-          ),
+          _PhoneItemWidget(phones: data.phones!, onTap: data.onPhoneTap, showFullWidth: shouldShowFullWidth),
+        if (hasPhones && hasEmails) Divider(color: context.colors.borderDefault, indent: Spacing.$12x, height: 1),
         if (hasEmails)
-          _EmailItemWidget(
-            emails: data.emails!,
-            onTap: data.onEmailTap,
-            showFullWidth: shouldShowFullWidth,
-          ),
+          _EmailItemWidget(emails: data.emails!, onTap: data.onEmailTap, showFullWidth: shouldShowFullWidth),
         if (hasSocialMedia) const SizedBox(width: double.maxFinite),
         if (hasSocialMedia)
           _SocialMediaItemWidget(
@@ -73,14 +60,14 @@ class PoiContentContactsCard extends StatelessWidget {
   }
 
   static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
-        PoiContentSocialMediaTypes.website => GeneralIcons.web,
-        PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
-        PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
-        PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
-        PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
-        PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
-        PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
-      };
+    PoiContentSocialMediaTypes.website => GeneralIcons.web,
+    PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
+    PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
+    PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
+    PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
+    PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
+    PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+  };
 }
 
 class _PhoneItemWidget extends StatelessWidget {
@@ -88,11 +75,7 @@ class _PhoneItemWidget extends StatelessWidget {
   final void Function(String phone) onTap;
   final bool showFullWidth;
 
-  const _PhoneItemWidget({
-    required this.phones,
-    required this.onTap,
-    this.showFullWidth = false,
-  });
+  const _PhoneItemWidget({required this.phones, required this.onTap, this.showFullWidth = false});
 
   @override
   Widget build(BuildContext context) {
@@ -110,10 +93,7 @@ class _PhoneItemWidget extends StatelessWidget {
           for (final phone in phones)
             GestureDetector(
               onLongPress: () async {
-                await onCopyToClipboard(
-                  phone,
-                  toastText: context.l10n.phoneCopied,
-                );
+                await onCopyToClipboard(phone, toastText: context.l10n.phoneCopied);
               },
               child: ContentRow(
                 onTap: () => onTap.call(phone),
@@ -122,9 +102,7 @@ class _PhoneItemWidget extends StatelessWidget {
                 leading: phoneIcon.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: phone,
-                  titleOptions: ContentRowTextOption(
-                    baseColor: context.colors.foregroundDefault,
-                  ),
+                  titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
                 ),
               ),
             ),
@@ -138,9 +116,7 @@ class _PhoneItemWidget extends StatelessWidget {
         supportTitleRTL: false,
         text: ContentRowTextOptions(
           title: phones.first,
-          titleOptions: ContentRowTextOption(
-            baseColor: context.colors.foregroundDefault,
-          ),
+          titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
         ),
         leading: phoneIcon.icon(color: context.colors.accentDefault),
         onTap: () => onTap.call(phones.first),
@@ -153,25 +129,18 @@ class _PhoneItemWidget extends StatelessWidget {
       onTitleTap: () => onTap.call(phones.first),
       text: ContentRowTextOptions(
         title: phones.first,
-        titleOptions: ContentRowTextOption(
-          baseColor: context.colors.foregroundDefault,
-        ),
+        titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
       ),
       trailing: Text(
         '${phones.length}',
-        style: context.textStyles.bodySmallSemiBold.copyWith(
-          color: context.colors.foregroundMuted,
-        ),
+        style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
       ),
       content: Column(
         children: [
           for (final phone in phones.sublist(1))
             GestureDetector(
               onLongPress: () async {
-                await onCopyToClipboard(
-                  phone,
-                  toastText: context.l10n.phoneCopied,
-                );
+                await onCopyToClipboard(phone, toastText: context.l10n.phoneCopied);
               },
               child: ContentRow(
                 onTap: () => onTap.call(phone),
@@ -179,9 +148,7 @@ class _PhoneItemWidget extends StatelessWidget {
                 leading: phoneIcon.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: phone,
-                  titleOptions: ContentRowTextOption(
-                    baseColor: context.colors.foregroundDefault,
-                  ),
+                  titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
                 ),
               ),
             ),
@@ -196,11 +163,7 @@ class _EmailItemWidget extends StatelessWidget {
   final void Function(String email) onTap;
   final bool showFullWidth;
 
-  const _EmailItemWidget({
-    required this.emails,
-    required this.onTap,
-    this.showFullWidth = false,
-  });
+  const _EmailItemWidget({required this.emails, required this.onTap, this.showFullWidth = false});
 
   @override
   Widget build(BuildContext context) {
@@ -216,22 +179,15 @@ class _EmailItemWidget extends StatelessWidget {
           for (final email in emails)
             GestureDetector(
               onLongPress: () async {
-                await onCopyToClipboard(
-                  email,
-                  toastText: context.l10n.emailHasBeenCopied,
-                );
+                await onCopyToClipboard(email, toastText: context.l10n.emailHasBeenCopied);
               },
               child: ContentRow(
                 onTap: () => onTap.call(email),
                 supportTitleRTL: false,
-                leading: GeneralIcons.web.icon(
-                  color: context.colors.accentDefault,
-                ),
+                leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: email,
-                  titleOptions: ContentRowTextOption(
-                    baseColor: context.colors.foregroundDefault,
-                  ),
+                  titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
                 ),
               ),
             ),
@@ -245,9 +201,7 @@ class _EmailItemWidget extends StatelessWidget {
         supportTitleRTL: false,
         text: ContentRowTextOptions(
           title: emails.first,
-          titleOptions: ContentRowTextOption(
-            baseColor: context.colors.foregroundDefault,
-          ),
+          titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
         ),
         leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
         onTap: () => onTap.call(emails.first),
@@ -259,36 +213,25 @@ class _EmailItemWidget extends StatelessWidget {
       leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
       text: ContentRowTextOptions(
         title: emails.first,
-        titleOptions: ContentRowTextOption(
-          baseColor: context.colors.foregroundDefault,
-        ),
+        titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
       ),
       trailing: Text(
         '${emails.length}',
-        style: context.textStyles.bodySmallSemiBold.copyWith(
-          color: context.colors.foregroundMuted,
-        ),
+        style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
       ),
       content: Column(
         children: [
           for (final email in emails.sublist(1))
             GestureDetector(
               onLongPress: () async {
-                await onCopyToClipboard(
-                  email,
-                  toastText: context.l10n.emailHasBeenCopied,
-                );
+                await onCopyToClipboard(email, toastText: context.l10n.emailHasBeenCopied);
               },
               child: ContentRow(
                 onTap: () => onTap.call(email),
-                leading: GeneralIcons.web.icon(
-                  color: context.colors.accentDefault,
-                ),
+                leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: email,
-                  titleOptions: ContentRowTextOption(
-                    baseColor: context.colors.foregroundDefault,
-                  ),
+                  titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
                 ),
               ),
             ),
@@ -303,11 +246,7 @@ class _SocialMediaItemWidget extends StatelessWidget {
   final void Function(String link) onTap;
   final bool showFullWidth;
 
-  const _SocialMediaItemWidget({
-    required this.socialMediaList,
-    required this.onTap,
-    this.showFullWidth = false,
-  });
+  const _SocialMediaItemWidget({required this.socialMediaList, required this.onTap, this.showFullWidth = false});
 
   @override
   Widget build(BuildContext context) {
@@ -318,14 +257,10 @@ class _SocialMediaItemWidget extends StatelessWidget {
           for (final socialMedia in socialMediaList)
             ContentRow(
               supportTitleRTL: false,
-              leading: _SocialMediaItemWidget.getIconData(
-                socialMedia.type,
-              ).icon(color: context.colors.accentDefault),
+              leading: _SocialMediaItemWidget.getIconData(socialMedia.type).icon(color: context.colors.accentDefault),
               text: ContentRowTextOptions(
                 title: _getDisplayText(socialMedia),
-                titleOptions: ContentRowTextOption(
-                  baseColor: context.colors.foregroundDefault,
-                ),
+                titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
               ),
               onTap: () => onTap.call(socialMedia.link),
             ),
@@ -335,10 +270,7 @@ class _SocialMediaItemWidget extends StatelessWidget {
 
     // Original logic: show as icons in Wrap
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.$4x,
-        vertical: Spacing.$3x,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
       child: Wrap(
         spacing: Spacing.$2x,
         runSpacing: Spacing.$2x,
@@ -355,14 +287,14 @@ class _SocialMediaItemWidget extends StatelessWidget {
   }
 
   static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
-        PoiContentSocialMediaTypes.website => GeneralIcons.web,
-        PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
-        PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
-        PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
-        PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
-        PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
-        PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
-      };
+    PoiContentSocialMediaTypes.website => GeneralIcons.web,
+    PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
+    PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
+    PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
+    PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
+    PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
+    PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+  };
 
   String _getDisplayText(PoiContentSocialMediaModel socialMedia) {
     // For website, show domain from link or displayText
@@ -460,14 +392,14 @@ class _SocialMediaItemWidget extends StatelessWidget {
   }
 
   String _getSocialMediaName(PoiContentSocialMediaTypes type) => switch (type) {
-        PoiContentSocialMediaTypes.website => 'Website',
-        PoiContentSocialMediaTypes.instagram => 'Instagram',
-        PoiContentSocialMediaTypes.facebook => 'Facebook',
-        PoiContentSocialMediaTypes.youtube => 'YouTube',
-        PoiContentSocialMediaTypes.linkedin => 'LinkedIn',
-        PoiContentSocialMediaTypes.whatsapp => 'WhatsApp',
-        PoiContentSocialMediaTypes.telegram => 'Telegram',
-      };
+    PoiContentSocialMediaTypes.website => 'Website',
+    PoiContentSocialMediaTypes.instagram => 'Instagram',
+    PoiContentSocialMediaTypes.facebook => 'Facebook',
+    PoiContentSocialMediaTypes.youtube => 'YouTube',
+    PoiContentSocialMediaTypes.linkedin => 'LinkedIn',
+    PoiContentSocialMediaTypes.whatsapp => 'WhatsApp',
+    PoiContentSocialMediaTypes.telegram => 'Telegram',
+  };
 }
 
 class _SocialMediaIconWidget extends StatelessWidget {
@@ -478,22 +410,22 @@ class _SocialMediaIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => CupertinoButton(
-        onPressed: onTap,
-        padding: EdgeInsets.zero,
-        minSize: 0,
-        child: Container(
-          padding: const EdgeInsets.all(Spacing.$2x),
-          decoration: BoxDecoration(
-            color: SaudiNationalDay.isNow()
-                ? context.colors.accentContainerDefault
-                : context.colors.accentSecondaryContainerDefault,
-            borderRadius: BorderRadius.circular(Spacing.$2x),
-          ),
-          child: Icon(
-            icon,
-            color: SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.accentSecondaryDefault,
-            size: Spacing.$6x,
-          ),
-        ),
-      );
+    onPressed: onTap,
+    padding: EdgeInsets.zero,
+    minSize: 0,
+    child: Container(
+      padding: const EdgeInsets.all(Spacing.$2x),
+      decoration: BoxDecoration(
+        color: SaudiNationalDay.isNow()
+            ? context.colors.accentContainerDefault
+            : context.colors.accentSecondaryContainerDefault,
+        borderRadius: BorderRadius.circular(Spacing.$2x),
+      ),
+      child: Icon(
+        icon,
+        color: SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.accentSecondaryDefault,
+        size: Spacing.$6x,
+      ),
+    ),
+  );
 }

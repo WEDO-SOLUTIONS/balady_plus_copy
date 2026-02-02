@@ -20,19 +20,11 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final bool photosAreLoading;
   final int objectId;
 
-  const HeaderComponent({
-    required this.photosEmpty,
-    required this.photosAreLoading,
-    required this.objectId,
-    super.key,
-  }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
+  const HeaderComponent({required this.photosEmpty, required this.photosAreLoading, required this.objectId, super.key})
+    : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
-  Widget build(
-    BuildContext context,
-    PoiCardBottomSheetState state,
-    double interpolation,
-  ) {
+  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     final photosSizeTransform = _transformPhotoSize(state, interpolation);
     final isItParkingSpot = objectId == parkingObjectId;
 
@@ -43,41 +35,27 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
       child: Opacity(
         opacity: _resolveOpacity(state, interpolation),
         child: Padding(
-          padding: topHeaderPaddingDelegate(
-            state,
-            interpolation,
-            showPhotos: !showPhotos,
-          ),
+          padding: topHeaderPaddingDelegate(state, interpolation, showPhotos: !showPhotos),
           child: Builder(
             builder: (context) {
               if (showPhotos) {
                 return SizedBox(
                   height: photosSizeTransform > 0 ? photosSizeTransform : photosMinHeight,
-                  child: PoiPhotosRow(
-                    objectId: objectId,
-                    state: state,
-                    interpolation: interpolation,
-                  ),
+                  child: PoiPhotosRow(objectId: objectId, state: state, interpolation: interpolation),
                 );
               }
               return Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   AppButton(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Spacing.$4x,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                     innerPadding: const EdgeInsetsDirectional.only(
                       start: Spacing.$2x + Spacing.$0_5x,
                       end: Spacing.$3x + Spacing.$0_5x,
                     ),
                     buttonColorScheme: ButtonColorScheme.accent,
                     buttonType: ButtonType.secondary,
-                    onTap: () => context.router.push(
-                      QuickFeedbackPhotoRoute(
-                        params: FeedbackObjectIdParams(objectId),
-                      ),
-                    ),
+                    onTap: () => context.router.push(QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId))),
                     primaryIcon: GeneralIcons.photoSolid,
                     primaryLabel: context.l10n.addPhoto,
                     color: context.colors.backgroundSurface2,
@@ -101,10 +79,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     return opacity.clamp(0, 1);
   }
 
-  double _transformPhotoSize(
-    PoiCardBottomSheetState state,
-    double interpolation,
-  ) {
+  double _transformPhotoSize(PoiCardBottomSheetState state, double interpolation) {
     if (state == PoiCardBottomSheetState.hidden) {
       return photosMinHeight * interpolation;
     }
@@ -133,24 +108,14 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     );
   }
 
-  EdgeInsets topHeaderPaddingDelegate(
-    PoiCardBottomSheetState state,
-    double interpolation, {
-    bool showPhotos = true,
-  }) {
+  EdgeInsets topHeaderPaddingDelegate(PoiCardBottomSheetState state, double interpolation, {bool showPhotos = true}) {
     if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return EdgeInsets.zero;
     }
     if (state == PoiCardBottomSheetState.hidden) {
-      return EdgeInsets.only(
-        bottom: Spacing.$2x,
-        top: showPhotos ? 0.0 : Spacing.$2x,
-      );
+      return EdgeInsets.only(bottom: Spacing.$2x, top: showPhotos ? 0.0 : Spacing.$2x);
     }
 
-    return EdgeInsets.only(
-      bottom: Spacing.$2x * (1 - interpolation),
-      top: showPhotos ? 0.0 : Spacing.$2x,
-    );
+    return EdgeInsets.only(bottom: Spacing.$2x * (1 - interpolation), top: showPhotos ? 0.0 : Spacing.$2x);
   }
 }

@@ -41,16 +41,10 @@ class PoiContentSliver extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = poiCardState?.gisObjectIdMessage;
-    const itemPadding = EdgeInsets.only(
-      left: Spacing.$4x,
-      right: Spacing.$4x,
-      bottom: Spacing.$3x,
-    );
+    const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
 
     final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(
-      poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim(),
-    );
+    final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
 
     final finishPoint = data != null
         ? RouteSearchPoint(
@@ -64,20 +58,13 @@ class PoiContentSliver extends ConsumerWidget {
     RouteSearchPoint? startPoint;
     if (userLocation != null) {
       startPoint = RouteSearchPoint(
-        coordinates: GeoPointMessage(
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-        ),
+        coordinates: GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
         dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
       );
     }
 
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-        startPoint: startPoint,
-      ),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
     );
 
     final searchObjectFuture = ref.watch(poiSearchByObjectProvider(data));
@@ -86,15 +73,11 @@ class PoiContentSliver extends ConsumerWidget {
     const colorShimmer = Color(0xFFE3E3E3);
 
     final mainLines = data?.routeInfos.map((e) => e.name).toList() ?? [];
-    poiSearchObjectFuture?.removeWhere(
-      (element) => mainLines.contains(element.title),
-    );
+    poiSearchObjectFuture?.removeWhere((element) => mainLines.contains(element.title));
 
     final entrancesWidget = Padding(
       padding: itemPadding,
-      child: PoiEntrancesMetro(
-        entrancesDirectoryObject: poiSearchByObjectEntrances,
-      ),
+      child: PoiEntrancesMetro(entrancesDirectoryObject: poiSearchByObjectEntrances),
     );
 
     return SliverPadding(
@@ -107,10 +90,7 @@ class PoiContentSliver extends ConsumerWidget {
           final about = data.getAbout(context.l10n);
           final workingHours = data.openingHours?.toWorkingHours();
 
-          Future<void> bssOnContactTap(
-            BssContactType type,
-            String value,
-          ) async {
+          Future<void> bssOnContactTap(BssContactType type, String value) async {
             await BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
@@ -152,15 +132,13 @@ class PoiContentSliver extends ConsumerWidget {
           final license = data.getLicense(context.l10n);
 
           // Accessibility info
-          final accessibilityInfo = data.getAccessibility(
-            context.l10n,
-            poiCardState?.qrTradeLicense,
-          );
+          final accessibilityInfo = data.getAccessibility(context.l10n, poiCardState?.qrTradeLicense);
 
           // Platforms lines info
           final routeInfos = data.routeInfos;
           final transportDirectoryRouteInfo = data.routeInfos.firstOrNull;
-          final currentRouteTransition = transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
+          final currentRouteTransition =
+              transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
                   .firstWhereOrNull((e) => e.name == data.title)
                   ?.transitions ??
               [];
@@ -176,11 +154,7 @@ class PoiContentSliver extends ConsumerWidget {
 
             context.router.push(const FavouritesRoute());
           };
-          final favourites = data.getFavourites(
-            favouritesState,
-            context.l10n,
-            onFavouritePressed,
-          );
+          final favourites = data.getFavourites(favouritesState, context.l10n, onFavouritePressed);
 
           // Feedback
           final feedback = PoiContentDataIncorrectModel(
@@ -194,10 +168,7 @@ class PoiContentSliver extends ConsumerWidget {
               }
 
               context.router.push(
-                QuickFeedbackRoute(
-                  type: QuickFeedbackType.editCompany,
-                  params: FeedbackObjectIdParams(objectIdInt),
-                ),
+                QuickFeedbackRoute(type: QuickFeedbackType.editCompany, params: FeedbackObjectIdParams(objectIdInt)),
               );
             },
             title: context.l10n.dataIsIncorrect,
@@ -209,9 +180,7 @@ class PoiContentSliver extends ConsumerWidget {
                 padding: itemPadding,
                 child: PoiContentFeedbackCard(
                   onTap: () {
-                    final objectIdInt = int.tryParse(
-                      data.id!.objectId.toString(),
-                    );
+                    final objectIdInt = int.tryParse(data.id!.objectId.toString());
                     if (objectIdInt == null) {
                       return;
                     }
@@ -229,13 +198,7 @@ class PoiContentSliver extends ConsumerWidget {
               ),
               Padding(
                 padding: itemPadding,
-                child: PoiContentFullAddressCard(
-                  data: data.getFullAddress(
-                    briefInfo,
-                    context.l10n,
-                    onEntrancesTap,
-                  ),
-                ),
+                child: PoiContentFullAddressCard(data: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap)),
               ),
               if (about != null)
                 Padding(
@@ -245,10 +208,7 @@ class PoiContentSliver extends ConsumerWidget {
               if (workingHours != null) //
                 Padding(
                   padding: itemPadding,
-                  child: PoiContentWorkingHoursCard(
-                    workingHours: workingHours,
-                    workStatusMessage: data.workStatus,
-                  ),
+                  child: PoiContentWorkingHoursCard(workingHours: workingHours, workStatusMessage: data.workStatus),
                 ),
               if (contacts != null) //
                 Padding(
@@ -271,37 +231,23 @@ class PoiContentSliver extends ConsumerWidget {
                   contentPadding: itemPadding,
                 ),
               if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
-                Shimmer.fromColors(
-                  baseColor: colorShimmer,
-                  highlightColor: Colors.white,
-                  child: entrancesWidget,
-                ),
+                Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
               if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
               ...routeInfos
                   .map(
                     (e) => Padding(
                       padding: itemPadding,
-                      child: PoiLinesMetro(
-                        transportDirectoryRouteInfo: e,
-                        address: data.title,
-                      ),
+                      child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
                     ),
                   )
                   .toList(),
               if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
-                Shimmer.fromColors(
-                  baseColor: colorShimmer,
-                  highlightColor: Colors.white,
-                  child: entrancesWidget,
-                ),
+                Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
               ...?poiSearchObjectFuture
                   ?.map(
                     (e) => Padding(
                       padding: itemPadding,
-                      child: PoiLinesMetro(
-                        transportDirectoryRouteInfo: e.routeInfos.first,
-                        address: data.title,
-                      ),
+                      child: PoiLinesMetro(transportDirectoryRouteInfo: e.routeInfos.first, address: data.title),
                     ),
                   )
                   .toList(),

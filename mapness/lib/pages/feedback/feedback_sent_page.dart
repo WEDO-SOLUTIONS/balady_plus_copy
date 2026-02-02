@@ -32,16 +32,14 @@ class FeedbackSentPage extends HookConsumerWidget {
       },
       loading: () => FeedbackSheetState.loading,
       error: (error, stack) {
-        logger.log(
-          'Error submitting feedback: $error\nStacktrace:\n$stack',
-          logLevel: MapnessLogLevel.critical,
-        );
+        logger.log('Error submitting feedback: $error\nStacktrace:\n$stack', logLevel: MapnessLogLevel.critical);
         return FeedbackSheetState.failure;
       },
     );
 
     // Check if payload has photos (any field value that is a list of strings/URLs)
-    final hasPhotos = payload?.fields.any((field) {
+    final hasPhotos =
+        payload?.fields.any((field) {
           final value = field.value;
           return value is List && value.isNotEmpty;
         }) ??

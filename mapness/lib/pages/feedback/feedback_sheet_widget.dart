@@ -24,15 +24,8 @@ final confettiShapes = [
       TrapezoidShape(startPosition, velocity, scale, gradient, x, y, z),
   (startPosition, velocity, scale, gradient, x, y, z) =>
       FlagRectangularShape(startPosition, velocity, scale, gradient, x, y, z),
-  (startPosition, velocity, scale, gradient, x, y, z) => SmoothParallelogramShape(
-        startPosition,
-        velocity,
-        scale,
-        gradient,
-        x,
-        y,
-        z,
-      ),
+  (startPosition, velocity, scale, gradient, x, y, z) =>
+      SmoothParallelogramShape(startPosition, velocity, scale, gradient, x, y, z),
   (startPosition, velocity, scale, gradient, x, y, z) => ArcShape(startPosition, velocity, scale, gradient, x, y, z),
 ];
 
@@ -41,30 +34,19 @@ class FeedbackSheetWidget extends HookWidget {
   final VoidCallback onRetry;
   final bool hasPhotos;
 
-  const FeedbackSheetWidget({
-    required this.onRetry,
-    required this.state,
-    this.hasPhotos = false,
-    super.key,
-  });
+  const FeedbackSheetWidget({required this.onRetry, required this.state, this.hasPhotos = false, super.key});
 
-  void popNavigation(
-    BuildContext context,
-    AnimationController confettiController,
-  ) =>
-      context.router.popUntil(
-        (route) =>
-            route.settings.name == PoiCardWidgetRoute.name ||
-            route.settings.name == SearchRoute.name ||
-            route.settings.name == BottomMenuRoute.name,
-      );
+  void popNavigation(BuildContext context, AnimationController confettiController) => context.router.popUntil(
+    (route) =>
+        route.settings.name == PoiCardWidgetRoute.name ||
+        route.settings.name == SearchRoute.name ||
+        route.settings.name == BottomMenuRoute.name,
+  );
 
   @override
   Widget build(BuildContext context) {
     final confettiController = useAnimationController();
-    final sheetController = useToggleSheetController(
-      onClose: (_) => popNavigation(context, confettiController),
-    );
+    final sheetController = useToggleSheetController(onClose: (_) => popNavigation(context, confettiController));
 
     final config = useMemoized(
       () => ConfettiGeneratorConfig.confetti(
@@ -79,16 +61,12 @@ class FeedbackSheetWidget extends HookWidget {
     useEffect(() {
       if (state == FeedbackSheetState.success) {
         confettiController
-            .animateTo(
-          1,
-          duration: config.animationDuration,
-          curve: config.animationCurve,
-        )
+            .animateTo(1, duration: config.animationDuration, curve: config.animationCurve)
             .whenCompleteOrCancel(() {
-          if (context.mounted) {
-            confettiController.reset();
-          }
-        });
+              if (context.mounted) {
+                confettiController.reset();
+              }
+            });
       }
       return null;
     }, [state]);
@@ -120,123 +98,103 @@ class FeedbackSheetWidget extends HookWidget {
                   duration: switchDuration,
                   child: switch (state) {
                     FeedbackSheetState.failure => BaseErrorWidget(
-                        onRetry: onRetry,
-                        errorLabel: context.l10n.appFeedbackConnectionIssueV2,
-                        paddingForImage: const EdgeInsets.symmetric(
-                          vertical: AppSizes.$3xs,
-                        ),
-                      ),
+                      onRetry: onRetry,
+                      errorLabel: context.l10n.appFeedbackConnectionIssueV2,
+                      paddingForImage: const EdgeInsets.symmetric(vertical: AppSizes.$3xs),
+                    ),
                     FeedbackSheetState.success => Column(
-                        key: const Key('feedback_success'),
-                        children: [
-                          Center(
-                            child: SizedBox(
-                              width: 180.0,
-                              child: SvgPicture.asset(
-                                Assets.imagesSvg.illustrationNotifications.keyName,
-                                matchTextDirection: true,
-                              ),
+                      key: const Key('feedback_success'),
+                      children: [
+                        Center(
+                          child: SizedBox(
+                            width: 180.0,
+                            child: SvgPicture.asset(
+                              Assets.imagesSvg.illustrationNotifications.keyName,
+                              matchTextDirection: true,
                             ),
                           ),
-                          const SizedBox(height: AppSizes.$4xs),
+                        ),
+                        const SizedBox(height: AppSizes.$4xs),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
+                            child: Text(
+                              context.l10n.feedbackSuccessTitle,
+                              style: context.textStyles.h3SemiBold,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                        if (hasPhotos) ...[
+                          const SizedBox(height: Spacing.$2x),
                           Center(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppSizes.xxs + Spacing.$4x,
-                              ),
+                              padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
                               child: Text(
-                                context.l10n.feedbackSuccessTitle,
-                                style: context.textStyles.h3SemiBold,
+                                context.l10n.feedbackSuccessPhotoUploaded,
+                                style: context.textStyles.bodyLargeRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
                                 textAlign: TextAlign.center,
                               ),
                             ),
                           ),
-                          if (hasPhotos) ...[
-                            const SizedBox(height: Spacing.$2x),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: AppSizes.xxs + Spacing.$4x,
-                                ),
-                                child: Text(
-                                  context.l10n.feedbackSuccessPhotoUploaded,
-                                  style: context.textStyles.bodyLargeRegular.copyWith(
-                                    color: context.colors.foregroundSoft,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                          const SizedBox(height: AppSizes.$4xs),
-                          Padding(
-                            padding: const EdgeInsets.only(top: Spacing.$3x),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: AppButton(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Spacing.$4x,
-                                ),
-                                buttonColorScheme: ButtonColorScheme.accentSecondary,
-                                size: ButtonSize.large,
-                                primaryLabel: context.l10n.complete,
-                                onTap: sheetController.close,
-                              ),
+                        ],
+                        const SizedBox(height: AppSizes.$4xs),
+                        Padding(
+                          padding: const EdgeInsets.only(top: Spacing.$3x),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                              buttonColorScheme: ButtonColorScheme.accentSecondary,
+                              size: ButtonSize.large,
+                              primaryLabel: context.l10n.complete,
+                              onTap: sheetController.close,
                             ),
                           ),
-                          const SizedBox(height: Spacing.$4x),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: Spacing.$4x),
+                      ],
+                    ),
                     FeedbackSheetState.loading => Column(
-                        key: const Key('feedback_loading'),
-                        children: [
-                          const SizedBox(height: AppSizes.$4xs),
-                          LayoutBuilder(
-                            builder: (context, constraints) {
-                              final textPainter = TextPainter(
-                                text: TextSpan(
-                                  text: context.l10n.feedbackSuccessTitle,
-                                  style: context.textStyles.h3SemiBold,
-                                ),
-                                textDirection: Directionality.of(context),
-                              )..layout(
-                                  maxWidth: constraints.maxWidth - AppSizes.xxs * 2,
-                                );
-                              final height = textPainter.height;
-                              return SizedBox(height: height);
-                            },
-                          ),
-                          const Center(
-                            child: SizedBox(
-                              width: 139,
-                              height: 139,
-                              child: Center(
-                                child: Loading(size: LoaderSize.large),
+                      key: const Key('feedback_loading'),
+                      children: [
+                        const SizedBox(height: AppSizes.$4xs),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final textPainter = TextPainter(
+                              text: TextSpan(
+                                text: context.l10n.feedbackSuccessTitle,
+                                style: context.textStyles.h3SemiBold,
                               ),
-                            ),
+                              textDirection: Directionality.of(context),
+                            )..layout(maxWidth: constraints.maxWidth - AppSizes.xxs * 2);
+                            final height = textPainter.height;
+                            return SizedBox(height: height);
+                          },
+                        ),
+                        const Center(
+                          child: SizedBox(
+                            width: 139,
+                            height: 139,
+                            child: Center(child: Loading(size: LoaderSize.large)),
                           ),
-                          const SizedBox(height: AppSizes.$4xs),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: Spacing.$3x + Spacing.$4x,
-                            ),
-                            child: SizedBox(
-                              height: ButtonSize.medium.height,
-                              width: double.infinity,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: AppSizes.$4xs),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x + Spacing.$4x),
+                          child: SizedBox(height: ButtonSize.medium.height, width: double.infinity),
+                        ),
+                      ],
+                    ),
                   },
                 ),
                 if (state == FeedbackSheetState.success) const SizedBox(height: Spacing.$4x),
               ],
             ),
             RepaintBoundary(
-              child: ConfettiAnimation(
-                animationController: confettiController,
-                config: config,
-              ),
+              child: ConfettiAnimation(animationController: confettiController, config: config),
             ),
           ],
         ),

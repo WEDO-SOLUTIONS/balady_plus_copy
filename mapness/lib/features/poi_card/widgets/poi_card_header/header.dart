@@ -123,19 +123,14 @@ class PoiHeader extends ConsumerWidget {
             return ColoredBox(
               color: shouldUseSurface1 ? context.colors.backgroundSurface1 : context.colors.backgroundSurface2,
               child: Padding(
-                padding: const EdgeInsets.only(
-                  left: Spacing.$4x,
-                  right: Spacing.$4x,
-                ),
+                padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     DraggerContainer(color: context.colors.backgroundSurface2),
                     CardHeader(
-                      title: CardHeaderWidget(
-                        child: TitleComponent(title: title),
-                      ),
+                      title: CardHeaderWidget(child: TitleComponent(title: title)),
                       onTapClose: onTapClose,
                       subTitle: CardHeaderWidget(
                         child: SubtitleComponent(

@@ -14,12 +14,7 @@ class PoiTabs extends ConsumerStatefulWidget {
   final int objectId;
   final TabController tabController;
 
-  const PoiTabs({
-    required this.tabController,
-    required this.objectId,
-    super.key,
-    this.poiCardState,
-  });
+  const PoiTabs({required this.tabController, required this.objectId, super.key, this.poiCardState});
 
   @override
   ConsumerState<PoiTabs> createState() => _PoiTabsState();
@@ -119,12 +114,7 @@ class _PoiTabItem extends StatelessWidget {
   final String title;
   final int? count;
 
-  const _PoiTabItem({
-    required this.title,
-    this.isActive,
-    this.onTap,
-    this.count,
-  });
+  const _PoiTabItem({required this.title, this.isActive, this.onTap, this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -164,9 +154,7 @@ class _PoiTabItem extends StatelessWidget {
                       ),
                       if (hasCounter)
                         Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            start: Spacing.$1x + Spacing.$0_5x,
-                          ),
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$1x + Spacing.$0_5x),
                           child: FittedBox(
                             child: Counter(
                               count: count,

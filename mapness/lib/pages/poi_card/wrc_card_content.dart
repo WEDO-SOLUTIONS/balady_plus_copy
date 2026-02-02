@@ -4,10 +4,7 @@ class _WrcCardContent extends ConsumerStatefulWidget {
   final WRCEventPoint wrcEventPoint;
   final PoiCardState? poiCardState;
 
-  const _WrcCardContent({
-    required this.wrcEventPoint,
-    this.poiCardState,
-  });
+  const _WrcCardContent({required this.wrcEventPoint, this.poiCardState});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _WrcCardContentState();
@@ -20,10 +17,7 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
 
   GeoPointMessage get _pointCenter => widget.wrcEventPoint.center;
 
-  LatLng get _closestPoints => LatLng(
-        latitude: _pointCenter.latitude,
-        longitude: _pointCenter.longitude,
-      );
+  LatLng get _closestPoints => LatLng(latitude: _pointCenter.latitude, longitude: _pointCenter.longitude);
 
   @override
   void initState() {
@@ -33,13 +27,15 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
         models: [
           FractionSnappingModel({0.0, .8}),
           OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
-          ComponentsSnappingModel(componentsDescriptions: [
-            SnapComponent.merge(
-              a: const SnapComponent.size(component: Components.header),
-              b: const SnapComponent.size(component: Components.footer),
-              merge: (a, b) => a + b,
-            ),
-          ])
+          ComponentsSnappingModel(
+            componentsDescriptions: [
+              SnapComponent.merge(
+                a: const SnapComponent.size(component: Components.header),
+                b: const SnapComponent.size(component: Components.footer),
+                merge: (a, b) => a + b,
+              ),
+            ],
+          ),
         ],
       ),
       stateMapper: const PoiCardStateMapper(),
@@ -57,13 +53,13 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    final wrcDirectoryObject =
-        widget.wrcEventPoint.mergeDirectoryObjectMessage(l10n, widget.poiCardState?.gisObjectIdMessage);
+    final wrcDirectoryObject = widget.wrcEventPoint.mergeDirectoryObjectMessage(
+      l10n,
+      widget.poiCardState?.gisObjectIdMessage,
+    );
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
-    final poiCardState = widget.poiCardState?.copyWith(
-      gisObjectIdMessage: wrcDirectoryObject,
-    );
+    final poiCardState = widget.poiCardState?.copyWith(gisObjectIdMessage: wrcDirectoryObject);
     final colors = context.colors;
 
     void _bssOnFavouritesTap() {
@@ -71,13 +67,8 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
         BssRequest(
           eventType: BSSEventType.action,
           actionType: BSSActionType.tap,
-          uiElement: const BssUIElement(
-            name: BssUIElementNames.bookmark,
-            ownerName: BssUIElementNames.actionBar,
-          ),
-          payload: BssPayload(
-            placeItem: wrcDirectoryObject.toBss(),
-          ),
+          uiElement: const BssUIElement(name: BssUIElementNames.bookmark, ownerName: BssUIElementNames.actionBar),
+          payload: BssPayload(placeItem: wrcDirectoryObject.toBss()),
         ),
       );
     }
@@ -94,20 +85,13 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
     RouteSearchPoint? startPoint;
     if (userLocation != null) {
       startPoint = RouteSearchPoint(
-        coordinates: GeoPointMessage(
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
-        ),
+        coordinates: GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
         dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
       );
     }
 
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-        startPoint: startPoint,
-      ),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
     );
 
     final brief = briefInfo?.firstOrNull;
@@ -142,10 +126,8 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
           closestPoint: _closestPoints,
           bottomSheetController: _bottomSheetController,
           data: wrcDirectoryObject,
-          share: () => ref.read(poiCardActionsProvider.notifier).share(
-                objectId: _objectId,
-                markerCoords: _closestPoints,
-              ),
+          share: () =>
+              ref.read(poiCardActionsProvider.notifier).share(objectId: _objectId, markerCoords: _closestPoints),
           callPhone: () {
             final phoneNumber = wrcDirectoryObject.getContactsInfoModels.firstWhereOrNull(
               (element) => element.type == ContactsInfoType.phone,
@@ -164,11 +146,7 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
               context,
               _objectId,
               wrcDirectoryObject.title,
-              RouteParamsPoint(
-                latitude: _pointCenter.latitude,
-                longitude: _pointCenter.longitude,
-                objectId: _objectId,
-              ),
+              RouteParamsPoint(latitude: _pointCenter.latitude, longitude: _pointCenter.longitude, objectId: _objectId),
               ref,
             );
           },
@@ -207,47 +185,40 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
         sliver: DecoratedSliver(
           decoration: BoxDecoration(
             color: context.colors.backgroundSurface4,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(PoiHeader.poiHeaderBorderRadius),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(PoiHeader.poiHeaderBorderRadius)),
           ),
           sliver: SliverFillAfter(
             sliver: SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: colors.backgroundSurface1,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(wrcDirectoryObject.title, style: context.textStyles.bodyLargeSemiBold),
-                              Text(
-                                address,
-                                style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
-                              ),
-                              const SizedBox(height: Spacing.$1_5x),
-                            ],
-                          ),
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: colors.backgroundSurface1,
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        const SizedBox(height: 16),
-                        PoiContentAboutCard(
-                          data: wrcDirectoryObject.getAbout(l10n)!,
-                          isExpandable: false,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(wrcDirectoryObject.title, style: context.textStyles.bodyLargeSemiBold),
+                            Text(
+                              address,
+                              style: context.textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
+                            ),
+                            const SizedBox(height: Spacing.$1_5x),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 16),
+                      PoiContentAboutCard(data: wrcDirectoryObject.getAbout(l10n)!, isExpandable: false),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ]),
             ),
           ),
         ),

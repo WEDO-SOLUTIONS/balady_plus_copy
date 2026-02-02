@@ -53,9 +53,5 @@ class PoiContentEntrancesModel {
   /// Callback for the entrances button
   final void Function() onTap;
 
-  const PoiContentEntrancesModel({
-    required this.title,
-    required this.count,
-    required this.onTap,
-  });
+  const PoiContentEntrancesModel({required this.title, required this.count, required this.onTap});
 }
