@@ -1,15 +1,17 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/str_conversion.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_svg_image/cached_network_svg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mapness/shared/utils/common_function.dart';
 
 class ImageIconBasedTypeWidget extends StatelessWidget {
   final String icon;
   final String? type;
+  final String? cdnLogoRef;
   final double iconSize;
   final Color? iconColor;
   final BoxFit fit;
@@ -18,6 +20,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
     super.key,
     required this.icon,
     this.type,
+    this.cdnLogoRef,
     this.iconSize = 18.0,
     this.iconColor = AppColor.primary900Light,
     this.fit = BoxFit.contain,
@@ -25,80 +28,60 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!icon.contains("http")) {
-      // Local asset icons
-      if ((icon).isSvgIcon) {
+    // Build proper URL if icon is not a full URL
+    String imageUrl = _buildImageUrl();
 
+    if (!imageUrl.contains("http")) {
+      // Local asset icons
+      if ((imageUrl).isSvgIcon) {
         return SvgPicture.asset(
-          icon,
+          imageUrl,
           height: iconSize,
           width: iconSize,
-          colorFilter: iconColor != null
-              ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
-              : null,
+          colorFilter: iconColor != null ? ColorFilter.mode(iconColor!, BlendMode.srcIn) : null,
           fit: fit,
+          placeholderBuilder: (context) => _buildFallbackIcon(),
         );
-      } else if ((icon).isImgIcon) {
-
+      } else if ((imageUrl).isImgIcon) {
         return Image.asset(
-          icon,
+          imageUrl,
           height: iconSize,
           width: iconSize,
           color: iconColor,
           colorBlendMode: BlendMode.srcIn,
           fit: fit,
+          errorBuilder: (context, error, stackTrace) => _buildFallbackIcon(),
         );
       }
     } else {
       // Remote icons
-      if ((icon).isSvgIcon || type == "svg") {
-
+      if ((imageUrl).isSvgIcon || type == "svg") {
         return CachedNetworkSVGImage(
-          icon,
-          placeholder: const SizedBox(
-            width: 40,
-            height: 40,
-            child: CircularProgressIndicator(),
+          imageUrl,
+          placeholder: SizedBox(
+            width: iconSize,
+            height: iconSize,
+            child: const CircularProgressIndicator(strokeWidth: 2),
           ),
-          headers: {
-            "verifyingKEY": hashRequest(icon, "GET"),
-          },
-          errorWidget: ImageIconBasedTypeWidget(
-            icon: IconPath.serviceIcon(icon.split("/").last),
-            iconSize: iconSize,
-            iconColor: iconColor,
-            fit: fit,
-          ),
+          headers: {"verifyingKEY": hashRequest(imageUrl, "GET")},
+          errorWidget: _buildFallbackIcon(),
           width: iconSize,
           height: iconSize,
           fadeDuration: const Duration(milliseconds: 500),
-          colorFilter: iconColor != null
-              ? ColorFilter.mode(iconColor!, BlendMode.srcIn)
-              : null,
+          colorFilter: iconColor != null ? ColorFilter.mode(iconColor!, BlendMode.srcIn) : null,
         );
       } else {
-
         return CachedNetworkImage(
-          imageUrl: icon,
-          httpHeaders: {
-            "verifyingKEY": hashRequest(icon, "GET"),
-          },
+          imageUrl: imageUrl,
+          httpHeaders: {"verifyingKEY": hashRequest(imageUrl, "GET")},
           progressIndicatorBuilder: (context, url, downloadProgress) {
             return SizedBox(
-              width: 40,
-              height: 40,
-              child:
-              CircularProgressIndicator(value: downloadProgress.progress),
+              width: iconSize,
+              height: iconSize,
+              child: CircularProgressIndicator(value: downloadProgress.progress, strokeWidth: 2),
             );
           },
-          errorWidget: (context, url, error) {
-            return ImageIconBasedTypeWidget(
-              icon: IconPath.serviceIcon(icon.split("/").last),
-              iconSize: iconSize,
-              iconColor: iconColor,
-              fit: fit,
-            );
-          },
+          errorWidget: (context, url, error) => _buildFallbackIcon(),
           width: iconSize,
           height: iconSize,
           fit: fit,
@@ -108,6 +91,38 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
       }
     }
 
-    return const SizedBox();
+    return _buildFallbackIcon();
+  }
+
+  String _buildImageUrl() {
+    // If icon is already a full URL, return as is
+    if (icon.contains("http")) {
+      return icon;
+    }
+
+    // If cdnLogoRef is provided and icon is not a local asset path, build URL
+    if (cdnLogoRef != null && cdnLogoRef!.isNotEmpty && !icon.contains("assets/")) {
+      try {
+        final baseUrl = GetIt.instance<EnvType>().domain;
+        return "${baseUrl}v1/balady-mini-apps/download/$cdnLogoRef";
+      } catch (e) {
+        // Fallback to original icon if EnvType is not available
+        return icon;
+      }
+    }
+
+    return icon;
+  }
+
+  Widget _buildFallbackIcon() {
+    return Container(
+      width: iconSize,
+      height: iconSize,
+      decoration: BoxDecoration(
+        color: iconColor?.withOpacity(0.1) ?? AppColor.primary900Light.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Icon(Icons.apps, size: iconSize * 0.6, color: iconColor ?? AppColor.primary900Light),
+    );
   }
 }

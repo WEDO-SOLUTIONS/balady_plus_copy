@@ -705,4 +705,5 @@ class ApiUrl {
 
   static const getRegions = 'v1/volunteer-platform-services/lookups/region';
   static const getcities = 'v1/volunteer-platform-services/lookups/city';
+  static const volunteerCardStatistics = '/v1/volunteer-platform-services/statistics';
 }

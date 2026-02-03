@@ -61,7 +61,8 @@ class NafathLoginWidget extends StatelessWidget {
     onPressed: () async {
       final isLoggedIn = await CommonFunctions.onLogin(isMunicipality: true);
       if (isLoggedIn) {
-        //TODO: refresh and fetch persona data
+        // The parent widget will automatically rebuild due to CommonProperties.isLoggedInMunicipality change
+        // No additional action needed as the widget tree will update automatically
       }
     },
     style: ElevatedButton.styleFrom(

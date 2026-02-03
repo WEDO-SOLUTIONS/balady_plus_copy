@@ -551,7 +551,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
                 if(routeEditorRoutesInfo.routeParams.finishPoint.coordinates == geoPoint) {
                     self.onRoutesInfoChanged(
                         to: destinationName, with: additionalInformation,
-                        with: routeEditorRoutesInfo,
+                        with: routeEditorRoutesInfo
                     )
                 }
             }
@@ -632,8 +632,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
             ),
             size: DGis.ScreenSize(
                 width: UInt32(screenWidth),
-                height: UInt32(screenHeight),
-            ),
+                height: UInt32(screenHeight)
+            )
         )
         self.moveCameraCancellable?.cancel()
         self.moveCameraCancellable = self.map.camera.move(

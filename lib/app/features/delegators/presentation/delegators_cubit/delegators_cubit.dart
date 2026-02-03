@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../core/services/services_exports.dart' show NoParams;
-import '../../../../core/utils/utils_exports.dart'
-    show BlocRequestStatus, Nullable;
-import '../../delegators_exports.dart'
-    show AgentEntity, DelegatorEntity, GetDelegators, GetAgents;
+import '../../../../core/utils/utils_exports.dart' show BlocRequestStatus, Nullable;
+import '../../delegators_exports.dart' show AgentEntity, DelegatorEntity, GetDelegators, GetAgents;
+import '../../../delegators/services/account_selection_service.dart';
 
 part 'delegators_state.dart';
 
@@ -14,8 +13,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   final GetDelegators _getDelegators;
   final GetAgents _getAgents;
 
-  DelegatorsCubit(this._getDelegators, this._getAgents)
-      : super(const DelegatorsState(tab: 0));
+  DelegatorsCubit(this._getDelegators, this._getAgents) : super(const DelegatorsState(tab: 0));
 
   void getDelegators() async {
     if (state.delegators.isEmpty)
@@ -31,28 +29,26 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
             ? BlocRequestStatus.submissionGetSuccess
             : BlocRequestStatus.submissionGetFailure;
 
-        emit(state.copyWith(
-          status: status,
-          errorMessage: failure.errorMessage,
-        ));
+        emit(state.copyWith(status: status, errorMessage: failure.errorMessage));
       },
       (delegators) {
-        emit(state.copyWith(
-          status: BlocRequestStatus.submissionGetSuccess,
-          delegators: delegators,
-        ));
+        emit(state.copyWith(status: BlocRequestStatus.submissionGetSuccess, delegators: delegators));
       },
     );
   }
 
   void selectDelegator(DelegatorEntity? delegator) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(delegator), sAgent: Nullable(null)));
+    emit(state.copyWith(selectedDelegator: Nullable(delegator), sAgent: Nullable(null)));
+
+    // Save selection to SharedPrefs
+    AccountSelectionService.saveCurrentSelection(this);
   }
 
   void selectAgent(AgentEntity? agent) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(null), sAgent: Nullable(agent)));
+    emit(state.copyWith(selectedDelegator: Nullable(null), sAgent: Nullable(agent)));
+
+    // Save selection to SharedPrefs
+    AccountSelectionService.saveCurrentSelection(this);
   }
 
   void changeTab(int index) {
@@ -63,8 +59,7 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
     if (state.agents.isEmpty)
       emit(state.copyWith(agentStatus: BlocRequestStatus.submissionGetLoading));
     else
-      emit(
-          state.copyWith(agentStatus: BlocRequestStatus.submissionPostLoading));
+      emit(state.copyWith(agentStatus: BlocRequestStatus.submissionPostLoading));
 
     final failureOrSuccess = await _getAgents(NoParams());
 
@@ -75,29 +70,29 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
             ? BlocRequestStatus.submissionGetSuccess
             : BlocRequestStatus.submissionGetFailure;
 
-        emit(state.copyWith(
-          agentStatus: status,
-          errorMessage: failure.errorMessage,
-        ));
+        emit(state.copyWith(agentStatus: status, errorMessage: failure.errorMessage));
       },
       (delegators) {
-        emit(state.copyWith(
-          agentStatus: BlocRequestStatus.submissionGetSuccess,
-          agents: delegators,
-        ));
+        emit(state.copyWith(agentStatus: BlocRequestStatus.submissionGetSuccess, agents: delegators));
       },
     );
   }
 
   void clearDelegators() {
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         status: BlocRequestStatus.submissionGetLoading,
-        agentStatus: BlocRequestStatus.submissionGetLoading));
+        agentStatus: BlocRequestStatus.submissionGetLoading,
+      ),
+    );
 
-    emit(state.copyWith(
+    emit(
+      state.copyWith(
         status: BlocRequestStatus.submissionGetSuccess,
         agentStatus: BlocRequestStatus.submissionGetSuccess,
         delegators: [],
-        agents: []));
+        agents: [],
+      ),
+    );
   }
 }

@@ -4829,7 +4829,6 @@
   "navigate": "Navigate",
   "grayScaleMode": "Grayscale mode",
   "stepsToAccessFeature": "Steps to access feature",
-  "voiceReader": "Voice reader"
-
-
+  "voiceReader": "Voice reader",
+  "switch_account": "Switch Account"
 }

@@ -110,7 +110,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                     ..loadMiniApps(
                       isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
                       isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-                      isUserAccountBusiness: false,
+                      isUserAccountBusiness: true, // Always show business groups, let individual groups handle access
                     ),
                   child: Scaffold(
                     body: Stack(
@@ -597,18 +597,11 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                   onTap: () {
                                                                     Navigator.of(context).push(
                                                                       PageRouteBuilder(
-                                                                        opaque:
-                                                                            false,
-                                                                        barrierColor:
-                                                                            Colors.transparent,
-                                                                        pageBuilder:
-                                                                            (
-                                                                              _,
-                                                                              __,
-                                                                              ___,
-                                                                            ) => AppsGroupPage(
-                                                                              groupId: otherServicesGroup.id,
-                                                                            ),
+                                                                        opaque: false,
+                                                                        barrierColor: Colors.transparent,
+                                                                        pageBuilder: (_, __, ___) => AppsGroupPage(
+                                                                          groupId: otherServicesGroup.id,
+                                                                        ),
                                                                       ),
                                                                     );
                                                                   },
@@ -639,20 +632,12 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                 ),
               );
             case '/search':
-              return MaterialPageRoute(
-                builder: (_) => const MiniAppsSearchPage(),
-                fullscreenDialog: true,
-              );
+              return MaterialPageRoute(builder: (_) => const MiniAppsSearchPage(), fullscreenDialog: true);
             case '/group':
               final args = settings.arguments as Map<String, dynamic>;
-              return MaterialPageRoute(
-                builder: (_) =>
-                    AppsGroupPage(groupId: args['groupId'] as String),
-              );
+              return MaterialPageRoute(builder: (_) => AppsGroupPage(groupId: args['groupId'] as String));
             default:
-              return MaterialPageRoute(
-                builder: (_) => const HomeMiniAppsListPages(),
-              );
+              return MaterialPageRoute(builder: (_) => const HomeMiniAppsListPages());
           }
         },
       ),
