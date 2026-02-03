@@ -15,6 +15,8 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/general_widgets/custom_sub_heading_text.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/page_bar_section_widgets/custom_text_field.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/filter_buttom_sheet.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/widgets/nafath_login_widget.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/persona_section/widgets/persona_banner.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,9 +54,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
     final cubit = context.watch<NewMiniAppLogicCubit>();
 
     //! Fetch the app group that matches the ID that the user should pass...
-    CategoryGroup? appGroup = cubit.state.appGroups.firstWhereOrNull(
-      (g) => g.id == widget.groupId,
-    );
+    CategoryGroup? appGroup = cubit.state.appGroups.firstWhereOrNull((g) => g.id == widget.groupId);
     //! HELPER function: Some groups contains sub group (group inside group)
     //! 1 - Loops through current groups
     //! 2 - If current group g matches the id return it
@@ -64,8 +64,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
     CategoryGroup? findGroupById(List<CategoryGroup> groups, String id) {
       for (final g in groups) {
         if (g.id == id) return g;
-        final subs =
-            g.subCategoryGroup?.values.toList() ?? const <CategoryGroup>[];
+        final subs = g.subCategoryGroup?.values.toList() ?? const <CategoryGroup>[];
         final found = findGroupById(subs, id);
         if (found != null) return found;
       }
@@ -97,9 +96,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
             ),
             SafeArea(
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.screenWidth * 0.04,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.04),
                 child: Column(
                   children: [
                     // STICKY HEADER (always visible)
@@ -112,9 +109,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           isTextCenter: true,
                           width: context.screenWidth,
                           height: context.h(35),
-                          text: CommonFunctions.isAppAR
-                              ? appGroup!.nameAr
-                              : appGroup!.nameEn,
+                          text: CommonFunctions.isAppAR ? appGroup!.nameAr : appGroup!.nameEn,
                           fontColor: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
@@ -137,19 +132,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.surface,
                                   borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(
-                                    color: Theme.of(context).cardColor,
-                                    width: 1,
-                                  ),
+                                  border: Border.all(color: Theme.of(context).cardColor, width: 1),
                                 ),
                                 child: IconButton(
                                   onPressed: () => Navigator.pop(context),
-                                  icon: Icon(
-                                    Icons.close,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
-                                  ),
+                                  icon: Icon(Icons.close, color: Theme.of(context).colorScheme.onSurface),
                                 ),
                               ),
                             ),
@@ -163,28 +150,21 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.surface,
                                   borderRadius: BorderRadius.circular(100),
-                                  border: Border.all(
-                                    color: Theme.of(context).cardColor,
-                                    width: 1,
-                                  ),
+                                  border: Border.all(color: Theme.of(context).cardColor, width: 1),
                                 ),
                                 child: IconButton(
                                   onPressed: () async {
-                                    final cubit = context
-                                        .read<NewMiniAppLogicCubit>();
+                                    final cubit = context.read<NewMiniAppLogicCubit>();
                                     final result = await FilterButtomSheet.show(
                                       context,
-                                      initialSelectedType:
-                                          cubit.state.selectedSortType,
+                                      initialSelectedType: cubit.state.selectedSortType,
                                     );
                                     if (result != null && mounted) {
                                       cubit.setSortType(result);
                                     }
                                   },
                                   icon: Image.asset(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     ImagePath.sortDescending,
                                     width: context.w(24),
                                     height: context.h(24),
@@ -201,14 +181,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     height: context.h(48),
                                     width: double.infinity,
                                     suffixPadding: value.text.isNotEmpty
-                                        ? EdgeInsets.symmetric(
-                                            horizontal:
-                                                context.screenWidth * 0.02,
-                                          )
-                                        : EdgeInsets.symmetric(
-                                            horizontal:
-                                                context.screenWidth * 0.04,
-                                          ),
+                                        ? EdgeInsets.symmetric(horizontal: context.screenWidth * 0.02)
+                                        : EdgeInsets.symmetric(horizontal: context.screenWidth * 0.04),
                                     autoFocus: false,
                                     autofocus: false,
                                     controller: controller,
@@ -216,44 +190,26 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                     keyboardType: TextInputType.text,
                                     isReadOnly: false,
                                     suffixString: value.text.isEmpty
-                                        ? Text(
-                                            "search2".tr(),
-                                            style: TextStyle(
-                                              color: Theme.of(
-                                                context,
-                                              ).disabledColor,
-                                            ),
-                                          )
+                                        ? Text("search2".tr(), style: TextStyle(color: Theme.of(context).disabledColor))
                                         : const SizedBox(),
                                     suffixIcon: value.text.isEmpty
                                         ? SvgPicture.asset(
-                                            Theme.of(context).brightness ==
-                                                    Brightness.dark
+                                            Theme.of(context).brightness == Brightness.dark
                                                 ? IconPath.searchSVG2
                                                 : IconPath.searchSVG,
                                           )
                                         : IconButton(
                                             onPressed: () {
                                               controller.clear();
-                                              context
-                                                  .read<NewMiniAppLogicCubit>()
-                                                  .searchMiniApp(
-                                                    '',
-                                                    source: appGroup!.apps,
-                                                  );
+                                              context.read<NewMiniAppLogicCubit>().searchMiniApp(
+                                                '',
+                                                source: appGroup!.apps,
+                                              );
                                             },
-                                            icon: const Icon(
-                                              Icons.close_rounded,
-                                              color: Color(0XFFB2B2B2),
-                                            ),
+                                            icon: const Icon(Icons.close_rounded, color: Color(0XFFB2B2B2)),
                                           ),
                                     onChanged: (query) {
-                                      context
-                                          .read<NewMiniAppLogicCubit>()
-                                          .searchMiniApp(
-                                            query,
-                                            source: appGroup!.apps,
-                                          );
+                                      context.read<NewMiniAppLogicCubit>().searchMiniApp(query, source: appGroup!.apps);
                                     },
                                   );
                                 },
@@ -264,150 +220,147 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                       ],
                     ),
 
-                    SizedBox(height: context.screenHeight * 0.04),
-
+                    SizedBox(height: context.screenHeight * 0.02),
                     Expanded(
                       child: BlocBuilder<NewMiniAppLogicCubit, NewMiniAppLogicState>(
                         builder: (context, state) {
+                          // Make NafathLoginWidget and the apps grid scroll together
+                          if (state.isSearching) {
+                            // when searching, fill remaining area with shimmer
+                            return CustomScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              slivers: [
+                                SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                                _buildNafathLoginWidget,
+                                SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                                const SliverFillRemaining(hasScrollBody: true, child: MiniAppsShimmerLoadingWidget()),
+                              ],
+                            );
+                          }
+
                           final isInitial =
-                              controller.text.isEmpty &&
-                              state.searchResults.isEmpty &&
-                              !state.isSearching;
+                              controller.text.isEmpty && state.searchResults.isEmpty && !state.isSearching;
+
+                          final cubit = context.read<NewMiniAppLogicCubit>();
 
                           if (isInitial) {
-                            final cubit = context.read<NewMiniAppLogicCubit>();
-                            final sortedApps = cubit.sortApps(
-                              appGroup!.apps,
-                              state.selectedSortType,
-                            );
-                            return GridView.builder(
+                            final sortedApps = cubit.sortApps(appGroup!.apps, state.selectedSortType);
+
+                            final subCount = appGroup.subCategoryGroup?.length ?? 0;
+                            final totalCount = subCount + sortedApps.length;
+
+                            return CustomScrollView(
                               physics: const BouncingScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                              slivers: [
+                                SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                                _buildNafathLoginWidget,
+                                SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                                SliverGrid(
+                                  delegate: SliverChildBuilderDelegate((context, index) {
+                                    if (appGroup!.subCategoryGroup != null && index < subCount) {
+                                      CategoryGroup categoryGroup = appGroup.subCategoryGroup!.values.toList()[index];
+                                      final groupName = CommonFunctions.isAppAR
+                                          ? categoryGroup.nameAr
+                                          : categoryGroup.nameEn;
+                                      return StaggeredAppear(
+                                        initialDelay: const Duration(milliseconds: 150),
+                                        itemDuration: const Duration(milliseconds: 150),
+                                        itemDelay: const Duration(milliseconds: 200),
+                                        children: [
+                                          CustomSubCategory(
+                                            text: groupName,
+                                            apps: categoryGroup.apps,
+                                            totalAppCount: categoryGroup.appCount,
+                                            onTap: () => Navigator.of(context).push(
+                                              PageRouteBuilder(
+                                                opaque: false,
+                                                barrierColor: Colors.transparent,
+                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+
+                                    final newIndex = index - subCount;
+                                    final miniApp = sortedApps[newIndex];
+                                    return StaggeredAppear(
+                                      initialDelay: const Duration(milliseconds: 150),
+                                      itemDuration: const Duration(milliseconds: 150),
+                                      itemDelay: const Duration(milliseconds: 200),
+                                      children: [
+                                        AppsGroupMiniAppsCardWidgets(
+                                          title: miniApp.name,
+                                          iconPath: miniApp.iconPath,
+                                          onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
+                                        ),
+                                      ],
+                                    );
+                                  }, childCount: totalCount),
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                     crossAxisCount: 3,
                                     crossAxisSpacing: 16,
                                     mainAxisSpacing: 16,
                                     childAspectRatio: 0.8,
                                   ),
-                              itemCount:
-                                  (appGroup.subCategoryGroup?.length ?? 0) +
-                                  sortedApps.length,
-                              itemBuilder: (context, index) {
-                                if (appGroup!.subCategoryGroup != null &&
-                                    index < appGroup.subCategoryGroup!.length) {
-                                  CategoryGroup categoryGroup = appGroup
-                                      .subCategoryGroup!
-                                      .values
-                                      .toList()[index];
-                                  final groupName = CommonFunctions.isAppAR
-                                      ? categoryGroup.nameAr
-                                      : categoryGroup.nameEn;
-                                  return StaggeredAppear(
-                                    initialDelay: const Duration(
-                                      milliseconds: 150,
-                                    ),
-                                    itemDuration: const Duration(
-                                      milliseconds: 150,
-                                    ),
-                                    itemDelay: const Duration(
-                                      milliseconds: 200,
-                                    ),
-                                    children: [
-                                      CustomSubCategory(
-                                        text: groupName,
-                                        apps: categoryGroup.apps,
-                                        totalAppCount: categoryGroup.appCount,
-                                        onTap: () => Navigator.of(context).push(
-                                          PageRouteBuilder(
-                                            opaque: false,
-                                            barrierColor: Colors.transparent,
-                                            pageBuilder: (_, __, ___) =>
-                                                AppsGroupPage(
-                                                  groupId: categoryGroup.id,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }
-
-                                int newIndex =
-                                    index -
-                                    (appGroup.subCategoryGroup?.length ?? 0);
-                                final miniApp = sortedApps[newIndex];
-                                return StaggeredAppear(
-                                  initialDelay: const Duration(
-                                    milliseconds: 150,
-                                  ),
-                                  itemDuration: const Duration(
-                                    milliseconds: 150,
-                                  ),
-                                  itemDelay: const Duration(milliseconds: 200),
-                                  children: [
-                                    AppsGroupMiniAppsCardWidgets(
-                                      title: miniApp.name,
-                                      iconPath: miniApp.iconPath,
-                                      onTap: () {
-                                        context
-                                            .read<NewMiniAppLogicCubit>()
-                                            .openMiniApp(miniApp);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
+                                ),
+                                // Add bottom spacing so the gradient overlay doesn't hide last items
+                                SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),
+                              ],
                             );
                           }
 
-                          if (state.isSearching) {
-                            return const MiniAppsShimmerLoadingWidget();
-                          }
-
+                          // Not initial => we have searchResults to show
                           final results = state.searchResults;
-                          final cubit = context.read<NewMiniAppLogicCubit>();
-                          final sortedResults = cubit.sortApps(
-                            results,
-                            state.selectedSortType,
-                          );
+                          final sortedResults = cubit.sortApps(results, state.selectedSortType);
 
                           if (sortedResults.isEmpty) {
-                            return Center(
-                              child: Text(
-                                "no_results_found".tr(),
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
-                                  fontSize: 25,
-                                  fontFamily: GeneralKey.appFontType,
+                            return CustomScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              slivers: [
+                                _buildNafathLoginWidget,
+                                SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                                SliverFillRemaining(
+                                  hasScrollBody: false,
+                                  child: Center(
+                                    child: Text(
+                                      "no_results_found".tr(),
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.onSurface,
+                                        fontSize: 25,
+                                        fontFamily: GeneralKey.appFontType,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                              ],
                             );
                           }
 
-                          return GridView.builder(
+                          return CustomScrollView(
                             physics: const BouncingScrollPhysics(),
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
+                            slivers: [
+                              _buildNafathLoginWidget,
+                              SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
+                              SliverGrid(
+                                delegate: SliverChildBuilderDelegate((context, index) {
+                                  final miniApp = sortedResults[index];
+                                  return AppsGroupMiniAppsCardWidgets(
+                                    title: miniApp.name,
+                                    iconPath: miniApp.iconPath,
+                                    onTap: () => context.read<NewMiniAppLogicCubit>().openMiniApp(miniApp),
+                                  );
+                                }, childCount: sortedResults.length),
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 3,
                                   crossAxisSpacing: 16,
                                   mainAxisSpacing: 16,
                                   childAspectRatio: 0.8,
                                 ),
-                            itemCount: sortedResults.length,
-                            itemBuilder: (context, index) {
-                              final miniApp = sortedResults[index];
-                              return AppsGroupMiniAppsCardWidgets(
-                                title: miniApp.name,
-                                iconPath: miniApp.iconPath,
-                                onTap: () {
-                                  context
-                                      .read<NewMiniAppLogicCubit>()
-                                      .openMiniApp(miniApp);
-                                },
-                              );
-                            },
+                              ),
+                              SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.08)),
+                            ],
                           );
                         },
                       ),
@@ -428,14 +381,15 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                     end: Alignment.bottomCenter,
                     colors: Theme.of(context).brightness == Brightness.dark
                         ? [
-                            Colors.black.withOpacity(0.0),
-                            Colors.black.withOpacity(0.6),
-                            Colors.black,
+                            // replaced with Color.fromRGBO to avoid withOpacity deprecation
+                            const Color.fromRGBO(0, 0, 0, 0.0),
+                            const Color.fromRGBO(0, 0, 0, 0.6),
+                            const Color.fromRGBO(0, 0, 0, 1.0),
                           ]
                         : [
-                            Colors.white.withOpacity(0.0),
-                            Colors.white.withOpacity(0.6),
-                            Colors.white,
+                            const Color.fromRGBO(255, 255, 255, 0.0),
+                            const Color.fromRGBO(255, 255, 255, 0.6),
+                            const Color.fromRGBO(255, 255, 255, 1.0),
                           ],
                     stops: const [0.0, 0.45, 1.0],
                   ),
@@ -447,4 +401,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       ),
     );
   }
+
+  Widget get _buildNafathLoginWidget => widget.groupId == '124a4dd1-7a7b-47f1-09eb-08de2cce6088' || widget.groupId == '6f736c81-c998-4c3e-09ea-08de2cce6088'
+      ? !CommonProperties.isLoggedInMunicipality ? SliverToBoxAdapter(child: NafathLoginWidget())
+      : SliverToBoxAdapter(child: PersonaBanner()) : SliverToBoxAdapter(child: const SizedBox());
 }
