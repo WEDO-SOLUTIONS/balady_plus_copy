@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
@@ -136,31 +135,31 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         ),
                       ],
                     ),
-                    Spacing.$2x.heightBox,
-                    Spacing.$2x.heightBox,
-                    ContentWrapper(
-                      color: context.colors.backgroundSurface1,
-                      children: [
-                        ContentRow(
-                          onTap: () =>
-                              context.router.push(const DarkMapRoute()),
-                          options: ContentRowOptions(
-                            leadingIcon: AppIcons(
-                              iconData: GeneralIcons.darkMode,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
-                            title: context.l10n.darkMap,
-                            actionWidget: ContentRowActionOptions(
-                              actionIcon: AppIcons(
-                                iconData: SystemIcons.arrowCornerRightLarge,
-                                color: context.colors.foregroundSoft,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Spacing.$2x.heightBox,
+                    // Spacing.$2x.heightBox,
+                    // ContentWrapper(
+                    //   color: context.colors.backgroundSurface1,
+                    //   children: [
+                    //     ContentRow(
+                    //       onTap: () =>
+                    //           context.router.push(const DarkMapRoute()),
+                    //       options: ContentRowOptions(
+                    //         leadingIcon: AppIcons(
+                    //           iconData: GeneralIcons.darkMode,
+                    //           color: context.colors.accentDefault,
+                    //           size: 24,
+                    //         ),
+                    //         title: context.l10n.darkMap,
+                    //         actionWidget: ContentRowActionOptions(
+                    //           actionIcon: AppIcons(
+                    //             iconData: SystemIcons.arrowCornerRightLarge,
+                    //             color: context.colors.foregroundSoft,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                     Spacing.$2x.heightBox,
                     Spacing.$2x.heightBox,
                     ContentWrapper(
