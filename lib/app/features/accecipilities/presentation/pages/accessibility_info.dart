@@ -16,7 +16,7 @@ class AccessibilityInfo extends StatelessWidget {
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
     value: SystemUiOverlayStyle.dark,
     child: Material(
-      color: Colors.white,
+      color: context.colors.backgroundSurface4,
       child: Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: Theme(
@@ -62,9 +62,11 @@ class AccessibilityInfo extends StatelessWidget {
                     Spacing.$5x.heightBox,
                     Text(
                       'stepsToAccessFeature'.tr(),
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 20,
+                        color:  context.colors.accentDefault,
+
                       ),
                     ),
                     Spacing.$5x.heightBox,
@@ -97,9 +99,11 @@ class AccessibilityInfo extends StatelessWidget {
                           Flexible(
                               child: Text(
                                 settingsText.values.elementAt(index).tr(),
-                                style: const TextStyle(
+                                style:  TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
+                                  color:  context.colors.accentDefault,
+
                                 ),
                               ))
                         ],

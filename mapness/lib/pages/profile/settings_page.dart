@@ -93,9 +93,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
-                          onTap: () => themeController.toggleTheme(
-                            !themeController.isDarkMode,
-                          ),
                           options: ContentRowOptions(
                             leadingIcon: AppIcons(
                               iconData: Icons.brightness_2_rounded,
@@ -137,32 +134,6 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                       ],
                     ),
                     Spacing.$2x.heightBox,
-                    Spacing.$2x.heightBox,
-                    ContentWrapper(
-                      color: context.colors.backgroundSurface1,
-                      children: [
-                        ContentRow(
-                          onTap: () =>
-                              context.router.push(const DarkMapRoute()),
-                          options: ContentRowOptions(
-                            leadingIcon: AppIcons(
-                              iconData: GeneralIcons.darkMode,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
-                            title: context.l10n.darkMap,
-                            actionWidget: ContentRowActionOptions(
-                              actionIcon: AppIcons(
-                                iconData: SystemIcons.arrowCornerRightLarge,
-                                color: context.colors.foregroundSoft,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Spacing.$2x.heightBox,
-                    Spacing.$2x.heightBox,
                     ContentWrapper(
                       color: context.colors.backgroundSurface1,
                       children: [
@@ -186,6 +157,29 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                 color: context.colors.foregroundSoft,
                               ),
                             ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Spacing.$2x.heightBox,
+                    ContentWrapper(
+                      color: context.colors.backgroundSurface1,
+                      children: [
+                        ContentRow(
+                          onTap: () => context.router.push(
+                            NavigatorSettingsRoute(showDarkModeSection: false),
+                          ),
+                          leading: AppIcons(
+                            iconData: SystemIcons.settings,
+                            color: context.colors.accentDefault,
+                            size: 24,
+                          ),
+                          text: ContentRowTextOptions(
+                            title: context.l10n.navigatorSettings,
+                          ),
+                          trailing: ContentRowTextTrailingOptions(
+                            icon: SystemIcons.arrowCornerRightLarge,
+                            iconColor: context.colors.foregroundSoft,
                           ),
                         ),
                       ],

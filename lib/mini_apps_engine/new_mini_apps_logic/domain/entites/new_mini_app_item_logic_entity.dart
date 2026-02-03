@@ -2,32 +2,12 @@
 //! Assign each mini app to matched categoryId and matched entryPointKey ...
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 
-// class MiniAppItem {
-//   final String id;
-//   final String name;
-//   final String description;
-//   final String iconPath;
-//   final List<String> categoryIds;
-//   final List<String> entryPointsKey;
-
-//   MiniAppItem({
-//     required this.id,
-//     required this.name,
-//     required this.iconPath,
-//     required this.categoryIds,
-//     required this.entryPointsKey,
-//     required this.description,
-//   });
-// }
-
 //! Get the category parent and add list of miniAppItem to it ...
 class CategoryGroup {
   final String id;
   final String nameAr;
   final String nameEn;
   final List<MiniApp> apps;
-
-  /// Fix It  add  copyWith
   Map<String, CategoryGroup>? subCategoryGroup;
 
   CategoryGroup({
@@ -39,6 +19,22 @@ class CategoryGroup {
   });
 
   int get appCount => apps.length;
+
+  CategoryGroup copyWith({
+    String? id,
+    String? nameAr,
+    String? nameEn,
+    List<MiniApp>? apps,
+    Map<String, CategoryGroup>? subCategoryGroup,
+  }) {
+    return CategoryGroup(
+      id: id ?? this.id,
+      nameAr: nameAr ?? this.nameAr,
+      nameEn: nameEn ?? this.nameEn,
+      apps: apps ?? this.apps,
+      subCategoryGroup: subCategoryGroup ?? this.subCategoryGroup,
+    );
+  }
 }
 
 //! Get the entry point parent and add list of miniAppItem to it ...

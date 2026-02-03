@@ -6,7 +6,6 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_bottom_sheet.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
 import 'package:balady_plus/mini_apps_engine/helper/app_launch_service.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
@@ -38,7 +37,12 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Timer? _searchDebounce;
 
   //! Get mini apps ...
-  Future<void> loadMiniApps({bool showLoading = true}) async {
+  Future<void> loadMiniApps({
+    bool showLoading = true,
+    bool? isUserLoggedInLifeStyle,
+    bool? isUserLoggedInMunicipality,
+    bool? isUserAccountBusiness,
+  }) async {
     emit(
       state.copyWith(
         isFavLoading: true,
@@ -52,7 +56,18 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       ),
     );
 
-    final result = await getMiniAppsUseCase();
+    // Get login status from CommonProperties if not provided
+    final isLoggedInLifestyle =
+        isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
+    final isLoggedInMunicipality =
+        isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
+    final userAccountBusiness = isUserAccountBusiness ?? false;
+
+    final result = await getMiniAppsUseCase(
+      isLoggedInLifestyle,
+      isLoggedInMunicipality,
+      userAccountBusiness,
+    );
 
     result.fold(
       (e) {
@@ -67,46 +82,20 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         );
       },
       (final data) async {
-        List<CategoryGroup> processAppGroups(List<CategoryGroup> rawAppGroups) {
-          final List<CategoryGroup> processedGroups = [];
-          final List<MiniApp> otherServicesApps = [];
-
-          for (final group in rawAppGroups) {
-            if (group.apps.length >= 2) {
-              processedGroups.add(group);
-            } else if (group.apps.length == 1) {
-              otherServicesApps.addAll(group.apps);
-            }
-          }
-
-          if (otherServicesApps.isNotEmpty) {
-            processedGroups.add(
-              CategoryGroup(
-                id: 'other_services_group',
-                nameAr: 'خدمات أخرى',
-                nameEn: 'Other Services',
-                apps: otherServicesApps,
-              ),
-            );
-          }
-
-          return processedGroups;
-        }
-
         final savedFavIds = await loadFavoriteIds();
         final allApps = data.miniApps;
 
         final appsById = {for (final app in allApps) app.id: app};
 
-        final favoriteApps =
-            savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
+        final favoriteApps = savedFavIds
+            .map((id) => appsById[id])
+            .whereType<MiniApp>()
+            .toList();
 
         final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
-        final unFavoriteApps =
-            allApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
-
-        // Process app groups before emitting state
-        final processedAppGroups = processAppGroups(data.appGroups);
+        final unFavoriteApps = allApps
+            .where((app) => !favoriteIdSet.contains(app.id))
+            .toList();
 
         emit(
           state.copyWith(
@@ -117,7 +106,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             favoriteApps: favoriteApps,
             unFavoriteApps: unFavoriteApps,
             parentMiniApp: data.parentMiniApp,
-            appGroups: processedAppGroups, // Use processed groups
+            appGroups: data.appGroups,
             entryPoints: data.entryPoints,
             favError: null,
             entryPointsError: null,
@@ -131,12 +120,14 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Future<void> refreshMiniApps() async {
     if (state.isRefreshing) return;
 
-    emit(state.copyWith(
-      isRefreshing: true,
-      favError: null,
-      entryPointsError: null,
-      searchError: null,
-    ));
+    emit(
+      state.copyWith(
+        isRefreshing: true,
+        favError: null,
+        entryPointsError: null,
+        searchError: null,
+      ),
+    );
 
     await loadMiniApps(showLoading: false);
 
@@ -191,11 +182,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     final app = favoriteApps.removeAt(oldIndex);
     favoriteApps.insert(newIndex, app);
 
-    emit(
-      state.copyWith(
-        favoriteApps: favoriteApps,
-      ),
-    );
+    emit(state.copyWith(favoriteApps: favoriteApps));
 
     await saveFavoriteIds(favoriteApps);
   }
@@ -237,11 +224,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     });
 
     emit(
-      state.copyWith(
-        isSearching: true,
-        searchError: null,
-        searchResults: [],
-      ),
+      state.copyWith(isSearching: true, searchError: null, searchResults: []),
     );
   }
 
@@ -320,7 +303,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             );
           } else {
             CommonFunctions.showError(
-                'Show errors Not Fund The Parent Maini App'.tr());
+              'Show errors Not Fund The Parent Maini App'.tr(),
+            );
           }
         } else {
           NavigationService.pushNamed(
@@ -348,11 +332,9 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   void clearSearch() {
-    emit(state.copyWith(
-      searchResults: [],
-      isSearching: false,
-      searchError: null,
-    ));
+    emit(
+      state.copyWith(searchResults: [], isSearching: false, searchError: null),
+    );
   }
 
   void setSortType(FilterOptionType? sortType) {
@@ -405,8 +387,9 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     MiniApp model = miniApp;
 
     try {
-      final response =
-          await homeServicesUseCases.getMiniAppAcessToken(model.id);
+      final response = await homeServicesUseCases.getMiniAppAcessToken(
+        model.id,
+      );
 
       return response.fold(
         (error) {
@@ -431,9 +414,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             code: 200,
             message: "success",
             eventName: "getAccessToken",
-            data: AccessTokenModel(
-              accessToken: res.toString(),
-            ),
+            data: AccessTokenModel(accessToken: res.toString()),
           );
         },
       );
