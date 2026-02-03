@@ -33,7 +33,8 @@ class _AccessibilitySettingsPageState
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
-          color: Colors.white,
+          color: context.colors.backgroundSurface4,
+
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(

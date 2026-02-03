@@ -31,7 +31,8 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
     final controller = Provider.of<AccessibilityController>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.backgroundSurface4,
+
       appBar: BaladyTopBar.iconAndText(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         title: 'fontSize'.tr(),
