@@ -119,7 +119,7 @@ class PoiHeader extends ConsumerWidget {
           builder: (context, _) {
             final state = bottomSheetController?.state;
             final shouldUseSurface1 =
-                state != null && state != PoiCardBottomSheetState.open && state != PoiCardBottomSheetState.halfOpen;
+                state != null && (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded);
             return ColoredBox(
               color: shouldUseSurface1 ? context.colors.backgroundSurface1 : context.colors.backgroundSurface2,
               child: Padding(
