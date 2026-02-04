@@ -16,6 +16,7 @@ class AuthQuickAccessBiometricWidget extends StatelessWidget {
           return Column(
             children: [
               AuthQuickAccessCell(isQuickAccess: state.loginData.isPasCode),
+              SizedBox(height: 8,),
               AuthBiometricCell(isBiometrics: state.loginData.isBiometrics),
             ],
           );

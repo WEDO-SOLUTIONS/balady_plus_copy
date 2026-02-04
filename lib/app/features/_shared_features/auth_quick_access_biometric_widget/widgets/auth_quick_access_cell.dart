@@ -26,7 +26,7 @@ class AuthQuickAccessCell extends StatelessWidget {
           ),
           child: Material(
             borderRadius: BorderRadius.circular(8),
-            color: const Color(0xFFF5F7FA),
+            color:  Theme.of(context).cardColor,
             child: InkWell(
               onTap: () {
                 NavigationService.pushNamed(
