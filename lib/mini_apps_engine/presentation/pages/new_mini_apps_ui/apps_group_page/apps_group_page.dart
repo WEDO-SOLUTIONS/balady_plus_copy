@@ -11,9 +11,9 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/dashboard/domain/entities/dashboard_card_entity.dart';
 import 'package:balady_plus/app/features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import 'package:balady_plus/app/features/dashboard/presentation/widgets/profile_card.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
@@ -22,6 +22,7 @@ import 'package:balady_plus/app/features/delegators/services/account_selection_s
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_plus/app/features/entry_point/domain/entities/sso_user_info.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/data/models/new_mini_app_logic_response_model.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/domain/entites/new_mini_app_item_logic_entity.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/animations/staggered_appear.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
@@ -40,11 +41,13 @@ import 'package:get_it/get_it.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class AppsGroupPage extends StatefulWidget {
   final String groupId;
+  final MiniApp? dashboard;
 
-  const AppsGroupPage({super.key, required this.groupId});
+  const AppsGroupPage({super.key, required this.groupId, this.dashboard});
 
   @override
   State<AppsGroupPage> createState() => _AppsGroupPageState();
@@ -304,7 +307,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                               PageRouteBuilder(
                                                 opaque: false,
                                                 barrierColor: Colors.transparent,
-                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id),
+                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id, dashboard: widget.dashboard,),
                                               ),
                                             ),
                                           ),
@@ -447,7 +450,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
         if (!isLoggedIn) {
           return SliverToBoxAdapter(child: NafathLoginWidget());
         } else {
-          return SliverToBoxAdapter(child: TempPersonaBannerSection(groupId: widget.groupId));
+          return SliverToBoxAdapter(child: TempPersonaBannerSection(groupId: widget.groupId, dashboard: widget.dashboard,));
         }
       },
     );
@@ -456,8 +459,9 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
 
 class TempPersonaBannerSection extends StatefulWidget {
   final String groupId;
+  final MiniApp? dashboard;
 
-  const TempPersonaBannerSection({super.key, required this.groupId});
+  const TempPersonaBannerSection({super.key, required this.groupId, this.dashboard});
 
   @override
   State<TempPersonaBannerSection> createState() => _TempPersonaBannerSectionState();
@@ -467,211 +471,299 @@ class _TempPersonaBannerSectionState extends State<TempPersonaBannerSection> {
   @override
   Widget build(BuildContext context) {
     bool isLoggedin = CommonProperties.isLoggedInMunicipality;
-    return BlocProvider<DelegatorsCubit>(
-      create: (context) {
-        final cubit = GetIt.instance<DelegatorsCubit>();
-        // Apply account selection logic based on group type
-        if (isLoggedin) {
-          _applyAccountSelection(cubit);
-        }
-        return cubit;
-      },
-      child: Builder(
-        builder: (context) {
-          // Now we can access the DelegatorsCubit and pass it to DashboardBloc
-          final delegatorsCubit = context.read<DelegatorsCubit>();
-          return BlocProvider<DashboardBloc>(
-            create: (context) => GetIt.instance<DashboardBloc>(),
-            child: BlocListener<DelegatorsCubit, DelegatorsState>(
-              listener: (context, state) {
-                // Refresh dashboard when delegator/agent selection changes
-                print(
-                  "DEBUG: Delegator selection changed - Delegator: ${state.selectedDelegate?.entityName}, Agent: ${state.selectedAgent?.grantorName}",
-                );
-                final dashboardBloc = context.read<DashboardBloc>();
-                dashboardBloc.add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
-              },
-              child: Container(
-                decoration: ShapeDecoration(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  shadows: [
-                    BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 1), spreadRadius: 0),
-                    BoxShadow(color: Color(0x0A000000), blurRadius: 0, offset: Offset(0, 0), spreadRadius: 0.50),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    BlocListener<DelegatorsCubit, DelegatorsState>(
-                      listenWhen: (previous, current) {
-                        // Only trigger when transitioning from loading to no-data state for business groups
-                        final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
-                        if (!isBusinessGroup || !isLoggedin) return false;
+    return Consumer<BaladyThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return BlocProvider<DelegatorsCubit>(
+          create: (context) {
+            final cubit = GetIt.instance<DelegatorsCubit>();
+            // Apply account selection logic based on group type
+            if (isLoggedin) {
+              _applyAccountSelection(cubit);
+            }
+            return cubit;
+          },
+          child: Builder(
+            builder: (context) {
+              // Now we can access the DelegatorsCubit and pass it to DashboardBloc
+              final delegatorsCubit = context.read<DelegatorsCubit>();
+              return BlocProvider<DashboardBloc>(
+                create: (context) => GetIt.instance<DashboardBloc>(),
+                child: BlocListener<DelegatorsCubit, DelegatorsState>(
+                  listenWhen: (previous, current) {
+                    // Only listen when the actual selection changes, not on loading states or other changes
+                    final previousSelection = '${previous.selectedDelegate?.id}_${previous.selectedAgent?.id}';
+                    final currentSelection = '${current.selectedDelegate?.id}_${current.selectedAgent?.id}';
+                    final selectionChanged = previousSelection != currentSelection;
 
-                        final wasLoading =
-                            previous.status == BlocRequestStatus.submissionGetLoading ||
-                            previous.agentStatus == BlocRequestStatus.submissionGetLoading ||
-                            previous.status == BlocRequestStatus.initial ||
-                            previous.agentStatus == BlocRequestStatus.initial;
-                        final isNotLoading =
-                            current.status != BlocRequestStatus.submissionGetLoading &&
-                            current.agentStatus != BlocRequestStatus.submissionGetLoading &&
-                            current.status != BlocRequestStatus.initial &&
-                            current.agentStatus != BlocRequestStatus.initial;
-                        final hasNoData = current.delegators.isEmpty && current.agents.isEmpty;
+                    if (selectionChanged) {
+                      print("DEBUG: Selection actually changed from '$previousSelection' to '$currentSelection'");
+                    }
 
-                        return wasLoading && isNotLoading && hasNoData;
-                      },
-                      listener: (context, state) {
-                        _showDelegatorSelectionBottomSheet(context, state);
-                      },
-                      child: BlocBuilder<DelegatorsCubit, DelegatorsState>(
-                        builder: (context, state) {
-                          final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
+                    return selectionChanged;
+                  },
+                  listener: (context, state) {
+                    // Refresh dashboard when delegator/agent selection changes
+                    print(
+                      "DEBUG: Delegator selection changed - Delegator: ${state.selectedDelegate?.entityName}, Agent: ${state.selectedAgent?.grantorName}",
+                    );
+                    final dashboardBloc = context.read<DashboardBloc>();
+                    dashboardBloc.add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
+                  },
+                  child: BlocListener<DelegatorsCubit, DelegatorsState>(
+                    listenWhen: (previous, current) {
+                      // Only trigger when transitioning from loading to no-data state for business groups
+                      final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
+                      if (!isBusinessGroup || !isLoggedin) return false;
 
-                          // For business groups, show loading while determining account selection
-                          if (isBusinessGroup && isLoggedin) {
-                            final isDataLoading =
-                                state.status == BlocRequestStatus.submissionGetLoading ||
-                                state.agentStatus == BlocRequestStatus.submissionGetLoading ||
-                                state.status == BlocRequestStatus.initial ||
-                                state.agentStatus == BlocRequestStatus.initial;
+                      final wasLoading = previous.status == BlocRequestStatus.submissionGetLoading ||
+                                        previous.agentStatus == BlocRequestStatus.submissionGetLoading ||
+                                        previous.status == BlocRequestStatus.initial ||
+                                        previous.agentStatus == BlocRequestStatus.initial;
+                      final isNotLoading = current.status != BlocRequestStatus.submissionGetLoading &&
+                                          current.agentStatus != BlocRequestStatus.submissionGetLoading &&
+                                          current.status != BlocRequestStatus.initial &&
+                                          current.agentStatus != BlocRequestStatus.initial;
+                      final hasNoData = current.delegators.isEmpty && current.agents.isEmpty;
 
-                            final hasNoData = state.delegators.isEmpty && state.agents.isEmpty;
-                            final hasDataButNoSelection =
-                                (state.delegators.isNotEmpty || state.agents.isNotEmpty) &&
-                                state.selectedDelegate == null &&
-                                state.selectedAgent == null;
-
-                            // Show loading while data is being fetched or selection is being determined
-                            if (isDataLoading && hasNoData) {
-                              return _buildLoadingProfileCard();
-                            }
-
-                            // If no delegators/agents available, the BlocListener above will handle showing the bottom sheet
-
-                            // If data loaded but no selection made yet, show loading briefly while selection is applied
-                            if (hasDataButNoSelection && !isDataLoading) {
-                              return _buildLoadingProfileCard();
-                            }
-                          }
-                          // return ;
-
-                          return SelectedPersonaCard(
-                            isListItem: false,
-                            agent: isLoggedin ? state.selectedAgent : null,
-                            delegator: isLoggedin ? state.selectedDelegate : null,
-                            userInfo: isLoggedin ? CommonProperties.userInfo : null,
-                            groupId: widget.groupId,
-                          );
-                        },
-                      ),
+                      return wasLoading && isNotLoading && hasNoData;
+                    },
+                    listener: (context, state) {
+                      _showDelegatorSelectionBottomSheet(context, state);
+                    },
+                  child: Container(
+                    decoration: ShapeDecoration(
+                      color: themeNotifier.isDarkMode ? Color(0xFF002D40) : Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      shadows: [
+                        BoxShadow(color: Color(0x14000000), blurRadius: 4, offset: Offset(0, 1), spreadRadius: 0),
+                        BoxShadow(color: Color(0x0A000000), blurRadius: 0, offset: Offset(0, 0), spreadRadius: 0.50),
+                      ],
                     ),
+                    child: Column(
+                      children: [
+                        BlocBuilder<DelegatorsCubit, DelegatorsState>(
+                          builder: (context, state) {
+                            final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
 
-                    // Dashboard
-                    if (CommonProperties.isLoggedInMunicipality) ...[
-                      BlocBuilder<DelegatorsCubit, DelegatorsState>(
-                        builder: (context, delegatorsState) {
-                          // Check if account selection is ready based on group type
-                          final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
-                          final isAccountSelectionReady = isBusinessGroup
-                              ? (delegatorsState.selectedDelegate != null ||
-                                    delegatorsState.selectedAgent != null ||
-                                    (delegatorsState.delegators.isEmpty &&
-                                        delegatorsState.agents.isEmpty &&
-                                        delegatorsState.status == BlocRequestStatus.submissionGetSuccess))
-                              : true; // Personal group is always ready
+                            // For business groups, show loading while determining account selection
+                            if (isBusinessGroup && isLoggedin) {
+                              final isDataLoading =
+                                  state.status == BlocRequestStatus.submissionGetLoading ||
+                                  state.agentStatus == BlocRequestStatus.submissionGetLoading ||
+                                  state.status == BlocRequestStatus.initial ||
+                                  state.agentStatus == BlocRequestStatus.initial;
 
-                          // Initialize dashboard when account selection is ready
-                          if (isAccountSelectionReady) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              final dashboardBloc = context.read<DashboardBloc>();
-                              if (dashboardBloc.state.status == BlocRequestStatus.initial) {
-                                print("DEBUG: Initializing dashboard with selected account");
-                                dashboardBloc.add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
+                              final hasNoData = state.delegators.isEmpty && state.agents.isEmpty;
+                              final hasDataButNoSelection =
+                                  (state.delegators.isNotEmpty || state.agents.isNotEmpty) &&
+                                  state.selectedDelegate == null &&
+                                  state.selectedAgent == null;
+
+                              // Show loading while data is being fetched or selection is being determined
+                              if (isDataLoading && hasNoData) {
+                                return _buildLoadingProfileCard();
                               }
-                            });
-                          }
 
-                          return Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: BlocBuilder<DashboardBloc, DashboardState>(
-                              builder: (context, dashboardState) {
-                                return SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: IntrinsicHeight(
-                                    child: Row(
-                                      spacing: 8,
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                                      children: dashboardState.cards
-                                          .map(
-                                            (e) => Container(
-                                              height: 72,
-                                              width: 72,
-                                              padding: const EdgeInsets.symmetric(vertical: 2),
-                                              decoration: ShapeDecoration(
-                                                color: Colors.white,
-                                                shape: RoundedRectangleBorder(
-                                                  side: BorderSide(
-                                                    width: 1,
-                                                    color: Colors.black.withValues(alpha: 0.08),
+                              // If no delegators/agents available, the BlocListener above will handle showing the bottom sheet
+
+                              // If data loaded but no selection made yet, show loading briefly while selection is applied
+                              if (hasDataButNoSelection && !isDataLoading) {
+                                return _buildLoadingProfileCard();
+                              }
+                            }
+                            // return ;
+
+                            return SelectedPersonaCard(
+                              isListItem: false,
+                              agent: isLoggedin ? state.selectedAgent : null,
+                              delegator: isLoggedin ? state.selectedDelegate : null,
+                              userInfo: isLoggedin ? CommonProperties.userInfo : null,
+                              groupId: widget.groupId,
+                              dashboard: widget.dashboard,
+                            );
+                          },
+                        ),
+
+                        // Dashboard
+                        if (CommonProperties.isLoggedInMunicipality) ...[
+                          BlocBuilder<DelegatorsCubit, DelegatorsState>(
+                            builder: (context, delegatorsState) {
+                              // Check if account selection is ready based on group type
+                              final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
+                              final isAccountSelectionReady = isBusinessGroup
+                                  ? (delegatorsState.selectedDelegate != null ||
+                                        delegatorsState.selectedAgent != null ||
+                                        (delegatorsState.delegators.isEmpty &&
+                                            delegatorsState.agents.isEmpty &&
+                                            delegatorsState.status == BlocRequestStatus.submissionGetSuccess))
+                                  : true; // Personal group is always ready
+
+                              // Initialize dashboard when account selection is ready
+                              if (isAccountSelectionReady) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  final dashboardBloc = context.read<DashboardBloc>();
+                                  if (dashboardBloc.state.status == BlocRequestStatus.initial) {
+                                    print("DEBUG: Initializing dashboard with selected account");
+                                    dashboardBloc.add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
+                                  }
+                                });
+                              }
+
+                              return Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: BlocBuilder<DashboardBloc, DashboardState>(
+                                  builder: (context, dashboardState) {
+                                    return SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: IntrinsicHeight(
+                                        child: Row(
+                                          spacing: 8,
+                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            // Always show 3 dashboard cards (empty or with data)
+                                            ...List.generate(3, (index) {
+                                              final hasCard = index < dashboardState.cards.length;
+                                              final card = hasCard ? dashboardState.cards[index] : null;
+                                              final hasData = hasCard && dashboardState.cardsStates[card] != null;
+
+                                              return Container(
+                                                height: 72,
+                                                width: 72,
+                                                padding: const EdgeInsets.symmetric(vertical: 2),
+                                                decoration: ShapeDecoration(
+                                                  color: themeNotifier.isDarkMode ? Color(0xFF002D40) : Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                      width: 1,
+                                                      color: themeNotifier.isDarkMode
+                                                          ? Color(0xFFFFFFFF).withValues(alpha: 0.6)
+                                                          : Colors.black.withValues(alpha: 0.08),
+                                                    ),
+                                                    borderRadius: BorderRadius.circular(16),
                                                   ),
-                                                  borderRadius: BorderRadius.circular(16),
+                                                ),
+                                                child: hasCard
+                                                    ? Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        spacing: 6,
+                                                        children: [
+                                                          Text(
+                                                            card!.name,
+                                                            textAlign: TextAlign.right,
+                                                            style: TextStyle(
+                                                              color: themeNotifier.isDarkMode
+                                                                  ? Color(0xFFFFFFFF).withValues(alpha: 0.6)
+                                                                  : const Color(0xFF8E8E93),
+                                                              fontSize: 12,
+                                                              fontFamily: GeneralKey.appFontType,
+                                                              fontWeight: FontWeight.w400,
+                                                              height: 1.67,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                          Text(
+                                                            hasData
+                                                                ? dashboardState.cardsStates[card]!.totalCount
+                                                                      .toString()
+                                                                : '0',
+                                                            textAlign: TextAlign.right,
+                                                            style: TextStyle(
+                                                              color: hasData
+                                                                  ? themeNotifier.isDarkMode
+                                                                        ? Color(0xFFFFFFFF)
+                                                                        : Colors.black
+                                                                  : const Color(0xFF8E8E93),
+                                                              fontSize: 20,
+                                                              fontFamily: GeneralKey.appFontType,
+                                                              fontWeight: FontWeight.w700,
+                                                              height: 1,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        spacing: 6,
+                                                        children: [
+                                                          Container(
+                                                            height: 12,
+                                                            width: 40,
+                                                            decoration: BoxDecoration(
+                                                              color: const Color(0xFF8E8E93).withValues(alpha: 0.3),
+                                                              borderRadius: BorderRadius.circular(6),
+                                                            ),
+                                                          ),
+                                                          Container(
+                                                            height: 20,
+                                                            width: 30,
+                                                            decoration: BoxDecoration(
+                                                              color: const Color(0xFF8E8E93).withValues(alpha: 0.3),
+                                                              borderRadius: BorderRadius.circular(6),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                              );
+                                            }),
+                                            // Always show "View More" button
+                                            if (widget.dashboard != null)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  context.read<NewMiniAppLogicCubit>().openMiniApp(widget.dashboard!);
+                                                },
+                                                child: Container(
+                                                  height: 72,
+                                                  width: 72,
+                                                  padding: const EdgeInsets.symmetric(vertical: 2),
+                                                  decoration: ShapeDecoration(
+                                                    color: themeNotifier.isDarkMode ? Color(0xFF002D40) : Colors.white,
+                                                    shape: RoundedRectangleBorder(
+                                                      side: BorderSide(
+                                                        width: 1,
+                                                        color: themeNotifier.isDarkMode
+                                                            ? Color(0xFFFFFFFF).withValues(alpha: 0.6)
+                                                            : Colors.black.withValues(alpha: 0.08),
+                                                      ),
+                                                      borderRadius: BorderRadius.circular(16),
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      "show_more".tr().replaceAll(' ', '\n'),
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                        color: const Color(0xFF29B2A9),
+                                                        fontSize: 14,
+                                                        fontFamily: GeneralKey.appFontType,
+                                                        fontWeight: FontWeight.w700,
+                                                        height: 1.33,
+                                                      ),
+                                                      maxLines: 2,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                spacing: 6,
-                                                children: [
-                                                  Text(
-                                                    e.name,
-                                                    textAlign: TextAlign.right,
-                                                    style: TextStyle(
-                                                      color: const Color(0xFF8E8E93),
-                                                      fontSize: 12,
-                                                      fontFamily: GeneralKey.appFontType,
-                                                      fontWeight: FontWeight.w400,
-                                                      height: 1.67,
-                                                    ),
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                  Text(
-                                                    dashboardState.cardsStates[e]?.totalCount.toString() ?? '0',
-                                                    textAlign: TextAlign.right,
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 20,
-                                                      fontFamily: GeneralKey.appFontType,
-                                                      fontWeight: FontWeight.w700,
-                                                      height: 1,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            // (e) => DashboardCardWidget(
-                                            //   card: e,
-                                            //   totalCount: dashboardState.cardsStates[e]?.totalCount ?? 0,
-                                            // ),
-                                          )
-                                          .toList(),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ],
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          );
-        },
-      ),
+              ));
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -765,6 +857,7 @@ class SelectedPersonaCard extends StatelessWidget {
     this.selected = false,
     this.isListItem = true,
     this.groupId,
+    this.dashboard,
   });
 
   final SsoUserInfo? userInfo;
@@ -773,6 +866,7 @@ class SelectedPersonaCard extends StatelessWidget {
   final bool selected;
   final bool isListItem;
   final String? groupId;
+  final MiniApp? dashboard;
 
   @override
   Widget build(BuildContext context) {
@@ -780,84 +874,95 @@ class SelectedPersonaCard extends StatelessWidget {
     final name = (agent?.grantorName ?? delegator?.entityName) ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
     String type = (agent?.agencyNumber ?? delegator?.id) ?? userInfo?.idNo ?? "in_balady".tr();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-      child: Row(
-        spacing: 6,
-        children: [
-          Expanded(
-            child: Text(
-              name,
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontFamily: GeneralKey.appFontType,
-                fontWeight: FontWeight.w400,
-                height: 1.75,
-                letterSpacing: -0.24,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          InkWell(
-            onTap: () async {
-              if (userInfo == null && delegator == null && agent == null) {
-                return;
-              }
-
-              if (isListItem) {
-                // Handle account selection with cross-group navigation
-                await _handleAccountSelection(context, newDelegator: delegator, newAgent: agent);
-              } else {
-                CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
-
-                context.read<DelegatorsCubit>().getDelegators();
-                context.read<DelegatorsCubit>().getAgents();
-                await BottomSheetDialog.showDraggableSheet(
-                  context,
-                  dialogKeyName: DialogName.delegatorsDialog,
-                  currentRouteName: "MorePage",
-                  child: DelegatorList(delegatorsCubit: context.read<DelegatorsCubit>(), groupId: groupId),
-                );
-
-                try {
-                  final delegatorsCubit = context.read<DelegatorsCubit>();
-                  BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
-                } catch (e) {
-                  // Fallback if DelegatorsCubit is not available
-                  BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
-                }
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: ShapeDecoration(
-                color: const Color(0x2629B2A9),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    "switch_account".tr(),
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                      fontFamily: GeneralKey.appFontType,
-                      fontWeight: FontWeight.w400,
-                      height: 2,
-                      letterSpacing: -0.24,
-                    ),
+    return Consumer<BaladyThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 6,
+            children: [
+              Expanded(
+                child: Text(
+                  name,
+                  style: TextStyle(
+                    color: themeNotifier.isDarkMode ? Colors.white : Colors.black,
+                    fontSize: 16,
+                    fontFamily: GeneralKey.appFontType,
+                    fontWeight: FontWeight.w400,
+                    height: 1.75,
+                    letterSpacing: -0.24,
                   ),
-                  Icon(Icons.keyboard_arrow_down_rounded, color: Colors.black, size: 20),
-                ],
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
+              InkWell(
+                onTap: () async {
+                  if (userInfo == null && delegator == null && agent == null) {
+                    return;
+                  }
+
+                  if (isListItem) {
+                    // Handle account selection with cross-group navigation
+                    await _handleAccountSelection(context, newDelegator: delegator, newAgent: agent);
+                  } else {
+                    CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
+
+                    context.read<DelegatorsCubit>().getDelegators();
+                    context.read<DelegatorsCubit>().getAgents();
+                    await BottomSheetDialog.showDraggableSheet(
+                      context,
+                      dialogKeyName: DialogName.delegatorsDialog,
+                      currentRouteName: "MorePage",
+                      child: DelegatorList(delegatorsCubit: context.read<DelegatorsCubit>(), groupId: groupId),
+                    );
+
+                    try {
+                      final delegatorsCubit = context.read<DelegatorsCubit>();
+                      BlocProvider.of<DashboardBloc>(
+                        context,
+                      ).add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
+                    } catch (e) {
+                      // Fallback if DelegatorsCubit is not available
+                      BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
+                    }
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: ShapeDecoration(
+                    color: const Color(0x2629B2A9),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "switch_account".tr(),
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: themeNotifier.isDarkMode ? Colors.white : Colors.black,
+                          fontSize: 14,
+                          fontFamily: GeneralKey.appFontType,
+                          fontWeight: FontWeight.w400,
+                          height: 2,
+                          letterSpacing: -0.24,
+                        ),
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: themeNotifier.isDarkMode ? Colors.white : Colors.black,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -885,14 +990,14 @@ class SelectedPersonaCard extends StatelessWidget {
             if (context.mounted) {
               print("DEBUG: Executing cross-group navigation to: $targetGroupId");
               // Close current group and navigate to target group
-              Navigator.of(context).pop(); // Close current AppsGroupPage
+              // Navigator.of(context).pop(); // Close current AppsGroupPage
 
               // Navigate to target group
               Navigator.of(context).push(
                 PageRouteBuilder(
                   opaque: false,
                   barrierColor: Colors.transparent,
-                  pageBuilder: (_, __, ___) => AppsGroupPage(groupId: targetGroupId),
+                  pageBuilder: (_, _, _) => AppsGroupPage(groupId: targetGroupId, dashboard: dashboard),
                 ),
               );
             } else {
