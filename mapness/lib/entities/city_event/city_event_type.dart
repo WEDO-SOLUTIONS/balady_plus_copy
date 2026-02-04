@@ -65,3 +65,31 @@ extension StyleX on CityEventType? {
     _ => MapnessConstants.mapStylesPath,
   };
 }
+
+extension DriveBackX on CityEventType? {
+  ImageProvider get driveHomeBackground => switch (this) {
+    CityEventType.saudiNationalDay => Assets.images.driveHomeBackgroundSaudiday.provider(),
+    CityEventType.foundingDay => Assets.images.driveHomeBackgroundFoundingDay.provider(),
+    _ => Assets.images.driveHomeBackground.provider(),
+  };
+  Widget get driveHomeArrow => switch (this) {
+    CityEventType.saudiNationalDay => Assets.images.driveHomeArrowSaudiday.image(matchTextDirection: true),
+    CityEventType.foundingDay => Transform.translate(
+      offset: const Offset(0, -35),
+      child: Assets.images.driveHomeArrowFoundingDay.image(matchTextDirection: true),
+    ),
+
+    _ => Assets.images.driveHomeArrow.image(matchTextDirection: true),
+  };
+  Color textColor(AppColorsThemeV3 colors) => switch (this) {
+    CityEventType.saudiNationalDay => colors.foregroundDefault,
+    CityEventType.foundingDay => colors.foregroundDefault,
+    _ => colors.staticWhite,
+  };
+
+  bool get showBlueCircles => switch (this) {
+    CityEventType.saudiNationalDay => false,
+    CityEventType.foundingDay => false,
+    _ => true,
+  };
+}
