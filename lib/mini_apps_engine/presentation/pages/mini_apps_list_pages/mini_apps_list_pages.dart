@@ -602,6 +602,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                                 );
                                                                                 return AppsGroupPage(
                                                                                   groupId: appGroup.id,
+                                                                                  dashboard: dashboard,
                                                                                 );
                                                                               },
                                                                             ),
@@ -647,9 +648,10 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                               PageRouteBuilder(
                                                                                 opaque: false,
                                                                                 barrierColor: Colors.transparent,
-                                                                                pageBuilder: (_, __, ___) =>
+                                                                                pageBuilder: (_, _, _) =>
                                                                                     AppsGroupPage(
                                                                                       groupId: otherServicesGroup.id,
+                                                                                      dashboard: dashboard,
                                                                                     ),
                                                                               ),
                                                                             );

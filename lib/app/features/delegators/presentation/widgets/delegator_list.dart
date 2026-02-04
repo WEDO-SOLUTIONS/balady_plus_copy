@@ -168,7 +168,7 @@ class _DelegatorListState extends State<DelegatorList> {
           PageRouteBuilder(
             opaque: false,
             barrierColor: Colors.transparent,
-            pageBuilder: (_, _, _) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId),
+            pageBuilder: (_, _, _) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId, ),
           ),
         );
       }
