@@ -4606,5 +4606,9 @@
   "grayScaleMode": "وضع التدرج الرمادي",
   "stepsToAccessFeature": "خطوات تفعيل الميزة",
   "voiceReader": "قارئ النصوص",
-  "switch_account": "تبديل الحساب"
+  "switch_account": "تبديل الحساب",
+  "indivisual_account": "حساب افراد",
+  "no_business_access_title": "لا يوجد حساب للأعمال",
+  "no_business_access_message": "لا يمكنك التبديل إلى حساب الأعمال لأنه لا يوجد لديك حساب أعمال مرتبط بهذا المستخدم.",
+  "switch_to_personal": "التبديل إلى خدمات افراد"
 }

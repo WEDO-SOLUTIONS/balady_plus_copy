@@ -1,5 +1,7 @@
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../core/services/services_exports.dart';
 import '../../../../../core/utils/utils_exports.dart';
@@ -51,97 +53,101 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Container(
-        padding: padding,
-        // height: context.screenHeight * 0.90,
-        color: widget.backgroundColor ?? AppColor.white,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const DrawLineWidget(
-              lineWidth: 70.0,
-              lineHeight: 6.0,
-              lineColor: AppColor.blackModern200Light,
-              radius: 46.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Consumer<BaladyThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Container(
+            padding: padding,
+            // height: context.screenHeight * 0.90,
+            color: widget.backgroundColor ?? AppColor.white,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Flexible(
-                  child: CustomTextWidget(
-                    widget.title,
-                    textAlign: TextAlign.start,
-                    maxLines: 3,
-                    textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                      fontSize: 24.0,
-                      color: AppColor.black,
+                const DrawLineWidget(
+                  lineWidth: 70.0,
+                  lineHeight: 6.0,
+                  lineColor: AppColor.blackModern200Light,
+                  radius: 46.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: CustomTextWidget(
+                        widget.title,
+                        textAlign: TextAlign.start,
+                        maxLines: 3,
+                        textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
+                          fontSize: 24.0,
+                          color: themeNotifier.isDarkMode ? Colors.white : AppColor.black,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: CircleIcon(
+                        icon: Icons.close,
+                        iconColor: AppColor.primary600Light,
+                        backgroundColor: AppColor.geyser.withOpacity(0.4),
+                        iconSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+                if (widget.searchable ?? false)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16.0),
+                    child: CustomTextFieldWidget(
+                      controller: _textEditingController,
+                      hintText: 'search'.tr(),
+                      prefixIcon: const DrawIconBasedTypeWidget(
+                        icon: IconPath.search,
+                        iconColor: AppColor.primary700Light,
+                      ),
+                      borderRadius: 16,
+                      borderColor: AppColor.primary900Light16,
+                      suffixIcon: _textEditingController.text.isNotEmpty
+                          ? InkWell(
+                              onTap: () {
+                                _textEditingController.text = '';
+                                FocusScope.of(context).unfocus();
+                              },
+                              child: const DrawIconBasedTypeWidget(
+                                icon: Icons.close,
+                                iconColor: AppColor.primary700Light,
+                              ),
+                            )
+                          : null,
                     ),
                   ),
-                ),
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: CircleIcon(
-                    icon: Icons.close,
-                    iconColor: AppColor.primary600Light,
-                    backgroundColor: AppColor.geyser.withOpacity(0.4),
-                    iconSize: 18,
+                if (widget.isList == true) widget.body,
+                if (widget.isList == false) ...[
+                  const SizedBox(height: 16),
+                  Flexible(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          widget.body,
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+                if (widget.action != null)
+                  Container(
+                    padding: EdgeInsets.only(bottom: 24),
+                    child: SafeArea(
+                      top: false,
+                      child: widget.action!,
+                    ),
                   ),
-                ),
               ],
             ),
-            if (widget.searchable ?? false)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: CustomTextFieldWidget(
-                  controller: _textEditingController,
-                  hintText: 'search'.tr(),
-                  prefixIcon: const DrawIconBasedTypeWidget(
-                    icon: IconPath.search,
-                    iconColor: AppColor.primary700Light,
-                  ),
-                  borderRadius: 16,
-                  borderColor: AppColor.primary900Light16,
-                  suffixIcon: _textEditingController.text.isNotEmpty
-                      ? InkWell(
-                          onTap: () {
-                            _textEditingController.text = '';
-                            FocusScope.of(context).unfocus();
-                          },
-                          child: const DrawIconBasedTypeWidget(
-                            icon: Icons.close,
-                            iconColor: AppColor.primary700Light,
-                          ),
-                        )
-                      : null,
-                ),
-              ),
-            if (widget.isList == true) widget.body,
-            if (widget.isList == false) ...[
-              const SizedBox(height: 16),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      widget.body,
-                    ],
-                  ),
-                ),
-              )
-            ],
-            if (widget.action != null)
-              Container(
-                padding: EdgeInsets.only(bottom: 24),
-                child: SafeArea(
-                  top: false,
-                  child: widget.action!,
-                ),
-              ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
 
     return GestureDetector(

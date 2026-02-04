@@ -1,10 +1,13 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/dashboard/presentation/widgets/profile_card.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/features/delegators/services/account_selection_service.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/apps_group_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/utils_exports.dart'
@@ -19,6 +22,7 @@ class DelegatorList extends StatefulWidget {
   final DelegatorsCubit _delegatorsCubit;
   final bool fromService;
   final String? groupId;
+
   const DelegatorList({super.key, required DelegatorsCubit delegatorsCubit, this.fromService = false, this.groupId})
     : _delegatorsCubit = delegatorsCubit;
 
@@ -38,9 +42,10 @@ class _DelegatorListState extends State<DelegatorList> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: widget._delegatorsCubit,
-      child: Builder(
-        builder: (context) {
+      child: Consumer<BaladyThemeNotifier>(
+        builder: (context, themeNotifier, _) {
           return BottomSheetWithActions(
+            backgroundColor: themeNotifier.isDarkMode ? Color(0xFF002D40) : Colors.white,
             title: "switch_account".tr(),
             body: BlocBuilder<DelegatorsCubit, DelegatorsState>(
               builder: (context, state) {
@@ -64,12 +69,19 @@ class _DelegatorListState extends State<DelegatorList> {
                       ],
                       // Only show tabs if there are delegators or agents
                       if (state.delegators.isNotEmpty || state.agents.isNotEmpty) ...[
-                        const ProfileHeader(),
-                        const CustomVerticalSpace(height: 16),
-                        if (state.tab == 0)
-                          DelegatorsBody(delegatorsCubit: widget._delegatorsCubit, groupId: widget.groupId),
-                        if (state.tab == 1)
-                          AgentsBody(delegatorsCubit: widget._delegatorsCubit, groupId: widget.groupId),
+                        // const ProfileHeader(),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(width: 1, color: const Color(0xFFE7E7E7)),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: state.tab == 0
+                              ? DelegatorsBody(delegatorsCubit: widget._delegatorsCubit, groupId: widget.groupId)
+                              : AgentsBody(delegatorsCubit: widget._delegatorsCubit, groupId: widget.groupId),
+                        ),
                       ],
                     ],
                   ],
@@ -138,31 +150,36 @@ class _DelegatorListState extends State<DelegatorList> {
   }
 
   void _switchToPersonalGroup(BuildContext context) {
+    // Clear business account selection from DelegatorsCubit
+    final delegatorsCubit = context.read<DelegatorsCubit>();
+    delegatorsCubit.clearSelection(); // This will trigger the mini apps list listener
+
     // Close the bottom sheet
     Navigator.of(context).pop();
 
     // Navigate to personal group after a short delay
-    Future.delayed(const Duration(milliseconds: 300), () {
+    // Future.delayed(const Duration(milliseconds: 500), () {
       if (context.mounted) {
         // Close current group and navigate to personal group
         Navigator.of(context).pop(); // Close current AppsGroupPage
 
-        // Navigate to personal group
+        // Navigate to personal group (business group will auto-disappear from list due to listener)
         Navigator.of(context).push(
           PageRouteBuilder(
             opaque: false,
             barrierColor: Colors.transparent,
-            pageBuilder: (_, __, ___) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId),
+            pageBuilder: (_, _, _) => const AppsGroupPage(groupId: AccountSelectionService.personalGroupId),
           ),
         );
       }
-    });
+    // });
   }
 }
 
 class DelegatorsBody extends StatelessWidget {
   final DelegatorsCubit delegatorsCubit;
   final String? groupId;
+
   const DelegatorsBody({super.key, required this.delegatorsCubit, this.groupId});
 
   @override
@@ -202,6 +219,7 @@ class DelegatorsBody extends StatelessWidget {
 class AgentsBody extends StatelessWidget {
   final DelegatorsCubit delegatorsCubit;
   final String? groupId;
+
   const AgentsBody({super.key, required this.delegatorsCubit, this.groupId});
 
   @override
@@ -278,6 +296,7 @@ class ProfileHeader extends StatelessWidget {
 class TabWidget extends StatelessWidget {
   final String name;
   final int index;
+
   const TabWidget({super.key, required this.name, required this.index});
 
   @override

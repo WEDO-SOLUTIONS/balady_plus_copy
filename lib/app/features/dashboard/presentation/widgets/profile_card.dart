@@ -1,11 +1,11 @@
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
 import 'package:balady_plus/app/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
@@ -16,8 +16,8 @@ import 'package:balady_plus/app/features/entry_point/domain/entities/sso_user_in
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/apps_group_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 class ProfileCard extends StatelessWidget {
   final SsoUserInfo? userInfo;
@@ -45,6 +45,8 @@ class ProfileCard extends StatelessWidget {
 
     String? agentType = (agent?.agencyTypeName ?? delegator?.roleName) ?? "Indivisual".tr();
 
+    bool isIndivisual = agentType == "Indivisual".tr();
+
     Color? agentBgColor = const Color(0xffEAF3EF);
     Color? agentTextColor = const Color(0xff2A8663);
 
@@ -65,122 +67,143 @@ class ProfileCard extends StatelessWidget {
     }
 
     if (!isListItem && delegator == null && agent == null && userInfo != null) {
-      // type = "individual_account".tr();
       type = userInfo?.idNo ?? "";
     }
 
-    return InkWell(
-      onTap: () async {
-        if (userInfo == null && delegator == null && agent == null) {
-          return;
-        }
+    return Consumer<BaladyThemeNotifier>(
+      builder: (context, themeNotifier, child) {
+        return InkWell(
+          onTap: () async {
+            if (userInfo == null && delegator == null && agent == null) {
+              return;
+            }
 
-        if (isListItem) {
-          // Handle account selection with cross-group navigation
-          await _handleAccountSelection(context, newDelegator: delegator, newAgent: agent);
-        } else {
-          CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
+            if (isListItem) {
+              // Handle account selection with cross-group navigation
+              await _handleAccountSelection(context, newDelegator: delegator, newAgent: agent);
+            } else {
+              CommonFunctions.sendUXCamEvent(UXCamEvents.DashBoard_Click_Switch_Account_From_Dashboard_Event);
 
-          context.read<DelegatorsCubit>().getDelegators();
-          context.read<DelegatorsCubit>().getAgents();
-          await BottomSheetDialog.showDraggableSheet(
-            context,
-            dialogKeyName: DialogName.delegatorsDialog,
-            currentRouteName: "MorePage",
-            child: DelegatorList(delegatorsCubit: context.read<DelegatorsCubit>(), groupId: groupId),
-          );
+              context.read<DelegatorsCubit>().getDelegators();
+              context.read<DelegatorsCubit>().getAgents();
+              await BottomSheetDialog.showDraggableSheet(
+                context,
+                dialogKeyName: DialogName.delegatorsDialog,
+                currentRouteName: "MorePage",
+                child: DelegatorList(delegatorsCubit: context.read<DelegatorsCubit>(), groupId: groupId),
+              );
 
-          try {
-            final delegatorsCubit = context.read<DelegatorsCubit>();
-            BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
-          } catch (e) {
-            // Fallback if DelegatorsCubit is not available
-            BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
-          }
-        }
-      },
-      child: Container(
-        margin: isListItem ? const EdgeInsets.symmetric(vertical: 8) : const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(16),
-        // height: 80,
-        decoration: BoxDecoration(
-          color: Theme.of(context).dividerColor,
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          border: selected && isListItem ? Border.all(color: const Color(0xff1191AC)) : null,
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleIcon(
-              showShadow: false,
-              icon: IconPath.profileIcon,
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              iconColor: agentTextColor,
-              // backgroundColor: AppColor.primary50Light,
+              try {
+                final delegatorsCubit = context.read<DelegatorsCubit>();
+                BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial(delegatorsCubit: delegatorsCubit));
+              } catch (e) {
+                // Fallback if DelegatorsCubit is not available
+                BlocProvider.of<DashboardBloc>(context).add(DashboardEventInitial());
+              }
+            }
+          },
+          child: Container(
+            margin: isListItem ? const EdgeInsets.symmetric(vertical: 8) : const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: ShapeDecoration(
+              color: isIndivisual
+                  ? Colors.transparent
+                  : themeNotifier.isDarkMode
+                  ? Color(0xFF00202D)
+                  : const Color(0xFFFAFAFA),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(width: 1, color: selected ? const Color(0xFF2AB3A9) : Colors.transparent),
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    child: CustomTextWidget(
-                      name,
-                      // fontColor: selected ? const Color(0xff18181B) : const Color(0xff18181B),
-                      maxLines: 2,
-                      fontWeight: AppFontWeight.bold,
-                      fontSize: 14,
-                    ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (!isIndivisual)
+                  CircleIcon(
+                    circleSize: 32,
+                    iconSize: 16,
+                    showShadow: false,
+                    icon: IconPath.profileIcon,
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    iconColor: agentTextColor,
                   ),
-                  const SizedBox(height: 8),
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomTextWidget(
-                          type,
-                          fontWeight: AppFontWeight.medium,
-                          fontSize: 12,
-                          //      fontColor: selected ? const Color(0xff737373) : const Color(0xff737373),
+                const SizedBox(width: 16),
+                Expanded(
+                  flex: 8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        isIndivisual ? 'indivisual_account'.tr() : name,
+                        maxLines: 2,
+                        style: TextStyle(
+                          color: themeNotifier.isDarkMode ? Colors.white : const Color(0xFF1B1B1B),
+                          fontSize: 16,
+                          fontFamily: GeneralKey.appFontType,
+                          fontWeight: FontWeight.w400,
                         ),
-                        const SizedBox(width: 5),
-                      ],
+                      ),
+                      if (!isIndivisual)
+                        Text(
+                          type,
+                          style: TextStyle(
+                            color: themeNotifier.isDarkMode
+                                ? Colors.white.withValues(alpha: 0.6)
+                                : const Color(0x993C3C43),
+                            fontSize: 12,
+                            fontFamily: GeneralKey.appFontType,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      if (!isIndivisual)
+                        Container(
+                          width: 60,
+                          height: 30,
+                          decoration: BoxDecoration(color: agentBgColor, borderRadius: BorderRadius.circular(6)),
+                          alignment: Alignment.center,
+                          child: Text(
+                            agentType,
+                            maxLines: 1,
+                            style: TextStyle(
+                              color: agentTextColor,
+                              fontSize: 12,
+                              fontFamily: GeneralKey.appFontType,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    height: 20,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: selected ? const Color(0xFF2AB3A9) : const Color(0xFFB2B2B2),
+                        width: selected ? 4 : 2,
+                      ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Container(
-                height: 28,
-                padding: const EdgeInsets.only(left: 2, right: 2, bottom: 6, top: 6),
-                decoration: BoxDecoration(color: agentBgColor, borderRadius: BorderRadius.circular(6)),
-                alignment: Alignment.center,
-                child: CustomTextWidget(
-                  agentType,
-                  maxLines: 4,
-                  fontSize: 12,
-                  fontWeight: AppFontWeight.medium,
-                  fontColor: agentTextColor,
                 ),
-              ),
-            ),
 
-            if (!isListItem && (userInfo != null || delegator != null))
-              SvgPicture.asset(
-                IconPath.arrowDown,
-                width: 16,
-                height: 16,
-                placeholderBuilder: (context) =>
-                    Icon(Icons.keyboard_arrow_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
-              ),
-          ],
-        ),
-      ),
+                // if (!isListItem && (userInfo != null || delegator != null))
+                //   SvgPicture.asset(
+                //     IconPath.arrowDown,
+                //     width: 16,
+                //     height: 16,
+                //     placeholderBuilder: (context) =>
+                //         Icon(Icons.keyboard_arrow_down, size: 16, color: Theme.of(context).colorScheme.onSurface),
+                //   ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

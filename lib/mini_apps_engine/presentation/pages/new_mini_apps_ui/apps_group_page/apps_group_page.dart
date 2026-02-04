@@ -90,6 +90,19 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
     //! Fall back to recursive search
     appGroup ??= findGroupById(cubit.state.appGroups, widget.groupId);
 
+    // If group not found (e.g., business group filtered out), go back
+    if (appGroup == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      });
+      return const Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: PopScope(
@@ -125,7 +138,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           isTextCenter: true,
                           width: context.screenWidth,
                           height: context.h(35),
-                          text: CommonFunctions.isAppAR ? appGroup!.nameAr : appGroup!.nameEn,
+                          text: CommonFunctions.isAppAR ? appGroup.nameAr : appGroup.nameEn,
                           fontColor: Theme.of(context).colorScheme.onSurface,
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
@@ -489,51 +502,70 @@ class _TempPersonaBannerSectionState extends State<TempPersonaBannerSection> {
                 ),
                 child: Column(
                   children: [
-                    BlocBuilder<DelegatorsCubit, DelegatorsState>(
-                      builder: (context, state) {
+                    BlocListener<DelegatorsCubit, DelegatorsState>(
+                      listenWhen: (previous, current) {
+                        // Only trigger when transitioning from loading to no-data state for business groups
                         final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
+                        if (!isBusinessGroup || !isLoggedin) return false;
 
-                        // For business groups, show loading while determining account selection
-                        if (isBusinessGroup && isLoggedin) {
-                          final isDataLoading =
-                              state.status == BlocRequestStatus.submissionGetLoading ||
-                              state.agentStatus == BlocRequestStatus.submissionGetLoading ||
-                              state.status == BlocRequestStatus.initial ||
-                              state.agentStatus == BlocRequestStatus.initial;
+                        final wasLoading =
+                            previous.status == BlocRequestStatus.submissionGetLoading ||
+                            previous.agentStatus == BlocRequestStatus.submissionGetLoading ||
+                            previous.status == BlocRequestStatus.initial ||
+                            previous.agentStatus == BlocRequestStatus.initial;
+                        final isNotLoading =
+                            current.status != BlocRequestStatus.submissionGetLoading &&
+                            current.agentStatus != BlocRequestStatus.submissionGetLoading &&
+                            current.status != BlocRequestStatus.initial &&
+                            current.agentStatus != BlocRequestStatus.initial;
+                        final hasNoData = current.delegators.isEmpty && current.agents.isEmpty;
 
-                          final hasNoData = state.delegators.isEmpty && state.agents.isEmpty;
-                          final hasDataButNoSelection =
-                              (state.delegators.isNotEmpty || state.agents.isNotEmpty) &&
-                              state.selectedDelegate == null &&
-                              state.selectedAgent == null;
-
-                          // Show loading while data is being fetched or selection is being determined
-                          if (isDataLoading && hasNoData) {
-                            return _buildLoadingProfileCard();
-                          }
-
-                          // If no delegators/agents available, show personal account and trigger bottom sheet
-                          if (!isDataLoading && hasNoData) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              _showDelegatorSelectionBottomSheet(context, state);
-                            });
-                          }
-
-                          // If data loaded but no selection made yet, show loading briefly while selection is applied
-                          if (hasDataButNoSelection && !isDataLoading) {
-                            return _buildLoadingProfileCard();
-                          }
-                        }
-                        // return ;
-
-                        return SelectedPersonaCard(
-                          isListItem: false,
-                          agent: isLoggedin ? state.selectedAgent : null,
-                          delegator: isLoggedin ? state.selectedDelegate : null,
-                          userInfo: isLoggedin ? CommonProperties.userInfo : null,
-                          groupId: widget.groupId,
-                        );
+                        return wasLoading && isNotLoading && hasNoData;
                       },
+                      listener: (context, state) {
+                        _showDelegatorSelectionBottomSheet(context, state);
+                      },
+                      child: BlocBuilder<DelegatorsCubit, DelegatorsState>(
+                        builder: (context, state) {
+                          final isBusinessGroup = AccountSelectionService.isBusinessGroup(widget.groupId);
+
+                          // For business groups, show loading while determining account selection
+                          if (isBusinessGroup && isLoggedin) {
+                            final isDataLoading =
+                                state.status == BlocRequestStatus.submissionGetLoading ||
+                                state.agentStatus == BlocRequestStatus.submissionGetLoading ||
+                                state.status == BlocRequestStatus.initial ||
+                                state.agentStatus == BlocRequestStatus.initial;
+
+                            final hasNoData = state.delegators.isEmpty && state.agents.isEmpty;
+                            final hasDataButNoSelection =
+                                (state.delegators.isNotEmpty || state.agents.isNotEmpty) &&
+                                state.selectedDelegate == null &&
+                                state.selectedAgent == null;
+
+                            // Show loading while data is being fetched or selection is being determined
+                            if (isDataLoading && hasNoData) {
+                              return _buildLoadingProfileCard();
+                            }
+
+                            // If no delegators/agents available, the BlocListener above will handle showing the bottom sheet
+
+                            // If data loaded but no selection made yet, show loading briefly while selection is applied
+                            if (hasDataButNoSelection && !isDataLoading) {
+                              return _buildLoadingProfileCard();
+                            }
+                          }
+                          // return ;
+
+                          return SelectedPersonaCard(
+                            isListItem: false,
+                            agent: isLoggedin ? state.selectedAgent : null,
+                            delegator: isLoggedin ? state.selectedDelegate : null,
+                            userInfo: isLoggedin ? CommonProperties.userInfo : null,
+                            groupId: widget.groupId,
+                          );
+                        },
+                      ),
                     ),
 
                     // Dashboard
@@ -573,51 +605,51 @@ class _TempPersonaBannerSectionState extends State<TempPersonaBannerSection> {
                                       crossAxisAlignment: CrossAxisAlignment.stretch,
                                       children: dashboardState.cards
                                           .map(
-                                          (e)=> Container(
-                                            height: 72,
-                                            width: 72,
-                                            padding: const EdgeInsets.symmetric(vertical: 2),
-                                            decoration: ShapeDecoration(
-                                              color: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(
-                                                  width: 1,
-                                                  color: Colors.black.withValues(alpha: 0.08),
+                                            (e) => Container(
+                                              height: 72,
+                                              width: 72,
+                                              padding: const EdgeInsets.symmetric(vertical: 2),
+                                              decoration: ShapeDecoration(
+                                                color: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                  side: BorderSide(
+                                                    width: 1,
+                                                    color: Colors.black.withValues(alpha: 0.08),
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(16),
                                                 ),
-                                                borderRadius: BorderRadius.circular(16),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                spacing: 6,
+                                                children: [
+                                                  Text(
+                                                    e.name,
+                                                    textAlign: TextAlign.right,
+                                                    style: TextStyle(
+                                                      color: const Color(0xFF8E8E93),
+                                                      fontSize: 12,
+                                                      fontFamily: GeneralKey.appFontType,
+                                                      fontWeight: FontWeight.w400,
+                                                      height: 1.67,
+                                                    ),
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                  Text(
+                                                    dashboardState.cardsStates[e]?.totalCount.toString() ?? '0',
+                                                    textAlign: TextAlign.right,
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 20,
+                                                      fontFamily: GeneralKey.appFontType,
+                                                      fontWeight: FontWeight.w700,
+                                                      height: 1,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              spacing: 6,
-                                              children: [
-                                                Text(
-                                                  e.name,
-                                                  textAlign: TextAlign.right,
-                                                  style: TextStyle(
-                                                    color: const Color(0xFF8E8E93),
-                                                    fontSize: 12,
-                                                    fontFamily: GeneralKey.appFontType,
-                                                    fontWeight: FontWeight.w400,
-                                                    height: 1.67,
-                                                  ),
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                Text(
-                                                  dashboardState.cardsStates[e]?.totalCount.toString() ?? '0',
-                                                  textAlign: TextAlign.right,
-                                                  style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 20,
-                                                    fontFamily: GeneralKey.appFontType,
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          )
                                             // (e) => DashboardCardWidget(
                                             //   card: e,
                                             //   totalCount: dashboardState.cardsStates[e]?.totalCount ?? 0,
@@ -653,9 +685,7 @@ class _TempPersonaBannerSectionState extends State<TempPersonaBannerSection> {
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
-      ),
+      decoration: BoxDecoration(borderRadius: const BorderRadius.all(Radius.circular(12))),
       child: CircleAvatar(
         radius: 24,
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -671,6 +701,8 @@ class _TempPersonaBannerSectionState extends State<TempPersonaBannerSection> {
       context,
       dialogKeyName: DialogName.delegatorsDialog,
       currentRouteName: "BusinessGroupPage",
+      isDismissible: false, // Non-dismissible
+      enableDrag: false, // Disable drag to close
       child: DelegatorList(delegatorsCubit: delegatorsCubit, groupId: widget.groupId),
     );
   }
@@ -725,7 +757,8 @@ class DashboardCardWidget extends StatelessWidget {
 }
 
 class SelectedPersonaCard extends StatelessWidget {
-  const SelectedPersonaCard({super.key,
+  const SelectedPersonaCard({
+    super.key,
     this.userInfo,
     this.delegator,
     this.agent,
@@ -747,9 +780,8 @@ class SelectedPersonaCard extends StatelessWidget {
     final name = (agent?.grantorName ?? delegator?.entityName) ?? userInfo?.getFirstAndLastName() ?? "hi".tr();
     String type = (agent?.agencyNumber ?? delegator?.id) ?? userInfo?.idNo ?? "in_balady".tr();
 
-
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12,  vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
       child: Row(
         spacing: 6,
         children: [
@@ -824,17 +856,16 @@ class SelectedPersonaCard extends StatelessWidget {
               ),
             ),
           ),
-
         ],
       ),
     );
   }
 
   Future<void> _handleAccountSelection(
-      BuildContext context, {
-        DelegatorEntity? newDelegator,
-        AgentEntity? newAgent,
-      }) async {
+    BuildContext context, {
+    DelegatorEntity? newDelegator,
+    AgentEntity? newAgent,
+  }) async {
     final cubit = context.read<DelegatorsCubit>();
 
     if (groupId != null) {
@@ -901,4 +932,3 @@ class SelectedPersonaCard extends StatelessWidget {
     }
   }
 }
-

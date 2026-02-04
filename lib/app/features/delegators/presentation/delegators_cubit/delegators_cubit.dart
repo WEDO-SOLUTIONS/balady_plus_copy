@@ -51,6 +51,13 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
     AccountSelectionService.saveCurrentSelection(this);
   }
 
+  void clearSelection() {
+    emit(state.copyWith(selectedDelegator: Nullable(null), sAgent: Nullable(null)));
+
+    // Save cleared selection to SharedPrefs
+    AccountSelectionService.saveCurrentSelection(this);
+  }
+
   void changeTab(int index) {
     emit(state.copyWith(tab: index));
   }

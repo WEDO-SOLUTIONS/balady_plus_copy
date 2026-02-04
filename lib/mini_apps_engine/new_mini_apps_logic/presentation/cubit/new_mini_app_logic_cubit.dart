@@ -28,11 +28,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   static const _favoritesKey = 'mini_apps_favorite_ids';
 
-  NewMiniAppLogicCubit(
-    this.getMiniAppsUseCase,
-    this.secureStorage,
-    this.homeServicesUseCases,
-  ) : super(NewMiniAppLogicState.initial());
+  NewMiniAppLogicCubit(this.getMiniAppsUseCase, this.secureStorage, this.homeServicesUseCases)
+    : super(NewMiniAppLogicState.initial());
 
   Timer? _searchDebounce;
 
@@ -57,17 +54,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     );
 
     // Get login status from CommonProperties if not provided
-    final isLoggedInLifestyle =
-        isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
-    final isLoggedInMunicipality =
-        isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
+    final isLoggedInLifestyle = isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
+    final isLoggedInMunicipality = isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
     final userAccountBusiness = isUserAccountBusiness ?? false;
 
-    final result = await getMiniAppsUseCase(
-      isLoggedInLifestyle,
-      isLoggedInMunicipality,
-      userAccountBusiness,
-    );
+    final result = await getMiniAppsUseCase(isLoggedInLifestyle, isLoggedInMunicipality, userAccountBusiness);
 
     result.fold(
       (e) {
@@ -83,19 +74,29 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       },
       (final data) async {
         final savedFavIds = await loadFavoriteIds();
-        final allApps = data.miniApps;
+
+        // Apply business logic filtering in the state layer
+        final filteredApps = _filterMiniApps(
+          allApps: data.miniApps,
+          isLoggedInLifestyle: isLoggedInLifestyle,
+          isLoggedInMunicipality: isLoggedInMunicipality,
+          isUserAccountBusiness: userAccountBusiness,
+        );
+
+        final filteredGroups = _filterAppGroups(
+          groups: data.appGroups,
+          isLoggedInMunicipality: isLoggedInMunicipality,
+          isUserAccountBusiness: userAccountBusiness,
+        );
+
+        final allApps = filteredApps;
 
         final appsById = {for (final app in allApps) app.id: app};
 
-        final favoriteApps = savedFavIds
-            .map((id) => appsById[id])
-            .whereType<MiniApp>()
-            .toList();
+        final favoriteApps = savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
 
         final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
-        final unFavoriteApps = allApps
-            .where((app) => !favoriteIdSet.contains(app.id))
-            .toList();
+        final unFavoriteApps = allApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
 
         emit(
           state.copyWith(
@@ -106,7 +107,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             favoriteApps: favoriteApps,
             unFavoriteApps: unFavoriteApps,
             parentMiniApp: data.parentMiniApp,
-            appGroups: data.appGroups,
+            appGroups: filteredGroups,
             entryPoints: data.entryPoints,
             favError: null,
             entryPointsError: null,
@@ -120,16 +121,14 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   Future<void> refreshMiniApps() async {
     if (state.isRefreshing) return;
 
-    emit(
-      state.copyWith(
-        isRefreshing: true,
-        favError: null,
-        entryPointsError: null,
-        searchError: null,
-      ),
-    );
+    emit(state.copyWith(isRefreshing: true, favError: null, entryPointsError: null, searchError: null));
 
-    await loadMiniApps(showLoading: false);
+    await loadMiniApps(
+      showLoading: false,
+      isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
+      isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
+      isUserAccountBusiness: true, // Default to true for refresh - will be updated by external listeners
+    );
 
     emit(state.copyWith(isRefreshing: false));
   }
@@ -142,12 +141,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     if (favIndex != -1) {
       final app = favoriteApps.removeAt(favIndex);
       unFavoriteApps.insert(0, app);
-      emit(
-        state.copyWith(
-          favoriteApps: favoriteApps,
-          unFavoriteApps: unFavoriteApps,
-        ),
-      );
+      emit(state.copyWith(favoriteApps: favoriteApps, unFavoriteApps: unFavoriteApps));
       await saveFavoriteIds(favoriteApps);
       return;
     }
@@ -161,12 +155,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       }
       final app = unFavoriteApps.removeAt(unFavIndex);
       favoriteApps.add(app);
-      emit(
-        state.copyWith(
-          favoriteApps: favoriteApps,
-          unFavoriteApps: unFavoriteApps,
-        ),
-      );
+      emit(state.copyWith(favoriteApps: favoriteApps, unFavoriteApps: unFavoriteApps));
 
       await saveFavoriteIds(favoriteApps);
     }
@@ -194,38 +183,22 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       final trimmed = query.trim();
 
       if (trimmed.isEmpty) {
-        emit(
-          state.copyWith(
-            searchResults: [],
-            isSearching: false,
-            searchError: null,
-          ),
-        );
+        emit(state.copyWith(searchResults: [], isSearching: false, searchError: null));
         return;
       }
 
-      final baseList =
-          source ?? [...state.favoriteApps, ...state.unFavoriteApps];
+      final baseList = source ?? [...state.favoriteApps, ...state.unFavoriteApps];
 
       final q = trimmed.toLowerCase();
 
       final results = baseList.where((app) {
-        return app.name.toLowerCase().contains(q) ||
-            app.description.toLowerCase().contains(q);
+        return app.name.toLowerCase().contains(q) || app.description.toLowerCase().contains(q);
       }).toList();
 
-      emit(
-        state.copyWith(
-          isSearching: false,
-          searchResults: results,
-          searchError: null,
-        ),
-      );
+      emit(state.copyWith(isSearching: false, searchResults: results, searchError: null));
     });
 
-    emit(
-      state.copyWith(isSearching: true, searchError: null, searchResults: []),
-    );
+    emit(state.copyWith(isSearching: true, searchError: null, searchResults: []));
   }
 
   Future<List<String>> loadFavoriteIds() async {
@@ -275,22 +248,18 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     /// continue flow
 
-    if (miniApp.latestVersion?.otpLogin == true &&
-        miniApp.latestVersion?.deepLinkDto == null) {
+    if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.latestVersion?.deepLinkDto != null) {
         try {
-          await AppLaunchService.launchApp(
-            deepLinkInfo: miniApp.latestVersion!.deepLinkDto!,
-          );
+          await AppLaunchService.launchApp(deepLinkInfo: miniApp.latestVersion!.deepLinkDto!);
         } catch (e) {
           CommonFunctions.showError('launch_failed'.tr());
         }
       } else {
         if (miniApp.childDeepLinkUrl != null) {
-          MiniApp? parentMAiniApp =
-              state.parentMiniApp[miniApp.parentServiceKey];
+          MiniApp? parentMAiniApp = state.parentMiniApp[miniApp.parentServiceKey];
 
           if (parentMAiniApp != null) {
             NavigationService.pushNamed(
@@ -302,28 +271,18 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
               ),
             );
           } else {
-            CommonFunctions.showError(
-              'Show errors Not Fund The Parent Maini App'.tr(),
-            );
+            CommonFunctions.showError('Show errors Not Fund The Parent Maini App'.tr());
           }
         } else {
-          NavigationService.pushNamed(
-            routeName: RouteName.miniAppsMainScreen,
-            args: miniApp,
-          );
+          NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
         }
       }
     }
   }
 
-  Future<void> openMiniAppByServiceKey({
-    required String serviceKey,
-    String? path,
-  }) async {
+  Future<void> openMiniAppByServiceKey({required String serviceKey, String? path}) async {
     try {
-      MiniApp miniApp = state.allMiniApps
-          .firstWhere((service) => service.serviceKey == serviceKey)
-          .copyWith();
+      MiniApp miniApp = state.allMiniApps.firstWhere((service) => service.serviceKey == serviceKey).copyWith();
 
       openMiniApp(miniApp);
     } catch (e) {
@@ -332,9 +291,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   void clearSearch() {
-    emit(
-      state.copyWith(searchResults: [], isSearching: false, searchError: null),
-    );
+    emit(state.copyWith(searchResults: [], isSearching: false, searchError: null));
   }
 
   void setSortType(FilterOptionType? sortType) {
@@ -387,19 +344,12 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     MiniApp model = miniApp;
 
     try {
-      final response = await homeServicesUseCases.getMiniAppAcessToken(
-        model.id,
-      );
+      final response = await homeServicesUseCases.getMiniAppAcessToken(model.id);
 
       return response.fold(
         (error) {
           if (error is ServerFailure) {
-            return BaseResponse(
-              code: 500,
-              message: error.errorMessage,
-              eventName: "getAccessToken",
-              data: null,
-            );
+            return BaseResponse(code: 500, message: error.errorMessage, eventName: "getAccessToken", data: null);
           } else {
             return BaseResponse(
               code: 500,
@@ -426,5 +376,79 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         data: null,
       );
     }
+  }
+
+  // Business logic filtering methods moved from repository layer
+  List<MiniApp> _filterMiniApps({
+    required List<MiniApp> allApps,
+    required bool isLoggedInLifestyle,
+    required bool isLoggedInMunicipality,
+    required bool isUserAccountBusiness,
+  }) {
+    //! Not logged in = show all
+    if (!isLoggedInLifestyle && !isLoggedInMunicipality) {
+      return allApps;
+    }
+
+    //! Lifestyle login = show all
+    if (isLoggedInLifestyle && !isLoggedInMunicipality) {
+      return allApps;
+    }
+
+    //! Municipality login
+    if (isLoggedInMunicipality && !isLoggedInLifestyle || isLoggedInMunicipality && isLoggedInLifestyle) {
+      //! Business account = show all
+      if (isLoggedInMunicipality == true && isUserAccountBusiness == true) {
+        return allApps;
+      }
+      //! Individual account = hide business-only apps
+      if (isLoggedInMunicipality == true && isUserAccountBusiness == false) {
+        return allApps.where((app) => !_isBusinessOnlyApp(app)).toList();
+      }
+    }
+
+    return allApps;
+  }
+
+  bool _isBusinessOnlyApp(MiniApp app) {
+    final categories = app.categories;
+    final isBusiness = categories.any(
+      (c) =>
+          c.id == '6f736c81-c998-4c3e-09ea-08de2cce6088' ||
+          c.name == 'تطبيقات بلدية للأعمال' ||
+          c.name == 'Business Municipal Apps',
+    );
+    final isIndividual = categories.any(
+      (c) =>
+          c.id == '124a4dd1-7a7b-47f1-09eb-08de2cce6088' ||
+          c.name == 'تطبيقات بلدية للأفراد' ||
+          c.name == 'Individual Municipal Apps',
+    );
+    return isBusiness && !isIndividual;
+  }
+
+  List<CategoryGroup> _filterAppGroups({
+    required List<CategoryGroup> groups,
+    required bool isLoggedInMunicipality,
+    required bool isUserAccountBusiness,
+  }) {
+    final List<CategoryGroup> filteredGroups = [];
+
+    for (final group in groups) {
+      // Check if this is the business category
+      final isBusinessCategory =
+          group.id == '6f736c81-c998-4c3e-09ea-08de2cce6088' ||
+          group.nameAr == 'تطبيقات بلدية للأعمال' ||
+          group.nameEn == 'Business Municipal Apps';
+
+      // Skip business category for individual municipality accounts
+      if (isBusinessCategory && isLoggedInMunicipality == true && isUserAccountBusiness == false) {
+        continue; // Don't add it at all
+      }
+
+      filteredGroups.add(group);
+    }
+
+    return filteredGroups;
   }
 }

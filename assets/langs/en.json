@@ -4830,5 +4830,9 @@
   "grayScaleMode": "Grayscale mode",
   "stepsToAccessFeature": "Steps to access feature",
   "voiceReader": "Voice reader",
-  "switch_account": "Switch Account"
+  "switch_account": "Switch Account",
+  "indivisual_account": "Individual Account",
+  "no_business_access_title": "Business Access Unavailable",
+  "no_business_access_message": "Your current account does not have access to business services. Please switch to an individual account to use these services.",
+  "switch_to_individual_account": "Switch to Individual Services"
 }
