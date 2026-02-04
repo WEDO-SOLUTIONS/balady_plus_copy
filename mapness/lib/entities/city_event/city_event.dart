@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:dgis_map/library.dart' show MarkerIconMessage;
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
