@@ -322,6 +322,8 @@ class IconPath {
   static const shoppingBag = '${_svgWalletIconPath}shopping_bag$_svg';
   static const buildingIcon = '${_svgIconPath}building$_svg';
 
+  static const volunteerIcon = '${_svgIconPath}volunteer$_svg';
+
   //Map
   static const investmentIcon = '${_svgIconPath}invetment_icon$_svg';
   static const mapLocationIcon = '${_svgIconPath}map_location_icon$_svg';

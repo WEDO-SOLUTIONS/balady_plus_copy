@@ -17,11 +17,7 @@ class MiniAppsItemWidget extends StatelessWidget {
   final MiniAppModel miniApp;
   final bool isEvent;
 
-  const MiniAppsItemWidget({
-    super.key,
-    required this.miniApp,
-    required this.isEvent,
-  });
+  const MiniAppsItemWidget({super.key, required this.miniApp, required this.isEvent});
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +29,9 @@ class MiniAppsItemWidget extends StatelessWidget {
             child: Card(
               color: context.colors.backgroundSurface1,
               elevation: 0.5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 24,
-                  horizontal: 18,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 18),
                 child: Column(
                   children: [
                     ClipRRect(
@@ -48,10 +39,9 @@ class MiniAppsItemWidget extends StatelessWidget {
                       child: ImageIconBasedTypeWidget(
                         icon: miniApp.logoKey!,
                         type: miniApp.cdnLogoRef?.split(".").last,
+                        cdnLogoRef: miniApp.cdnLogoRef,
                         iconSize: 40,
-                        iconColor: isEvent
-                            ? AppColor.primary900LightEvent
-                            : AppColor.primary900Light,
+                        iconColor: isEvent ? AppColor.primary900LightEvent : AppColor.primary900Light,
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -68,9 +58,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      miniApp.description?.isNotEmpty == true
-                          ? miniApp.description!
-                          : '',
+                      miniApp.description?.isNotEmpty == true ? miniApp.description! : '',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.grey[600],
                         fontSize: 13,
@@ -94,16 +82,12 @@ class MiniAppsItemWidget extends StatelessWidget {
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
             if (isSuccess ?? false) {
-              NavigationService.pushNamed(
-                routeName: RouteName.miniAppsMainScreen,
-                args: miniApp,
-              );
+              NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
             }
           },
         ),
       );
-    } else if (miniApp.latestVersion?.otpLogin == true &&
-        miniApp.latestVersion?.deepLinkModel == null) {
+    } else if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkModel == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.serviceKey == "volunteerapp") {
@@ -122,10 +106,7 @@ class MiniAppsItemWidget extends StatelessWidget {
             CommonFunctions.showError('launch_failed'.tr());
           }
         } else {
-          NavigationService.pushNamed(
-            routeName: RouteName.miniAppsMainScreen,
-            args: miniApp,
-          );
+          NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
         }
       }
     }

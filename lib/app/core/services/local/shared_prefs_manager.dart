@@ -30,8 +30,7 @@ class SharedPrefs {
   }
 
   void setFirstDateTime() async {
-    await _sharedPreferences?.setString(
-        "firstDateTime", DateTime.now().toIso8601String());
+    await _sharedPreferences?.setString("firstDateTime", DateTime.now().toIso8601String());
   }
 
   String? getFirstDateTime() {
@@ -106,21 +105,13 @@ class SharedPrefs {
     return _sharedPreferences?.getString('guestMobile');
   }
 
-
-
   setPrayerSettings(List<String> settings) async =>
       await _sharedPreferences?.setStringList('prayer_settings', settings);
 
   List<String> getPrayerSettings() =>
       _sharedPreferences?.getStringList('prayer_settings') ??
       // "0" to set all prayer times setting to false
-      [
-        "0",
-        "0",
-        "0",
-        "0",
-        "0",
-      ];
+      ["0", "0", "0", "0", "0"];
 
   /////////////////////////////////////////////////////////////
 
@@ -185,15 +176,9 @@ class SharedPrefs {
     }
   }
 
-
-
-
-
-
   setUserLocation(GISParams? item) async {
     if (item != null) {
-      await _sharedPreferences?.setString(
-          'gis_user_location', json.encode(item.toMap()));
+      await _sharedPreferences?.setString('gis_user_location', json.encode(item.toMap()));
     } else {
       _sharedPreferences?.remove("gis_user_location");
     }
@@ -202,8 +187,7 @@ class SharedPrefs {
   Future<GISParams?> getUserLocation() async {
     String? bookMarks = _sharedPreferences?.getString('gis_user_location');
     GISParams? model = bookMarks != null
-        ? GISParams.fromMap(json
-        .decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
+        ? GISParams.fromMap(json.decode(_sharedPreferences?.getString('gis_user_location') ?? ""))
         : null;
 
     return model;
@@ -211,8 +195,7 @@ class SharedPrefs {
 
   setUserGISLoaction(GISResponseModel? item) async {
     if (item != null) {
-      await _sharedPreferences?.setString(
-          'gis_user_data', json.encode(item.toMap()));
+      await _sharedPreferences?.setString('gis_user_data', json.encode(item.toMap()));
     } else {
       _sharedPreferences?.remove("gis_user_data");
     }
@@ -221,11 +204,44 @@ class SharedPrefs {
   Future<GISResponseModel?> getUserGISData() async {
     String? bookMarks = _sharedPreferences?.getString('gis_user_data');
     GISResponseModel? model = bookMarks != null
-        ? GISResponseModel.fromMap(
-        json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
+        ? GISResponseModel.fromMap(json.decode(_sharedPreferences?.getString('gis_user_data') ?? ""))
         : null;
 
     return model;
+  }
+
+  // Account Selection Methods
+  Future<void> saveSelectedDelegator(String? delegatorId) async {
+    const key = 'selected_delegator_id';
+    if (delegatorId != null) {
+      await _sharedPreferences?.setString(key, delegatorId);
+    } else {
+      await _sharedPreferences?.remove(key);
+    }
+  }
+
+  Future<void> saveSelectedAgent(String? agentId) async {
+    const key = 'selected_agent_id';
+    if (agentId != null) {
+      await _sharedPreferences?.setString(key, agentId);
+    } else {
+      await _sharedPreferences?.remove(key);
+    }
+  }
+
+  String? getSelectedDelegatorId() {
+    const key = 'selected_delegator_id';
+    return _sharedPreferences?.getString(key);
+  }
+
+  String? getSelectedAgentId() {
+    const key = 'selected_agent_id';
+    return _sharedPreferences?.getString(key);
+  }
+
+  Future<void> clearSelectedAccounts() async {
+    await _sharedPreferences?.remove('selected_delegator_id');
+    await _sharedPreferences?.remove('selected_agent_id');
   }
 }
 

@@ -9,55 +9,6 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
 
   NewMiniAppsLogicRepositoryImpl({required this.dataSource});
 
-  bool _isBusinessOnlyApp(MiniApp app) {
-    final categories = app.categories;
-    final isBusiness = categories.any(
-      (c) =>
-          c.id == '6f736c81-c998-4c3e-09ea-08de2cce6088' ||
-          c.name == 'تطبيقات بلدية للأعمال' ||
-          c.name == 'Business Municipal Apps',
-    );
-    final isIndividual = categories.any(
-      (c) =>
-          c.id == '124a4dd1-7a7b-47f1-09eb-08de2cce6088' ||
-          c.name == 'تطبيقات بلدية للأفراد' ||
-          c.name == 'Individual Municipal Apps',
-    );
-    return isBusiness && !isIndividual;
-  }
-
-  List<MiniApp> _filterMiniApps({
-    required List<MiniApp> allApps,
-    required bool isLoggedInLifestyle,
-    required bool isLoggedInMunicipality,
-    required bool isUserAccountBusiness,
-  }) {
-    //! Not logged in = show all
-    if (!isLoggedInLifestyle && !isLoggedInMunicipality) {
-      return allApps;
-    }
-
-    //! Lifestyle login = show all
-    if (isLoggedInLifestyle && !isLoggedInMunicipality) {
-      return allApps;
-    }
-
-    //! Municipality login
-    if (isLoggedInMunicipality && !isLoggedInLifestyle ||
-        isLoggedInMunicipality && isLoggedInLifestyle) {
-      //! Business account = show all
-      if (isLoggedInMunicipality == true && isUserAccountBusiness == true) {
-        return allApps;
-      }
-      //! Individual account = hide business-only apps
-      if (isLoggedInMunicipality == true && isUserAccountBusiness == false) {
-        return allApps.where((app) => !_isBusinessOnlyApp(app)).toList();
-      }
-    }
-
-    return allApps;
-  }
-
   @override
   Future<Either<Exception, NewMiniAppsLogicEntity>> getMiniApps(
     bool isLoggedInLifestyle,
@@ -83,9 +34,7 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
             parentMiniApp[item.serviceKey] = item;
             if (item.childServices?.isNotEmpty ?? false) {
               for (final child in item.childServices!) {
-                MiniApp typeChild = child.copyWith(
-                  parentServiceKey: item.serviceKey,
-                );
+                MiniApp typeChild = child.copyWith(parentServiceKey: item.serviceKey);
                 allMiniAppsUI.add(typeChild);
               }
             }
@@ -95,16 +44,11 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
         }
       }
 
-      // Apply filtering based on user status
-      final filteredMiniApps = _filterMiniApps(
-        allApps: allMiniAppsUI,
-        isLoggedInLifestyle: isLoggedInLifestyle,
-        isLoggedInMunicipality: isLoggedInMunicipality,
-        isUserAccountBusiness: isUserAccountBusiness,
-      );
+      // Removed app filtering from repository - this should be handled in the state layer
+      // Return all apps and let the cubit handle business logic filtering
 
-      // Now create groups and entry points from FILTERED apps
-      for (final item in filteredMiniApps) {
+      // Now create groups and entry points from ALL apps
+      for (final item in allMiniAppsUI) {
         _mapOnMiniAppEntryPoint(mapEntryPoints, item);
         _mapOnAppCategoryGroup(mapAppCategoryGroup, item, item.categories);
       }
@@ -119,7 +63,7 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
       return Right(
         NewMiniAppsLogicEntity(
           parentMiniApp: parentMiniApp,
-          miniApps: filteredMiniApps,
+          miniApps: allMiniAppsUI,
           appGroups: processedGroups,
           entryPoints: mapEntryPoints.values.toList(),
         ),
@@ -127,10 +71,7 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     });
   }
 
-  Map<String, EntryPoints> _mapOnMiniAppEntryPoint(
-    Map<String, EntryPoints> mapEntryPoints,
-    MiniApp item,
-  ) {
+  Map<String, EntryPoints> _mapOnMiniAppEntryPoint(Map<String, EntryPoints> mapEntryPoints, MiniApp item) {
     for (var entryPoint in item.entryPoints) {
       if (mapEntryPoints[entryPoint.entryPointKey] == null) {
         mapEntryPoints[entryPoint.entryPointKey] = EntryPoints(
@@ -156,12 +97,7 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     for (var category in listMiniAppCategory) {
       CategoryGroup? mainCategoryGroup = mapAppCategoryGroup[category.id];
       if (mainCategoryGroup == null) {
-        mainCategoryGroup = CategoryGroup(
-          id: category.id,
-          nameAr: category.name,
-          nameEn: category.name,
-          apps: [],
-        );
+        mainCategoryGroup = CategoryGroup(id: category.id, nameAr: category.name, nameEn: category.name, apps: []);
         mapAppCategoryGroup[category.id] = mainCategoryGroup;
       }
       if (category.subCategories?.isNotEmpty ?? false) {
@@ -186,25 +122,17 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     final List<MiniApp> otherServicesApps = [];
 
     for (final group in groups) {
-      // Check if this is the business category
-      final isBusinessCategory =
-          group.id == '6f736c81-c998-4c3e-09ea-08de2cce6088' ||
-          group.nameAr == 'تطبيقات بلدية للأعمال' ||
-          group.nameEn == 'Business Municipal Apps';
+      // Removed hardcoded business category filtering - this should be handled in the state layer
 
-      // ALWAYS skip/hide the business category
-      if (isBusinessCategory &&
-          isLoggedInMunicipality == true &&
-          isUserAccountBusiness == false) {
-        continue; // Don't add it at all
-      }
-
-      // Regular processing for non-business categories
-      if (group.apps.length >= 2) {
+      // Regular processing - count apps recursively including subcategories
+      final totalAppCount = _getTotalAppCount(group);
+      if (totalAppCount >= 2) {
         processedGroups.add(group);
-      } else if (group.apps.length == 1) {
-        otherServicesApps.addAll(group.apps);
+      } else if (totalAppCount == 1) {
+        // Collect all apps from this group and its subcategories
+        _collectAllApps(group, otherServicesApps);
       }
+      // Groups with 0 apps are silently dropped
     }
 
     if (otherServicesApps.isNotEmpty) {
@@ -219,5 +147,29 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
     }
 
     return processedGroups;
+  }
+
+  /// Recursively counts all apps in a group and its subcategories
+  int _getTotalAppCount(CategoryGroup group) {
+    int count = group.apps.length;
+
+    if (group.subCategoryGroup != null) {
+      for (final subGroup in group.subCategoryGroup!.values) {
+        count += _getTotalAppCount(subGroup);
+      }
+    }
+
+    return count;
+  }
+
+  /// Recursively collects all apps from a group and its subcategories
+  void _collectAllApps(CategoryGroup group, List<MiniApp> collector) {
+    collector.addAll(group.apps);
+
+    if (group.subCategoryGroup != null) {
+      for (final subGroup in group.subCategoryGroup!.values) {
+        _collectAllApps(subGroup, collector);
+      }
+    }
   }
 }
