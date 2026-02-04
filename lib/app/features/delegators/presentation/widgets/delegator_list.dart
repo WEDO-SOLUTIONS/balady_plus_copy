@@ -45,6 +45,7 @@ class _DelegatorListState extends State<DelegatorList> {
       child: Consumer<BaladyThemeNotifier>(
         builder: (context, themeNotifier, _) {
           return BottomSheetWithActions(
+            withoutClose: true,
             backgroundColor: themeNotifier.isDarkMode ? Color(0xFF002D40) : Colors.white,
             title: "switch_account".tr(),
             body: BlocBuilder<DelegatorsCubit, DelegatorsState>(

@@ -16,16 +16,19 @@ class BottomSheetWithActions extends StatefulWidget {
   final bool? isList;
   final Color? backgroundColor;
   final Function? onSearchChanged;
+  final bool withoutClose;
 
-  const BottomSheetWithActions(
-      {super.key,
-      required this.title,
-      required this.body,
-      this.action,
-      this.isList = false,
-      this.searchable,
-      this.backgroundColor,
-      this.onSearchChanged});
+  const BottomSheetWithActions({
+    super.key,
+    required this.title,
+    required this.body,
+    this.action,
+    this.isList = false,
+    this.searchable,
+    this.backgroundColor,
+    this.withoutClose = false,
+    this.onSearchChanged,
+  });
 
   @override
   State<BottomSheetWithActions> createState() => _BottomSheetWithActionsState();
@@ -84,15 +87,16 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: CircleIcon(
-                        icon: Icons.close,
-                        iconColor: AppColor.primary600Light,
-                        backgroundColor: AppColor.geyser.withOpacity(0.4),
-                        iconSize: 18,
+                    if (!widget.withoutClose)
+                      InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: CircleIcon(
+                          icon: Icons.close,
+                          iconColor: AppColor.primary600Light,
+                          backgroundColor: AppColor.geyser.withOpacity(0.4),
+                          iconSize: 18,
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 if (widget.searchable ?? false)
@@ -126,28 +130,20 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
                   const SizedBox(height: 16),
                   Flexible(
                     child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          widget.body,
-                        ],
-                      ),
+                      child: Column(mainAxisSize: MainAxisSize.min, children: [widget.body]),
                     ),
-                  )
+                  ),
                 ],
                 if (widget.action != null)
                   Container(
                     padding: EdgeInsets.only(bottom: 24),
-                    child: SafeArea(
-                      top: false,
-                      child: widget.action!,
-                    ),
+                    child: SafeArea(top: false, child: widget.action!),
                   ),
               ],
             ),
           ),
         );
-      }
+      },
     );
 
     return GestureDetector(
@@ -158,22 +154,14 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
         color: AppColor.white,
         child: Column(
           children: [
-            const DrawLineWidget(
-              lineWidth: 70.0,
-              lineHeight: 6.0,
-              lineColor: AppColor.gray,
-              radius: 46.0,
-            ),
+            const DrawLineWidget(lineWidth: 70.0, lineHeight: 6.0, lineColor: AppColor.gray, radius: 46.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CustomTextWidget(
                   widget.title,
                   textAlign: TextAlign.center,
-                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(
-                    fontSize: 24.0,
-                    color: AppColor.black,
-                  ),
+                  textStyle: AppStyle.mainTextSecondaryStyle.copyWith(fontSize: 24.0, color: AppColor.black),
                 ),
                 InkWell(
                   onTap: () => Navigator.pop(context),
@@ -189,19 +177,10 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
             const SizedBox(height: 16),
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    widget.body,
-                  ],
-                ),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [widget.body]),
               ),
             ),
-            if (widget.action != null)
-              SafeArea(
-                top: false,
-                child: widget.action!,
-              ),
+            if (widget.action != null) SafeArea(top: false, child: widget.action!),
           ],
         ),
       ),
@@ -209,11 +188,11 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
   }
 
   EdgeInsetsGeometry get padding => EdgeInsets.only(
-        right: UIHelper.mediumPadding,
-        left: UIHelper.mediumPadding,
-        top: UIHelper.smallPadding,
-        bottom: context.bottomPadding,
-      );
+    right: UIHelper.mediumPadding,
+    left: UIHelper.mediumPadding,
+    top: UIHelper.smallPadding,
+    bottom: context.bottomPadding,
+  );
 
   BuildContext get context => NavigationService.navigatorKey.currentContext!;
 }
