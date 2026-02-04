@@ -25,10 +25,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final routes = context.router.stack;
@@ -92,6 +89,18 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       );
     }
 
+    final isFoundingDayObject = ref.read(foundingDayProvider.notifier).isFoundationObject(widget.objectId.objectId);
+
+    if (isFoundingDayObject && data != null) {
+      return _FoundingDayPoiCardContent(
+        objectId: widget.objectId.objectId,
+        closestPoint: widget.closestPoint,
+        cameraConfig: widget.cameraConfig,
+        poiCardState: poiCardState,
+        data: data,
+      );
+    }
+
     // We need to leave this block of code to specify the point where the route will be built. (BSA-2415)
     //
     // Example: The user put a point on the map in a field (or desert). If we don't change markerPosition to closestPoint,
@@ -145,11 +154,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       }
     }();
     if (dataAndError != null) {
-      return PoiLoadingOrErrorSheet(
-        sheetHeight: 360,
-        contentHeight: 300,
-        data: dataAndError,
-      );
+      return PoiLoadingOrErrorSheet(sheetHeight: 360, contentHeight: 300, data: dataAndError);
     }
 
     if (data == null) {
@@ -200,9 +205,7 @@ Future<void> _onFavoriteTap({
         MetricsConstants.poiKeys.addToFavorite,
         group: MetricsConstants.poiTag,
         action: MetricAction.tap.toString(),
-        props: {
-          'objectId': data.id?.objectId,
-        },
+        props: {'objectId': data.id?.objectId},
       );
 
       toggleFavoriteDirectoryObject(context: context, ref: ref, data: data, favouriteItem: favouriteItem);

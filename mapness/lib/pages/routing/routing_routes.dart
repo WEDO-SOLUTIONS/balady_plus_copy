@@ -30,11 +30,7 @@ class RoutingRoutesPage extends StatefulHookConsumerWidget {
   final List<RouteParamsPointWithLabel> points;
   final bool isHomeOrWork;
 
-  const RoutingRoutesPage({
-    required this.points,
-    this.isHomeOrWork = false,
-    super.key,
-  });
+  const RoutingRoutesPage({required this.points, this.isHomeOrWork = false, super.key});
 
   @override
   ConsumerState<RoutingRoutesPage> createState() => _RoutingRoutesPageState();
@@ -52,9 +48,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     if (!_permissionRequested && widget.points.any((p) => p.value == null)) {
       _permissionRequested = true;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(locationProvider.notifier).checkLocationPermission(
-              routeOnClose: RoutingRoutesRoute.name,
-            );
+        ref.read(locationProvider.notifier).checkLocationPermission(routeOnClose: RoutingRoutesRoute.name);
       });
     }
   }
@@ -87,9 +81,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    final sheetController = useToggleSheetController(
-      isInteractive: false,
-    );
+    final sheetController = useToggleSheetController(isInteractive: false);
 
     return ToggleSheet(
       shouldPop: (_) => false,
@@ -102,10 +94,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-              left: Spacing.$4x,
-              right: Spacing.$4x,
-            ),
+            padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -136,10 +125,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
               ].insertBetween(Spacing.$3x.widthBox).toList(),
             ),
           ),
-          RoutingInfo(
-            pointsWithLabel: points,
-            isHomeOrWork: widget.isHomeOrWork,
-          ),
+          RoutingInfo(pointsWithLabel: points, isHomeOrWork: widget.isHomeOrWork),
         ],
       ),
     );
@@ -160,11 +146,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   /// On tap of the ABPoints widget, show the bottom sheet to change the route
   void _changeRoute() {
     final myLocation = ref.watch(locationProvider);
-    const shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(
-        top: Radius.circular(Spacing.$4x),
-      ),
-    );
+    const shape = RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(Spacing.$4x)));
     showModalBottomSheet(
       backgroundColor: context.colors.backgroundSurface4,
       shape: shape,
@@ -188,9 +170,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   /// Confirm the reordering of the points. Also close the bottom sheet
-  void _onConfirm(
-    List<RouteParamsPointWithLabel> points,
-  ) {
+  void _onConfirm(List<RouteParamsPointWithLabel> points) {
     setState(() {
       this.points = points;
     });

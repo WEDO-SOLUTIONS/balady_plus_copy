@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -10,6 +11,7 @@ class Markers {
   static final defaultPin = Assets.icons.lottie.pinLogoAnimated;
   static final defaultPinNew = Assets.icons.svg.icPinNew.keyName;
   static final defaultPinNewSaudiDay = Assets.icons.svg.icPinNewSaudiDay.keyName;
+  static final defaultPinNewFoundingDay = Assets.icons.svg.placesNewFoundingDay.icDefault.keyName;
 
   static Marker pinMarker(
     GeoPointWithElevationMessage position, {
@@ -20,16 +22,17 @@ class Markers {
     String? text,
     MarkerTextStyleMessage? textStyle,
     int maxCharsPerLine = 40,
+    CityEventType? activeCityEvent,
   }) =>
       Marker(
         id: id ?? 'PIN-MARKER',
         options: MarkerOptionsMessage(
           position: position,
           icon: SvgMarkerIcon(
-            svgPath: icon ??
+            svgPath: activeCityEvent?.defaultPin ??(icon ??
                 (SaudiNationalDay.isNow()
                     ? Assets.icons.svg.icPinNewSaudiDay.keyName
-                    : Assets.icons.svg.icPinNew.keyName),
+                    : Assets.icons.svg.icPinNew.keyName)),
             width: width ?? defaultWidth,
           ),
           text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),

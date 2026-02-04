@@ -1,7 +1,11 @@
 import 'dart:math';
 
-import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -21,7 +25,11 @@ import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:sheetify/sheetify.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
-  const Dashboard({required this.bottomSheetController, required this.fireworksController, super.key});
+  const Dashboard({
+    required this.bottomSheetController,
+    required this.fireworksController,
+    super.key,
+  });
 
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
@@ -50,7 +58,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         final interpolation = controller.interpolation;
         final state = controller.state;
 
-        final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+      final isGoToNavigatorShown = freeRoamState.canStart &&
+          !freeRoamState.isAutorun;
 
         final isSheetCoversThreshold = fraction > threshold;
         final isSheetStateOpen = state == ThreeStateSheet.open;
@@ -79,7 +88,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     },
   );
 
-  final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
+  final topHeaderOffset = const StatefulSheetDelegateValue<double>(
+      value: -Spacing.$4x);
 
   @override
   void initState() {
@@ -94,7 +104,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
+  void didChangeAppLifecycleState(AppLifecycleState state) =>
+      _checkLocationPermission(state);
 
   ///This method is intended for handling location permission requests
   /// if it's triggered by someone before Mapness starts.
@@ -113,7 +124,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     });
 
     freeRoamState = ref.watch(freeRoamStarterProvider);
-
+    final activeEvent = ref.watch(activeCityEventProvider);
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final themeConfig = dashboardThemeConfigFor(specialThemeMode);
     final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase ||
@@ -180,13 +191,18 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   }
 
   void _scrollListenHandler() {
-    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
+    footerOpacity.value =
+        min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
 
     Future.delayed(Duration.zero, () {
       if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
-        ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
+        ref.read(mapControlsProvider.notifier).update(
+          MapControlsStateDashboard(),
+        );
       } else {
-        ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+        ref.read(mapControlsProvider.notifier).update(
+          MapControlsStateIdle(),
+        );
       }
     });
   }

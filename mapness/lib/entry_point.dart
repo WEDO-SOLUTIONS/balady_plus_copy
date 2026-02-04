@@ -37,6 +37,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
@@ -45,8 +46,7 @@ import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/search/providers/search_region.dart'
-    show initializeSearchRegionServiceProvider;
+import 'package:mapness/features/search/providers/search_region.dart' show initializeSearchRegionServiceProvider;
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -81,6 +81,7 @@ import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/widgets/founding_day/founding_day_theme.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
@@ -124,9 +125,7 @@ class MapnessProviderScope extends StatelessWidget {
           child: Consumer(
             builder: (context, ref, child) {
               final language = ref.watch(appLanguageProvider);
-              final localizations = language == Language.arabic
-                  ? AppLocalizationsAr()
-                  : AppLocalizationsEn();
+              final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
               // Initialize Saudi National Day provider to start the timer
               ref
                 ..watch(saudiNationalDayProvider)
@@ -196,8 +195,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await ref.read(initializeSearchRegionServiceProvider.future);
       final track = ref.read(urbiAnalyticsProvider).track;
       await AdvancedMetrics.instance.stopMeasureStartup(track: track);
-      await AdvancedMetrics.instance
-          .sendPreviousSessionBatteryUsage(track: track);
+      await AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
       await AdvancedMetrics.instance.startMeasureBattery();
       await ref.read(cityscapeProvider.notifier).initializeGlobalMarker();
     });
@@ -302,12 +300,49 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
+  Future<void> _updateGlobalMarkerFoundingDay(WidgetRef ref) async {
+    final isFoundingDayToday = ref.read(foundingDayProvider);
+    final selectedMarker = ref.read(selectedMarkerProvider);
+    final notifier = ref.read(foundingDayProvider.notifier);
+
+    if (isFoundingDayToday && selectedMarker == null) {
+      await notifier.showGlobalMarker();
+    } else {
+      await notifier.hideGlobalMarker();
+    }
+  }
+
+  Future<void> _updateSpecificMarkerWRC(WidgetRef ref, Marker? previousMarker, Marker? marker) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    // hide previous marker if there was one
+    if (previousMarker != null) {
+      await notifier.showSpecificMarker(previousMarker);
+    }
+
+    // show new marker if there is one
+    if (marker != null) {
+      await notifier.hideSpecificMarker(marker);
+    }
+  }
+
+  Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
+    final notifier = ref.read(wRCProvider.notifier);
+    if (wrcEnabled) {
+      await notifier.showAllMarkers();
+    } else {
+      await notifier.hideAllMarkers();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
-    final isNationalDay = ref.watch(saudiNationalDayProvider);
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
+    final isFoundingDay = activeEvent?.isFoundingDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
+
     ref.listen<bool>(cityscapeProvider, (prev, next) {
       _updateGlobalMarker(ref);
     });
@@ -315,7 +350,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     ref.listen<dynamic>(selectedMarkerProvider, (prev, next) {
       _updateGlobalMarker(ref);
     });
-
     // Track theme changes for analytics
     ref.listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
       if (prev == next) return;
@@ -340,6 +374,28 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
 
     ref
+      ..listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
+        if (next == null || prev?.zoom == next.zoom) {
+          return;
+        }
+        _updateGlobalMarkerCityscape(ref);
+        _updateGlobalMarkerFoundingDay(ref);
+      })
+      // listen cityscapeProvider and selectedMarkerProvider for other updates
+      ..listen<bool>(cityscapeProvider, (prev, next) {
+        _updateGlobalMarkerCityscape(ref);
+      })
+      ..listen<bool>(foundingDayProvider, (prev, next) {
+        _updateGlobalMarkerFoundingDay(ref);
+      })
+      ..listen<bool>(wRCProvider, (prev, next) {
+        _updateAllMarkersWRC(ref, next);
+      })
+      ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
+        _updateGlobalMarkerCityscape(ref);
+        _updateGlobalMarkerFoundingDay(ref);
+        _updateSpecificMarkerWRC(ref, prev, next);
+      })
       // listen for changes in car connection state. But do not rebuild widget
       ..listen(carEnableFreeRoamProvider, (previous, next) {})
       // listen for changes in debug state provider to show/hide the debug overlay
@@ -387,14 +443,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                     ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
-                  AppColorsThemeV3.palette(
-                    themes: switch (specialThemeMode) {
+                  if (isFoundingDay)
+                    AppColorsThemeV3FoundingDayExt.foundingDay()
+                  else
+                    AppColorsThemeV3.palette(themes: switch (specialThemeMode) {
                       SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
                       SpecialThemeMode.mekkahBase ||
                       SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
                       _ => BaladyAppThemes.light,
-                    },
-                  ),
+                    })
                   AppStaticColorsThemeExt.palette(),
                 ],
               ),

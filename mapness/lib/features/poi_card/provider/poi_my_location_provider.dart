@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/profile/user_profile_data.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/lib/make_address.dart';
@@ -30,12 +31,7 @@ class PoiMyLocationState {
     required this.isAuthorized,
   });
 
-  PoiMyLocationState copyWith({
-    String? address,
-    LatLng? location,
-    String? title,
-    bool? isAuthorized,
-  }) =>
+  PoiMyLocationState copyWith({String? address, LatLng? location, String? title, bool? isAuthorized}) =>
       PoiMyLocationState(
         address: address ?? this.address,
         location: location ?? this.location,
@@ -47,10 +43,7 @@ class PoiMyLocationState {
 @riverpod
 class PoiMyLocation extends _$PoiMyLocation {
   @override
-  Future<PoiMyLocationState?> build({
-    required LatLng? closestPoint,
-    required PoiCameraConfig? cameraConfig,
-  }) async {
+  Future<PoiMyLocationState?> build({required LatLng? closestPoint, required PoiCameraConfig? cameraConfig}) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     if (closestPoint == null || cameraConfig == null) {
@@ -62,10 +55,7 @@ class PoiMyLocation extends _$PoiMyLocation {
     unawaited(_cameraAnimation(closestPoint));
 
     unawaited(dgisController
-        .search(
-      '${closestPoint.latitude}, ${closestPoint.longitude}',
-      sortingType: SortingTypeMessage.byDistance,
-    )
+        .search('${closestPoint.latitude}, ${closestPoint.longitude}', sortingType: SortingTypeMessage.byDistance)
         .then((data) {
       if (data.firstPage?.items.isNotEmpty == true) {
         String? address = data.firstPage!.items.firstOrNull?.makeAddress();
@@ -90,18 +80,12 @@ class PoiMyLocation extends _$PoiMyLocation {
   Future<void> _cameraAnimation(LatLng closestPoint) async {
     final settings = MapObjectManagerSettings.myLocation();
     final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier,
     );
     await mapObjectManager.removeAllMarkers();
     final marker = Markers.pinMarker(
-      GeoPointWithElevationMessage(
-        latitude: closestPoint.latitude,
-        longitude: closestPoint.longitude,
-        elevation: 1,
-      ),
+      GeoPointWithElevationMessage(latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 1),
+      activeCityEvent: ref.read(activeCityEventProvider),
     );
 
     /// For those cases when we switch from an area (building) to MyLocation

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -33,10 +34,7 @@ import 'package:sheetify/sheetify.dart';
 class NaviBottomSheet extends ConsumerStatefulWidget {
   final bool isPathNavScreen;
 
-  const NaviBottomSheet({
-    super.key,
-    this.isPathNavScreen = false,
-  });
+  const NaviBottomSheet({super.key, this.isPathNavScreen = false});
 
   @override
   ConsumerState<NaviBottomSheet> createState() => _NaviBottomSheetState();
@@ -55,10 +53,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   void initState() {
     super.initState();
     if (widget.isPathNavScreen) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     }
 
     ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
@@ -122,17 +117,11 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   @override
   Widget build(BuildContext context) {
     final searchObjectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: _settings.name,
-        layerId: _settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
-    ref.listen(
-      searchProvider(_scope),
-      (previous, next) {
-        _drawSearchMarkers(next, previous, searchObjectManager);
-      },
-    );
+    ref.listen(searchProvider(_scope), (previous, next) {
+      _drawSearchMarkers(next, previous, searchObjectManager);
+    });
 
     return SearchScope(
       named: SearchScopeEnum.navi,
@@ -163,9 +152,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
                 requestFocus: false,
                 onClose: () => context.router.popForced(),
               ),
-              sliver: NaviSearchContent(
-                bottomSheetContentScrollController: _multiStateSheetController,
-              ),
+              sliver: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
             ),
           ),
         ],
@@ -184,10 +171,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
+        activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
       );
@@ -245,14 +234,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   }
 
   void _removeAllMarkersAndPop() {
-    ref
-        .read(
-          mapObjectManagerProvider(
-            named: _settings.name,
-            layerId: _settings.layerId,
-          ).notifier,
-        )
-        .removeAllMarkers();
+    ref.read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier).removeAllMarkers();
     ref.read(searchInRectProvider(_scope).notifier).update();
     context.router.popForced();
   }

@@ -5,6 +5,8 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
@@ -71,6 +73,7 @@ class _ParkingManage extends _$ParkingManage {
     await hive.put(_keyCache, model.toJson());
     await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
     await _mapObjectManager.removeAllMarkers();
+    final activeCityEvent = ref.read(activeCityEventProvider);
     await _mapObjectManager.addMarker(
       Marker(
         id: parkingId,
@@ -80,9 +83,9 @@ class _ParkingManage extends _$ParkingManage {
             longitude: model.lon,
             elevation: 1,
           ),
-          icon: SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32)
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(size: 32),
+          icon: activeCityEvent?.icParking ??(SaudiNationalDay.isNow()
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon()),
         ),
         onTap: () {
           ref.read(appRouterProvider).replaceOrPush(
@@ -136,6 +139,7 @@ class _ParkingManage extends _$ParkingManage {
       GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
       text: title,
       textStyle: style,
+      activeCityEvent: ref.read(activeCityEventProvider),
       icon: SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew,
       id: poiPinId,
     ));
@@ -167,6 +171,8 @@ class _ParkingManage extends _$ParkingManage {
       return;
     }
 
+    final activeCityEvent = ref.read(activeCityEventProvider);
+
     await _mapObjectManager.addMarker(
       Marker(
         id: parkingId,
@@ -176,9 +182,9 @@ class _ParkingManage extends _$ParkingManage {
             longitude: lon,
             elevation: 1,
           ),
-          icon: SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32)
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(size: 32),
+          icon: activeCityEvent?.icParking ??(SaudiNationalDay.isNow()
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon()),
         ),
         onTap: () {
           ref.read(poiCardClosingProvider.notifier).close();
