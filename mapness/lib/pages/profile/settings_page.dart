@@ -60,12 +60,13 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: const [NotificationsSettingCell()],
                     ),
+
                     const SizedBox(height: Spacing.$4x),
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: const [AuthQuickAccessBiometricWidget()],
                     ),
                     const SizedBox(height: Spacing.$4x),
