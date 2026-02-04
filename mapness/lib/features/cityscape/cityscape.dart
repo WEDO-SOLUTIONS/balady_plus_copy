@@ -71,16 +71,6 @@ class Cityscape extends _$Cityscape {
   /// Checks if the custom pin should be shown, based on the object ID
   bool showCustomPin(int objectId) => _cityscapeObjectId == objectId && state;
 
-  /// Manually triggers an update of the state
-  void refresh() {
-    ref.read(dgisEnvironmentProvider).whenData(
-      (data) {
-        final now = DateTime.now();
-        state = now.isAfter(data.cityscapeDateTimeRange.from) && now.isBefore(data.cityscapeDateTimeRange.to);
-      },
-    );
-  }
-
   Future<void> initializeGlobalMarker() async {
     mapManager = ref.read(
       mapObjectManagerProvider(
@@ -144,16 +134,5 @@ class Cityscape extends _$Cityscape {
       ),
       toCompareRoutes: [PoiCardWidgetRoute.page],
     );
-  }
-
-  /// Simple provider that returns the current status without periodic updates
-  /// Use this if you only need a one-time check
-  bool isNow() {
-    // Check if debug override is enabled
-    if (cityscapeDebugOverride) {
-      return true;
-    }
-
-    return state;
   }
 }

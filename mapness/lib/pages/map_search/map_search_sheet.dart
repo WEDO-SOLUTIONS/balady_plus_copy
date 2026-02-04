@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
@@ -68,14 +69,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>(
-    (controller) {
-      final fraction = controller.fraction;
-      final state = controller.state;
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
+    final fraction = controller.fraction;
+    final state = controller.state;
 
-      return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
-    },
-  );
+    return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+  });
 
   @override
   void initState() {
@@ -83,13 +82,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
     _multiStateSheetController = MultiStateSheetController(
       initialState: ThreeStateSheet.expanded,
-      behavior: MultiSnappingBehavior(models: [
-        FractionSnappingModel({
-          0.0,
-          if (Platform.isIOS) .3 else .38,
-        }),
-        OffsetSnappingModel({Spacing.$4x}),
-      ]),
+      behavior: MultiSnappingBehavior(
+        models: [
+          FractionSnappingModel({0.0, if (Platform.isIOS) .3 else .38}),
+          OffsetSnappingModel({Spacing.$4x}),
+        ],
+      ),
       stateMapper: const LandingStateMapper(),
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
@@ -146,12 +144,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         clustering: widget.withClustering ? _clustering : null,
       ).notifier,
     );
-    ref.listen(
-      searchProvider(_scope),
-      (previous, next) {
-        _drawSearchMarkers(next, previous, searchObjectManager);
-      },
-    );
+    ref.listen(searchProvider(_scope), (previous, next) {
+      _drawSearchMarkers(next, previous, searchObjectManager);
+    });
 
     return SearchScope(
       named: SearchScopeEnum.map,
@@ -177,17 +172,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               header: Container(
                 color: contentColor,
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
-                child: MapSearchBar(
-                  requestFocus: widget.requestFocus,
-                  onClose: onClose,
-                ),
+                child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose),
               ),
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-              content: [
-                MapSearchContent(
-                  bottomSheetContentScrollController: _multiStateSheetController,
-                ),
-              ],
+              content: [MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController)],
             ),
           ),
         ],
@@ -206,11 +194,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final dark = await ref.watch(darkModeProvider.future);
+      final activeCityEvent = ref.read(activeCityEventProvider);
 
       final markers = await searchState.results.getMarkers(
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         advancedIconResolver: mapMarkerMapper.getMarkerPath,
+        activeCityEvent: activeCityEvent,
         isRtl: isRtl,
         isDark: dark.isDark,
         onTapAnalytic: (markerInfo, index) async {
@@ -223,10 +213,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 ownerName: BssUIElementNames.searchResultList,
               ),
               payload: BssPayload(
-                mapMarker: const BssMapMarker(
-                  scale: BssMarkerSize.small,
-                  adsHighlight: false,
-                ),
+                mapMarker: const BssMapMarker(scale: BssMarkerSize.small, adsHighlight: false),
                 searchResultList: searchState.results.toBss(),
                 placeItem: markerInfo?.toBss(index),
               ),
@@ -245,16 +232,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-        icon: SaudiNationalDay.isNow()
-            ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
-            : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
-        text: '$objectCount',
-        textStyle: MarkerTextStyleMessage(
-          textPlacement: MarkerTextPlacementMessage(
-            placement: TextPlacementMessage.centerCenter,
-          ),
-        ),
-      );
+    icon: SaudiNationalDay.isNow()
+        ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
+        : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
+    text: '$objectCount',
+    textStyle: MarkerTextStyleMessage(
+      textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+    ),
+  );
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {

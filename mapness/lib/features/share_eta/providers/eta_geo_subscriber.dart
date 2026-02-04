@@ -10,6 +10,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
 import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
@@ -539,11 +540,8 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
   void _addFinishPin(RouteParamsPoint finishPoint) {
     final settings = MapObjectManagerSettings.selectedMarker();
     final marker = Markers.pinMarker(
-      GeoPointWithElevationMessage(
-        latitude: finishPoint.latitude,
-        longitude: finishPoint.longitude,
-        elevation: 1,
-      ),
+      GeoPointWithElevationMessage(latitude: finishPoint.latitude, longitude: finishPoint.longitude, elevation: 1),
+      activeCityEvent: ref.read(activeCityEventProvider),
     );
     ref
         .read(
