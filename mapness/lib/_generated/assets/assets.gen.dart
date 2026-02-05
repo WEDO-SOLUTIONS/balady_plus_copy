@@ -52,6 +52,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
 
+  /// File path: assets/images/driveHomeArrowFoundingDay.png
+  AssetGenImage get driveHomeArrowFoundingDay => const AssetGenImage('assets/images/driveHomeArrowFoundingDay.png');
+
   /// File path: assets/images/drive_home_arrow.png
   AssetGenImage get driveHomeArrow => const AssetGenImage('assets/images/drive_home_arrow.png');
 
@@ -60,6 +63,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/drive_home_background.png
   AssetGenImage get driveHomeBackground => const AssetGenImage('assets/images/drive_home_background.png');
+
+  /// File path: assets/images/drive_home_background_founding_day.png
+  AssetGenImage get driveHomeBackgroundFoundingDay =>
+      const AssetGenImage('assets/images/drive_home_background_founding_day.png');
 
   /// File path: assets/images/drive_home_background_saudiday.png
   AssetGenImage get driveHomeBackgroundSaudiday =>
@@ -94,6 +101,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
+
+  /// File path: assets/images/foundation_day_logo.png
+  AssetGenImage get foundationDayLogo => const AssetGenImage('assets/images/foundation_day_logo.png');
 
   /// File path: assets/images/founding_day_circle_logo.png
   AssetGenImage get foundingDayCircleLogo => const AssetGenImage('assets/images/founding_day_circle_logo.png');
@@ -170,9 +180,11 @@ class $AssetsImagesGen {
         cityExpertSaudiDay,
         cityscapeGlobal,
         darkMapPreview,
+        driveHomeArrowFoundingDay,
         driveHomeArrow,
         driveHomeArrowSaudiday,
         driveHomeBackground,
+        driveHomeBackgroundFoundingDay,
         driveHomeBackgroundSaudiday,
         etaSheetBackground,
         favoritesExampleArabic,
@@ -183,6 +195,7 @@ class $AssetsImagesGen {
         feedbackDashboardFoundingDay,
         feedbackDashboardSaudiday,
         feedbackEyes,
+        foundationDayLogo,
         foundingDayCircleLogo,
         icArrowFeedback,
         icFlipsContinue,
@@ -328,6 +341,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
+
+  /// File path: assets/icons/svg/historic_diriyah_fort.svg
+  SvgGenImage get historicDiriyahFort => const SvgGenImage('assets/icons/svg/historic_diriyah_fort.svg');
 
   /// File path: assets/icons/svg/ic_2d.svg
   SvgGenImage get ic2d => const SvgGenImage('assets/icons/svg/ic_2d.svg');
@@ -565,6 +581,7 @@ class $AssetsIconsSvgGen {
         carActiveSaudi,
         cityscapeUniqueMarker,
         currentLocationIcon,
+        historicDiriyahFort,
         ic2d,
         ic3d,
         icActionsContainer,

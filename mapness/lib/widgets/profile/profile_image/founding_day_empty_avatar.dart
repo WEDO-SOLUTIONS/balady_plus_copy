@@ -1,4 +1,3 @@
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -6,28 +5,28 @@ import 'package:flutter_svg/svg.dart';
 
 //TODO:(anyone) move to balady_uikit
 class FoundingDayAvatar extends StatelessWidget {
-  final AvatarSize size;
+  final double size;
   final String? abbreviatedName;
   const FoundingDayAvatar({required this.size, super.key, this.abbreviatedName});
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: size.size,
-    height: size.size,
-    child: DecoratedBox(
-      decoration: BoxDecoration(shape: BoxShape.circle, gradient: getGradient(context)),
-      child: ClipOval(
-        child: _DataEmpty(size: size.size, abbreviatedName: abbreviatedName),
-      ),
-    ),
-  );
+        width: size,
+        height: size,
+        child: DecoratedBox(
+          decoration: BoxDecoration(shape: BoxShape.circle, gradient: getGradient(context)),
+          child: ClipOval(
+            child: _DataEmpty(size: size, abbreviatedName: abbreviatedName),
+          ),
+        ),
+      );
 
   LinearGradient? getGradient(BuildContext context) => LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [context.colors.accentDefault, const Color(0xff9E794B)],
-    // colors: [],
-  );
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [context.colors.accentDefault, const Color(0xff9E794B)],
+        // colors: [],
+      );
 }
 
 class _DataEmpty extends StatelessWidget {

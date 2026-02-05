@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
-import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_background.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_logo.dart';
@@ -43,8 +42,6 @@ class CityEventDisplay extends ConsumerWidget {
           onTap: () {
             if (activeEvent == CityEventType.cityscape) {
               ref.read(cityscapeProvider.notifier).openThePlace();
-            } else if (activeEvent == CityEventType.wrc) {
-              ref.read(wRCProvider.notifier).moveCameraToEventArea();
             } else if (activeEvent == CityEventType.foundingDay) {
               fireworksController!
                 ..value = 0

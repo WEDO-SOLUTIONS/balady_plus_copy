@@ -13,14 +13,15 @@ import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart'
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -123,7 +124,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
     freeRoamState = ref.watch(freeRoamStarterProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
-    final isNationalDay = ref.watch(saudiNationalDayProvider);
+    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
 
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
