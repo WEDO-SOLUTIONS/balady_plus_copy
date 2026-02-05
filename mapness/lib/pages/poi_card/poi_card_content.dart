@@ -196,7 +196,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           safeAreaColor: _bottomSheetController.closestState == PoiCardBottomSheetState.halfOpen
               ? context.colors.backgroundSurface2
               : context.colors.backgroundSurface1,
-          backgroundColor: context.colors.backgroundSurface2,
+          backgroundColor: context.colors.backgroundSurface4,
           barrierColorDelegate: PoiCardStateMapper.barrierColorDelegate,
           outside: PoiCardMapControlsWrapper(
             bottomSheetController: _bottomSheetController,
