@@ -9,7 +9,13 @@ import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDeleg
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -88,8 +94,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     },
   );
 
-  final topHeaderOffset = const StatefulSheetDelegateValue<double>(
-      value: -Spacing.$4x);
+  final topHeaderOffset = const StatefulSheetDelegateValue<double>(value: -Spacing.$4x);
 
   @override
   void initState() {
@@ -125,6 +130,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
 
     freeRoamState = ref.watch(freeRoamStarterProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
+    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final themeConfig = dashboardThemeConfigFor(specialThemeMode);
     final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase ||
@@ -191,18 +197,17 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   }
 
   void _scrollListenHandler() {
-    footerOpacity.value =
-        min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
+    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.fraction) * 2);
 
     Future.delayed(Duration.zero, () {
       if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(
-          MapControlsStateDashboard(),
-        );
+              MapControlsStateDashboard(),
+            );
       } else {
         ref.read(mapControlsProvider.notifier).update(
-          MapControlsStateIdle(),
-        );
+              MapControlsStateIdle(),
+            );
       }
     });
   }

@@ -1,5 +1,3 @@
-import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart' as sdk;
 import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -97,12 +95,11 @@ abstract class CityEventConfig {
 
   /// Factory method to create config from event type
   static CityEventConfig? fromEventType(CityEventType? eventType) => switch (eventType) {
-    CityEventType.saudiNationalDay => const SaudiNationalDayConfig(),
-    CityEventType.cityscape => const CityscapeConfig(),
-    CityEventType.wrc => const WRCConfig(),
-    CityEventType.foundingDay => const FoundingDayConfig(),
-    null => null,
-  };
+        CityEventType.saudiNationalDay => const SaudiNationalDayConfig(),
+        CityEventType.cityscape => const CityscapeConfig(),
+        CityEventType.foundingDay => const FoundingDayConfig(),
+        null => null,
+      };
 }
 
 class SaudiNationalDayConfig extends CityEventConfig {
@@ -125,14 +122,14 @@ class SaudiNationalDayConfig extends CityEventConfig {
 
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
-    imagePath: Assets.images.saudiNationalFlag.keyName,
-    width: 97.8,
-    shimmerGradient: const LinearGradient(
-      colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
-      stops: [0.0, 0.4, 0.5, 0.6, 1.0],
-    ),
-    supportsFireworks: true,
-  );
+        imagePath: Assets.images.saudiNationalFlag.keyName,
+        width: 97.8,
+        shimmerGradient: const LinearGradient(
+          colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
+          stops: [0.0, 0.4, 0.5, 0.6, 1.0],
+        ),
+        supportsFireworks: true,
+      );
 }
 
 class CityscapeConfig extends CityEventConfig {
@@ -160,7 +157,7 @@ class CityscapeConfig extends CityEventConfig {
   String get customMarkerPath => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
   @override
-  String get defaultMarkerPath => Assets.icons.svg.cityscapeUniqueDefaultMarker.keyName;
+  String get defaultMarkerPath => Assets.icons.svg.cityscapeUniqueMarker.keyName;
 
   @override
   String get globalImagePath => Assets.images.cityscapeGlobal.keyName;
@@ -177,41 +174,14 @@ class CityscapeConfig extends CityEventConfig {
 
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
-    imagePath: globalImagePath,
-    padding: const EdgeInsets.only(left: 24.0),
-    imageOffset: const Offset(0, 30),
-    shimmerGradient: const LinearGradient(
-      colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
-      stops: [0.0, 0.4, 0.5, 0.6, 1.0],
-    ),
-  );
-}
-
-class WRCConfig extends CityEventConfig {
-  const WRCConfig();
-
-  @override
-  Color getBackgroundColor(BuildContext context) => context.colors.accentSecondaryDefault;
-
-  @override
-  String getText(AppLocalizations l10n) => l10n.wrcDashboardTitle;
-
-  @override
-  double get verticalOffset => 10.0;
-
-  @override
-  bool get hasDashboardLogo => true;
-
-  @override
-  String get dashboardImagePath => Assets.images.wrcDashboard.keyName;
-
-  @override
-  EventLogoConfig get logoConfig => EventLogoConfig(
-    imagePath: dashboardImagePath,
-    width: 109,
-    padding: EdgeInsets.zero,
-    imageOffset: const Offset(Spacing.$6x, -(Spacing.$4x + Spacing.$0_5x)),
-  );
+        imagePath: globalImagePath,
+        padding: const EdgeInsets.only(left: 24.0),
+        imageOffset: const Offset(0, 30),
+        shimmerGradient: const LinearGradient(
+          colors: [Color(0x00C5FFD6), Color(0x00C5FFD6), Color(0xffC5FFD6), Color(0x00C5FFD6), Color(0x00C5FFD6)],
+          stops: [0.0, 0.4, 0.5, 0.6, 1.0],
+        ),
+      );
 }
 
 class FoundingDayConfig extends CityEventConfig {
@@ -233,9 +203,6 @@ class FoundingDayConfig extends CityEventConfig {
   bool get hasDashboardLogo => true;
 
   @override
-  String get customPinPath => Assets.icons.svg.foundingDayPin.keyName;
-
-  @override
   String get customMarkerPath => Assets.icons.svg.historicDiriyahFort.keyName;
 
   @override
@@ -250,34 +217,34 @@ class FoundingDayConfig extends CityEventConfig {
 
   @override
   Set<int> get additionalObjectIds => const {
-    70030076676985563,
-    70030076209992979,
-    70030076209992995,
-    70030076209992609,
-    70030076209992704,
-    70030076209992635,
-    70030076527609092,
-    70030076676985002,
-    70030076676985436,
-    70030076209992983,
-    70030076676983761,
-    70030076676983790,
-    70030076209992629,
-    70030076209992634,
-    70030076567999453,
-    70000001101604698,
-    70030076209990811,
-  };
+        70030076676985563,
+        70030076209992979,
+        70030076209992995,
+        70030076209992609,
+        70030076209992704,
+        70030076209992635,
+        70030076527609092,
+        70030076676985002,
+        70030076676985436,
+        70030076209992983,
+        70030076676983761,
+        70030076676983790,
+        70030076209992629,
+        70030076209992634,
+        70030076567999453,
+        70000001101604698,
+        70030076209990811,
+      };
 
   @override
   String get globalMarkerId => 'founding_day_global';
 
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
-    imagePath: globalImagePath,
-    width: 140,
-    padding: EdgeInsets.zero,
-    supportsFireworks: true,
-    imageOffset: const Offset(0, -26),
-  );
+        imagePath: globalImagePath,
+        width: 140,
+        padding: EdgeInsets.zero,
+        supportsFireworks: true,
+        imageOffset: const Offset(0, -26),
+      );
 }

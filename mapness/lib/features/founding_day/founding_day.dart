@@ -32,7 +32,7 @@ class FoundingDay extends _$FoundingDay {
 
   MapObjectManager? mapManager;
 
-  String get customPinPath => const FoundingDayConfig().customPinPath;
+  // String get customPinPath => const FoundingDayConfig().customPinPath;
 
   String get customMarker => const FoundingDayConfig().customMarkerPath;
 

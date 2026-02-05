@@ -25,13 +25,11 @@ class LightThemeV3FoundingDay extends ColorSchemeV3 {
     super.accentMuted = const Color(0xFFCEA676),
     super.accentActive = const Color(0xFF8B6A44),
     super.accentOnAccent = NeutralColors.$0,
-
     super.accentContainerDefault = const Color(0x24B28F64),
     super.accentContainerSoft = const Color(0x17B28F64),
     super.accentContainerMuted = const Color(0x12B28F64),
     super.accentContainerActive = const Color(0x3DB28F64),
     super.accentOnContainer = const Color(0xFF93734D),
-
     super.foregroundSoft = NeutralColors.$500,
     super.foregroundMuted = NeutralColors.$300,
     super.foregroundDisabled = const Color(0x7F898989),
@@ -42,7 +40,6 @@ class LightThemeV3FoundingDay extends ColorSchemeV3 {
     super.accentSecondaryMuted = const Color(0xFF907064),
     super.accentSecondaryActive = const Color(0xFF382721),
     super.accentSecondaryOnAccentSecondary = NeutralColors.$0,
-
     super.accentSecondaryContainerDefault = const Color(0x24523B32),
     super.accentSecondaryContainerSoft = const Color(0x17523B32),
     super.accentSecondaryContainerMuted = const Color(0x12523B32),
@@ -60,12 +57,10 @@ class LightThemeV3FoundingDay extends ColorSchemeV3 {
     super.neutralOnDarkContainerMuted = const Color(0x07FFFFFF),
     super.neutralOnDarkContainerActive = const Color(0x23FFFFFF),
     super.neutralOnDarkOnContainer = NeutralColors.$0,
-
     super.neutralSoft = NeutralColors.$400,
     super.neutralMuted = NeutralColors.$200,
     super.neutralActive = NeutralColors.$700,
     super.neutralOnNeutral = NeutralColors.$0,
-
     super.neutralContainerOnMap = const Color(0x1E898989),
     super.neutralContainerDefault = const Color(0x1E898989),
     super.neutralContainerSoft = const Color(0x0C898989),
@@ -84,7 +79,6 @@ class LightThemeV3FoundingDay extends ColorSchemeV3 {
     super.onmapSurfaceWeather = NeutralColors.$100,
     super.gradientBackgroundCardGradient0 = const Color(0x00FFFFFF),
     super.gradientBackgroundCardGradient80 = const Color(0xCCFFFFFF),
-
     super.screenOverlayDimming40 = const Color(0x66000000),
     super.screenOverlayDimming60 = const Color(0x99000000),
     super.screenOverlayDimming90 = const Color(0xE5000000),
@@ -169,9 +163,9 @@ class LightThemeV3FoundingDay extends ColorSchemeV3 {
 
   @override
   Map<String, String> parents() => {
-    'accentDefault': 'Color(0xFFB28F64)',
-    'accentSecondaryDefault': 'Color(0xFF523B32)',
-  };
+        'accentDefault': 'Color(0xFFB28F64)',
+        'accentSecondaryDefault': 'Color(0xFF523B32)',
+      };
 }
 
 extension AppColorsThemeV3FoundingDayExt on AppColorsThemeV3 {
@@ -301,7 +295,7 @@ extension AppColorsThemeV3FoundingDayExt on AppColorsThemeV3 {
       pinSoft: scheme.pinSoft,
       pinFoundationPin: scheme.pinFoundationPin,
       pinBorderMarker: scheme.pinBorderMarker,
-      parents: scheme.parents(),
+      // parents: scheme.parents(),
     );
   }
 }
