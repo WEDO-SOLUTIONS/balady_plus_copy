@@ -74,8 +74,8 @@ class Cityscape extends _$Cityscape {
   Future<void> initializeGlobalMarker() async {
     mapManager = ref.read(
       mapObjectManagerProvider(
-        named: MapObjectManagerSettings.myLocation().name,
-        layerId: MapObjectManagerSettings.myLocation().layerId,
+        named: MapObjectManagerSettings.cityEvent().name,
+        layerId: MapObjectManagerSettings.cityEvent().layerId,
       ).notifier,
     );
     await mapManager?.removeMarkerById(cityscapeGlobalMarkerId);

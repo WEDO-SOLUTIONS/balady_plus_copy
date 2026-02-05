@@ -57,6 +57,10 @@ class MapObjectManagerSettings {
         name: 'my_location',
         layerId: MapObjectLayers.priorityLayerId,
       );
+  factory MapObjectManagerSettings.cityEvent() => const MapObjectManagerSettings._(
+        name: 'city_event',
+        layerId: MapObjectLayers.priorityLayerId,
+      );
 
   factory MapObjectManagerSettings.eta() => const MapObjectManagerSettings._(
         name: 'eta',
