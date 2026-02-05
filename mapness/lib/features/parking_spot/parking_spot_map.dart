@@ -16,9 +16,8 @@ part 'parking_spot_map.g.dart';
 class _ParkingSpotMap extends _$ParkingSpotMap {
   late Completer<DgisMapController> _completer;
   late final _settings = MapObjectManagerSettings.parking();
-  late final _mapObjectManager = ref
-      .read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId))
-      .value;
+  late final _mapObjectManager =
+      ref.read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId)).value;
 
   @override
   Future<DgisMapController> build() {
@@ -30,7 +29,9 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
   Future<void> onMapCreated(DgisMapController controller) async {
     await controller.initialize();
     final activeCityEvent = ref.read(activeCityEventProvider);
-    await controller.loadStyles(activeCityEvent?.sylePath ?? MapnessConstants.mapStylesPath);
+    print('onMapCreated activeCityEvent: ${activeCityEvent?.name}');
+    print('onMapCreated style: ${activeCityEvent?.stylePath ?? MapnessConstants.mapStylesPath}');
+    await controller.loadStyles(activeCityEvent?.stylePath ?? MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);
@@ -46,13 +47,13 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
   }
 
   Future<void> setCameraPosition(GeoPointWithElevationMessage markerPosition) async => (await future).setCameraPosition(
-    CameraPositionMessage(
-      point: GeoPointMessage(latitude: markerPosition.latitude, longitude: markerPosition.longitude),
-      zoom: 14,
-      tilt: 0,
-      bearing: 0,
-    ),
-  );
+        CameraPositionMessage(
+          point: GeoPointMessage(latitude: markerPosition.latitude, longitude: markerPosition.longitude),
+          zoom: 14,
+          tilt: 0,
+          bearing: 0,
+        ),
+      );
 
   Future<void> addMarker(Marker marker) async {
     await (await future).removeAllMarkers(fromManager: _mapObjectManager);

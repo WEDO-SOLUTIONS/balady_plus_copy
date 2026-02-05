@@ -11,6 +11,7 @@ import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart'
 import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
+import 'package:mapness/widgets/debug_overlay/founding_day_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/link_checker.dart';
 import 'package:mapness/widgets/debug_overlay/onboarding_button.dart';
 import 'package:mapness/widgets/debug_overlay/saudi_national_day_debug_switcher.dart';
@@ -20,10 +21,8 @@ import 'package:mapness/widgets/debug_overlay/voice_picker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {
-  const DebugSheet({
-    required DraggableScrollableController draggableController,
-    super.key,
-  }) : _draggableController = draggableController;
+  const DebugSheet({required DraggableScrollableController draggableController, super.key})
+      : _draggableController = draggableController;
 
   final DraggableScrollableController _draggableController;
 
@@ -53,10 +52,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
         controller: widget._draggableController,
         builder: (context, scrollController) => Container(
           decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
             color: Colors.white,
           ),
           child: Directionality(
@@ -73,10 +69,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            'development-menu',
-                            style: context.textStyle.heading1.copyWith(color: Colors.black),
-                          ),
+                          Text('development-menu', style: context.textStyle.heading1.copyWith(color: Colors.black)),
                           RichText(
                             text: TextSpan(
                               children: [
@@ -86,9 +79,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                 ),
                                 TextSpan(
                                   text: PackageConfig.releaseVersion,
-                                  style: context.textStyle.footNoteBold.copyWith(
-                                    color: Colors.black87,
-                                  ),
+                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
                                 ),
                               ],
                             ),
@@ -131,10 +122,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                                 ),
                                 TextSpan(
                                   text: PackageConfig.buildName,
-                                  style: context.textStyle.footNoteBold.copyWith(
-                                    color: Colors.black87,
-                                    fontSize: 12,
-                                  ),
+                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87, fontSize: 12),
                                 ),
                               ],
                             ),
@@ -142,17 +130,12 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                         ],
                       ),
                       const Spacer(),
-                      SvgPicture.asset(
-                        Assets.icons.svg.icBug.keyName,
-                        height: 30,
-                      ),
+                      SvgPicture.asset(Assets.icons.svg.icBug.keyName, height: 30),
                     ],
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Divider(
-                      color: Colors.black54,
-                    ),
+                    child: Divider(color: Colors.black54),
                   ),
                   LabeledElevatedButton(
                     onPressed: () {
@@ -165,43 +148,16 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     },
                     label: 'Show logs',
                   ),
-                  Text(
-                    'Git branch:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
-                  Text(
-                    PackageConfig.gitBranch,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    'Git commit:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
-                  Text(
-                    PackageConfig.gitCommit,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    'Vendor:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
-                  Text(
-                    PackageConfig.vendorConfig,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    'Uuid:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
+                  Text('Git branch:', style: context.textStyle.footNote.copyWith(color: Colors.black)),
+                  Text(PackageConfig.gitBranch, style: context.textStyle.heading2.copyWith(color: Colors.black)),
+                  const SizedBox(height: 16),
+                  Text('Git commit:', style: context.textStyle.footNote.copyWith(color: Colors.black)),
+                  Text(PackageConfig.gitCommit, style: context.textStyle.heading2.copyWith(color: Colors.black)),
+                  const SizedBox(height: 16),
+                  Text('Vendor:', style: context.textStyle.footNote.copyWith(color: Colors.black)),
+                  Text(PackageConfig.vendorConfig, style: context.textStyle.heading2.copyWith(color: Colors.black)),
+                  const SizedBox(height: 16),
+                  Text('Uuid:', style: context.textStyle.footNote.copyWith(color: Colors.black)),
                   Text(
                     ref.watch(uuidProviderProvider),
                     style: context.textStyle.footNoteBold.copyWith(color: Colors.black),
@@ -216,6 +172,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const SsoCredentialView(),
                   const CityscapeDebugSwitcher(),
                   const SaudiNationalDayDebugSwitcher(),
+                  const FoundingDayDebugSwitcher(),
                   const VoicePicker(),
                   const BetterRouteSettingsWidget(),
                   const SizedBox(height: 12),
@@ -226,9 +183,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                   const ShowSaudiDayButton(),
                   const SizedBox(height: 12),
                   const LinkChecker(),
-                  SizedBox(
-                    height: MediaQuery.of(context).viewInsets.bottom,
-                  ),
+                  SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
                 ],
               ),
             ),

@@ -56,10 +56,10 @@ extension FeedbackDashboard on CityEventType? {
 }
 
 extension StyleX on CityEventType? {
-  String get sylePath => switch (this) {
+  String get stylePath => switch (this) {
         CityEventType.saudiNationalDay => MapnessConstants.mapStylesSaudiPath,
-        CityEventType.foundingDay => MapnessConstants.mapStylesPath,
-        _ => MapnessConstants.mapStylesPath,
+        CityEventType.foundingDay => MapnessConstants.mapStylesFoundingDayPath,
+        _ => MapnessConstants.mapStylesFoundingDayPath,
       };
 }
 
@@ -87,5 +87,20 @@ extension DriveBackX on CityEventType? {
         CityEventType.saudiNationalDay => false,
         CityEventType.foundingDay => false,
         _ => true,
+      };
+}
+
+extension IllustrationsX on CityEventType? {
+  String get illustrationError => switch (this) {
+        CityEventType.foundingDay => Assets.imagesSvg.illustrationError.keyName,
+        _ => Assets.imagesSvg.illustrationError.keyName,
+      };
+  String get illustrationPercent => switch (this) {
+        CityEventType.foundingDay => Assets.imagesSvg.illustrationPercent.keyName,
+        _ => Assets.imagesSvg.illustrationPercent.keyName,
+      };
+  String get illustrationNotifications => switch (this) {
+        CityEventType.foundingDay => Assets.imagesSvg.illustrationNotifications.keyName,
+        _ => Assets.imagesSvg.illustrationNotifications.keyName,
       };
 }
