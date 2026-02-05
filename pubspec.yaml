@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-# version: 3.30.3+467
-version: 3.12.23+433
+version: 3.30.3+446
+# version: 3.12.23+433
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -130,7 +130,6 @@ dependencies:
   adjust_sdk: 5.1.1
   flutter_appauth: ^9.0.0
 
-
   webview_flutter: 4.10.0
   flutter_inappwebview: ^6.1.5
 
@@ -186,11 +185,8 @@ dependencies:
   encrypt: ^5.0.0
   printing: ^5.14.2
 
-
-
   dsbridge_flutter: ^1.2.0
   flutter_archive: ^6.0.3
-
 
   # Map urbi SDK
   dgis_map:
@@ -206,7 +202,6 @@ dependencies:
 
   mapness:
     path: mapness
-
 
   wakelock_plus: 1.2.8
   provider: ^6.0.5
@@ -235,7 +230,6 @@ dependencies:
   http_certificate_pinning: ^2.1.3
 
   syncfusion_flutter_pdfviewer:
-
 
   ############################################################
   balady_authorization:
@@ -413,16 +407,13 @@ flutter_launcher_icons:
         - asset: assets/fonts/SomarSans/SomarSans-SemiBold.ttf
           weight: 600
 
-
-
-
 sentry:
-  url: https://sentry.momah.gov.sa  # if self-hoste
+  url: https://sentry.momah.gov.sa # if self-hoste
   org: momah
   project: super-app
   auth_token: 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
-  upload_source_maps: true      # <— enable sourcemaps
-  upload_sources: true          # <— optional: also upload .dart/.js sources
-  wait_for_processing: true     # optional
-  log_level: debug              # optional
+  upload_source_maps: true # <— enable sourcemaps
+  upload_sources: true # <— optional: also upload .dart/.js sources
+  wait_for_processing: true # optional
+  log_level: debug # optional
 
