@@ -18,6 +18,7 @@ import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -27,6 +28,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
+import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
+import 'package:mapness/widgets/landing/dashboard/city_event_logo.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
@@ -125,6 +128,19 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     freeRoamState = ref.watch(freeRoamStarterProvider);
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
+    final config = CityEventConfig.fromEventType(activeEvent);
+
+    final eventLogo = config?.logoConfig != null && config!.hasDashboardLogo
+        ? CityEventLogo(
+            config: config.logoConfig!,
+            fireworksController: widget.fireworksController,
+            onTap: () {
+              if (activeEvent == CityEventType.foundingDay) {
+                ref.read(foundingDayProvider.notifier).openThePlace();
+              }
+            },
+          )
+        : null;
 
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
@@ -282,6 +298,50 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   const SizedBox(height: Spacing.$6x),
                 ],
               ),
+            ),
+          if (eventLogo != null)
+            AnimatedBuilder(
+              animation: widget.bottomSheetController,
+              builder: (context, snapshot) {
+                final fraction = widget.bottomSheetController.fraction;
+                // Direction-agnostic visibility windows:
+                // Opening:  0.91 → 0.96  (becomes fully invisible at >= 0.96)
+                // Closing:  0.19 → 0.11  (becomes fully invisible at <= 0.11)
+                const double openStart = 0.91;
+                const double openEnd = 0.96; // fully invisible here
+                const double closeStart = 0.19;
+                const double closeEnd = 0.11; // fully invisible here
+                const double eps = 1e-6;
+
+                // Compute shrink amount independently for both windows and take the stronger effect.
+                final double openT = ((fraction - openStart) / (openEnd - openStart)).clamp(0.0, 1.0);
+                final double closeT = ((closeStart - fraction) / (closeStart - closeEnd)).clamp(0.0, 1.0);
+                final double shrink = max(openT, closeT); // 0.0..1.0
+                double scaleValue = 1.0 - shrink; // 1.0..0.0
+
+                // Hard clamp to 0 when we are beyond the full-invisible bounds.
+                if (fraction >= openEnd - eps || fraction <= closeEnd + eps) {
+                  scaleValue = 0.0;
+                }
+
+                final double _baseBottom = (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(
+                  0.0,
+                  double.infinity,
+                );
+                return Positioned(
+                  bottom: _baseBottom,
+                  child: scaleValue <= 0.0
+                      ? const SizedBox.shrink()
+                      : Opacity(
+                          opacity: scaleValue, // fade together with scale to avoid subpixel artifacts
+                          child: Transform.scale(
+                            scale: scaleValue,
+                            alignment: Alignment.bottomCenter,
+                            child: eventLogo,
+                          ),
+                        ),
+                );
+              },
             ),
         ],
       ),
