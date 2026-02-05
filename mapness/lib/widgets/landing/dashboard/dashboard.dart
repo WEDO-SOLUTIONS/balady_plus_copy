@@ -16,6 +16,7 @@ import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -135,7 +136,19 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     final themeConfig = dashboardThemeConfigFor(specialThemeMode);
     final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase ||
         specialThemeMode == SpecialThemeMode.ramadan;
+    final config = CityEventConfig.fromEventType(activeEvent);
 
+    final eventLogo = config?.logoConfig != null && config!.hasDashboardLogo
+        ? CityEventLogo(
+      config: config.logoConfig!,
+      fireworksController: widget.fireworksController,
+      onTap: () {
+        if (activeEvent == CityEventType.foundingDay) {
+          ref.read(foundingDayProvider.notifier).openThePlace();
+        }
+      },
+    )
+        : null;
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Padding(
