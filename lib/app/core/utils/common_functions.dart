@@ -7,6 +7,8 @@ import 'package:balady_authorization/src/authentication/bloc/authentication_bloc
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
@@ -1691,11 +1693,9 @@ class CommonProperties {
 
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
 
-  // static DelegatorEntity? get selectedDelegator =>
-  //     sl<EntryPointCubit>().state.selectedDelegator;
-  //
-  // static AgentEntity? get selectedAgent =>
-  //     sl<EntryPointCubit>().state.selectedAgent;
+  static DelegatorEntity? get selectedDelegator => sl<DelegatorsCubit>().state.selectedDelegate;
+
+  static AgentEntity? get selectedAgent => sl<DelegatorsCubit>().state.selectedAgent;
 
   // static UserProfileEntity? getCurrentUserProfile() {
   //   if (selectedDelegator != null) {
