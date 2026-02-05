@@ -42,6 +42,7 @@ import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
@@ -71,6 +72,7 @@ import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
@@ -288,7 +290,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> _updateGlobalMarker(WidgetRef ref) async {
+  Future<void> _updateGlobalMarkerCityscape(WidgetRef ref) async {
     final cityscapeEnabled = ref.read(cityscapeProvider);
     final selectedMarker = ref.read(selectedMarkerProvider);
     final notifier = ref.read(cityscapeProvider.notifier);
@@ -309,28 +311,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await notifier.showGlobalMarker();
     } else {
       await notifier.hideGlobalMarker();
-    }
-  }
-
-  Future<void> _updateSpecificMarkerWRC(WidgetRef ref, Marker? previousMarker, Marker? marker) async {
-    final notifier = ref.read(wRCProvider.notifier);
-    // hide previous marker if there was one
-    if (previousMarker != null) {
-      await notifier.showSpecificMarker(previousMarker);
-    }
-
-    // show new marker if there is one
-    if (marker != null) {
-      await notifier.hideSpecificMarker(marker);
-    }
-  }
-
-  Future<void> _updateAllMarkersWRC(WidgetRef ref, bool wrcEnabled) async {
-    final notifier = ref.read(wRCProvider.notifier);
-    if (wrcEnabled) {
-      await notifier.showAllMarkers();
-    } else {
-      await notifier.hideAllMarkers();
     }
   }
 
@@ -388,13 +368,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       ..listen<bool>(foundingDayProvider, (prev, next) {
         _updateGlobalMarkerFoundingDay(ref);
       })
-      ..listen<bool>(wRCProvider, (prev, next) {
-        _updateAllMarkersWRC(ref, next);
-      })
       ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
         _updateGlobalMarkerCityscape(ref);
         _updateGlobalMarkerFoundingDay(ref);
-        _updateSpecificMarkerWRC(ref, prev, next);
       })
       // listen for changes in car connection state. But do not rebuild widget
       ..listen(carEnableFreeRoamProvider, (previous, next) {})

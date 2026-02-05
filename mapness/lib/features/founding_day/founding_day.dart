@@ -42,8 +42,8 @@ class FoundingDay extends _$FoundingDay {
   bool build() {
     mapManager = ref.watch(
       mapObjectManagerProvider(
-        named: const MapObjectManagerSettings.cityEvent().name,
-        layerId: const MapObjectManagerSettings.cityEvent().layerId,
+        named: MapObjectManagerSettings.cityEvent().name,
+        layerId: MapObjectManagerSettings.cityEvent().layerId,
       ).notifier,
     );
 
@@ -57,7 +57,7 @@ class FoundingDay extends _$FoundingDay {
       return true;
     }
 
-    final eventDateRange = ref.watch(dgisEnvironmentProvider.select((value) => value.value?.wrcEventDateRange));
+    final eventDateRange = ref.watch(dgisEnvironmentProvider.select((value) => value.value?.foundingDayDateRange));
     if (eventDateRange != null) {
       return eventDateRange.isNow;
     }
@@ -68,8 +68,8 @@ class FoundingDay extends _$FoundingDay {
   Future<void> initializeGlobalMarker() async {
     mapManager = ref.read(
       mapObjectManagerProvider(
-        named: const MapObjectManagerSettings.cityEvent().name,
-        layerId: const MapObjectManagerSettings.cityEvent().layerId,
+        named: MapObjectManagerSettings.cityEvent().name,
+        layerId: MapObjectManagerSettings.cityEvent().layerId,
       ).notifier,
     );
     await mapManager?.removeMarkerById(const FoundingDayConfig().globalMarkerId);
@@ -125,19 +125,17 @@ class FoundingDay extends _$FoundingDay {
   bool isFoundationObject(int objectId) => const FoundingDayConfig().additionalObjectIds.contains(objectId) && state;
 
   void openThePlace() {
-    ref
-        .read(appRouterProvider)
-        .replaceOrPush(
-          route: PoiCardWidgetRoute(
-            objectId: sdk.DgisObjectIdMessage(objectId: const FoundingDayConfig().objectId, entranceId: 0),
-            closestPoint: sdk.LatLng(
-              latitude: const FoundingDayConfig().center.latitude,
-              longitude: const FoundingDayConfig().center.longitude,
-            ),
-            cameraConfig: const PoiCameraConfig(zoom: 20, tilt: 90),
-          ),
-          toCompareRoutes: [PoiCardWidgetRoute.page],
-        );
+    ref.read(appRouterProvider).replaceOrPush(
+      route: PoiCardWidgetRoute(
+        objectId: sdk.DgisObjectIdMessage(objectId: const FoundingDayConfig().objectId, entranceId: 0),
+        closestPoint: sdk.LatLng(
+          latitude: const FoundingDayConfig().center.latitude,
+          longitude: const FoundingDayConfig().center.longitude,
+        ),
+        cameraConfig: const PoiCameraConfig(zoom: 20, tilt: 90),
+      ),
+      toCompareRoutes: [PoiCardWidgetRoute.page],
+    );
   }
 
   sdk.MarkerTextStyleMessage get _markerAnchorTextStyle {

@@ -142,7 +142,6 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
         return;
       }
     });
-    final l10n = context.l10n;
 
     final parkingPoi = widget.objectId == parkingObjectId;
 
@@ -256,8 +255,6 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
               ref,
             );
           },
-          onAddPointToRoute: () => _onAddObjectPointToRoute(context, l10n, ref, widget.data),
-          onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, l10n, ref, widget.data),
           onTapFavorite: (item) {
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
@@ -307,7 +304,6 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
           data: widget.data,
           onTapClose: () async {
             await ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
-            await closePoiCard(context, ref);
           },
         ),
         sliver: ValueListenableBuilder(
@@ -322,25 +318,25 @@ class _FoundingDayContentState extends ConsumerState<_FoundingDayPoiCardContent>
                 duration: Durations.medium2,
                 child: switch (tabType) {
                   PoiTabsType.info => PoiContentSliver(
-                    poiCardState: poiCardState,
-                    onEntrancesTap: () {
-                      poiActions.toggleEntrances(
-                        widget.data,
-                        () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                        widget.closestPoint,
-                      );
-                    },
-                  ),
+                      poiCardState: poiCardState,
+                      onEntrancesTap: () {
+                        poiActions.toggleEntrances(
+                          widget.data,
+                          () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                          widget.closestPoint,
+                        );
+                      },
+                    ),
                   PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                   PoiTabsType.organizations => PoiOrganizationsSliver(
-                    state: poiCardState,
-                    objectId: widget.data.id!,
-                    bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
-                  ),
+                      state: poiCardState,
+                      objectId: widget.data.id!,
+                      bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                    ),
                   PoiTabsType.parking => const SliverPadding(
-                    padding: EdgeInsets.all(Spacing.$4x),
-                    sliver: ParkingContent(),
-                  ),
+                      padding: EdgeInsets.all(Spacing.$4x),
+                      sliver: ParkingContent(),
+                    ),
                 },
               ),
             ),
