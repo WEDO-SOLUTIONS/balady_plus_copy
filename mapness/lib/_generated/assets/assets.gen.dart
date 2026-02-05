@@ -228,6 +228,14 @@ class $AssetsImagesGen {
 class $AssetsImagesSvgGen {
   const $AssetsImagesSvgGen();
 
+  /// File path: assets/images_svg/Illustration_error_foundation_day.svg
+  SvgGenImage get illustrationErrorFoundationDay =>
+      const SvgGenImage('assets/images_svg/Illustration_error_foundation_day.svg');
+
+  /// File path: assets/images_svg/Illustration_notifications_foundaton_day.svg
+  SvgGenImage get illustrationNotificationsFoundatonDay =>
+      const SvgGenImage('assets/images_svg/Illustration_notifications_foundaton_day.svg');
+
   /// File path: assets/images_svg/active_star.svg
   SvgGenImage get activeStar => const SvgGenImage('assets/images_svg/active_star.svg');
 
@@ -290,6 +298,8 @@ class $AssetsImagesSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        illustrationErrorFoundationDay,
+        illustrationNotificationsFoundatonDay,
         activeStar,
         arBaladyLogo,
         emptySearch,

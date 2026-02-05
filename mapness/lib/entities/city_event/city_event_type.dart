@@ -92,15 +92,11 @@ extension DriveBackX on CityEventType? {
 
 extension IllustrationsX on CityEventType? {
   String get illustrationError => switch (this) {
-        CityEventType.foundingDay => Assets.imagesSvg.illustrationError.keyName,
+        CityEventType.foundingDay => Assets.imagesSvg.illustrationErrorFoundationDay.keyName,
         _ => Assets.imagesSvg.illustrationError.keyName,
       };
-  String get illustrationPercent => switch (this) {
-        CityEventType.foundingDay => Assets.imagesSvg.illustrationPercent.keyName,
-        _ => Assets.imagesSvg.illustrationPercent.keyName,
-      };
   String get illustrationNotifications => switch (this) {
-        CityEventType.foundingDay => Assets.imagesSvg.illustrationNotifications.keyName,
+        CityEventType.foundingDay => Assets.imagesSvg.illustrationNotificationsFoundatonDay.keyName,
         _ => Assets.imagesSvg.illustrationNotifications.keyName,
       };
 }
