@@ -8,10 +8,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:sheetify/sheetify.dart';
 
-enum FeedbackImageSelectorType {
-  camera,
-  gallery,
-}
+enum FeedbackImageSelectorType { camera, gallery }
 
 class FeedbackImageSelectorSheet extends HookWidget {
   final ValueChanged<FeedbackImageSelectorType?>? onSelect;
@@ -37,9 +34,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
             options: ContentRowOptions(
               padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               title: context.l10n.addPhoto,
-              titleStyle: context.textStyles.h4SemiBold.copyWith(
-                color: context.colors.foregroundDefault,
-              ),
+              titleStyle: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
                 onTap: context.router.pop,
@@ -49,51 +44,38 @@ class FeedbackImageSelectorSheet extends HookWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
-          child: ContentWrapper(color: context.colors.backgroundSurface1, children: [
-            ContentRow(
-              isDividerEnabled: true,
-              onTap: () => onSelect != null
-                  ? onSelect?.call(FeedbackImageSelectorType.camera)
-                  : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
-              leading: AppIcons(
-                iconData: GeneralIcons.photo,
-                color: context.colors.accentDefault,
-              ),
-              text: ContentRowTextOptions(
-                title: context.l10n.takePhoto,
-              ),
-              trailing: ContentRowCustomTrailingOptions(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: AppIcons(
-                    iconData: SystemIcons.arrowCornerRightLarge,
-                    color: context.colors.foregroundMuted,
+          child: ContentWrapper(
+            color: context.colors.backgroundSurface1,
+            children: [
+              ContentRow(
+                isDividerEnabled: true,
+                onTap: () => onSelect != null
+                    ? onSelect?.call(FeedbackImageSelectorType.camera)
+                    : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
+                leading: AppIcons(iconData: GeneralIcons.photo, color: context.colors.foregroundSoft),
+                text: ContentRowTextOptions(title: context.l10n.takePhoto),
+                trailing: ContentRowCustomTrailingOptions(
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    child: AppIcons(iconData: SystemIcons.arrowCornerRightSmall, color: context.colors.foregroundMuted),
                   ),
                 ),
               ),
-            ),
-            ContentRow(
-              onTap: () => onSelect != null
-                  ? onSelect?.call(FeedbackImageSelectorType.gallery)
-                  : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
-              leading: AppIcons(
-                iconData: SystemIcons.images,
-                color: context.colors.accentDefault,
-              ),
-              text: ContentRowTextOptions(
-                title: context.l10n.chooseFromGallery,
-              ),
-              trailing: ContentRowCustomTrailingOptions(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: AppIcons(
-                    iconData: SystemIcons.arrowCornerRightLarge,
-                    color: context.colors.foregroundMuted,
+              ContentRow(
+                onTap: () => onSelect != null
+                    ? onSelect?.call(FeedbackImageSelectorType.gallery)
+                    : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
+                leading: AppIcons(iconData: SystemIcons.images, color: context.colors.foregroundSoft),
+                text: ContentRowTextOptions(title: context.l10n.chooseFromGallery),
+                trailing: ContentRowCustomTrailingOptions(
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    child: AppIcons(iconData: SystemIcons.arrowCornerRightSmall, color: context.colors.foregroundMuted),
                   ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
         ),
 
         /// TODO: remove then https://github.com/urbi-ae/baladi/pull/2292 merged

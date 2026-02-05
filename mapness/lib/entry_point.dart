@@ -49,6 +49,7 @@ import 'package:mapness/features/search/providers/search_region.dart' show initi
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
+import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
@@ -125,7 +126,7 @@ class MapnessProviderScope extends StatelessWidget {
 
           return provider.MultiProvider(
             providers: [
-              provider.ChangeNotifierProvider(create: (_) => ThemeController()..init()),
+              provider.ChangeNotifierProvider(create: (_) => ThemeController()),
               provider.Provider<AppLocalizations>.value(value: localizations),
             ],
             child: child,
@@ -321,19 +322,24 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(darkModeProvider, (prev, next) {
+    ref.listen(darkModeProvider, (prev, next) async {
       final themeController = context.read<ThemeController>();
-
       if (next.value?.isDark == true) {
-        themeController.setTheme(BaladyAppThemes.dark);
+        await themeController.setTheme(BaladyAppThemes.dark);
       } else {
-        themeController.setTheme(BaladyAppThemes.light);
+        await themeController.setTheme(BaladyAppThemes.light);
       }
     });
 
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+
+    ref.listen<Language>(appLanguageProvider, (prev, next) {
+      if (prev != next) {
+        ref.read(forecastWeatherProvider.notifier).forceRefresh();
+      }
+    });
 
     ref.listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
       if (next == null) return;
@@ -348,7 +354,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     ref.listen<bool>(wRCProvider, (prev, next) {
       _updateAllMarkersWRC(ref, next);
     });
-
     ref.listen<Marker?>(selectedMarkerProvider, (prev, next) {
       _updateGlobalMarkerCityscape(ref);
       _updateSpecificMarkerWRC(ref, prev, next);
@@ -653,7 +658,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     // if we come from stories we must close them for nice user experience
     if (eventHandled && areStoriesOpen && router.canPop()) {
       await router.topMostRouter().maybePop();
-      ref.read(landingPageBottomSheetControllerProvider)?.setState(ThreeStateSheet.hidden);
+      ref.read(bottomSheetControllerProvider.notifier).state.controller?.setState(ThreeStateSheet.hidden);
     }
   }
 

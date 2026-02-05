@@ -10,54 +10,44 @@ class OfferTermsSheet extends HookWidget {
   final String title;
   final String close;
 
-  const OfferTermsSheet({
-    required this.terms,
-    required this.title,
-    required this.close,
-    super.key,
-  });
+  const OfferTermsSheet({required this.terms, required this.title, required this.close, super.key});
 
   @override
   Widget build(BuildContext context) => ToggleSheet(
-      backgroundColor: context.colors.backgroundSurface1,
-      header: Padding(
-        padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: context.textStyles.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
-              ),
-            ),
-            Spacing.$3x.widthBox,
-            AppButton.close(
-              onTap:() =>  Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
-      content: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: Text(
-            terms,
-            style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+    backgroundColor: context.colors.backgroundSurface1,
+    header: Padding(
+      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(title, style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault)),
           ),
-        ),
-      ],
-      footer: Container(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        margin: const EdgeInsetsDirectional.only(bottom: Spacing.$4x),
-        color: context.colors.backgroundSurface1,
-        child: AppButton(
-          primaryLabel: close,
-          color: context.colors.accentSecondaryContainerDefault,
-          textColor: context.colors.accentSecondaryOnContainer,
-          buttonColorScheme: ButtonColorScheme.accent,
-          onTap: () => Navigator.pop(context),
+          Spacing.$3x.widthBox,
+          AppButton.close(onTap: () => Navigator.pop(context)),
+        ],
+      ),
+    ),
+    content: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Text(
+          terms,
+          style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
         ),
       ),
-      scrollController: ToggleSheetController(),
-    );
+    ],
+    footer: Container(
+      padding: const EdgeInsets.all(Spacing.$4x),
+      margin: const EdgeInsetsDirectional.only(bottom: Spacing.$4x),
+      color: context.colors.backgroundSurface1,
+      child: AppButton(
+        primaryLabel: close,
+        color: context.colors.accentSecondaryContainerDefault,
+        textColor: context.colors.accentSecondaryOnContainer,
+        buttonColorScheme: ButtonColorScheme.accent,
+        onTap: () => Navigator.pop(context),
+      ),
+    ),
+    scrollController: ToggleSheetController(),
+  );
 }

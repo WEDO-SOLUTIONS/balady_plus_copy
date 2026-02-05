@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -24,6 +24,7 @@ import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
@@ -31,12 +32,7 @@ class ParkingSpotPage extends HookConsumerWidget {
   final GeoPointWithElevationMessage? markerPosition;
   final bool isEdit;
 
-  const ParkingSpotPage({
-    this.address,
-    this.markerPosition,
-    this.isEdit = false,
-    super.key,
-  });
+  const ParkingSpotPage({this.address, this.markerPosition, this.isEdit = false, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,12 +41,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     final isDirty = useState<bool>(false);
     final isValid = useState<bool>(true);
     final latLng = useState<LatLng?>(
-      markerPosition != null
-          ? LatLng(
-              latitude: markerPosition!.latitude,
-              longitude: markerPosition!.longitude,
-            )
-          : null,
+      markerPosition != null ? LatLng(latitude: markerPosition!.latitude, longitude: markerPosition!.longitude) : null,
     );
 
     final maxLines = useState<int>(3);
@@ -118,7 +109,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar(
-        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+        systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
         title: isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
@@ -144,24 +135,28 @@ class ParkingSpotPage extends HookConsumerWidget {
                       final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
                       await dgisMapController.onMapCreated(controller);
                       if (latLng.value != null) {
-                        await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
-                          latitude: latLng.value!.latitude,
-                          longitude: latLng.value!.longitude,
-                          elevation: 0,
-                        ));
-                        await dgisMapController.addMarker(Marker(
-                          id: parkingId,
-                          options: MarkerOptionsMessage(
-                            position: GeoPointWithElevationMessage(
-                              latitude: latLng.value!.latitude,
-                              longitude: latLng.value!.longitude,
-                              elevation: 0,
-                            ),
-                            icon: SaudiNationalDay.isNow()
-                                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                                : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+                        await dgisMapController.setCameraPosition(
+                          GeoPointWithElevationMessage(
+                            latitude: latLng.value!.latitude,
+                            longitude: latLng.value!.longitude,
+                            elevation: 0,
                           ),
-                        ));
+                        );
+                        await dgisMapController.addMarker(
+                          Marker(
+                            id: parkingId,
+                            options: MarkerOptionsMessage(
+                              position: GeoPointWithElevationMessage(
+                                latitude: latLng.value!.latitude,
+                                longitude: latLng.value!.longitude,
+                                elevation: 0,
+                              ),
+                              icon: SaudiNationalDay.isNow()
+                                  ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+                                  : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+                            ),
+                          ),
+                        );
                       }
                     },
                     key: const Key('ParkingSpotDGISMapKey'),
@@ -201,9 +196,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                   maxLines: maxLines.value,
                   isDisposed: false,
                 ),
-                supportingText: BaladySupportingText(
-                  text: supportingText.value,
-                ),
+                supportingText: BaladySupportingText(text: supportingText.value),
               ),
               Spacing.$4x.heightBox,
               SelectedImages(isEdit: isEdit),
@@ -216,14 +209,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                   primaryLabel: context.l10n.save,
                   size: ButtonSize.large,
                   onTap: canSave
-                      ? () => _handleSave(
-                            context,
-                            ref,
-                            textController,
-                            latLng,
-                            addressNotifier,
-                            isEdit,
-                          )
+                      ? () => _handleSave(context, ref, textController, latLng, addressNotifier, isEdit)
                       : null,
                 ),
               ),
@@ -256,25 +242,29 @@ class ParkingSpotPage extends HookConsumerWidget {
           : 'latitude: ${result.latitude}, longitude:${result.longitude}';
 
       final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-      await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
-        latitude: latLng.value!.latitude,
-        longitude: latLng.value!.longitude,
-        elevation: 0,
-      ));
-      await dgisMapController.deleteMarkers();
-      await dgisMapController.addMarker(Marker(
-        id: parkingId,
-        options: MarkerOptionsMessage(
-          position: GeoPointWithElevationMessage(
-            latitude: latLng.value!.latitude,
-            longitude: latLng.value!.longitude,
-            elevation: 0,
-          ),
-          icon: SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+      await dgisMapController.setCameraPosition(
+        GeoPointWithElevationMessage(
+          latitude: latLng.value!.latitude,
+          longitude: latLng.value!.longitude,
+          elevation: 0,
         ),
-      ));
+      );
+      await dgisMapController.deleteMarkers();
+      await dgisMapController.addMarker(
+        Marker(
+          id: parkingId,
+          options: MarkerOptionsMessage(
+            position: GeoPointWithElevationMessage(
+              latitude: latLng.value!.latitude,
+              longitude: latLng.value!.longitude,
+              elevation: 0,
+            ),
+            icon: SaudiNationalDay.isNow()
+                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+                : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+          ),
+        ),
+      );
     }
   }
 
@@ -293,30 +283,27 @@ class ParkingSpotPage extends HookConsumerWidget {
       return;
     }
 
-    await parkingManage.saveStore(ParkingStoreModel(
-      dateTime: DateTime.now(),
-      imagesPaths: images.map((e) => e.path).toList(),
-      comment: textController.text,
-      lat: latLng.value!.latitude,
-      lon: latLng.value!.longitude,
-      address: addressNotifier.value,
-    ));
+    await parkingManage.saveStore(
+      ParkingStoreModel(
+        dateTime: DateTime.now(),
+        imagesPaths: images.map((e) => e.path).toList(),
+        comment: textController.text,
+        lat: latLng.value!.latitude,
+        lon: latLng.value!.longitude,
+        address: addressNotifier.value,
+      ),
+    );
 
     callToast(context, latLng);
     await context.router.maybePop();
   }
 
-  void callToast(
-    BuildContext context,
-    ValueNotifier<LatLng?> latLng,
-  ) {
+  void callToast(BuildContext context, ValueNotifier<LatLng?> latLng) {
     ToastOverlay.of(context).show(
       title: context.l10n.parkingSuccessfullySaved,
       icon: ToastIconAsset(Assets.icons.svg.parkingControl.keyName),
       actions: [
-        ToastAction(
-          title: context.l10n.feedbackBreaksSheetClose,
-        ),
+        ToastAction(title: context.l10n.feedbackBreaksSheetClose),
         ToastAction(
           title: context.l10n.share,
           onTap: () async {

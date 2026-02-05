@@ -25,9 +25,11 @@ class RoadPanelSheetPage extends HookConsumerWidget {
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
 
-    final sheetController = useToggleSheetController(onClose: (c) {
-      context.router.pop();
-    });
+    final sheetController = useToggleSheetController(
+      onClose: (c) {
+        context.router.pop();
+      },
+    );
 
     final l10n = context.l10n;
     final colors = context.colors;
@@ -42,7 +44,7 @@ class RoadPanelSheetPage extends HookConsumerWidget {
         safeAreaColor: context.colors.backgroundSurface4,
         scrollController: sheetController,
         header: ColoredBox(
-          color: colors.backgroundSurface1,
+          color: colors.backgroundSurface4,
           child: Align(
             alignment: AlignmentDirectional.centerEnd,
             child: Padding(
@@ -71,17 +73,10 @@ class RoadPanelSheetPage extends HookConsumerWidget {
               ContentRow(
                 onTap: () => context.router.push(const SoundSettingsRoute()),
                 options: ContentRowOptions(
-                  subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                    color: color.foregroundSoft,
-                  ),
-                  titleStyle: textStyles.bodyLargeMedium.copyWith(
-                    color: colors.foregroundDefault,
-                  ),
+                  subtitleStyle: textStyles.bodySmallRegular.copyWith(color: color.foregroundSoft),
+                  titleStyle: textStyles.bodyLargeMedium.copyWith(color: colors.foregroundDefault),
                   actionWidget: ContentRowActionOptions(
-                    actionIcon: AppIcons(
-                      iconData: SystemIcons.arrowCornerRightSmall,
-                      color: color.foregroundMuted,
-                    ),
+                    actionIcon: AppIcons(iconData: SystemIcons.arrowCornerRightSmall, color: color.foregroundMuted),
                   ),
                   padding: const EdgeInsets.only(
                     top: Spacing.$4x,
@@ -119,17 +114,10 @@ class RoadPanelSheetPage extends HookConsumerWidget {
                 context.router.push(NavigatorSettingsRoute());
               },
               options: ContentRowOptions(
-                leadingIcon: Icon(
-                  SystemIcons.settings,
-                  size: Spacing.$6x,
-                  color: colors.foregroundMuted,
-                ),
+                leadingIcon: Icon(SystemIcons.settings, size: Spacing.$6x, color: colors.foregroundMuted),
                 title: l10n.navigatorSettings,
                 actionWidget: ContentRowActionOptions(
-                  actionIcon: AppIcons(
-                    iconData: SystemIcons.arrowCornerRightSmall,
-                    color: color.foregroundMuted,
-                  ),
+                  actionIcon: AppIcons(iconData: SystemIcons.arrowCornerRightSmall, color: color.foregroundMuted),
                 ),
               ),
             ),
@@ -152,18 +140,17 @@ class RoadPanelSheetPage extends HookConsumerWidget {
 class ContentContainer extends StatelessWidget {
   final Widget child;
 
-  const ContentContainer({
-    required this.child,
-    super.key,
-  });
+  const ContentContainer({required this.child, super.key});
 
   @override
   Widget build(BuildContext context) => DecoratedBox(
-        decoration: BoxDecoration(
-            color: context.colors.backgroundSurface1, borderRadius: BorderRadius.circular(RadiusBorder.xl)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-          child: child,
-        ),
-      );
+    decoration: BoxDecoration(
+      color: context.colors.backgroundSurface1,
+      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+      child: child,
+    ),
+  );
 }

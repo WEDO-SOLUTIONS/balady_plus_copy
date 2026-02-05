@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -21,6 +21,7 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 import 'package:mapness/widgets/favourites/favourites_toggle.dart';
 import 'package:mapness/widgets/favourites/pinned_place_card.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class FavouritesPage extends ConsumerStatefulWidget {
@@ -126,7 +127,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
         final state = data.value;
         return Scaffold(
           appBar: BaladyTopBar(
-            systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+            systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
             leading: InkWell(
               onTap: () {
                 if (!isEditing) {

@@ -23,15 +23,11 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     this.subtitleIcon,
     this.inlineSpans = const [],
     super.key,
-  }) : super(
-          defaultState: PoiCardBottomSheetState.halfOpen,
-        );
+  }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
-    final subTitleTextStyle = context.textStyle.footNote.copyWith(
-      color: context.colors.foregroundSoft,
-    );
+    final subTitleTextStyle = context.textStyle.footNote.copyWith(color: context.colors.foregroundSoft);
 
     var scale = interpolation;
     if (state.index >= PoiCardBottomSheetState.halfOpen.index) {
@@ -47,31 +43,42 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               (e) => Row(
                 children: [
                   Assets.icons.svg.icMetroMarker.svg(
-                    colorFilter:
-                        ColorFilter.mode(Color(e?.color ?? context.colorsV3.foregroundDefault.value), BlendMode.srcIn),
+                    colorFilter: ColorFilter.mode(
+                      Color(e?.color ?? context.colorsV3.foregroundDefault.value),
+                      BlendMode.srcIn,
+                    ),
                   ),
                   Spacing.$1x.widthBox,
                 ],
               ),
             ),
           Expanded(
-            child: Text.rich(
-              TextSpan(text: subtitle, children: inlineSpans),
-              style: subTitleTextStyle,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              textAlign: TextAlign.start,
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(subtitle, style: subTitleTextStyle, maxLines: 1, overflow: TextOverflow.ellipsis),
+                ),
+                ...inlineSpans.map((span) {
+                  if (span is WidgetSpan) return span.child;
+                  if (span is TextSpan) {
+                    return RichText(
+                      text: TextSpan(
+                        text: span.text,
+                        children: span.children,
+                        style: span.style?.merge(subTitleTextStyle) ?? subTitleTextStyle,
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
+              ],
             ),
           ),
           if (subtitleIcon != null)
             Padding(
               padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-              child: Icon(
-                subtitleIcon,
-                color: context.colors.foregroundSoft,
-                size: 24,
-              ),
-            )
+              child: Icon(subtitleIcon, color: context.colors.foregroundSoft, size: 24),
+            ),
         ],
       ),
     );

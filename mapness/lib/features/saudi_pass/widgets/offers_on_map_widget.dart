@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -27,6 +27,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 const offerPoiPinId = 'offer_poi_pin_id';
@@ -69,24 +70,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     _setupVisibleRectListener(controller);
   }
 
-  MarkerTextStyleMessage _buildTextStyle({
-    required bool isArabic,
-    required bool isDark,
-  }) =>
-      MarkerTextStyleMessage(
-        color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
-        strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
-        fontSize: 13,
-        fontName: isArabic ? poiMapFontAr : poiMapFontEn,
-        textOffset: 4,
-        strokeWidth: 1,
-      );
+  MarkerTextStyleMessage _buildTextStyle({required bool isArabic, required bool isDark}) => MarkerTextStyleMessage(
+    color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
+    strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
+    fontSize: 13,
+    fontName: isArabic ? poiMapFontAr : poiMapFontEn,
+    textOffset: 4,
+    strokeWidth: 1,
+  );
 
-  Marker _createMarker({
-    required Offer item,
-    required bool isRtl,
-    required bool isDark,
-  }) {
+  Marker _createMarker({required Offer item, required bool isRtl, required bool isDark}) {
     final text = item.provider.name.breakMarkerLabel(maxCharsPerLine: 20);
     final hasArabic = text.containsArabic() || isRtl;
 
@@ -105,18 +98,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
     );
 
-    return Marker(
-      id: item.id,
-      onTap: () => _onTapMarker(item, text, options),
-      options: options,
-    );
+    return Marker(id: item.id, onTap: () => _onTapMarker(item, text, options), options: options);
   }
 
-  SimpleClusterOptionsMessage _clusterOptions({
-    required bool isRtl,
-    required bool isDark,
-    required int objectCount,
-  }) =>
+  SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
       SimpleClusterOptionsMessage(
         icon: isDark
             ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName.markerIcon(size: _kClusterIconSize)
@@ -228,11 +213,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
       return () {
         // on exit
-        showMapOffers.switchOffersVisibility(
-          enabled: false,
-          isAll: widget.isAll,
-          cityId: widget.city.id,
-        );
+        showMapOffers.switchOffersVisibility(enabled: false, isAll: widget.isAll, cityId: widget.city.id);
       };
     }, []);
 
@@ -285,7 +266,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           child: Column(
             children: [
               BaladyTopBar.iconAndText(
-                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+                systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
                 title: context.l10n.offers,
                 textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                 colorEnabled: context.colors.foregroundDefault,
@@ -306,7 +287,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                     style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -315,16 +296,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           builder: (context, val, _) {
             if (val.isEmpty) {
               return const Expanded(
-                child: RoutingMapControls(
-                  key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
-                  useSafeArea: false,
-                ),
+                child: RoutingMapControls(key: ValueKey('OffersOnMapWidgetRoutingMapControls'), useSafeArea: false),
               );
             }
 
-            return Expanded(
-              child: OfferListBottomSheetMapWidget(offersId: val),
-            );
+            return Expanded(child: OfferListBottomSheetMapWidget(offersId: val));
           },
         ),
       ],

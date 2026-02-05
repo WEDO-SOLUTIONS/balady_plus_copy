@@ -24,10 +24,10 @@ class OfferFavoritesRemovingSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomSheetController = useToggleSheetController(
-      onClose: (_) => Navigator.of(context).pop(),
-    );
+    final bottomSheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
     return ToggleSheet(
+      backgroundColor: context.colors.backgroundSurface1,
+      safeAreaColor: context.colors.backgroundSurface1,
       content: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -42,12 +42,12 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                       children: [
                         Text(
                           title,
-                          style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+                          style: context.textStyleV3.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
                         ),
                         Spacing.$1x.heightBox,
                         Text(
                           description,
-                          style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                          style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                         ),
                       ],
                     ),
@@ -58,7 +58,6 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                     size: ButtonSize.small,
                     onTap: () => bottomSheetController.close(),
                     primaryIcon: SystemIcons.close,
-                    iconColor: context.colorsV3.neutralOnContainer,
                   ),
                 ],
               ),
@@ -76,7 +75,7 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                   Expanded(
                     child: AppButton(
                       primaryLabel: remove,
-                      buttonColorScheme: ButtonColorScheme.primary,
+                      buttonColorScheme: ButtonColorScheme.secondary,
                       onTap: () {
                         onRemove();
                         bottomSheetController.close();
@@ -88,7 +87,7 @@ class OfferFavoritesRemovingSheet extends HookWidget {
               Spacing.$2x.heightBox,
             ],
           ),
-        )
+        ),
       ],
       scrollController: bottomSheetController,
     );

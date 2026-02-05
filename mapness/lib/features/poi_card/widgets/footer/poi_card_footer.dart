@@ -30,6 +30,9 @@ class PoiCardFooter extends HookConsumerWidget {
   static const double padding = 12;
   static const iconAsset = 'packages/mapness/assets/icons/svg/ic_complete.svg';
 
+  final Color? color;
+  final Curve? curve;
+  final Duration? duration;
   final DirectoryObjectMessage? data;
   final Future Function() share;
   final VoidCallback? callPhone;
@@ -47,6 +50,9 @@ class PoiCardFooter extends HookConsumerWidget {
     required this.onAddPointToRoute,
     required this.onRemovePointFromRoute,
     required this.onTapFavorite,
+    this.color,
+    this.curve,
+    this.duration,
     this.callPhone,
     this.onEntranceTap,
     this.data,
@@ -112,6 +118,9 @@ class PoiCardFooter extends HookConsumerWidget {
       callback: share,
       resetAfterFutureCompleted: true,
       builder: (context, throttledShare) => BottomActionBar(
+        duration: duration,
+        curve: curve,
+        color: color,
         displayShadow: displayShadow.value,
         items: [
           ItemActionBar(
@@ -139,31 +148,6 @@ class PoiCardFooter extends HookConsumerWidget {
                 innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
                 onPressed: onRemovePointFromRoute,
               ),
-          if (hasContactsAndHasEntrances && callPhone != null)
-            ItemActionBar(
-              icon: GeneralIcons.phoneLTR,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
-              label: hasContactsAndHasEntrances ? null : context.l10n.call,
-              onPressed: callPhone,
-            ),
-          if (hasEntrances && onEntranceTap != null && !hasMetro)
-            ItemActionBar(
-              icon: SystemIcons.turnRight,
-              buttonType: ButtonType.secondary,
-              colorScheme: _buttonColorScheme,
-              onPressed: onEntranceTap,
-            ),
-          if (website != null && data != null)
-            ItemActionBar(
-              icon: GeneralIcons.web,
-              colorScheme: ButtonColorScheme.accent,
-              buttonType: ButtonType.secondary,
-              onPressed: () {
-                BssService.instance.trackLinkTap(data!, BssContactType.website, website);
-                poiActions.launch(website);
-              },
-            ),
           if (!parkingPoi)
             ItemActionBar(
               icon: iconData,
@@ -184,6 +168,32 @@ class PoiCardFooter extends HookConsumerWidget {
               colorScheme: _buttonColorScheme,
               onPressed: () => _onParkingTab(ref, context),
             ),
+          if (hasContactsAndHasEntrances && callPhone != null)
+            ItemActionBar(
+              icon: GeneralIcons.phoneLTR,
+              buttonType: ButtonType.secondary,
+              colorScheme: _buttonColorScheme,
+              label: hasContactsAndHasEntrances ? null : context.l10n.call,
+              onPressed: callPhone,
+            ),
+          if (hasEntrances && onEntranceTap != null && !hasMetro)
+            ItemActionBar(
+              icon: SystemIcons.turnRight,
+              buttonType: ButtonType.secondary,
+              colorScheme: _buttonColorScheme,
+              onPressed: onEntranceTap,
+            ),
+          if (website != null && data != null)
+            ItemActionBar(
+              icon: GeneralIcons.web,
+              colorScheme: _buttonColorScheme,
+              buttonType: ButtonType.secondary,
+              onPressed: () {
+                BssService.instance.trackLinkTap(data!, BssContactType.website, website);
+                poiActions.launch(website);
+              },
+            ),
+
           if (parkingPoi)
             ItemActionBar(
               icon: SystemIcons.edit,

@@ -12,11 +12,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
   final WorkingHours workingHours;
   final WorkStatusMessage? workStatusMessage;
 
-  const PoiContentWorkingHoursCard({
-    required this.workingHours,
-    this.workStatusMessage,
-    super.key,
-  });
+  const PoiContentWorkingHoursCard({required this.workingHours, this.workStatusMessage, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,15 +46,11 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
         color: context.colors.backgroundSurface1,
         children: [
           ContentRow(
-            leading: GeneralIcons.timeQuarter.icon(
-              color: context.colors.accentDefault,
-            ),
+            leading: GeneralIcons.timeQuarter.icon(color: context.colors.accentDefault),
             text: ContentRowTextOptions(
               title: todayWorkingHours(),
               subtitle: todayBreaks(),
-              subtitleOptions: ContentRowTextOption(
-                baseColor: context.colors.foregroundSoft,
-              ),
+              subtitleOptions: ContentRowTextOption(baseColor: context.colors.foregroundSoft),
             ),
           ),
         ],
@@ -99,9 +91,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
             title: todayWorkingHours(),
             subtitle: todayBreaks(),
             subtitleStyle: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-            leadingIcon: GeneralIcons.timeQuarter.icon(
-              color: context.colors.accentDefault,
-            ),
+            leadingIcon: GeneralIcons.timeQuarter.icon(color: context.colors.accentDefault),
           ),
           content: Column(
             children: <Widget>[
@@ -109,9 +99,10 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
               if (workStatusMessage != null)
                 ContentRow(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  leading: GeneralIcons.infoSquare.icon(
-                    color: context.colors.foregroundMuted,
-                  ),
+                  iconCrossAxisAlignment: CrossAxisAlignment.start,
+                  leading: GeneralIcons.infoSquare.icon(color: context.colors.foregroundMuted),
+                  leadingPadding: const EdgeInsetsDirectional.only(top: Spacing.$4x, start: Spacing.$4x),
+                  verticalTextPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$4_5x),
                   text: ContentRowTextOptions(
                     title: context.l10n.extraInformation,
                     titleOptions: const ContentRowTextOption(maxLines: 99),
@@ -133,55 +124,58 @@ class _WorkTimeItemWidget extends StatelessWidget {
   final String? breakHours;
   final bool showDivider;
 
-  const _WorkTimeItemWidget(
-      {required this.showDivider, required this.dayTitle, required this.workHours, this.breakHours});
+  const _WorkTimeItemWidget({
+    required this.showDivider,
+    required this.dayTitle,
+    required this.workHours,
+    this.breakHours,
+  });
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsetsDirectional.only(
-          start: Spacing.$4x + AppSizes.xxs + Spacing.$3x,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-              child: Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(6),
-                  1: FlexColumnWidth(8),
-                },
+    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x + AppSizes.xxs + Spacing.$3x),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+          child: Table(
+            columnWidths: const {0: FlexColumnWidth(6), 1: FlexColumnWidth(8)},
+            children: [
+              TableRow(
                 children: [
-                  TableRow(
-                    children: [
-                      Text(dayTitle, style: context.textStyles.bodyLargeRegular),
-                      Text(workHours, style: context.textStyles.bodyLargeRegular),
-                    ],
+                  Text(
+                    dayTitle,
+                    style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                   ),
-                  if (breakHours != null)
-                    TableRow(children: [
-                      const SizedBox(),
-                      Text(
-                        breakHours!,
-                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-                      ),
-                    ]),
+                  Text(
+                    workHours,
+                    style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                  ),
                 ],
               ),
-            ),
-            if (showDivider) const _Divider(),
-          ],
+              if (breakHours != null)
+                TableRow(
+                  children: [
+                    const SizedBox(),
+                    Text(
+                      breakHours!,
+                      style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                    ),
+                  ],
+                ),
+            ],
+          ),
         ),
-      );
+        if (showDivider) const _Divider(),
+      ],
+    ),
+  );
 }
 
 class _Divider extends StatelessWidget {
   const _Divider();
 
   @override
-  Widget build(BuildContext context) => Divider(
-        color: context.colors.borderSoft,
-        height: 8,
-        thickness: 1,
-      );
+  Widget build(BuildContext context) => Divider(color: context.colors.borderSoft, height: 8, thickness: 1);
 }

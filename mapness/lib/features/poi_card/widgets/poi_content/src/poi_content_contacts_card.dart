@@ -13,10 +13,7 @@ import 'package:mapness/shared/utils/copy_to_clipboard.dart';
 class PoiContentContactsCard extends StatelessWidget {
   final PoiContentContactsModel? data;
 
-  const PoiContentContactsCard({
-    required this.data,
-    super.key,
-  });
+  const PoiContentContactsCard({required this.data, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,37 +29,29 @@ class PoiContentContactsCard extends StatelessWidget {
       color: context.colors.backgroundSurface1,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (hasPhones)
-          _PhoneItemWidget(
-            phones: data.phones!,
-            onTap: data.onPhoneTap,
-          ),
-        if (hasPhones && hasEmails)
-          Divider(
-            color: context.colors.borderDefault,
-            indent: Spacing.$12x,
-            height: 1,
-          ),
-        if (hasEmails)
-          _EmailItemWidget(
-            emails: data.emails!,
-            onTap: data.onEmailTap,
-          ),
+        if (hasPhones) _PhoneItemWidget(phones: data.phones!, onTap: data.onPhoneTap),
+        if (hasPhones && hasEmails) Divider(color: context.colors.borderDefault, indent: Spacing.$12x, height: 1),
+        if (hasEmails) _EmailItemWidget(emails: data.emails!, onTap: data.onEmailTap),
         if (hasSocialMedia) const SizedBox(width: double.maxFinite),
-        if (hasSocialMedia)
+        if (hasSocialMedia && data.socialMediaList?.length == 1)
+          _SocialItemWidget(
+            icon: getIconData(data.socialMediaList![0].type),
+            socialLink: data.socialMediaList![0].link,
+            onTap: (link) => data.onSocialMediaTap.call(data.socialMediaList![0].link),
+          )
+        else if (hasSocialMedia)
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.$4x,
-              vertical: Spacing.$3x,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
             child: Wrap(
               spacing: Spacing.$2x,
               runSpacing: Spacing.$2x,
               children: data.socialMediaList!
-                  .map((e) => _SocialMediaItemWidget(
-                        icon: getIconData(e.type),
-                        onTap: () => data.onSocialMediaTap.call(e.link),
-                      ))
+                  .map(
+                    (e) => _SocialMediaItemWidget(
+                      icon: getIconData(e.type),
+                      onTap: () => data.onSocialMediaTap.call(e.link),
+                    ),
+                  )
                   .toList(),
             ),
           ),
@@ -71,14 +60,14 @@ class PoiContentContactsCard extends StatelessWidget {
   }
 
   static IconData getIconData(PoiContentSocialMediaTypes type) => switch (type) {
-        PoiContentSocialMediaTypes.website => GeneralIcons.web,
-        PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
-        PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
-        PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
-        PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
-        PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
-        PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
-      };
+    PoiContentSocialMediaTypes.website => GeneralIcons.web,
+    PoiContentSocialMediaTypes.instagram => SocialIcons.instagram,
+    PoiContentSocialMediaTypes.facebook => SocialIcons.facebook,
+    PoiContentSocialMediaTypes.youtube => SocialIcons.youtube,
+    PoiContentSocialMediaTypes.linkedin => SocialIcons.linkedin,
+    PoiContentSocialMediaTypes.whatsapp => SocialIcons.whatsapp,
+    PoiContentSocialMediaTypes.telegram => SocialIcons.telegram,
+  };
 }
 
 class _PhoneItemWidget extends StatelessWidget {
@@ -100,9 +89,7 @@ class _PhoneItemWidget extends StatelessWidget {
         supportTitleRTL: false,
         text: ContentRowTextOptions(
           title: phones.first,
-          titleOptions: ContentRowTextOption(
-            baseColor: context.colors.foregroundDefault,
-          ),
+          titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
         ),
         leading: phoneIcon.icon(color: context.colors.accentDefault),
         onTap: () => onTap.call(phones.first),
@@ -115,25 +102,18 @@ class _PhoneItemWidget extends StatelessWidget {
       onTitleTap: () => onTap.call(phones.first),
       text: ContentRowTextOptions(
         title: phones.first,
-        titleOptions: ContentRowTextOption(
-          baseColor: context.colors.foregroundDefault,
-        ),
+        titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
       ),
       trailing: Text(
         '${phones.length}',
-        style: context.textStyles.bodySmallSemiBold.copyWith(
-          color: context.colors.foregroundMuted,
-        ),
+        style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
       ),
       content: Column(
         children: [
           for (final phone in phones.sublist(1))
             GestureDetector(
               onLongPress: () async {
-                await onCopyToClipboard(
-                  phone,
-                  toastText: context.l10n.phoneCopied,
-                );
+                await onCopyToClipboard(phone, toastText: context.l10n.phoneCopied);
               },
               child: ContentRow(
                 onTap: () => onTap.call(phone),
@@ -141,9 +121,7 @@ class _PhoneItemWidget extends StatelessWidget {
                 leading: phoneIcon.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: phone,
-                  titleOptions: ContentRowTextOption(
-                    baseColor: context.colors.foregroundDefault,
-                  ),
+                  titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
                 ),
               ),
             ),
@@ -170,9 +148,7 @@ class _EmailItemWidget extends StatelessWidget {
         supportTitleRTL: false,
         text: ContentRowTextOptions(
           title: emails.first,
-          titleOptions: ContentRowTextOption(
-            baseColor: context.colors.foregroundDefault,
-          ),
+          titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
         ),
         leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
         onTap: () => onTap.call(emails.first),
@@ -184,34 +160,25 @@ class _EmailItemWidget extends StatelessWidget {
       leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
       text: ContentRowTextOptions(
         title: emails.first,
-        titleOptions: ContentRowTextOption(
-          baseColor: context.colors.foregroundDefault,
-        ),
+        titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
       ),
       trailing: Text(
         '${emails.length}',
-        style: context.textStyles.bodySmallSemiBold.copyWith(
-          color: context.colors.foregroundMuted,
-        ),
+        style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundMuted),
       ),
       content: Column(
         children: [
           for (final email in emails.sublist(1))
             GestureDetector(
               onLongPress: () async {
-                await onCopyToClipboard(
-                  email,
-                  toastText: context.l10n.emailHasBeenCopied,
-                );
+                await onCopyToClipboard(email, toastText: context.l10n.emailHasBeenCopied);
               },
               child: ContentRow(
                 onTap: () => onTap.call(email),
                 leading: GeneralIcons.web.icon(color: context.colors.accentDefault),
                 text: ContentRowTextOptions(
                   title: email,
-                  titleOptions: ContentRowTextOption(
-                    baseColor: context.colors.foregroundDefault,
-                  ),
+                  titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
                 ),
               ),
             ),
@@ -221,33 +188,56 @@ class _EmailItemWidget extends StatelessWidget {
   }
 }
 
+class _SocialItemWidget extends StatelessWidget {
+  final String socialLink;
+  final IconData icon;
+  final void Function(String link) onTap;
+
+  const _SocialItemWidget({required this.socialLink, required this.onTap, required this.icon, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (socialLink.isEmpty) {
+      assert(socialLink.isNotEmpty, 'Social link must not be empty');
+      return const SizedBox.shrink();
+    }
+
+    return ContentRow(
+      supportTitleRTL: false,
+      text: ContentRowTextOptions(
+        title: socialLink,
+        titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
+      ),
+      leading: Icon(icon, color: context.colors.accentDefault, size: Spacing.$6x),
+      onTap: () => onTap.call(socialLink),
+    );
+  }
+}
+
 class _SocialMediaItemWidget extends StatelessWidget {
   final IconData icon;
   final void Function() onTap;
 
-  const _SocialMediaItemWidget({
-    required this.icon,
-    required this.onTap,
-  });
+  const _SocialMediaItemWidget({required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) => CupertinoButton(
-        onPressed: onTap,
-        padding: EdgeInsets.zero,
-        minSize: 0,
-        child: Container(
-          padding: const EdgeInsets.all(Spacing.$2x),
-          decoration: BoxDecoration(
-            color: SaudiNationalDay.isNow()
-                ? context.colors.accentContainerDefault
-                : context.colors.accentSecondaryContainerDefault,
-            borderRadius: BorderRadius.circular(Spacing.$2x),
-          ),
-          child: Icon(
-            icon,
-            color: SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.accentSecondaryDefault,
-            size: Spacing.$6x,
-          ),
-        ),
-      );
+    onPressed: onTap,
+    padding: EdgeInsets.zero,
+    minSize: 0,
+    child: Container(
+      padding: const EdgeInsets.all(Spacing.$2x),
+      decoration: BoxDecoration(
+        color: SaudiNationalDay.isNow()
+            ? context.colors.accentContainerDefault
+            : context.colors.accentSecondaryContainerDefault,
+        borderRadius: BorderRadius.circular(Spacing.$2x),
+      ),
+      child: Icon(
+        icon,
+        color: SaudiNationalDay.isNow() ? context.colors.accentDefault : context.colors.accentSecondaryDefault,
+        size: Spacing.$6x,
+      ),
+    ),
+  );
 }

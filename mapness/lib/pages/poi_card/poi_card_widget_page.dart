@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart'
-    show General16Icons, GeneralIcons, IconDataExt, SliverFillAfter, Spacing;
+import 'package:balady_uikit/balady_uikit.dart' show General16Icons, GeneralIcons, SliverFillAfter, Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -105,14 +104,10 @@ class PoiCardWidgetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PoiCardWrapper(
-        objectId: objectId ??
-            DgisObjectIdMessage(
-              objectId: dGisObjectId ?? 0,
-              entranceId: 0,
-            ),
-        cameraConfig: cameraConfig,
-        poiCardDataFromGoogle: poiCardDataFromGoogle,
-        closestPoint: closestPoint,
-        key: key,
-      );
+    objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),
+    cameraConfig: cameraConfig,
+    poiCardDataFromGoogle: poiCardDataFromGoogle,
+    closestPoint: closestPoint,
+    key: key,
+  );
 }

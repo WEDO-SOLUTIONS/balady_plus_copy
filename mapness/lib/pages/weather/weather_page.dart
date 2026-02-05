@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/weather/weather_dashboard.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 @RoutePage()
@@ -27,10 +29,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
 
   @override
   void initState() {
-    ref.read(weatherMapControllerProvider().notifier).toggleWeatherMap(
-          enable: true,
-          type: WeatherMapType.temperature,
-        );
+    ref.read(weatherMapControllerProvider().notifier).toggleWeatherMap(enable: true, type: WeatherMapType.temperature);
     super.initState();
   }
 
@@ -38,7 +37,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   Widget build(BuildContext context) {
     if (ref.watch(forecastWeatherProvider) != null) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
+        value: context.read<ThemeController>().systemOverlayStyle,
         child: Material(
           type: MaterialType.transparency,
           child: WeatherDashboard(bottomSheetController: _bottomSheetController),

@@ -38,13 +38,15 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
       behavior: MultiSnappingBehavior(
         models: [
           SizeSnappingModel({0.0, if (offersId.length == 1) offersOneHeightOffset else mediaQueryHeight}),
-          ComponentsSnappingModel(componentsDescriptions: [
-            SnapComponent.merge(
-              a: const SnapComponent.size(component: Components.header),
-              b: const SnapComponent.size(component: Components.footer),
-              merge: (a, b) => a + b,
-            ),
-          ])
+          ComponentsSnappingModel(
+            componentsDescriptions: [
+              SnapComponent.merge(
+                a: const SnapComponent.size(component: Components.header),
+                b: const SnapComponent.size(component: Components.footer),
+                merge: (a, b) => a + b,
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -54,11 +56,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
     final offersAsync = ref.watch(getAllOffersIdsProvider(offersId));
 
     if (offersAsync.isLoading) {
-      return const PoiLoadingOrErrorSheet(
-        sheetHeight: 250,
-        contentHeight: 200,
-        data: PoiLoading(),
-      );
+      return const PoiLoadingOrErrorSheet(sheetHeight: 250, contentHeight: 200, data: PoiLoading());
     }
 
     final list = offersAsync.value ?? const <OfferDetails>[];
@@ -81,16 +79,19 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(
-              '${offersId.length} ${l10n.offers}',
-              style: context.textStyles.h4SemiBold,
-            ),
-            Text(
-              l10n.selectedLocation,
-              style: context.textStyles.bodySmallRegular,
-            ),
-          ]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                '${offersId.length} ${l10n.offers}',
+                style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+              ),
+              Text(
+                l10n.selectedLocation,
+                style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+              ),
+            ],
+          ),
           uikit.AppButton.close(
             primaryIcon: uikit.SystemIcons.closeSmall,
             onTap: () async {
@@ -111,11 +112,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
       content: [OffersBottomSheetWidget(list)],
       footer: Container(
         width: double.infinity,
-        padding: const EdgeInsets.only(
-          left: uikit.Spacing.$4x,
-          right: uikit.Spacing.$4x,
-          bottom: uikit.Spacing.$4x,
-        ),
+        padding: const EdgeInsets.only(left: uikit.Spacing.$4x, right: uikit.Spacing.$4x, bottom: uikit.Spacing.$4x),
         child: uikit.AppButton(
           size: uikit.ButtonSize.large,
           primaryIcon: uikit.TransportIcons.locationDirectionNavigator,

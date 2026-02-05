@@ -1,18 +1,25 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart';
 
 class SetPreferencesPlaceholderWidget extends StatelessWidget {
   final VoidCallback action;
 
   const SetPreferencesPlaceholderWidget({required this.action, super.key});
 
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent.keyName,
+  };
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    asset: Assets.imagesSvg.illustrationPercent.keyName,
+    asset: asset(context),
     action: action,
     title: context.l10n.saudiPassOffersSetPreferences,
     hint: context.l10n.saudiPassOffersSetPreferencesHint,
@@ -25,9 +32,14 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
 
   const LoginPreferencesPlaceholderWidget({required this.action, super.key});
 
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent.keyName,
+  };
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    asset: Assets.imagesSvg.illustrationPercent.keyName,
+    asset: asset(context),
     action: action,
     title: context.l10n.saudiPassOffersSetPreferences,
     hint: context.l10n.saudiPassOffersLoginHint,
@@ -40,9 +52,14 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
 
   const WentWrongPlaceholderWidget({required this.action, super.key});
 
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+  };
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    asset: Assets.imagesSvg.illustrationError.keyName,
+    asset: asset(context),
     action: action,
     title: context.l10n.saudiPassSomethingWentWrong,
     hint: context.l10n.saudiPassSomethingWentWrongHint,

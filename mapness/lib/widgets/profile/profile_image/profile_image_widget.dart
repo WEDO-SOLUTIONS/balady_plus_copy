@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+
 part 'default_profile_image.dart';
 
 class ProfileImageWidget extends ConsumerWidget {
@@ -31,27 +32,19 @@ class ProfileImageWidget extends ConsumerWidget {
     final value = profileImage.value;
     if (value != null && value.imageBase64.isNotEmpty) {
       final imageBytes = base64Decode(value.imageBase64);
-      return Avatar(
-        key: ValueKey(profileImage.value!.imageBase64),
-        size: dimension,
-        data: AvatarBytes(imageBytes),
-      );
+      return Avatar(key: ValueKey(profileImage.value!.imageBase64), size: dimension, data: AvatarBytes(imageBytes));
     }
     if (abbreviatedName != null && abbreviatedName!.isNotEmpty) {
       return Avatar(
         key: ValueKey(abbreviatedName!),
         size: dimension,
-        data: AvatarDataEmpty(
-          value: abbreviatedName,
-          style: style,
-        ),
+        data: AvatarDataEmpty(value: abbreviatedName, style: style),
       );
     }
-    return Avatar(
-      size: dimension,
-      data: AvatarDataEmpty(
-        isGrayScale: !isSelected,
-        style: style,
+    return Assets.icons.svg.icProfile2.svg(
+      colorFilter: ColorFilter.mode(
+        isSelected ? context.colors.accentSecondarySoft : context.colors.neutralSoft,
+        BlendMode.srcIn,
       ),
     );
   }

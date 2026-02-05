@@ -1,7 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,7 +28,6 @@ import 'package:mapness/shared/providers/analytic/models/extensions/directory_ob
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
-import 'package:shimmer/shimmer.dart';
 
 class PoiContentSliver extends ConsumerWidget {
   final PoiCardState? poiCardState;
@@ -124,12 +121,6 @@ class PoiContentSliver extends ConsumerWidget {
 
           // Platforms lines info
           final routeInfos = data.routeInfos;
-          final transportDirectoryRouteInfo = data.routeInfos.firstOrNull;
-          final currentRouteTransition =
-              transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
-                  .firstWhereOrNull((e) => e.name == data.title)
-                  ?.transitions ??
-              [];
 
           // Favourite
           final favouritesState = ref.watch(favouriteCacheProvider);
@@ -215,12 +206,7 @@ class PoiContentSliver extends ConsumerWidget {
                   offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
                   contentPadding: itemPadding,
                 ),
-              if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
-                Shimmer.fromColors(
-                  baseColor: context.colors.backgroundSurface1,
-                  highlightColor: context.colors.backgroundSurface1,
-                  child: entrancesWidget,
-                ),
+
               if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
               ...routeInfos
                   .map(
@@ -230,12 +216,7 @@ class PoiContentSliver extends ConsumerWidget {
                     ),
                   )
                   .toList(),
-              if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
-                Shimmer.fromColors(
-                  baseColor: context.colors.backgroundSurface1,
-                  highlightColor: context.colors.backgroundSurface1,
-                  child: entrancesWidget,
-                ),
+
               ...?poiSearchObjectFuture
                   ?.map(
                     (e) => Padding(

@@ -23,6 +23,7 @@ class PoiHeader extends ConsumerWidget {
   static const poiHeaderHeight = 210.0;
   static const poiHeaderBorderRadius = RadiusBorder.xl;
 
+  final Color? color;
   final String title;
   final String subTitle;
   final List<InlineSpan> subTitleExtraInlineSpans;
@@ -37,6 +38,7 @@ class PoiHeader extends ConsumerWidget {
     required this.title,
     required this.subTitle,
     required this.onTapClose,
+    this.color,
     this.tabController,
     this.parkingInfo,
     this.data,
@@ -76,15 +78,22 @@ class PoiHeader extends ConsumerWidget {
       backgroundColor: closedStatusColors?.background,
       textColor: closedStatusColors?.text,
       isVisible: closedStatus.isNotEmpty,
-      child: ColoredBox(
-        color: context.colors.backgroundSurface2,
+      child: AnimatedContainer(
+        color: color ?? context.colors.backgroundSurface1,
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
         child: Padding(
           padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              DraggerContainer(color: context.colors.backgroundSurface2),
+              AnimatedContainer(
+                color: color ?? context.colors.backgroundSurface1,
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+                child: const DraggerContainer(color: Colors.transparent),
+              ),
               CardHeader(
                 title: CardHeaderWidget(child: TitleComponent(title: title)),
                 onTapClose: onTapClose,

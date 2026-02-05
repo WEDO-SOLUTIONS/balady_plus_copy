@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -15,12 +15,11 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class NaviFavoritesPage extends HookConsumerWidget {
-  const NaviFavoritesPage({
-    super.key,
-  });
+  const NaviFavoritesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,11 +34,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
       ),
       loading: (_) => Material(
         color: context.colors.backgroundSurface1,
-        child: Center(
-          child: CircularProgressIndicator(
-            color: context.colors.accentDefault,
-          ),
-        ),
+        child: Center(child: CircularProgressIndicator(color: context.colors.accentDefault)),
       ),
       data: (data) {
         final state = data.value;
@@ -51,61 +46,49 @@ class NaviFavoritesPage extends HookConsumerWidget {
 
         return Scaffold(
           appBar: BaladyTopBar.iconAndText(
-            systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+            systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
             title: context.l10n.favorites,
-            leading: ActionModel(
-              icon: SystemIcons.arrowCornerLeftLarge,
-              onPressed: () => context.router.pop(),
-            ),
+            leading: ActionModel(icon: SystemIcons.arrowCornerLeftLarge, onPressed: () => context.router.pop()),
           ),
           backgroundColor: context.colors.backgroundSurface4,
           body: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.$4x,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                  child: Spacing.$4x.heightBox,
-                ),
+                SliverToBoxAdapter(child: Spacing.$4x.heightBox),
                 if (allFav.isEmpty)
                   SliverToBoxAdapter(
                     child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: context.colors.backgroundSurface2,
-                        ),
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(Spacing.$4x),
-                              child: Text(
-                                context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
-                                textAlign: TextAlign.center,
-                                style: context.textStyle.text.copyWith(
-                                  color: context.colors.foregroundDefault,
-                                ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: context.colors.backgroundSurface2,
+                      ),
+                      alignment: Alignment.center,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(Spacing.$4x),
+                            child: Text(
+                              context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
+                              textAlign: TextAlign.center,
+                              style: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.asset(
+                                fit: BoxFit.fitWidth,
+                                ref.read(appLanguageProvider) == Language.arabic
+                                    ? Assets.images.favoritesExampleArabic.keyName
+                                    : Assets.images.favoritesExampleEnglish.keyName,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: Spacing.$4x,
-                                right: Spacing.$4x,
-                                bottom: Spacing.$4x,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  fit: BoxFit.fitWidth,
-                                  ref.read(appLanguageProvider) == Language.arabic
-                                      ? Assets.images.favoritesExampleArabic.keyName
-                                      : Assets.images.favoritesExampleEnglish.keyName,
-                                ),
-                              ),
-                            ),
-                          ],
-                        )),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 SliverList.separated(
                   itemCount: allFav.length,
@@ -127,18 +110,13 @@ class NaviFavoritesPage extends HookConsumerWidget {
                         isDeletable: false,
                         isSelected: false,
                         isEditing: false,
-                        icon: SystemIcons.bookmark.icon(
-                          color: context.colors.foregroundMuted,
-                        ),
+                        icon: SystemIcons.bookmark.icon(color: context.colors.foregroundMuted),
                         key: ValueKey(item.id),
                         isFirst: index == 0,
                         isLast: index == allFav.length - 1,
                         onTap: () => context.router.replaceOrPush(
                           route: PoiCardWidgetRoute(
-                            objectId: DgisObjectIdMessage(
-                              objectId: int.parse(item.entity!.id),
-                              entranceId: 0,
-                            ),
+                            objectId: DgisObjectIdMessage(objectId: int.parse(item.entity!.id), entranceId: 0),
                           ),
                           toCompareRoutes: [PoiCardWidgetRoute.page],
                         ),
