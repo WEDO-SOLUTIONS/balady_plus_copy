@@ -18,7 +18,7 @@ class BottomMenuPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => AutoTabsRouter.builder(
-    routes: const [LandingRoute(), RoutingPointsRoute(), MapnessServicesRoute(), ProfileRoute()],
+    routes: [const LandingRoute(), const RoutingPointsRoute(), MapnessServicesRoute(), const ProfileRoute()],
     onNavigate: (tab) {
       // Send event to analytics when route is Selected
       if (tab.activeIndex == 1) {

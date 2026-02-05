@@ -95,6 +95,17 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
 
     // If group not found (e.g., business group filtered out), go back
     if (appGroup == null) {
+      if (cubit.state.isAppsGroupLoading) {
+        return const Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: CircularProgressIndicator(
+              color: Color(0xFF1CA9A6),
+            ),
+          ),
+        );
+      }
+
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (context.mounted) {
           Navigator.of(context).pop();
@@ -102,7 +113,11 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       });
       return const Scaffold(
         backgroundColor: Colors.transparent,
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF1CA9A6),
+          ),
+        ),
       );
     }
 
