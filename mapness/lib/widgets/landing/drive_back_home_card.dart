@@ -46,7 +46,6 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     final showBlueCircles = activeCityEvent?.showBlueCircles ?? true;
 
     super.build(context);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: GestureDetector(
@@ -117,13 +116,24 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     final router = context.router;
 
     debouncer.debounce(
-      () async => ref
-          .read(authMethodsProvider.notifier)
-          .authAndOpen(context, callback: () async => authAndOpenNavigator(ref, router, locationLabel, homeLabel)),
+      () async => ref.read(authMethodsProvider.notifier).authAndOpen(
+            context,
+            callback: () async => authAndOpenNavigator(
+              ref,
+              router,
+              locationLabel,
+              homeLabel,
+            ),
+          ),
     );
   }
 
-  Future<void> authAndOpenNavigator(WidgetRef ref, StackRouter router, String locationLabel, String homeLabel) async {
+  Future<void> authAndOpenNavigator(
+    WidgetRef ref,
+    StackRouter router,
+    String locationLabel,
+    String homeLabel,
+  ) async {
     /// If already have a subscription, do nothing
     if (subscribtion != null) {
       return;
@@ -151,8 +161,19 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     final (startLocation, finishLocation) = locations;
 
     subscribtion ??= ref.listenManual(
-      routesProvider(startPoint: startLocation, finishPoint: finishLocation, navType: navigatingType),
-      (_, current) => navigateBackHomeCallback(current, locationLabel, homeLabel, ref, startLocation, finishLocation),
+      routesProvider(
+        startPoint: startLocation,
+        finishPoint: finishLocation,
+        navType: navigatingType,
+      ),
+      (_, current) => navigateBackHomeCallback(
+        current,
+        locationLabel,
+        homeLabel,
+        ref,
+        startLocation,
+        finishLocation,
+      ),
       fireImmediately: true,
     );
   }
@@ -180,7 +201,10 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
       return null;
     }
 
-    final startLocation = RouteParamsPoint(latitude: location.latitude, longitude: location.longitude);
+    final startLocation = RouteParamsPoint(
+      latitude: location.latitude,
+      longitude: location.longitude,
+    );
 
     final finishLocation = RouteParamsPoint(
       latitude: home.coordinates.latitude,
@@ -223,7 +247,10 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
       context.router.push(
         RoutingRoutesRoute(
           points: [
-            RouteParamsPointWithLabel(value: startLocation, label: locationLabel),
+            RouteParamsPointWithLabel(
+              value: startLocation,
+              label: locationLabel,
+            ),
             RouteParamsPointWithLabel(
               value: RouteParamsPoint(
                 latitude: finishLocation.latitude,
@@ -241,7 +268,10 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   Future<void> setupMap(WidgetRef ref) async {
     final mapSetting = MapObjectManagerSettings.search();
     await ref
-        .read(mapObjectManagerProvider(named: mapSetting.name, layerId: mapSetting.layerId).notifier)
+        .read(mapObjectManagerProvider(
+          named: mapSetting.name,
+          layerId: mapSetting.layerId,
+        ).notifier)
         .removeAllMarkers();
 
     Metrics.logEventAdvanced(
@@ -260,7 +290,11 @@ class _BluredCircle extends StatelessWidget {
   final double blur;
   final double opacity;
 
-  const _BluredCircle({required this.size, required this.blur, required this.opacity});
+  const _BluredCircle({
+    required this.size,
+    required this.blur,
+    required this.opacity,
+  });
 
   @override
   Widget build(BuildContext context) => SizedBox(
