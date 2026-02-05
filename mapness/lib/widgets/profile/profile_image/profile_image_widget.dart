@@ -43,7 +43,7 @@ class ProfileImageWidget extends ConsumerWidget {
     }
     return Assets.icons.svg.icProfile2.svg(
       colorFilter: ColorFilter.mode(
-        isSelected ? context.colors.accentSecondarySoft : context.colors.neutralSoft,
+        isSelected ? context.colors.accentDefault : context.colors.neutralDefault,
         BlendMode.srcIn,
       ),
     );

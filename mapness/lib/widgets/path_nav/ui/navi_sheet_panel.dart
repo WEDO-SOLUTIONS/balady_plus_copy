@@ -188,7 +188,10 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
           content: [
             // hide share button for multilocation route because sharing is broken for such routes
             if (!hasIntermediateRoutePoints) ...[
-              ShareEtaBtn(durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0),
+              ShareEtaBtn(
+                sheetController: widget.sheetController,
+                durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
+              ),
               Spacing.$3x.heightBox,
             ],
             ContentWrapper.single(
@@ -265,7 +268,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             ),
             Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => context.router.push(NavigatorSettingsRoute()),
+              onTap: () => context.router.push(NavigatorSettingsRoute(showDarkModeSection: false)),
               options: ContentRowOptions(
                 titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
                 wrapperColor: context.colors.backgroundSurface1,

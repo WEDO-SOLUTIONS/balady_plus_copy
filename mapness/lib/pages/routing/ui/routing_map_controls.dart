@@ -35,12 +35,7 @@ class RoutingMapControls extends ConsumerWidget {
           textDirection: TextDirection.ltr,
           child: Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 12,
-                top: 12,
-                right: 12,
-                bottom: 16,
-              ),
+              padding: const EdgeInsets.only(left: 12, top: 12, right: 12, bottom: 16),
               child: Row(
                 children: [
                   Column(
@@ -68,11 +63,9 @@ class RoutingMapControls extends ConsumerWidget {
                           if (onAddStop != null) ...[
                             const SizedBox(width: uikit.Spacing.$2x),
                             uikit.AppButton(
-                              color: context.colors.backgroundSurface1,
+                              color: context.colors.onMapSurfaceOnMap,
                               iconColor: context.colors.foregroundSoft,
-                              innerPadding: const EdgeInsets.symmetric(
-                                horizontal: uikit.Spacing.$3x,
-                              ),
+                              innerPadding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$3x),
                               primaryLabel: context.l10n.addStop,
                               onTap: onAddStop,
                               buttonColorScheme: uikit.ButtonColorScheme.neutral,
@@ -115,10 +108,7 @@ class RoutingMapControls extends ConsumerWidget {
     );
 
     if (useSafeArea) {
-      return SafeArea(
-        bottom: false,
-        child: controlsMap,
-      );
+      return SafeArea(bottom: false, child: controlsMap);
     }
 
     return controlsMap;

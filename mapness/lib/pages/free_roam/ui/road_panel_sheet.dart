@@ -7,7 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
@@ -39,28 +38,42 @@ class RoadPanelSheetPage extends HookConsumerWidget {
     return Directionality(
       textDirection: direction,
       child: ToggleSheet(
-        dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
+        dragger: SheetDragger(backgroundColor: colors.backgroundSurface1),
         backgroundColor: colors.backgroundSurface4,
         safeAreaColor: context.colors.backgroundSurface4,
         scrollController: sheetController,
         header: ColoredBox(
-          color: colors.backgroundSurface4,
-          child: Align(
-            alignment: AlignmentDirectional.centerEnd,
-            child: Padding(
-              padding: const EdgeInsetsDirectional.only(end: Spacing.$4x, bottom: Spacing.$2x),
-              child: AppButton.close(
-                primaryIcon: SystemIcons.arrowCornerDownLarge,
-                onTap: () {
-                  Metrics.logEventAdvanced(
-                    MetricsConstants.layersKeys.exitIcon,
-                    group: MetricsConstants.layersTag,
-                    action: MetricAction.tap.toString(),
-                  );
-                  sheetController.close();
-                },
-                padding: EdgeInsets.zero,
-              ),
+          color: colors.backgroundSurface1,
+          child: Padding(
+            padding: const EdgeInsetsDirectional.only(start: Spacing.$4x, end: Spacing.$4x, bottom: Spacing.$3x),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AppButton.close(
+                  primaryIcon: SystemIcons.search,
+                  onTap: () {
+                    sheetController.close();
+                    context.router.push(NaviSearchRoute());
+                  },
+                  padding: EdgeInsets.zero,
+                ),
+                Text(
+                  context.l10n.freeRoam,
+                  style: context.textStyles.h3SemiBold.copyWith(color: color.foregroundDefault),
+                ),
+                AppButton.close(
+                  primaryIcon: SystemIcons.arrowCornerDownLarge,
+                  onTap: () {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.layersKeys.exitIcon,
+                      group: MetricsConstants.layersTag,
+                      action: MetricAction.tap.toString(),
+                    );
+                    sheetController.close();
+                  },
+                  padding: EdgeInsets.zero,
+                ),
+              ],
             ),
           ),
         ),
@@ -114,7 +127,7 @@ class RoadPanelSheetPage extends HookConsumerWidget {
                 context.router.push(NavigatorSettingsRoute());
               },
               options: ContentRowOptions(
-                leadingIcon: Icon(SystemIcons.settings, size: Spacing.$6x, color: colors.foregroundMuted),
+                leadingIcon: Icon(SystemIcons.settings, size: Spacing.$6x, color: colors.foregroundSoft),
                 title: l10n.navigatorSettings,
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(iconData: SystemIcons.arrowCornerRightSmall, color: color.foregroundMuted),
@@ -123,14 +136,14 @@ class RoadPanelSheetPage extends HookConsumerWidget {
             ),
           ),
           const SizedBox(height: Spacing.$5x),
-          AppButton(
-            buttonColorScheme: ButtonColorScheme.error,
-            size: ButtonSize.large,
-            color: colors.errorDefault,
-            primaryLabel: l10n.endTrip,
-            onTap: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
-          ),
-          const SizedBox(height: Spacing.$2x),
+          // AppButton(
+          //   buttonColorScheme: ButtonColorScheme.error,
+          //   size: ButtonSize.large,
+          //   color: colors.errorDefault,
+          //   primaryLabel: l10n.endTrip,
+          //   onTap: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
+          // ),
+          // const SizedBox(height: Spacing.$2x),
         ],
       ),
     );

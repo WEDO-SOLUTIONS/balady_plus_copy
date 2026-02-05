@@ -50,7 +50,7 @@ class _NaviTime extends StatelessWidget {
       ),
       Text(
         subTitle,
-        style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft.withOpacity(0.64)),
+        style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),

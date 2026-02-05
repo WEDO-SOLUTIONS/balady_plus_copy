@@ -18,10 +18,7 @@ import 'package:mapness/widgets/routing/ui/search_action.dart';
 class RoutingSearchHistory extends ConsumerWidget {
   final bool showMyLocation;
 
-  const RoutingSearchHistory({
-    required this.showMyLocation,
-    super.key,
-  });
+  const RoutingSearchHistory({required this.showMyLocation, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,32 +40,20 @@ class RoutingSearchHistory extends ConsumerWidget {
                 ContentRow(
                   leading: Icon(
                     isLTR ? TransportIcons.locationLTR : TransportIcons.locationRTL,
-                    color: context.colors.accentActive,
+                    color: context.colors.accentDefault,
                     size: 22,
                   ),
-                  text: ContentRowTextOptions(
-                    title: context.l10n.myLocation,
-                  ),
+                  text: ContentRowTextOptions(title: context.l10n.myLocation),
                   onTap: () => context.router.pop(RoutePointMyLocation()),
                 ),
               ContentRow(
-                leading: Icon(
-                  GeneralIcons.location,
-                  color: context.colors.accentDefault,
-                ),
-                text: ContentRowTextOptions(
-                  title: context.l10n.specifyOnTheMap,
-                ),
+                leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
+                text: ContentRowTextOptions(title: context.l10n.specifyOnTheMap),
                 onTap: () => _specifyOnTheMap(context),
               ),
               ContentRow(
-                leading: Icon(
-                  SystemIcons.bookmark,
-                  color: context.colors.accentDefault,
-                ),
-                text: ContentRowTextOptions(
-                  title: context.l10n.findInFavorites,
-                ),
+                leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
+                text: ContentRowTextOptions(title: context.l10n.findInFavorites),
                 onTap: () => _onFavouriteTap(context, ref),
               ),
             ],
@@ -101,19 +86,19 @@ class RoutingSearchHistory extends ConsumerWidget {
   }
 
   Future<void> _onFavouriteTap(BuildContext context, WidgetRef ref) async {
-    await ref.read(authMethodsProvider.notifier).authOrOpen(
-      context,
-      callback: () async {
-        if (context.mounted) {
-          final result = await context.router.push(const FavouritesPickerRoute());
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authOrOpen(
+          context,
+          callback: () async {
+            if (context.mounted) {
+              final result = await context.router.push(const FavouritesPickerRoute());
 
-          if (result != null) {
-            context.router.pop(
-              RoutePointFavouriteItem(result as FavouriteItem?),
-            );
-          }
-        }
-      },
-    );
+              if (result != null) {
+                context.router.pop(RoutePointFavouriteItem(result as FavouriteItem?));
+              }
+            }
+          },
+        );
   }
 }

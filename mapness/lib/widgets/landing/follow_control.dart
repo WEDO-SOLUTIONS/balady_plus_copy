@@ -23,8 +23,9 @@ class FollowControl extends ConsumerWidget {
     final followNotifier = ref.watch(followStateProvider.notifier);
     final hasGPS = ref.watch(pathNavMessageProvider)?.state != PathNavMessageState.gpsConnectionLost;
 
-    final iconColor =
-        followState.type == LocationFollowType.off ? context.colors.foregroundDefault : context.colors.accentDefault;
+    final iconColor = followState.type == LocationFollowType.off
+        ? context.colors.foregroundDefault
+        : context.colors.accentDefault;
 
     return MapButton(
       onTap: () async {
@@ -46,8 +47,8 @@ class FollowControl extends ConsumerWidget {
       child: Icon(
         hasGPS
             ? (followState.type == LocationFollowType.followDirection
-                ? TransportIcons.locationDirection
-                : (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL))
+                  ? TransportIcons.locationDirection
+                  : (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL))
             : (isLTR ? TransportIcons.locationQuestionLTR : TransportIcons.locationQuestionRTL),
         color: iconColor,
         size: 24,

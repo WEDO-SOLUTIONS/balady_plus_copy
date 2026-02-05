@@ -191,6 +191,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                   style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                 ),
                 config: BaladyInputConfig(
+                  fillColor: context.colors.neutralContainerDefault,
                   autofocus: true,
                   hintText: context.l10n.feedbackCommentHint,
                   maxLines: maxLines.value,
@@ -213,11 +214,13 @@ class ParkingSpotPage extends HookConsumerWidget {
                       : null,
                 ),
               ),
-              Spacing.$0_5x.heightBox,
+              Spacing.$1_5x.heightBox,
               Center(
-                child: Text(
-                  context.l10n.dataStoredFor,
-                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
+                child: FittedBox(
+                  child: Text(
+                    context.l10n.dataStoredFor,
+                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
+                  ),
                 ),
               ),
             ],

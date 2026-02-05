@@ -24,10 +24,7 @@ const hajjPoiPinId = 'hajj_poi_pin_id';
 class HajjWrapperListeners extends ConsumerStatefulWidget {
   final Widget child;
 
-  const HajjWrapperListeners({
-    required this.child,
-    super.key,
-  });
+  const HajjWrapperListeners({required this.child, super.key});
 
   @override
   HajjWrapperListenersState createState() => HajjWrapperListenersState();
@@ -45,10 +42,7 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
   @override
   Widget build(BuildContext context) {
     final objectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: _settings.name,
-        layerId: _settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
 
     ref
@@ -90,11 +84,7 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
       options: MarkerOptionsMessage(
         text: text,
         textStyle: _buildTextStyle(isArabic: hasArabic, isPin: false, isDark: isDark),
-        position: GeoPointWithElevationMessage(
-          latitude: item.latitude,
-          longitude: item.longitude,
-          elevation: 0,
-        ),
+        position: GeoPointWithElevationMessage(latitude: item.latitude, longitude: item.longitude, elevation: 0),
         isVisible: true,
         icon: item.categoryId.categoryFromId()?.iconPath.markerIcon(size: _sizeMarkersHajj),
       ),
@@ -109,33 +99,23 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
 
     await selectedMarker.showMarker(
       Markers.pinMarker(
-          GeoPointWithElevationMessage(
-            latitude: item.latitude,
-            longitude: item.longitude,
-            elevation: 1,
-          ),
-          text: text,
-          textStyle: _buildTextStyle(isArabic: hasArabic, isPin: true, isDark: isDark),
-          icon: Markers.defaultPinNew,
-          id: hajjPoiPinId,
-          maxCharsPerLine: _maxCharsPerLine),
+        GeoPointWithElevationMessage(latitude: item.latitude, longitude: item.longitude, elevation: 1),
+        text: text,
+        textStyle: _buildTextStyle(isArabic: hasArabic, isPin: true, isDark: isDark),
+        icon: Markers.defaultPinNew,
+        id: hajjPoiPinId,
+        maxCharsPerLine: _maxCharsPerLine,
+      ),
       settings: _settings,
     );
 
     await context.router.replaceOrPush(
       route: HajjPoiCardRoute(poiMarkerRcmc: item),
-      toCompareRoutes: [
-        PoiCardWidgetRoute.page,
-        HajjPoiCardRoute.page,
-      ],
+      toCompareRoutes: [PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
     );
   }
 
-  MarkerTextStyleMessage _buildTextStyle({
-    required bool isArabic,
-    required bool isPin,
-    required bool isDark,
-  }) {
+  MarkerTextStyleMessage _buildTextStyle({required bool isArabic, required bool isPin, required bool isDark}) {
     final colorPin = isDark ? 0xD3FFFFFF : 0xff1B1B1B;
     final strokeColorPin = isDark ? 0xff1B1B1B : 0xD3FFFFFF;
     final strokeColorMarker = isDark ? 0xFF1B1B1B : 0xFFFFFFFF;
