@@ -12,7 +12,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
@@ -153,12 +155,12 @@ class ParkingSpotPage extends HookConsumerWidget {
                       const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                   child: UrbiMap(
                     onMapCreated: (controller) async {
+                      final activeCityEvent = ref.read(activeCityEventProvider);
                       final dgisMapController =
                           ref.read(parkingSpotMapProvider.notifier);
                       await dgisMapController.onMapCreated(controller);
                       if (latLng.value != null) {
-                        await dgisMapController
-                            .setCameraPosition(GeoPointWithElevationMessage(
+                        await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
                           latitude: latLng.value!.latitude,
                           longitude: latLng.value!.longitude,
                           elevation: 0,
@@ -171,9 +173,8 @@ class ParkingSpotPage extends HookConsumerWidget {
                               longitude: latLng.value!.longitude,
                               elevation: 0,
                             ),
-                            icon: SaudiNationalDay.isNow()
-                                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32)
-                                : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(size: 32),
+                            icon:
+                                activeCityEvent?.icParking ?? Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
                           ),
                         ));
                       }
@@ -186,8 +187,7 @@ class ParkingSpotPage extends HookConsumerWidget {
               if (addressNotifier.value.isNotEmpty)
                 Text(
                   addressNotifier.value,
-                  style: context.textStyles.captionLargeRegular
-                      .copyWith(color: context.colors.foregroundSoft),
+                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
               Spacing.$3x.heightBox,
               SizedBox(
@@ -199,8 +199,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                   size: ButtonSize.large,
                   primaryIcon: GeneralIcons.location,
                   primaryLabel: context.l10n.changeLocation,
-                  onTap: () => _handleChangeLocation(
-                      context, ref, latLng, addressNotifier),
+                  onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
                 ),
               ),
               Spacing.$4x.heightBox,
@@ -209,8 +208,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 inputState: inputState.value,
                 label: BaladyInputLabel(
                   text: context.l10n.comment,
-                  style: context.textStyles.captionMediumRegular
-                      .copyWith(color: context.colors.foregroundDefault),
+                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                 ),
                 config: BaladyInputConfig(
                   autofocus: true,
@@ -229,8 +227,7 @@ class ParkingSpotPage extends HookConsumerWidget {
                 width: double.infinity,
                 child: AppButton(
                   buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonState:
-                      canSave ? ButtonState.defaultState : ButtonState.disabled,
+                  buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
                   primaryLabel: context.l10n.save,
                   size: ButtonSize.large,
                   onTap: canSave
@@ -249,8 +246,7 @@ class ParkingSpotPage extends HookConsumerWidget {
               Center(
                 child: Text(
                   context.l10n.dataStoredFor,
-                  style: context.textStyles.captionMediumRegular
-                      .copyWith(color: context.colors.foregroundSoft),
+                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
               ),
             ],
@@ -269,12 +265,10 @@ class ParkingSpotPage extends HookConsumerWidget {
   ) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
     if (result is RoutePoint) {
-      latLng.value =
-          LatLng(latitude: result.latitude!, longitude: result.longitude!);
-      addressNotifier.value =
-          result is RoutePointCoordinates && result.label != null
-              ? result.label!
-              : 'latitude: ${result.latitude}, longitude:${result.longitude}';
+      latLng.value = LatLng(latitude: result.latitude!, longitude: result.longitude!);
+      addressNotifier.value = result is RoutePointCoordinates && result.label != null
+          ? result.label!
+          : 'latitude: ${result.latitude}, longitude:${result.longitude}';
 
       final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
       await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
@@ -292,8 +286,8 @@ class ParkingSpotPage extends HookConsumerWidget {
             elevation: 0,
           ),
           icon: SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(size: 32)
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(size: 32),
+              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
       ));
     }
@@ -350,10 +344,8 @@ class ParkingSpotPage extends HookConsumerWidget {
 
             query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
 
-            query[BaldayDeeplink.latitudeKey] =
-                latLng.value!.latitude.toString();
-            query[BaldayDeeplink.longitudeKey] =
-                latLng.value!.longitude.toString();
+            query[BaldayDeeplink.latitudeKey] = latLng.value!.latitude.toString();
+            query[BaldayDeeplink.longitudeKey] = latLng.value!.longitude.toString();
 
             await balady_utils.safeShareText(
               '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}',

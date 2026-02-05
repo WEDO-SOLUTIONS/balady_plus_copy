@@ -1,13 +1,16 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
-class EtaShareExpired extends StatelessWidget {
+class EtaShareExpired extends ConsumerWidget {
   final String title;
   final String subtitle;
 
@@ -29,7 +32,7 @@ class EtaShareExpired extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context, WidgetRef ref) => Container(
         decoration: BoxDecoration(
           color: context.colors.backgroundSurface2,
           borderRadius: const BorderRadius.only(
@@ -64,7 +67,7 @@ class EtaShareExpired extends StatelessWidget {
                 ),
               ),
               SvgPicture.asset(
-                Assets.imagesSvg.illustrationError.keyName,
+                ref.watch(activeCityEventProvider)?.illustrationError ?? Assets.imagesSvg.illustrationError.keyName,
               ),
               const SizedBox(height: Spacing.$2x),
               Text(

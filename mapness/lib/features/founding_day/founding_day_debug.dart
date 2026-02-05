@@ -1,3 +1,5 @@
+import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'founding_day_debug.g.dart';
@@ -25,6 +27,9 @@ class FoundingDayDebug extends _$FoundingDayDebug {
   void enable() {
     state = true;
     _foundingDayDebugOverride = true;
+    final dgisController = ref.read(dgisControllerProvider);
+    final dgisControllerValue = dgisController.valueOrNull;
+    dgisControllerValue?.loadStyles(MapnessConstants.mapStylesFoundingDayPath);
   }
 
   /// Disable the debug override

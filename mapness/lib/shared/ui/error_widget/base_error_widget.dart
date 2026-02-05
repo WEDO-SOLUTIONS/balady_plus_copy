@@ -1,12 +1,15 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A base error widget that displays an error message and a retry button.
-class BaseErrorWidget extends StatelessWidget {
+class BaseErrorWidget extends ConsumerWidget {
   /// The action to be taken when the retry button is pressed.
   final VoidCallback onRetry;
 
@@ -59,8 +62,9 @@ class BaseErrorWidget extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
+    final activeEvent = ref.watch(activeCityEventProvider);
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
@@ -90,7 +94,7 @@ class BaseErrorWidget extends StatelessWidget {
             Padding(
               padding: paddingForImage,
               child: SvgPicture.asset(
-                Assets.imagesSvg.illustrationError.keyName,
+                activeEvent?.illustrationError ?? Assets.imagesSvg.illustrationError.keyName,
               ),
             ),
             if (errorTitle != null)

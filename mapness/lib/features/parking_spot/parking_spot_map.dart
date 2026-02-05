@@ -18,9 +18,7 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
   late Completer<DgisMapController> _completer;
   late final _settings = MapObjectManagerSettings.parking();
   late final _mapObjectManager = ref
-      .read(
-        mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId),
-      )
+      .read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId))
       .value;
 
   @override
@@ -33,8 +31,7 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
   Future<void> onMapCreated(DgisMapController controller) async {
     await controller.initialize();
     final activeCityEvent = ref.read(activeCityEventProvider);
-    await controller
-        .loadStyles(activeCityEvent?.sylePath ??(SaudiNationalDay.isNow() ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath));
+    await controller.loadStyles(activeCityEvent?.stylePath ?? MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);

@@ -4,10 +4,13 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
@@ -33,7 +36,7 @@ final confettiShapes = [
   (startPosition, velocity, scale, gradient, x, y, z) => ArcShape(startPosition, velocity, scale, gradient, x, y, z),
 ];
 
-class FeedbackSheetWidget extends HookWidget {
+class FeedbackSheetWidget extends ConsumerWidget {
   final FeedbackSheetState state;
   final VoidCallback onRetry;
 
@@ -49,7 +52,7 @@ class FeedbackSheetWidget extends HookWidget {
       route.settings.name == BottomMenuRoute.name);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final confettiController = useAnimationController();
     final sheetController = useToggleSheetController(
       onClose: (_) => popNavigation(context, confettiController),
@@ -118,7 +121,8 @@ class FeedbackSheetWidget extends HookWidget {
                             child: SizedBox(
                               width: 180.0,
                               child: SvgPicture.asset(
-                                Assets.imagesSvg.illustrationNotifications.keyName,
+                                ref.watch(activeCityEventProvider)?.illustrationNotifications ??
+                                    Assets.imagesSvg.illustrationNotifications.keyName,
                                 matchTextDirection: true,
                               ),
                             ),
