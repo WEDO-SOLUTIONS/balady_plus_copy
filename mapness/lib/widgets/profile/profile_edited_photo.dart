@@ -32,7 +32,10 @@ class ProfileEditablePhoto extends StatelessWidget {
                   color: context.colors.staticWhite,
                 ),
                 child: Center(
-                  child: General16Icons.edit.icon(color: context.colors.foregroundMuted, size: AppSizes.$4xs),
+                  child: General16Icons.edit.icon(
+                    color: context.colors.foregroundMuted,
+                    size: AppSizes.$4xs,
+                  ),
                 ),
               ),
             ),
@@ -101,10 +104,19 @@ class ProfileEditablePhoto extends StatelessWidget {
     );
 
     // set up the AlertDialog
-    final AlertDialog alert = AlertDialog(content: Text(title), actions: [cancelButton, continueButton]);
+    final AlertDialog alert = AlertDialog(
+      content: Text(title),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
 
     // show the dialog
-    await showDialog(context: context, builder: (context) => alert);
+    await showDialog(
+      context: context,
+      builder: (context) => alert,
+    );
   }
 
   Future<void> _showDialog(BuildContext context) async {
