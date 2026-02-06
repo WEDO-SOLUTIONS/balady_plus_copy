@@ -206,7 +206,7 @@ class FoundingDayConfig extends CityEventConfig {
   String get customMarkerPath => Assets.icons.svg.historicDiriyahFort.keyName;
 
   @override
-  String get globalImagePath => Assets.images.foundationDayLogo.keyName;
+  String get globalImagePath => Assets.images.foundingDayLogo.keyName;
 
   @override
   sdk.GeoPointWithElevationMessage get center =>
@@ -242,9 +242,9 @@ class FoundingDayConfig extends CityEventConfig {
   @override
   EventLogoConfig get logoConfig => EventLogoConfig(
         imagePath: globalImagePath,
-        width: 140,
+        width: 130,
         padding: EdgeInsets.zero,
         supportsFireworks: true,
-        imageOffset: const Offset(0, -26),
+        imageOffset: const Offset(0, -45),
       );
 }
