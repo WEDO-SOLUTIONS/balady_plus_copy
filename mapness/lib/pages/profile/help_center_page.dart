@@ -50,10 +50,8 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                         ContentRow(
                           onTap: () => context.router.push(const MomraWebsiteRoute()),
                           text: ContentRowTextOptions(title: context.l10n.baladyWebsite),
-                          leading: AppIcons(
-                            iconPath: Assets.icons.svg.profile.website.path,
-                            color: context.colors.accentDefault,
-                            package: Assets.package,
+                          leading: Assets.icons.svg.profile.website.svg(
+                            colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
                           ),
                           trailing: ContentRowTextTrailingOptions(
                             icon: SystemIcons.arrowCornerRightSmall.icon(color: context.colors.foregroundSoft).iconData,
