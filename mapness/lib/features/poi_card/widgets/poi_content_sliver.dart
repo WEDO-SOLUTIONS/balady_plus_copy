@@ -150,8 +150,7 @@ class PoiContentSliver extends ConsumerWidget {
     // Platforms lines info
     final routeInfos = data.routeInfos;
     final transportDirectoryRouteInfo = data.routeInfos.firstOrNull;
-    final currentRouteTransition =
-        transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
+    final currentRouteTransition = transportDirectoryRouteInfo?.directions.firstOrNull?.platforms
             .firstWhereOrNull((e) => e.name == data.title)
             ?.transitions ??
         [];
@@ -238,7 +237,6 @@ class PoiContentSliver extends ConsumerWidget {
                   ),
                 ),
               if (about != null)
-                //TODO(anyone): Find the better way to replace certain widgets
                 if (canUseCustomData)
                   ScrollPaper(
                     roughness: 1.2,
