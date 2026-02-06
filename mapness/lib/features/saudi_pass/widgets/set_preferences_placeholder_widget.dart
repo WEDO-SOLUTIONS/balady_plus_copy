@@ -8,7 +8,7 @@ import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class SetPreferencesPlaceholderWidget extends StatelessWidget {
+class SetPreferencesPlaceholderWidget extends ConsumerWidget {
   final VoidCallback action;
 
   const SetPreferencesPlaceholderWidget({
@@ -17,8 +17,8 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationPercent.keyName,
+  Widget build(BuildContext context, WidgetRef ref) => _PlaceholderWidget(
+        asset: ref.read(activeCityEventProvider)?.illustrationPercent ?? Assets.imagesSvg.illustrationPercent.keyName,
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
         hint: context.l10n.saudiPassOffersSetPreferencesHint,
@@ -26,7 +26,7 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
       );
 }
 
-class LoginPreferencesPlaceholderWidget extends StatelessWidget {
+class LoginPreferencesPlaceholderWidget extends ConsumerWidget {
   final VoidCallback action;
 
   const LoginPreferencesPlaceholderWidget({
@@ -35,8 +35,8 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationPercent.keyName,
+  Widget build(BuildContext context, WidgetRef ref) => _PlaceholderWidget(
+        asset: ref.read(activeCityEventProvider)?.illustrationPercent ?? Assets.imagesSvg.illustrationPercent.keyName,
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
         hint: context.l10n.saudiPassOffersLoginHint,
