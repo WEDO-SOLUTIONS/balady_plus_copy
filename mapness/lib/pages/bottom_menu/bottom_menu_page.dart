@@ -106,6 +106,7 @@ class BottomMenuPage extends ConsumerWidget {
                         selected: route.activeIndex == 3,
                         iconBuilder: (context, selected) => ProfileImageWidget(
                           dimension: 24,
+                          isSelected: selected,
                           color: selected ? context.colors.accentDefault : context.colors.foregroundSoft,
                         ),
                         label: context.l10n.nav_profile,

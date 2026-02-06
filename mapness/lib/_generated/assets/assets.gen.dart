@@ -358,6 +358,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
 
+  /// File path: assets/icons/svg/founding_day_profile.svg
+  SvgGenImage get foundingDayProfile => const SvgGenImage('assets/icons/svg/founding_day_profile.svg');
+
   /// File path: assets/icons/svg/historic_diriyah_fort.svg
   SvgGenImage get historicDiriyahFort => const SvgGenImage('assets/icons/svg/historic_diriyah_fort.svg');
 
@@ -597,6 +600,7 @@ class $AssetsIconsSvgGen {
         carActiveSaudi,
         cityscapeUniqueMarker,
         currentLocationIcon,
+        foundingDayProfile,
         historicDiriyahFort,
         ic2d,
         ic3d,
