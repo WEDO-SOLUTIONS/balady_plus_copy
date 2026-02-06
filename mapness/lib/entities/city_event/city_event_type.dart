@@ -23,7 +23,7 @@ extension DefaultMarkerExt on CityEventType? {
       };
 
   String get defaultPin => switch (this) {
-        CityEventType.foundingDay => Assets.icons.svg.placesNewFoundingDay.icDefault.keyName,
+        CityEventType.foundingDay => Assets.icons.svg.placesNewFoundingDayBig.icDefault.keyName,
         CityEventType.saudiNationalDay => Assets.icons.svg.icPinNewSaudiDay.keyName,
         _ => Assets.icons.svg.icPinNew.keyName,
       };
