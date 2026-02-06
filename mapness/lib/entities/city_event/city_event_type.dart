@@ -99,6 +99,10 @@ extension IllustrationsX on CityEventType? {
         CityEventType.foundingDay => Assets.imagesSvg.illustrationNotificationsFoundatonDay.keyName,
         _ => Assets.imagesSvg.illustrationNotifications.keyName,
       };
+  String get illustrationPercent => switch (this) {
+        CityEventType.foundingDay => Assets.imagesSvg.illustrationPercentFoundingDay.keyName,
+        _ => Assets.imagesSvg.illustrationPercent.keyName,
+      };
 }
 
 extension TrafficControlX on CityEventType? {
