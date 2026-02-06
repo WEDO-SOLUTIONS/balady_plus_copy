@@ -41,7 +41,11 @@ class PoiContentFeedbackCard extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: DecoratedBox(
-            decoration: BoxDecoration(gradient: LinearGradient(colors: data.gradientColorsBuilder(activeCityEvent))),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: data.gradientColorsBuilder(activeCityEvent),
+              ),
+            ),
             child: IntrinsicHeight(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -91,16 +95,16 @@ class _ArrowIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-    width: Spacing.$6x,
-    height: Spacing.$6x,
-    child: DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(RadiusBorder.s),
-        color: context.colors.staticWhite.withOpacity(0.2),
-      ),
-      child: Center(
-        child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x),
-      ),
-    ),
-  );
+        width: Spacing.$6x,
+        height: Spacing.$6x,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(RadiusBorder.s),
+            color: context.colors.staticWhite.withOpacity(0.2),
+          ),
+          child: Center(
+            child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x),
+          ),
+        ),
+      );
 }
