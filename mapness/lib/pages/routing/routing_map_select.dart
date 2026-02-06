@@ -8,9 +8,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -71,6 +72,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
       return () => scrollController.removeListener(updateCameraPadding);
     }, [scrollController]);
 
+    final activeEvent = ref.watch(activeCityEventProvider);
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface4,
@@ -84,7 +86,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
               padding: EdgeInsets.only(
                 bottom: additionPadding,
               ),
-              child: SvgPicture.asset(SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew),
+              child: SvgPicture.asset(activeEvent?.defaultPin ?? Markers.defaultPinNew),
             ),
           ),
         ],

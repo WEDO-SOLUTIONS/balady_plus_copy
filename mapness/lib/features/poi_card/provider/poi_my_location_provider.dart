@@ -85,7 +85,7 @@ class PoiMyLocation extends _$PoiMyLocation {
     await mapObjectManager.removeAllMarkers();
     final marker = Markers.pinMarker(
       GeoPointWithElevationMessage(latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 1),
-      activeCityEvent: ref.read(activeCityEventProvider),
+      activeCityEvent: ref.watch(activeCityEventProvider),
     );
 
     /// For those cases when we switch from an area (building) to MyLocation

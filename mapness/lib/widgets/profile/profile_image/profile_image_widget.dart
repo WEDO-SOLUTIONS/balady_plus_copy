@@ -24,19 +24,20 @@ class ProfileImageWidget extends ConsumerWidget {
 
   final Color? color;
   final double dimension;
-  final bool isSelected;
   final bool isEditing;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isFoundingDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
 
     if (isFoundingDay) {
-      if (isSelected) {
-        return Assets.icons.svg.foundingDayProfile.svg();
-      }
       if (isEditing) {
         return FoundingDayAvatar(size: dimension);
+      } else if (isSelected) {
+        return Assets.icons.svg.foundingDayProfile.svg();
+      } else {
+        return Assets.icons.svg.foundingDayProfileInactive.svg();
       }
     }
 
