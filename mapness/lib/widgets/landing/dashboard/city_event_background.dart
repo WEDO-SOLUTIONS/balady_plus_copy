@@ -55,7 +55,7 @@ class _EventBanner extends StatelessWidget {
         color: config.getBackgroundColor(context),
       ),
       child: Align(
-        alignment: Alignment.centerRight,
+        alignment: const Alignment(1, -0.2),
         child: Padding(
           padding: const EdgeInsets.only(right: Spacing.$4x),
           child: formattedDate != null
