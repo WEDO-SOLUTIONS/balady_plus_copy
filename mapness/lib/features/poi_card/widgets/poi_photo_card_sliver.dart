@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
@@ -177,6 +178,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
                 padding: const EdgeInsets.only(top: Spacing.$4x),
                 child: PoiContentFeedbackCard(
                   data: PoiContentFeedbackType.addPhoto,
+                  activeCityEvent: ref.watch(activeCityEventProvider),
                   onTap: () => context.router.push(
                     QuickFeedbackPhotoRoute(
                       params: FeedbackObjectIdParams(objectId),

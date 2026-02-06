@@ -100,3 +100,21 @@ extension IllustrationsX on CityEventType? {
         _ => Assets.imagesSvg.illustrationNotifications.keyName,
       };
 }
+
+extension TrafficControlX on CityEventType? {
+  Widget trafficIcon({
+    required Color inactiveColor,
+    bool isOn = false,
+  }) {
+    final asset = switch (this) {
+      CityEventType.saudiNationalDay when isOn => Assets.icons.svg.carActiveSaudi,
+      CityEventType.foundingDay when isOn => Assets.icons.svg.carActiveFoundingDay,
+      _ => Assets.icons.svg.car,
+    };
+
+    return SvgPicture.asset(
+      asset.keyName,
+      colorFilter: !isOn ? ColorFilter.mode(inactiveColor, BlendMode.srcIn) : null,
+    );
+  }
+}

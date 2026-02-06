@@ -31,6 +31,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
+  /// File path: assets/images/add_photo_founding_day.png
+  AssetGenImage get addPhotoFoundingDay => const AssetGenImage('assets/images/add_photo_founding_day.png');
+
   /// File path: assets/images/background_ornament_saudiday.png
   AssetGenImage get backgroundOrnamentSaudiday => const AssetGenImage('assets/images/background_ornament_saudiday.png');
 
@@ -173,6 +176,7 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
+        addPhotoFoundingDay,
         backgroundOrnamentSaudiday,
         calendarCard,
         cityExpert,
@@ -342,6 +346,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/car_active.svg
   SvgGenImage get carActive => const SvgGenImage('assets/icons/svg/car_active.svg');
+
+  /// File path: assets/icons/svg/car_active_founding_day.svg
+  SvgGenImage get carActiveFoundingDay => const SvgGenImage('assets/icons/svg/car_active_founding_day.svg');
 
   /// File path: assets/icons/svg/car_active_saudi.svg
   SvgGenImage get carActiveSaudi => const SvgGenImage('assets/icons/svg/car_active_saudi.svg');
@@ -591,6 +598,7 @@ class $AssetsIconsSvgGen {
   List<SvgGenImage> get values => [
         car,
         carActive,
+        carActiveFoundingDay,
         carActiveSaudi,
         cityscapeUniqueMarker,
         currentLocationIcon,
