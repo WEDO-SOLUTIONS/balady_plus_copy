@@ -34,11 +34,14 @@ class ProfileImageWidget extends ConsumerWidget {
     if (isFoundingDay) {
       if (isEditing) {
         return FoundingDayAvatar(size: dimension);
-      } else if (isSelected) {
-        return Assets.icons.svg.foundingDayProfile.svg();
-      } else {
-        return Assets.icons.svg.foundingDayProfileInactive.svg();
       }
+
+      return Assets.icons.svg.foundingDayProfile.svg(
+        colorFilter: ColorFilter.mode(
+          color ?? context.colors.foregroundDefault,
+          BlendMode.srcIn,
+        ),
+      );
     }
 
     final profileImage = ref.watch(profileImageProvider);
