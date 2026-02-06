@@ -1,7 +1,5 @@
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/scheme_colors.dart';
-// import 'package:balady_uikit/core/colorsV2/values/src/accent_colors.dart';
-// import 'package:balady_uikit/core/colorsV2/values/src/accent_secondary_colors.dart';
 import 'package:balady_uikit/core/colorsV2/values/src/error_colors.dart';
 import 'package:balady_uikit/core/colorsV2/values/src/extra_01_colors.dart';
 import 'package:balady_uikit/core/colorsV2/values/src/extra_02_colors.dart';
@@ -295,7 +293,6 @@ extension AppColorsThemeV3FoundingDayExt on AppColorsThemeV3 {
       pinSoft: scheme.pinSoft,
       pinFoundationPin: scheme.pinFoundationPin,
       pinBorderMarker: scheme.pinBorderMarker,
-      // parents: scheme.parents(),
     );
   }
 }

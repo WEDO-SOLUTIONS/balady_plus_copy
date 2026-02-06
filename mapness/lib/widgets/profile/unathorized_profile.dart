@@ -15,11 +15,9 @@ class UnauthorizedProfile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeCityEvent = ref.watch(activeCityEventProvider);
-    final logoColor = (activeCityEvent?.isFoundingDay ?? false)
-        ? context.colors.accentDefault
-        : context.colors.accentOnAccent;
+    final logoColor =
+        (activeCityEvent?.isFoundingDay ?? false) ? context.colors.accentDefault : context.colors.accentOnAccent;
 
-    // final
     return Column(
       children: [
         Spacing.$8x.heightBox,

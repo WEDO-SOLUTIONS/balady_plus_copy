@@ -21,7 +21,6 @@ class ScrollPainter extends CustomPainter {
   static const double _vbH = 71;
 
   double _noise(int seed) {
-    // детерминированный псевдошум [0..1]
     final x = sin(seed * 12.9898) * 43758.5453;
     return x - x.floor();
   }
