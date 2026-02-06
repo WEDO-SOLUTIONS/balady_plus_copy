@@ -1,8 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
-import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
 class Markers {
@@ -29,10 +27,7 @@ class Markers {
         options: MarkerOptionsMessage(
           position: position,
           icon: SvgMarkerIcon(
-            svgPath: activeCityEvent?.defaultPin ??(icon ??
-                (SaudiNationalDay.isNow()
-                    ? Assets.icons.svg.icPinNewSaudiDay.keyName
-                    : Assets.icons.svg.icPinNew.keyName)),
+            svgPath: icon ?? activeCityEvent?.defaultPin ?? Assets.icons.svg.icPinNew.keyName,
             width: width ?? defaultWidth,
           ),
           text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),
