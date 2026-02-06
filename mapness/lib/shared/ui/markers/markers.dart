@@ -27,7 +27,7 @@ class Markers {
         options: MarkerOptionsMessage(
           position: position,
           icon: SvgMarkerIcon(
-            svgPath: activeCityEvent?.defaultPin ?? Assets.icons.svg.icPinNew.keyName,
+            svgPath: icon ?? activeCityEvent?.defaultPin ?? Assets.icons.svg.icPinNew.keyName,
             width: width ?? defaultWidth,
           ),
           text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),

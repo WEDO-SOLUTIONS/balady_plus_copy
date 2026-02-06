@@ -91,7 +91,7 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
 
     final foundingDayNotifier = ref.watch(foundingDayProvider.notifier);
     if (foundingDayNotifier.isFoundationObject(objectId)) {
-      return (null, foundingDayNotifier.customMarker);
+      return (foundingDayNotifier.customMarker, foundingDayNotifier.customMarker);
     }
 
     final activeCityEvent = ref.read(activeCityEventProvider);
