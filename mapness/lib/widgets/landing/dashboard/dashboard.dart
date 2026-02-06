@@ -142,208 +142,219 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           )
         : null;
 
-    return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
-      child: MultiStateSheet<ThreeStateSheet>(
-        animateOpening: false,
-        keepContentBehindFooter: true,
-        useSafeArea: false,
-        scrollController: widget.bottomSheetController,
-        topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
-        topHeaderOffset: isNationalDay ? topHeaderOffset : null,
-        offsetOutsideWidgetByTopheader: !isNationalDay,
-        backgroundColor: context.colors.backgroundSurface2,
-        dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
-        header: const DashboardHeader(),
-        footer: IgnorePointer(
-          child: SizedBox(
-            height: Spacing.$16x + Spacing.$5x,
-            width: double.infinity,
-            child: FadeTransition(
-              opacity: Animation.fromValueListenable(footerOpacity),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  backgroundBlendMode: BlendMode.srcOver,
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.white.withOpacity(0),
-                      Colors.white.withOpacity(0.8),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        barrierColorDelegate: barrierColorDelegate,
-        outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
-        outsideOpacityDelegate: outsideOpacityDelegate,
-        sliver: SliverPersistentHeader(
-          delegate: DashboardHeaderDelegate(vsync: this),
-          pinned: true,
-          floating: true,
-        ),
-        content: [
-          const SizedBox(height: Spacing.$3x),
-          FeedbackBannerCardV2(
-            path: activeEvent.feedbackDashboard,
-            onTap: () {
-              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
-              context.router.push(const ContributeRoute());
-            },
-            gradientColors: activeEvent.feedbackDashboardGradientColors,
-            title: context.l10n.contribute,
-            subtitle: context.l10n.buildBaladyTogether,
-          ),
-          const SizedBox(height: Spacing.$6x),
-          StoriesWidget(
-            titleWidget: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$3x),
-              child: DashboardTitle(context.l10n.whatIsNewInBalady),
-            ),
-          ),
-          const SizedBox(height: Spacing.$6x),
-          DashboardTitle(context.l10n.quickActions),
-          const SizedBox(height: Spacing.$4x),
-          ScrollConfiguration(
-            behavior: NoGlowingScrollBehavior(),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$0_5x),
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  QuickActionButton(
-                    text: context.l10n.sendLocation,
-                    icon: General32Icons.locationAction,
-                    onTap: _openMyLocation,
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.freeRoam,
-                    icon: TransportIcons.locationDirectionNavigator,
-                    onTap: _openFreeRoam,
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.parkingAction,
-                    icon: General32Icons.parkingAction,
-                    onTap: _openParking,
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.snapAndSendAction,
-                    icon: General32Icons.snapAndSendAction,
-                    onTap: _openSnapAndSend,
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.qibla,
-                    icon: General32Icons.qiblaAction,
-                    onTap: () => _openQibla(context),
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.quaranAction,
-                    icon: General32Icons.quaranAction,
-                    onTap: () => _openQuran(context),
-                  ),
-                  const SizedBox(width: Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.athkarAction,
-                    icon: General32Icons.athkarAction,
-                    onTap: () => _openAthkar(context),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: Spacing.$4x),
-          const DriveBackHomeCard(),
-          const SizedBox(height: Spacing.$6x),
-          const DashboardOffersRow(),
-          const SizedBox(height: Spacing.$6x),
-          if (!isNationalDay) ...[
-            DashboardTitle(context.l10n.exploreNearby),
-            const SizedBox(height: Spacing.$4x),
-            const PlacePreview(),
-            const SizedBox(height: Spacing.$6x),
-          ],
-          if (isNationalDay)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Color(0xff00343A),
-                  ],
-                ),
-                image: DecorationImage(
-                  image: Assets.images.backgroundOrnamentSaudiday.provider(),
-                  matchTextDirection: true,
-                  fit: BoxFit.cover,
-                  alignment: AlignmentDirectional.centerEnd,
-                ),
-              ),
-              child: Column(
-                children: [
-                  DashboardTitle(context.l10n.exploreNearby),
-                  const SizedBox(height: Spacing.$4x),
-                  const PlacePreview(),
-                  const SizedBox(height: Spacing.$6x),
-                ],
-              ),
-            ),
-          if (eventLogo != null)
-            AnimatedBuilder(
-              animation: widget.bottomSheetController,
-              builder: (context, snapshot) {
-                final fraction = widget.bottomSheetController.fraction;
-                // Direction-agnostic visibility windows:
-                // Opening:  0.91 → 0.96  (becomes fully invisible at >= 0.96)
-                // Closing:  0.19 → 0.11  (becomes fully invisible at <= 0.11)
-                const double openStart = 0.91;
-                const double openEnd = 0.96; // fully invisible here
-                const double closeStart = 0.19;
-                const double closeEnd = 0.11; // fully invisible here
-                const double eps = 1e-6;
-
-                // Compute shrink amount independently for both windows and take the stronger effect.
-                final double openT = ((fraction - openStart) / (openEnd - openStart)).clamp(0.0, 1.0);
-                final double closeT = ((closeStart - fraction) / (closeStart - closeEnd)).clamp(0.0, 1.0);
-                final double shrink = max(openT, closeT); // 0.0..1.0
-                double scaleValue = 1.0 - shrink; // 1.0..0.0
-
-                // Hard clamp to 0 when we are beyond the full-invisible bounds.
-                if (fraction >= openEnd - eps || fraction <= closeEnd + eps) {
-                  scaleValue = 0.0;
-                }
-
-                final double _baseBottom = (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(
-                  0.0,
-                  double.infinity,
-                );
-                return Positioned(
-                  bottom: _baseBottom,
-                  child: scaleValue <= 0.0
-                      ? const SizedBox.shrink()
-                      : Opacity(
-                          opacity: scaleValue, // fade together with scale to avoid subpixel artifacts
-                          child: Transform.scale(
-                            scale: scaleValue,
-                            alignment: Alignment.bottomCenter,
-                            child: eventLogo,
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.viewPaddingOf(context).top),
+        child: Stack(
+          children: [
+            Directionality(
+              textDirection: Directionality.of(context),
+              child: MultiStateSheet<ThreeStateSheet>(
+                animateOpening: false,
+                keepContentBehindFooter: true,
+                useSafeArea: false,
+                scrollController: widget.bottomSheetController,
+                topHeader: MapHiddenStateControls(widget.bottomSheetController, widget.fireworksController),
+                topHeaderOffset: isNationalDay ? topHeaderOffset : null,
+                offsetOutsideWidgetByTopheader: !isNationalDay,
+                backgroundColor: context.colors.backgroundSurface2,
+                dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface2),
+                header: const DashboardHeader(),
+                footer: IgnorePointer(
+                  child: SizedBox(
+                    height: Spacing.$16x + Spacing.$5x,
+                    width: double.infinity,
+                    child: FadeTransition(
+                      opacity: Animation.fromValueListenable(footerOpacity),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          backgroundBlendMode: BlendMode.srcOver,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.white.withOpacity(0),
+                              Colors.white.withOpacity(0.8),
+                            ],
                           ),
                         ),
-                );
-              },
+                      ),
+                    ),
+                  ),
+                ),
+                barrierColorDelegate: barrierColorDelegate,
+                outside:
+                    MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
+                outsideOpacityDelegate: outsideOpacityDelegate,
+                sliver: SliverPersistentHeader(
+                  delegate: DashboardHeaderDelegate(vsync: this),
+                  pinned: true,
+                  floating: true,
+                ),
+                content: [
+                  const SizedBox(height: Spacing.$3x),
+                  FeedbackBannerCardV2(
+                    path: activeEvent.feedbackDashboard,
+                    onTap: () {
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
+                      context.router.push(const ContributeRoute());
+                    },
+                    gradientColors: activeEvent.feedbackDashboardGradientColors,
+                    title: context.l10n.contribute,
+                    subtitle: context.l10n.buildBaladyTogether,
+                  ),
+                  const SizedBox(height: Spacing.$6x),
+                  StoriesWidget(
+                    titleWidget: Padding(
+                      padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                      child: DashboardTitle(context.l10n.whatIsNewInBalady),
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.$6x),
+                  DashboardTitle(context.l10n.quickActions),
+                  const SizedBox(height: Spacing.$4x),
+                  ScrollConfiguration(
+                    behavior: NoGlowingScrollBehavior(),
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$0_5x),
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          QuickActionButton(
+                            text: context.l10n.sendLocation,
+                            icon: General32Icons.locationAction,
+                            onTap: _openMyLocation,
+                          ),
+                          const SizedBox(width: Spacing.$2x),
+                          QuickActionButton(
+                            text: context.l10n.freeRoam,
+                            icon: TransportIcons.locationDirectionNavigator,
+                            onTap: _openFreeRoam,
+                          ),
+                          const SizedBox(width: Spacing.$2x),
+                          QuickActionButton(
+                            text: context.l10n.parkingAction,
+                            icon: General32Icons.parkingAction,
+                            onTap: _openParking,
+                          ),
+                          const SizedBox(width: Spacing.$2x),
+                          QuickActionButton(
+                            text: context.l10n.snapAndSendAction,
+                            icon: General32Icons.snapAndSendAction,
+                            onTap: _openSnapAndSend,
+                          ),
+                          const SizedBox(width: Spacing.$2x),
+                          QuickActionButton(
+                            text: context.l10n.qibla,
+                            icon: General32Icons.qiblaAction,
+                            onTap: () => _openQibla(context),
+                          ),
+                          const SizedBox(width: Spacing.$2x),
+                          QuickActionButton(
+                            text: context.l10n.quaranAction,
+                            icon: General32Icons.quaranAction,
+                            onTap: () => _openQuran(context),
+                          ),
+                          const SizedBox(width: Spacing.$2x),
+                          QuickActionButton(
+                            text: context.l10n.athkarAction,
+                            icon: General32Icons.athkarAction,
+                            onTap: () => _openAthkar(context),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: Spacing.$4x),
+                  const DriveBackHomeCard(),
+                  const SizedBox(height: Spacing.$6x),
+                  const DashboardOffersRow(),
+                  const SizedBox(height: Spacing.$6x),
+                  if (!isNationalDay) ...[
+                    DashboardTitle(context.l10n.exploreNearby),
+                    const SizedBox(height: Spacing.$4x),
+                    const PlacePreview(),
+                    const SizedBox(height: Spacing.$6x),
+                  ],
+                  if (isNationalDay)
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Color(0xff00343A),
+                          ],
+                        ),
+                        image: DecorationImage(
+                          image: Assets.images.backgroundOrnamentSaudiday.provider(),
+                          matchTextDirection: true,
+                          fit: BoxFit.cover,
+                          alignment: AlignmentDirectional.centerEnd,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          DashboardTitle(context.l10n.exploreNearby),
+                          const SizedBox(height: Spacing.$4x),
+                          const PlacePreview(),
+                          const SizedBox(height: Spacing.$6x),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
             ),
-        ],
+            if (eventLogo != null)
+              AnimatedBuilder(
+                animation: widget.bottomSheetController,
+                builder: (context, snapshot) {
+                  final fraction = widget.bottomSheetController.fraction;
+                  // Direction-agnostic visibility windows:
+                  // Opening:  0.91 → 0.96  (becomes fully invisible at >= 0.96)
+                  // Closing:  0.19 → 0.11  (becomes fully invisible at <= 0.11)
+                  const double openStart = 0.91;
+                  const double openEnd = 0.96; // fully invisible here
+                  const double closeStart = 0.19;
+                  const double closeEnd = 0.11; // fully invisible here
+                  const double eps = 1e-6;
+
+                  // Compute shrink amount independently for both windows and take the stronger effect.
+                  final double openT = ((fraction - openStart) / (openEnd - openStart)).clamp(0.0, 1.0);
+                  final double closeT = ((closeStart - fraction) / (closeStart - closeEnd)).clamp(0.0, 1.0);
+                  final double shrink = max(openT, closeT); // 0.0..1.0
+                  double scaleValue = 1.0 - shrink; // 1.0..0.0
+
+                  // Hard clamp to 0 when we are beyond the full-invisible bounds.
+                  if (fraction >= openEnd - eps || fraction <= closeEnd + eps) {
+                    scaleValue = 0.0;
+                  }
+
+                  final double _baseBottom = (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(
+                    0.0,
+                    double.infinity,
+                  );
+                  return Positioned(
+                    bottom: _baseBottom,
+                    child: scaleValue <= 0.0
+                        ? const SizedBox.shrink()
+                        : Opacity(
+                            opacity: scaleValue, // fade together with scale to avoid subpixel artifacts
+                            child: Transform.scale(
+                              scale: scaleValue,
+                              alignment: Alignment.bottomCenter,
+                              child: eventLogo,
+                            ),
+                          ),
+                  );
+                },
+              ),
+          ],
+        ),
       ),
     );
   }
