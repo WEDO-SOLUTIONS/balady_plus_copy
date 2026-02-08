@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/notifications/presentation/bloc/notifications_settings/notifications_list_settings_cubit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +24,16 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
+      trailing: Icon(Icons.keyboard_arrow_down, color: context.colors.accentActive),
         shape: const Border(),
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Text(
             widget.category.name!,
-            style: AppStyle.cardTitleTextStle,
+            style: AppStyle.cardTitleTextStle.copyWith(
+              color:  context.colors.accentActive,
+
+            ),
           ),
         ),
         children: List.generate(
@@ -68,7 +73,7 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                         padding: const EdgeInsets.all(8.0),
                         child: Material(
                           borderRadius: BorderRadius.circular(8),
-                          color: const Color(0xFFF5F7FA),
+
                           child: InkWell(
                             onTap: () {
                               cubit.setNotificationsProfileProducts(
@@ -80,7 +85,8 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                                       applicationId: 'super-app'));
                             },
                             borderRadius: BorderRadius.circular(8),
-                            child: SizedBox(
+                            child: Container(
+                             color: context.colors.backgroundSurface1,
                               height: 48,
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
@@ -98,13 +104,13 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                                         style: Theme.of(context)
                                             .extension<ThemeTextStyles>()!
                                             .text
-                                            .copyWith(
-                                                color: const Color(0xFF1E2A36)),
+
                                       ),
                                     ),
                                     const Spacer(),
                                     IgnorePointer(
                                       child: CupertinoSwitch(
+                                        activeColor: context.colors.accentActive,
                                         onChanged: (bool value) {},
                                         value: cubit.isChecked,
                                       ),
@@ -118,6 +124,10 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                       );
                     },
                   ),
-                )));
+                )),
+
+
+
+    );
   }
 }
