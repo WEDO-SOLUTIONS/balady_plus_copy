@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension PoiContentFeedbackExt on PoiContentFeedbackType {
