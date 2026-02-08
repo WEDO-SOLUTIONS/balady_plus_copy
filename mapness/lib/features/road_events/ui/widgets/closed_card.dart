@@ -63,7 +63,7 @@ class ClosedRoadCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    CustomCloseButton(onClose: context.router.popForced),
+                    CustomCloseButton(onClose: () => context.router.popForced()),
                   ],
                 ),
                 if (workDuration != null)

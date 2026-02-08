@@ -43,7 +43,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
         dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
         shouldPop: (_) => false,
         header: AppFeedbackSheetHeader(
-          onBackTap: context.router.popForced,
+          onBackTap: () => context.router.popForced(),
           title: context.l10n.appFeedbackInputTitle,
         ),
         content: [
