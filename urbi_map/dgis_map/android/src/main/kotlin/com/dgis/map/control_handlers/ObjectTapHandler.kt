@@ -878,7 +878,7 @@ class ObjectTapHandler(
         val objects: List<SimpleMapObject> = if (points.size > 1) {
             listOf(Polyline(PolylineOptions(points = points.map { it.toGeoPoint() })))
         } else {
-            listOf(Circle(CircleOptions(position = points.first().toGeoPoint(), radius = Meter(500.0))))
+            listOf(Circle(CircleOptions(position = points.first().toGeoPoint(), radius = Meter(500.0f))))
         }
 
         calcPositionForObjects(objects = objects, options = options, callback = callback)
