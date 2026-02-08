@@ -461,14 +461,6 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
                 colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
                 matchTextDirection: true,
               ),
-          errorBuilder:
-              (_, __, ___) => SvgPicture.asset(
-                svgAsset,
-                width: size,
-                height: size,
-                colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
-                matchTextDirection: true,
-              ),
         );
       }
 
