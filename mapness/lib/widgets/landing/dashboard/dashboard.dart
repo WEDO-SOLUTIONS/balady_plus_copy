@@ -14,11 +14,9 @@ import 'package:mapness/widgets/landing/dashboard_contents/dashboard_theme_confi
 import 'package:mapness/widgets/landing/dashboard_contents/base_dashboard_content.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/national_day_dashboard_content.dart';
 import 'package:mapness/widgets/landing/dashboard_contents/makkah_based_dashboard_content.dart';
-import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
-import 'package:mapness/widgets/landing/dashboard/wrc_logo.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:sheetify/sheetify.dart';
 
@@ -115,7 +113,6 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     });
 
     freeRoamState = ref.watch(freeRoamStarterProvider);
-    final isWRCActive = ref.watch(wRCProvider);
 
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final themeConfig = dashboardThemeConfigFor(specialThemeMode);
@@ -176,54 +173,6 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 ],
               ),
             ),
-            if (isWRCActive)
-              AnimatedBuilder(
-                animation: widget.bottomSheetController,
-                builder: (context, snapshot) {
-                  final fraction = widget.bottomSheetController.fraction;
-                  // Direction-agnostic visibility windows:
-                  // Opening:  0.91 → 0.96  (becomes fully invisible at >= 0.96)
-                  // Closing:  0.19 → 0.11  (becomes fully invisible at <= 0.11)
-                  const double openStart = 0.91;
-                  const double openEnd = 0.96; // fully invisible here
-                  const double closeStart = 0.19;
-                  const double closeEnd = 0.11; // fully invisible here
-                  const double eps = 1e-6;
-
-                  // Compute shrink amount independently for both windows and take the stronger effect.
-                  final double openT = ((fraction - openStart) / (openEnd - openStart)).clamp(0.0, 1.0);
-                  final double closeT = ((closeStart - fraction) / (closeStart - closeEnd)).clamp(0.0, 1.0);
-                  final double shrink = max(openT, closeT); // 0.0..1.0
-                  double scaleValue = 1.0 - shrink; // 1.0..0.0
-
-                  // Hard clamp to 0 when we are beyond the full-invisible bounds.
-                  if (fraction >= openEnd - eps || fraction <= closeEnd + eps) {
-                    scaleValue = 0.0;
-                  }
-
-                  final double _baseBottom = (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(
-                    0.0,
-                    double.infinity,
-                  );
-                  return Positioned(
-                    bottom: _baseBottom,
-                    child: scaleValue <= 0.0
-                        ? const SizedBox.shrink()
-                        : Opacity(
-                            opacity: scaleValue, // fade together with scale to avoid subpixel artifacts
-                            child: Transform.scale(
-                              scale: scaleValue,
-                              alignment: Alignment.bottomCenter,
-                              child: WRCLogo(
-                                onTap: () {
-                                  ref.read(wRCProvider.notifier).moveCameraToEventArea();
-                                },
-                              ),
-                            ),
-                          ),
-                  );
-                },
-              ),
           ],
         ),
       ),
