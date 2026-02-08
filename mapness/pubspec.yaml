@@ -39,8 +39,7 @@ dependencies:
     path: ..
 
   balady_uikit:
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: 4.1.6
+    path: ../balady_uikit
 
   sheetify: 1.1.1
   smooth_corner: ^1.0.0
@@ -203,6 +202,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/config.json
     - assets/icons/svg/
     - assets/icons/svg/profile/
     - assets/icons/lottie/
@@ -214,6 +214,8 @@ flutter:
     - assets/icons/svg/places_big_new_saudi_day/
     - assets/icons/svg/places_new_saudi_day/
     - assets/images/
+    - assets/images/makkah_quick_actions/
+    - assets/images/ramadan_quick_actions/
     - assets/images/saudi_pass/
     - assets/images_svg/
     - assets/maps/configs/
