@@ -8,7 +8,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
-import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 
 class ParkingControl extends ConsumerWidget {
@@ -16,7 +16,7 @@ class ParkingControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final result = ref.watch(parkingManageProvider).value;
+    final result = ref.watch(parkingManageProvider).valueOrNull;
     final cameraPosition = ref.watch(cameraPositionProvider);
 
     if (result == null) {

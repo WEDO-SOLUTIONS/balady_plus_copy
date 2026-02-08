@@ -14,7 +14,7 @@ import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -191,7 +191,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
           markerType: FavouriteItemMarkerType.home,
         ),
       );
-      return ref.refresh(favouriteCacheProvider).value?.home;
+      return ref.refresh(favouriteCacheProvider).valueOrNull?.home;
     }
     return home;
   }
@@ -224,7 +224,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     RouteParamsPoint startLocation,
     RouteParamsPoint finishLocation,
   ) async {
-    final routes = current.value;
+    final routes = current.valueOrNull;
     final route = routes?.firstOrNull;
     if (route == null) {
       return;

@@ -1,11 +1,9 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
-class QuickFilter extends ConsumerWidget {
+class QuickFilter extends StatelessWidget {
   final FilterItemConfig item;
   final bool selected;
   final ChipsType chipsType;
@@ -18,29 +16,16 @@ class QuickFilter extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colors = context.colors;
-
-    final specialThemeMode = ref.watch(specialThemeModeProvider);
-
-    final bool isMekkahTheme =
-        specialThemeMode == SpecialThemeMode.mekkahBase ||
-        specialThemeMode == SpecialThemeMode.ramadan;
-
-    final Color themedColor =
-        specialThemeMode == SpecialThemeMode.ramadan
-            ? const Color(0xFF806E5C)
-            : const Color(0xFF307457);
-
-    final Color iconColor = isMekkahTheme ? themedColor : colors.foregroundSoft;
-    final Color? labelColor = isMekkahTheme ? themedColor : null;
-
-    final leadingIcon =
-        item.icon != null
-            ? ChipIconWidget(
-              ({color}) => Icon(item.icon, size: 24, color: color ?? iconColor),
-            )
-            : null;
+  Widget build(BuildContext context) {
+    final leadingIcon = item.icon != null
+        ? ChipIconWidget(
+            ({color}) => Icon(
+              item.icon,
+              size: 24,
+              color: context.colors.foregroundSoft,
+            ),
+          )
+        : null;
     final label = item.title;
     if (label == null || label.isEmpty == true) {
       if (leadingIcon == null) {
@@ -50,19 +35,14 @@ class QuickFilter extends ConsumerWidget {
         onPressed: item.onTap,
         isSelected: item.selected,
         type: chipsType,
-        options: ChipsIconOptions(icon: leadingIcon, color: iconColor),
+        options: ChipsIconOptions(icon: leadingIcon),
       );
     }
     return ChipsElement(
       onPressed: item.onTap,
       isSelected: item.selected,
       type: chipsType,
-      options: ChipsLabelOptions(
-        labelFirst: label,
-        leadingIcon: leadingIcon,
-        leadingIconColor: iconColor,
-        labelFirstColor: labelColor,
-      ),
+      options: ChipsLabelOptions(labelFirst: label, leadingIcon: leadingIcon),
     );
   }
 }
