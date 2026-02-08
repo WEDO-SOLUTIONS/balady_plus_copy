@@ -1,6 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,19 +48,13 @@ class DashboardActions {
   /// Opens the Quran mini-app.
   void openQuran() {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Quran_Show_All_Surahs_Page",
-    );
+    // TODO: Implement when mini_apps_engine is available
   }
 
   /// Opens the Athkar mini-app.
   void openAthkar() {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    sl<HomeMiniAppsListCubit>().openMiniApp(
-      serviceKey: "islamicservice",
-      path: "#Athkar_Page",
-    );
+    // TODO: Implement when mini_apps_engine is available
   }
 
   /// Opens the Free Roam navigation screen.
@@ -113,7 +105,7 @@ class DashboardActions {
       action: MetricAction.tap.name,
       group: MetricsConstants.exploreTag,
     );
-    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "snapandsend");
+    // TODO: Implement when mini_apps_engine is available
   }
 
   /// Opens the road event reporting feature.
