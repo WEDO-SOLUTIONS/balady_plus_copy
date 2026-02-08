@@ -11,13 +11,10 @@ import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
-import 'package:mapness/features/wrc/wrc.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/landing/dashboard/cityscape_background.dart';
-import 'package:mapness/widgets/landing/dashboard/cityscape_logo.dart';
+import 'package:mapness/widgets/landing/dashboard/cityescape_control.dart';
 import 'package:mapness/widgets/landing/dashboard/special_theme_header.dart';
-import 'package:mapness/widgets/landing/dashboard/wrc_background.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
@@ -28,19 +25,13 @@ class MapHiddenStateControls extends ConsumerStatefulWidget {
 
   final AnimationController fireworksController;
 
-  const MapHiddenStateControls(
-    this.controller,
-    this.fireworksController, {
-    super.key,
-  });
+  const MapHiddenStateControls(this.controller, this.fireworksController, {super.key});
 
   @override
-  ConsumerState<MapHiddenStateControls> createState() =>
-      _MapHiddenStateControlsState();
+  ConsumerState<MapHiddenStateControls> createState() => _MapHiddenStateControlsState();
 }
 
-class _MapHiddenStateControlsState
-    extends ConsumerState<MapHiddenStateControls> {
+class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls> {
   late final ItemScrollController quickScrollController;
 
   @override
@@ -69,12 +60,9 @@ class _MapHiddenStateControlsState
     final freeRoamState = ref.read(freeRoamStarterProvider);
 
     final isLaunchingDismiss =
-        freeRoamState.canStart &&
-        freeRoamState.isAutorun &&
-        widget.controller.state != ThreeStateSheet.hidden;
+        freeRoamState.canStart && freeRoamState.isAutorun && widget.controller.state != ThreeStateSheet.hidden;
 
-    final isGoToNavigatorDismiss =
-        freeRoamState.canStart &&
+    final isGoToNavigatorDismiss = freeRoamState.canStart &&
         !freeRoamState.isAutorun &&
         widget.controller.state == ThreeStateSheet.open &&
         widget.controller.interpolation > 0.5;
@@ -93,7 +81,6 @@ class _MapHiddenStateControlsState
         specialThemeMode == SpecialThemeMode.mekkahBase ||
         specialThemeMode == SpecialThemeMode.ramadan;
     final isCityscapeDay = ref.watch(cityscapeProvider);
-    final isWRCActive = ref.watch(wRCProvider);
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     ref.listen(freeRoamStarterProvider, (_, state) {
       if (widget.controller.state == ThreeStateSheet.expanded) {
@@ -101,17 +88,12 @@ class _MapHiddenStateControlsState
       } else if (state.canStart && state.isAutorun) {
         widget.controller.setState(ThreeStateSheet.hidden);
         setState(() {
-          quickScrollController.scrollTo(
-            index: 0,
-            duration: const Duration(milliseconds: 150),
-            alignment: 0.05,
-          );
+          quickScrollController.scrollTo(index: 0, duration: const Duration(milliseconds: 150), alignment: 0.05);
         });
       }
     });
 
-    final showLaunchingFreeRoam =
-        freeRoamState.canStart && freeRoamState.isAutorun;
+    final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
     final isFreeRoamStart = freeRoamState.canStart && !freeRoamState.isAutorun;
 
     return Column(
@@ -119,17 +101,11 @@ class _MapHiddenStateControlsState
       children: [
         Stack(
           alignment: Alignment.bottomCenter,
-          clipBehavior: Clip.none,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                bottom: showSpecialBanner ? Spacing.$4x : 0.0,
-              ),
+              padding: EdgeInsets.only(bottom: showSpecialBanner ? Spacing.$4x : 0.0),
               child: AnimatedCrossFade(
-                crossFadeState:
-                    isFreeRoamStart
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
+                crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                 firstChild: const FreeRoamBar(),
                 secondChild: QuickSearchBar(
                   direction: uiDirection,
@@ -140,49 +116,69 @@ class _MapHiddenStateControlsState
               ),
             ),
             if (specialThemeMode != SpecialThemeMode.base)
+              MultiStateSheetBuilder(
+                defaultState: ThreeStateSheet.hidden,
+                builder: (context, state, interpolation, child) => Padding(
+                  padding:
+                      EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0),
+                  child: GestureDetector(
+                    onTap: () => widget.controller.setState(ThreeStateSheet.open),
+                    child: SizedBox(
+                      height:
+                          Spacing.$12x * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
+                      width: double.infinity,
+                      child: DecoratedBox(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
+                          color: Color(0xFF00343A),
+                        ),
+                        child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
+                              child: Text(
+                                context.l10n.happy95thYears,
+                                style: context.textStyles.bodySmallSemiBold.copyWith(
+                                  color: context.colors.successOnSuccess,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            )),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (specialThemeMode != SpecialThemeMode.base)
               SpecialThemeHeader(
                 mode: specialThemeMode,
                 controller: widget.controller,
                 fireworksController: widget.fireworksController,
               ),
             if (isCityscapeDay)
-              CityscapeBackground(
+              CityscapeGlobal(
                 controller: widget.controller,
                 onTap: () {
                   ref.read(cityscapeProvider.notifier).openThePlace();
                 },
-              ),
-            if (isCityscapeDay)
-              CityscapeLogo(
-                onTap: () {
-                  ref.read(cityscapeProvider.notifier).openThePlace();
-                },
-              ),
-            if (isWRCActive)
-              WRCBackground(
-                controller: widget.controller,
-                onTap: () {
-                  ref.read(wRCProvider.notifier).moveCameraToEventArea();
-                },
-              ),
+              )
           ],
-        ),
+        )
       ],
     );
   }
 }
 
 class FreeRoamBar extends ConsumerWidget {
-  const FreeRoamBar({super.key});
+  const FreeRoamBar({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => const Padding(
-    padding: EdgeInsets.symmetric(
-      horizontal: Spacing.$4x,
-      vertical: Spacing.$3x,
-    ),
-    child: GoToNavigatorButton(),
-  );
+        padding: EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
+        child: GoToNavigatorButton(),
+      );
 }
 
 class QuickSearchBar extends StatelessWidget {
@@ -203,62 +199,61 @@ class QuickSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MultiStateSheetBuilder<ThreeStateSheet>(
-    defaultState: ThreeStateSheet.hidden,
-    builder: (context, state, interpolation, child) {
-      final delta =
-          state == ThreeStateSheet.hidden
-              ? clampDouble(1 - interpolation * 3, 0, 1)
-              : hiddenHeight;
+        defaultState: ThreeStateSheet.hidden,
+        builder: (context, state, interpolation, child) {
+          final delta = state == ThreeStateSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
 
-      opacity.value = delta;
-      return IgnorePointer(
-        ignoring: state != ThreeStateSheet.hidden,
-        child: Align(
-          heightFactor: delta,
-          alignment: Alignment.topCenter,
-          child: child,
-        ),
-      );
-    },
-    child: FadeTransition(
-      opacity: Animation.fromValueListenable(opacity),
-      child: Directionality(
-        textDirection: direction,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: Spacing.$2x),
-          child: MapQuickFilters(
-            forMap: true,
-            itemScrollController: quickScrollController,
-            customFilters: [
-              FilterItemBuilder(
-                filterType: FilterType.custom,
-                builder:
-                    (context, {required isSelected}) => _FreeRoamQuickAction(
+          opacity.value = delta;
+          return IgnorePointer(
+            ignoring: state != ThreeStateSheet.hidden,
+            child: Align(
+              heightFactor: delta,
+              alignment: Alignment.topCenter,
+              child: child,
+            ),
+          );
+        },
+        child: FadeTransition(
+          opacity: Animation.fromValueListenable(opacity),
+          child: Directionality(
+            textDirection: direction,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.$2x),
+              child: MapQuickFilters(
+                forMap: true,
+                itemScrollController: quickScrollController,
+                customFilters: [
+                  FilterItemBuilder(
+                    filterType: FilterType.custom,
+                    builder: (
+                      context, {
+                      required isSelected,
+                    }) =>
+                        _FreeRoamQuickAction(
                       isLaunching: showLaunchingFreeRoam,
                     ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 }
 
 class _FreeRoamQuickAction extends ConsumerStatefulWidget {
   final bool isLaunching;
 
-  const _FreeRoamQuickAction({required this.isLaunching});
+  const _FreeRoamQuickAction({
+    required this.isLaunching,
+  });
 
   @override
   ConsumerState<_FreeRoamQuickAction> createState() => _FreeRoamState();
 }
 
 class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
-    with
-        TickerProviderStateMixin,
-        FreeRoamAnimationMixin,
-        AutomaticKeepAliveClientMixin {
+    with TickerProviderStateMixin, FreeRoamAnimationMixin, AutomaticKeepAliveClientMixin {
   late final AnimationController launchingController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 666),
@@ -300,11 +295,9 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
     final colors = context.colors;
 
     final delta = launchingController.value;
-    final borderRadius =
-        lerpDouble(RadiusBorder.m, RadiusBorder.l, delta) ?? RadiusBorder.m;
+    final borderRadius = lerpDouble(RadiusBorder.m, RadiusBorder.l, delta) ?? RadiusBorder.m;
 
-    final iconAndTextColor =
-        Color.lerp(
+    final iconAndTextColor = Color.lerp(
           colors.foregroundDefault,
           context.colors.backgroundSurface1,
           delta,
@@ -325,13 +318,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: Shadows.s,
-        color:
-            Color.lerp(
-              colors.accentOnAccent,
-              colors.accentSecondarySoft,
-              delta,
-            ) ??
-            colors.accentOnAccent,
+        color: Color.lerp(colors.accentOnAccent, colors.accentSecondarySoft, delta) ?? colors.accentOnAccent,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -356,7 +343,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                   ],
                   stops: [
                     if (isLTR) gradientPosition else 1 - gradientPosition,
-                    if (isLTR) gradientPosition else 1 - gradientPosition,
+                    if (isLTR) gradientPosition else 1 - gradientPosition
                   ],
                 ),
               ),
@@ -371,9 +358,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                       child: DecoratedBox(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(RadiusBorder.m),
-                          color: Colors.white.withOpacity(
-                            progressOpacity * delta,
-                          ),
+                          color: Colors.white.withOpacity(progressOpacity * delta),
                         ),
                         child: Center(
                           child: Icon(
@@ -391,29 +376,22 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                         alignment: AlignmentDirectional.centerStart,
                         widthFactor: delta,
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            start: Spacing.$2x,
-                          ),
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
                           child: Row(
                             children: [
                               Text(
                                 context.l10n.launchingNavigator,
-                                style: context.textStyles.bodySmallSemiBold
-                                    .copyWith(color: iconAndTextColor),
+                                style: context.textStyles.bodySmallSemiBold.copyWith(color: iconAndTextColor),
                               ),
                               AppButton(
                                 color: context.colors.accentSecondarySoft,
                                 onTap: () {
-                                  ref
-                                      .read(freeRoamStarterProvider.notifier)
-                                      .pauseAnimation();
-                                  context.router.push(
-                                    const AutostartSettingsSheetRoute(),
-                                  );
+                                  ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+                                  context.router.push(const AutostartSettingsSheetRoute());
                                 },
                                 primaryIcon: SystemIcons.close,
                                 buttonColorScheme: ButtonColorScheme.accent,
-                              ),
+                              )
                             ],
                           ),
                         ),
