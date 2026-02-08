@@ -1,55 +1,51 @@
-import 'package:balady_uikit/balady_uikit.dart';
-import 'package:sheetify/sheetify.dart' as sheetify;
+import 'package:sheetify/sheetify.dart';
 
-final class RouteDetailsStateMapper implements BottomSheetStateMapper<ThreeStateBottomSheet> {
+final class RouteDetailsStateMapper implements SheetStateMapper<ThreeStateSheet> {
   const RouteDetailsStateMapper();
 
   @override
-  ThreeStateBottomSheet state(int state) => switch (state) {
-        0 => ThreeStateBottomSheet.hidden,
-        1 => ThreeStateBottomSheet.open,
-        _ => ThreeStateBottomSheet.expanded,
+  ThreeStateSheet state(int state) => switch (state) {
+        0 => ThreeStateSheet.hidden,
+        1 => ThreeStateSheet.open,
+        _ => ThreeStateSheet.expanded,
       };
 
   @override
-  int index(ThreeStateBottomSheet state) => state.index.clamp(0, 2);
+  int index(ThreeStateSheet state) => state.index.clamp(0, 2);
 
   @override
-  bool shouldPopOn(StatefulBottomSheetController<ThreeStateBottomSheet> controller) {
+  bool shouldPopOn(MultiStateSheetController<ThreeStateSheet> controller) {
     switch (controller.closestState) {
-      case ThreeStateBottomSheet.hidden:
+      case ThreeStateSheet.hidden:
         return true;
 
-      case ThreeStateBottomSheet.open:
-        controller.setState(ThreeStateBottomSheet.hidden);
+      case ThreeStateSheet.open:
+        controller.setState(ThreeStateSheet.hidden);
         return false;
 
-      case ThreeStateBottomSheet.expanded:
-        controller.setState(ThreeStateBottomSheet.open);
+      case ThreeStateSheet.expanded:
+        controller.setState(ThreeStateSheet.open);
         return false;
     }
   }
 }
 
-enum TwoStateSheet {
-  hidden,
-  expanded,
-}
+enum TwoStateSheet { hidden, expanded }
 
-final class RouteDetailsStateMapperV2 implements sheetify.SheetStateMapper<TwoStateSheet> {
+final class RouteDetailsStateMapperV2 implements SheetStateMapper<TwoStateSheet> {
   const RouteDetailsStateMapperV2();
 
   @override
   TwoStateSheet state(int state) => switch (state) {
-        0 => TwoStateSheet.hidden,
-        _ => TwoStateSheet.expanded,
-      };
+    0 => TwoStateSheet.hidden,
+    _ => TwoStateSheet.expanded,
+  };
 
   @override
   int index(TwoStateSheet state) => state.index.clamp(0, 2);
 
   @override
-  bool shouldPopOn(sheetify.MultiStateSheetController<TwoStateSheet> controller) {
+  bool shouldPopOn(MultiStateSheetController<TwoStateSheet> controller) {
     switch (controller.closestState) {
       case TwoStateSheet.hidden:
         return true;
