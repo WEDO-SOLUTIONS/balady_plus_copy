@@ -1,22 +1,20 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
-import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
 import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
-import 'package:mapness/widgets/debug_overlay/link_checker.dart';
+import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
 import 'package:mapness/widgets/debug_overlay/onboarding_button.dart';
-import 'package:mapness/widgets/debug_overlay/saudi_national_day_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
 import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
-import 'package:mapness/widgets/debug_overlay/voice_picker.dart';
+import 'package:mapness/widgets/debug_overlay/special_theme_debug_panel.dart';
+import 'package:mapness/widgets/debug_overlay/wrc_debug_switcher.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {
@@ -32,6 +30,8 @@ class DebugSheet extends ConsumerStatefulWidget {
 }
 
 class _DebugSheetState extends ConsumerState<DebugSheet> {
+  PackageInfo? _packageInfo;
+
   @override
   void initState() {
     super.initState();
@@ -42,197 +42,334 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
     });
   }
 
-  PackageInfo? _packageInfo;
-
   @override
-  Widget build(BuildContext context) => DraggableScrollableSheet(
-        minChildSize: 0,
-        maxChildSize: 0.9,
-        initialChildSize: 0,
-        snapSizes: const [0, 0.9],
-        controller: widget._draggableController,
-        builder: (context, scrollController) => Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-            color: Colors.white,
+  Widget build(BuildContext context) {
+    return DraggableScrollableSheet(
+      minChildSize: 0,
+      maxChildSize: 0.9,
+      initialChildSize: 0,
+      snapSizes: const [0, 0.9],
+      controller: widget._draggableController,
+      builder: (context, scrollController) => Container(
+        decoration: const BoxDecoration(
+          color: DebugTheme.background,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
           ),
-          child: Directionality(
-            textDirection: TextDirection.ltr,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
-              physics: const ClampingScrollPhysics(),
-              controller: scrollController,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
+        ),
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Column(
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  physics: const ClampingScrollPhysics(),
+                  controller: scrollController,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'development-menu',
-                            style: context.textStyle.heading1.copyWith(color: Colors.black),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Urbi Release Version: ',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
-                                ),
-                                TextSpan(
-                                  text: PackageConfig.releaseVersion,
-                                  style: context.textStyle.footNoteBold.copyWith(
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'App version: ',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
-                                ),
-                                TextSpan(
-                                  text: '${_packageInfo?.version}(${_packageInfo?.buildNumber})',
-                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
-                                ),
-                              ],
-                            ),
-                          ),
-                          // TODO(Sergei): temporary information for internal testing builds from AA branch
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Android Auto: ',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
-                                ),
-                                TextSpan(
-                                  text: 'true',
-                                  style: context.textStyle.footNoteBold.copyWith(color: Colors.black87),
-                                ),
-                              ],
-                            ),
-                          ),
-                          RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'CI build version: \n',
-                                  style: context.textStyle.footNote.copyWith(color: Colors.black54),
-                                ),
-                                TextSpan(
-                                  text: PackageConfig.buildName,
-                                  style: context.textStyle.footNoteBold.copyWith(
-                                    color: Colors.black87,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                      _AppInfoCard(packageInfo: _packageInfo),
+                      const SpecialThemeDebugPanel(),
+                      _QuickActionsCard(
+                        draggableController: widget._draggableController,
                       ),
-                      const Spacer(),
-                      SvgPicture.asset(
-                        Assets.icons.svg.icBug.keyName,
-                        height: 30,
+                      const DebugServerUrl(),
+                      const SsoCredentialView(),
+                      const CityscapeDebugSwitcher(),
+                      const WRCDebugSwitcher(),
+                      const BetterRouteSettingsWidget(),
+                      const SliderSpeed(),
+                      const DebugNavigationControll(),
+                      const ShowOnboardingButton(),
+                      const ShowSaudiDayButton(),
+                      SizedBox(
+                        height: MediaQuery.of(context).viewInsets.bottom + 24,
                       ),
                     ],
                   ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8),
-                    child: Divider(
-                      color: Colors.black54,
-                    ),
-                  ),
-                  LabeledElevatedButton(
-                    onPressed: () {
-                      widget._draggableController.animateTo(
-                        0.0,
-                        duration: const Duration(milliseconds: 150),
-                        curve: Curves.linear,
-                      );
-                      logger.share();
-                    },
-                    label: 'Show logs',
-                  ),
-                  Text(
-                    'Git branch:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
-                  Text(
-                    PackageConfig.gitBranch,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    'Git commit:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
-                  Text(
-                    PackageConfig.gitCommit,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    'Vendor:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
-                  Text(
-                    PackageConfig.vendorConfig,
-                    style: context.textStyle.heading2.copyWith(color: Colors.black),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    'Uuid:',
-                    style: context.textStyle.footNote.copyWith(color: Colors.black),
-                  ),
-                  Text(
-                    ref.watch(uuidProviderProvider),
-                    style: context.textStyle.footNoteBold.copyWith(color: Colors.black),
-                  ),
-                  const SizedBox(height: 8),
-                  LabeledElevatedButton(
-                    onPressed: () => ref.read(uuidProviderProvider.notifier).randomize(),
-                    label: 'randomize uuid',
-                  ),
-                  const DebugServerUrl(),
-                  const SizedBox(height: 12),
-                  const SsoCredentialView(),
-                  const CityscapeDebugSwitcher(),
-                  const SaudiNationalDayDebugSwitcher(),
-                  const VoicePicker(),
-                  const BetterRouteSettingsWidget(),
-                  const SizedBox(height: 12),
-                  const SliderSpeed(),
-                  const SizedBox(height: 12),
-                  const DebugNavigationControll(),
-                  const ShowOnboardingButton(),
-                  const ShowSaudiDayButton(),
-                  const SizedBox(height: 12),
-                  const LinkChecker(),
-                  SizedBox(
-                    height: MediaQuery.of(context).viewInsets.bottom,
-                  ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: DebugTheme.border),
+        ),
+      ),
+      child: Column(
+        children: [
+          // Handle bar
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: DebugTheme.surfaceLight,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: DebugTheme.gradientPurple,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: DebugTheme.accent.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.bug_report_rounded,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Developer Tools',
+                      style: context.textStyles.h3SemiBold.copyWith(
+                        color: DebugTheme.textPrimary,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    Text(
+                      'Debug & Configuration Panel',
+                      style: context.textStyles.captionSmallRegular.copyWith(
+                        color: DebugTheme.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              DebugBadge(
+                label: 'DEV',
+                color: DebugTheme.warning,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AppInfoCard extends ConsumerWidget {
+  const _AppInfoCard({required this.packageInfo});
+
+  final PackageInfo? packageInfo;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final uuid = ref.watch(uuidProviderProvider);
+
+    return DebugCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DebugSectionHeader(
+            icon: Icons.info_outline_rounded,
+            title: 'App Information',
+            gradient: DebugTheme.gradientBlue,
+          ),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: DebugTheme.surfaceLight,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              children: [
+                _InfoItem(
+                  label: 'Urbi Release',
+                  value: PackageConfig.releaseVersion,
+                ),
+                _InfoItem(
+                  label: 'App Version',
+                  value: '${packageInfo?.version ?? '-'}(${packageInfo?.buildNumber ?? '-'})',
+                ),
+                _InfoItem(
+                  label: 'CI Build',
+                  value: PackageConfig.buildName,
+                  isSmall: true,
+                ),
+                _InfoItem(
+                  label: 'Android Auto',
+                  value: 'Enabled',
+                  valueColor: DebugTheme.success,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Device UUID',
+                      style: context.textStyles.captionSmallRegular.copyWith(
+                        color: DebugTheme.textMuted,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    GestureDetector(
+                      onTap: () => Clipboard.setData(ClipboardData(text: uuid)),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: DebugTheme.surfaceLight,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: DebugTheme.border),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                uuid,
+                                style: context.textStyles.captionSmallMedium.copyWith(
+                                  color: DebugTheme.textSecondary,
+                                  fontFamily: 'monospace',
+                                  fontSize: 10,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Icon(
+                              Icons.copy_rounded,
+                              size: 14,
+                              color: DebugTheme.textMuted,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              DebugOutlinedButton(
+                label: 'Randomize',
+                icon: Icons.shuffle_rounded,
+                onPressed: () => ref.read(uuidProviderProvider.notifier).randomize(),
+                isCompact: true,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoItem extends StatelessWidget {
+  const _InfoItem({
+    required this.label,
+    required this.value,
+    this.valueColor,
+    this.isSmall = false,
+  });
+
+  final String label;
+  final String value;
+  final Color? valueColor;
+  final bool isSmall;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: context.textStyles.captionSmallRegular.copyWith(
+              color: DebugTheme.textMuted,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Flexible(
+            child: Text(
+              value,
+              style: context.textStyles.captionSmallMedium.copyWith(
+                color: valueColor ?? DebugTheme.textPrimary,
+                fontSize: isSmall ? 10 : null,
+              ),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickActionsCard extends StatelessWidget {
+  const _QuickActionsCard({required this.draggableController});
+
+  final DraggableScrollableController draggableController;
+
+  @override
+  Widget build(BuildContext context) {
+    return DebugCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DebugSectionHeader(
+            icon: Icons.flash_on_rounded,
+            title: 'Quick Actions',
+            gradient: DebugTheme.gradientAmber,
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: DebugButton(
+                  label: 'View Logs',
+                  icon: Icons.article_outlined,
+                  gradient: DebugTheme.gradientTeal,
+                  onPressed: () {
+                    draggableController.animateTo(
+                      0.0,
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.linear,
+                    );
+                    logger.share();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }
