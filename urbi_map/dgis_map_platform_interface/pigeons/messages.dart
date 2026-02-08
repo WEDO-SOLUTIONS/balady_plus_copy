@@ -1736,6 +1736,12 @@ abstract class MapApi {
   );
 
   @async
+  CameraPositionMessage calcPositionForGeoPoints(
+    List<GeoPointMessage> points,
+    CalcPositionOptionsMessage options,
+  );
+
+  @async
   CameraPositionMessage calcPositionForPolylines(
     List<String> polylines,
     CalcPositionOptionsMessage options,

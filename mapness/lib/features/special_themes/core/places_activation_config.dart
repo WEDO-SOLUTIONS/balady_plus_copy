@@ -333,7 +333,7 @@ class PlacesActivationConfigDatasource {
   Future<PlacesActivationConfig> _loadFromAssets() async {
     try {
       final jsonOutput = await rootBundle.loadString(
-        'assets/config.json',
+        'packages/mapness/assets/config.json',
       );
       final json = jsonDecode(jsonOutput) as Map<String, dynamic>;
       return PlacesActivationConfig.fromJson(json);
