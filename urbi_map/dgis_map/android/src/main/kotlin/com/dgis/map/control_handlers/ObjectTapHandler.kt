@@ -859,6 +859,31 @@ class ObjectTapHandler(
         )
     }
 
+    fun calcPositionForGeoPoints(
+            points: List<GeoPointMessage>,
+            options: CalcPositionOptionsMessage,
+            callback: (Result<CameraPositionMessage>) -> Unit
+    ) {
+        if (points.isEmpty()) {
+            val pos = map.camera.position
+            callback(Result.success(CameraPositionMessage(
+                point = GeoPointMessage(pos.point.latitude.value, pos.point.longitude.value),
+                zoom = pos.zoom.value.toDouble(),
+                tilt = pos.tilt.value.toDouble(),
+                bearing = pos.bearing.value
+            )))
+            return
+        }
+
+        val objects: List<SimpleMapObject> = if (points.size > 1) {
+            listOf(Polyline(PolylineOptions(points = points.map { it.toGeoPoint() })))
+        } else {
+            listOf(Circle(CircleOptions(position = points.first().toGeoPoint(), radius = Meter(500.0))))
+        }
+
+        calcPositionForObjects(objects = objects, options = options, callback = callback)
+    }
+
     fun calcPositionForPoints(
         area: GeometryMessage,
         options: CalcPositionOptionsMessage,
