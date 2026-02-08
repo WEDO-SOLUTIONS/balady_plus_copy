@@ -198,8 +198,7 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: 4.1.6
+    path: balady_uikit
 
   sheetify: 1.1.1
 
@@ -302,6 +301,7 @@ flutter:
     - assets/mock/mini_apps_response.json
     - assets/
     - assets/icons/svg/
+    - assets/icons/makkah/
     - assets/icons/svg/jod/
     - assets/icons/svg/map/
     - assets/icons/svg/prayers/
@@ -324,7 +324,12 @@ flutter:
     - assets/icons/png/new_services/
     - assets/icons/svg/weather/day/
     - assets/icons/svg/weather/night/
+    - assets/icons/makkah_markers/
+    - assets/icons/ramadan_markers/
+    - assets/icons/makkah/
     - assets/images/
+    - assets/images/themes/makkah/
+    - assets/images/themes/ramadan/
     - assets/langs/
     - assets/maps/configs/
     - assets/maps/icons/
