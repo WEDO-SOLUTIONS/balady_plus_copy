@@ -29,6 +29,9 @@ import 'package:mapness/shared/providers/analytic/models/extensions/directory_ob
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
+import 'package:mapness/features/special_themes/core/places_activation_config.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/widgets/landing/kaaba_virtual_journey_card.dart';
 import 'package:shimmer/shimmer.dart';
 
 class PoiContentSliver extends ConsumerWidget {
@@ -45,6 +48,28 @@ class PoiContentSliver extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data = poiCardState?.gisObjectIdMessage;
     const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
+
+    final specialThemeMode = ref.watch(specialThemeModeProvider);
+    final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
+    const kaabaLat = 21.422421;
+    const kaabaLon = 39.826168;
+    const eps = 1e-6;
+    final markerPosition = data?.markerPosition;
+    final isKaaba = markerPosition != null &&
+        (markerPosition.latitude - kaabaLat).abs() < eps &&
+        (markerPosition.longitude - kaabaLon).abs() < eps;
+
+    // Check if pilgrim feature is enabled and active based on dates
+    final isPilgrimFeatureActive = pilgrimFeature != null &&
+        pilgrimFeature.enabled &&
+        (pilgrimFeature.startDate == null ||
+            !DateTime.now().isBefore(pilgrimFeature.startDate!));
+
+    final shouldShowMakkahPreview =
+        (specialThemeMode == SpecialThemeMode.mekkahBase ||
+            specialThemeMode == SpecialThemeMode.ramadan) &&
+        isKaaba &&
+        isPilgrimFeatureActive;
 
     final offers = ref.watch(poiOffersProvider);
     final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
@@ -201,6 +226,15 @@ class PoiContentSliver extends ConsumerWidget {
                   data: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap),
                 ),
               ),
+              if (shouldShowMakkahPreview)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                  child: KaabaVirtualJourneyCard(
+                    onTap: () {
+                      context.router.push(const GaussianSplattingRoute());
+                    },
+                  ),
+                ),
               if (about != null)
                 Padding(
                   padding: itemPadding,

@@ -3,18 +3,169 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 
+Widget _makkahWorkingHoursIcon({Color? backgroundColor}) {
+  return DecoratedBox(
+    decoration: BoxDecoration(
+      color: backgroundColor ?? const Color(0xFFDAB98A),
+      borderRadius: BorderRadius.circular(8),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(Spacing.$1x),
+      child: SvgPicture.asset(
+        'assets/icons/makkah/clock.svg',
+        width: 20,
+        height: 20,
+        colorFilter: const ColorFilter.mode(
+          Color(0xFFFFFFFF),
+          BlendMode.srcIn,
+        ),
+        matchTextDirection: true,
+      ),
+    ),
+  );
+}
+
+/// Makkah-style working hours tile that matches _MakkahFeatureTile layout
+class _MakkahWorkingHoursTile extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final Color iconBackgroundColor;
+  final Color tileBackgroundColor;
+  final VoidCallback? onTap;
+  final bool showChevron;
+
+  const _MakkahWorkingHoursTile({
+    required this.title,
+    required this.iconBackgroundColor,
+    required this.tileBackgroundColor,
+    this.subtitle,
+    this.onTap,
+    this.showChevron = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const iconSize = 20.0;
+    const iconContainerSize = 28.0;
+    const iconSlotSize = 36.0;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 50),
+        decoration: BoxDecoration(
+          color: tileBackgroundColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsetsDirectional.only(
+          start: 26,
+          end: Spacing.$3x,
+          top: Spacing.$2x,
+          bottom: Spacing.$2x,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: iconSlotSize,
+              height: iconSlotSize,
+              child: Align(
+                alignment: AlignmentDirectional.topStart,
+                child: SizedBox(
+                  width: iconContainerSize,
+                  height: iconContainerSize,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: iconBackgroundColor,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        'assets/icons/makkah/clock.svg',
+                        width: iconSize,
+                        height: iconSize,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0xFFFFFFFF),
+                          BlendMode.srcIn,
+                        ),
+                        matchTextDirection: true,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: Spacing.$3x),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: _makkahWorkingHoursTextStyle(
+                      context,
+                      color: context.colors.foregroundDefault,
+                    ),
+                  ),
+                  if (subtitle != null && subtitle!.isNotEmpty) ...[
+                    const SizedBox(height: Spacing.$0_5x),
+                    Text(
+                      subtitle!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: _makkahWorkingHoursTextStyle(
+                        context,
+                        color: context.colors.foregroundSoft,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (showChevron)
+              Icon(
+                Icons.keyboard_arrow_down,
+                size: 24,
+                color: context.colors.foregroundMuted,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+TextStyle _makkahWorkingHoursTextStyle(BuildContext context, {required Color color}) {
+  return context.textStyles.bodySmallRegular.copyWith(
+    fontSize: 14,
+    height: 1.2,
+    letterSpacing: 0,
+    color: color,
+  );
+}
+
 class PoiContentWorkingHoursCard extends StatelessWidget {
   final WorkingHours workingHours;
   final WorkStatusMessage? workStatusMessage;
+  final Color? makkahIconBackgroundColor;
+  final Color? makkahTileBackgroundColor;
+  final EdgeInsetsGeometry? makkahInnerPadding;
 
   const PoiContentWorkingHoursCard({
     required this.workingHours,
     this.workStatusMessage,
+    this.makkahIconBackgroundColor,
+    this.makkahTileBackgroundColor,
+    this.makkahInnerPadding,
     super.key,
   });
 
@@ -45,19 +196,56 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       return null;
     }
 
+    final isMakkahMode = makkahIconBackgroundColor != null && makkahTileBackgroundColor != null;
+
     if (workingHours.isSameEveryDay) {
+      if (isMakkahMode) {
+        return _MakkahWorkingHoursTile(
+          title: todayWorkingHours(),
+          subtitle: todayBreaks(),
+          iconBackgroundColor: makkahIconBackgroundColor!,
+          tileBackgroundColor: makkahTileBackgroundColor!,
+        );
+      }
       return ContentWrapper(
         color: context.colors.backgroundSurface1,
         children: [
-          ContentRow(
-            leading: GeneralIcons.timeQuarter.icon(
-              color: context.colors.accentDefault,
-            ),
-            text: ContentRowTextOptions(
-              title: todayWorkingHours(),
-              subtitle: todayBreaks(),
-              subtitleOptions: ContentRowTextOption(
-                baseColor: context.colors.foregroundSoft,
+          Padding(
+            padding: makkahInnerPadding ?? EdgeInsets.zero,
+            child: ContentRow(
+              leading: _makkahWorkingHoursIcon(backgroundColor: makkahIconBackgroundColor),
+              text: ContentRowTextOptions(
+                titleOptions: ContentRowTextOption(
+                  builder:
+                      (context) => Text(
+                        todayWorkingHours(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                        style: _makkahWorkingHoursTextStyle(
+                          context,
+                          color: context.colors.foregroundDefault,
+                        ),
+                      ),
+                ),
+                subtitleOptions:
+                    todayBreaks() == null
+                        ? null
+                        : ContentRowTextOption(
+                          builder:
+                              (context) => Text(
+                                todayBreaks()!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                                style: _makkahWorkingHoursTextStyle(
+                                  context,
+                                  color: context.colors.foregroundSoft,
+                                ),
+                              ),
+                        ),
+                title: '',
+                subtitle: '',
               ),
             ),
           ),
@@ -92,16 +280,38 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
-          padding: EdgeInsets.zero,
+          padding: makkahInnerPadding ?? EdgeInsets.zero,
+          crossAxisAlignment: CrossAxisAlignment.center,
           expandIconColor: context.colors.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
             title: todayWorkingHours(),
             subtitle: todayBreaks(),
-            subtitleStyle: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-            leadingIcon: GeneralIcons.timeQuarter.icon(
-              color: context.colors.accentDefault,
-            ),
+            titleBuilder:
+                (context) => Text(
+                  todayWorkingHours(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  softWrap: false,
+                  style: _makkahWorkingHoursTextStyle(
+                    context,
+                    color: context.colors.foregroundDefault,
+                  ),
+                ),
+            subtitleBuilder:
+                todayBreaks() == null
+                    ? null
+                    : (context) => Text(
+                      todayBreaks()!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
+                      style: _makkahWorkingHoursTextStyle(
+                        context,
+                        color: context.colors.foregroundSoft,
+                      ),
+                    ),
+            leadingIcon: _makkahWorkingHoursIcon(backgroundColor: makkahIconBackgroundColor),
           ),
           content: Column(
             children: <Widget>[
@@ -154,8 +364,20 @@ class _WorkTimeItemWidget extends StatelessWidget {
                 children: [
                   TableRow(
                     children: [
-                      Text(dayTitle, style: context.textStyles.bodyLargeRegular),
-                      Text(workHours, style: context.textStyles.bodyLargeRegular),
+                      Text(
+                        dayTitle,
+                        style: _makkahWorkingHoursTextStyle(
+                          context,
+                          color: context.colors.foregroundDefault,
+                        ),
+                      ),
+                      Text(
+                        workHours,
+                        style: _makkahWorkingHoursTextStyle(
+                          context,
+                          color: context.colors.foregroundDefault,
+                        ),
+                      ),
                     ],
                   ),
                   if (breakHours != null)
@@ -163,7 +385,10 @@ class _WorkTimeItemWidget extends StatelessWidget {
                       const SizedBox(),
                       Text(
                         breakHours!,
-                        style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+                        style: _makkahWorkingHoursTextStyle(
+                          context,
+                          color: context.colors.foregroundSoft,
+                        ),
                       ),
                     ]),
                 ],
