@@ -204,15 +204,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+446"
+    version: "3.12.23+433"
   balady_uikit:
     dependency: "direct main"
     description:
-      name: balady_uikit
-      sha256: d6037763b0123cbd131634277d90d0ffbacdabd02988eebcf054decd58dcd5b7
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
-    version: "4.1.6"
+      path: "../balady_uikit"
+      relative: true
+    source: path
+    version: "4.2.1"
   barcode:
     dependency: transitive
     description:
