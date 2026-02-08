@@ -7,6 +7,8 @@ import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_state.dart';
 import 'package:mapness/pages/theme_splash/theme_splash_page.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
 // Design tokens
@@ -384,6 +386,16 @@ class _ThemeChip extends StatelessWidget {
 }
 
 class _DebugTogglesCard extends ConsumerWidget {
+  void _trackDebugToggle(String feature, bool enabled) {
+    Metrics.logEventAdvanced(
+      enabled
+          ? MetricsConstants.themesKeys.debugOverrideEnabled
+          : MetricsConstants.themesKeys.debugOverrideDisabled,
+      group: MetricsConstants.themesTag,
+      props: {'feature': feature, 'enabled': enabled},
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final foundationDay = ref.watch(foundationDayDebugProvider);
@@ -405,31 +417,46 @@ class _DebugTogglesCard extends ConsumerWidget {
           _ToggleRow(
             label: 'Foundation Day',
             value: foundationDay,
-            onChanged: ref.read(foundationDayDebugProvider.notifier).set,
+            onChanged: (v) {
+              _trackDebugToggle('foundationDay', v);
+              ref.read(foundationDayDebugProvider.notifier).set(v);
+            },
             gradient: _DebugColors.gradientPurple,
           ),
           _ToggleRow(
             label: 'Makkah Base',
             value: mekkahBase,
-            onChanged: ref.read(mekkahBaseThemeDebugProvider.notifier).set,
+            onChanged: (v) {
+              _trackDebugToggle('mekkahBase', v);
+              ref.read(mekkahBaseThemeDebugProvider.notifier).set(v);
+            },
             gradient: _DebugColors.gradientAmber,
           ),
           _ToggleRow(
             label: 'Ramadan Season',
             value: ramadan,
-            onChanged: ref.read(ramadanSeasonDebugProvider.notifier).set,
+            onChanged: (v) {
+              _trackDebugToggle('ramadan', v);
+              ref.read(ramadanSeasonDebugProvider.notifier).set(v);
+            },
             gradient: _DebugColors.gradientTeal,
           ),
           _ToggleRow(
             label: 'Hajj Season',
             value: hajj,
-            onChanged: ref.read(hajjSeasonDebugProvider.notifier).set,
+            onChanged: (v) {
+              _trackDebugToggle('hajj', v);
+              ref.read(hajjSeasonDebugProvider.notifier).set(v);
+            },
             gradient: _DebugColors.gradientBlue,
           ),
           _ToggleRow(
             label: 'Kaaba Virtual Tour',
             value: pilgrimFeature,
-            onChanged: ref.read(pilgrimFeatureDebugProvider.notifier).set,
+            onChanged: (v) {
+              _trackDebugToggle('kaabaTour', v);
+              ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
+            },
             gradient: _DebugColors.gradientGreen,
           ),
           const SizedBox(height: 14),
@@ -467,6 +494,11 @@ class _LocationRefreshRow extends ConsumerWidget {
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
+                // Track location refresh
+                Metrics.logEventAdvanced(
+                  MetricsConstants.themesKeys.debugLocationRefreshed,
+                  group: MetricsConstants.themesTag,
+                );
                 ref.read(locationProvider.notifier).refreshLocation();
               },
               child: Container(
@@ -648,6 +680,13 @@ class _SplashTestCard extends ConsumerWidget {
   }
 
   void _showSplash(WidgetRef ref, SpecialThemeMode mode) {
+    // Track debug splash triggered
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.debugSplashTriggered,
+      group: MetricsConstants.themesTag,
+      props: {'theme': mode.name},
+    );
+
     final splashState = ref.read(themeSplashStateProvider.notifier);
     splashState.resetSplashFor(mode);
 
@@ -752,8 +791,14 @@ class _RemoteConfigCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 10),
                   _RefreshButton(
-                    onTap: () =>
-                        ref.read(placesActivationProvider.notifier).refresh(),
+                    onTap: () {
+                      // Track config refresh
+                      Metrics.logEventAdvanced(
+                        MetricsConstants.themesKeys.debugConfigRefreshed,
+                        group: MetricsConstants.themesTag,
+                      );
+                      ref.read(placesActivationProvider.notifier).refresh();
+                    },
                   ),
                 ],
               ),

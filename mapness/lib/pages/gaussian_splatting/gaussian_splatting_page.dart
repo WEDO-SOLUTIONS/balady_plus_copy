@@ -3,6 +3,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -42,6 +44,13 @@ class _GaussianSplattingPageWidgetState
   void initState() {
     super.initState();
 
+    // Track page opened
+    Metrics.logEventAdvanced(
+      MetricsConstants.kaabaTourKeys.pageOpened,
+      group: MetricsConstants.kaabaTourTag,
+      props: {'url': _getVirtualTourUrl()},
+    );
+
     _controller =
         WebViewController()
           ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -49,6 +58,11 @@ class _GaussianSplattingPageWidgetState
           ..setNavigationDelegate(
             NavigationDelegate(
               onPageFinished: (_) {
+                // Track page load completed
+                Metrics.logEventAdvanced(
+                  MetricsConstants.kaabaTourKeys.pageLoadCompleted,
+                  group: MetricsConstants.kaabaTourTag,
+                );
                 // Mute all audio/video elements
                 _controller.runJavaScript('''
                   document.querySelectorAll('video, audio').forEach(function(el) {
@@ -68,7 +82,13 @@ class _GaussianSplattingPageWidgetState
                   setState(() => _isLoading = false);
                 }
               },
-              onWebResourceError: (_) {
+              onWebResourceError: (error) {
+                // Track page load failed
+                Metrics.logEventAdvanced(
+                  MetricsConstants.kaabaTourKeys.pageLoadFailed,
+                  group: MetricsConstants.kaabaTourTag,
+                  props: {'error': error.description},
+                );
                 if (mounted) {
                   setState(() => _isLoading = false);
                 }
@@ -80,6 +100,11 @@ class _GaussianSplattingPageWidgetState
 
   @override
   void dispose() {
+    // Track page closed
+    Metrics.logEventAdvanced(
+      MetricsConstants.kaabaTourKeys.pageClosed,
+      group: MetricsConstants.kaabaTourTag,
+    );
     // Stop any playing media by loading an empty page before disposing
     _controller.loadRequest(Uri.parse('about:blank'));
     super.dispose();

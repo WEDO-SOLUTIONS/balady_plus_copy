@@ -92,6 +92,17 @@ class _ContentState extends State<_PoiCardContent>
   void initState() {
     super.initState();
 
+    // Track Makkah POI opened
+    Metrics.logEventAdvanced(
+      MetricsConstants.makkahPlacesKeys.placePoiOpened,
+      group: MetricsConstants.makkahPlacesTag,
+      props: {
+        'objectId': widget.objectId,
+        'placeId': widget.makkahPlace?.placeId ?? '',
+        'title': widget.makkahPlace?.titleEn ?? '',
+      },
+    );
+
     _bottomSheetListener = () {
       if (!mounted) return;
       final isInitial = _bottomSheetPreviousState == null;
@@ -174,6 +185,16 @@ class _ContentState extends State<_PoiCardContent>
                   MetricsConstants.poiKeys.exitButton,
                   group: MetricsConstants.poiTag,
                   action: MetricAction.tap.toString(),
+                );
+
+                // Track Makkah POI closed
+                Metrics.logEventAdvanced(
+                  MetricsConstants.makkahPlacesKeys.placePoiClosed,
+                  group: MetricsConstants.makkahPlacesTag,
+                  props: {
+                    'objectId': widget.objectId,
+                    'placeId': widget.makkahPlace?.placeId ?? '',
+                  },
                 );
 
                 _handleCloseTap();

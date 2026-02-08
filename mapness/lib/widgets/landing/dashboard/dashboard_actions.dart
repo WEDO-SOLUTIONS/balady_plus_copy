@@ -7,6 +7,7 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -20,8 +21,20 @@ class DashboardActions {
 
   final WidgetRef ref;
 
+  /// Helper to log themed quick action
+  void _logThemedQuickAction(String actionName) {
+    final themeMode = ref.read(specialThemeModeProvider);
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.quickActionTapped,
+      group: MetricsConstants.themesTag,
+      action: MetricAction.tap.name,
+      props: {'action': actionName, 'theme': themeMode.name},
+    );
+  }
+
   /// Opens the parking layer view.
   void openParking() {
+    _logThemedQuickAction('parking');
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
     ref.read(layersControlsProvider.notifier).enableParking();
   }
@@ -30,6 +43,7 @@ class DashboardActions {
   ///
   /// Checks location permission before navigating.
   Future<void> openQibla(BuildContext context) async {
+    _logThemedQuickAction('qibla');
     ref.read(appAnalyticsProvider).quickActionSelected('qibla');
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.qibla,
@@ -47,18 +61,21 @@ class DashboardActions {
 
   /// Opens the Quran mini-app.
   void openQuran() {
+    _logThemedQuickAction('quran');
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     // TODO: Implement when mini_apps_engine is available
   }
 
   /// Opens the Athkar mini-app.
   void openAthkar() {
+    _logThemedQuickAction('athkar');
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     // TODO: Implement when mini_apps_engine is available
   }
 
   /// Opens the Free Roam navigation screen.
   void openFreeRoam(BuildContext context) {
+    _logThemedQuickAction('free_roam');
     ref.read(appAnalyticsProvider).quickActionSelected('free_roam');
     context.router.push(const FreeRoamRoute());
   }
@@ -67,6 +84,7 @@ class DashboardActions {
   ///
   /// Checks location permission before navigating.
   Future<void> openMyLocation(BuildContext context) async {
+    _logThemedQuickAction('send_location');
     ref.read(appAnalyticsProvider).quickActionSelected('my_location');
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.myLocation,
@@ -99,6 +117,7 @@ class DashboardActions {
 
   /// Opens the Snap and Send mini-app for reporting issues.
   void openSnapAndSend() {
+    _logThemedQuickAction('snap_and_send');
     ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
@@ -112,7 +131,7 @@ class DashboardActions {
   ///
   /// TODO: Implement road event action when feature is ready.
   void openRoadEvent() {
-    // TODO: Implement road event action
+    _logThemedQuickAction('road_event');
     ref.read(appAnalyticsProvider).quickActionSelected('road_event');
   }
 }

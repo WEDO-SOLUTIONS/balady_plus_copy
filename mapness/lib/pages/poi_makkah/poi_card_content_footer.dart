@@ -21,6 +21,14 @@ void _onMakkahDirectionsTap(
     props: {'object_id': objectId, 'finish_point': '$lat,$lon'},
   );
 
+  // Track Makkah places directions
+  Metrics.logEventAdvanced(
+    MetricsConstants.makkahPlacesKeys.placeDirections,
+    group: MetricsConstants.makkahPlacesTag,
+    action: MetricAction.tap.name,
+    props: {'objectId': objectId, 'lat': lat, 'lon': lon},
+  );
+
   final mapSetting = MapObjectManagerSettings.search();
   ref
       .read(
@@ -63,6 +71,14 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
   });
 
   Future<void> _onPhoneTap(String phone) async {
+    // Track Makkah places call
+    Metrics.logEventAdvanced(
+      MetricsConstants.makkahPlacesKeys.placeCall,
+      group: MetricsConstants.makkahPlacesTag,
+      action: MetricAction.tap.name,
+      props: {'placeId': makkahPlace?.placeId ?? ''},
+    );
+
     final uri = Uri(scheme: 'tel', path: phone);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
@@ -94,6 +110,18 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     final favState = ref.read(favouriteCacheProvider).value;
     final favNotifier = ref.read(favouriteCacheProvider.notifier);
     final favouriteItem = favNotifier.getFavouriteOrNull(objectId);
+
+    // Track Makkah places favorite toggle
+    Metrics.logEventAdvanced(
+      MetricsConstants.makkahPlacesKeys.placeFavorite,
+      group: MetricsConstants.makkahPlacesTag,
+      action: MetricAction.tap.name,
+      props: {
+        'objectId': objectId,
+        'placeId': makkahPlace?.placeId ?? '',
+        'action': favouriteItem != null ? 'remove' : 'add',
+      },
+    );
 
     if (favouriteItem != null) {
       favNotifier.deleteItem(favouriteItem);
@@ -167,6 +195,18 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
     // Prefer makkahPlace.dgisId for sharing, fall back to data.id.objectId
     final shareId = makkahPlace?.dgisId ?? data.id?.objectId.toString();
     if (shareId == null || shareId == '0') return;
+
+    // Track Makkah places share
+    Metrics.logEventAdvanced(
+      MetricsConstants.makkahPlacesKeys.placeShare,
+      group: MetricsConstants.makkahPlacesTag,
+      action: MetricAction.tap.name,
+      props: {
+        'shareId': shareId,
+        'placeId': makkahPlace?.placeId ?? '',
+      },
+    );
+
     ShareUtil.share(shareId, context: context);
   }
 
