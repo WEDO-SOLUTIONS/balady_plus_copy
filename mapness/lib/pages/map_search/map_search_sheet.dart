@@ -14,7 +14,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';

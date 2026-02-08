@@ -13,7 +13,7 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/app_language.dart';
