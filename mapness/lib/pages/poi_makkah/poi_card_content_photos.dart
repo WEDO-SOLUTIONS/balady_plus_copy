@@ -184,7 +184,6 @@ class _MakkahDummyPhotosRow extends StatelessWidget {
           context.router.push(
             PhotoViewerRoute(
               photoPaths: photoUrls,
-              previewUrls: photoUrls,
               currentPhotoIndex: index,
             ),
           );
