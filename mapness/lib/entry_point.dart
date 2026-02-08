@@ -86,7 +86,16 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 
-import 'features/saudi_national_day/saudi_national_day.dart';
+import 'package:collection/collection.dart';
+import 'package:mapness/features/lifestyle_layers/providers/parking_details.dart';
+import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
+import 'features/special_themes/core/places_activation_config.dart';
+import 'features/special_themes/core/special_theme_mode.dart';
+import 'features/special_themes/core/theme_splash_config.dart';
+import 'features/special_themes/core/theme_splash_migration.dart';
+import 'features/special_themes/core/theme_splash_state.dart';
+import 'pages/theme_splash/theme_splash_page.dart';
+import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
 
@@ -123,6 +132,8 @@ class MapnessProviderScope extends StatelessWidget {
                 ..watch(saudiNationalDayProvider)
                 // Initialize Cityscape provider to listen remote config
                 ..watch(cityscapeProvider);
+              // Initialize Makkah places layer provider
+              ref.watch(makkahPlacesLayerProvider);
 
               return provider.MultiProvider(
                 providers: [
@@ -296,6 +307,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
+    final specialThemeMode = ref.watch(specialThemeModeProvider);
     ref.listen<bool>(cityscapeProvider, (prev, next) {
       _updateGlobalMarker(ref);
     });
@@ -353,9 +365,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
                   AppColorsThemeV3.palette(
-                    themes: isNationalDay
-                        ? BaladyAppThemes.saudiDay
-                        : BaladyAppThemes.light,
+                    themes: switch (specialThemeMode) {
+                      SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
+                      SpecialThemeMode.mekkahBase ||
+                      SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
+                      _ => BaladyAppThemes.light,
+                    },
                   ),
                   AppStaticColorsThemeExt.palette(),
                 ],
