@@ -129,7 +129,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
           title: context.l10n.createNewParkingSpot,
           desc: context.l10n.currentParkingSpaceRemoved,
           onAcceptTab: () async {
-            context.router.pop();
+            context.router.popForced();
             await Future.delayed(Duration.zero);
             await context.router.push(
               ParkingSpotRoute(
@@ -144,7 +144,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
               ),
             );
           },
-          onCancelTab: () => context.router.pop(),
+          onCancelTab: () => context.router.popForced(),
         ),
       );
     } else {
