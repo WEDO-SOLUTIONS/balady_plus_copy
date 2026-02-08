@@ -100,6 +100,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/light_map_preview.jpg
   AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
 
+  /// Directory path: assets/images/makkah_quick_actions
+  $AssetsImagesMakkahQuickActionsGen get makkahQuickActions => const $AssetsImagesMakkahQuickActionsGen();
+
   /// File path: assets/images/marker_eta_mask.png
   AssetGenImage get markerEtaMask => const AssetGenImage('assets/images/marker_eta_mask.png');
 
@@ -114,6 +117,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/qibla.png
   AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.png');
+
+  /// Directory path: assets/images/ramadan_quick_actions
+  $AssetsImagesRamadanQuickActionsGen get ramadanQuickActions => const $AssetsImagesRamadanQuickActionsGen();
 
   /// File path: assets/images/region_not_available.png
   AssetGenImage get regionNotAvailable => const AssetGenImage('assets/images/region_not_available.png');
@@ -601,6 +607,75 @@ class $AssetsIconsSvgGen {
         tagTraffic,
         ukFlag
       ];
+}
+
+class $AssetsImagesMakkahQuickActionsGen {
+  const $AssetsImagesMakkahQuickActionsGen();
+
+  /// File path: assets/images/makkah_quick_actions/athkar.png
+  AssetGenImage get athkar => const AssetGenImage('assets/images/makkah_quick_actions/athkar.png');
+
+  /// File path: assets/images/makkah_quick_actions/free_roam.png
+  AssetGenImage get freeRoam => const AssetGenImage('assets/images/makkah_quick_actions/free_roam.png');
+
+  /// File path: assets/images/makkah_quick_actions/parking.png
+  AssetGenImage get parking => const AssetGenImage('assets/images/makkah_quick_actions/parking.png');
+
+  /// File path: assets/images/makkah_quick_actions/qibla.png
+  AssetGenImage get qibla => const AssetGenImage('assets/images/makkah_quick_actions/qibla.png');
+
+  /// File path: assets/images/makkah_quick_actions/quaran.png
+  AssetGenImage get quaran => const AssetGenImage('assets/images/makkah_quick_actions/quaran.png');
+
+  /// File path: assets/images/makkah_quick_actions/road_event.png
+  AssetGenImage get roadEvent => const AssetGenImage('assets/images/makkah_quick_actions/road_event.png');
+
+  /// File path: assets/images/makkah_quick_actions/send_location.png
+  AssetGenImage get sendLocation => const AssetGenImage('assets/images/makkah_quick_actions/send_location.png');
+
+  /// File path: assets/images/makkah_quick_actions/snap_and_send.png
+  AssetGenImage get snapAndSend => const AssetGenImage('assets/images/makkah_quick_actions/snap_and_send.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [athkar, freeRoam, parking, qibla, quaran, roadEvent, sendLocation, snapAndSend];
+}
+
+class $AssetsImagesRamadanQuickActionsGen {
+  const $AssetsImagesRamadanQuickActionsGen();
+
+  /// File path: assets/images/ramadan_quick_actions/athkar.png
+  AssetGenImage get athkar => const AssetGenImage('assets/images/ramadan_quick_actions/athkar.png');
+
+  /// File path: assets/images/ramadan_quick_actions/free_roam.png
+  AssetGenImage get freeRoam => const AssetGenImage('assets/images/ramadan_quick_actions/free_roam.png');
+
+  /// File path: assets/images/ramadan_quick_actions/parking.png
+  AssetGenImage get parking => const AssetGenImage('assets/images/ramadan_quick_actions/parking.png');
+
+  /// File path: assets/images/ramadan_quick_actions/qibla.png
+  AssetGenImage get qibla => const AssetGenImage('assets/images/ramadan_quick_actions/qibla.png');
+
+  /// File path: assets/images/ramadan_quick_actions/quaran.png
+  AssetGenImage get quaran => const AssetGenImage('assets/images/ramadan_quick_actions/quaran.png');
+
+  /// File path: assets/images/ramadan_quick_actions/road_event.png
+  AssetGenImage get roadEvent => const AssetGenImage('assets/images/ramadan_quick_actions/road_event.png');
+
+  /// File path: assets/images/ramadan_quick_actions/safety_tips.png
+  AssetGenImage get safetyTips => const AssetGenImage('assets/images/ramadan_quick_actions/safety_tips.png');
+
+  /// File path: assets/images/ramadan_quick_actions/send_location.png
+  AssetGenImage get sendLocation => const AssetGenImage('assets/images/ramadan_quick_actions/send_location.png');
+
+  /// File path: assets/images/ramadan_quick_actions/snap_and_send.png
+  AssetGenImage get snapAndSend => const AssetGenImage('assets/images/ramadan_quick_actions/snap_and_send.png');
+
+  /// File path: assets/images/ramadan_quick_actions/transport.png
+  AssetGenImage get transport => const AssetGenImage('assets/images/ramadan_quick_actions/transport.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values =>
+      [athkar, freeRoam, parking, qibla, quaran, roadEvent, safetyTips, sendLocation, snapAndSend, transport];
 }
 
 class $AssetsImagesSaudiPassGen {
@@ -1299,10 +1374,14 @@ class Assets {
 
   static const String package = 'mapness';
 
+  static const String config = 'packages/mapness/assets/config.json';
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
   static const $AssetsMapsGen maps = $AssetsMapsGen();
+
+  /// List of all assets
+  static List<String> get values => [config];
 }
 
 class AssetGenImage {
