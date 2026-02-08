@@ -1,0 +1,984 @@
+[
+  {
+    "place_id": "1",
+    "dgis_id": "",
+    "is_original_object": false,
+    "title_en": "Clock Tower Museum",
+    "title_ar": "متحف برج الساعة",
+    "description_en": "The Clock Royal Tower (Center for Crescent Observation and Astronomy) The Astronomy Museum consists of four floors: First Floor: Showcases everything related to the Makkah Clock, including its construction and timekeeping technologies. There is also a balcony providing a view of the Holy Kaaba. Second Floor: Focuses on everything related to time measurement, human innovations, and documentation of human efforts to comprehend time. Third Floor: Dedicated to the sun, earth, the moon, and all associated elements. Fourth Floor: Designated for observing all aspects related to the universe as a whole, including stars, constellations, and astronomical occurrences. Center for Crescent Observation: The Center for Crescent Observation occupies seven floors at the top of the Clock Royal Tower in Makkah: First Floor: Lobby (Reception hall and administrative offices) Second Floor: Crescent Library Third Floor: Crescent Gallery (Phases of the Moon) Fourth Floor: Research departments (Prayer Times Center, Qibla Direction) Fifth Floor: Crescent Committee Sixth Floor: Prayer hall Seventh Floor: Tower Peak Lounge Makkah Observatory",
+    "description_ar": "برج الساعة (مركز علوم الكون) يتكون مركز علوم الكون (المتحف) من أربعة أدوار: الدور الأول: مخصص لعرض ما يتعلق بساعة مكة، من حيث الإنشاء والتقنيات المستخدمة لتحديد الوقت. كذلك توجد الشرفة التي تطل على الكعبة المشّرفة. الدور الثاني: مخصص لكل ما يتعلق بقياس الوقت وابتكارات الإنسان وتوثيق محاولاته لمعرفة الوقت. الدور الثالث: مخصص للشمس والأرض والقمر وما يتعلق بها. الدور الرابع: مخصص للاطلاع على ما يتعلق بالكون عموماً، ومن ذلك النجوم والأبراج والظواهر الفلكية. مركز الأهلة: يتكون مركز الأهلة من سبعة أدوار تقع في قمة برج الساعة في مكة المكرمة: الدور الأول: الردهة (قاعة الاستقبال ومكاتب إدارية) الدور الثاني: مكتبة الأهلة الدور الثالث: معرض الأهلة (أطوار القمر) الدور الرابع: أقسام البحوث (مركز مواقيت الصلاة، واتجاه القبلة) الدور الخامس: لجنة الأهلة الدور السادس: المصلى الدور السابع: ردهة قمة البرج مرصد مكة",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586082646_m7qqhp.svg",
+    "lon": 39.825552,
+    "lat": 21.41796,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589703989_d12e9b.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592571796_e0og8m.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592574800_jn5jdm.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592577082_wrrcw0.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592580552_53obqm.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592585432_uwqcj2.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592588352_wizmhk.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592591484_zv61w1.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592595098_e0ga2h.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592598006_uv9k0u.jpg"
+    ],
+    "workhours_en": "Saturday, Sunday, Monday, Tuesday, Wednesday, Thursday from 9:00 AM to 11:30 PM\n\nFriday: from 2:00 PM to 11:30 PM",
+    "workhours_ar": "السبت، الأحد، الاثنين، الثلاثاء، الأربعاء، الخميس: من الساعة 9:00 صباحًا حتى 11:30 مساءً\n\nالجمعة: من الساعة 2:00 ظهرًا حتى 11:30 مساءً",
+    "website": "https://towervisitors.com/",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "Museum",
+    "general_tag_ar": "متحف",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "CR9G+853, King Abdul Aziz - 38 Rd, Waqf, Makkah 24231",
+    "address_ar": "CR9G+853، طريق 38 - طريق الملك عبدالعزيز، وقف، مكة 24231",
+    "fixed_order_position": 1,
+    "workhours_json": {
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Fri": {
+        "working_hours": [
+          {
+            "from": "14:00",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Sat": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Sun": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "23:30"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000001"
+  },
+  {
+    "place_id": "2",
+    "dgis_id": "70000001105138242",
+    "is_original_object": true,
+    "title_en": "Exhibition of the Two Holy Mosques Architecture",
+    "title_ar": "معرض عمارة الحرمين الشريفين",
+    "description_en": "Located in Makkah, this museum was established in 1999 and focuses on the Two Holy Mosques and the evolution of their architecture throughout history.\nThe museum includes the following halls:\n• Hall of Al-Masjid Al-Haram\n• Hall of Al-Masjid Al-Nabawi (Prophet's Mosque)\n• Hall of the Holy Kaaba Photography Exhibition\n• Hall Entrance Hall Zamzam Well\n• Hall Manuscripts Hall",
+    "description_ar": "هو أحد متاحف مكـــة المكرمة، تأسس في عام 1999، يعنى بالحرمين الشريفين والتطور الذي شهدته متحف عمارة الحرمين الشريفين عمارتهما على مدى العصور. القاعات التي يضمها المتحف: قاعة المسجـــــــد الحـــرام - \n قاعة المسجـــــــد النبـــوي -\n قاعة الكعبـــــة المشرفـــة -\n قاعة الصور الفوتوجرافية -\n قاعة المـــدخـــــــل -\n قاعة بئر زمزم -\n قاعة المخطوطات -",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586105890_i2gbt3.svg",
+    "lon": 39.754438,
+    "lat": 21.433785,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589722086_erok2p.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592615359_pnjdz1.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592619790_5wsoi9.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592622943_05g230.png"
+    ],
+    "workhours_en": "From Sunday to Thursday, from 8:00 AM to 8:00 PM",
+    "workhours_ar": "من الأحد إلى الخميس، من الساعة 8:00 صباحًا حتى 8:00 مساءً",
+    "website": "",
+    "phone": "125602188",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "Exhibition",
+    "general_tag_ar": "معرض",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "CQM3+GP9, Old Makkah Jeddah Rd, Al Hamra Umm Al Jud, Makkah 24321",
+    "address_ar": "CQM3+GP9، طريق مكة جدة القديم، أم الجود، مكة 24321",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "Sun": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000002"
+  },
+  {
+    "place_id": "3",
+    "dgis_id": "70030076259020092",
+    "is_original_object": false,
+    "title_en": "The Cultural Front of Umm Al-Qura University",
+    "title_ar": "الواجهة الثَّقافيَّة لجامعة أمِّ القُرى",
+    "description_en": "The Cultural Front Building of Umm Al-Qura University is located at its main campus in the Al-Abdiyyah neighborhood, within the university campus. It serves as an integrated cultural center that includes the contents of the Umm Al-Qura University Museum, which were transferred from the university's headquarters in the Al-Aziziyah neighborhood, and it includes the contents of the Manuscripts Museum, which were transferred from the King Abdullah University Library. The building contains several exhibitions that contribute to highlighting the role of the Kingdom of Saudi Arabia in developing higher education and highlighting the role of Umm Al-Qura University in preserving the history of Makkah Al-Mukarramah by displaying artifacts, manuscripts, and historical photographs of the city of Makkah Al-Mukarramah. The building also reflects the local culture of the city of Makkah Al-Mukarramah through its exterior design and through the Makkah Gallery and the Makkah Center Gallery. It also contains a cultural square that contains the latest display technologies and provides a place to hold discussions and dialogue sessions.",
+    "description_ar": "يقع مبنى الواجهة الثقافية لجامعة أم القرى في مقرها الرئيسي بحي العابدية داخل الحرم الجامعي، ليكون مركزاً ثقافياً متكاملاً يضم محتويات متحف جامعة أم القرى التي تم نقلها من مقر الجامعة بحي العزيزية، ويضم محتويات متحف المخطوطات التي تم نقلها من مكتبة الملك عبدالله الجامعية، ويحتوي المبنى على عدة معارض تسهم في ابراز دور المملكة العربية السعودية في تطوير التعليم العالي وابراز دور جامعة ام القرى في الحفاظ على تاريخ مكة المكرمة من خلال عرض المقتنيات والمخطوطات والصور التاريخية لمدينة مكة المكرمة كما يعكس المبنى الثقافة المحلية لمدينة مكة المكرمة من خلال تصميمه الخارجي ومن خلال معرض رواق مكة ومعرض المركاز المكي، كما يحتوي على ساحة ثقافية تحتوي على أحدث تقنيات العرض وتوفر مكان لعقد المناقشات والجلسات الحوارية.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586063371_0vrm82.svg",
+    "lon": 39.94183,
+    "lat": 21.328268,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589659419_pgwtza.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769587728623_j6owva.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769587731845_7oksx5.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769587734028_m2tvni.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769587736154_z3vi3t.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769587738459_jr5dae.jpg"
+    ],
+    "workhours_en": "Test",
+    "workhours_ar": "اختبار",
+    "website": "https://uqu.edu.sa/App/Events/40623",
+    "phone": "123456789",
+    "tags_en": [
+      "Test tag 1",
+      "Test tag 2"
+    ],
+    "tags_ar": [
+      "اختبار العلامة 1",
+      "اختبار العلامة 2"
+    ],
+    "general_tag_en": "Educational",
+    "general_tag_ar": "تعليمي",
+    "features": [
+      {
+        "code": "multiple_levels",
+        "text_en": "Multiple levels including ground and upper floors",
+        "text_ar": "مستويات متعددة تشمل الطابق الأرضي والطوابق العلوية",
+        "image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/features/1769769992498_ntmk6e.svg",
+        "short_tag_en": "test",
+        "short_tag_ar": "العلوية"
+      },
+      {
+        "code": "wheelchair_paths",
+        "text_en": "Dedicated and wheelchair-accessible paths",
+        "text_ar": "مسارات مخصصة ومجهزة للكراسي المتحركة",
+        "image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/features/1769770025182_n8ig1h.svg",
+        "short_tag_en": "test2",
+        "short_tag_ar": "العلوية2"
+      }
+    ],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "2443 Umm Al-Qura University Internal Road, Al Mashair, MDAA7715, 7715, Makkah 24381",
+    "address_ar": "2443 طريق داخلي جامعة أم القرى، المشاعر، MDAA7715، 7715، مكة 24381",
+    "fixed_order_position": null,
+    "workhours_json": null,
+    "poi_id": "30000000000000003"
+  },
+  {
+    "place_id": "4",
+    "dgis_id": "70000001096653647",
+    "is_original_object": true,
+    "title_en": "The Holy Quran Museum",
+    "title_ar": "متحف القرآن الكريم",
+    "description_en": "Holy Qur’an Museum, located in the heart of Makkah near Jabal Hira, where the first verses of the Qur’an were revealed, It offers a unique experience through interactive halls equipped with the latest technologies to showcase the greatness of the Qur’an and its impact on the lives of Muslims. The museum houses rare artifacts, making it a distinctive cultural and spiritual destination within Hira Cultural District.",
+    "description_ar": "متحف القرآن الكريم في قلب مكة المكرمة يقع بجوار جبل حراء، حيث نزلت أولى آيات القرآن الكريم، وهو أول متحف متخصص في القرآن الكريم. يقدم تجربة مميزة عبر قاعات تفاعلية تستخدم أحدث التقنيات للتعريف بعظمة القرآن وأثره في حياة المسلمين. يضم المتحف مقتنيات نادرة، ليكون وجهة ثقافية وروحانية فريدة في حي حراء الثقافي.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586117543_lgjf5a.svg",
+    "lon": 39.869607,
+    "lat": 21.456479,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589739540_cyg5i4.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592636019_vbatzz.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592638744_lq7t1j.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592641082_rd6hdc.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592643692_r2vwqk.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592646435_ju98cz.png"
+    ],
+    "workhours_en": "Saturday to Wednesday: 07:30 AM to 11:30 PM\nThursday: 07:30 AM to 01:00 AM\nFriday: 03:30 PM to 01:00 AM",
+    "workhours_ar": "السبت إلى الأربعاء: من الساعة 07:30 صباحًا حتى 11:30 مساءً\nالخميس: من الساعة 07:30 صباحًا حتى 01:00 صباحًا\nالجمعة: من الساعة 03:30 مساءً حتى 01:00 صباحًا",
+    "website": "https://hihala.com/en/e/quran-museum/",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "Jabal Al-Nour, 3427, 6389, Makkah 24239",
+    "address_ar": "جبل النور، 3427، 6389، مكة 24239",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "Sat": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Sun": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "01:00"
+          }
+        ]
+      },
+      "Fri": {
+        "working_hours": [
+          {
+            "from": "15:30",
+            "to": "01:00"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000004"
+  },
+  {
+    "place_id": "5",
+    "dgis_id": "70000001096694304",
+    "is_original_object": true,
+    "title_en": "Revelation Exhibition",
+    "title_ar": "معرض الوحي",
+    "description_en": "It presents the story of the revelation from its very first light in the Cave of Hira, along with detailed aspects of the life of Prophet Muhammad (peace be upon him). The museum features halls equipped with the latest audiovisual display technologies, offering visitors an interactive experience that enriches their knowledge of the Prophet’s biography.",
+    "description_ar": "يعرض قصة تنزل الوحي منذ إشراقة شمسه الأولى في غار حراء, مع جوانب من سيرة سيدنا محمد صلى الله عليه وسلم بشكل تفصيلي. يضم قاعات مزودة بأحدث تقنيات العروض المرئية والمسموعة , ليدخل الزائر في تجربة تفاعلية تثري معرفته بالسيرة النبوية.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586180680_b6ywp7.svg",
+    "lon": 39.86928,
+    "lat": 21.457131,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589748669_rsrwg6.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592665978_mur285.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592669012_82o0hs.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592671630_14lz2r.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592673959_c72zi1.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592676386_gc48wh.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592678543_pk0kj4.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592680853_ljmff3.jpg"
+    ],
+    "workhours_en": "Daily from 7:30 AM to 11:30 PM",
+    "workhours_ar": "يوميًا من الساعة 7:30 صباحًا حتى 11:30 مساءً",
+    "website": "https://www.visitsaudi.com/en/makkah/attractions/revelation-exhibition",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "6484, 3404 6484, Makkah 24239",
+    "address_ar": "6484, 3404 6484، مكة 24239",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Fri": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Sat": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      },
+      "Sun": {
+        "working_hours": [
+          {
+            "from": "07:30",
+            "to": "23:30"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000005"
+  },
+  {
+    "place_id": "6",
+    "dgis_id": "70000001096651906",
+    "is_original_object": true,
+    "title_en": "Abu Bakr Al Amoudi Museum",
+    "title_ar": "متحف أبو بكر العمودي للتراث",
+    "description_en": "A privately owned museum conceived from a personal passion for collecting and preserving rare heritage artifacts from across the Kingdom of Saudi Arabia. The museum showcases a curated collection of traditional hospitality items, household utensils, and distinctive Makkah-related collectibles.",
+    "description_ar": "متحف خاص بدأت فكرة إنشاؤه نتيجة هواية شخصية لجمع واقتناء القطع التراثية النادرة، من جميع مناطق المملكة العربية السعودية، يعرض المتحف مجموعة من الأدوات الخاصة بالضيافة والأواني المنزلية والمقتنيات المكية.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586253333_figdjj.svg",
+    "lon": 39.628694,
+    "lat": 21.353299,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589759509_ftd2fq.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592694917_za6w1i.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592698343_fxqcnk.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592701151_o85la9.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592703978_rlhou1.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592706745_9vhgnp.png"
+    ],
+    "workhours_en": "Saturday to Thursday: 08:00 AM to 09:00 PM\nFriday: 02:00 PM to 09:00 PM",
+    "workhours_ar": "السبت إلى الخميس: من الساعة 08:00 صباحًا حتى 09:00 مساءً\nالجمعة: من الساعة 02:00 مساءً حتى 09:00 مساءً",
+    "website": "",
+    "phone": "+966594401273",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "Makkah - Jeddah Hwy, Al Hamra Umm Al Jud, Makkah 24337",
+    "address_ar": "طريق مكة جدة السريع، أم الجود، مكة 24337",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "Sat": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "21:00"
+          }
+        ]
+      },
+      "Sun": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "21:00"
+          }
+        ]
+      },
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "21:00"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "21:00"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "21:00"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "21:00"
+          }
+        ]
+      },
+      "Fri": {
+        "working_hours": [
+          {
+            "from": "14:00",
+            "to": "21:00"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000006"
+  },
+  {
+    "place_id": "7",
+    "dgis_id": "70030076683822730",
+    "is_original_object": true,
+    "title_en": "Al Masfalah Park",
+    "title_ar": "حديقة المسفلة",
+    "description_en": "Al-Masfalah Park in Makkah has been developed as a welcoming urban retreat for visitors, pilgrims, and Umrah performers, supporting the humanization of cities, enhancing the urban landscape, and enriching the overall visitor experience.",
+    "description_ar": "تم تطوير حديقة المسفلة بمكة المكرمة لتكون متنفساً للزوار والحجاج والمعتمرين، ولتعزيز أنسنة المدن وتحسين المشهد الحضاري وتعزيز إثراء التجربة للزوار.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586267008_gdoid6.svg",
+    "lon": 39.820185,
+    "lat": 21.408229,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589778421_0qtqjt.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592724197_y1z1xe.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592727876_nbf8tm.png"
+    ],
+    "workhours_en": "Open 24 hours Daily",
+    "workhours_ar": "مفتوح على مدار 24 ساعة يوميًا",
+    "website": "",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "Al Misfalah, 8549 Al Hijrah Rd, 3303, Makkah 24233",
+    "address_ar": "المسفلة، 8549 الهجرة، 3303، مكة 24233",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "is_24x7": true
+    },
+    "poi_id": "30000000000000007"
+  },
+  {
+    "place_id": "8",
+    "dgis_id": "70030076307210522",
+    "is_original_object": false,
+    "title_en": "Al Arak Park",
+    "title_ar": "حديقة الأراك",
+    "description_en": "A lush garden, green spaces, and beautiful nature… Is this all you seek from a visit to Al-Hussainiyah Park in Makkah? Certainly not. This park cannot be described in just one or two words. It deserves an extensive description and should be visited in person to truly appreciate its unique magnificence. Al-Hussainiyah Park has established itself as one of the best parks in Makkah and a key attraction for tourists in the area.",
+    "description_ar": "حديقة الأراك حديقة غنّاء، مساحات خضراء، طبيعة جذّابة، هل هذا كل ما تأمله من زيارة حديقة الحسينية مكة المكرمة ؟ بالطبع لا، فهذه الحديقة هي مكان لا يُمكن وصفه بكلمة أو كلمتين، بل يستحق وصفها أسطُر عديدة وينبغي زيارتها على أرض الواقع لتكتشف الحُسن الذي تتميّز به هذه الحديقة والذي خوّلها لتكون أحد أفضل حدائق مكة وأحد أبرز وجهات السياحة في مكة التي لا يُمكن تفويت زيارتها.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586298023_c2touv.svg",
+    "lon": 39.87683,
+    "lat": 21.38064,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589825754_w16tkf.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592741883_dvb1ox.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592744466_hdl0s4.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592747142_s9xp3w.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592749660_hfnof7.jpg"
+    ],
+    "workhours_en": "Open 24 hours Daily",
+    "workhours_ar": "مفتوح على مدار 24 ساعة يوميًا",
+    "website": "",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "9VJG+4R2, Al Mashair, Makkah 24246",
+    "address_ar": "9VJG+4R2، المشاعر، مكة 24246",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "is_24x7": true
+    },
+    "poi_id": "30000000000000008"
+  },
+  {
+    "place_id": "9",
+    "dgis_id": "70030077050991825",
+    "is_original_object": true,
+    "title_en": "Umm Al Mu'minin Zainab Al Hilaliyah Park and Walkway",
+    "title_ar": "حديقة وممشى أم المؤمنين زينب الهلالية",
+    "description_en": "A family-friendly park suitable for both adults and children. It features spacious grassy areas for relaxing, kids' play areas, and fast food stands. The park, founded in 2010, is a large, well-organized space that is definitely worth a visit.",
+    "description_ar": "حديقة وممشى أم المؤمنين زينب الهلالية منتزه للكبار والصغار مساحات عشبيه جيده للجلوس عليها والعاب أطفال وأكشاك بيع الوجبات السريعه فودترك مكان جميل كبير ومنظم يستحق الزياة. تأسست 2010م",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586307988_fjkmel.svg",
+    "lon": 39.791676,
+    "lat": 21.379559,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589838447_73r7t7.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592777083_c6yi7s.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592780752_aetws4.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592783721_1x4inm.png"
+    ],
+    "workhours_en": "Open 24 hours Daily",
+    "workhours_ar": "مفتوح على مدار 24 ساعة يوميًا",
+    "website": "",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "Al Shoqiyah, 2933 Umm Al-Mu'minin Zainab Al-Hilaliyah St, 6931, Makkah 24351",
+    "address_ar": "الشوقية، 2933 شارع أم المؤمنين زينب الهلالية، 6931، مكة 24351",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "is_24x7": true
+    },
+    "poi_id": "30000000000000009"
+  },
+  {
+    "place_id": "11",
+    "dgis_id": "70030076559936870",
+    "is_original_object": false,
+    "title_en": "Hira Cultural District",
+    "title_ar": "حي حراء الثقافي",
+    "description_en": "A significant cultural and tourist attraction located next to Jabal Al-Nour, home of Hira Cave. It tells the story of the divine revelation and offers insights into the historical importance of the mountain and the cave. Hira Cultural District enriches visitors' cultural and educational experiences through its diverse facilities. Hira Cultural District Facilities include:\n• The Revelation Gallery\n• Museum of the Holy Quran\n• The way up to the cave\n• The Cultural Library\n• Visitor Center\n• Commercial facilities Hira Garden and other facilities",
+    "description_ar": "حي حراء الثقافي معلم ثقافي سياحي، بجوار جبل حراء، يحكي قصة الوحي ويعطي معلومات عن الجبل والغار وأهميتهما التاريخية، ويسهم في إثراء التجربة المعرفية والثقافية للزوار عبر مكوناته المتنوعة. مكونات حي حراء الثقافي:\n• معرض الوحي \n• متحف القرآن الكريم \n• طريق الصعود إلى الغــــار \n• المكتبة الثقافية \n• مركز الزوار \n• المرافق التجارية \n• حديقة حراء ومجموعة من الخدمات الأخرى.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586342362_6h527d.svg",
+    "lon": 39.869062,
+    "lat": 21.456187,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589851466_ev5edz.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592795122_uggeuf.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592797961_awa7xj.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592800077_3rpnvx.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592802327_b2rfp9.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592804713_knpwvd.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592807496_i127tn.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592809823_e8wem3.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592812139_bsix30.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592814862_evsjuw.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592817022_kxy3sw.png"
+    ],
+    "workhours_en": "Cultural District (24 hours)\n\nPath to the Cave of Hira (24 hours)\n\nMuseums and Exhibitions\nSat-Wed: 7:30 - 23:30\nThu: 7:30 - 01:00\nFri: 15:30 - 01:00",
+    "workhours_ar": "المنطقة الثقافية (على مدار 24 ساعة)\nالطريق إلى غار حراء (على مدار 24 ساعة)\n\nالمتاحف والمعارض\nالسبت إلى الأربعاء: 7:30 - 23:30\nالخميس: 7:30 - 01:00\nالجمعة: 15:30 - 01:00",
+    "website": "https://hiradistrict.com/",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "FV49+FJ, 6389, 3427, Makkah 24239",
+    "address_ar": "FV49+FJ, 6389, 3427، مكة 24239",
+    "fixed_order_position": null,
+    "workhours_json": null,
+    "poi_id": "30000000000000011"
+  },
+  {
+    "place_id": "12",
+    "dgis_id": "70000001101261379",
+    "is_original_object": true,
+    "title_en": "King Abdulaziz Complex for Holy Kaaba Kiswa",
+    "title_ar": "مجمع الملك عبد العزيز للكسوة المشرفة",
+    "description_en": "In mid-1346 AH, King Abdul-Aziz bin Abdul-Rahman Al Saud (may Allah have mercy on him) issued an order to establish a dedicated facility for producing the Kiswa (cover) of the Kaaba. The factory’s development continued until it was renovated and modernized, and reopened in 1397 AH. Departments of the Complex: The complex comprises several departments, the most important of which are: Belt Department Sewing Department Dyeing Department Printing Department Mechanical Weaving Department Hand Weaving Department Laboratory Department More than 200 qualified and trained Saudi workers operate in these departments. Alongside producing the Kiswa of the Holy Kaaba annually, the complex also manufactures the inner Kiswa of the Kaaba, the inner Kiswa of the Sacred Prophet’s Chamber, and the flag of the Kingdom of Saudi Arabia, embroidered and printed in accordance with the Law of the Flag of the Kingdom. Visiting Hours: The complex welcomes Muslim visitors for a unique learning experience in weaving and embroidering the Kaaba’s Kiswa",
+    "description_ar": "في منتصف عام 1346هـ أصدر الملك عبد العزيز بن عبد الرحمن آل سعود يرحمه الله أمرًا بإنشاء دار خاصة لصناعة كسوة الكعبة. واستمر العمل في إنشاء مصنع كسوة الكعبة المشرفة إلى أن تم تجديد المصنع وتحديثه وافتتح في عـــام1397هـ. أقسام المجمع: يحتوي المجمع على عدة أقسام من أهم هذه الأقسام: 1. قسم الحزام 2. قسم خياطة الثوب 3. قسم المصبغة 4. قسم الطباعة 5. قسم النسيج الآلي 6. قسم النسيج اليدوي 7. قسم المختبر ويعمل في تلك الأقسام أكثر من مائتي عامل من العمالة السعودية المؤهلة والمدربة. وبالإضافة إلى إنتاج كسوة الكعبة المشرفة كل عام فإن المجمع ينتج أيضًا الكسوة الداخلية للكعبة المشرفة والكسوة الداخلية للحجرة النبوية الشريفة وعلم المملكة العربية السعودية مطرزًا ومطبوعاً طبقاٌ لنظام علم المملكة العربية السعودية. أوقات الزيارة: يرحب المجمع بزواره من المسلمين والمسلمات لخوض تجربة معرفية فريدة بين حياكة كسوة الكعبة وتطريزها",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586479067_v36f22.svg",
+    "lon": 39.756664,
+    "lat": 21.434516,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589868258_yq6cyd.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592832061_g6g5w5.png",
+      "",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592837315_ffpl38.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592839845_trp7ln.png",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592841912_7p9z0d.png"
+    ],
+    "workhours_en": "Monday to Thursday, from 8:00 AM to 11:00 AM",
+    "workhours_ar": "من الاثنين إلى الخميس، من الساعة 8:00 صباحًا حتى 11:00 صباحًا",
+    "website": "https://www.visitsaudi.com/ar/makkah/attractions/the-kiswa-factory-of-the-holy-kaaba-in-makkah",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "Al Hamra Umm Al Jud, 8308 Old Makkah Jeddah Rd, 2903, Makkah 24321",
+    "address_ar": "الحمراء أم الجود، 8308 طريق مكة جدة القديم، 2903، مكة 24321",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "11:00"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "11:00"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "11:00"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "11:00"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000012"
+  },
+  {
+    "place_id": "13",
+    "dgis_id": "",
+    "is_original_object": false,
+    "title_en": "The International Fairs and Museums of the Prophet’s Biography and Islamic Civilization",
+    "title_ar": "المعرض والمتحف الدولي للسيرة النبوية والحضارة الإسلامية",
+    "description_en": "The International Exhibition and Museum of the Prophet’s Biography and Islamic Civilization is located in the Clock Tower. It is dedicated to presenting a comprehensive civilizational introduction to the Prophet Muhammad (peace be upon him), highlighting his noble conduct, exemplary morals, and tolerant Sharia through a distinguished scientific approach, rigorous academic grounding, unique technological innovation, and a creative, forward-looking presentation delivered through the latest media and technologies.",
+    "description_ar": "يقع المعرض والمتحف الدولي للسيرة النبوية والحضارة الإسلامية، في برج الساعة، يعنى بالتعريف الحضاري الشامل بالنبي صلى الله عليه وسلم ، وآدابه الكريمة’ وأخلاقه العظيمة، وشريعته السمحة، بمنهج علمي متميز، وتأصيل بحثي محكم ، وتجديدٍ تقني فريد، وعرض إبداعي مبتكر، عبر أحدث الوسائل والتقنيات",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586488470_cbrmlg.svg",
+    "lon": 39.825411,
+    "lat": 21.41905,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589879218_lf4xlj.jpg",
+    "photo_urls": [
+      "",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592858444_xq2k5w.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592861245_73e78p.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592863947_a3vwtn.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592866227_tkez0n.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592868026_h2hz0k.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592869745_psakc2.jpg"
+    ],
+    "workhours_en": "Daily from 9:00 AM to 12:00 AM\nMonday from 1:00 PM to 12:00 AM\nFriday from 4:00 PM to 12:00 AM",
+    "workhours_ar": "يوميًا من الساعة 9:00 صباحًا حتى 12:00 صباحًا\nيوم الاثنين من الساعة 1:00 مساءً حتى 12:00 صباحًا\nيوم الجمعة من الساعة 4:00 مساءً حتى 12:00 صباحًا",
+    "website": "https://mkh.ethaf.com/ar",
+    "phone": "+966920008397",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "2nd Floor, Clock Tower, Al Haram, Makkah 21955",
+    "address_ar": "الدور الثاني، برج الساعة، الحرم، مكة 21955",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "13:00",
+            "to": "00:00"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "00:00"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "00:00"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "00:00"
+          }
+        ]
+      },
+      "Fri": {
+        "working_hours": [
+          {
+            "from": "16:00",
+            "to": "00:00"
+          }
+        ]
+      },
+      "Sat": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "00:00"
+          }
+        ]
+      },
+      "Sun": {
+        "working_hours": [
+          {
+            "from": "09:00",
+            "to": "00:00"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000013"
+  },
+  {
+    "place_id": "14",
+    "dgis_id": "70000001098449767",
+    "is_original_object": true,
+    "title_en": "The library of the Grand Mosque",
+    "title_ar": "مكتبة الحرم المكي الشريف",
+    "description_en": "The Library of the Grand Mosque in Makkah is one of the city’s prominent scientific and cultural landmarks. Its establishment dates back to 161 AH. Originally located within the Grand Mosque, the library was later relocated outside the المسجد الحرام as its collections expanded over time. It is currently situated in the Batha Quraysh district and operates under the supervision of the General Authority for the Care of the Affairs of the Grand Mosque and the Prophet’s Mosque.\nThe library houses more than 8,305 manuscripts, including approximately 2,000 digitized manuscripts. It also preserves rare historical photographs of the Two Holy Mosques dating back to 1279 AH. In addition, the library holds around 78,000 titles and a collection exceeding 200,000 books.",
+    "description_ar": "تعتبر مكتبة الحرم المكي الشريف أحد الصروح العلمية الثقافية بمكة المكرمة ويعود تاريخ انشاءها الى العام 161هـ، كان موقعها سابقاً داخل المسجد الحرام وبمرور الأيام وتوسع المكتبة انتقلت الى خارج المسجد الحرام، وتقع حالياً في حي بطحاء قريش تحت إشراف هيئة العناية بشؤون المسجد الحرام والمسجد النبوي، حيث تحتوي المكتبة على أكثر من8305 مخطوطة، منها 2000مخطوطة مصورة كما تحتوي المكتبة على صور نادرة للحرمين الشريفين منذ العام ١٢٧٩هـ، ويوجد بالمكتبة 78000 عنوان وأكثر من ٢٠٠ ألف كتاب.",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586502502_dmy70n.svg",
+    "lon": 39.834073,
+    "lat": 21.375369,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589889860_c8aets.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592882368_jo7jif.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592884654_lssl9r.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592887093_nvsciq.jpg"
+    ],
+    "workhours_en": "Daily from 08:00 AM to 08:00 PM",
+    "workhours_ar": "يوميًا من الساعة 8:00 صباحًا حتى 8:00 مساءً",
+    "website": "",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "Ajyad St, 5254 Next to Ahmed bin Hanbal Mosque and Public Prosecution, Extension of Zat Al-Nitaqayn St, Makkah 24352",
+    "address_ar": "شارع أجياد، 5254 بجوار جامع احمد بن حنبل و النيابة العامة شارع ذات النطاقين امتداد، مكة 24352",
+    "fixed_order_position": null,
+    "workhours_json": {
+      "Mon": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Tue": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Wed": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Thu": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Fri": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Sat": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      },
+      "Sun": {
+        "working_hours": [
+          {
+            "from": "08:00",
+            "to": "20:00"
+          }
+        ]
+      }
+    },
+    "poi_id": "30000000000000014"
+  },
+  {
+    "place_id": "15",
+    "dgis_id": "",
+    "is_original_object": false,
+    "title_en": "Street Food",
+    "title_ar": "شارع المأكولات شعبية",
+    "description_en": "As part of the initiative to revive the Traditional Food Street, the Culinary Arts Authority, in coordination with the Royal Commission for Makkah City, designated a site for the street’s establishment. The project is implemented by the Culinary Arts Authority, which will also oversee its operation for eight months from the opening date. After this period, all assets will be handed over to the site’s owning entity, which will assume full responsibility for supervision, operation, and management of the project.",
+    "description_ar": "انطلاقا من مبادرة احياء شارع المأكولات الشعبية من قبل هيئة فنون الطهي بالتنسيق ميع الهيئة الملكية لمدينة مكة المكرمة بتخصيص موقع لإنشاء هذا الشارع بتنفيذ من قبل هيئة فنون الطهي واشرافهم على تشغيل المشروع لمدة ثمانية أشهر من تاريخ الافتتاح ومن ثم يتم تسليم جميع الاصول للجهة المالكة للموقع لتقوم عل استكمال عملية الاشراف والتشغيل وحرية التصرف",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586532843_ds67qi.svg",
+    "lon": 39.781333,
+    "lat": 21.402162,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589899717_e4dg1c.jpg",
+    "photo_urls": [
+      "",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592909758_nk7mb6.png"
+    ],
+    "workhours_en": "",
+    "workhours_ar": "",
+    "website": "",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "CQ2J+VG4, Makkah",
+    "address_ar": "CQ2J+VG4 مكة",
+    "fixed_order_position": null,
+    "workhours_json": null,
+    "poi_id": "30000000000000015"
+  },
+  {
+    "place_id": "16",
+    "dgis_id": "70000001102333411",
+    "is_original_object": true,
+    "title_en": "Sulh Alhudibeah Museum",
+    "title_ar": "متحف صلح الحديبية",
+    "description_en": "A private museum highlighting the historical significance of the Al-Hudaybiyyah site. The museum features numerous archaeological artifacts, heritage items, traditional tools, and various historic vehicles. It is organized into several sections, including the Great Conquest Section (featuring a simulation of Al-Hudaybiyyah Well), the Al-Hudaybiyyah Mosque Simulation Section, the Founder King Abdulaziz Well Section, the Al-Mudai Market Simulation Section, the Dates Corner, the Collectibles Section, and several other thematic areas.",
+    "description_ar": "متحف خاص يبرز اهمية موقع الحديبية التاريخي كما يحتوي المتحف على العديد من القطع الاثرية والمقتنيات والادوات الحرفية والعديد من المركبات التراثية، ويشتمل المتحف على عدد من الاقسام على سبيل المثال ( قسم الفتح الاعظم (محاكاة بئر الحديبية ) – قسم محاكاة مسجد الحديبية - وقسم بئر سبيل المؤسس الملك عبد العزيز رحمه الله - وقسم محاكاة سوق المدعى - وقسم ركن التمور - قسم المقتنيات وغيرها من الاقسام الاخرى)",
+    "marker_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769586550519_ejxdpv.svg",
+    "lon": 39.632154,
+    "lat": 21.436237,
+    "preview_image_url": "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769589910614_qevnfm.jpg",
+    "photo_urls": [
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592922517_tpqipn.jpg",
+      "https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/images/1769592925169_bnxt9l.jpg"
+    ],
+    "workhours_en": "Daily from 08:00 AM to 11:30 PM",
+    "workhours_ar": "يوميًا من الساعة 8:00 صباحًا حتى 11:30 مساءً",
+    "website": "",
+    "phone": "",
+    "tags_en": [],
+    "tags_ar": [],
+    "general_tag_en": "",
+    "general_tag_ar": "",
+    "features": [],
+    "accessibility_en": "",
+    "accessibility_ar": "",
+    "address_en": "CJPJ+PV2, Old Makkah Jeddah Rd, Al Hamra Umm Al Jud, Makkah 24316",
+    "address_ar": "CJPJ+PV2، طريق مكة جدة القديم، أم الجود، مكة 24316",
+    "fixed_order_position": null,
+    "workhours_json": null,
+    "poi_id": "30000000000000016"
+  }
+]
