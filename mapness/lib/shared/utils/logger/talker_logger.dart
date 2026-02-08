@@ -4,12 +4,12 @@ import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 class TalkerMapnessLogger implements IMapnessLogger {
-  late final Talker _talker;
+  final Talker _talker = Talker();
   Talker get talker => _talker;
 
   @override
   Future<void> init() async {
-    _talker = Talker();
+    // Already initialized in constructor
   }
 
   @override
