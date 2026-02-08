@@ -44,7 +44,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
               ),
               customActionWidget: AppButton.close(
                 color: context.colors.neutralContainerDefault,
-                onTap: context.router.popForced,
+                onTap: () => context.router.popForced(),
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
               ),
             ),

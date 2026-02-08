@@ -144,7 +144,7 @@ class _MakkahPoiFooterPlaceholder extends ConsumerWidget {
               ),
             );
           },
-          onCancelTab: context.router.pop,
+          onCancelTab: () => context.router.pop(),
         ),
       );
     } else {

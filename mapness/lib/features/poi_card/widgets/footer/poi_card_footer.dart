@@ -176,7 +176,7 @@ class PoiCardFooter extends HookConsumerWidget {
               ),
             );
           },
-          onCancelTab: context.router.popForced,
+          onCancelTab: () => context.router.popForced(),
         ),
       );
     } else {
@@ -207,7 +207,7 @@ class PoiCardFooter extends HookConsumerWidget {
           );
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },
-        onCancelTab: context.router.popForced,
+        onCancelTab: () => context.router.popForced(),
       ),
     );
   }

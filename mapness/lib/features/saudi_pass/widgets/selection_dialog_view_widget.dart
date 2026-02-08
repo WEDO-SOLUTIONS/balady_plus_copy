@@ -36,7 +36,7 @@ class SelectionDialogViewWidget<T> extends HookWidget {
       backgroundColor: backgroundColor ?? context.colors.backgroundSurface2,
       safeAreaColor: context.colors.backgroundSurface2,
       outside: GestureDetector(
-        onTap: context.router.popForced,
+        onTap: () => context.router.popForced(),
       ),
       header: Padding(
         padding: horizontalPadding.copyWith(bottom: Spacing.$4x),

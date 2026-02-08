@@ -102,7 +102,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
     };
 
     return LabeledDraggableSheet(
-      onClose: context.router.popForced,
+      onClose: () => context.router.popForced(),
       title: title,
       child: SafeArea(
         top: false,

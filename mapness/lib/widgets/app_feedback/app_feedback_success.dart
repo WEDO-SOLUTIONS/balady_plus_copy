@@ -56,7 +56,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                 buttonColorScheme: ButtonColorScheme.accentSecondary,
                 size: ButtonSize.large,
                 primaryLabel: context.l10n.done,
-                onTap: context.router.popForced,
+                onTap: () => context.router.popForced(),
               ),
             ),
           ],
