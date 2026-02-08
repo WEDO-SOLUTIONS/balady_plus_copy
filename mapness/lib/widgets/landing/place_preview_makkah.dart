@@ -155,6 +155,18 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
                   props: {'id': dgisId, 'title': item.titleEn ?? ''},
                 );
 
+                // Track Makkah places specific metric
+                Metrics.logEventAdvanced(
+                  MetricsConstants.makkahPlacesKeys.placeCardTapped,
+                  action: MetricAction.tap.name,
+                  group: MetricsConstants.makkahPlacesTag,
+                  props: {
+                    'placeId': item.placeId ?? '',
+                    'dgisId': dgisId,
+                    'title': item.titleEn ?? '',
+                  },
+                );
+
                 // Fly to marker location
                 if (item.lat != null && item.lon != null) {
                   unawaited(

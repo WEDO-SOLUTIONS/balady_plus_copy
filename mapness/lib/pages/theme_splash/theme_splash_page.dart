@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
 import 'package:mapness/pages/stories/stories_page.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 /// Generic themed splash screen page.
 ///
@@ -25,7 +27,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 ///
 /// NOTE: Not using @RoutePage() because auto_route has issues with enum parameters.
 /// This page is used programmatically via MaterialPageRoute instead.
-class ThemeSplashPage extends StatelessWidget {
+class ThemeSplashPage extends StatefulWidget {
   const ThemeSplashPage({
     required this.theme,
     this.onClose,
@@ -39,23 +41,50 @@ class ThemeSplashPage extends StatelessWidget {
   final Function()? onClose;
 
   @override
+  State<ThemeSplashPage> createState() => _ThemeSplashPageState();
+}
+
+class _ThemeSplashPageState extends State<ThemeSplashPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Track splash shown
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.splashShown,
+      group: MetricsConstants.themesTag,
+      props: {'theme': widget.theme.name},
+    );
+  }
+
+  void _handleClose() {
+    // Track splash closed
+    Metrics.logEventAdvanced(
+      MetricsConstants.themesKeys.splashClosed,
+      group: MetricsConstants.themesTag,
+      action: MetricAction.tap.name,
+      props: {'theme': widget.theme.name},
+    );
+    widget.onClose?.call();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final splashConfig = theme.splashConfig;
+    final splashConfig = widget.theme.splashConfig;
 
     // Hide sound icon for Makkah theme since the overlay covers the tap area
-    final hideSoundIcon = theme == SpecialThemeMode.mekkahBase;
+    final hideSoundIcon = widget.theme == SpecialThemeMode.mekkahBase;
 
     return Stack(
       children: [
         // Video background
         StoriesPage(
           type: splashConfig.storyType,
-          onClose: onClose,
+          onClose: _handleClose,
           showSoundIcon: !hideSoundIcon,
           useNavigatorPop: true,
         ),
         // Theme-specific overlay
-        if (theme == SpecialThemeMode.mekkahBase)
+        if (widget.theme == SpecialThemeMode.mekkahBase)
           const _MakkahSplashOverlay(),
       ],
     );

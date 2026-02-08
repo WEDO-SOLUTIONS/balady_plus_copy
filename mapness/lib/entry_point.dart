@@ -316,6 +316,29 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       _updateGlobalMarker(ref);
     });
 
+    // Track theme changes for analytics
+    ref.listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
+      if (prev == next) return;
+
+      // Track theme deactivation
+      if (prev != null && prev != SpecialThemeMode.base) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.themesKeys.themeDeactivated,
+          group: MetricsConstants.themesTag,
+          props: {'theme': prev.name},
+        );
+      }
+
+      // Track theme activation
+      if (next != SpecialThemeMode.base) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.themesKeys.themeActivated,
+          group: MetricsConstants.themesTag,
+          props: {'theme': next.name},
+        );
+      }
+    });
+
     ref
       // listen for changes in car connection state. But do not rebuild widget
       ..listen(carEnableFreeRoamProvider, (previous, next) {})
