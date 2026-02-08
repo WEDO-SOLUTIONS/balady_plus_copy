@@ -1,0 +1,1334 @@
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/special_themes/core/places_activation_config.dart';
+import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
+import 'package:mapness/features/special_themes/core/theme_splash_state.dart';
+import 'package:mapness/pages/theme_splash/theme_splash_page.dart';
+import 'package:mapness/shared/providers/location.dart';
+
+// Design tokens
+class _DebugColors {
+  static const background = Color(0xFF0D0D0F);
+  static const surface = Color(0xFF18181B);
+  static const surfaceLight = Color(0xFF27272A);
+  static const border = Color(0xFF3F3F46);
+  static const borderLight = Color(0xFF52525B);
+
+  static const textPrimary = Color(0xFFFAFAFA);
+  static const textSecondary = Color(0xFFA1A1AA);
+  static const textMuted = Color(0xFF71717A);
+
+  static const accent = Color(0xFF8B5CF6);
+  static const accentLight = Color(0xFFA78BFA);
+  static const success = Color(0xFF22C55E);
+  static const warning = Color(0xFFF59E0B);
+  static const error = Color(0xFFEF4444);
+  static const info = Color(0xFF3B82F6);
+
+  static const gradientPurple = LinearGradient(
+    colors: [Color(0xFF8B5CF6), Color(0xFFA855F7)],
+  );
+  static const gradientGreen = LinearGradient(
+    colors: [Color(0xFF22C55E), Color(0xFF10B981)],
+  );
+  static const gradientAmber = LinearGradient(
+    colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
+  );
+  static const gradientTeal = LinearGradient(
+    colors: [Color(0xFF14B8A6), Color(0xFF0D9488)],
+  );
+  static const gradientBlue = LinearGradient(
+    colors: [Color(0xFF3B82F6), Color(0xFF2563EB)],
+  );
+}
+
+class SpecialThemeDebugPanel extends ConsumerWidget {
+  const SpecialThemeDebugPanel({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: _DebugColors.background,
+        borderRadius: BorderRadius.all(Radius.circular(16)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _Header(),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _ActiveThemeCard(),
+                const SizedBox(height: 12),
+                _DebugTogglesCard(),
+                const SizedBox(height: 12),
+                _SplashTestCard(),
+                const SizedBox(height: 12),
+                _RemoteConfigCard(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: _DebugColors.border, width: 1),
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              gradient: _DebugColors.gradientPurple,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: _DebugColors.accent.withOpacity(0.3),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Icon(
+              Icons.palette_rounded,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Theme Manager',
+                style: context.textStyles.bodyLargeSemiBold.copyWith(
+                  color: _DebugColors.textPrimary,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              Text(
+                'Debug & Configuration',
+                style: context.textStyles.captionSmallRegular.copyWith(
+                  color: _DebugColors.textMuted,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GlassCard extends StatelessWidget {
+  const _GlassCard({
+    required this.child,
+    this.gradient,
+    this.padding = const EdgeInsets.all(14),
+  });
+
+  final Widget child;
+  final Gradient? gradient;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: _DebugColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: _DebugColors.border, width: 1),
+        gradient: gradient,
+      ),
+      child: Padding(
+        padding: padding,
+        child: child,
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({
+    required this.icon,
+    required this.title,
+    this.trailing,
+    this.iconGradient,
+  });
+
+  final IconData icon;
+  final String title;
+  final Widget? trailing;
+  final Gradient? iconGradient;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            gradient: iconGradient ?? _DebugColors.gradientPurple,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(icon, color: Colors.white, size: 14),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          title,
+          style: context.textStyles.bodySmallSemiBold.copyWith(
+            color: _DebugColors.textPrimary,
+            letterSpacing: -0.2,
+          ),
+        ),
+        if (trailing != null) ...[
+          const Spacer(),
+          trailing!,
+        ],
+      ],
+    );
+  }
+}
+
+class _ActiveThemeCard extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final mode = ref.watch(specialThemeModeProvider);
+    final debugOverride = ref.watch(specialThemeModeDebugOverrideProvider);
+
+    return _GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionTitle(
+            icon: Icons.auto_awesome_rounded,
+            title: 'Active Theme',
+            iconGradient: _DebugColors.gradientAmber,
+            trailing: _ActiveBadge(mode: mode),
+          ),
+          const SizedBox(height: 14),
+          _ThemeSelector(currentMode: mode),
+          if (debugOverride != null) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: _DebugColors.warning.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: _DebugColors.warning.withOpacity(0.3),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.bug_report_rounded,
+                    size: 14,
+                    color: _DebugColors.warning,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Override: ${debugOverride.name}',
+                    style: context.textStyles.captionSmallMedium.copyWith(
+                      color: _DebugColors.warning,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ActiveBadge extends StatelessWidget {
+  const _ActiveBadge({required this.mode});
+
+  final SpecialThemeMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = mode != SpecialThemeMode.base;
+    final color = isActive ? _DebugColors.success : _DebugColors.textMuted;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              boxShadow: isActive
+                  ? [
+                      BoxShadow(
+                        color: color.withOpacity(0.5),
+                        blurRadius: 4,
+                      ),
+                    ]
+                  : null,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            isActive ? mode.name.toUpperCase() : 'INACTIVE',
+            style: context.textStyles.captionSmallMedium.copyWith(
+              color: color,
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ThemeSelector extends StatelessWidget {
+  const _ThemeSelector({required this.currentMode});
+
+  final SpecialThemeMode currentMode;
+
+  @override
+  Widget build(BuildContext context) {
+    final themes = [
+      ('National', SpecialThemeMode.nationalDay, _DebugColors.gradientGreen),
+      ('Foundation', SpecialThemeMode.foundationDay, _DebugColors.gradientPurple),
+      ('Makkah', SpecialThemeMode.mekkahBase, _DebugColors.gradientAmber),
+      ('Ramadan', SpecialThemeMode.ramadan, _DebugColors.gradientTeal),
+    ];
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: themes.map((t) {
+        final isActive = currentMode == t.$2;
+        return _ThemeChip(
+          label: t.$1,
+          isActive: isActive,
+          gradient: t.$3,
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _ThemeChip extends StatelessWidget {
+  const _ThemeChip({
+    required this.label,
+    required this.isActive,
+    required this.gradient,
+  });
+
+  final String label;
+  final bool isActive;
+  final Gradient gradient;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        gradient: isActive ? gradient : null,
+        color: isActive ? null : _DebugColors.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isActive ? Colors.transparent : _DebugColors.border,
+        ),
+        boxShadow: isActive
+            ? [
+                BoxShadow(
+                  color: (gradient.colors.first).withOpacity(0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ]
+            : null,
+      ),
+      child: Text(
+        label,
+        style: context.textStyles.captionSmallMedium.copyWith(
+          color: isActive ? Colors.white : _DebugColors.textSecondary,
+          fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+class _DebugTogglesCard extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final foundationDay = ref.watch(foundationDayDebugProvider);
+    final mekkahBase = ref.watch(mekkahBaseThemeDebugProvider);
+    final ramadan = ref.watch(ramadanSeasonDebugProvider);
+    final hajj = ref.watch(hajjSeasonDebugProvider);
+    final pilgrimFeature = ref.watch(pilgrimFeatureDebugProvider);
+
+    return _GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionTitle(
+            icon: Icons.bug_report_rounded,
+            title: 'Debug Overrides',
+            iconGradient: _DebugColors.gradientBlue,
+          ),
+          const SizedBox(height: 14),
+          _ToggleRow(
+            label: 'Foundation Day',
+            value: foundationDay,
+            onChanged: ref.read(foundationDayDebugProvider.notifier).set,
+            gradient: _DebugColors.gradientPurple,
+          ),
+          _ToggleRow(
+            label: 'Makkah Base',
+            value: mekkahBase,
+            onChanged: ref.read(mekkahBaseThemeDebugProvider.notifier).set,
+            gradient: _DebugColors.gradientAmber,
+          ),
+          _ToggleRow(
+            label: 'Ramadan Season',
+            value: ramadan,
+            onChanged: ref.read(ramadanSeasonDebugProvider.notifier).set,
+            gradient: _DebugColors.gradientTeal,
+          ),
+          _ToggleRow(
+            label: 'Hajj Season',
+            value: hajj,
+            onChanged: ref.read(hajjSeasonDebugProvider.notifier).set,
+            gradient: _DebugColors.gradientBlue,
+          ),
+          _ToggleRow(
+            label: 'Kaaba Virtual Tour',
+            value: pilgrimFeature,
+            onChanged: ref.read(pilgrimFeatureDebugProvider.notifier).set,
+            gradient: _DebugColors.gradientGreen,
+          ),
+          const SizedBox(height: 14),
+          _LocationRefreshRow(),
+        ],
+      ),
+    );
+  }
+}
+
+class _LocationRefreshRow extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final location = ref.watch(locationProvider);
+    final locationText = location != null
+        ? '(${location.latitude.toStringAsFixed(4)}, ${location.longitude.toStringAsFixed(4)})'
+        : 'null';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(Icons.location_on, size: 14, color: _DebugColors.textMuted),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Location: $locationText',
+                style: context.textStyles.captionSmallRegular.copyWith(
+                  color: _DebugColors.textSecondary,
+                  fontSize: 10,
+                ),
+              ),
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                ref.read(locationProvider.notifier).refreshLocation();
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  gradient: _DebugColors.gradientGreen,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'Refresh',
+                  style: context.textStyles.captionSmallMedium.copyWith(
+                    color: Colors.white,
+                    fontSize: 10,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ToggleRow extends StatelessWidget {
+  const _ToggleRow({
+    required this.label,
+    required this.value,
+    required this.onChanged,
+    required this.gradient,
+  });
+
+  final String label;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final Gradient gradient;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Container(
+            width: 3,
+            height: 20,
+            decoration: BoxDecoration(
+              gradient: value ? gradient : null,
+              color: value ? null : _DebugColors.border,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              label,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: value
+                    ? _DebugColors.textPrimary
+                    : _DebugColors.textSecondary,
+              ),
+            ),
+          ),
+          _CustomSwitch(
+            value: value,
+            onChanged: onChanged,
+            gradient: gradient,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CustomSwitch extends StatelessWidget {
+  const _CustomSwitch({
+    required this.value,
+    required this.onChanged,
+    required this.gradient,
+  });
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final Gradient gradient;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: 44,
+        height: 24,
+        decoration: BoxDecoration(
+          gradient: value ? gradient : null,
+          color: value ? null : _DebugColors.surfaceLight,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: value ? Colors.transparent : _DebugColors.border,
+          ),
+        ),
+        child: AnimatedAlign(
+          duration: const Duration(milliseconds: 200),
+          alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+          child: Container(
+            margin: const EdgeInsets.all(2),
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SplashTestCard extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentMode = ref.watch(specialThemeModeProvider);
+    final hasSplash = currentMode.splashConfig.enabled;
+
+    return _GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionTitle(
+            icon: Icons.play_circle_rounded,
+            title: 'Test Splash',
+            iconGradient: _DebugColors.gradientGreen,
+          ),
+          const SizedBox(height: 14),
+          if (!hasSplash)
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: _DebugColors.surfaceLight,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline_rounded,
+                    size: 16,
+                    color: _DebugColors.textMuted,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'No splash for "${currentMode.name}" theme',
+                      style: context.textStyles.captionSmallRegular.copyWith(
+                        color: _DebugColors.textMuted,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            _GradientButton(
+              label: 'Show ${currentMode.name} Splash',
+              icon: Icons.play_arrow_rounded,
+              gradient: _DebugColors.gradientGreen,
+              onTap: () => _showSplash(ref, currentMode),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _showSplash(WidgetRef ref, SpecialThemeMode mode) {
+    final splashState = ref.read(themeSplashStateProvider.notifier);
+    splashState.resetSplashFor(mode);
+
+    final navigator = rootNavigatorKey.currentState;
+    if (navigator == null) return;
+
+    navigator.push(
+      MaterialPageRoute<void>(
+        builder: (_) => ThemeSplashPage(
+          theme: mode,
+          onClose: () {
+            splashState.markSplashShown(mode);
+            // Navigation handled by StoriesPage via useNavigatorPop
+          },
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+}
+
+class _GradientButton extends StatelessWidget {
+  const _GradientButton({
+    required this.label,
+    required this.icon,
+    required this.gradient,
+    required this.onTap,
+  });
+
+  final String label;
+  final IconData icon;
+  final Gradient gradient;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: gradient.colors.first.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: Colors.white, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: context.textStyles.bodySmallSemiBold.copyWith(
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _RemoteConfigCard extends ConsumerWidget {
+  const _RemoteConfigCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final configAsync = ref.watch(placesActivationProvider);
+
+    return _GlassCard(
+      padding: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: _SectionTitle(
+              icon: Icons.cloud_rounded,
+              title: 'Remote Config',
+              iconGradient: _DebugColors.gradientTeal,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  configAsync.when(
+                    data: (_) => _StatusDot(color: _DebugColors.success),
+                    loading: () => const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: _DebugColors.accent,
+                      ),
+                    ),
+                    error: (_, __) => _StatusDot(color: _DebugColors.error),
+                  ),
+                  const SizedBox(width: 10),
+                  _RefreshButton(
+                    onTap: () =>
+                        ref.read(placesActivationProvider.notifier).refresh(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 1,
+            color: _DebugColors.border,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: configAsync.when(
+              data: (config) => _ConfigDetails(config: config),
+              loading: () => const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: CircularProgressIndicator(color: _DebugColors.accent),
+                ),
+              ),
+              error: (e, _) => _ErrorBox(message: e.toString()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusDot extends StatelessWidget {
+  const _StatusDot({required this.color});
+
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.5),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RefreshButton extends StatelessWidget {
+  const _RefreshButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        decoration: BoxDecoration(
+          color: _DebugColors.surfaceLight,
+          borderRadius: BorderRadius.circular(6),
+          border: Border.all(color: _DebugColors.border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.refresh_rounded,
+              size: 12,
+              color: _DebugColors.textSecondary,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              'Refresh',
+              style: context.textStyles.captionSmallMedium.copyWith(
+                color: _DebugColors.textSecondary,
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorBox extends StatelessWidget {
+  const _ErrorBox({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: _DebugColors.error.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: _DebugColors.error.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.error_outline_rounded, size: 16, color: _DebugColors.error),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              message,
+              style: context.textStyles.captionSmallRegular.copyWith(
+                color: _DebugColors.error,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ConfigDetails extends StatelessWidget {
+  const _ConfigDetails({required this.config});
+
+  final PlacesActivationConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _ConfigMeta(config: config),
+        const SizedBox(height: 14),
+        _SubsectionLabel(label: 'THEMES'),
+        const SizedBox(height: 8),
+        if (config.presentThemes.contains('mekkah'))
+          _ThemeConfigItem(
+            name: 'Mekkah',
+            config: config.mekkah,
+            gradient: _DebugColors.gradientAmber,
+          ),
+        if (config.presentThemes.contains('foundation_day'))
+          _ThemeConfigItem(
+            name: 'Foundation Day',
+            config: config.foundationDay,
+            gradient: _DebugColors.gradientPurple,
+          ),
+        if (config.presentThemes.contains('ramadan'))
+          _ThemeConfigItem(
+            name: 'Ramadan',
+            config: config.ramadan,
+            gradient: _DebugColors.gradientTeal,
+          ),
+        if (config.presentThemes.contains('hajj'))
+          _ThemeConfigItem(
+            name: 'Hajj',
+            config: config.hajj,
+            gradient: _DebugColors.gradientBlue,
+          ),
+        if (config.presentThemes.isEmpty)
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: _DebugColors.surfaceLight,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline_rounded,
+                  size: 16,
+                  color: _DebugColors.textMuted,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'No themes defined in config',
+                  style: context.textStyles.captionSmallRegular.copyWith(
+                    color: _DebugColors.textMuted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        if (config.features.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          _SubsectionLabel(label: 'FEATURES'),
+          const SizedBox(height: 8),
+          ...config.features.map((f) => _FeatureItem(feature: f)),
+        ],
+      ],
+    );
+  }
+}
+
+class _ConfigMeta extends StatelessWidget {
+  const _ConfigMeta({required this.config});
+
+  final PlacesActivationConfig config;
+
+  @override
+  Widget build(BuildContext context) {
+    final forceEnabled = _getForceEnabled(config);
+
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: _DebugColors.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          _MetaBadge(
+            label: 'v${config.version}',
+            color: _DebugColors.info,
+          ),
+          const SizedBox(width: 8),
+          _MetaBadge(
+            label: forceEnabled.isNotEmpty
+                ? 'Force: $forceEnabled'
+                : 'No Force',
+            color: forceEnabled.isNotEmpty
+                ? _DebugColors.warning
+                : _DebugColors.textMuted,
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getForceEnabled(PlacesActivationConfig config) {
+    if (config.mekkah.forceEnabled) return 'mekkah';
+    if (config.ramadan.forceEnabled) return 'ramadan';
+    if (config.hajj.forceEnabled) return 'hajj';
+    if (config.foundationDay.forceEnabled) return 'foundation_day';
+    return '';
+  }
+}
+
+class _MetaBadge extends StatelessWidget {
+  const _MetaBadge({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: context.textStyles.captionSmallMedium.copyWith(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class _SubsectionLabel extends StatelessWidget {
+  const _SubsectionLabel({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: context.textStyles.captionSmallMedium.copyWith(
+        color: _DebugColors.textMuted,
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 1,
+      ),
+    );
+  }
+}
+
+class _ThemeConfigItem extends StatelessWidget {
+  const _ThemeConfigItem({
+    required this.name,
+    required this.config,
+    required this.gradient,
+  });
+
+  final String name;
+  final ThemeConfig config;
+  final Gradient gradient;
+
+  @override
+  Widget build(BuildContext context) {
+    final primaryColor = gradient.colors.first;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: config.enabled
+            ? primaryColor.withOpacity(0.08)
+            : _DebugColors.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: config.enabled
+              ? primaryColor.withOpacity(0.2)
+              : _DebugColors.border,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  gradient: config.enabled ? gradient : null,
+                  color: config.enabled ? null : _DebugColors.textMuted,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                name,
+                style: context.textStyles.captionSmallSemiBold.copyWith(
+                  color: config.enabled
+                      ? _DebugColors.textPrimary
+                      : _DebugColors.textMuted,
+                ),
+              ),
+              const Spacer(),
+              if (config.forceEnabled)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _DebugColors.warning.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    'FORCED',
+                    style: context.textStyles.captionSmallMedium.copyWith(
+                      color: _DebugColors.warning,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          if (config.startDate != null ||
+              config.endDate != null ||
+              config.area != null) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 10,
+              runSpacing: 4,
+              children: [
+                if (config.startDate != null)
+                  _InfoChip(
+                    icon: Icons.event_rounded,
+                    label: _formatDate(config.startDate!),
+                  ),
+                if (config.endDate != null)
+                  _InfoChip(
+                    icon: Icons.event_busy_rounded,
+                    label: _formatDate(config.endDate!),
+                  ),
+                if (config.area != null)
+                  _InfoChip(
+                    icon: Icons.location_on_rounded,
+                    label: '${config.area!.radiusKm}km',
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+}
+
+class _FeatureItem extends ConsumerWidget {
+  const _FeatureItem({required this.feature});
+
+  final FeatureConfig feature;
+
+  /// Returns true if the feature is effectively active (enabled AND past start_date)
+  bool _isEffectivelyActive(bool debugOverride) {
+    if (debugOverride) return true;
+    if (!feature.enabled) return false;
+    if (feature.startDate == null) return true;
+    return !DateTime.now().isBefore(feature.startDate!);
+  }
+
+  /// Returns the reason why feature is not active
+  String? _getInactiveReason(bool debugOverride) {
+    if (debugOverride) return null;
+    if (!feature.enabled) return null;
+    if (feature.startDate != null && DateTime.now().isBefore(feature.startDate!)) {
+      return 'Starts ${_formatDate(feature.startDate!)}';
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Check if this feature has a debug override
+    final isPilgrimFeature = feature.code == 'show_pilgrim';
+    final debugOverride = isPilgrimFeature ? ref.watch(pilgrimFeatureDebugProvider) : false;
+
+    final isActive = _isEffectivelyActive(debugOverride);
+    final inactiveReason = _getInactiveReason(debugOverride);
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: isActive
+            ? _DebugColors.info.withOpacity(0.08)
+            : _DebugColors.surfaceLight,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: debugOverride
+              ? _DebugColors.warning.withOpacity(0.5)
+              : isActive
+                  ? _DebugColors.info.withOpacity(0.2)
+                  : _DebugColors.border,
+          width: debugOverride ? 2 : 1,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                isActive
+                    ? Icons.toggle_on_rounded
+                    : Icons.toggle_off_rounded,
+                size: 18,
+                color: isActive
+                    ? _DebugColors.info
+                    : _DebugColors.textMuted,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  feature.code,
+                  style: context.textStyles.captionSmallSemiBold.copyWith(
+                    color: isActive
+                        ? _DebugColors.textPrimary
+                        : _DebugColors.textMuted,
+                  ),
+                ),
+              ),
+              if (debugOverride)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  margin: const EdgeInsets.only(right: 6),
+                  decoration: BoxDecoration(
+                    color: _DebugColors.warning.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    'DEBUG',
+                    style: context.textStyles.captionSmallMedium.copyWith(
+                      color: _DebugColors.warning,
+                      fontSize: 9,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              _StatusPill(
+                label: isActive ? 'ACTIVE' : 'INACTIVE',
+                isActive: isActive,
+              ),
+            ],
+          ),
+          if (feature.url != null || feature.startDate != null || inactiveReason != null) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 10,
+              runSpacing: 4,
+              children: [
+                if (inactiveReason != null)
+                  _InfoChip(
+                    icon: Icons.schedule_rounded,
+                    label: inactiveReason,
+                  ),
+                if (feature.startDate != null && inactiveReason == null)
+                  _InfoChip(
+                    icon: Icons.event_rounded,
+                    label: _formatDate(feature.startDate!),
+                  ),
+                if (feature.url != null)
+                  _InfoChip(
+                    icon: Icons.link_rounded,
+                    label: Uri.tryParse(feature.url!)?.host ?? feature.url!,
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
+}
+
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.label, required this.isActive});
+
+  final String label;
+  final bool isActive;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isActive ? _DebugColors.success : _DebugColors.textMuted;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Text(
+        label,
+        style: context.textStyles.captionSmallMedium.copyWith(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 12, color: _DebugColors.textMuted),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: context.textStyles.captionSmallRegular.copyWith(
+            color: _DebugColors.textSecondary,
+            fontSize: 10,
+          ),
+        ),
+      ],
+    );
+  }
+}
