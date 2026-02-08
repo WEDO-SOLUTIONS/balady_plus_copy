@@ -1,0 +1,21 @@
+##uncomment if color generation needed
+#targets:
+#  $default:
+#    builders:
+#      balady_uikit|color_generator:
+#        enabled: true
+#        options:
+#          input_directory: "assets/colors/**"
+#        generate_for:
+#          include:
+#            - "assets/colors/**"
+#
+#builders:
+#  balady_uikit|color_generator:
+#    import: "lib/gen/generator/color_generator.dart"
+#    builder_factories: ["colorConstantsBuilder"]
+#    build_extensions:
+#      .json: [".g.dart"]
+#    auto_apply: none
+#    build_to: source
+#    applies_builders: [ "source_gen|combining_builder" ]
