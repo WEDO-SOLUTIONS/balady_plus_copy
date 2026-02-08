@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
 class Markers {
