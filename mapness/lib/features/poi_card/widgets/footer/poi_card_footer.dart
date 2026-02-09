@@ -85,7 +85,9 @@ class PoiCardFooter extends HookConsumerWidget {
     final parkingPoi = objectId == parkingObjectId;
 
     return ThrottledCallbackWidget(
-      callback: share,
+      callback: () {
+        share();
+      },
       resetAfterFutureCompleted: true,
       builder: (context, throttledShare) => BottomActionBar(
         displayShadow: displayShadow.value,
