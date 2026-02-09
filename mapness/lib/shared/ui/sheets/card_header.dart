@@ -18,12 +18,12 @@ class CardHeaderText extends CardHeaderData {
   CardHeaderText({required this.text, required this.style, required this.maxLines});
 
   CardHeaderText.title({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
-        maxLines = maxLines ?? 2;
+    : style = style ?? context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+      maxLines = maxLines ?? 2;
 
   CardHeaderText.subTitle({required this.text, required BuildContext context, TextStyle? style, int? maxLines})
-      : style = style ?? context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
-        maxLines = maxLines ?? 1;
+    : style = style ?? context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
+      maxLines = maxLines ?? 1;
 
   @override
   Widget get build => _HeaderText(text: text, maxLines: maxLines, style: style);
@@ -64,36 +64,30 @@ class CardHeader extends SheetAnimatedWidget<PoiCardBottomSheetState> {
       scale = Curves.easeInQuart.transform(1 - interpolation);
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: Spacing.$2x),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (profileImage != null) ...[
-            profileImage!,
-            const SizedBox(width: Spacing.$3x),
-          ],
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                title.build,
-                if (subTitle != null && !hideSubtitle)
-                  ContentTransition(
-                    interpolation: scale,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: Spacing.$2x),
-                      child: subTitle!.build,
-                    ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (profileImage != null) ...[profileImage!, const SizedBox(width: Spacing.$3x)],
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              title.build,
+              if (subTitle != null && !hideSubtitle)
+                ContentTransition(
+                  interpolation: scale,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: Spacing.$2x),
+                    child: subTitle!.build,
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
-          const SizedBox(width: Spacing.$3x),
-          CustomCloseButton(onClose: onTapClose, padding: EdgeInsets.zero),
-        ],
-      ),
+        ),
+        const SizedBox(width: Spacing.$3x),
+        CustomCloseButton(onClose: onTapClose, padding: EdgeInsets.zero),
+      ],
     );
   }
 }
@@ -103,18 +97,9 @@ class _HeaderText extends StatelessWidget {
   final TextStyle style;
   final int maxLines;
 
-  const _HeaderText({
-    required this.text,
-    required this.style,
-    this.maxLines = 1,
-  });
+  const _HeaderText({required this.text, required this.style, this.maxLines = 1});
 
   @override
-  Widget build(BuildContext context) => Text(
-        text,
-        style: style,
-        overflow: TextOverflow.ellipsis,
-        maxLines: maxLines,
-        textAlign: TextAlign.start,
-      );
+  Widget build(BuildContext context) =>
+      Text(text, style: style, overflow: TextOverflow.ellipsis, maxLines: maxLines, textAlign: TextAlign.start);
 }

@@ -54,8 +54,8 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
     );
     return ToggleSheet(
       scrollController: scrollController,
-      backgroundColor: context.colors.backgroundSurface1,
-      safeAreaColor: context.colors.backgroundSurface1,
+      backgroundColor: context.colors.backgroundSurface2,
+      safeAreaColor: context.colors.backgroundSurface2,
       dragger: const SheetDragger(),
       sliver: SliverFillRemaining(
         child: Stack(
