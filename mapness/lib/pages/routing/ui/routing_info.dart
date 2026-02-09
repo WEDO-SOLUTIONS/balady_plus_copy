@@ -8,11 +8,15 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/path_nav/providers/active_public_transport_route.dart';
@@ -45,11 +49,8 @@ class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
   final bool isHomeOrWork;
 
-  RoutingInfo({
-    required this.pointsWithLabel,
-    this.isHomeOrWork = false,
-    super.key,
-  }) : points = pointsWithLabel.map((e) => e.value).toList();
+  RoutingInfo({required this.pointsWithLabel, this.isHomeOrWork = false, super.key})
+    : points = pointsWithLabel.map((e) => e.value).toList();
 
   @override
   ConsumerState<RoutingInfo> createState() => _RoutingInfoState();
@@ -65,13 +66,14 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initialize());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initialize();
+      _updateIntermediateStopMarkers();
+    });
   }
 
   Future<void> _initialize() async {
-    final navState = await ActiveNavigationHelper.getState(
-      ref.read(dgisControllerProvider).value,
-    );
+    final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 
     if (navState.isActive) {
       _lockedNavType = navState.navType;
@@ -114,7 +116,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     final physicalPixelsHeight = height * devicePixelRatio;
     final physicalPixelsWidth = width * devicePixelRatio;
 
-    ref.read(cameraPositionProvider.notifier).setPadding(
+    ref
+        .read(cameraPositionProvider.notifier)
+        .setPadding(
           CameraSetPaddingMessage(
             leftPadding: (physicalPixelsWidth / 8).ceil(),
             topPadding: (physicalPixelsHeight / 5).ceil(),
@@ -142,6 +146,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     // if points have changed we need to recalculate nav type
     if (!const DeepCollectionEquality().equals(oldWidget.points, widget.points)) {
       _initializeNavType();
+      _updateIntermediateStopMarkers();
     }
   }
 
@@ -235,9 +240,100 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     _isNavTypeLoading.value = false;
   }
 
+  static final _intermediateStopIcons = [
+    null, // index 0 is not used
+    Assets.icons.svg.intermediateStopNumbers.a01,
+    Assets.icons.svg.intermediateStopNumbers.a02,
+    Assets.icons.svg.intermediateStopNumbers.a03,
+    Assets.icons.svg.intermediateStopNumbers.a04,
+    Assets.icons.svg.intermediateStopNumbers.a05,
+    Assets.icons.svg.intermediateStopNumbers.a06,
+    Assets.icons.svg.intermediateStopNumbers.a07,
+    Assets.icons.svg.intermediateStopNumbers.a08,
+    Assets.icons.svg.intermediateStopNumbers.a09,
+    Assets.icons.svg.intermediateStopNumbers.a10,
+  ];
+
+  Future<void> _updateIntermediateStopMarkers() async {
+    final settings = MapObjectManagerSettings.intermediateStops();
+    final manager = ref.read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier);
+
+    await manager.removeAllMarkers();
+
+    // Get intermediate points (all except first and last)
+    if (widget.pointsWithLabel.length <= 2) {
+      return;
+    }
+
+    final intermediatePoints = widget.pointsWithLabel.sublist(1, widget.pointsWithLabel.length - 1);
+    if (intermediatePoints.isEmpty) {
+      return;
+    }
+
+    final markers = <Marker>[];
+
+    for (var i = 0; i < intermediatePoints.length; i++) {
+      final point = intermediatePoints[i].value;
+      if (point == null) {
+        continue;
+      }
+
+      final stopIndex = i + 1;
+      if (stopIndex >= _intermediateStopIcons.length) {
+        continue;
+      }
+
+      final svgAsset = _intermediateStopIcons[stopIndex];
+      if (svgAsset == null) {
+        continue;
+      }
+
+      markers.add(
+        Marker(
+          id: 'intermediate_stop_$stopIndex',
+          onTap: point.objectId != null ? () => _onIntermediateStopTap(point) : null,
+          options: MarkerOptionsMessage(
+            position: GeoPointWithElevationMessage(latitude: point.latitude, longitude: point.longitude, elevation: 0),
+            icon: svgAsset.keyName.markerIcon(),
+            animatedAppearance: true,
+            zIndex: 50,
+          ),
+        ),
+      );
+    }
+
+    if (markers.isNotEmpty) {
+      await manager.addMarkers(markers);
+    }
+  }
+
+  void _onIntermediateStopTap(RouteParamsPoint point) {
+    if (point.objectId == null) {
+      return;
+    }
+
+    ref
+        .read(appRouterProvider)
+        .replaceOrPush(
+          route: PoiCardWidgetRoute(
+            objectId: DgisObjectIdMessage(objectId: point.objectId!, entranceId: point.entranceId ?? 0),
+            closestPoint: LatLng(latitude: point.latitude, longitude: point.longitude),
+          ),
+          toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Keep intermediate stops marker manager alive
+    final intermediateStopsSettings = MapObjectManagerSettings.intermediateStops();
     ref
+      ..watch(
+        mapObjectManagerProvider(
+          named: intermediateStopsSettings.name,
+          layerId: intermediateStopsSettings.layerId,
+        ).notifier,
+      )
       ..watch(activePublicTransportRouteProvider)
       ..listen(carConnectionProvider, (_, next) {
         final connected = next.value ?? false;
@@ -245,18 +341,15 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           _navType.value = RouteSearchOptionsMessage.car;
         }
       })
-      ..listen<RouteSearchOptionsMessage>(
-        routesUpdateTabProvider,
-        (previous, next) {
-          if (previous != next) {
-            _navType.value = next;
-            ref
-              ..invalidate(routesProvider)
-              ..invalidate(publicTransportRoutesProvider)
-              ..invalidate(publicTransportVisibilityProvider);
-          }
-        },
-      );
+      ..listen<RouteSearchOptionsMessage>(routesUpdateTabProvider, (previous, next) {
+        if (previous != next) {
+          _navType.value = next;
+          ref
+            ..invalidate(routesProvider)
+            ..invalidate(publicTransportRoutesProvider)
+            ..invalidate(publicTransportVisibilityProvider);
+        }
+      });
 
     return ValueListenableBuilder(
       valueListenable: _isNavTypeLoading,
@@ -280,10 +373,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             );
 
             final publicTransportVisibility = ref.watch(
-              publicTransportVisibilityProvider(
-                startPoint: widget.points[0],
-                finishPoint: widget.points[1],
-              ),
+              publicTransportVisibilityProvider(startPoint: widget.points[0], finishPoint: widget.points[1]),
             );
 
             return Column(
@@ -298,7 +388,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                   publicTransportVisibility: publicTransportVisibility,
                   routes: routes,
                 ),
-                Spacing.$4x.heightBox,
+                Spacing.$3x.heightBox,
                 RouteTabBar(
                   active: navigatingType,
                   onChanged: _onChanged,
@@ -329,6 +419,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     final mapSetting = MapObjectManagerSettings.search();
     final markerSettings = MapObjectManagerSettings.selectedMarker();
+    final intermediateStopsSetting = MapObjectManagerSettings.intermediateStops();
     final location = ref.read(cityByLocationProvider.notifier);
     final originCity = await location.getCityByLatLng(
       lat: widget.pointsWithLabel.first.value?.latitude,
@@ -339,14 +430,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       lng: widget.pointsWithLabel.lastOrNull?.value?.longitude,
     );
 
-    for (final settings in [mapSetting, markerSettings]) {
+    for (final settings in [mapSetting, markerSettings, intermediateStopsSetting]) {
       await ref
-          .read(
-            mapObjectManagerProvider(
-              named: settings.name,
-              layerId: settings.layerId,
-            ).notifier,
-          )
+          .read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier)
           .removeAllMarkers();
     }
 
@@ -360,12 +446,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     // log advert analytics event
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
-    ref.read(advertMetricsProvider.notifier).sendEvent(
-          AdvertMetricsKeys.journeyStartedUnique,
-          isUniquePerSession: true,
-        );
+    ref
+        .read(advertMetricsProvider.notifier)
+        .sendEvent(AdvertMetricsKeys.journeyStartedUnique, isUniquePerSession: true);
 
-    ref.read(appAnalyticsProvider).navigationStarted(
+    ref
+        .read(appAnalyticsProvider)
+        .navigationStarted(
           originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
           destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
           originCity: originCity.name,
@@ -374,30 +461,25 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           estimateDistance: route.distance,
         );
 
-    unawaited(ref.read(urbiAnalyticsProvider).track(
-      'startNavigation',
-      properties: {
-        'duration': route.duration,
-        'distance': route.distance,
-      },
-    ));
+    unawaited(
+      ref
+          .read(urbiAnalyticsProvider)
+          .track('startNavigation', properties: {'duration': route.duration, 'distance': route.distance}),
+    );
 
-    await ref.read(currentRouteProvider.notifier).setNavigationState(
-          CurrentRouteState(
-            points: widget.pointsWithLabel,
-            navType: navigatingType,
-            route: route,
-          ),
-        );
+    await ref
+        .read(currentRouteProvider.notifier)
+        .setNavigationState(CurrentRouteState(points: widget.pointsWithLabel, navType: navigatingType, route: route));
     ref.read(currentNavigationDestinationProvider.notifier).state = widget.pointsWithLabel.lastOrNull?.value;
 
     await context.router.pushAndPopUntil(
-        PathNavRoute(
-          navType: navigatingType,
-          isHomeOrWork: widget.isHomeOrWork,
-          initAction: PathNavPageInitAction.startNavigation,
-        ),
-        predicate: (route) => route.settings.name == BottomMenuRoute.name);
+      PathNavRoute(
+        navType: navigatingType,
+        isHomeOrWork: widget.isHomeOrWork,
+        initAction: PathNavPageInitAction.startNavigation,
+      ),
+      predicate: (route) => route.settings.name == BottomMenuRoute.name,
+    );
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {

@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/city_by_location/city_by_location.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
@@ -15,19 +19,18 @@ import 'package:mapness/pages/navi_search/ui/navi_search_history.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_results.dart';
 import 'package:mapness/pages/navi_search/ui/navi_suggest_list.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
-import 'package:mapness/widgets/navi_search/navi_find_in_fav.dart';
 import 'package:mapness/widgets/navi_search/navi_quick_filter.dart';
 import 'package:provider/provider.dart';
 
 class NaviSearchContent extends ConsumerStatefulWidget {
   final ScrollController bottomSheetContentScrollController;
 
-  const NaviSearchContent({
-    required this.bottomSheetContentScrollController,
-    super.key,
-  });
+  const NaviSearchContent({required this.bottomSheetContentScrollController, super.key});
 
   @override
   ConsumerState<NaviSearchContent> createState() => _MapSearchContentState();
@@ -65,7 +68,9 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
 
   void _sendNavigationEvent({required String searchText, required bool isResultsFound, required int resultCount}) {
     final city = ref.read(cityByLocationProvider);
-    ref.read(appAnalyticsProvider).navigationSearch(
+    ref
+        .read(appAnalyticsProvider)
+        .navigationSearch(
           destinationCity: city.value?.name ?? '',
           keyword: searchText,
           originCity: city.value?.name ?? '',
@@ -82,12 +87,7 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
     ref
       ..listen(searchProvider(scope.value), (_oldState, newState) {
         if (newState is SearchStateEmpty) {
-          ref.read(urbiAnalyticsProvider).track(
-            'searchFailed',
-            properties: {
-              'text': newState.searchText,
-            },
-          );
+          ref.read(urbiAnalyticsProvider).track('searchFailed', properties: {'text': newState.searchText});
         } else if (newState is SearchStateResults) {
           _sendNavigationEvent(
             searchText: newState.searchText,
@@ -102,12 +102,9 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
           );
         }
       })
-      ..listen(
-        networkStatusProvider,
-        (_, hasConnection) {
-          _debouncedUpdate(context, hasConnection);
-        },
-      );
+      ..listen(networkStatusProvider, (_, hasConnection) {
+        _debouncedUpdate(context, hasConnection);
+      });
 
     if (!_hasConnection) {
       return SliverToBoxAdapter(
@@ -127,22 +124,61 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
     }
 
     return searchState.map(
-      empty: () => const SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: MapSearchEmpty(),
-        ),
-      ),
+      empty: () =>
+          const SliverFillRemaining(hasScrollBody: false, child: SafeArea(top: false, child: MapSearchEmpty())),
       history: () => SliverToBoxAdapter(
         child: SafeArea(
           top: false,
           child: Column(
             children: [
-              NaviQuickFilter(
-                onFilterSelected: (q) => ref.read(searchProvider(scope.value).notifier).searchByText(q),
+              NaviQuickFilter(onFilterSelected: (q) => ref.read(searchProvider(scope.value).notifier).searchByText(q)),
+              const SizedBox(height: Spacing.$4x),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                child: ContentWrapper(
+                  color: context.colors.backgroundSurface1,
+                  children: [
+                    ContentRow(
+                      isDividerEnabled: true,
+                      leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
+                      text: ContentRowTextOptions(title: context.l10n.selectOnTheMap),
+                      trailing: ContentRowTextTrailingOptions(
+                        icon: SystemIcons.arrowCornerRightSmall,
+                        iconColor: context.colors.foregroundMuted,
+                      ),
+                      onTap: () => _specifyOnTheMap(context),
+                    ),
+                    ContentRow(
+                      isDividerEnabled: true,
+                      leading: Icon(
+                        Directionality.of(context) == TextDirection.ltr
+                            ? TransportIcons.locationLTR
+                            : TransportIcons.locationRTL,
+                        color: context.colors.accentDefault,
+                        size: 22,
+                      ),
+                      text: ContentRowTextOptions(title: context.l10n.yourLocation),
+                      trailing: ContentRowTextTrailingOptions(
+                        icon: SystemIcons.arrowCornerRightSmall,
+                        iconColor: context.colors.foregroundMuted,
+                      ),
+                      onTap: () => _onYourLocationTap(context, ref),
+                    ),
+                    ContentRow(
+                      leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
+                      text: ContentRowTextOptions(title: context.l10n.findInFav),
+                      trailing: ContentRowTextTrailingOptions(
+                        icon: SystemIcons.arrowCornerRightSmall,
+                        iconColor: context.colors.foregroundMuted,
+                      ),
+                      onTap: () => ref
+                          .read(authMethodsProvider.notifier)
+                          .authAndOpen(context, callback: () => context.router.push(const NaviFavoritesRoute())),
+                    ),
+                  ],
+                ),
               ),
-              const NaviFindInFav(),
+              const SizedBox(height: Spacing.$3x),
               const NaviSearchHistory(),
             ],
           ),
@@ -153,19 +189,11 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
         child: SafeArea(
           top: false,
           child: Center(
-            child: Loading(
-              orientation: Axis.vertical,
-              size: LoaderSize.large,
-              title: context.l10n.loading,
-            ),
+            child: Loading(orientation: Axis.vertical, size: LoaderSize.large, title: context.l10n.loading),
           ),
         ),
       ),
-      suggest: (suggest) => SliverToBoxAdapter(
-        child: NaviSuggestList(
-          suggest: suggest,
-        ),
-      ),
+      suggest: (suggest) => SliverToBoxAdapter(child: NaviSuggestList(suggest: suggest)),
       results: (results) => SliverToBoxAdapter(
         child: SafeArea(
           top: false,
@@ -187,5 +215,32 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
         ),
       ),
     );
+  }
+
+  Future<void> _specifyOnTheMap(BuildContext context) async {
+    final currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+
+    await context.router.push(const RoutingMapSelectRoute());
+  }
+
+  Future<void> _onYourLocationTap(BuildContext context, WidgetRef ref) async {
+    final location = ref.read(locationProvider);
+    if (location == null) return;
+
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    await dgisController.setCameraPosition(
+      CameraPositionMessage(
+        point: GeoPointMessage(latitude: location.latitude, longitude: location.longitude),
+        zoom: 16,
+        tilt: 0,
+        bearing: 0,
+      ),
+    );
+    if (context.mounted) {
+      context.router.pop();
+    }
   }
 }

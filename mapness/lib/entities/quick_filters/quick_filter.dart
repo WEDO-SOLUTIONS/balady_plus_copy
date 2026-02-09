@@ -27,11 +27,11 @@ class QuickFilterList extends QuickFilterBase {
 class NaviQuickFilterList extends QuickFilterBase {
   @override
   List<QuickFilter> get list => [
+        QuickFilter.fuel,
         QuickFilter.eatOut,
-        QuickFilter.mosques,
         QuickFilter.markets,
         QuickFilter.hotels,
-        QuickFilter.fuel,
+        QuickFilter.mosques,
       ];
 }
 

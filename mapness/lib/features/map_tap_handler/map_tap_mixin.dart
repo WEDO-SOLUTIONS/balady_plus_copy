@@ -19,7 +19,6 @@ mixin GuardTapEventMixin on _$MapTapHandler {
     final objectIgnoreRoute = [
       RoutingMapSelectRoute.name,
       SearchRoute.name,
-      RoutingRoutesRoute.name,
     ];
     if (isQuickSearchRunning) {
       objectIgnoreRoute.add(PoiCardWidgetRoute.name);

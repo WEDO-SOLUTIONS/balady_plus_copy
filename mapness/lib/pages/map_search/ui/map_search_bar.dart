@@ -178,7 +178,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             _focusNode.requestFocus();
           },
 
-          hintText: context.l10n.search,
+          hintText: context.l10n.searchPlaceOrAddress,
           fillColor: context.colors.neutralContainerDefault,
           hintColor: context.colors.foregroundSoft,
           // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)

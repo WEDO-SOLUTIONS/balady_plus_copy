@@ -33,10 +33,7 @@ import 'package:sheetify/sheetify.dart';
 class NaviBottomSheet extends ConsumerStatefulWidget {
   final bool isPathNavScreen;
 
-  const NaviBottomSheet({
-    super.key,
-    this.isPathNavScreen = false,
-  });
+  const NaviBottomSheet({super.key, this.isPathNavScreen = false});
 
   @override
   ConsumerState<NaviBottomSheet> createState() => _NaviBottomSheetState();
@@ -55,10 +52,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   void initState() {
     super.initState();
     if (widget.isPathNavScreen) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     }
 
     ref.read(dgisControllerProvider).value?.stopFollowNavigation();
@@ -72,7 +66,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         ],
       ),
       stateMapper: const ThreeStateMapper(),
-      initialState: ThreeStateSheet.open,
+      initialState: ThreeStateSheet.expanded,
     );
 
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
@@ -122,17 +116,11 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   @override
   Widget build(BuildContext context) {
     final searchObjectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: _settings.name,
-        layerId: _settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
-    ref.listen(
-      searchProvider(_scope),
-      (previous, next) {
-        _drawSearchMarkers(next, previous, searchObjectManager);
-      },
-    );
+    ref.listen(searchProvider(_scope), (previous, next) {
+      _drawSearchMarkers(next, previous, searchObjectManager);
+    });
 
     return SearchScope(
       named: SearchScopeEnum.navi,
@@ -161,12 +149,10 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               key: const ValueKey('NAVI SEARCH SHEET'),
               header: NaviSearchHeader(
                 backgroundColor: context.colors.backgroundSurface2,
-                requestFocus: false,
+                requestFocus: true,
                 onClose: () => context.router.pop(),
               ),
-              sliver: NaviSearchContent(
-                bottomSheetContentScrollController: _multiStateSheetController,
-              ),
+              sliver: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
             ),
           ),
         ],
@@ -246,14 +232,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   }
 
   void _removeAllMarkersAndPop() {
-    ref
-        .read(
-          mapObjectManagerProvider(
-            named: _settings.name,
-            layerId: _settings.layerId,
-          ).notifier,
-        )
-        .removeAllMarkers();
+    ref.read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier).removeAllMarkers();
     ref.read(searchInRectProvider(_scope).notifier).update();
     context.router.pop();
   }

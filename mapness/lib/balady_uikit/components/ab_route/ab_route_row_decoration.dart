@@ -40,7 +40,9 @@ class _ABRouteRowDecoration extends StatelessWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: context.textStyles.bodyLargeRegular,
+                        style: context.textStyles.bodyLargeRegular.copyWith(
+                          color: context.colors.foregroundDefault,
+                        ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),

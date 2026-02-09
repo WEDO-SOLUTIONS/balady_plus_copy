@@ -71,21 +71,22 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         onDismiss: () => widget.onDelete(widget.history[index]),
                         elementKey: ValueKey(widget.history[index].hashKey),
                         child: ContentRow(
-                            backgroundColor: contentColor,
-                            onTap: () async {
-                              await Future.delayed(const Duration(milliseconds: 300));
-                              widget.onTap(widget.history[index], index, bssHistoryList);
-                            },
-                            leading: AppIcons(
-                              iconData: GeneralIcons.timeQuarter,
-                              color: widget.iconColor ?? context.colors.foregroundSoft,
-                              size: 24,
-                            ),
-                            text: ContentRowTextOptions(
-                              title: widget.history[index].title,
-                              subtitle: widget.history[index].address,
-                            ),
-                            isDividerEnabled: !isLastItemAndNoManyResults),
+                          backgroundColor: contentColor,
+                          onTap: () async {
+                            await Future.delayed(const Duration(milliseconds: 300));
+                            widget.onTap(widget.history[index], index, bssHistoryList);
+                          },
+                          leading: AppIcons(
+                            iconData: GeneralIcons.timeQuarter,
+                            color: widget.iconColor ?? context.colors.foregroundSoft,
+                            size: 24,
+                          ),
+                          text: ContentRowTextOptions(
+                            title: widget.history[index].title,
+                            subtitle: widget.history[index].address,
+                          ),
+                          isDividerEnabled: !isLastItemAndNoManyResults,
+                        ),
                       ),
                     );
                   },
@@ -99,15 +100,15 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                           eventType: BSSEventType.action,
                           actionType: BSSActionType.tap,
                           uiElement: BssUIElement(
-                            name:
-                                _collapsed ? BssUIElementNames.expandHistoryList : BssUIElementNames.rollupHistoryList,
+                            name: _collapsed
+                                ? BssUIElementNames.expandHistoryList
+                                : BssUIElementNames.rollupHistoryList,
                             ownerName: BssUIElementNames.directorySearchScreen,
-                            position:
-                                _collapsed ? 11 : widget.history.length + 1, // Because we have 10 items in the list
+                            position: _collapsed
+                                ? 11
+                                : widget.history.length + 1, // Because we have 10 items in the list
                           ),
-                          payload: BssPayload(
-                            historyList: BssHistoryList(size: widget.history.length),
-                          ),
+                          payload: BssPayload(historyList: BssHistoryList(size: widget.history.length)),
                         ),
                       );
                       setState(() => _collapsed = !_collapsed);
@@ -117,9 +118,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                       color: widget.iconColor ?? context.colors.foregroundDefault,
                       size: 24,
                     ),
-                    text: ContentRowTextOptions(
-                      title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
-                    ),
+                    text: ContentRowTextOptions(title: _collapsed ? context.l10n.showMore : context.l10n.showLess),
                   ),
               ],
             ),
@@ -127,9 +126,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
           if (_collapsed) const SizedBox(height: Spacing.$4x),
           if (!_collapsed)
             Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: Spacing.$3x,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
               child: Row(
                 children: [
                   Expanded(
