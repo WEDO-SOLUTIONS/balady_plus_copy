@@ -120,15 +120,18 @@ class PoiHeader extends ConsumerWidget {
             final state = bottomSheetController?.state;
             final shouldUseSurface1 =
                 state != null && (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded);
+            final backgroundColor = shouldUseSurface1
+                ? context.colors.backgroundSurface1
+                : context.colors.backgroundSurface2;
             return ColoredBox(
-              color: shouldUseSurface1 ? context.colors.backgroundSurface1 : context.colors.backgroundSurface2,
+              color: backgroundColor,
               child: Padding(
                 padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DraggerContainer(color: context.colors.backgroundSurface2),
+                    DraggerContainer(color: backgroundColor),
                     CardHeader(
                       title: CardHeaderWidget(child: TitleComponent(title: title)),
                       onTapClose: onTapClose,
