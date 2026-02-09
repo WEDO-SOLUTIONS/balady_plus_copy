@@ -39,10 +39,7 @@ class PoiContentFloorModel {
   /// Count of floors
   final int floors;
 
-  const PoiContentFloorModel({
-    required this.title,
-    required this.floors,
-  });
+  const PoiContentFloorModel({required this.title, required this.floors});
 }
 
 /// Model for entrances content. It is used in the address card
@@ -56,9 +53,5 @@ class PoiContentEntrancesModel {
   /// Callback for the entrances button
   final void Function() onTap;
 
-  const PoiContentEntrancesModel({
-    required this.title,
-    required this.count,
-    required this.onTap,
-  });
+  const PoiContentEntrancesModel({required this.title, required this.count, required this.onTap});
 }

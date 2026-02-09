@@ -14,12 +14,7 @@ class PoiTabs extends ConsumerStatefulWidget {
   final int objectId;
   final TabController tabController;
 
-  const PoiTabs({
-    required this.tabController,
-    required this.objectId,
-    super.key,
-    this.poiCardState,
-  });
+  const PoiTabs({required this.tabController, required this.objectId, super.key, this.poiCardState});
 
   @override
   ConsumerState<PoiTabs> createState() => _PoiTabsState();
@@ -47,63 +42,68 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
     final organizationsCount = widget.poiCardState?.organizations?.count ?? 0;
 
-    return TabBar(
-      padding: EdgeInsets.zero,
-      controller: widget.tabController,
-      indicatorColor: Colors.transparent,
-      isScrollable: true,
-      labelPadding: EdgeInsets.zero,
-      tabs: [
-        Tab(
-          iconMargin: EdgeInsets.zero,
-          child: _PoiTabItem(
-            title: context.l10n.info,
-            onTap: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.$4x),
+      child: TabBar(
+        padding: EdgeInsets.zero,
+        controller: widget.tabController,
+        indicatorColor: Colors.transparent,
+        isScrollable: true,
+        labelPadding: EdgeInsets.zero,
+        tabs: [
+          Tab(
+            iconMargin: EdgeInsets.zero,
+            child: _PoiTabItem(
+              title: context.l10n.info,
+              onTap: () {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.poiKeys.tab,
                   group: MetricsConstants.poiTag,
                   action: MetricAction.tap.toString(),
-                  props: {
-                    'tab': context.l10n.info,
-                  });
-              widget.tabController.animateTo(0);
-            },
-            isActive: widget.tabController.index == 0,
+                  props: {'tab': context.l10n.info},
+                );
+                widget.tabController.animateTo(0);
+              },
+              isActive: widget.tabController.index == 0,
+            ),
           ),
-        ),
-        Tab(
-          iconMargin: EdgeInsets.zero,
-          child: _PoiTabItem(
-            title: context.l10n.photos,
-            count: photoCount,
-            onTap: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+          Tab(
+            iconMargin: EdgeInsets.zero,
+            child: _PoiTabItem(
+              title: context.l10n.photos,
+              count: photoCount,
+              onTap: () {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.poiKeys.tab,
                   group: MetricsConstants.poiTag,
                   action: MetricAction.tap.toString(),
-                  props: {'tab': context.l10n.photos});
+                  props: {'tab': context.l10n.photos},
+                );
 
-              widget.tabController.animateTo(1);
-            },
-            isActive: widget.tabController.index == 1,
+                widget.tabController.animateTo(1);
+              },
+              isActive: widget.tabController.index == 1,
+            ),
           ),
-        ),
-        Tab(
-          iconMargin: EdgeInsets.zero,
-          child: organizationsCount > 0
-              ? _PoiTabItem(
-                  title: context.l10n.organizations,
-                  count: organizationsCount,
-                  onTap: () {
-                    if (organizationsCount == 0) {
-                      widget.tabController.index = widget.tabController.previousIndex;
-                      return;
-                    }
-                    widget.tabController.animateTo(2);
-                  },
-                  isActive: widget.tabController.index == 2,
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
+          Tab(
+            iconMargin: EdgeInsets.zero,
+            child: organizationsCount > 0
+                ? _PoiTabItem(
+                    title: context.l10n.organizations,
+                    count: organizationsCount,
+                    onTap: () {
+                      if (organizationsCount == 0) {
+                        widget.tabController.index = widget.tabController.previousIndex;
+                        return;
+                      }
+                      widget.tabController.animateTo(2);
+                    },
+                    isActive: widget.tabController.index == 2,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -114,12 +114,7 @@ class _PoiTabItem extends StatelessWidget {
   final String title;
   final int? count;
 
-  const _PoiTabItem({
-    required this.title,
-    this.isActive,
-    this.onTap,
-    this.count,
-  });
+  const _PoiTabItem({required this.title, this.isActive, this.onTap, this.count});
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +161,7 @@ class _PoiTabItem extends StatelessWidget {
                               color: isActive ? context.colors.neutralDefault : context.colors.neutralMuted,
                             ),
                           ),
-                        )
+                        ),
                     ],
                   ),
                 ),

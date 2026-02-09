@@ -35,13 +35,13 @@ class PoiContentSocialMediaModel {
   /// Type of the social media
   final PoiContentSocialMediaTypes type;
 
+  /// Display text (username, website address, etc.)
+  final String? displayText;
+
   /// Link to the social media
   final String link;
 
-  const PoiContentSocialMediaModel({
-    required this.type,
-    required this.link,
-  });
+  const PoiContentSocialMediaModel({required this.type, required this.link, this.displayText});
 }
 
 /// [ContactsInfoModel] is a model for the contacts info section of a POI card.
@@ -56,20 +56,7 @@ class ContactsInfoModel {
   final String? value;
   final String? comment;
 
-  const ContactsInfoModel({
-    required this.type,
-    this.displayText,
-    this.value,
-    this.comment,
-  });
+  const ContactsInfoModel({required this.type, this.displayText, this.value, this.comment});
 }
 
-enum PoiContentSocialMediaTypes {
-  website,
-  instagram,
-  facebook,
-  youtube,
-  linkedin,
-  whatsapp,
-  telegram,
-}
+enum PoiContentSocialMediaTypes { website, instagram, facebook, youtube, linkedin, whatsapp, telegram }

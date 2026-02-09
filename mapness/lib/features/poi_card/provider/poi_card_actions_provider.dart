@@ -20,9 +20,7 @@ class PoiCardActions extends _$PoiCardActions {
   @override
   void build() {}
 
-  void onError() => Future(
-    () => ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()),
-  );
+  void onError() => Future(() => ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle()));
 
   Future<void> onEntranceTap(DirectoryObjectMessage? objectMessage) async {
     final controller = await ref.read(dgisControllerProvider.future);
@@ -51,18 +49,14 @@ class PoiCardActions extends _$PoiCardActions {
     if (context == null) {
       return Future.value();
     }
-    return balady_utils.safeShareText(
-      BaldayDeeplink.urlWithQuery(baseUri, query),
-      context: context,
-    );
+    return balady_utils.safeShareText(BaldayDeeplink.urlWithQuery(baseUri, query), context: context);
   }
 
-  String _myLocationDeeplink(LatLng location) =>
-      BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
-        BaldayDeeplink.latitudeKey: location.latitude.toString(),
-        BaldayDeeplink.longitudeKey: location.longitude.toString(),
-        BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
-      });
+  String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(BaldayDeeplink.basePoiUri, {
+    BaldayDeeplink.latitudeKey: location.latitude.toString(),
+    BaldayDeeplink.longitudeKey: location.longitude.toString(),
+    BaldayDeeplink.typeKey: BaldayDeeplink.typeValueMyLocation,
+  });
 
   void shareMyLocation(LatLng? location) {
     if (location != null) {
@@ -70,10 +64,7 @@ class PoiCardActions extends _$PoiCardActions {
       if (context == null) {
         return;
       }
-      balady_utils.safeShareText(
-        _myLocationDeeplink(location),
-        context: context,
-      );
+      balady_utils.safeShareText(_myLocationDeeplink(location), context: context);
     } else {
       onError();
     }
@@ -81,16 +72,12 @@ class PoiCardActions extends _$PoiCardActions {
 
   Future<void> copyToClipboard(LatLng? location) async {
     if (location != null) {
-      await Clipboard.setData(
-        ClipboardData(text: _myLocationDeeplink(location)),
-      );
+      await Clipboard.setData(ClipboardData(text: _myLocationDeeplink(location)));
     }
   }
 
   Future<void> sendEmail(String value) async {
-    await launchUrl(
-      Uri(scheme: 'mailto', path: value, queryParameters: {'subject': ''}),
-    );
+    await launchUrl(Uri(scheme: 'mailto', path: value, queryParameters: {'subject': ''}));
   }
 
   Future<void> launch(String value) async {
@@ -108,11 +95,7 @@ class PoiCardActions extends _$PoiCardActions {
     ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
   }
 
-  Future<void> toggleEntrances(
-    DirectoryObjectMessage data,
-    VoidCallback callBack,
-    LatLng? closestPoint,
-  ) async {
+  Future<void> toggleEntrances(DirectoryObjectMessage data, VoidCallback callBack, LatLng? closestPoint) async {
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.entrances,
       group: MetricsConstants.poiTag,
@@ -127,20 +110,13 @@ class PoiCardActions extends _$PoiCardActions {
     }
 
     await _animateToEntrance(
-      data.entrances
-          .map((e) => e.geometry?.entrancePoints ?? [])
-          .toList()
-          .expand((element) => element)
-          .toList(),
+      data.entrances.map((e) => e.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
       closestPoint,
     );
     callBack.call();
   }
 
-  Future<void> _animateToEntrance(
-    List<GeoPointMessage?> data,
-    LatLng? closestPoint,
-  ) async {
+  Future<void> _animateToEntrance(List<GeoPointMessage?> data, LatLng? closestPoint) async {
     if (data.isEmpty) {
       return;
     }
@@ -177,10 +153,7 @@ class PoiCardActions extends _$PoiCardActions {
     // Animate to the entrance
     await cameraController.animateTo(
       CameraPositionMessage(
-        point: GeoPointMessage(
-          latitude: minCoords.latitude,
-          longitude: minCoords.longitude,
-        ),
+        point: GeoPointMessage(latitude: minCoords.latitude, longitude: minCoords.longitude),
         zoom: 17.3,
         tilt: cameraPosition?.tilt ?? 0,
         bearing: cameraPosition?.tilt ?? 0,
