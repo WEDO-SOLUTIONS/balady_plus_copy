@@ -98,13 +98,10 @@ class DgisController extends _$DgisController {
     _locationHelper = LocationSetupHelper(controller);
     await _locationHelper.run();
 
-    ///Through trial and error, I found a version where the user marker is displayed.
-    ///Even if the user doesn’t grant permission, calling these functions won’t break anything.
     await controller.onLocationPermissionGranted(
       desiredAccuracy: DesiredAccuracyMessage.high,
     );
     await controller.toggleFollowState();
-
   }
 
   /// Moves camera on Riyadh Tower

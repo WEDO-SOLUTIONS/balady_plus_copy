@@ -60,10 +60,9 @@ class LocationSetupHelper with WidgetsBindingObserver {
       return;
     }
 
-    _log('permission granted → enabling follow-location'); // permission granted → enabling follow-location
+    _log('permission granted → enabling location services');
     await controller.onLocationPermissionGranted(
       desiredAccuracy: DesiredAccuracyMessage.high,
     );
-    await controller.toggleFollowState();
   }
 }
