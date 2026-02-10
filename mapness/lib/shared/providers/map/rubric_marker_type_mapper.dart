@@ -89,7 +89,7 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
       return (cityscapeNotifier.customMarker, cityscapeNotifier.customPinPath);
     }
 
-    final foundingDayNotifier = ref.watch(foundingDayProvider.notifier);
+    final foundingDayNotifier = ref.watch(foundingDayUrbiProvider.notifier);
     if (foundingDayNotifier.isFoundationObject(objectId)) {
       return (foundingDayNotifier.customMarker, foundingDayNotifier.customMarker);
     }

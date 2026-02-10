@@ -32,7 +32,6 @@ class CityEventDisplay extends ConsumerWidget {
     if (config == null) {
       return const SizedBox.shrink();
     }
-
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -51,7 +50,7 @@ class CityEventDisplay extends ConsumerWidget {
                   duration: fireworksController!.duration,
                 );
 
-              ref.read(foundingDayProvider.notifier).openThePlace();
+              ref.read(foundingDayUrbiProvider.notifier).openThePlace();
             }
           },
         ),

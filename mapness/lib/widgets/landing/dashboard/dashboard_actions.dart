@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
@@ -104,7 +106,7 @@ class DashboardActions {
     if (userLocation == null) return;
 
     if (!context.mounted) return;
-    context.router.push(
+    unawaited(context.router.push(
       ShareMyLocationRoute(
         cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
         closestPoint: LatLng(
@@ -112,7 +114,7 @@ class DashboardActions {
           longitude: userLocation.longitude,
         ),
       ),
-    );
+    ));
   }
 
   /// Opens the Snap and Send mini-app for reporting issues.

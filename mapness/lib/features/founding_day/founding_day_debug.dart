@@ -13,7 +13,7 @@ bool get foundingDayDebugOverride => _foundingDayDebugOverride;
 /// This allows developers to force the Founding Day feature to be active
 /// regardless of the actual date
 @riverpod
-class FoundingDayDebug extends _$FoundingDayDebug {
+class FoundingDayDebugUrbi extends _$FoundingDayDebugUrbi {
   @override
   bool build() => _foundingDayDebugOverride;
 

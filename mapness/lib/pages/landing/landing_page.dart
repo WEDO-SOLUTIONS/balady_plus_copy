@@ -90,7 +90,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void _bottomsheetListener() {
     if (_bottomSheetController.state != _stateSheet) {
       _stateSheet = _bottomSheetController.state;
-      final isFoundingDayToday = ref.watch(foundingDayProvider);
+      final isFoundingDayToday = ref.watch(foundingDayUrbiProvider);
       // On founding day, animate confetti on every state change
       if (isFoundingDayToday) {
         confettiController

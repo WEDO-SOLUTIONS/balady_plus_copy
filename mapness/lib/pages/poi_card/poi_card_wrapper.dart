@@ -89,7 +89,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       );
     }
 
-    final isFoundingDayObject = ref.read(foundingDayProvider.notifier).isFoundationObject(widget.objectId.objectId);
+    final isFoundingDayObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(widget.objectId.objectId);
 
     if (isFoundingDayObject && data != null) {
       return _FoundingDayPoiCardContent(

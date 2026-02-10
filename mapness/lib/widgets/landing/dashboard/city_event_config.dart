@@ -203,6 +203,9 @@ class FoundingDayConfig extends CityEventConfig {
   bool get hasDashboardLogo => true;
 
   @override
+  bool get hasLogo => true;
+
+  @override
   String get customMarkerPath => Assets.icons.svg.historicDiriyahFort.keyName;
 
   @override

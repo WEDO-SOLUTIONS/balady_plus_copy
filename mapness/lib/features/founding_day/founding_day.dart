@@ -26,7 +26,7 @@ const _currentDateCheckInterval = Duration(minutes: 15);
 /// Returns `true` if the current time is between the start and end dates,
 /// `false` otherwise.
 @riverpod
-class FoundingDay extends _$FoundingDay {
+class FoundingDayUrbi extends _$FoundingDayUrbi {
   // we need to check if current date comes in or goes out of event date range as the time goes by
   late Timer _timer;
 
@@ -52,7 +52,7 @@ class FoundingDay extends _$FoundingDay {
     ref.onDispose(_timer.cancel);
 
     // Check if debug override is enabled
-    final debugOverride = ref.watch(foundingDayDebugProvider);
+    final debugOverride = ref.watch(foundingDayDebugUrbiProvider);
     if (debugOverride) {
       return true;
     }

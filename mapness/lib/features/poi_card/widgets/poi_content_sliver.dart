@@ -187,8 +187,8 @@ class PoiContentSliver extends ConsumerWidget {
     );
     final activeCityEvent = ref.watch(activeCityEventProvider);
     final isFoundationDay = activeCityEvent?.isFoundingDay ?? false;
-    final isFoundationObject = ref.read(foundingDayProvider.notifier).isFoundationObject(data.id!.objectId);
-    final localAboutText = ref.read(foundingDayProvider.notifier).getAboutByDgisId(data.id!.objectId);
+    final isFoundationObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(data.id!.objectId);
+    final localAboutText = ref.read(foundingDayUrbiProvider.notifier).getAboutByDgisId(data.id!.objectId);
     final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text ?? '';
     final canUseCustomData = isFoundationDay && isFoundationObject;
 

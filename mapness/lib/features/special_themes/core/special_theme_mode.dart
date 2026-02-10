@@ -1,10 +1,12 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/modes/foundation_day/foundation_day.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'special_theme_mode.g.dart';
@@ -39,6 +41,13 @@ class FoundationDayDebug extends _$FoundationDayDebug {
 
   void set(bool value) {
     state = value;
+    final isEnabled = ref.watch(foundingDayDebugUrbiProvider);
+    final notifier = ref.read(foundingDayDebugUrbiProvider.notifier);
+    if (value) {
+      notifier.enable();
+    } else {
+      notifier.disable();
+    }
   }
 }
 
@@ -123,22 +132,17 @@ SpecialThemeMode specialThemeMode(Ref ref) {
   final hajjConfig = ref.watch(placesActivationHajjProvider);
 
   // Foundation Day: force_enabled OR debug OR (enabled AND conditions met)
-  final isFoundationDay =
-      foundationDayConfig.forceEnabled ||
+  final isFoundationDay = foundationDayConfig.forceEnabled ||
       isFoundationDayDebug ||
       (foundationDayConfig.enabled && ref.watch(foundationDayProvider));
 
   // Ramadan: force_enabled OR (enabled AND in date range) OR debug
   final isRamadanSeason =
-      ramadanConfig.forceEnabled ||
-      isRamadanSeasonDebug ||
-      (ramadanConfig.enabled && _isInDateRange(ramadanConfig));
+      ramadanConfig.forceEnabled || isRamadanSeasonDebug || (ramadanConfig.enabled && _isInDateRange(ramadanConfig));
 
   // Hajj: force_enabled OR (enabled AND in date range) OR debug
   final isHajjSeason =
-      hajjConfig.forceEnabled ||
-      isHajjSeasonDebug ||
-      (hajjConfig.enabled && _isInDateRange(hajjConfig));
+      hajjConfig.forceEnabled || isHajjSeasonDebug || (hajjConfig.enabled && _isInDateRange(hajjConfig));
 
   // Makkah base: force_enabled OR (enabled AND in Makkah area) OR debug
   // Also implicitly enabled when Ramadan/Hajj debug is on (since they require Makkah)
@@ -147,8 +151,7 @@ SpecialThemeMode specialThemeMode(Ref ref) {
   final isInLaunchWindow = _isMekkahLaunchWindow();
   final isInMakkahArea = ref.watch(mekkahBaseThemeProvider);
   final isInLaunchWindowArea = _isInLaunchWindowArea(ref);
-  final isMekkahBase =
-      mekkahConfig.forceEnabled ||
+  final isMekkahBase = mekkahConfig.forceEnabled ||
       isMekkahBaseDebug ||
       isRamadanSeasonDebug ||
       isHajjSeasonDebug ||
@@ -220,4 +223,3 @@ bool _isInLaunchWindowArea(Ref ref) {
 
   return distanceKm <= launchRadiusKm;
 }
-

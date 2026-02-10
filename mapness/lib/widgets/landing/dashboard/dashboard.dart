@@ -147,7 +147,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
       fireworksController: widget.fireworksController,
       onTap: () {
         if (activeEvent == CityEventType.foundingDay) {
-          ref.read(foundingDayProvider.notifier).openThePlace();
+          ref.read(foundingDayUrbiProvider.notifier).openThePlace();
         }
       },
     )

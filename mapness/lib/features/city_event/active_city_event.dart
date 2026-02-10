@@ -1,5 +1,6 @@
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day_debug.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -25,7 +26,7 @@ class ActiveCityEvent extends _$ActiveCityEvent {
     if (ref.watch(cityscapeDebugProvider)) {
       return CityEventType.cityscape;
     }
-    if (ref.watch(foundingDayDebugProvider)) {
+    if (ref.watch(foundingDayUrbiProvider)) {
       return CityEventType.foundingDay;
     }
 

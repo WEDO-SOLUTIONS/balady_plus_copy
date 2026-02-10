@@ -1,6 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
 
 class FoundingDayDebugSwitcher extends ConsumerWidget {
@@ -8,8 +9,8 @@ class FoundingDayDebugSwitcher extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isEnabled = ref.watch(foundingDayDebugProvider);
-    final notifier = ref.read(foundingDayDebugProvider.notifier);
+    final isEnabled = ref.watch(foundingDayUrbiProvider);
+    final notifier = ref.read(foundingDayDebugUrbiProvider.notifier);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),

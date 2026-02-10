@@ -78,9 +78,10 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
   @override
   Widget build(BuildContext context) {
     final uiDirection = ref.watch(uiDirectionProvider);
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
-    final bool showSpecialBanner =
-        specialThemeMode == SpecialThemeMode.nationalDay ||
+    final bool showSpecialBanner = specialThemeMode == SpecialThemeMode.nationalDay ||
         specialThemeMode == SpecialThemeMode.mekkahBase ||
         specialThemeMode == SpecialThemeMode.ramadan;
     final isCityscapeDay = ref.watch(cityscapeProvider);
@@ -118,39 +119,11 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 duration: const Duration(milliseconds: 300),
               ),
             ),
-            if (specialThemeMode != SpecialThemeMode.base)
-              MultiStateSheetBuilder(
-                defaultState: ThreeStateSheet.hidden,
-                builder: (context, state, interpolation, child) => Padding(
-                  padding:
-                      EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0),
-                  child: GestureDetector(
-                    onTap: () => widget.controller.setState(ThreeStateSheet.open),
-                    child: SizedBox(
-                      height:
-                          Spacing.$12x * (state == ThreeStateSheet.hidden ? clampDouble(interpolation * 3, 0, 1) : 1.0),
-                      width: double.infinity,
-                      child: DecoratedBox(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
-                          color: Color(0xFF00343A),
-                        ),
-                        child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
-                              child: Text(
-                                context.l10n.happy95thYears,
-                                style: context.textStyles.bodySmallSemiBold.copyWith(
-                                  color: context.colors.successOnSuccess,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            )),
-                      ),
-                    ),
-                  ),
-                ),
+            if (specialThemeMode == SpecialThemeMode.foundationDay)
+              CityEventDisplay(
+                activeEvent: activeEvent,
+                controller: widget.controller,
+                fireworksController: widget.fireworksController,
               ),
             if (specialThemeMode != SpecialThemeMode.base)
               SpecialThemeHeader(

@@ -105,11 +105,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
 
-  /// File path: assets/images/foundation_day_logo.png
-  AssetGenImage get foundationDayLogo => const AssetGenImage('assets/images/foundation_day_logo.png');
-
   /// File path: assets/images/founding_day_circle_logo.png
   AssetGenImage get foundingDayCircleLogo => const AssetGenImage('assets/images/founding_day_circle_logo.png');
+
+  /// File path: assets/images/founding_day_logo.png
+  AssetGenImage get foundingDayLogo => const AssetGenImage('assets/images/founding_day_logo.png');
 
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
@@ -205,8 +205,8 @@ class $AssetsImagesGen {
         feedbackDashboardFoundingDay,
         feedbackDashboardSaudiday,
         feedbackEyes,
-        foundationDayLogo,
         foundingDayCircleLogo,
+        foundingDayLogo,
         icArrowFeedback,
         icFlipsContinue,
         ishanSeefromtheskyUnsplash,
@@ -285,6 +285,10 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/illustration_percent.svg
   SvgGenImage get illustrationPercent => const SvgGenImage('assets/images_svg/illustration_percent.svg');
 
+  /// File path: assets/images_svg/illustration_percent_founding_day.svg
+  SvgGenImage get illustrationPercentFoundingDay =>
+      const SvgGenImage('assets/images_svg/illustration_percent_founding_day.svg');
+
   /// File path: assets/images_svg/illustration_thanks.svg
   SvgGenImage get illustrationThanks => const SvgGenImage('assets/images_svg/illustration_thanks.svg');
 
@@ -319,6 +323,7 @@ class $AssetsImagesSvgGen {
         illustrationError,
         illustrationNotifications,
         illustrationPercent,
+        illustrationPercentFoundingDay,
         illustrationThanks,
         inactiveStar,
         lostLocation,
@@ -367,9 +372,6 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/founding_day_profile.svg
   SvgGenImage get foundingDayProfile => const SvgGenImage('assets/icons/svg/founding_day_profile.svg');
-
-  /// File path: assets/icons/svg/founding_day_profile_inactive.svg
-  SvgGenImage get foundingDayProfileInactive => const SvgGenImage('assets/icons/svg/founding_day_profile_inactive.svg');
 
   /// File path: assets/icons/svg/historic_diriyah_fort.svg
   SvgGenImage get historicDiriyahFort => const SvgGenImage('assets/icons/svg/historic_diriyah_fort.svg');
@@ -612,7 +614,6 @@ class $AssetsIconsSvgGen {
         cityscapeUniqueMarker,
         currentLocationIcon,
         foundingDayProfile,
-        foundingDayProfileInactive,
         historicDiriyahFort,
         ic2d,
         ic3d,
@@ -1577,12 +1578,8 @@ class $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen {
   /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_wc.svg
   SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_wc.svg');
 
-  /// File path: assets/icons/svg/places_new_founding_day_big_dark/rename_founding_day_icons.sh
-  String get renameFoundingDayIcons =>
-      'packages/mapness/assets/icons/svg/places_new_founding_day_big_dark/rename_founding_day_icons.sh';
-
   /// List of all assets
-  List<dynamic> get values => [
+  List<SvgGenImage> get values => [
         icAirport,
         icAnimals,
         icArtAndDesign,
@@ -1619,8 +1616,7 @@ class $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen {
         icShopping,
         icTooth,
         icWaterPlaces,
-        icWc,
-        renameFoundingDayIcons
+        icWc
       ];
 }
 
@@ -1751,12 +1747,8 @@ class $AssetsIconsSvgPlacesNewFoundingDayDarkGen {
   /// File path: assets/icons/svg/places_new_founding_day_dark/ic_wc.svg
   SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_wc.svg');
 
-  /// File path: assets/icons/svg/places_new_founding_day_dark/rename_founding_day_icons.sh
-  String get renameFoundingDayIcons =>
-      'packages/mapness/assets/icons/svg/places_new_founding_day_dark/rename_founding_day_icons.sh';
-
   /// List of all assets
-  List<dynamic> get values => [
+  List<SvgGenImage> get values => [
         icAirport,
         icAnimals,
         icArtAndDesign,
@@ -1793,8 +1785,7 @@ class $AssetsIconsSvgPlacesNewFoundingDayDarkGen {
         icShopping,
         icTooth,
         icWaterPlaces,
-        icWc,
-        renameFoundingDayIcons
+        icWc
       ];
 }
 
