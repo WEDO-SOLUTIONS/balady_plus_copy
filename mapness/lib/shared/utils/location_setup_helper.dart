@@ -43,7 +43,8 @@ class LocationSetupHelper with WidgetsBindingObserver {
       } on PlatformException catch (_) {
         // another request already running – just exit and wait for RESUMED
         _log(
-            'another request already running → waiting'); // another request already running – just exit and wait for RESUMED
+          'another request already running → waiting',
+        ); // another request already running – just exit and wait for RESUMED
         return;
       } finally {
         _requestInProgress = false;
@@ -61,8 +62,6 @@ class LocationSetupHelper with WidgetsBindingObserver {
     }
 
     _log('permission granted → enabling location services');
-    await controller.onLocationPermissionGranted(
-      desiredAccuracy: DesiredAccuracyMessage.high,
-    );
+    await controller.onLocationPermissionGranted(desiredAccuracy: DesiredAccuracyMessage.high);
   }
 }
