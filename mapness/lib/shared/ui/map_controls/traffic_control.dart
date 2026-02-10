@@ -1,11 +1,13 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 
-class TrafficControlWidget extends StatelessWidget {
+class TrafficControlWidget extends ConsumerWidget {
   final double opacity;
   final bool isEnabled;
   final BorderRadius? borderRadius;
@@ -20,7 +22,7 @@ class TrafficControlWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => AnimatedOpacity(
+  Widget build(BuildContext context, WidgetRef ref) => AnimatedOpacity(
         opacity: opacity,
         duration: const Duration(milliseconds: 250),
         child: MapButton(
@@ -29,20 +31,11 @@ class TrafficControlWidget extends StatelessWidget {
           child: SizedBox(
             width: 24,
             height: 24,
-            child: SvgPicture.asset(
-              isEnabled
-                  ? SaudiNationalDay.isNow()
-                      ? Assets.icons.svg.carActiveSaudi.keyName
-                      : Assets.icons.svg.carActive.keyName
-                  : Assets.icons.svg.car.keyName,
-              // package: packageName,
-              colorFilter: onTap == null
-                  ? ColorFilter.mode(
-                      context.colors.foregroundMuted.withOpacity(0.36),
-                      BlendMode.srcIn,
-                    )
-                  : null,
-            ),
+            child: ref.read(activeCityEventProvider)?.trafficIcon(
+                      isOn: isEnabled,
+                      inactiveColor: context.colors.foregroundMuted.withOpacity(0.36),
+                    ) ??
+                Assets.icons.svg.car.svg(),
           ),
         ),
       );

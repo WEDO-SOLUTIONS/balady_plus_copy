@@ -8,7 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -31,6 +33,8 @@ class MapSearchEmpty extends ConsumerWidget {
       ref.read(searchProvider(scope.value).notifier).alternativeSearch();
     }
 
+    final activeEvent = ref.watch(activeCityEventProvider);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: Column(
@@ -40,9 +44,7 @@ class MapSearchEmpty extends ConsumerWidget {
           Transform(
             transform: Matrix4.rotationY(context.locale.languageCode == 'ar' ? pi : 0),
             alignment: Alignment.center,
-            child: SvgPicture.asset(
-              Assets.imagesSvg.illustrationError.keyName,
-            ),
+            child: SvgPicture.asset(activeEvent?.illustrationError ?? Assets.imagesSvg.illustrationError.keyName),
           ),
           const SizedBox(height: Spacing.$1x),
           Text(

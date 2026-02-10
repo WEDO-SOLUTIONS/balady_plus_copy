@@ -21,12 +21,16 @@ class PoiContentFullAddressModel {
   /// We are not sure that it will be used in the future, so if we do not use it for a long time, feel free to remove it
   final String? networkLogoUrl;
 
+  /// Asset logo url
+  final String? assetLogoUrl;
+
   const PoiContentFullAddressModel({
     required this.title,
     required this.fullAddress,
     this.floors,
     this.entrances,
     this.networkLogoUrl,
+    this.assetLogoUrl,
     this.types,
   });
 }
@@ -39,10 +43,7 @@ class PoiContentFloorModel {
   /// Count of floors
   final int floors;
 
-  const PoiContentFloorModel({
-    required this.title,
-    required this.floors,
-  });
+  const PoiContentFloorModel({required this.title, required this.floors});
 }
 
 /// Model for entrances content. It is used in the address card
@@ -56,9 +57,5 @@ class PoiContentEntrancesModel {
   /// Callback for the entrances button
   final void Function() onTap;
 
-  const PoiContentEntrancesModel({
-    required this.title,
-    required this.count,
-    required this.onTap,
-  });
+  const PoiContentEntrancesModel({required this.title, required this.count, required this.onTap});
 }

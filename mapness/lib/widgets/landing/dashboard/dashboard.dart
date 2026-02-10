@@ -1,11 +1,22 @@
 import 'dart:math';
 
-import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
+import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -20,8 +31,15 @@ import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart
 import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:sheetify/sheetify.dart';
 
+import 'city_event_config.dart';
+import 'city_event_logo.dart';
+
 class Dashboard extends ConsumerStatefulWidget {
-  const Dashboard({required this.bottomSheetController, required this.fireworksController, super.key});
+  const Dashboard({
+    required this.bottomSheetController,
+    required this.fireworksController,
+    super.key,
+  });
 
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
@@ -50,7 +68,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         final interpolation = controller.interpolation;
         final state = controller.state;
 
-        final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+      final isGoToNavigatorShown = freeRoamState.canStart &&
+          !freeRoamState.isAutorun;
 
         final isSheetCoversThreshold = fraction > threshold;
         final isSheetStateOpen = state == ThreeStateSheet.open;
@@ -94,7 +113,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
+  void didChangeAppLifecycleState(AppLifecycleState state) =>
+      _checkLocationPermission(state);
 
   ///This method is intended for handling location permission requests
   /// if it's triggered by someone before Mapness starts.
@@ -113,12 +133,25 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     });
 
     freeRoamState = ref.watch(freeRoamStarterProvider);
-
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
     final themeConfig = dashboardThemeConfigFor(specialThemeMode);
     final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase ||
         specialThemeMode == SpecialThemeMode.ramadan;
+    final config = CityEventConfig.fromEventType(activeEvent);
 
+    final eventLogo = config?.logoConfig != null && config!.hasDashboardLogo
+        ? CityEventLogo(
+      config: config.logoConfig!,
+      fireworksController: widget.fireworksController,
+      onTap: () {
+        if (activeEvent == CityEventType.foundingDay) {
+          ref.read(foundingDayProvider.notifier).openThePlace();
+        }
+      },
+    )
+        : null;
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Padding(
@@ -184,9 +217,13 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
 
     Future.delayed(Duration.zero, () {
       if (widget.bottomSheetController.state != ThreeStateSheet.hidden) {
-        ref.read(mapControlsProvider.notifier).update(MapControlsStateDashboard());
+        ref.read(mapControlsProvider.notifier).update(
+              MapControlsStateDashboard(),
+            );
       } else {
-        ref.read(mapControlsProvider.notifier).update(MapControlsStateIdle());
+        ref.read(mapControlsProvider.notifier).update(
+              MapControlsStateIdle(),
+            );
       }
     });
   }

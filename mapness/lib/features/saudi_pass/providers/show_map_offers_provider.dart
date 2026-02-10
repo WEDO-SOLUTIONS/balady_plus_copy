@@ -5,7 +5,8 @@ import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_rive
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/shared/extensions/marker_icons_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -48,14 +49,12 @@ class ShowMapOffers extends _$ShowMapOffers {
   Future<void> showMarker(Marker marker) async {
     _showHiddenMarkerIfPresent();
 
-    final position = LatLng(
-      latitude: marker.options.position.latitude,
-      longitude: marker.options.position.longitude,
-    );
+    final position = LatLng(latitude: marker.options.position.latitude, longitude: marker.options.position.longitude);
+    final isDarkMode = ref.read(darkModeProvider).value?.isDark ?? false;
 
     final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
+      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.toBigIcon(isDark: isDarkMode);
       _hideMarker(currentSearchMarker);
     }
 
@@ -125,11 +124,11 @@ class ShowMapOffers extends _$ShowMapOffers {
 
       final cities = isAll
           ? {
-        cityId,
-      }
+              cityId,
+            }
           : {
-        if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
-      };
+              if (preferences?.cities.isNotEmpty ?? false) ...preferences!.cities.map((city) => city.id),
+            };
       final updatedState = List<Offer>.from([]);
 
       final promotions = await saudiPassRepository.getPromotions(
@@ -149,9 +148,7 @@ class ShowMapOffers extends _$ShowMapOffers {
     }
   }
 
-  Future<void> toggleOffersOnMap(String cityId, {
-    required bool isAll
-  }) async {
+  Future<void> toggleOffersOnMap(String cityId, {required bool isAll}) async {
     toggleShowMap = !toggleShowMap;
 
     await switchOffersVisibility(enabled: toggleShowMap, isAll: isAll, cityId: cityId);

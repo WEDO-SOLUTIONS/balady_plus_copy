@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/active_event/active_event_theme_widget.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
 import 'package:mapness/widgets/bottom_menu/lazy_index_stack.dart';
@@ -52,67 +53,70 @@ class BottomMenuPage extends ConsumerWidget {
                   ),
                 ],
               ),
-              child: BottomNavigationBar(
-                elevation: 0,
-                type: BottomNavigationBarType.fixed,
-                selectedLabelStyle: TextStyle(
-                  color: context.colors.accentOnContainer,
-                  fontSize: 0,
-                  height: 0,
+              child: ActiveEventThemeWrapper.secondary(
+                child: BottomNavigationBar(
+                  elevation: 0,
+                  type: BottomNavigationBarType.fixed,
+                  selectedLabelStyle: TextStyle(
+                    color: context.colors.accentOnContainer,
+                    fontSize: 0,
+                    height: 0,
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    color: context.colors.foregroundDefault,
+                    fontSize: 0,
+                    height: 0,
+                  ),
+                  items: [
+                    BottomNavigationBarItem(
+                      icon: AppBottomNavigationBarItem(
+                        selected: route.activeIndex == 0,
+                        iconBuilder: (ctx, isSelected) => DefaultIcon(
+                          icon: GeneralIcons.pin,
+                          selected: isSelected,
+                        ),
+                        label: context.l10n.nav_general,
+                      ),
+                      label: '',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: AppBottomNavigationBarItem(
+                        selected: route.activeIndex == 1,
+                        iconBuilder: (ctx, isSelected) => DefaultIcon(
+                          icon: GeneralIcons.routeStroke,
+                          selected: isSelected,
+                        ),
+                        label: context.l10n.nav_route,
+                      ),
+                      label: '',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: AppBottomNavigationBarItem(
+                        selected: route.activeIndex == 2,
+                        iconBuilder: (ctx, isSelected) => DefaultIcon(
+                          icon: GeneralIcons.dashboard,
+                          selected: isSelected,
+                        ),
+                        label: context.l10n.nav_landing,
+                      ),
+                      label: '',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: AppBottomNavigationBarItem(
+                        selected: route.activeIndex == 3,
+                        iconBuilder: (context, selected) => ProfileImageWidget(
+                          dimension: 24,
+                          isSelected: selected,
+                          color: selected ? context.colors.accentDefault : context.colors.foregroundSoft,
+                        ),
+                        label: context.l10n.nav_profile,
+                      ),
+                      label: '',
+                    ),
+                  ],
+                  currentIndex: route.activeIndex,
+                  onTap: route.setActiveIndex,
                 ),
-                unselectedLabelStyle: TextStyle(
-                  color: context.colors.foregroundDefault,
-                  fontSize: 0,
-                  height: 0,
-                ),
-                items: [
-                  BottomNavigationBarItem(
-                    icon: AppBottomNavigationBarItem(
-                      selected: route.activeIndex == 0,
-                      iconBuilder: (ctx, isSelected) => DefaultIcon(
-                        icon: GeneralIcons.pin,
-                        selected: isSelected,
-                      ),
-                      label: context.l10n.nav_general,
-                    ),
-                    label: '',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: AppBottomNavigationBarItem(
-                      selected: route.activeIndex == 1,
-                      iconBuilder: (ctx, isSelected) => DefaultIcon(
-                        icon: GeneralIcons.routeStroke,
-                        selected: isSelected,
-                      ),
-                      label: context.l10n.nav_route,
-                    ),
-                    label: '',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: AppBottomNavigationBarItem(
-                      selected: route.activeIndex == 2,
-                      iconBuilder: (ctx, isSelected) => DefaultIcon(
-                        icon: GeneralIcons.dashboard,
-                        selected: isSelected,
-                      ),
-                      label: context.l10n.nav_landing,
-                    ),
-                    label: '',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: AppBottomNavigationBarItem(
-                      selected: route.activeIndex == 3,
-                      iconBuilder: (context, selected) => ProfileImageWidget(
-                        dimension: 24,
-                        color: selected ? context.colors.accentDefault : context.colors.foregroundSoft,
-                      ),
-                      label: context.l10n.nav_profile,
-                    ),
-                    label: '',
-                  ),
-                ],
-                currentIndex: route.activeIndex,
-                onTap: route.setActiveIndex,
               ),
             ),
           ],

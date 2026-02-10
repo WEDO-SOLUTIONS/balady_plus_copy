@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -16,9 +18,7 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
   late Completer<DgisMapController> _completer;
   late final _settings = MapObjectManagerSettings.parking();
   late final _mapObjectManager = ref
-      .read(
-        mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId),
-      )
+      .read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId))
       .value;
 
   @override
@@ -30,8 +30,8 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
 
   Future<void> onMapCreated(DgisMapController controller) async {
     await controller.initialize();
-    await controller
-        .loadStyles(SaudiNationalDay.isNow() ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    await controller.loadStyles(activeCityEvent?.stylePath ?? MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(min: 5.5);

@@ -31,6 +31,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
+  /// File path: assets/images/add_photo_founding_day.png
+  AssetGenImage get addPhotoFoundingDay => const AssetGenImage('assets/images/add_photo_founding_day.png');
+
   /// File path: assets/images/background_ornament_saudiday.png
   AssetGenImage get backgroundOrnamentSaudiday => const AssetGenImage('assets/images/background_ornament_saudiday.png');
 
@@ -39,6 +42,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/city_expert.png
   AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
+
+  /// File path: assets/images/city_expert_founding_day.png
+  AssetGenImage get cityExpertFoundingDay => const AssetGenImage('assets/images/city_expert_founding_day.png');
 
   /// File path: assets/images/city_expert_saudi_day.png
   AssetGenImage get cityExpertSaudiDay => const AssetGenImage('assets/images/city_expert_saudi_day.png');
@@ -49,6 +55,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
 
+  /// File path: assets/images/driveHomeArrowFoundingDay.png
+  AssetGenImage get driveHomeArrowFoundingDay => const AssetGenImage('assets/images/driveHomeArrowFoundingDay.png');
+
   /// File path: assets/images/drive_home_arrow.png
   AssetGenImage get driveHomeArrow => const AssetGenImage('assets/images/drive_home_arrow.png');
 
@@ -57,6 +66,10 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/drive_home_background.png
   AssetGenImage get driveHomeBackground => const AssetGenImage('assets/images/drive_home_background.png');
+
+  /// File path: assets/images/drive_home_background_founding_day.png
+  AssetGenImage get driveHomeBackgroundFoundingDay =>
+      const AssetGenImage('assets/images/drive_home_background_founding_day.png');
 
   /// File path: assets/images/drive_home_background_saudiday.png
   AssetGenImage get driveHomeBackgroundSaudiday =>
@@ -82,11 +95,21 @@ class $AssetsImagesGen {
   /// File path: assets/images/feedback_dashboard.png
   AssetGenImage get feedbackDashboard => const AssetGenImage('assets/images/feedback_dashboard.png');
 
+  /// File path: assets/images/feedback_dashboard_founding_day.png
+  AssetGenImage get feedbackDashboardFoundingDay =>
+      const AssetGenImage('assets/images/feedback_dashboard_founding_day.png');
+
   /// File path: assets/images/feedback_dashboard_saudiday.png
   AssetGenImage get feedbackDashboardSaudiday => const AssetGenImage('assets/images/feedback_dashboard_saudiday.png');
 
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
+
+  /// File path: assets/images/foundation_day_logo.png
+  AssetGenImage get foundationDayLogo => const AssetGenImage('assets/images/foundation_day_logo.png');
+
+  /// File path: assets/images/founding_day_circle_logo.png
+  AssetGenImage get foundingDayCircleLogo => const AssetGenImage('assets/images/founding_day_circle_logo.png');
 
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
@@ -159,15 +182,19 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
+        addPhotoFoundingDay,
         backgroundOrnamentSaudiday,
         calendarCard,
         cityExpert,
+        cityExpertFoundingDay,
         cityExpertSaudiDay,
         cityscapeGlobal,
         darkMapPreview,
+        driveHomeArrowFoundingDay,
         driveHomeArrow,
         driveHomeArrowSaudiday,
         driveHomeBackground,
+        driveHomeBackgroundFoundingDay,
         driveHomeBackgroundSaudiday,
         etaSheetBackground,
         favoritesExampleArabic,
@@ -175,8 +202,11 @@ class $AssetsImagesGen {
         favoritesExampleEnglish,
         favoritesExampleEnglishSaudiday,
         feedbackDashboard,
+        feedbackDashboardFoundingDay,
         feedbackDashboardSaudiday,
         feedbackEyes,
+        foundationDayLogo,
+        foundingDayCircleLogo,
         icArrowFeedback,
         icFlipsContinue,
         ishanSeefromtheskyUnsplash,
@@ -201,6 +231,14 @@ class $AssetsImagesGen {
 
 class $AssetsImagesSvgGen {
   const $AssetsImagesSvgGen();
+
+  /// File path: assets/images_svg/Illustration_error_foundation_day.svg
+  SvgGenImage get illustrationErrorFoundationDay =>
+      const SvgGenImage('assets/images_svg/Illustration_error_foundation_day.svg');
+
+  /// File path: assets/images_svg/Illustration_notifications_foundaton_day.svg
+  SvgGenImage get illustrationNotificationsFoundatonDay =>
+      const SvgGenImage('assets/images_svg/Illustration_notifications_foundaton_day.svg');
 
   /// File path: assets/images_svg/active_star.svg
   SvgGenImage get activeStar => const SvgGenImage('assets/images_svg/active_star.svg');
@@ -264,6 +302,8 @@ class $AssetsImagesSvgGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        illustrationErrorFoundationDay,
+        illustrationNotificationsFoundatonDay,
         activeStar,
         arBaladyLogo,
         emptySearch,
@@ -313,6 +353,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/car_active.svg
   SvgGenImage get carActive => const SvgGenImage('assets/icons/svg/car_active.svg');
 
+  /// File path: assets/icons/svg/car_active_founding_day.svg
+  SvgGenImage get carActiveFoundingDay => const SvgGenImage('assets/icons/svg/car_active_founding_day.svg');
+
   /// File path: assets/icons/svg/car_active_saudi.svg
   SvgGenImage get carActiveSaudi => const SvgGenImage('assets/icons/svg/car_active_saudi.svg');
 
@@ -321,6 +364,15 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
+
+  /// File path: assets/icons/svg/founding_day_profile.svg
+  SvgGenImage get foundingDayProfile => const SvgGenImage('assets/icons/svg/founding_day_profile.svg');
+
+  /// File path: assets/icons/svg/founding_day_profile_inactive.svg
+  SvgGenImage get foundingDayProfileInactive => const SvgGenImage('assets/icons/svg/founding_day_profile_inactive.svg');
+
+  /// File path: assets/icons/svg/historic_diriyah_fort.svg
+  SvgGenImage get historicDiriyahFort => const SvgGenImage('assets/icons/svg/historic_diriyah_fort.svg');
 
   /// File path: assets/icons/svg/ic_2d.svg
   SvgGenImage get ic2d => const SvgGenImage('assets/icons/svg/ic_2d.svg');
@@ -488,6 +540,21 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/places_new
   $AssetsIconsSvgPlacesNewGen get placesNew => const $AssetsIconsSvgPlacesNewGen();
 
+  /// Directory path: assets/icons/svg/places_new_founding_day
+  $AssetsIconsSvgPlacesNewFoundingDayGen get placesNewFoundingDay => const $AssetsIconsSvgPlacesNewFoundingDayGen();
+
+  /// Directory path: assets/icons/svg/places_new_founding_day_big
+  $AssetsIconsSvgPlacesNewFoundingDayBigGen get placesNewFoundingDayBig =>
+      const $AssetsIconsSvgPlacesNewFoundingDayBigGen();
+
+  /// Directory path: assets/icons/svg/places_new_founding_day_big_dark
+  $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen get placesNewFoundingDayBigDark =>
+      const $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen();
+
+  /// Directory path: assets/icons/svg/places_new_founding_day_dark
+  $AssetsIconsSvgPlacesNewFoundingDayDarkGen get placesNewFoundingDayDark =>
+      const $AssetsIconsSvgPlacesNewFoundingDayDarkGen();
+
   /// Directory path: assets/icons/svg/places_new_saudi_day
   $AssetsIconsSvgPlacesNewSaudiDayGen get placesNewSaudiDay => const $AssetsIconsSvgPlacesNewSaudiDayGen();
 
@@ -540,9 +607,13 @@ class $AssetsIconsSvgGen {
   List<SvgGenImage> get values => [
         car,
         carActive,
+        carActiveFoundingDay,
         carActiveSaudi,
         cityscapeUniqueMarker,
         currentLocationIcon,
+        foundingDayProfile,
+        foundingDayProfileInactive,
+        historicDiriyahFort,
         ic2d,
         ic3d,
         icActionsContainer,
@@ -1155,6 +1226,575 @@ class $AssetsIconsSvgPlacesNewGen {
         icTooth,
         icWaterPlaces,
         icWc
+      ];
+}
+
+class $AssetsIconsSvgPlacesNewFoundingDayGen {
+  const $AssetsIconsSvgPlacesNewFoundingDayGen();
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_barbershop.svg
+  SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_car_services.svg
+  SvgGenImage get icCarServices => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_default.svg
+  SvgGenImage get icDefault => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_default.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_events.svg
+  SvgGenImage get icEvents => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_events.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_fire_station.svg
+  SvgGenImage get icFireStation => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_fire_station.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_hospital.svg
+  SvgGenImage get icHospital => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_hospital.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_park.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_police_station.svg
+  SvgGenImage get icPoliceStation =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_police_station.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_recreation.svg
+  SvgGenImage get icRecreation => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_restaurant.svg
+  SvgGenImage get icRestaurant => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_water_places.svg
+  SvgGenImage get icWaterPlaces => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_water_places.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new_founding_day/ic_wc.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icCarServices,
+        icDefault,
+        icEvents,
+        icFireStation,
+        icGasstationLtr,
+        icGym,
+        icHospital,
+        icHotels,
+        icMarkets,
+        icMedicineLtr,
+        icMosques,
+        icPark,
+        icPoliceStation,
+        icQibla,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icTooth,
+        icWaterPlaces,
+        icWc
+      ];
+}
+
+class $AssetsIconsSvgPlacesNewFoundingDayBigGen {
+  const $AssetsIconsSvgPlacesNewFoundingDayBigGen();
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_barbershop.svg
+  SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_car_services.svg
+  SvgGenImage get icCarServices =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_default.svg
+  SvgGenImage get icDefault => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_default.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_events.svg
+  SvgGenImage get icEvents => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_events.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_fire_station.svg
+  SvgGenImage get icFireStation =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_fire_station.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_hospital.svg
+  SvgGenImage get icHospital => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_hospital.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_park.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_police_station.svg
+  SvgGenImage get icPoliceStation =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_police_station.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_recreation.svg
+  SvgGenImage get icRecreation => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_restaurant.svg
+  SvgGenImage get icRestaurant => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_water_places.svg
+  SvgGenImage get icWaterPlaces =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_water_places.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new_founding_day_big/ic_wc.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icCarServices,
+        icDefault,
+        icEvents,
+        icFireStation,
+        icGasstationLtr,
+        icGym,
+        icHospital,
+        icHotels,
+        icMarkets,
+        icMedicineLtr,
+        icMosques,
+        icPark,
+        icPoliceStation,
+        icQibla,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icTooth,
+        icWaterPlaces,
+        icWc
+      ];
+}
+
+class $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen {
+  const $AssetsIconsSvgPlacesNewFoundingDayBigDarkGen();
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_airport.svg
+  SvgGenImage get icAirport => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_airport.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_animals.svg
+  SvgGenImage get icAnimals => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_animals.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_art_and_design.svg
+  SvgGenImage get icArtAndDesign =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_art_and_design.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_banks.svg
+  SvgGenImage get icBanks => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_banks.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_barbershop.svg
+  SvgGenImage get icBarbershop =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_building_materials.svg
+  SvgGenImage get icBuildingMaterials =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_building_materials.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_business.svg
+  SvgGenImage get icBusiness => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_business.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_car_services.svg
+  SvgGenImage get icCarServices =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_childrens_goods.svg
+  SvgGenImage get icChildrensGoods =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_childrens_goods.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_city_transport.svg
+  SvgGenImage get icCityTransport =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_city_transport.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_clothing_and_footwear.svg
+  SvgGenImage get icClothingAndFootwear =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_clothing_and_footwear.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_connection.svg
+  SvgGenImage get icConnection =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_connection.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_construction.svg
+  SvgGenImage get icConstruction =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_construction.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_default.svg
+  SvgGenImage get icDefault => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_default.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_events.svg
+  SvgGenImage get icEvents => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_events.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_hospital.svg
+  SvgGenImage get icHospital => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_hospital.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_media.svg
+  SvgGenImage get icMedia => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_media.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_municipalities.svg
+  SvgGenImage get icMunicipalities =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_municipalities.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_park.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_police_station.svg
+  SvgGenImage get icPoliceStation =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_police_station.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_railway_transport.svg
+  SvgGenImage get icRailwayTransport =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_railway_transport.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_recreation.svg
+  SvgGenImage get icRecreation =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_restaurant.svg
+  SvgGenImage get icRestaurant =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_water_places.svg
+  SvgGenImage get icWaterPlaces =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_water_places.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new_founding_day_big_dark/ic_wc.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_big_dark/rename_founding_day_icons.sh
+  String get renameFoundingDayIcons =>
+      'packages/mapness/assets/icons/svg/places_new_founding_day_big_dark/rename_founding_day_icons.sh';
+
+  /// List of all assets
+  List<dynamic> get values => [
+        icAirport,
+        icAnimals,
+        icArtAndDesign,
+        icBanks,
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icBuildingMaterials,
+        icBusiness,
+        icCarServices,
+        icChildrensGoods,
+        icCityTransport,
+        icClothingAndFootwear,
+        icConnection,
+        icConstruction,
+        icDefault,
+        icEvents,
+        icGasstationLtr,
+        icGym,
+        icHospital,
+        icHotels,
+        icMarkets,
+        icMedia,
+        icMedicineLtr,
+        icMosques,
+        icMunicipalities,
+        icPark,
+        icPoliceStation,
+        icQibla,
+        icRailwayTransport,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icTooth,
+        icWaterPlaces,
+        icWc,
+        renameFoundingDayIcons
+      ];
+}
+
+class $AssetsIconsSvgPlacesNewFoundingDayDarkGen {
+  const $AssetsIconsSvgPlacesNewFoundingDayDarkGen();
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_airport.svg
+  SvgGenImage get icAirport => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_airport.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_animals.svg
+  SvgGenImage get icAnimals => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_animals.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_art_and_design.svg
+  SvgGenImage get icArtAndDesign =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_art_and_design.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_banks.svg
+  SvgGenImage get icBanks => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_banks.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_barbershop.svg
+  SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_building_materials.svg
+  SvgGenImage get icBuildingMaterials =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_building_materials.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_business.svg
+  SvgGenImage get icBusiness => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_business.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_car_services.svg
+  SvgGenImage get icCarServices =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_childrens_goods.svg
+  SvgGenImage get icChildrensGoods =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_childrens_goods.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_city_transport.svg
+  SvgGenImage get icCityTransport =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_city_transport.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_clothing_and_footwear.svg
+  SvgGenImage get icClothingAndFootwear =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_clothing_and_footwear.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_connection.svg
+  SvgGenImage get icConnection => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_connection.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_construction.svg
+  SvgGenImage get icConstruction =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_construction.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_default.svg
+  SvgGenImage get icDefault => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_default.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_events.svg
+  SvgGenImage get icEvents => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_events.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_hospital.svg
+  SvgGenImage get icHospital => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_hospital.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_media.svg
+  SvgGenImage get icMedia => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_media.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_municipalities.svg
+  SvgGenImage get icMunicipalities =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_municipalities.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_park.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_police_station.svg
+  SvgGenImage get icPoliceStation =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_police_station.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_railway_transport.svg
+  SvgGenImage get icRailwayTransport =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_railway_transport.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_recreation.svg
+  SvgGenImage get icRecreation => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_restaurant.svg
+  SvgGenImage get icRestaurant => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_water_places.svg
+  SvgGenImage get icWaterPlaces =>
+      const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_water_places.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new_founding_day_dark/ic_wc.svg');
+
+  /// File path: assets/icons/svg/places_new_founding_day_dark/rename_founding_day_icons.sh
+  String get renameFoundingDayIcons =>
+      'packages/mapness/assets/icons/svg/places_new_founding_day_dark/rename_founding_day_icons.sh';
+
+  /// List of all assets
+  List<dynamic> get values => [
+        icAirport,
+        icAnimals,
+        icArtAndDesign,
+        icBanks,
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icBuildingMaterials,
+        icBusiness,
+        icCarServices,
+        icChildrensGoods,
+        icCityTransport,
+        icClothingAndFootwear,
+        icConnection,
+        icConstruction,
+        icDefault,
+        icEvents,
+        icGasstationLtr,
+        icGym,
+        icHospital,
+        icHotels,
+        icMarkets,
+        icMedia,
+        icMedicineLtr,
+        icMosques,
+        icMunicipalities,
+        icPark,
+        icPoliceStation,
+        icQibla,
+        icRailwayTransport,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icTooth,
+        icWaterPlaces,
+        icWc,
+        renameFoundingDayIcons
       ];
 }
 

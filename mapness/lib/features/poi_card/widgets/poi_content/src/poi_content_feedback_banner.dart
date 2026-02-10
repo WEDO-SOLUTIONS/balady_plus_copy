@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -9,11 +10,12 @@ class PoiContentFeedbackCard extends StatelessWidget {
   final PoiContentFeedbackType data;
   final void Function()? onTap;
   final EdgeInsetsGeometry padding;
-
+  final CityEventType? activeCityEvent;
   const PoiContentFeedbackCard({
     required this.data,
     this.padding = const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     this.onTap,
+    this.activeCityEvent,
     super.key,
   });
 
@@ -24,8 +26,11 @@ class PoiContentFeedbackCard extends StatelessWidget {
     final subtitleStyle = context.textStyles.captionSmallMedium.copyWith(color: foregroundColor);
 
     const arrowPadding = EdgeInsetsDirectional.only(end: Spacing.$4x, bottom: Spacing.$4x);
-    const contentPadding =
-        EdgeInsetsDirectional.only(start: Spacing.$4x, top: Spacing.$4x - 1, bottom: Spacing.$4x - 1);
+    const contentPadding = EdgeInsetsDirectional.only(
+      start: Spacing.$4x,
+      top: Spacing.$4x - 1,
+      bottom: Spacing.$4x - 1,
+    );
 
     return Padding(
       padding: padding,
@@ -37,7 +42,9 @@ class PoiContentFeedbackCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(RadiusBorder.xl),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: data.gradientColors),
+              gradient: LinearGradient(
+                colors: data.gradientColorsBuilder(activeCityEvent),
+              ),
             ),
             child: IntrinsicHeight(
               child: Row(
@@ -64,15 +71,12 @@ class PoiContentFeedbackCard extends StatelessWidget {
                         image: DecorationImage(
                           fit: BoxFit.fitHeight,
                           matchTextDirection: true,
-                          image: AssetImage(data.path),
+                          image: AssetImage(data.pathBuilder(activeCityEvent)),
                         ),
                       ),
                       child: const Align(
                         alignment: AlignmentDirectional.bottomEnd,
-                        child: Padding(
-                          padding: arrowPadding,
-                          child: _ArrowIcon(),
-                        ),
+                        child: Padding(padding: arrowPadding, child: _ArrowIcon()),
                       ),
                     ),
                   ),
@@ -99,11 +103,7 @@ class _ArrowIcon extends StatelessWidget {
             color: context.colors.staticWhite.withOpacity(0.2),
           ),
           child: Center(
-            child: Icon(
-              SystemIcons.arrowRight,
-              color: context.colors.staticWhite,
-              size: Spacing.$5x,
-            ),
+            child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x),
           ),
         ),
       );
