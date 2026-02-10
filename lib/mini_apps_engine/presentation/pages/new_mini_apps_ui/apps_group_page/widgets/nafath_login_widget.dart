@@ -9,7 +9,6 @@ class NafathLoginWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: context.screenHeight * 0.18,
       padding: const EdgeInsets.all(16),
       decoration: shapeDecoration,
       child: Row(

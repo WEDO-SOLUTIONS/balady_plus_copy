@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocRequestStatus;
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
@@ -75,10 +76,26 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
           switch (settings.name) {
             case '/':
               return MaterialPageRoute(
-                builder: (_) => BlocProvider<DelegatorsCubit>.value(
-                  value: sl<DelegatorsCubit>(),
-                  child: BlocListener<DelegatorsCubit, DelegatorsState>(
-                    listenWhen: (previous, current) {
+                builder: (_) {
+                  final delegatorsCubit = sl<DelegatorsCubit>();
+                  
+                  // Initialize: Fetch delegators/agents and restore selection on first load
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    // Only fetch if not already loaded
+                    if (delegatorsCubit.state.delegators.isEmpty && 
+                        delegatorsCubit.state.status != BlocRequestStatus.submissionGetLoading) {
+                      delegatorsCubit.getDelegators();
+                    }
+                    if (delegatorsCubit.state.agents.isEmpty && 
+                        delegatorsCubit.state.agentStatus != BlocRequestStatus.submissionGetLoading) {
+                      delegatorsCubit.getAgents();
+                    }
+                  });
+                  
+                  return BlocProvider<DelegatorsCubit>.value(
+                    value: delegatorsCubit,
+                    child: BlocListener<DelegatorsCubit, DelegatorsState>(
+                      listenWhen: (previous, current) {
                       // Listen when selection changes (including clearing selection)
                       final previousBusiness =
                           previous.selectedDelegate != null ||
@@ -1016,9 +1033,10 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                         );
                       },
                     ),
-                  ),
-                ),
-              );
+                  )
+                );
+              },
+            );
             case '/search':
               return MaterialPageRoute(
                 builder: (_) => const MiniAppsSearchPage(),

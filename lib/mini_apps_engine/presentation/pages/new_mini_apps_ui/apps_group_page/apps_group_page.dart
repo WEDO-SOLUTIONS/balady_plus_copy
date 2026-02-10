@@ -121,6 +121,8 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
       );
     }
 
+    MiniApp? fetchedDashboard = appGroup.apps.firstWhereOrNull((miniApp) => miniApp.serviceKey == 'Dashboard');
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: PopScope(
@@ -278,7 +280,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               physics: const BouncingScrollPhysics(),
                               slivers: [
                                 SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
-                                _buildNafathLoginWidget,
+                                _buildNafathLoginWidget(fetchedDashboard),
                                 SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
                                 const SliverFillRemaining(hasScrollBody: true, child: MiniAppsShimmerLoadingWidget()),
                               ],
@@ -300,7 +302,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                               physics: const BouncingScrollPhysics(),
                               slivers: [
                                 SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
-                                _buildNafathLoginWidget,
+                                _buildNafathLoginWidget(fetchedDashboard),
                                 SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
                                 SliverGrid(
                                   delegate: SliverChildBuilderDelegate((context, index) {
@@ -322,7 +324,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                                               PageRouteBuilder(
                                                 opaque: false,
                                                 barrierColor: Colors.transparent,
-                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id, dashboard: widget.dashboard,),
+                                                pageBuilder: (_, __, ___) => AppsGroupPage(groupId: categoryGroup.id, dashboard: widget.dashboard ?? fetchedDashboard,),
                                               ),
                                             ),
                                           ),
@@ -366,7 +368,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                             return CustomScrollView(
                               physics: const BouncingScrollPhysics(),
                               slivers: [
-                                _buildNafathLoginWidget,
+                                _buildNafathLoginWidget(fetchedDashboard),
                                 SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
                                 SliverFillRemaining(
                                   hasScrollBody: false,
@@ -388,7 +390,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
                           return CustomScrollView(
                             physics: const BouncingScrollPhysics(),
                             slivers: [
-                              _buildNafathLoginWidget,
+                              _buildNafathLoginWidget(fetchedDashboard),
                               SliverToBoxAdapter(child: SizedBox(height: context.screenHeight * 0.02)),
                               SliverGrid(
                                 delegate: SliverChildBuilderDelegate((context, index) {
@@ -451,7 +453,7 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
 
   // 124a4dd1-7a7b-47f1-09eb-08de2cce6088 => Personal Municipality Group ID
   // 6f736c81-c998-4c3e-09ea-08de2cce6088 => Business Municipality Group ID
-  Widget get _buildNafathLoginWidget {
+  Widget _buildNafathLoginWidget(MiniApp? fetchedDashboard) {
     // Only show login/dashboard for specific municipality groups
     if (widget.groupId != '124a4dd1-7a7b-47f1-09eb-08de2cce6088' &&
         widget.groupId != '6f736c81-c998-4c3e-09ea-08de2cce6088') {
@@ -465,24 +467,24 @@ class _AppsGroupPageState extends State<AppsGroupPage> {
         if (!isLoggedIn) {
           return SliverToBoxAdapter(child: NafathLoginWidget());
         } else {
-          return SliverToBoxAdapter(child: TempPersonaBannerSection(groupId: widget.groupId, dashboard: widget.dashboard,));
+          return SliverToBoxAdapter(child: PersonaBannerSection(groupId: widget.groupId, dashboard: widget.dashboard ?? fetchedDashboard,));
         }
       },
     );
   }
 }
 
-class TempPersonaBannerSection extends StatefulWidget {
+class PersonaBannerSection extends StatefulWidget {
   final String groupId;
   final MiniApp? dashboard;
 
-  const TempPersonaBannerSection({super.key, required this.groupId, this.dashboard});
+  const PersonaBannerSection({super.key, required this.groupId, this.dashboard});
 
   @override
-  State<TempPersonaBannerSection> createState() => _TempPersonaBannerSectionState();
+  State<PersonaBannerSection> createState() => _PersonaBannerSectionState();
 }
 
-class _TempPersonaBannerSectionState extends State<TempPersonaBannerSection> {
+class _PersonaBannerSectionState extends State<PersonaBannerSection> {
   @override
   Widget build(BuildContext context) {
     bool isLoggedin = CommonProperties.isLoggedInMunicipality;
