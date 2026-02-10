@@ -25,14 +25,12 @@ class FeedbackBaladyBusiness extends ConsumerWidget {
             children: [
               Text(
                 context.l10n.signInToBaladyBusiness,
-                style: context.textStyles.bodyLargeSemiBold,
+                style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
               Spacing.$1x.heightBox,
               Text(
                 context.l10n.addMoreFeaturesToYourBusiness,
-                style: context.textStyles.bodySmallRegular.copyWith(
-                  color: context.colors.foregroundSoft,
-                ),
+                style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
               ),
               const SizedBox(height: Spacing.$3x),
               SizedBox(

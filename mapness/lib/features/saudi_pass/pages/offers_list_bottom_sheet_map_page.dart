@@ -98,6 +98,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
               await showMapOffers.removeMarker(offerPoiPinId);
               context.router.pop();
             },
+            padding: EdgeInsets.zero,
           ),
         ],
       ),

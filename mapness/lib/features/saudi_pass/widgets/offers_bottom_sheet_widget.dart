@@ -20,7 +20,7 @@ class OffersBottomSheetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+    margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     decoration: BoxDecoration(
       color: context.colors.backgroundSurface1,
       borderRadius: BorderRadius.circular(RadiusBorder.xl),

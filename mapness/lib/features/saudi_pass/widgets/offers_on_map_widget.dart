@@ -279,7 +279,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: const EdgeInsets.only(bottom: Spacing.$3x),
                 child: Material(
                   color: Colors.transparent,
                   child: Text(

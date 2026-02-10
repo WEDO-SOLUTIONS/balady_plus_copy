@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
-import 'package:sheetify/toggle_sheet/toggle_sheet.dart';
+import 'package:sheetify/sheetify.dart';
 
 class OfferFavoritesRemovingSheet extends HookWidget {
   final String title;
@@ -26,8 +26,9 @@ class OfferFavoritesRemovingSheet extends HookWidget {
   Widget build(BuildContext context) {
     final bottomSheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
     return ToggleSheet(
-      backgroundColor: context.colors.backgroundSurface1,
-      safeAreaColor: context.colors.backgroundSurface1,
+      dragger: DraggerContainer(draggerColor: context.colors.backgroundSurface5),
+      backgroundColor: context.colors.backgroundSurface2,
+      safeAreaColor: context.colors.backgroundSurface2,
       content: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -54,7 +55,7 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                   ),
                   Spacing.$3x.widthBox,
                   AppButton(
-                    buttonColorScheme: ButtonColorScheme.secondary,
+                    buttonColorScheme: ButtonColorScheme.neutral,
                     size: ButtonSize.small,
                     onTap: () => bottomSheetController.close(),
                     primaryIcon: SystemIcons.close,
@@ -67,6 +68,8 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                   Expanded(
                     child: AppButton(
                       primaryLabel: cancel,
+                      buttonType: ButtonType.secondary,
+                      size: ButtonSize.large,
                       buttonColorScheme: ButtonColorScheme.secondary,
                       onTap: bottomSheetController.close,
                     ),
@@ -75,6 +78,7 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                   Expanded(
                     child: AppButton(
                       primaryLabel: remove,
+                      size: ButtonSize.large,
                       buttonColorScheme: ButtonColorScheme.secondary,
                       onTap: () {
                         onRemove();

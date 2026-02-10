@@ -228,7 +228,7 @@ class _Content extends HookConsumerWidget {
                                 ],
                               ),
                             ),
-                          Spacing.$3x.heightBox,
+                          Spacing.$4x.heightBox,
                         ],
                       ),
                     ),
@@ -536,13 +536,12 @@ class _OfferPreviewByBusiness extends StatelessWidget {
             ),
           ),
           Spacing.$3x.widthBox,
-          Expanded(
-            child: SizedBox(
-              height: 100,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-                child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
-              ),
+          SizedBox(
+            height: 48,
+            width: 48,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+              child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
             ),
           ),
         ],
@@ -652,12 +651,14 @@ class _FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => !offer.favorite
       ? AppButton(
+          size: ButtonSize.large,
           buttonColorScheme: ButtonColorScheme.primary,
           onTap: () => changeFavorite(favorite: true),
           primaryIcon: GeneralIcons.heart,
           primaryLabel: context.l10n.addToFavorites,
         )
       : AppButton(
+          size: ButtonSize.large,
           buttonColorScheme: ButtonColorScheme.secondary,
           onTap: () => changeFavorite(favorite: false),
           primaryLabel: context.l10n.removeFromFavorites,

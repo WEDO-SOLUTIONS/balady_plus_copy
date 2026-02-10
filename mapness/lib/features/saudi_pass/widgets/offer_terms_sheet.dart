@@ -14,7 +14,9 @@ class OfferTermsSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) => ToggleSheet(
-    backgroundColor: context.colors.backgroundSurface1,
+    useSafeArea: false,
+    dragger: DraggerContainer(draggerColor: context.colors.backgroundSurface5),
+    backgroundColor: context.colors.backgroundSurface2,
     header: Padding(
       padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
       child: Row(
@@ -39,8 +41,9 @@ class OfferTermsSheet extends HookWidget {
     footer: Container(
       padding: const EdgeInsets.all(Spacing.$4x),
       margin: const EdgeInsetsDirectional.only(bottom: Spacing.$4x),
-      color: context.colors.backgroundSurface1,
+      color: context.colors.backgroundSurface2,
       child: AppButton(
+        size: ButtonSize.large,
         primaryLabel: close,
         color: context.colors.accentSecondaryContainerDefault,
         textColor: context.colors.accentSecondaryOnContainer,

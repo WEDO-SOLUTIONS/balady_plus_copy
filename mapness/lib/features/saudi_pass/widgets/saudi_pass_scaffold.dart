@@ -19,21 +19,16 @@ class SaudiPassScaffold extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(top: Spacing.$4x),
-    child: Scaffold(
-      backgroundColor: context.colors.backgroundSurface4,
-      appBar: BaladyTopBar.iconAndText(
-        systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
-        title: title,
-        textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-        colorEnabled: context.colors.foregroundDefault,
-        leading: ActionModel(onPressed: onBackButton, icon: SystemIcons.arrowCornerLeftLarge),
-        trailing: onShowOnMapPressed != null
-            ? ActionModel(onPressed: onShowOnMapPressed, icon: GeneralIcons.map)
-            : null,
-      ),
-      body: body,
+  Widget build(BuildContext context) => Scaffold(
+    backgroundColor: context.colors.backgroundSurface4,
+    appBar: BaladyTopBar.iconAndText(
+      systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
+      title: title,
+      textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+      colorEnabled: context.colors.foregroundDefault,
+      leading: ActionModel(onPressed: onBackButton, icon: SystemIcons.arrowCornerLeftLarge),
+      trailing: onShowOnMapPressed != null ? ActionModel(onPressed: onShowOnMapPressed, icon: GeneralIcons.map) : null,
     ),
+    body: body,
   );
 }

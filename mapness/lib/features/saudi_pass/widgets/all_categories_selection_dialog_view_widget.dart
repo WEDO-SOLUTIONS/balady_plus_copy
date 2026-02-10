@@ -42,10 +42,14 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
     return SafeArea(
       bottom: false,
       child: ToggleSheet(
+        useSafeArea: false,
         barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
           function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
         ),
-        dragger: DraggerContainer(backgroundColor: context.colors.backgroundSurface1),
+        dragger: DraggerContainer(
+          backgroundColor: context.colors.backgroundSurface1,
+          draggerColor: context.colors.backgroundSurface5,
+        ),
         backgroundColor: context.colors.backgroundSurface5,
         safeAreaColor: context.colors.backgroundSurface5,
         scrollController: scrollController,
@@ -59,7 +63,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
                 context.l10n.saudiPassOffersPageFilterCategory,
                 style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
-              CustomCloseButton(onClose: () => selectionDialogView.tapCross(context)),
+              CustomCloseButton(onClose: () => selectionDialogView.tapCross(context), padding: EdgeInsets.zero),
             ],
           ),
         ),
@@ -86,7 +90,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
                       ),
                       child: BaladyTextInput(
                         config: BaladyInputConfig(
-                          fillColor: context.colors.backgroundSurface4,
+                          fillColor: context.colors.neutralContainerDefault,
                           autofocus: true,
                           hintColor: context.colors.foregroundMuted,
                           hintText: context.l10n.saudiPassCategorySelectionPageSearchHint,
@@ -135,7 +139,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
           color: context.colors.backgroundSurface4,
           child: Padding(
             padding: horizontalPadding.copyWith(
-              top: Spacing.$6x,
+              top: Spacing.$3x,
               bottom: Spacing.$4x + MediaQuery.viewPaddingOf(context).bottom,
             ),
             child: ResetSaveWidget(selectionDialogView),
@@ -155,16 +159,18 @@ class CategoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsetsDirectional.only(top: Spacing.$2x, bottom: Spacing.$2x, end: Spacing.$8x),
+    padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, bottom: Spacing.$1x, end: Spacing.$8x),
     child: ContentRow(
       key: ValueKey<bool>(isHighlighted),
-      leading: getCategorySvg(category.id),
+      leading: getCategorySvg(category.id, context),
       onTap: () => onTap(category.id),
+      startTextPadding: 0,
+      endTextPadding: 0,
       text: ContentRowTextOptions(
         titleOptions: ContentRowTextOption(
           builder: (context) => Text(
             category.name,
-            style: context.textStyles.captionLargeMedium.copyWith(color: context.colors.foregroundSoft),
+            style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
           ),
         ),
       ),
@@ -207,7 +213,7 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsetsDirectional.only(top: Spacing.$4x, bottom: Spacing.$4x),
+    padding: const EdgeInsetsDirectional.only(top: Spacing.$2_5x, bottom: Spacing.$2_5x),
     margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
@@ -229,17 +235,18 @@ class SubCategoryWidget extends StatelessWidget {
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: view,
     builder: (context, _) => Container(
-      margin: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-      height: AppSizes.l,
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: ContentRow(
         key: ValueKey<bool>(view.isHighlighted),
-        leading: categoryId != null ? getCategorySvg(categoryId!) : null,
+        leading: categoryId != null ? getCategorySvg(categoryId!, context) : null,
         onTap: () => view.onTap(context),
+        startTextPadding: 0,
+        endTextPadding: 0,
         text: ContentRowTextOptions(
           titleOptions: ContentRowTextOption(
             builder: (context) {
               final color = context.colors.foregroundDefault;
-              final baseStyle = context.textStyles.captionLargeRegular.copyWith(color: color);
+              final baseStyle = context.textStyles.bodySmallRegular.copyWith(color: color);
 
               return search != null
                   ? Text.rich(

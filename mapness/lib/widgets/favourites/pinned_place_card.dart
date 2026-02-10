@@ -32,100 +32,91 @@ class PinnedPlaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(
-          vertical: Spacing.$3x,
-          horizontal: Spacing.$2x,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-          color: context.colors.backgroundSurface4,
-        ),
-        child: Stack(
-          fit: StackFit.passthrough,
+    padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$2x),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(RadiusBorder.l),
+      color: context.colors.backgroundSurface1,
+    ),
+    child: Stack(
+      fit: StackFit.passthrough,
+      children: [
+        Column(
           children: [
-            Column(
-              children: [
-                const SizedBox(height: Spacing.$2x),
-                InkWell(
-                  onTap: onTap,
-                  child: Container(
-                    height: 56,
-                    width: 56,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(40),
-                      color: isAdded ? context.colors.backgroundSurface1 : context.color.surfaceStatusContrastAccent,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: SizedBox(
-                        height: 32,
-                        width: 32,
-                        child: isAdded
-                            ? iconData.icon(color: context.colors.accentDefault)
-                            : SystemIcons.zoomPlus.icon(
-                                color: context.colors.accentOnContainer,
-                              ),
-                      ),
-                    ),
-                  ),
+            const SizedBox(height: Spacing.$2x),
+            InkWell(
+              onTap: onTap,
+              child: Container(
+                height: 56,
+                width: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(40),
+                  color: isAdded ? context.colors.backgroundSurface1 : context.color.surfaceStatusContrastAccent,
                 ),
-                const SizedBox(height: Spacing.$1x),
-                Text(
-                  title,
-                  textAlign: TextAlign.right,
-                  style: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
-                ),
-                const SizedBox(height: Spacing.$0_5x),
-                Text(
-                  address,
-                  textAlign: TextAlign.right,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textStyle.caption.copyWith(color: context.colors.foregroundSoft),
-                ),
-              ],
-            ),
-            if (isAdded)
-              Positioned(
-                top: 0,
-                right: context.isLTR ? 0 : null,
-                left: context.isLTR ? null : 0,
-                child: PopupCard(
-                  items: [
-                    PopupModel(
-                      title: context.l10n.route,
-                      icon: GeneralIcons.routeStroke,
-                      onTap: onTapRoute,
-                      color: context.colors.foregroundDefault,
-                    ),
-                    PopupModel(
-                      title: context.l10n.share,
-                      icon: SystemIcons.share,
-                      onTap: onTapShare,
-                      color: context.colors.foregroundDefault,
-                    ),
-                    PopupModel(
-                      title: context.l10n.change,
-                      icon: SystemIcons.bookmarkAdd,
-                      onTap: onTapChange,
-                      color: context.colors.foregroundDefault,
-                    ),
-                    PopupModel(
-                      titleStyle: context.textStyle.text.copyWith(
-                        color: context.colors.errorDefault,
-                      ),
-                      color: context.colors.errorDefault,
-                      title: context.l10n.delete,
-                      icon: GeneralIcons.trash,
-                      onTap: onDelete,
-                    ),
-                  ],
-                  child: SystemIcons.ellipsis.icon(
-                    color: context.colors.accentDefault,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: isAdded
+                        ? iconData.icon(color: context.colors.accentDefault)
+                        : SystemIcons.zoomPlus.icon(color: context.colors.accentOnContainer),
                   ),
                 ),
               ),
+            ),
+            const SizedBox(height: Spacing.$1x),
+            Text(
+              title,
+              textAlign: TextAlign.right,
+              style: context.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
+            ),
+            const SizedBox(height: Spacing.$0_5x),
+            Text(
+              address,
+              textAlign: TextAlign.right,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyle.caption.copyWith(color: context.colors.foregroundSoft),
+            ),
           ],
         ),
-      );
+        if (isAdded)
+          Positioned(
+            top: 0,
+            right: context.isLTR ? 0 : null,
+            left: context.isLTR ? null : 0,
+            child: PopupCard(
+              items: [
+                PopupModel(
+                  title: context.l10n.route,
+                  icon: GeneralIcons.routeStroke,
+                  onTap: onTapRoute,
+                  color: context.colors.foregroundDefault,
+                ),
+                PopupModel(
+                  title: context.l10n.share,
+                  icon: SystemIcons.share,
+                  onTap: onTapShare,
+                  color: context.colors.foregroundDefault,
+                ),
+                PopupModel(
+                  title: context.l10n.change,
+                  icon: SystemIcons.bookmarkAdd,
+                  onTap: onTapChange,
+                  color: context.colors.foregroundDefault,
+                ),
+                PopupModel(
+                  titleStyle: context.textStyle.text.copyWith(color: context.colors.errorDefault),
+                  color: context.colors.errorDefault,
+                  title: context.l10n.delete,
+                  icon: GeneralIcons.trash,
+                  onTap: onDelete,
+                ),
+              ],
+              child: SystemIcons.ellipsis.icon(color: context.colors.accentDefault),
+            ),
+          ),
+      ],
+    ),
+  );
 }

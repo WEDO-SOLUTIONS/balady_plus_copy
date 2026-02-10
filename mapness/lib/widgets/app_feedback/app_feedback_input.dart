@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -63,13 +64,14 @@ class AppFeedbackInput extends HookWidget {
     }, [textController]);
 
     return Padding(
-      padding: const EdgeInsets.all(Spacing.$4x),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: ValueListenableBuilder<int>(
         valueListenable: maxLines,
         builder: (context, maxLinesValue, _) => BaladyTextInput(
           controller: textController,
           inputState: inputState.value,
           config: BaladyInputConfig(
+            textStyle: context.textStyles.bodyLargeRegular,
             background: BaladyInputBackground.color,
             textInputAction: textInputAction,
             focusNode: focusNode,
@@ -78,10 +80,7 @@ class AppFeedbackInput extends HookWidget {
             maxLines: maxLinesValue,
             isDisposed: false,
           ),
-          supportingText: BaladySupportingText(
-            text: supportingText.value,
-            maxLength: maxCharsAllowed,
-          ),
+          supportingText: BaladySupportingText(text: supportingText.value, maxLength: maxCharsAllowed),
         ),
       ),
     );

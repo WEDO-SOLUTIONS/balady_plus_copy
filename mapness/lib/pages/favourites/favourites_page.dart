@@ -141,9 +141,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                   Spacing.$4x.widthBox,
                   if (isEditing)
                     Text(ctx.l10n.cancel, style: ctx.textStyle.footNote.copyWith(color: ctx.colors.accentDefault)),
-                  if (!isEditing) Icon(SystemIcons.arrowCornerLeftLarge, color: ctx.colors.accentDefault),
-                  if (!isEditing)
-                    Text(ctx.l10n.back, style: ctx.textStyle.footNote.copyWith(color: ctx.colors.accentDefault)),
+                  if (!isEditing) Icon(SystemIcons.arrowCornerLeftLarge, color: ctx.colors.foregroundDefault),
                 ],
               ),
             ),
@@ -339,14 +337,14 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                   ),
                 SliverList.separated(
                   itemCount: state.items.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  separatorBuilder: (_, __) => Divider(height: 0.5, color: context.colors.borderSoft),
                   itemBuilder: (_, index) {
                     final item = state.items[index];
                     const radius = Radius.circular(RadiusBorder.l);
                     return Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
-                        color: context.colors.backgroundSurface4,
+                        color: context.colors.backgroundSurface1,
                         borderRadius: BorderRadius.vertical(
                           top: index == 0 ? radius : Radius.zero,
                           bottom: index == state.items.length - 1 ? radius : Radius.zero,
