@@ -270,6 +270,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                 finishPoint: widget.points.last,
                 navType: navigatingType,
                 intermediatePoints: intermediatePoints,
+                showOnlyActiveRoute: false,
               ),
             );
 
