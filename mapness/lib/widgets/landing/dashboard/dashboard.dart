@@ -136,22 +136,10 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode);
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode,activeEvent);
     final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase ||
         specialThemeMode == SpecialThemeMode.ramadan;
-    final config = CityEventConfig.fromEventType(activeEvent);
 
-    final eventLogo = config?.logoConfig != null && config!.hasDashboardLogo
-        ? CityEventLogo(
-      config: config.logoConfig!,
-      fireworksController: widget.fireworksController,
-      onTap: () {
-        if (activeEvent == CityEventType.foundingDay) {
-          ref.read(foundingDayUrbiProvider.notifier).openThePlace();
-        }
-      },
-    )
-        : null;
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Padding(
@@ -237,10 +225,10 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
           themeConfig: themeConfig,
         );
       case SpecialThemeMode.nationalDay:
-        return NationalDayDashboardContent(themeConfig: themeConfig);
+        return NationalDayDashboardContent(themeConfig: themeConfig,bottomSheetController: widget.bottomSheetController,fireworksController: widget.fireworksController,);
       case SpecialThemeMode.foundationDay:
       case SpecialThemeMode.base:
-        return BaseDashboardContent(themeConfig: themeConfig);
+        return BaseDashboardContent(themeConfig: themeConfig,bottomSheetController: widget.bottomSheetController,fireworksController: widget.fireworksController,);
     }
   }
 }

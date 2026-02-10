@@ -248,6 +248,6 @@ class FoundingDayConfig extends CityEventConfig {
         width: 130,
         padding: EdgeInsets.zero,
         supportsFireworks: true,
-        imageOffset: const Offset(0, -45),
+        imageOffset: const Offset(0, 10),
       );
 }

@@ -20,7 +20,7 @@ class CityEventDisplay extends ConsumerWidget {
   final MultiStateSheetController<ThreeStateSheet> controller;
   final AnimationController? fireworksController;
 
-  const CityEventDisplay({this.activeEvent, required this.controller, this.fireworksController, super.key});
+  const CityEventDisplay({required this.controller, this.activeEvent, this.fireworksController, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -63,6 +63,9 @@ class CityEventDisplay extends ConsumerWidget {
             onTap: () {
               if (activeEvent == CityEventType.cityscape) {
                 ref.read(cityscapeProvider.notifier).openThePlace();
+              }
+              if (activeEvent == CityEventType.foundingDay) {
+                ref.read(foundingDayUrbiProvider.notifier).openThePlace();
               } else if (activeEvent == CityEventType.saudiNationalDay && fireworksController != null) {
                 // Fireworks are handled automatically in CityEventLogo
               }

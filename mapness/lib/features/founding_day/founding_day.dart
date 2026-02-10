@@ -125,17 +125,24 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
   bool isFoundationObject(int objectId) => const FoundingDayConfig().additionalObjectIds.contains(objectId) && state;
 
   void openThePlace() {
-    ref.read(appRouterProvider).replaceOrPush(
-      route: PoiCardWidgetRoute(
-        objectId: sdk.DgisObjectIdMessage(objectId: const FoundingDayConfig().objectId, entranceId: 0),
-        closestPoint: sdk.LatLng(
-          latitude: const FoundingDayConfig().center.latitude,
-          longitude: const FoundingDayConfig().center.longitude,
+    try
+    {
+      print('amr try' );
+      ref.read(appRouterProvider).replaceOrPush(
+        route: PoiCardWidgetRoute(
+          objectId: sdk.DgisObjectIdMessage(objectId: const FoundingDayConfig().objectId, entranceId: 0),
+          closestPoint: sdk.LatLng(
+            latitude: const FoundingDayConfig().center.latitude,
+            longitude: const FoundingDayConfig().center.longitude,
+          ),
+          cameraConfig: const PoiCameraConfig(zoom: 20, tilt: 90),
         ),
-        cameraConfig: const PoiCameraConfig(zoom: 20, tilt: 90),
-      ),
-      toCompareRoutes: [PoiCardWidgetRoute.page],
-    );
+        toCompareRoutes: [PoiCardWidgetRoute.page],
+      );
+    }catch (ex){
+      print('amr ${ex.toString()}');
+    }
+
   }
 
   sdk.MarkerTextStyleMessage get _markerAnchorTextStyle {

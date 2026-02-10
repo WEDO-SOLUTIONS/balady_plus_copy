@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
 
 typedef ImageProviderBuilder = ImageProvider Function();
 
@@ -29,7 +31,8 @@ class DashboardThemeConfig {
   final Color? backgroundColor;
 }
 
-DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode) {
+DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventType? activeEvent) {
+
   switch (mode) {
     case SpecialThemeMode.nationalDay:
       return DashboardThemeConfig(
@@ -81,12 +84,25 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode) {
       );
 
     case SpecialThemeMode.base:
-    case SpecialThemeMode.foundationDay:
       return DashboardThemeConfig(
         useTopHeaderOffset: false,
         offsetOutsideWidgetByTopHeader: true,
         feedbackBannerAssetPath: Assets.images.feedbackDashboard.keyName,
         feedbackBannerGradient: const [Color(0xFF4EC9C0), Color(0xFF2AB3A9)],
+        useThemedExploreBackground: false,
+        exploreBackgroundGradient: const [
+          Colors.transparent,
+          Colors.transparent,
+        ],
+        exploreBackgroundImageBuilder: null,
+        backgroundColor: null,
+      );
+    case SpecialThemeMode.foundationDay:
+      return DashboardThemeConfig(
+        useTopHeaderOffset: false,
+        offsetOutsideWidgetByTopHeader: true,
+        feedbackBannerAssetPath: activeEvent.feedbackDashboard,
+        feedbackBannerGradient: activeEvent.feedbackDashboardGradientColors,
         useThemedExploreBackground: false,
         exploreBackgroundGradient: const [
           Colors.transparent,

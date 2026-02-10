@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
@@ -82,7 +83,9 @@ class _DashboardMenu extends ConsumerWidget {
         remainingSpaceForQuickFilters / heightOfQuickFilters;
 
     final specialThemeMode = ref.watch(specialThemeModeProvider);
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode);
+    final activeEvent = ref.watch(activeCityEventProvider);
+
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode,activeEvent);
     final backgroundColor =
         themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
 
@@ -132,7 +135,8 @@ class DashboardHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final specialThemeMode = ref.watch(specialThemeModeProvider);
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode);
+    final activeEvent = ref.watch(activeCityEventProvider);
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode,activeEvent);
     final headerBackgroundColor =
         themeConfig.backgroundColor ?? context.colors.backgroundSurface2;
     final bool isMekkahTheme =
