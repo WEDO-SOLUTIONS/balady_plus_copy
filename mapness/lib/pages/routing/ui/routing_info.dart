@@ -45,11 +45,8 @@ class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
   final bool isHomeOrWork;
 
-  RoutingInfo({
-    required this.pointsWithLabel,
-    this.isHomeOrWork = false,
-    super.key,
-  }) : points = pointsWithLabel.map((e) => e.value).toList();
+  RoutingInfo({required this.pointsWithLabel, this.isHomeOrWork = false, super.key})
+    : points = pointsWithLabel.map((e) => e.value).toList();
 
   @override
   ConsumerState<RoutingInfo> createState() => _RoutingInfoState();
@@ -69,9 +66,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   }
 
   Future<void> _initialize() async {
-    final navState = await ActiveNavigationHelper.getState(
-      ref.read(dgisControllerProvider).value,
-    );
+    final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 
     if (navState.isActive) {
       _lockedNavType = navState.navType;
@@ -114,7 +109,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     final physicalPixelsHeight = height * devicePixelRatio;
     final physicalPixelsWidth = width * devicePixelRatio;
 
-    ref.read(cameraPositionProvider.notifier).setPadding(
+    ref
+        .read(cameraPositionProvider.notifier)
+        .setPadding(
           CameraSetPaddingMessage(
             leftPadding: (physicalPixelsWidth / 8).ceil(),
             topPadding: (physicalPixelsHeight / 5).ceil(),
@@ -245,18 +242,15 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           _navType.value = RouteSearchOptionsMessage.car;
         }
       })
-      ..listen<RouteSearchOptionsMessage>(
-        routesUpdateTabProvider,
-        (previous, next) {
-          if (previous != next) {
-            _navType.value = next;
-            ref
-              ..invalidate(routesProvider)
-              ..invalidate(publicTransportRoutesProvider)
-              ..invalidate(publicTransportVisibilityProvider);
-          }
-        },
-      );
+      ..listen<RouteSearchOptionsMessage>(routesUpdateTabProvider, (previous, next) {
+        if (previous != next) {
+          _navType.value = next;
+          ref
+            ..invalidate(routesProvider)
+            ..invalidate(publicTransportRoutesProvider)
+            ..invalidate(publicTransportVisibilityProvider);
+        }
+      });
 
     return ValueListenableBuilder(
       valueListenable: _isNavTypeLoading,
@@ -281,8 +275,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
             final publicTransportVisibility = ref.watch(
               publicTransportVisibilityProvider(
-                startPoint: widget.points[0],
-                finishPoint: widget.points[1],
+                startPoint: widget.points.first,
+                finishPoint: widget.points.last,
+                intermediatePoints: intermediatePoints,
               ),
             );
 
@@ -303,7 +298,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                   active: navigatingType,
                   onChanged: _onChanged,
                   points: widget.points,
-                  publicTransportVisibility: publicTransportVisibility,
+                  hasPublicTransport: publicTransportVisibility.asData?.value.hasPublicTransportRoutes ?? false,
                   routes: routes,
                   lockedNavType: _lockedNavType,
                 ),
@@ -341,12 +336,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     for (final settings in [mapSetting, markerSettings]) {
       await ref
-          .read(
-            mapObjectManagerProvider(
-              named: settings.name,
-              layerId: settings.layerId,
-            ).notifier,
-          )
+          .read(mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier)
           .removeAllMarkers();
     }
 
@@ -360,12 +350,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     // log advert analytics event
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
-    ref.read(advertMetricsProvider.notifier).sendEvent(
-          AdvertMetricsKeys.journeyStartedUnique,
-          isUniquePerSession: true,
-        );
+    ref
+        .read(advertMetricsProvider.notifier)
+        .sendEvent(AdvertMetricsKeys.journeyStartedUnique, isUniquePerSession: true);
 
-    ref.read(appAnalyticsProvider).navigationStarted(
+    ref
+        .read(appAnalyticsProvider)
+        .navigationStarted(
           originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
           destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
           originCity: originCity.name,
@@ -374,30 +365,25 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
           estimateDistance: route.distance,
         );
 
-    unawaited(ref.read(urbiAnalyticsProvider).track(
-      'startNavigation',
-      properties: {
-        'duration': route.duration,
-        'distance': route.distance,
-      },
-    ));
+    unawaited(
+      ref
+          .read(urbiAnalyticsProvider)
+          .track('startNavigation', properties: {'duration': route.duration, 'distance': route.distance}),
+    );
 
-    await ref.read(currentRouteProvider.notifier).setNavigationState(
-          CurrentRouteState(
-            points: widget.pointsWithLabel,
-            navType: navigatingType,
-            route: route,
-          ),
-        );
+    await ref
+        .read(currentRouteProvider.notifier)
+        .setNavigationState(CurrentRouteState(points: widget.pointsWithLabel, navType: navigatingType, route: route));
     ref.read(currentNavigationDestinationProvider.notifier).state = widget.pointsWithLabel.lastOrNull?.value;
 
     await context.router.pushAndPopUntil(
-        PathNavRoute(
-          navType: navigatingType,
-          isHomeOrWork: widget.isHomeOrWork,
-          initAction: PathNavPageInitAction.startNavigation,
-        ),
-        predicate: (route) => route.settings.name == BottomMenuRoute.name);
+      PathNavRoute(
+        navType: navigatingType,
+        isHomeOrWork: widget.isHomeOrWork,
+        initAction: PathNavPageInitAction.startNavigation,
+      ),
+      predicate: (route) => route.settings.name == BottomMenuRoute.name,
+    );
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {
