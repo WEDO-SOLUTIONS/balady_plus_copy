@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -64,6 +65,16 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                   if (manageNotificationClicked) {
                     manageNotificationClicked = false;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
+                      NavigationService.navigatorKey.currentState!.push(
+                        MaterialPageRoute(
+                          builder: (_) => NotificationsSettings(
+                            notificationsList:
+                                cubit.notificationsSettingsList.categories!,
+                          ),
+                        ),
+                      );
+
+                      /*
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => NotificationsSettings(
@@ -72,6 +83,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ),
                         ),
                       );
+                      */
                     });
                   }
 
@@ -128,7 +140,8 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                   child: CupertinoSwitch(
                                     onChanged: (bool value) {},
                                     value: state.isChecked,
-                                    activeColor: context.colors.accentActive,
+                                    activeTrackColor:
+                                        context.colors.accentActive,
                                   ),
                                 ),
                               ],
