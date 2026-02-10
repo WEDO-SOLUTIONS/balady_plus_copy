@@ -16,6 +16,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_p
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/apps_group_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_fav_section_shimmer_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_most_used_section_shimmer_widget.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/mini_apps_search_bar_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/overlay_blur_circle.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_apps_list_pages/widgets/shimmer_loading_widgets/page_bar_shimmer_loading_widget.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui/apps_group_page/apps_group_page.dart';
@@ -309,7 +310,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                                   "dashboard".tr(),
                                                                                   textAlign: TextAlign.center,
                                                                                   style: const TextStyle(
-                                                                                    fontFamily: 'Frutiger',
+                                                                                    fontFamily: GeneralKey.appFontType,
                                                                                     fontWeight: FontWeight.w400,
                                                                                   ),
                                                                                 ),
@@ -334,51 +335,70 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                     SizedBox(
                                                       height: context.h(14),
                                                     ),
-                                                    MiniAppsCustomTextField(
-                                                      onTap: () {
-                                                        Navigator.of(
-                                                          context,
-                                                        ).push(
-                                                          PageRouteBuilder(
-                                                            opaque: false,
-                                                            barrierColor: Colors
-                                                                .transparent,
-                                                            pageBuilder:
-                                                                (_, __, ___) =>
-                                                                    const MiniAppsSearchPage(),
-                                                          ),
-                                                        );
-                                                      },
-                                                      isEnabled: false,
-                                                      isReadOnly: true,
-                                                      // width: context.w(150),
-                                                      height: context.h(48),
-                                                      keyboardType:
-                                                          TextInputType.text,
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      suffixString: Text(
-                                                        "search2".tr(),
-                                                        style: TextStyle(
-                                                          color: Theme.of(
-                                                            context,
-                                                          ).disabledColor,
-                                                          // color: Colors.black,
-                                                          fontFamily: GeneralKey
-                                                              .appFontType,
-                                                        ),
-                                                      ),
-                                                      suffixIcon: SvgPicture.asset(
-                                                        Theme.of(
+                                                    state.isFavLoading ||
+                                                            state
+                                                                .isUnFavLoading ||
+                                                            state
+                                                                .isAppsGroupLoading ||
+                                                            state
+                                                                .isEntryPointsLoading
+                                                        ? MiniAppsSearchTextFieldShimmer()
+                                                        : MiniAppsCustomTextField(
+                                                            onTap: () {
+                                                              Navigator.of(
+                                                                context,
+                                                              ).push(
+                                                                PageRouteBuilder(
+                                                                  opaque: false,
+                                                                  barrierColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  pageBuilder:
+                                                                      (
+                                                                        _,
+                                                                        __,
+                                                                        ___,
+                                                                      ) =>
+                                                                          const MiniAppsSearchPage(),
+                                                                ),
+                                                              );
+                                                            },
+                                                            isEnabled: false,
+                                                            isReadOnly: true,
+                                                            // width: context.w(150),
+                                                            height: context.h(
+                                                              48,
+                                                            ),
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .text,
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            suffixString: Text(
+                                                              "search2".tr(),
+                                                              style: TextStyle(
+                                                                color: Theme.of(
                                                                   context,
-                                                                ).brightness ==
-                                                                Brightness.dark
-                                                            ? IconPath
-                                                                  .searchSVG2
-                                                            : IconPath
-                                                                  .searchSVG,
-                                                      ),
-                                                    ),
+                                                                ).disabledColor,
+                                                                // color: Colors.black,
+                                                                fontFamily:
+                                                                    GeneralKey
+                                                                        .appFontType,
+                                                              ),
+                                                            ),
+                                                            suffixIcon: SvgPicture.asset(
+                                                              Theme.of(
+                                                                        context,
+                                                                      ).brightness ==
+                                                                      Brightness
+                                                                          .dark
+                                                                  ? IconPath
+                                                                        .searchSVG2
+                                                                  : IconPath
+                                                                        .searchSVG,
+                                                            ),
+                                                          ),
                                                     Padding(
                                                       padding: EdgeInsets.only(
                                                         left:
