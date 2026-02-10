@@ -86,25 +86,18 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       MetricsConstants.poiKeys.map,
       group: MetricsConstants.poiTag,
       action: MetricAction.tap.toString(),
-      props: {
-        'objectId': event.dgisObjectId.objectId,
-      },
+      props: {'objectId': event.dgisObjectId.objectId},
     );
 
-    ref.read(appRouterProvider).replaceOrPush(
-      route: PoiCardWidgetRoute(
-        objectId: DgisObjectIdMessage(
-          objectId: event.dgisObjectId.objectId,
-          entranceId: 0,
-        ),
-        closestPoint: event.latLng,
-      ),
-      toCompareRoutes: [
-        ShareMyLocationRoute.page,
-        PoiCardWidgetRoute.page,
-        HajjPoiCardRoute.page,
-      ],
-    );
+    ref
+        .read(appRouterProvider)
+        .replaceOrPush(
+          route: PoiCardWidgetRoute(
+            objectId: DgisObjectIdMessage(objectId: event.dgisObjectId.objectId, entranceId: 0),
+            closestPoint: event.latLng,
+          ),
+          toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
+        );
   }
 
   void _handleRoadEventTapEvent(RoadEventTapEvent event) {
@@ -126,13 +119,9 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       finishTime: event.finishTime,
     );
     if (router.isRouteActive(RoadClosedRoute.name)) {
-      router.popAndPush(
-        roadClosedRoute,
-      );
+      router.popAndPush(roadClosedRoute);
     } else {
-      router.push(
-        roadClosedRoute,
-      );
+      router.push(roadClosedRoute);
     }
   }
 
@@ -147,14 +136,16 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
 
     final userLocation = ref.read(locationProvider);
 
-    ref.read(appRouterProvider).replaceOrPush(
-      route: ShareMyLocationRoute(
-        cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-        closestPoint: userLocation != null
-            ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-            : event.latLng,
-      ),
-      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
-    );
+    ref
+        .read(appRouterProvider)
+        .replaceOrPush(
+          route: ShareMyLocationRoute(
+            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+            closestPoint: userLocation != null
+                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                : event.latLng,
+          ),
+          toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
+        );
   }
 }

@@ -40,42 +40,27 @@ class _ABRouteRowDecoration extends StatelessWidget {
                     Expanded(
                       child: Text(
                         title,
-                        style: context.textStyles.bodyLargeRegular.copyWith(
-                          color: context.colors.foregroundDefault,
-                        ),
+                        style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                     ),
-                    _ActionsContainer(
-                      [
-                        if (onDeletePressed != null)
-                          GestureDetector(
-                            onTap: onDeletePressed,
-                            child: Icon(
-                              SystemIcons.closeSmall,
-                              color: actionColor,
-                            ),
-                          ),
-                        ReorderableDragStartListener(
-                          index: index,
-                          child: Icon(
-                            SystemIcons.dragMenu,
-                            color: actionColor,
-                          ),
-                        )
-                      ],
-                    ),
+                    _ActionsContainer([
+                      if (onDeletePressed != null)
+                        GestureDetector(
+                          onTap: onDeletePressed,
+                          child: Icon(SystemIcons.closeSmall, color: actionColor),
+                        ),
+                      ReorderableDragStartListener(
+                        index: index,
+                        child: Icon(SystemIcons.dragMenu, color: actionColor),
+                      ),
+                    ]),
                   ].insertBetween(Spacing.$3x.widthBox).toList(),
                 ),
               ),
               if (isDividerEnabled)
-                Divider(
-                  color: context.colors.borderSoft,
-                  height: 0.5,
-                  thickness: 0.5,
-                  indent: Spacing.$12x.toDouble(),
-                ),
+                Divider(color: context.colors.borderSoft, height: 0.5, thickness: 0.5, indent: Spacing.$12x.toDouble()),
             ],
           ),
         ),
@@ -90,7 +75,5 @@ class _ActionsContainer extends StatelessWidget {
   const _ActionsContainer(this.actions);
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: actions.insertBetween(Spacing.$2x.widthBox).toList(),
-      );
+  Widget build(BuildContext context) => Row(children: actions.insertBetween(Spacing.$2x.widthBox).toList());
 }

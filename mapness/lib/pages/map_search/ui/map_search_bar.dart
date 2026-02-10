@@ -11,8 +11,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart'
-    as metric_const;
+import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -26,12 +25,7 @@ class MapSearchBar extends ConsumerStatefulWidget {
   final VoidCallback onClose;
   final bool isCloseButton;
 
-  const MapSearchBar({
-    required this.requestFocus,
-    required this.onClose,
-    this.isCloseButton = false,
-    super.key,
-  });
+  const MapSearchBar({required this.requestFocus, required this.onClose, this.isCloseButton = false, super.key});
 
   @override
   ConsumerState<MapSearchBar> createState() => _MapSearchBarState();
@@ -73,9 +67,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     ref
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(searchProvider(scope.value), (previous, next) {
-        final isSearchInRectRequest = ref
-            .read(searchInRectProvider(scope.value))
-            .isSearchInThisAreaRequest;
+        final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
         if (next.searchText.isEmpty) {
           ref.read(searchInRectProvider(scope.value).notifier).update();
         }
@@ -84,9 +76,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (next is SearchStateLoading) {
             _focusNode.unfocus();
-          } else if (next is SearchStateResults &&
-              !isSearchInRectRequest &&
-              previous is SearchStateLoading) {
+          } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
             _focusNode.requestFocus();
           }
         });
@@ -99,9 +89,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
-            ref
-                .read(searchProvider(scope.value).notifier)
-                .searchQueryChanged(query);
+            ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
@@ -110,24 +98,18 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   name: BssUIElementNames.searchBar,
                   ownerName: BssUIElementNames.directorySearchScreen,
                 ),
-                payload: BssPayload(
-                  searchRequest: BssSearchRequest(text: query),
-                ),
+                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
               ),
             );
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
               group: metric_const.MetricsConstants.searchTag,
               action: metrics.MetricAction.type.toString(),
-              props: {
-                'query': query,
-              },
+              props: {'query': query},
             );
           },
           onTap: () {
-            ref
-                .read(advertMetricsProvider.notifier)
-                .sendEvent(AdvertMetricsKeys.journeySearch);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             BssService.instance.sendEvent(
               const BssRequest(
                 eventType: BSSEventType.action,
@@ -138,20 +120,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                 ),
               ),
             );
-            _controller.selection = TextSelection.fromPosition(
-              TextPosition(
-                offset: _controller.text.length,
-              ),
-            );
+            _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
           },
           onSubmitted: (query) async {
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
               group: metric_const.MetricsConstants.searchTag,
               action: metrics.MetricAction.type.toString(),
-              props: {
-                'query': query,
-              },
+              props: {'query': query},
             );
             await BssService.instance.sendEvent(
               BssRequest(
@@ -161,19 +137,19 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   name: BssUIElementNames.searchStart,
                   ownerName: BssUIElementNames.searchBar,
                 ),
-                payload: BssPayload(
-                  searchRequest: BssSearchRequest(text: query),
-                ),
+                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
               ),
             );
             if (query.trim().isNotEmpty) {
               await searcher.searchByText(query);
-              await ref.read(urbiAnalyticsProvider).track(
+              await ref
+                  .read(urbiAnalyticsProvider)
+                  .track(
                     '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
                   );
-              await ref.read(searchHistoryProvider(scope.value).notifier).put(
-                    SearchHistoryItem.fromQuery(query: query),
-                  );
+              await ref
+                  .read(searchHistoryProvider(scope.value).notifier)
+                  .put(SearchHistoryItem.fromQuery(query: query));
             }
             _focusNode.requestFocus();
           },
@@ -186,14 +162,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         ),
       ),
       option: widget.isCloseButton
-          ? SearchIconBackOption(
-              icon: SystemIcons.close,
-              onPressed: () => _onBackPressed(searcher),
-            )
-          : SearchTextBackOption(
-              text: context.l10n.cancel,
-              onPressed: () => _onBackPressed(searcher),
-            ),
+          ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
+          : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
     );
   }
 

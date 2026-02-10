@@ -228,7 +228,9 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
 
   Future<void> _onYourLocationTap(BuildContext context, WidgetRef ref) async {
     final location = ref.read(locationProvider);
-    if (location == null) return;
+    if (location == null) {
+      return;
+    }
 
     final dgisController = await ref.read(dgisControllerProvider.future);
     await dgisController.setCameraPosition(

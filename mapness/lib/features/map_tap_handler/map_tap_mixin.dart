@@ -16,10 +16,7 @@ mixin GuardTapEventMixin on _$MapTapHandler {
 
     // We don't want to handle tap events when the search is running (for now it is quick search)
     final isQuickSearchRunning = ref.read(searchProvider(SearchScopeEnum.map.value).notifier).isQuickSearchRunning;
-    final objectIgnoreRoute = [
-      RoutingMapSelectRoute.name,
-      SearchRoute.name,
-    ];
+    final objectIgnoreRoute = [RoutingMapSelectRoute.name, SearchRoute.name];
     if (isQuickSearchRunning) {
       objectIgnoreRoute.add(PoiCardWidgetRoute.name);
     }
