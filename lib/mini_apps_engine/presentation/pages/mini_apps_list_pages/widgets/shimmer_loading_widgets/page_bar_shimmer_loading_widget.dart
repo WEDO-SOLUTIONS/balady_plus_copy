@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -30,38 +31,41 @@ class PageBarShimmerLoadingWidget extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: baseColor,
       highlightColor: highlightColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _ShimmerBox(
-                width: w(140),
-                height: h(30),
-                radius: 8,
-                color: boxColor,
-                borderColor: borderColor,
-              ),
-              const SizedBox(height: 6),
-              _ShimmerBox(
-                width: w(135),
-                height: h(30),
-                radius: 8,
-                color: boxColor,
-                borderColor: borderColor,
-              ),
-            ],
-          ),
-          _ShimmerBox(
-            width: w(150),
-            height: h(48),
-            radius: 12,
-            color: boxColor,
-            borderColor: borderColor,
-          ),
-        ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: context.screenWidth * 0.04),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ShimmerBox(
+                  width: w(140),
+                  height: h(30),
+                  radius: 8,
+                  color: boxColor,
+                  borderColor: borderColor,
+                ),
+                const SizedBox(height: 6),
+                _ShimmerBox(
+                  width: w(135),
+                  height: h(30),
+                  radius: 8,
+                  color: boxColor,
+                  borderColor: borderColor,
+                ),
+              ],
+            ),
+            _ShimmerBox(
+              width: w(150),
+              height: h(48),
+              radius: 12,
+              color: boxColor,
+              borderColor: borderColor,
+            ),
+          ],
+        ),
       ),
     );
   }
