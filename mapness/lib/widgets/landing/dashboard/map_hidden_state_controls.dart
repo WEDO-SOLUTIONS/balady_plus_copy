@@ -21,6 +21,8 @@ import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sheetify/sheetify.dart';
 
+import '../../../features/cityscape/cityscape.dart';
+
 class MapHiddenStateControls extends ConsumerStatefulWidget {
   final MultiStateSheetController<ThreeStateSheet> controller;
 

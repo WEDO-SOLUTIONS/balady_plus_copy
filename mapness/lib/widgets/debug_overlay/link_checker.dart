@@ -35,9 +35,9 @@ class LinkChecker extends HookConsumerWidget {
               final text = linkController.text;
 
               if (pages.contains(text)) {
-                context.router.navigatePath(text);
+                context.router.navigateNamed(text);
               } else {
-                context.router.pushPath(text);
+                context.router.navigateNamed(text);
               }
             } catch (e) {
               logger.log('Error navigating to link: ${e.toString()}');

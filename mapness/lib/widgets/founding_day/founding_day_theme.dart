@@ -292,7 +292,7 @@ extension AppColorsThemeV3FoundingDayExt on AppColorsThemeV3 {
       pinDefault: scheme.pinDefault,
       pinSoft: scheme.pinSoft,
       pinFoundationPin: scheme.pinFoundationPin,
-      pinBorderMarker: scheme.pinBorderMarker,
+      pinBorderMarker: scheme.pinBorderMarker, parents: {},
     );
   }
 }

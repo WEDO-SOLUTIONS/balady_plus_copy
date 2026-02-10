@@ -324,11 +324,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final specialThemeMode = ref.watch(specialThemeModeProvider);
 
     ref.listen<bool>(cityscapeProvider, (prev, next) {
-      _updateGlobalMarker(ref);
+      _updateGlobalMarkerCityscape(ref);
     });
 
     ref.listen<dynamic>(selectedMarkerProvider, (prev, next) {
-      _updateGlobalMarker(ref);
+      _updateGlobalMarkerFoundingDay(ref);
     });
     // Track theme changes for analytics
     ref.listen<SpecialThemeMode>(specialThemeModeProvider, (prev, next) {
@@ -427,7 +427,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                       SpecialThemeMode.mekkahBase ||
                       SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
                       _ => BaladyAppThemes.light,
-                    })
+                    }),
                   AppStaticColorsThemeExt.palette(),
                 ],
               ),

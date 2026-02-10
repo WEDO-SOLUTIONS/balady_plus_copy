@@ -31,6 +31,9 @@ import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart
 import 'package:mapness/widgets/landing/dashboard_header.dart';
 import 'package:sheetify/sheetify.dart';
 
+import 'city_event_config.dart';
+import 'city_event_logo.dart';
+
 class Dashboard extends ConsumerStatefulWidget {
   const Dashboard({
     required this.bottomSheetController,
