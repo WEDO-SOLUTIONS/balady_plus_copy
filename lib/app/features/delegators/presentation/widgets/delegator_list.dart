@@ -55,7 +55,7 @@ class _DelegatorListState extends State<DelegatorList> {
                   children: [
                     // Check if this is a business group with no access
                     if (_shouldShowNoAccessMessage(state)) ...[
-                      _buildNoAccessWidget(context),
+                      _buildNoAccessWidget(context, themeNotifier.isDarkMode),
                     ] else if (widget.fromService && state.delegators.isEmpty && state.agents.isEmpty) ...[
                       const NoAccountsWidget(),
                     ] else ...[
@@ -112,7 +112,7 @@ class _DelegatorListState extends State<DelegatorList> {
     return widget.groupId != null && AccountSelectionService.isBusinessGroup(widget.groupId!);
   }
 
-  Widget _buildNoAccessWidget(BuildContext context) {
+  Widget _buildNoAccessWidget(BuildContext context, bool isDarkMode) {
     return Container(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -122,7 +122,7 @@ class _DelegatorListState extends State<DelegatorList> {
           const SizedBox(height: 16),
           Text(
             "no_business_access_title".tr(),
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF27272A)),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: isDarkMode ? Colors.grey[400] : Color(0xFF27272A)),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),

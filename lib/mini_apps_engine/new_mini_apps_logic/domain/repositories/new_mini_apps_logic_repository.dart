@@ -5,6 +5,5 @@ abstract class NewMiniAppsLogicRepository {
   Future<Either<Exception, NewMiniAppsLogicEntity>> getMiniApps(
     final bool isLoggedInLifestyle,
     final bool isLoggedInMunicipality,
-    final bool isUserAccountBusiness,
   );
 }
