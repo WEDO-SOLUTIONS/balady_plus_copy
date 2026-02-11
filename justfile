@@ -19,7 +19,7 @@ import? 'justscripts/local.just'
 import 'justscripts/styles.just'
 
 # prebuild: pubget locale_gen build_pigeon download-sdk codegen
-prebuild: clean locale_gen pubget build_pigeon codegen
+prebuild: locale_gen pubget build_pigeon codegen
 
 pubrefresh: clean pubget
 
@@ -27,19 +27,15 @@ pubget:
     #!/bin/bash
     set -euo pipefail
     fvm flutter pub get
-    flutter pub get
     cd mapness
     fvm flutter pub get
-    flutter pub get
 
 clean:
     #!/bin/bash
     set -euo pipefail
     fvm flutter clean
-    flutter clean
     cd mapness
     fvm flutter clean
-    flutter clean
 
 delete_codegen:
     fd -HI -tf '\.(g|freezed)\.dart' -X rm
