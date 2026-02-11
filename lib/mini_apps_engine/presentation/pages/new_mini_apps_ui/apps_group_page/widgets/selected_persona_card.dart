@@ -168,7 +168,7 @@ class SelectedPersonaCard extends StatelessWidget {
                 PageRouteBuilder(
                   opaque: false,
                   barrierColor: Colors.transparent,
-                  pageBuilder: (_, _, _) => AppsGroupPage(groupId: targetGroupId, dashboard: dashboard),
+                  pageBuilder: (_, __, ___) => AppsGroupPage(groupId: targetGroupId, dashboard: dashboard),
                 ),
               );
             } else {

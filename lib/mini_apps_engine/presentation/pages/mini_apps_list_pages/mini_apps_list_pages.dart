@@ -639,7 +639,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                                                                   PageRouteBuilder(
                                                                                     opaque: false,
                                                                                     barrierColor: Colors.transparent,
-                                                                                    pageBuilder: (_, _, _) {
+                                                                                    pageBuilder: (_, __, ___) {
                                                                                       print('Group name: $groupName');
                                                                                       print(
                                                                                         'Navigating to group: ${appGroup.id}',
