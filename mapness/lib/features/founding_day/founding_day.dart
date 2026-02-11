@@ -127,7 +127,6 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
   void openThePlace() {
     try
     {
-      print('amr try' );
       ref.read(appRouterProvider).replaceOrPush(
         route: PoiCardWidgetRoute(
           objectId: sdk.DgisObjectIdMessage(objectId: const FoundingDayConfig().objectId, entranceId: 0),
@@ -140,7 +139,7 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
         toCompareRoutes: [PoiCardWidgetRoute.page],
       );
     }catch (ex){
-      print('amr ${ex.toString()}');
+
     }
 
   }

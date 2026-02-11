@@ -25,28 +25,32 @@ class PoiPhoto extends _$PoiPhoto {
     final cancelToken = CancelToken();
     ref.onDispose(cancelToken.cancel);
 
-    final response = await dio.get(
-      'https://api.photo.$baseApiUrl/3.0/objects/$objectId/albums/all/photos',
-      queryParameters: {
-        'key': 'eTei6feebievaeh',
-        'locale': switch (locale) {
-          Language.english => 'en_SA',
-          Language.arabic => 'ar_AE',
+    try {
+      final response = await dio.get(
+        'https://api.photo.$baseApiUrl/3.0/objects/$objectId/albums/all/photos',
+        queryParameters: {
+          'key': 'eTei6feebievaeh',
+          'locale': switch (locale) {
+            Language.english => 'en_SA',
+            Language.arabic => 'ar_AE',
+          },
+          'preview_size': '600x',
         },
-        'preview_size': '600x',
-      },
-      options: Options(
-        validateStatus: (status) => status != null && status >= 200 && status < 300 || status == HttpStatus.notFound,
-      ),
-      cancelToken: cancelToken,
-    );
+        options: Options(
+          validateStatus: (status) => status != null && status >= 200 && status < 300 || status == HttpStatus.notFound,
+        ),
+        cancelToken: cancelToken,
+      );
 
-    if (response.statusCode == HttpStatus.notFound) {
+      if (response.statusCode == HttpStatus.notFound) {
+        return DgisPhotosDto(albums: [], items: []);
+      }
+
+      final data = DgisPhotosDto.fromJson(response.data as Map<String, dynamic>);
+
+      return data;
+    } catch (ex) {
       return DgisPhotosDto(albums: [], items: []);
     }
-
-    final data = DgisPhotosDto.fromJson(response.data as Map<String, dynamic>);
-
-    return data;
   }
 }

@@ -432,24 +432,24 @@ class _DebugTogglesCard extends ConsumerWidget {
             },
             gradient: _DebugColors.gradientAmber,
           ),
-          _ToggleRow(
-            label: 'Ramadan Season',
-            value: ramadan,
-            onChanged: (v) {
-              _trackDebugToggle('ramadan', v);
-              ref.read(ramadanSeasonDebugProvider.notifier).set(v);
-            },
-            gradient: _DebugColors.gradientTeal,
-          ),
-          _ToggleRow(
-            label: 'Hajj Season',
-            value: hajj,
-            onChanged: (v) {
-              _trackDebugToggle('hajj', v);
-              ref.read(hajjSeasonDebugProvider.notifier).set(v);
-            },
-            gradient: _DebugColors.gradientBlue,
-          ),
+          // _ToggleRow(
+          //   label: 'Ramadan Season',
+          //   value: ramadan,
+          //   onChanged: (v) {
+          //     _trackDebugToggle('ramadan', v);
+          //     ref.read(ramadanSeasonDebugProvider.notifier).set(v);
+          //   },
+          //   gradient: _DebugColors.gradientTeal,
+          // ),
+          // _ToggleRow(
+          //   label: 'Hajj Season',
+          //   value: hajj,
+          //   onChanged: (v) {
+          //     _trackDebugToggle('hajj', v);
+          //     ref.read(hajjSeasonDebugProvider.notifier).set(v);
+          //   },
+          //   gradient: _DebugColors.gradientBlue,
+          // ),
           _ToggleRow(
             label: 'Kaaba Virtual Tour',
             value: pilgrimFeature,
