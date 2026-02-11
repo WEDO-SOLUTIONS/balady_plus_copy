@@ -57,14 +57,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       ),
     );
 
-    // ✅ Get login status from CommonProperties if not provided
-    final isLoggedInLifestyle =
-        isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
-    final isLoggedInMunicipality =
-        isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
-
-    // ⚠️ Don't default business to true here; it causes wrong view after rebuilds.
-    // Get login status from CommonProperties if not provided
     final isLoggedInLifestyle =
         isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
     final isLoggedInMunicipality =
@@ -132,10 +124,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             .toList();
 
         final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
-        final unFavoriteApps = allApps
-            .where((app) => !favoriteIdSet.contains(app.id))
-            .toList();
-
         final unFavoriteApps = filteredApps
             .where((app) => !favoriteIdSet.contains(app.id))
             .toList();
@@ -180,9 +168,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
       isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
       isUserAccountBusiness:
-          isUserAccountBusiness, // Default to true for refresh - will be updated by external listeners
-      isUserAccountBusiness:
-          true, // Default to true for refresh - will be updated by external listeners
+          isUserAccountBusiness, // Value controlled by external listeners
     );
 
     emit(state.copyWith(isRefreshing: false));
@@ -264,8 +250,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       final q = _normalizeForSearch(trimmed.toLowerCase());
 
       final results = baseList.where((app) {
-        return app.name.toLowerCase().contains(q) ||
-            app.description.toLowerCase().contains(q);
         final name = _normalizeForSearch(app.name.toLowerCase());
         final description = _normalizeForSearch(app.description.toLowerCase());
 
@@ -287,9 +271,6 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       );
     });
 
-    emit(
-      state.copyWith(isSearching: true, searchError: null, searchResults: []),
-    );
     emit(
       state.copyWith(isSearching: true, searchError: null, searchResults: []),
     );
