@@ -369,11 +369,16 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                 finishPoint: widget.points.last,
                 navType: navigatingType,
                 intermediatePoints: intermediatePoints,
+                showOnlyActiveRoute: false,
               ),
             );
 
             final publicTransportVisibility = ref.watch(
-              publicTransportVisibilityProvider(startPoint: widget.points[0], finishPoint: widget.points[1]),
+              publicTransportVisibilityProvider(
+                startPoint: widget.points.first,
+                finishPoint: widget.points.last,
+                intermediatePoints: intermediatePoints,
+              ),
             );
 
             return Column(
@@ -393,7 +398,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
                   active: navigatingType,
                   onChanged: _onChanged,
                   points: widget.points,
-                  publicTransportVisibility: publicTransportVisibility,
+                  hasPublicTransport: publicTransportVisibility.asData?.value.hasPublicTransportRoutes ?? false,
                   routes: routes,
                   lockedNavType: _lockedNavType,
                 ),

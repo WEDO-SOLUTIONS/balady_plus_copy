@@ -48,27 +48,15 @@ class HeaderInfoWrapper extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Row(
-                  children: [
-                    Text(
-                      text,
-                      style: context.textStyles.bodySmallRegular.copyWith(
-                        color: textColor,
-                      ),
-                    ),
-                  ],
+                  children: [Text(text, style: context.textStyles.bodySmallRegular.copyWith(color: textColor))],
                 ),
               ),
             ),
           ),
         ),
-        ColoredBox(
-          color: backgroundColor,
-          child: ClipRRect(
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(borderRadius),
-            ),
-            child: child,
-          ),
+        ClipRRect(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(borderRadius)),
+          child: child,
         ),
       ],
     );
