@@ -73,17 +73,6 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ),
                         ),
                       );
-
-                      /*
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => NotificationsSettings(
-                            notificationsList:
-                                cubit.notificationsSettingsList.categories!,
-                          ),
-                        ),
-                      );
-                      */
                     });
                   }
 
