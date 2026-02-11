@@ -91,23 +91,6 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
     );
   }
 
-  void clearDelegators() {
-    emit(
-      state.copyWith(
-        status: BlocRequestStatus.submissionGetLoading,
-        agentStatus: BlocRequestStatus.submissionGetLoading,
-      ),
-    );
-
-    emit(
-      state.copyWith(
-        status: BlocRequestStatus.submissionGetSuccess,
-        agentStatus: BlocRequestStatus.submissionGetSuccess,
-        delegators: [],
-        agents: [],
-      ),
-    );
-  }
 
   /// Restores the selected delegator/agent from SharedPreferences
   /// Should be called after delegators/agents are loaded

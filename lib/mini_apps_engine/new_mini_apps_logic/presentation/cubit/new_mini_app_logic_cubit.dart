@@ -39,7 +39,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     bool showLoading = true,
     bool? isUserLoggedInLifeStyle,
     bool? isUserLoggedInMunicipality,
-    bool? isUserAccountBusiness,
+    required bool isUserAccountBusiness,
   }) async {
     emit(
       state.copyWith(
@@ -56,7 +56,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     final isLoggedInLifestyle = isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
     final isLoggedInMunicipality = isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
-    final userAccountBusiness = isUserAccountBusiness ?? false;
+    final userAccountBusiness = isUserAccountBusiness;
 
     final result = await getMiniAppsUseCase(isLoggedInLifestyle, isLoggedInMunicipality);
 

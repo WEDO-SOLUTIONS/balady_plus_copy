@@ -76,32 +76,52 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                 builder: (_) {
                   final delegatorsCubit = sl<DelegatorsCubit>();
 
-                  // Initialize: Fetch delegators/agents and restore selection on first load
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    // Only fetch if not already loaded
-                    if (delegatorsCubit.state.delegators.isEmpty &&
-                        delegatorsCubit.state.status !=
-                            BlocRequestStatus.submissionGetLoading) {
-                      delegatorsCubit.getDelegators();
-                    }
-                    if (delegatorsCubit.state.agents.isEmpty &&
-                        delegatorsCubit.state.agentStatus !=
-                            BlocRequestStatus.submissionGetLoading) {
-                      delegatorsCubit.getAgents();
-                    }
-                  });
+                  // Initialize: Fetch delegators/agents immediately on screen entry
+                  // Check if we need to fetch (empty and not already loading)
+                  final needsDelegatorsFetch = delegatorsCubit.state.delegators.isEmpty &&
+                      delegatorsCubit.state.status != BlocRequestStatus.submissionGetLoading &&
+                      delegatorsCubit.state.status != BlocRequestStatus.submissionGetSuccess;
+                  final needsAgentsFetch = delegatorsCubit.state.agents.isEmpty &&
+                      delegatorsCubit.state.agentStatus != BlocRequestStatus.submissionGetLoading &&
+                      delegatorsCubit.state.agentStatus != BlocRequestStatus.submissionGetSuccess;
+
+                  if (needsDelegatorsFetch) {
+                    delegatorsCubit.getDelegators();
+                  }
+                  if (needsAgentsFetch) {
+                    delegatorsCubit.getAgents();
+                  }
 
                   return BlocProvider<DelegatorsCubit>.value(
                     value: delegatorsCubit,
                     child: BlocListener<DelegatorsCubit, DelegatorsState>(
                       listenWhen: (previous, current) {
-                        // Listen when selection changes (including clearing selection)
-                        final previousBusiness = previous.selectedDelegate != null || previous.selectedAgent != null;
-                        final currentBusiness = current.selectedDelegate != null || current.selectedAgent != null;
-                        return previousBusiness != currentBusiness;
+                        // Listen when:
+                        // 1. Selection changes (including clearing selection)
+                        // 2. Delegators/agents finish loading (transition from loading to success/failure)
+                        final selectionChanged = (previous.selectedDelegate != null || previous.selectedAgent != null) !=
+                            (current.selectedDelegate != null || current.selectedAgent != null);
+                        
+                        final delegatorsJustLoaded = 
+                            (previous.status == BlocRequestStatus.submissionGetLoading || 
+                             previous.status == BlocRequestStatus.initial) &&
+                            (current.status == BlocRequestStatus.submissionGetSuccess ||
+                             current.status == BlocRequestStatus.submissionGetFailure);
+                        
+                        final agentsJustLoaded = 
+                            (previous.agentStatus == BlocRequestStatus.submissionGetLoading || 
+                             previous.agentStatus == BlocRequestStatus.initial) &&
+                            (current.agentStatus == BlocRequestStatus.submissionGetSuccess ||
+                             current.agentStatus == BlocRequestStatus.submissionGetFailure);
+                        
+                        final businessStatusChanged = 
+                            (previous.delegators.isNotEmpty || previous.agents.isNotEmpty) !=
+                            (current.delegators.isNotEmpty || current.agents.isNotEmpty);
+                        
+                        return selectionChanged || delegatorsJustLoaded || agentsJustLoaded || businessStatusChanged;
                       },
                       listener: (context, state) {
-                        // Reload mini apps when business account status changes
+                        // Reload mini apps when business account status changes or delegators/agents finish loading
                         final isUserAccountBusiness = state.delegators.isNotEmpty || state.agents.isNotEmpty;
                         sl<NewMiniAppLogicCubit>().loadMiniApps(
                           isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
@@ -112,8 +132,19 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                       child: BlocBuilder<DelegatorsCubit, DelegatorsState>(
                         builder: (context, delegatorsState) {
                           // Compute business account status from actual state
-                          final isUserAccountBusiness =
-                              delegatorsState.delegators.isNotEmpty || delegatorsState.agents.isNotEmpty;
+                          // Check if delegators/agents API calls have completed
+                          final delegatorsLoaded = delegatorsState.status == BlocRequestStatus.submissionGetSuccess ||
+                              delegatorsState.status == BlocRequestStatus.submissionGetFailure;
+                          final agentsLoaded = delegatorsState.agentStatus == BlocRequestStatus.submissionGetSuccess ||
+                              delegatorsState.agentStatus == BlocRequestStatus.submissionGetFailure;
+                          
+                          // Compute business account status:
+                          // - If delegators have data -> true
+                          // - Else if agents have data -> true  
+                          // - Else if both APIs finished with no data -> false
+                          // - Else -> false (still loading, will reload via BlocListener when done)
+                          final isUserAccountBusiness = delegatorsState.delegators.isNotEmpty || 
+                              delegatorsState.agents.isNotEmpty;
 
                           return BlocProvider<NewMiniAppLogicCubit>.value(
                             value: sl<NewMiniAppLogicCubit>()
@@ -147,14 +178,48 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                                           if (hasError) {
                                             return GeneralErrorWidget(error: state.favError ?? state.entryPointsError!);
                                           }
-                                          return RefreshIndicator(
+                                            return RefreshIndicator(
                                             color: const Color(0xFF1CA9A6),
-                                            onRefresh: () {
-                                              print(delegatorsState.delegators);
-                                              print(delegatorsState.agents);
+                                            onRefresh: () async {
+                                              // Fetch delegators and agents first on refresh
+                                              final delegatorsCubit = context.read<DelegatorsCubit>();
+                                              
+                                              // Fetch delegators and agents if not already loading
+                                              if (delegatorsCubit.state.status != BlocRequestStatus.submissionGetLoading) {
+                                                delegatorsCubit.getDelegators();
+                                              }
+                                              if (delegatorsCubit.state.agentStatus != BlocRequestStatus.submissionGetLoading) {
+                                                delegatorsCubit.getAgents();
+                                              }
+                                              
+                                              // Wait for delegators/agents to finish loading (with timeout)
+                                              int attempts = 0;
+                                              while (attempts < 10) {
+                                                await Future.delayed(const Duration(milliseconds: 200));
+                                                attempts++;
+                                                
+                                                final delegatorsLoaded = delegatorsCubit.state.status == 
+                                                    BlocRequestStatus.submissionGetSuccess ||
+                                                    delegatorsCubit.state.status == BlocRequestStatus.submissionGetFailure;
+                                                final agentsLoaded = delegatorsCubit.state.agentStatus == 
+                                                    BlocRequestStatus.submissionGetSuccess ||
+                                                    delegatorsCubit.state.agentStatus == BlocRequestStatus.submissionGetFailure;
+                                                
+                                                if (delegatorsLoaded && agentsLoaded) {
+                                                  break;
+                                                }
+                                              }
+                                              
+                                              // Now compute the business account status with fresh data
+                                              final refreshedDelegatorsState = delegatorsCubit.state;
+                                              final refreshedIsUserAccountBusiness = 
+                                                  refreshedDelegatorsState.delegators.isNotEmpty || 
+                                                  refreshedDelegatorsState.agents.isNotEmpty;
+                                              
+                                              // Refresh mini apps with updated business account status
                                               return context.read<NewMiniAppLogicCubit>().refreshMiniApps(
-                                              isUserAccountBusiness: isUserAccountBusiness,
-                                            );
+                                                isUserAccountBusiness: refreshedIsUserAccountBusiness,
+                                              );
                                             },
                                             child: SingleChildScrollView(
                                               physics: const AlwaysScrollableScrollPhysics(
