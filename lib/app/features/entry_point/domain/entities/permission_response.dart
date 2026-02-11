@@ -4,7 +4,7 @@ class PermissionResponse extends Equatable {
   final List<String>? roles;
   final List<String>? permissions;
 
-  PermissionResponse({this.permissions, this.roles});
+  const PermissionResponse({this.permissions, this.roles});
 
   @override
   List<Object?> get props => [];

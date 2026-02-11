@@ -36,7 +36,7 @@ class EventsState extends Equatable {
 
   final SearchEventsParams searchedParams;
 
-  EventsState({
+  const EventsState({
     this.errorMessage,
     required this.eventDetails,
     this.status = BlocStatus.initial,

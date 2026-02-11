@@ -110,7 +110,7 @@ class _NotificationsSettingsCellState extends State<NotificationsSettingsCell> {
                                     const Spacer(),
                                     IgnorePointer(
                                       child: CupertinoSwitch(
-                                        activeColor: context.colors.accentActive,
+                                        activeTrackColor: context.colors.accentActive,
                                         onChanged: (bool value) {},
                                         value: cubit.isChecked,
                                       ),

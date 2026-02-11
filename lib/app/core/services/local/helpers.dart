@@ -331,7 +331,7 @@ class Helpers {
 
         String queryString = qeuryParms ?? "";
 
-        String message = data != null ? data.toString() : "";
+        String message = data.toString();
         String? URL = url;
 
         if (URL != null) {
@@ -561,7 +561,7 @@ class Helpers {
     return "";
   }*/
 
-  static openFile(Uint8List bytes, {String? contentType}) async {
+  static Future<void> openFile(Uint8List bytes, {String? contentType}) async {
     String extension =
         contentType != null ? (".${contentType.split("/").last}") : "";
     try {

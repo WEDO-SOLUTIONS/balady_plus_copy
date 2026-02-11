@@ -48,10 +48,11 @@ class _SingleEventDescriptionPageState
         body: BlocBuilder<EventsBloc, EventsState>(
           builder: (context, state) {
             if (img.isEmpty) img = state.eventDetails.logoUrl ?? "";
-            if (state.status == BlocStatus.loading)
+            if (state.status == BlocStatus.loading) {
               return const Center(child: CustomCircularLoadingWidget());
+            }
 
-            if (state.status == BlocStatus.failure)
+            if (state.status == BlocStatus.failure) {
               return Center(
                 child: RetryWidget(
                   onRetry: () {
@@ -59,6 +60,7 @@ class _SingleEventDescriptionPageState
                   },
                 ),
               );
+            }
 
             return RefreshIndicator(
               onRefresh: () async {
@@ -141,12 +143,13 @@ class _SingleEventDescriptionPageState
                                       GestureDetector(
                                         onTap: () {
                                           if (state.eventDetails.ticketUrl !=
-                                              null)
+                                              null) {
                                             safeShareText(
                                               state.eventDetails.ticketUrl ??
                                                   "",
                                               context: context,
                                             );
+                                          }
 
                                           CommonFunctions.sendUXCamEvent(
                                             UXCamEvents

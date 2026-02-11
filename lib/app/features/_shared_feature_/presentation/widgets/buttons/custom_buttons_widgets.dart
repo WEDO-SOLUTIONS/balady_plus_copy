@@ -275,7 +275,7 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
   final double verticalMargin;
 
   const EnhancedCustomElevatedButtonWidget(
-      {Key? key,
+      {super.key,
       required this.btnPressed,
       this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
@@ -294,8 +294,7 @@ class EnhancedCustomElevatedButtonWidget extends StatelessWidget {
       this.spaceBetweenTextAndIcon = 4.0,
       this.icon,
       this.horizontalMargin = 0,
-      this.verticalMargin = 0})
-      : super(key: key);
+      this.verticalMargin = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -674,7 +673,7 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
   final MainAxisSize mainAxisSize;
 
   const CustomTextButtonWithIconWidget(
-      {Key? key,
+      {super.key,
       this.btnBackgroundColor,
       this.btnEffectColor,
       this.btnAlignment,
@@ -690,8 +689,7 @@ class CustomTextButtonWithIconWidget extends StatelessWidget {
       this.textUnderline = false,
       this.textUnderlineColor,
       this.padding = EdgeInsets.zero,
-      this.mainAxisSize = MainAxisSize.max})
-      : super(key: key);
+      this.mainAxisSize = MainAxisSize.max});
 
   @override
   Widget build(BuildContext context) {
@@ -748,7 +746,7 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
   final EdgeInsetsGeometry padding;
 
   const CustomTextButtonWithIconWidgetWithFlexible({
-    Key? key,
+    super.key,
     this.btnBackgroundColor,
     this.btnEffectColor,
     this.btnAlignment,
@@ -764,7 +762,7 @@ class CustomTextButtonWithIconWidgetWithFlexible extends StatelessWidget {
     this.textUnderline = false,
     this.textUnderlineColor,
     this.padding = EdgeInsets.zero,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -825,7 +823,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
   final BUTTON_ICON_POSITION buttonIconPosition;
 
   const CustomElevatedButtonWidget1(
-      {Key? key,
+      {super.key,
       required this.btnPressed,
       this.btnColor = AppColor.primary900Light,
       this.btnHeight = 65.0,
@@ -843,8 +841,7 @@ class CustomElevatedButtonWidget1 extends StatelessWidget {
       this.btnTextUnderline = false,
       this.btnTextUnderlineColor,
       this.spaceBetweenTextAndIcon = 4.0,
-      this.icon})
-      : super(key: key);
+      this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -1011,7 +1008,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
   final double spaceBetweenTextAndIcon;
 
   const CustomElevatedButtonWithIconWidget1({
-    Key? key,
+    super.key,
     required this.btnPressed,
     this.btnColor = AppColor.primary900Light,
     this.btnHeight = 65.0,
@@ -1031,7 +1028,7 @@ class CustomElevatedButtonWithIconWidget1 extends StatelessWidget {
     this.buttonIconPosition = BUTTON_ICON_POSITION.left,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.spaceBetweenTextAndIcon = 4.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1100,7 +1097,7 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
   final double spaceBetweenTextAndIcon;
 
   const CustomElevatedButtonWithIconWidget({
-    Key? key,
+    super.key,
     required this.btnPressed,
     this.btnColor = AppColor.primary900Light,
     this.btnHeight = 65.0,
@@ -1120,7 +1117,7 @@ class CustomElevatedButtonWithIconWidget extends StatelessWidget {
     this.buttonIconPosition = BUTTON_ICON_POSITION.left,
     this.mainAxisAlignment = MainAxisAlignment.center,
     this.spaceBetweenTextAndIcon = 4.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1271,10 +1268,10 @@ class CustomInkWellButtonWidget extends StatelessWidget {
   final Widget widget;
 
   const CustomInkWellButtonWidget({
-    Key? key,
+    super.key,
     required this.btnPressed,
     required this.widget,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1291,9 +1288,9 @@ class CustomInkWellButtonWidget extends StatelessWidget {
 class RotationBasedLanguageWidget extends StatelessWidget {
   final Widget child;
   const RotationBasedLanguageWidget({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -1322,7 +1319,6 @@ class LabelTextWithOptional extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RichText(
-      textScaleFactor: 1,
       textAlign: labelTextAlign,
       text: TextSpan(
         children: [
@@ -1340,7 +1336,7 @@ class LabelTextWithOptional extends StatelessWidget {
               fontFamily: GeneralKey.appFontType,
               fontWeight: FontWeight.bold)),
         ],
-      ),
+      ), textScaler: TextScaler.linear(1),
     );
   }
 }

@@ -16,10 +16,11 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   DelegatorsCubit(this._getDelegators, this._getAgents) : super(const DelegatorsState(tab: 0));
 
   void getDelegators() async {
-    if (state.delegators.isEmpty)
+    if (state.delegators.isEmpty) {
       emit(state.copyWith(status: BlocRequestStatus.submissionGetLoading));
-    else
+    } else {
       emit(state.copyWith(status: BlocRequestStatus.submissionPostLoading));
+    }
 
     final failureOrSuccess = await _getDelegators(NoParams());
 
@@ -63,10 +64,11 @@ class DelegatorsCubit extends Cubit<DelegatorsState> {
   }
 
   void getAgents() async {
-    if (state.agents.isEmpty)
+    if (state.agents.isEmpty) {
       emit(state.copyWith(agentStatus: BlocRequestStatus.submissionGetLoading));
-    else
+    } else {
       emit(state.copyWith(agentStatus: BlocRequestStatus.submissionPostLoading));
+    }
 
     final failureOrSuccess = await _getAgents(NoParams());
 

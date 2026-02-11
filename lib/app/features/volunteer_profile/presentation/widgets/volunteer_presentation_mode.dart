@@ -15,9 +15,9 @@ class VolunteerPresentationMode extends StatefulWidget {
   final bool isEditMode;
 
   const VolunteerPresentationMode({
-    Key? key,
+    super.key,
     this.isEditMode = false,
-  }) : super(key: key);
+  });
 
   @override
   State<VolunteerPresentationMode> createState() =>
@@ -1117,7 +1117,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
         );
       }
       return DropdownButtonFormField<String>(
-        value: state.regionId?.isEmpty == true ? null : state.regionId,
+        initialValue: state.regionId?.isEmpty == true ? null : state.regionId,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -1169,7 +1169,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
       }
 
       return DropdownButtonFormField<String>(
-        value: state.cityId?.isEmpty == true ? null : state.cityId,
+        initialValue: state.cityId?.isEmpty == true ? null : state.cityId,
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.symmetric(horizontal: 10),
@@ -1289,7 +1289,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             Expanded(
               child: _isEditMode && items != null
                   ? DropdownButtonFormField<String>(
-                      value:
+                      initialValue:
                           selectedValue?.isEmpty == true ? null : selectedValue,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -1344,7 +1344,7 @@ class _VolunteerPresentationModeState extends State<VolunteerPresentationMode> {
             Expanded(
               child: _isEditMode
                   ? DropdownButtonFormField<String>(
-                      value: state.workExperience?.isEmpty == true ||
+                      initialValue: state.workExperience?.isEmpty == true ||
                               state.workExperience == 'null'
                           ? null
                           : state.workExperience,

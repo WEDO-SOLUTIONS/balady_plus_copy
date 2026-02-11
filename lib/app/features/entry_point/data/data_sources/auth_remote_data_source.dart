@@ -75,9 +75,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         ],
       );
       AuthorizationTokenResponse? response = await _appAuth.authorizeAndExchangeCode(request);
-      if (response == null) {
-        throw Exception('Response of [authorize] is null. Please check the response. ${request.toString()}');
-      }
 
       response.accessToken.actionLog();
       await sharedPrefs.setIsNafathLogin(response.idToken);
@@ -105,9 +102,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         ],
       );
       TokenResponse? response = await _appAuth.token(request);
-      if (response == null) {
-        throw Exception('Response of [refreshToken] is null. Please check the response. ${request.toString()}');
-      }
       return response;
     } on PlatformException catch (error) {
       final errorMessage = error.toString();
@@ -187,7 +181,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<bool> endSession() async {
     try {
-      String? idToken = await sharedPrefs.getIsNafathLogin();
+      String? idToken = sharedPrefs.getIsNafathLogin();
       if(idToken != null) {
         EndSessionRequest endSessionRequest = EndSessionRequest(
           idTokenHint: idToken,

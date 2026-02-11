@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' show DioError, RequestOptions, Response;
+import 'package:dio/dio.dart' show DioException, RequestOptions, Response;
 
 import '../utils/utils_exports.dart'
     show APIResponsesConversion, ApiResponse, CommonFunctions;
@@ -8,7 +8,7 @@ class ServerException implements Exception {
   final String errorMessage;
   final int? statusCode;
   final String? statusMessage;
-  final DioError? dioError;
+  final DioException? dioError;
   final Response? response;
   final dynamic errorCode;
   final Exception? exception;
@@ -33,7 +33,7 @@ class APIException implements Exception {
 
   APIException({
     this.errorMessage,
-  }) {}
+  });
 }
 
 class CacheException implements Exception {}
@@ -47,7 +47,7 @@ class CannotPrintBillException implements Exception {}
 class CannotDrawAppBarTitleWidgetException implements Exception {}
 
 /* ------------ Web Services Exceptions ------------ */
-class DeadlineExceededException extends DioError {
+class DeadlineExceededException extends DioException {
   DeadlineExceededException(RequestOptions requestOptions)
       : super(requestOptions: requestOptions);
 
@@ -55,7 +55,7 @@ class DeadlineExceededException extends DioError {
   String toString() => ApiResponse.deadlineExceeded.getErrorMessage(response);
 }
 
-class BadRequestException extends DioError {
+class BadRequestException extends DioException {
   BadRequestException(
     RequestOptions requestOptions,
     Response? response,
@@ -66,7 +66,7 @@ class BadRequestException extends DioError {
   String toString() => ApiResponse.badRequest.getErrorMessage(response);
 }
 
-class NoDataFoundException extends DioError {
+class NoDataFoundException extends DioException {
   NoDataFoundException(
     RequestOptions requestOptions,
     Response? response,
@@ -75,7 +75,7 @@ class NoDataFoundException extends DioError {
   String toString() => ApiResponse.unAuthorized.getErrorMessage(response);
 }
 
-class UnAuthorizedException extends DioError {
+class UnAuthorizedException extends DioException {
   UnAuthorizedException(
     RequestOptions requestOptions,
     Response? response,
@@ -85,7 +85,7 @@ class UnAuthorizedException extends DioError {
   String toString() => ApiResponse.unAuthorized.getErrorMessage(response);
 }
 
-class RequestNotFoundException extends DioError {
+class RequestNotFoundException extends DioException {
   RequestNotFoundException(
     RequestOptions requestOptions,
     Response? response,
@@ -95,7 +95,7 @@ class RequestNotFoundException extends DioError {
   String toString() => ApiResponse.requestNotFound.getErrorMessage(response);
 }
 
-class MethodNotAllowedException extends DioError {
+class MethodNotAllowedException extends DioException {
   MethodNotAllowedException(
     RequestOptions requestOptions,
     Response? response,
@@ -105,7 +105,7 @@ class MethodNotAllowedException extends DioError {
   String toString() => ApiResponse.methodNotAllowed.getErrorMessage(response);
 }
 
-class ConflictException extends DioError {
+class ConflictException extends DioException {
   ConflictException(
     RequestOptions requestOptions,
     Response? response,
@@ -115,7 +115,7 @@ class ConflictException extends DioError {
   String toString() => ApiResponse.conflict.getErrorMessage(response);
 }
 
-class InternalServerErrorException extends DioError {
+class InternalServerErrorException extends DioException {
   InternalServerErrorException(
     RequestOptions requestOptions,
     Response? response,
@@ -126,7 +126,7 @@ class InternalServerErrorException extends DioError {
       ApiResponse.internalServerError.getErrorMessage(response);
 }
 
-class NoInternetConnectionException extends DioError {
+class NoInternetConnectionException extends DioException {
   NoInternetConnectionException(RequestOptions requestOptions)
       : super(requestOptions: requestOptions);
 
@@ -136,7 +136,7 @@ class NoInternetConnectionException extends DioError {
 }
 
 //! Tokens Exceptions
-class TokenNotFoundException extends DioError {
+class TokenNotFoundException extends DioException {
   TokenNotFoundException(RequestOptions requestOptions)
       : super(requestOptions: requestOptions);
 
@@ -144,7 +144,7 @@ class TokenNotFoundException extends DioError {
   String toString() => ApiResponse.tokenNotFound.getErrorMessage(response);
 }
 
-class FailedToGenerateTokenException extends DioError {
+class FailedToGenerateTokenException extends DioException {
   FailedToGenerateTokenException(RequestOptions requestOptions)
       : super(requestOptions: requestOptions);
 
@@ -153,7 +153,7 @@ class FailedToGenerateTokenException extends DioError {
       ApiResponse.failedToGenerateToken.getErrorMessage(response);
 }
 
-class TokenHasExpiredException extends DioError {
+class TokenHasExpiredException extends DioException {
   TokenHasExpiredException(RequestOptions requestOptions)
       : super(requestOptions: requestOptions);
 

@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
 import 'package:intl/intl.dart';
 

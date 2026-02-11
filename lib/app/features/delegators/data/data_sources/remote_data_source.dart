@@ -36,7 +36,7 @@ class DelegatorsRemoteDataSourceImplementation
           .map<DelegatorModel>(
               (e) => DelegatorModel.fromMap(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -48,7 +48,7 @@ class DelegatorsRemoteDataSourceImplementation
       if (error is NoDataFoundException) {
         rethrow;
       }
-      var errorCode;
+      String? errorCode;
       try {
         final decodedResponse = ResponseBodyModel.fromMap(
           error.response?.data,
@@ -105,7 +105,7 @@ class DelegatorsRemoteDataSourceImplementation
       return result
           .map<AgentModel>((e) => AgentModel.fromMap(e as Map<String, dynamic>))
           .toList();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -115,7 +115,7 @@ class DelegatorsRemoteDataSourceImplementation
       );
       "DioError $error".errorLog();
 
-      var errorCode;
+      String? errorCode;
       try {
         final decodedResponse = ResponseBodyModel.fromMap(
           error.response?.data,

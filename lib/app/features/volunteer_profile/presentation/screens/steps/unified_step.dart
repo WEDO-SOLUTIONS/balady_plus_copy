@@ -7,7 +7,7 @@ import '../../bloc/volunteer_profile_bloc.dart';
 import '../../bloc/volunteer_profile_state.dart';
 
 class UnifiedStep extends StatefulWidget {
-  const UnifiedStep({Key? key}) : super(key: key);
+  const UnifiedStep({super.key});
 
   @override
   State<UnifiedStep> createState() => _UnifiedStepState();
@@ -195,7 +195,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value: _selectedRegionId?.isEmpty == true
+                  initialValue: _selectedRegionId?.isEmpty == true
                       ? null
                       : _selectedRegionId,
                   decoration: InputDecoration(
@@ -235,7 +235,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value:
+                  initialValue:
                       _selectedCityId?.isEmpty == true ? null : _selectedCityId,
                   decoration: InputDecoration(
                     hintText: 'city'.tr(),
@@ -284,7 +284,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: state.educationalQualificationId?.isEmpty == true
+                  initialValue: state.educationalQualificationId?.isEmpty == true
                       ? null
                       : state.educationalQualificationId,
                   decoration: InputDecoration(
@@ -345,7 +345,7 @@ class _UnifiedStepState extends State<UnifiedStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value: state.volunteeringWorkFieldId,
+                  initialValue: state.volunteeringWorkFieldId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(

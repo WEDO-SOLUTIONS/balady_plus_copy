@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 class DayCardShimmer extends StatelessWidget {
   const DayCardShimmer({super.key});

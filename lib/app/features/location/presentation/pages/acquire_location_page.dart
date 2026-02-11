@@ -47,7 +47,7 @@ class _AcquireLocationPageState extends State<AcquireLocationPage>
     return BlocConsumer<LocationCubit, LocationState>(
       listener: (context, state) {
         if (state.requestsStatus == BlocStatus.success) {
-          if (mounted)
+          if (mounted) {
             Timer(Duration(seconds: 1), () {
               final params = sl<BridgeParams>().copyWith(isAuthenticated: true);
               final entryPointBridge = sl<EntryPointBridge>();
@@ -57,6 +57,7 @@ class _AcquireLocationPageState extends State<AcquireLocationPage>
                   .read<LocationCubit>()
                   .emit(state.copyWith(requestsStatus: BlocStatus.initial));
             });
+          }
         }
       },
       builder: (context, state) {
@@ -67,32 +68,38 @@ class _AcquireLocationPageState extends State<AcquireLocationPage>
                     image: AssetImage(ImagePath.successPageBackground),
                     fit: BoxFit.cover)),
             child: Builder(builder: (context) {
-              if (state.locationStatus == BlocStatus.success)
+              if (state.locationStatus == BlocStatus.success) {
                 return LocationRetriveData();
+              }
               //  return Container(
               //     child: Center(child: Text("Getting Location Success")));
-              if (state.locationStatus == BlocStatus.loading)
+              if (state.locationStatus == BlocStatus.loading) {
                 return LocationRetriveData();
-              if (state.locationStatus == BlocStatus.failure)
+              }
+              if (state.locationStatus == BlocStatus.failure) {
                 return Container(
                     child: Center(child: Text("Getting Location")));
+              }
 
               if (state.locationPermissionStatus ==
                       BlocStatus.locationPermissionSuceess &&
                   state.locationServiceStatus ==
-                      BlocStatus.locationServiceSuceess)
+                      BlocStatus.locationServiceSuceess) {
                 return LocationRetriveData();
+              }
 
               if (state.locationServiceStatus ==
-                  BlocStatus.locationServiceFailed)
+                  BlocStatus.locationServiceFailed) {
                 return LocationRetriveLocation(
                   permission: false,
                 );
+              }
               if (state.locationPermissionStatus ==
-                  BlocStatus.locationPermissionFailed)
+                  BlocStatus.locationPermissionFailed) {
                 return LocationRetriveLocation(
                   permission: true,
                 );
+              }
 
               return Container(child: Center(child: Text("")));
             }),

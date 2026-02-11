@@ -20,14 +20,13 @@ class IncidentTypeWithSearchDialog extends StatefulWidget {
   final bool? isButtonDisabled;
 
   IncidentTypeWithSearchDialog(
-      {Key? key,
+      {super.key,
       required this.onSelect,
       this.selectedItem,
       required this.items,
       this.title,
       this.searchHint,
-      this.isButtonDisabled})
-      : super(key: key);
+      this.isButtonDisabled});
 
   @override
   State<StatefulWidget> createState() {
@@ -76,7 +75,7 @@ class _IncidentTypeWithSearchDialog
               setState(() {
                 items = widget.items
                     .where((element) =>
-                        element.name?.contains(value) ?? element.name == value)
+                        element.name.contains(value) ?? element.name == value)
                     .toList();
               });
             },

@@ -866,7 +866,7 @@ class CommonFunctions {
     return false;
   }
 
-  static showSuccess(String msg) {
+  static void showSuccess(String msg) {
     if (msg.isNotEmpty) {
       try {
         BotToast.showSimpleNotification(
@@ -929,7 +929,7 @@ class CommonFunctions {
     }
   }
 
-  static showError(String error, [bool? isHtml]) {
+  static void showError(String error, [bool? isHtml]) {
     if (error.isNotEmpty) {
       if (error.contains("https") || error.toLowerCase().contains("momra.gov.sa")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
@@ -1164,13 +1164,13 @@ class CommonFunctions {
     }
   }
 
-  static externalLaunch(String? url) async {
+  static Future<void> externalLaunch(String? url) async {
     if (url == null) return;
     final Uri convertUrl = Uri.parse(url);
     if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication)) throw 'Could not launch $convertUrl';
   }
 
-  static openBaldyWithRefreshCookie(String? redirectUrl, {bool pushReplacement = false}) async {
+  static Future<void> openBaldyWithRefreshCookie(String? redirectUrl, {bool pushReplacement = false}) async {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
@@ -1216,7 +1216,7 @@ class CommonFunctions {
     return newStr.isEmpty ? value : newStr;
   }
 
-  static sendEvent({DioException? dioError, Response? response, Exception? ex, String? errorMessage}) {
+  static void sendEvent({DioException? dioError, Response? response, Exception? ex, String? errorMessage}) {
     try {
       SentryRequest request = SentryRequest(
         url: dioError?.requestOptions.path ?? response?.realUri.path,
@@ -1303,7 +1303,7 @@ class CommonFunctions {
     }
   }
 
-  static sendUrbiMapLogs() async {
+  static Future<void> sendUrbiMapLogs() async {
     try {
       final List<File> dGisFiles = [];
 
@@ -1527,7 +1527,7 @@ class CommonFunctions {
     }
   }
 
-  static showBackGroundLocationConsent() async {
+  static Future<void> showBackGroundLocationConsent() async {
     //if (Platform.isAndroid) {
     bool? consetnt = sharedPrefs.getLocationConsent();
     if (consetnt != null) return;

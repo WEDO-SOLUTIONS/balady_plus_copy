@@ -11,7 +11,7 @@ class PDFViewer extends StatefulWidget {
   final Uint8List file;
   final String? title;
 
-  const PDFViewer({Key? key, required this.file, this.title}) : super(key: key);
+  const PDFViewer({super.key, required this.file, this.title});
 
   @override
   _PDFViewerState createState() => _PDFViewerState();
@@ -65,7 +65,7 @@ class _PDFViewerState extends State<PDFViewer> {
 class FullImageView extends StatelessWidget {
   final String imageBase64;
 
-  const FullImageView({Key? key, required this.imageBase64}) : super(key: key);
+  const FullImageView({super.key, required this.imageBase64});
 
   @override
   Widget build(BuildContext context) {
@@ -82,8 +82,7 @@ class FullImageView extends StatelessWidget {
 class FullImageViewBytes extends StatelessWidget {
   final Uint8List imageBase64;
 
-  const FullImageViewBytes({Key? key, required this.imageBase64})
-      : super(key: key);
+  const FullImageViewBytes({super.key, required this.imageBase64});
 
   @override
   Widget build(BuildContext context) {

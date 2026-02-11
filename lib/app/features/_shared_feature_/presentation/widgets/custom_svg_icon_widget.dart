@@ -53,7 +53,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
   final bool addHeader;
 
   const CustomNetworkImageWidget(this.imagePath,
-      {Key? key,
+      {super.key,
       this.imageWidth,
       this.imageHeight,
       this.imageColor,
@@ -62,8 +62,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
       this.placeHolderWidget,
       this.isVerifyingKey = false,
       this.sso = false,
-      this.addHeader = false})
-      : super(key: key);
+      this.addHeader = false});
 
   @override
   State<CustomNetworkImageWidget> createState() =>
@@ -161,15 +160,14 @@ class CustomCachedNetworkImage extends StatefulWidget {
   final bool ssoAuth;
 
   const CustomCachedNetworkImage(this.imagePath,
-      {Key? key,
+      {super.key,
       this.imageWidth,
       this.imageHeight,
       this.imageColor,
       this.imageAlignment = Alignment.center,
       this.imageFit = BoxFit.cover,
       this.placeHolderWidget,
-      this.ssoAuth = false})
-      : super(key: key);
+      this.ssoAuth = false});
 
   @override
   State<CustomCachedNetworkImage> createState() => _CustomCachedNetworkImage();
@@ -228,7 +226,7 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
 
   const CustomSvgIconWithBackgroundWidget(
     this.iconPath, {
-    Key? key,
+    super.key,
     this.iconWidth = 16,
     this.iconHeight = 16,
     this.iconColor,
@@ -238,7 +236,7 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
     this.width = 60.0,
     this.height = 60.0,
     this.backgroundShape = BoxShape.circle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

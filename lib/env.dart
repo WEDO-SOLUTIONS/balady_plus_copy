@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:adjust_sdk/adjust.dart';
-import 'package:adjust_sdk/adjust_attribution.dart';
 import 'package:adjust_sdk/adjust_config.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
@@ -19,13 +18,10 @@ import 'package:localize_and_translate/localize_and_translate.dart'
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di show initialize;
 import './app/core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './app/core/services/services_exports.dart' show HiveManager, NotificationService;
-import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di
     show initialize;
 import './app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
-import './app/core/services/services_exports.dart'
-    show HiveManager, NotificationService;
 import './app/core/utils/utils_exports.dart' show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
 import 'app/core/services/local/notification_hawaii.dart';

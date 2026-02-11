@@ -19,12 +19,11 @@ class FormAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback backOnPress;
   final VoidCallback onClose;
   const FormAppBar(
-      {Key? key,
+      {super.key,
       required this.currentStep,
       required this.backOnPress,
       required this.pageLength,
-      required this.onClose})
-      : super(key: key);
+      required this.onClose});
 
   @override
   Size get preferredSize => const Size.fromHeight(120);

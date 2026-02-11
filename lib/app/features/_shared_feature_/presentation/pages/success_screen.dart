@@ -25,8 +25,8 @@ import '../widgets/texts/custom_text_widget.dart';
 
 class SuccessScreen extends StatefulWidget {
   const SuccessScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
@@ -216,7 +216,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
 class SuccessBody extends StatelessWidget {
   final SuccessScreenArgs? successScreenArgs;
 
-  const SuccessBody({Key? key, this.successScreenArgs}) : super(key: key);
+  const SuccessBody({super.key, this.successScreenArgs});
 
   @override
   Widget build(BuildContext context) {
@@ -434,12 +434,11 @@ class SuccessButtons extends StatelessWidget {
   String? requestId;
 
   SuccessButtons(
-      {Key? key,
+      {super.key,
       required this.pageType,
       this.isFawry = false,
       this.fromHomePage = false,
-      this.requestId})
-      : super(key: key);
+      this.requestId});
 
   @override
   Widget build(BuildContext context) {
@@ -700,8 +699,8 @@ class CustomHtmlTextWidget extends StatelessWidget {
 
   const CustomHtmlTextWidget(
     this.data, {
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ import '../../../../_shared_feature_/shared_feature_exports.dart';
 import '../../../home_exports.dart';
 
 class BaladySmartAdvisorCard extends StatelessWidget {
-  const BaladySmartAdvisorCard({Key? key}) : super(key: key);
+  const BaladySmartAdvisorCard({super.key});
 
   @override
   Widget build(BuildContext context) {

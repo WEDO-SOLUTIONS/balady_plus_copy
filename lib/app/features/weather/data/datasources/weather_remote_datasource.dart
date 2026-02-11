@@ -65,9 +65,10 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       final decodedLocationResponse = LocationModel.fromMap(locationData);
       final currentCondition = currentData['condition'];
 
-      if (currentCondition != null)
+      if (currentCondition != null) {
         decodedCurrentResponse = CurrentModel.fromMap(
             currentData, ConditionsModel.fromMap(currentCondition));
+      }
 
       final List<ForecastDayModel> decodedForecastDayResponse =
           forecastDayData.map((forecastDay) {
@@ -83,9 +84,10 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
         var dayConditionData;
         ConditionsModel? decodedDayConditionResponse;
         dayConditionData = dayData['condition'];
-        if (dayConditionData != null)
+        if (dayConditionData != null) {
           decodedDayConditionResponse =
               ConditionsModel.fromMap(dayConditionData);
+        }
 
         return decodedDayConditionResponse != null
             ? ForecastDayModel.fromMap(
@@ -107,7 +109,7 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
       );
 
       return allWeatherData;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -128,9 +130,9 @@ class WeatherRemoteDataSourceImpl extends WeatherRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      if (error is ServerException)
-        throw error;
-      else {
+      if (error is ServerException) {
+        rethrow;
+      } else {
         try {} catch (error, stackTrace) {
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(

@@ -14,8 +14,7 @@ class DialogHeader extends StatelessWidget {
   final String title;
   final withDivider;
 
-  const DialogHeader({Key? key, required this.title, this.withDivider = false})
-      : super(key: key);
+  const DialogHeader({super.key, required this.title, this.withDivider = false});
 
   @override
   Widget build(BuildContext context) {

@@ -18,7 +18,7 @@ class LocationRetriveData extends StatelessWidget {
       padding: EdgeInsets.all(16),
       child: Stack(
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

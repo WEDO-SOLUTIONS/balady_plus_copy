@@ -13,11 +13,11 @@ class ReloadWidget extends StatelessWidget {
   final VoidCallback onTab;
 
   const ReloadWidget({
-    Key? key,
+    super.key,
     this.widgetHeight = 150,
     this.errorMessage,
     required this.onTab,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

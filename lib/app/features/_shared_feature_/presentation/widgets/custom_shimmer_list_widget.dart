@@ -9,11 +9,11 @@ class CustomShimmerListWidget extends StatelessWidget {
   final EdgeInsets? padding;
 
   const CustomShimmerListWidget({
-    Key? key,
+    super.key,
     required this.height,
     this.itemCount,
     this.padding,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +37,11 @@ class CustomShimmerWidget extends StatelessWidget {
   final EdgeInsets? padding;
 
   const CustomShimmerWidget(
-      {Key? key,
+      {super.key,
       this.childWidget,
       this.childHeight,
       this.childWidth,
-      this.padding})
-      : super(key: key);
+      this.padding});
 
   @override
   Widget build(BuildContext context) {
@@ -72,15 +71,14 @@ class CustomShimmerGridViewWidget extends StatelessWidget {
   final double mainAxisExtent;
 
   const CustomShimmerGridViewWidget(
-      {Key? key,
+      {super.key,
       required this.height,
       this.width = double.infinity,
       this.itemCount,
       this.padding,
       this.crossAxisCount = 2,
       this.mainAxisSpacing = 16,
-      this.mainAxisExtent = 100})
-      : super(key: key);
+      this.mainAxisExtent = 100});
 
   @override
   Widget build(BuildContext context) {

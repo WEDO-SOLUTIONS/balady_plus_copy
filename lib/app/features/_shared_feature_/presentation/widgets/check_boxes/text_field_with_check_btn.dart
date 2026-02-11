@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../texts/custom_text_field_widget.dart';
-import '../texts/custom_text_widget.dart';
 
 class TextWithCheckBtn extends StatefulWidget {
   final String title;

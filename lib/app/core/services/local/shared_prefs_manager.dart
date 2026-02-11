@@ -11,7 +11,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class SharedPrefs {
   static SharedPreferences? _sharedPreferences;
 
-  init() async {
+  Future<void> init() async {
     _sharedPreferences ??= await SharedPreferences.getInstance();
   }
 
@@ -45,7 +45,7 @@ class SharedPrefs {
     }
   }
 
-  setDeviceHeight(double? height) async {
+  Future<void> setDeviceHeight(double? height) async {
     await _sharedPreferences?.setDouble('device_height', height ?? 0);
   }
 
@@ -57,11 +57,11 @@ class SharedPrefs {
     }
   }
 
-  setIsFirstLaunchForGame(bool? firstLaunch) async {
+  Future<void> setIsFirstLaunchForGame(bool? firstLaunch) async {
     await _sharedPreferences?.setBool('first_launch_game', firstLaunch ?? true);
   }
 
-  clearAll() {
+  void clearAll() {
     _sharedPreferences?.clear();
   }
 
@@ -105,7 +105,7 @@ class SharedPrefs {
     return _sharedPreferences?.getString('guestMobile');
   }
 
-  setPrayerSettings(List<String> settings) async =>
+  Future<bool?>? setPrayerSettings(List<String> settings) async =>
       await _sharedPreferences?.setStringList('prayer_settings', settings);
 
   List<String> getPrayerSettings() =>
@@ -115,7 +115,7 @@ class SharedPrefs {
 
   /////////////////////////////////////////////////////////////
 
-  setIsEkramDriver(bool? isEkramDriver) async {
+  Future<void> setIsEkramDriver(bool? isEkramDriver) async {
     if (isEkramDriver != null) {
       await _sharedPreferences?.setBool('isEkramDriver', isEkramDriver);
     } else {
@@ -127,7 +127,7 @@ class SharedPrefs {
     return _sharedPreferences?.getBool('isEkramDriver');
   }
 
-  setLocationConsent(bool? value) async {
+  Future<void> setLocationConsent(bool? value) async {
     if (value != null) {
       await _sharedPreferences?.setBool('locationConsent', value);
     } else {
@@ -139,7 +139,7 @@ class SharedPrefs {
     return _sharedPreferences?.getBool('locationConsent');
   }
 
-  setChatbotSessionId(String? sessionId) async {
+  Future<void> setChatbotSessionId(String? sessionId) async {
     if (sessionId != null) {
       _sharedPreferences?.setString('chatbot_session_id', sessionId);
     } else {
@@ -176,7 +176,7 @@ class SharedPrefs {
     }
   }
 
-  setUserLocation(GISParams? item) async {
+  Future<void> setUserLocation(GISParams? item) async {
     if (item != null) {
       await _sharedPreferences?.setString('gis_user_location', json.encode(item.toMap()));
     } else {
@@ -193,7 +193,7 @@ class SharedPrefs {
     return model;
   }
 
-  setUserGISLoaction(GISResponseModel? item) async {
+  Future<void> setUserGISLoaction(GISResponseModel? item) async {
     if (item != null) {
       await _sharedPreferences?.setString('gis_user_data', json.encode(item.toMap()));
     } else {

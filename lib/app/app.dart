@@ -1,8 +1,6 @@
-import 'dart:io';
 
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_design_system/theme/app_theme.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/accecipilities/accessibility_controller.dart';
 import 'package:balady_plus/app/features/accecipilities/balady_theme_controller.dart';
@@ -10,7 +8,6 @@ import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
 import 'package:bot_toast/bot_toast.dart' show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -18,7 +15,6 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show Translation, translator;
 import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;

@@ -7,7 +7,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
-import 'app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 void main() async {

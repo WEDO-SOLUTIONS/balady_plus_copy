@@ -119,8 +119,8 @@ class AppColor {
   static const base500Light50 = Color(0x33fdfdfd);
   static const riverBed = Color(0xFF47515C);
   static const mystic = Color(0x7FE6EFEF);
-  static const lightgery = Color(0xFFF545480);
-  static const borderBlck = Color(0xFFF545454);
+  static const lightgery = Color(0xfff545480);
+  static const borderBlck = Color(0xfff545454);
   static const greenOptacty = Color(0xFFE6EFEF);
 
 

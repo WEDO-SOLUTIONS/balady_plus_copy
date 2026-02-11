@@ -3,9 +3,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/icons/gen
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 
-import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';

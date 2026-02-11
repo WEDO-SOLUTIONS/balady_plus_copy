@@ -11,12 +11,12 @@ class NeedLoginBottomSheet extends StatelessWidget {
   final Function(bool isSuccess)? onSuccessLogin;
 
   const NeedLoginBottomSheet({
-    Key? key,
+    super.key,
     this.desc,
     this.title,
     this.mainPage,
     this.onSuccessLogin,
-  }) : super(key: key);
+  });
 
   List<Widget> textActions(BuildContext context) => [
     const SizedBox(height: 10),

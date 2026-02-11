@@ -28,7 +28,7 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
       List<MiniAppModel> list =
           result.map<MiniAppModel>((e) => MiniAppModel.fromJson(e)).toList();
       return list;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -52,9 +52,9 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      if (error is ServerException)
-        throw error;
-      else {
+      if (error is ServerException) {
+        rethrow;
+      } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(
@@ -75,7 +75,7 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
       var result = response.data["data"]["result"]['token'];
 
       return result;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -99,9 +99,9 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      if (error is ServerException)
-        throw error;
-      else {
+      if (error is ServerException) {
+        rethrow;
+      } else {
         throw ServerException(
           "errors_server_error_2".tr(),
           exception: APIException(

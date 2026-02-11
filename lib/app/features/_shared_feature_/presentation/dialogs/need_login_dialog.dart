@@ -10,8 +10,7 @@ class NeedLoginDialog extends StatelessWidget {
   final String? mainPage;
   final Function(bool isSuccess)? onSuccessLogin;
 
-  const NeedLoginDialog({Key? key, this.desc, this.img, this.title, this.mainPage, this.onSuccessLogin})
-      : super(key: key);
+  const NeedLoginDialog({super.key, this.desc, this.img, this.title, this.mainPage, this.onSuccessLogin});
 
   List<Widget> textActions(BuildContext context) => [
         TextButton(

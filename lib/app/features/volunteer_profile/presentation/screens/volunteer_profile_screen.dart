@@ -6,11 +6,6 @@ import '../../../../core/utils/constants/route_names.dart';
 import '../../presentation/bloc/volunteer_profile_bloc.dart';
 import '../../presentation/bloc/volunteer_profile_event.dart';
 import '../../presentation/bloc/volunteer_profile_state.dart';
-import '../../presentation/screens/steps/medical_info_step.dart';
-import '../../presentation/screens/steps/personal_info_step.dart';
-import '../../presentation/screens/steps/scientific_info_step.dart';
-import '../../presentation/screens/steps/social_media_information_step.dart';
-import '../../presentation/screens/steps/volunteering_interests_step.dart';
 import '../../presentation/widgets/volunteer_presentation_mode.dart';
 import '../../presentation/widgets/volunteer_success_dialog.dart';
 

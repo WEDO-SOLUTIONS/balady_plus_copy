@@ -39,7 +39,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       cubit.getPrayerTime();
       cubit.getPrayerTimeRange();
     });
@@ -130,11 +130,12 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                         builder: (context, state) {
                           String? cityName = state.gisResponse?.cityName ??
                               state.gisResponse?.adminMunicipalityName;
-                          if (cityName != null)
+                          if (cityName != null) {
                             return CustomTextWidget(
-                              "${"prayerTimesIn".tr()} ${cityName}",
+                              "${"prayerTimesIn".tr()} $cityName",
                               textStyle: AppStyle.prayerTimeCityTextStyle,
                             );
+                          }
                           return SizedBox();
                         },
                       ),
@@ -158,11 +159,12 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
                               onTap: () => cubit.getPrayerTime(),
                             );
                           }
-                          if (state.nextPrayer != null)
+                          if (state.nextPrayer != null) {
                             return NextPrayer(
                               prayer: state.nextPrayer!.prayer,
                               time: state.nextPrayer!.dateTime,
                             );
+                          }
                           return Container();
                         },
                       ),

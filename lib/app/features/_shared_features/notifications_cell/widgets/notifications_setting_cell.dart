@@ -128,7 +128,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                   child: CupertinoSwitch(
                                     onChanged: (bool value) {},
                                     value: state.isChecked,
-                                    activeColor: context.colors.accentActive,
+                                    activeTrackColor: context.colors.accentActive,
                                   ),
                                 ),
                               ],

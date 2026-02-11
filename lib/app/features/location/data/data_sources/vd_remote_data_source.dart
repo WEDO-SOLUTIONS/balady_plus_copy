@@ -41,7 +41,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       final decodedResponse = GISResponseModel.fromMap(data);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -62,9 +62,9 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
-      if (error is ServerException)
-        throw error;
-      else {
+      if (error is ServerException) {
+        rethrow;
+      } else {
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),

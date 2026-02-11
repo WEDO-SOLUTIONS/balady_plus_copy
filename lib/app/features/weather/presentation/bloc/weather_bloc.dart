@@ -37,7 +37,7 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
     //     state.showLocationError == false) return;
 
     CommonFunctions.checkLocationSettings(
-        NavigationService.navigatorKey!.currentContext!);
+        NavigationService.navigatorKey.currentContext!);
     print("_getAllWeatherInfo");
 
     emitter(state.copyWith(
@@ -55,10 +55,11 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           x: latlng?.longitude ?? 46.72364215018372,
           y: latlng?.latitude ?? 24.744615305066496);
 
-      if (latlng == null)
+      if (latlng == null) {
         emitter(state.copyWith(showLocationError: true));
-      else
+      } else {
         emitter(state.copyWith(showLocationError: false));
+      }
     } else {
       emitter(state.copyWith(showLocationError: false));
     }
@@ -108,10 +109,11 @@ class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
           x: latlng?.longitude ?? 46.72364215018372,
           y: latlng?.latitude ?? 24.744615305066496);
 
-      if (latlng == null)
+      if (latlng == null) {
         emitter(state.copyWith(showLocationError: true));
-      else
+      } else {
         emitter(state.copyWith(showLocationError: false));
+      }
     } else {
       emitter(state.copyWith(showLocationError: false));
     }
