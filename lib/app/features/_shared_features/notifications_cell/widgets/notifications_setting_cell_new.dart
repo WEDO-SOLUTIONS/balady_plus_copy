@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/notifications/data/repositories/notification_repository_implementation.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -15,7 +16,8 @@ class NotificationsSettingCell extends StatefulWidget {
   const NotificationsSettingCell({super.key});
 
   @override
-  State<NotificationsSettingCell> createState() => _NotificationsSettingCellState();
+  State<NotificationsSettingCell> createState() =>
+      _NotificationsSettingCellState();
 }
 
 class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
@@ -27,14 +29,20 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
         ? const SizedBox.shrink()
         : BlocProvider(
             create: (context) {
-              NotificationRepositoryImplementation notificationRepositoryImplementation = sl();
+              NotificationRepositoryImplementation
+              notificationRepositoryImplementation = sl();
               return NotificationsSettingCubit(
-                  notificationsSettingsListRepository: notificationRepositoryImplementation, notificationId: 'mobile');
+                notificationsSettingsListRepository:
+                    notificationRepositoryImplementation,
+                notificationId: 'mobile',
+              );
             },
             child: BlocBuilder<NotificationsSettingCubit, NotificationsSettingState>(
               builder: (contextCubit, state) {
-                NotificationsSettingCubit cubit = contextCubit.watch<NotificationsSettingCubit>();
-                if (state is InitialNotificationsSettingsState || state is LoadingEventsSettingsState) {
+                NotificationsSettingCubit cubit = contextCubit
+                    .watch<NotificationsSettingCubit>();
+                if (state is InitialNotificationsSettingsState ||
+                    state is LoadingEventsSettingsState) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state is FailureNotificationsSettingsState) {
@@ -48,9 +56,21 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                   if (manageNotificationClicked) {
                     manageNotificationClicked = false;
                     WidgetsBinding.instance.addPostFrameCallback((_) {
+                      NavigationService.navigatorKey.currentState!.push(
+                        MaterialPageRoute(
+                          builder: (_) => NotificationsSettings(
+                            notificationsList:
+                                cubit.notificationsSettingsList.categories!,
+                          ),
+                        ),
+                      );
+
+                      /*
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>
                               NotificationsSettings(notificationsList: cubit.notificationsSettingsList.categories!)));
+
+                      */
                     });
                   }
                   return Column(
@@ -86,23 +106,21 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           // )
                         ],
                       ),
-                      const SizedBox(
-                        height: Spacing.$2x,
-                      ),
+                      const SizedBox(height: Spacing.$2x),
                       Text(
                         'enable_disable_notifications'.tr(),
                         style: context.textStyle.caption.copyWith(
                           color: const Color(0xFF1E2A36).withOpacity(0.36),
                         ),
                       ),
-                      const SizedBox(
-                        height: Spacing.$2x,
-                      ),
+                      const SizedBox(height: Spacing.$2x),
                       state.isChecked
                           ? GestureDetector(
                               onTap: () {
                                 manageNotificationClicked = true;
-                                cubit.getNotificationSetting(cubit.notificationId);
+                                cubit.getNotificationSetting(
+                                  cubit.notificationId,
+                                );
                                 /* Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NotificationsSettings(
                                         notificationsList: cubit
@@ -110,7 +128,9 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                                             .categories!)));*/
                               },
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                ),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(

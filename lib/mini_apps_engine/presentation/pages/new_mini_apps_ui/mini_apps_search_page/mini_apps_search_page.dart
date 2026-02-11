@@ -129,8 +129,10 @@ class MiniAppsSearchPage extends StatelessWidget {
                                         minFontSize: 25,
                                         maxFontSize: 30,
                                         textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          color: Color.fromARGB(161, 0, 0, 0),
+                                        style: TextStyle(
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
                                           fontWeight: FontWeight.w400,
                                           fontFamily: GeneralKey.appFontType,
                                         ),

@@ -37,7 +37,7 @@ class SearchMiniAppsResultsList extends StatelessWidget {
             child: Text(
               'no_results_found'.tr(),
               style: TextStyle(
-                color: Theme.of(context).disabledColor,
+                color: Theme.of(context).colorScheme.onSurface,
                 fontFamily: GeneralKey.appFontType,
                 fontSize: 30,
               ),

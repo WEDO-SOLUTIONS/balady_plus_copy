@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -18,12 +18,25 @@ class _NotificationsSettingsState extends State<NotificationsSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.colors.backgroundSurface2,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
 
       appBar: AppBar(
-        leading: IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.arrow_back_ios,color: context.color.surfaceStatusAccent,)),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+
         elevation: 0,
-        title: Text('settings'.tr()),
+        title: Text(
+          'settings'.tr(),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onSurface,
+            fontFamily: GeneralKey.appFontType,
+          ),
+        ),
         backgroundColor: Colors.transparent,
       ),
       body: ListView.builder(

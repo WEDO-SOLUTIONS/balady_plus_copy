@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
@@ -31,39 +32,49 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
     bool manageNotificationClicked = false;
     return CommonProperties.isLoggedInMunicipality
         ? BlocProvider(
-            create: (context) {
-              NotificationRepositoryImplementation
-              notificationRepositoryImplementation = sl();
-              return NotificationsSettingCubit(
-                notificationsSettingsListRepository:
-                    notificationRepositoryImplementation,
-                notificationId: 'mobile',
-              );
-            },
-            child: BlocBuilder<NotificationsSettingCubit, NotificationsSettingState>(
-              builder: (contextCubit, state) {
-                NotificationsSettingCubit cubit = contextCubit
-                    .watch<NotificationsSettingCubit>();
-                if (state is InitialNotificationsSettingsState ||
-                    state is LoadingEventsSettingsState) {
-                  return const SizedBox(
-                    // We set this height because of glich effect. In normal state it takes 112px
-                    // So the wrapper will not rebuild its height
-                    height: 112,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                if (state is FailureNotificationsSettingsState) {
-                  return ReloadWidget(
-                    onTab: () {
-                      cubit.getNotificationSetting(cubit.notificationId);
-                    },
-                  );
-                }
-                if (state is SucceedEventsNotificationState) {
-                  if (manageNotificationClicked) {
-                    manageNotificationClicked = false;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
+      create: (context) {
+        NotificationRepositoryImplementation
+        notificationRepositoryImplementation = sl();
+        return NotificationsSettingCubit(
+          notificationsSettingsListRepository:
+          notificationRepositoryImplementation,
+          notificationId: 'mobile',
+        );
+      },
+      child: BlocBuilder<NotificationsSettingCubit, NotificationsSettingState>(
+        builder: (contextCubit, state) {
+          NotificationsSettingCubit cubit = contextCubit
+              .watch<NotificationsSettingCubit>();
+          if (state is InitialNotificationsSettingsState ||
+              state is LoadingEventsSettingsState) {
+            return const SizedBox(
+              // We set this height because of glich effect. In normal state it takes 112px
+              // So the wrapper will not rebuild its height
+              height: 112,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (state is FailureNotificationsSettingsState) {
+            return ReloadWidget(
+              onTab: () {
+                cubit.getNotificationSetting(cubit.notificationId);
+              },
+            );
+          }
+          if (state is SucceedEventsNotificationState) {
+            if (manageNotificationClicked) {
+              manageNotificationClicked = false;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                NavigationService.navigatorKey.currentState!.push(
+                  MaterialPageRoute(
+                    builder: (_) => NotificationsSettings(
+                      notificationsList:
+                      cubit.notificationsSettingsList.categories!,
+                    ),
+                  ),
+                );
+
+                /*
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => NotificationsSettings(
@@ -72,140 +83,142 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                           ),
                         ),
                       );
-                    });
-                  }
+                      */
+              });
+            }
 
-                  return Column(
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          cubit.setNotificationsProfile(
-                            SetNotificationsProfileParams(
-                              enabled: !state.isChecked,
-                              channelId: 'mobile',
-                              applicationId: 'super-app',
-                            ),
-                            !state.isChecked,
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(8),
-                        child: SizedBox(
-                          height: 48,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  IconPath.notificationIc2,
-                                  height: 24,
-                                  width: 24,
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColor.primary900Light,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(bottom: 2.0),
-                                    child: Text(
-                                      'notifications'.tr(),
-                                      style: Theme.of(context)
-                                          .extension<ThemeTextStyles>()!
-                                          .text
-                                          .copyWith(
-                                            color: context
-                                                .colors
-                                                .foregroundDefault,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-
-                                IgnorePointer(
-                                  child: CupertinoSwitch(
-                                    onChanged: (bool value) {},
-                                    value: state.isChecked,
-                                    activeTrackColor: context.colors.accentActive,
-                                  ),
-                                ),
-                              ],
+            return Column(
+              children: [
+                InkWell(
+                  onTap: () {
+                    cubit.setNotificationsProfile(
+                      SetNotificationsProfileParams(
+                        enabled: !state.isChecked,
+                        channelId: 'mobile',
+                        applicationId: 'super-app',
+                      ),
+                      !state.isChecked,
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: SizedBox(
+                    height: 48,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                      ),
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            IconPath.notificationIc2,
+                            height: 24,
+                            width: 24,
+                            colorFilter: const ColorFilter.mode(
+                              AppColor.primary900Light,
+                              BlendMode.srcIn,
                             ),
                           ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              'enable_disable_notifications'.tr(),
-                              style: Theme.of(context)
-                                  .extension<ThemeTextStyles>()!
-                                  .caption
-                                  .copyWith(
-                                    color: context.colors.foregroundDefault
-                                        .withOpacity(0.36),
-                                  ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 2.0),
+                              child: Text(
+                                'notifications'.tr(),
+                                style: Theme.of(context)
+                                    .extension<ThemeTextStyles>()!
+                                    .text
+                                    .copyWith(
+                                  color: context
+                                      .colors
+                                      .foregroundDefault,
+                                ),
+                              ),
                             ),
-                          ],
+                          ),
+
+                          IgnorePointer(
+                            child: CupertinoSwitch(
+                              onChanged: (bool value) {},
+                              value: state.isChecked,
+                              activeTrackColor:
+                              context.colors.accentActive,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'enable_disable_notifications'.tr(),
+                        style: Theme.of(context)
+                            .extension<ThemeTextStyles>()!
+                            .caption
+                            .copyWith(
+                          color: context.colors.foregroundDefault
+                              .withOpacity(0.36),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      state.isChecked
-                          ? GestureDetector(
-                              onTap: () {
-                                manageNotificationClicked = true;
-                                cubit.getNotificationSetting(
-                                  cubit.notificationId,
-                                );
-                                /* Navigator.of(context).push(MaterialPageRoute(
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                state.isChecked
+                    ? GestureDetector(
+                  onTap: () {
+                    manageNotificationClicked = true;
+                    cubit.getNotificationSetting(
+                      cubit.notificationId,
+                    );
+                    /* Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NotificationsSettings(
                                         notificationsList: cubit
                                             .notificationsSettingsList
                                             .categories!)));*/
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      "assets/icons/svg/profile/settings.svg",
-                                      height: 24,
-                                      width: 24,
-                                      colorFilter: const ColorFilter.mode(
-                                        Colors.red,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'manage_notification'.tr(),
-                                      style: Theme.of(context)
-                                          .extension<ThemeTextStyles>()!
-                                          .text
-                                          .copyWith(color: Colors.red),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
-                      const SizedBox(height: 8),
-                    ],
-                  );
-                }
-                return const SizedBox();
-              },
-            ),
-          )
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/icons/svg/profile/settings.svg",
+                          height: 24,
+                          width: 24,
+                          colorFilter: const ColorFilter.mode(
+                            Colors.red,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'manage_notification'.tr(),
+                          style: Theme.of(context)
+                              .extension<ThemeTextStyles>()!
+                              .text
+                              .copyWith(color: Colors.red),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+                    : const SizedBox.shrink(),
+                const SizedBox(height: 8),
+              ],
+            );
+          }
+          return const SizedBox();
+        },
+      ),
+    )
         : const SizedBox.shrink();
   }
 }

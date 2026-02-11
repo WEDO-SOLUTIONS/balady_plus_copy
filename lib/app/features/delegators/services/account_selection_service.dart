@@ -302,4 +302,14 @@ class AccountSelectionService {
   static Future<void> clearAllSelections() async {
     await sharedPrefs.clearSelectedAccounts();
   }
+
+  /// Gets the saved delegator ID from SharedPreferences
+  static String? getSavedDelegatorId() {
+    return sharedPrefs.getSelectedDelegatorId();
+  }
+
+  /// Gets the saved agent ID from SharedPreferences
+  static String? getSavedAgentId() {
+    return sharedPrefs.getSelectedAgentId();
+  }
 }

@@ -57,6 +57,13 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       ),
     );
 
+    // ✅ Get login status from CommonProperties if not provided
+    final isLoggedInLifestyle =
+        isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
+    final isLoggedInMunicipality =
+        isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
+
+    // ⚠️ Don't default business to true here; it causes wrong view after rebuilds.
     // Get login status from CommonProperties if not provided
     final isLoggedInLifestyle =
         isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
@@ -83,9 +90,9 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         );
       },
       (final data) async {
-        final savedFavIds = await loadFavoriteIds();
-
-        // Apply business logic filtering in the state layer
+        // ---------------------------
+        // ✅ 1) Filter apps (business rules)
+        // ---------------------------
         final filteredApps = _filterMiniApps(
           allApps: data.miniApps,
           isLoggedInLifestyle: isLoggedInLifestyle,
@@ -93,15 +100,31 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           isUserAccountBusiness: userAccountBusiness,
         );
 
-        final filteredGroups = _filterAppGroups(
-          groups: data.appGroups,
-          isLoggedInMunicipality: isLoggedInMunicipality,
-          isUserAccountBusiness: userAccountBusiness,
+        final allowedIds = filteredApps.map((e) => e.id).toSet();
+
+        // ---------------------------
+        // ✅ 2) Filter groups recursively by allowed apps
+        // (fixes subCategoryGroup + "Other Services" leaking)
+        // ---------------------------
+        final filteredGroups = _filterGroupsRecursivelyByAllowedIds(
+          data.appGroups,
+          allowedIds,
         );
 
-        final allApps = filteredApps;
+        // ---------------------------
+        // ✅ 3) Filter entry points apps by allowed apps
+        // (fixes business apps appearing in Most Used section)
+        // ---------------------------
+        final filteredEntryPoints = _filterEntryPointsByAllowedIds(
+          data.entryPoints,
+          allowedIds,
+        );
 
-        final appsById = {for (final app in allApps) app.id: app};
+        // ---------------------------
+        // ✅ 4) Favorites should be computed from the filtered list
+        // ---------------------------
+        final savedFavIds = await loadFavoriteIds();
+        final appsById = {for (final app in filteredApps) app.id: app};
 
         final favoriteApps = savedFavIds
             .map((id) => appsById[id])
@@ -113,9 +136,16 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             .where((app) => !favoriteIdSet.contains(app.id))
             .toList();
 
+        final unFavoriteApps = filteredApps
+            .where((app) => !favoriteIdSet.contains(app.id))
+            .toList();
+
+        // ---------------------------
+        // ✅ 5) Emit ONE consistent state
+        // ---------------------------
         emit(
           state.copyWith(
-            allMiniApps: data.miniApps,
+            allMiniApps: filteredApps,
             isFavLoading: false,
             isAppsGroupLoading: false,
             isEntryPointsLoading: false,
@@ -123,7 +153,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             unFavoriteApps: unFavoriteApps,
             parentMiniApp: data.parentMiniApp,
             appGroups: filteredGroups,
-            entryPoints: data.entryPoints,
+            entryPoints: filteredEntryPoints,
             favError: null,
             entryPointsError: null,
           ),
@@ -133,7 +163,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   //! pull to refresh mini apps UI.
-  Future<void> refreshMiniApps() async {
+  Future<void> refreshMiniApps({bool? isUserAccountBusiness}) async {
     if (state.isRefreshing) return;
 
     emit(
@@ -149,6 +179,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       showLoading: false,
       isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
       isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
+      isUserAccountBusiness:
+          isUserAccountBusiness, // Default to true for refresh - will be updated by external listeners
       isUserAccountBusiness:
           true, // Default to true for refresh - will be updated by external listeners
     );
@@ -232,6 +264,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       final q = _normalizeForSearch(trimmed.toLowerCase());
 
       final results = baseList.where((app) {
+        return app.name.toLowerCase().contains(q) ||
+            app.description.toLowerCase().contains(q);
         final name = _normalizeForSearch(app.name.toLowerCase());
         final description = _normalizeForSearch(app.description.toLowerCase());
 
@@ -253,6 +287,9 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       );
     });
 
+    emit(
+      state.copyWith(isSearching: true, searchError: null, searchResults: []),
+    );
     emit(
       state.copyWith(isSearching: true, searchError: null, searchResults: []),
     );
@@ -633,5 +670,62 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     }
 
     return filteredGroups;
+  }
+
+  List<CategoryGroup> _filterGroupsRecursivelyByAllowedIds(
+    List<CategoryGroup> groups,
+    Set<String> allowedIds,
+  ) {
+    CategoryGroup? filterOne(CategoryGroup g) {
+      // Filter apps in this group
+      final filteredApps = g.apps
+          .where((a) => allowedIds.contains(a.id))
+          .toList();
+
+      // Filter subcategories recursively (Map -> entries -> where -> Map)
+      final Map<String, CategoryGroup>? filteredSubs =
+          g.subCategoryGroup == null
+          ? null
+          : Map<String, CategoryGroup>.fromEntries(
+              g.subCategoryGroup!.entries.map((e) {
+                final filteredChild = filterOne(e.value);
+                if (filteredChild == null) return null;
+                return MapEntry(e.key, filteredChild);
+              }).whereType<MapEntry<String, CategoryGroup>>(),
+            );
+
+      final hasSubs = filteredSubs != null && filteredSubs.isNotEmpty;
+
+      // If group has no apps and no subs after filtering -> drop it
+      if (filteredApps.isEmpty && !hasSubs) return null;
+
+      return g.copyWith(apps: filteredApps, subCategoryGroup: filteredSubs);
+    }
+
+    return groups.map(filterOne).whereType<CategoryGroup>().toList();
+  }
+
+  List<EntryPoints> _filterEntryPointsByAllowedIds(
+    List<EntryPoints> entryPoints,
+    Set<String> allowedIds,
+  ) {
+    return entryPoints
+        .map((ep) {
+          final filteredApps = ep.apps
+              .where((a) => allowedIds.contains(a.id))
+              .toList();
+
+          if (filteredApps.isEmpty) return null;
+
+          return EntryPoints(
+            entryPointKey: ep.entryPointKey,
+            arName: ep.arName,
+            enName: ep.enName,
+            isActive: ep.isActive,
+            apps: filteredApps,
+          );
+        })
+        .whereType<EntryPoints>()
+        .toList();
   }
 }

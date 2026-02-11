@@ -8,6 +8,30 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Premium shimmer palette (no pure black)
+    final baseColor = isDark
+        ? const Color(0xFF2A2F3A)
+        : const Color(0xFFE7E9EF);
+    final highlightColor = isDark
+        ? const Color(0xFF3A4150)
+        : const Color(0xFFF5F6FA);
+
+    // Surfaces
+    final surface = isDark ? const Color(0xFF141821) : Colors.white;
+    final placeholder = isDark ? const Color(0xFF1D2430) : Colors.white;
+
+    // Subtle borders & shadow for “premium”
+    final borderColor = isDark
+        ? Colors.white.withOpacity(0.06)
+        : Colors.black.withOpacity(0.04);
+
+    final shadowColor = isDark
+        ? Colors.black.withOpacity(0.35)
+        : Colors.black.withOpacity(0.06);
+
+    // Dimensions
     final double iconWidth = context.w(53.95);
     final double iconHeight = context.h(53.95);
     final double titlesWidth = context.w(55.21214294433594);
@@ -17,31 +41,63 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
       return Column(
         children: [
           Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
+            baseColor: baseColor,
+            highlightColor: highlightColor,
             child: Container(
               width: iconWidth,
               height: iconHeight,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: surface,
                 borderRadius: BorderRadius.circular(16),
-                border: isDashedAdd
-                    ? Border.all(color: Colors.white, width: 2)
-                    : null,
+                border: Border.all(
+                  color: isDashedAdd
+                      ? (isDark
+                            ? Colors.white.withOpacity(0.14)
+                            : Colors.black.withOpacity(0.08))
+                      : borderColor,
+                  width: isDashedAdd ? 1.5 : 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: shadowColor,
+                    blurRadius: isDark ? 10 : 8,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
+              child: isDashedAdd
+                  ? Center(
+                      child: Container(
+                        width: iconWidth * 0.46,
+                        height: iconHeight * 0.46,
+                        decoration: BoxDecoration(
+                          color: placeholder,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isDark
+                                ? Colors.white.withOpacity(0.06)
+                                : Colors.black.withOpacity(0.04),
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                    )
+                  : null,
             ),
           ),
+
           // Text Shimmer
           SizedBox(height: context.h(4)),
           Shimmer.fromColors(
-            baseColor: Colors.grey[300]!,
-            highlightColor: Colors.grey[100]!,
+            baseColor: baseColor,
+            highlightColor: highlightColor,
             child: Container(
               width: titlesWidth,
               height: titlesHeight * 0.5,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(4),
+                color: placeholder,
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: borderColor, width: 1),
               ),
             ),
           ),
@@ -52,19 +108,30 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // Section title shimmer
         Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
+          baseColor: baseColor,
+          highlightColor: highlightColor,
           child: Container(
             width: context.w(170),
             height: context.h(33),
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              color: surface,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: borderColor, width: 1),
+              boxShadow: [
+                BoxShadow(
+                  color: shadowColor,
+                  blurRadius: isDark ? 10 : 8,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
           ),
         ),
+
         SizedBox(height: context.screenHeight * 0.02),
+
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -74,14 +141,12 @@ class MiniAppsFavSectionShimmerWidget extends StatelessWidget {
               height: context.screenHeight * 0.13,
               width: context.screenWidth * 0.70,
               child: ListView.separated(
-                separatorBuilder: (context, index) {
-                  return SizedBox(width: context.screenWidth * 0.03);
-                },
+                separatorBuilder: (context, index) =>
+                    SizedBox(width: context.screenWidth * 0.03),
                 scrollDirection: Axis.horizontal,
                 itemCount: 10,
-                itemBuilder: (context, index) {
-                  return buildShimmerItem(context, false);
-                },
+                itemBuilder: (context, index) =>
+                    buildShimmerItem(context, false),
               ),
             ),
           ],
