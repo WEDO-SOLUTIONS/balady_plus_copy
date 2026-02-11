@@ -6,14 +6,13 @@ import '../../../../_shared_feature_/shared_feature_exports.dart'
 
 class CircleIcon extends StatelessWidget {
   const CircleIcon(
-      {Key? key,
+      {super.key,
       required this.icon,
       this.circleSize = 48,
       this.backgroundColor,
       this.iconColor,
       this.iconSize = 18,
-      this.showShadow = true})
-      : super(key: key);
+      this.showShadow = true});
 
   final Object icon;
   final double circleSize;

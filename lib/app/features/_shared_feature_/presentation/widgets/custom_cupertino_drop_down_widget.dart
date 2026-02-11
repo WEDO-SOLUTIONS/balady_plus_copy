@@ -39,7 +39,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
   final double? marginBottom;
 
   const CustomHeaderAndDescOnTapWidget(
-      {Key? key,
+      {super.key,
       required this.label,
       this.labelColor = AppColor.blackModern700Light,
       this.labelSize = 16.0,
@@ -58,8 +58,7 @@ class CustomHeaderAndDescOnTapWidget extends StatefulWidget {
       this.textValue,
       this.materialIconDirection = MATERIAL_ICON_DIRECTION.down,
       this.icon,
-      this.showOptional = false})
-      : super(key: key);
+      this.showOptional = false});
 
   @override
   State<CustomHeaderAndDescOnTapWidget> createState() =>
@@ -204,7 +203,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   final bool? readOnly;
 
   CustomTapWidgetForLongDialog(
-      {Key? key,
+      {super.key,
       required this.onChangeType,
       this.value,
       this.marginBottom,
@@ -217,8 +216,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
       this.showOptional = false,
       this.showHintAsTitle = false,
       this.isButtonDisabled,
-      this.readOnly})
-      : super(key: key);
+      this.readOnly});
 
   @override
   State<CustomTapWidgetForLongDialog> createState() =>
@@ -360,7 +358,7 @@ class CustomTapWidgetForMultiLongDialog extends StatefulWidget {
   final bool? showOptional;
   final bool showHintAsTitle;
   CustomTapWidgetForMultiLongDialog(
-      {Key? key,
+      {super.key,
       required this.onChangeType,
       this.values,
       required this.items,
@@ -369,8 +367,7 @@ class CustomTapWidgetForMultiLongDialog extends StatefulWidget {
       this.searchHint,
       this.errorText,
       this.showOptional = false,
-      this.showHintAsTitle = true})
-      : super(key: key);
+      this.showHintAsTitle = true});
 
   @override
   State<CustomTapWidgetForMultiLongDialog> createState() =>

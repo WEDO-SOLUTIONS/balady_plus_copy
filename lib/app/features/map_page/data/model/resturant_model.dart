@@ -95,9 +95,9 @@ class ResturantModel extends PointLayersData {
       );
 
   String get getRating =>
-      RATE != null && RATE!.trim().isNotEmpty ? "${RATE}/5" : "";
+      RATE != null && RATE!.trim().isNotEmpty ? "$RATE/5" : "";
   String get getReviews =>
-      REVIEW != null && REVIEW!.trim().isNotEmpty ? "(${REVIEW})" : "";
+      REVIEW != null && REVIEW!.trim().isNotEmpty ? "($REVIEW)" : "";
   String get getAddress => [STREET_NAME, DISTRICT_ID, CITY_ID, REGION_ID]
       .whereNotNull()
       .whereNot((element) => element.isEmpty)

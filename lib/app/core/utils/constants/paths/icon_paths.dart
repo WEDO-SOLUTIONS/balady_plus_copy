@@ -119,7 +119,7 @@ class IconPath {
   static const isha = '${_svgPrayerIconPath}iconSalahIsha$_svg';
 
   // Services
-  static serviceIcon(String name) => '$_svgServicesIconPath$name';
+  static String serviceIcon(String name) => '$_svgServicesIconPath$name';
   static const rating = '${_svgServicesIconPath}rating$_svg';
   static const duration = '${_svgServicesIconPath}duration$_svg';
   static const warnings = '${_svgServicesIconPath}warnings$_svg';
@@ -150,7 +150,7 @@ class IconPath {
   static const notification = '${_svgProfileIconPath}notification$_svg';
 
   // Nearby
-  static nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
+  static String nearbyIcon(String name) => '$_svgNearbyIconPath$name$_svg';
 
   // Weather
   static const partlyClouded = '${_svgWeatherIconPath}partly_clouded$_svg';

@@ -42,10 +42,10 @@ class _WeatherMainPageState extends State<WeatherMainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final MediaQueryData _mediaQuery = MediaQuery.of(context);
-    final Size _size = _mediaQuery.size;
-    final screenWidth = _size.width;
-    final screenHeight = _size.height;
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    final Size size = mediaQuery.size;
+    final screenWidth = size.width;
+    final screenHeight = size.height;
 
     return BlocProvider.value(
       value: sl<WeatherBloc>()

@@ -55,8 +55,7 @@ class _GenericBottomSheetListState<T> extends State<GenericBottomSheetList> {
 
   @override
   Widget build(BuildContext context) {
-    bool showNoDataMsg = (widget.items != null &&
-        widget.items.isEmpty &&
+    bool showNoDataMsg = (widget.items.isEmpty &&
         widget.noDataMsg != null);
     return BottomSheetWithActions(
       title: widget.title,

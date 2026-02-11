@@ -6,7 +6,7 @@ class DatePickerState extends Equatable {
       : _initialDate = initialDate;
 
   DateString get selectedDateString => _initialDate != null
-      ? "${_initialDate!.year}/${_initialDate!.month}/${_initialDate!.day}"
+      ? "${_initialDate.year}/${_initialDate.month}/${_initialDate.day}"
       : "yyyy/mm/dd";
   DateTime get selectedDate {
     final date = _initialDate ?? DateTime.now();

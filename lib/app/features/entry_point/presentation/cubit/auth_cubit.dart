@@ -518,7 +518,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     // sl<DelegatorsCubit>().clearDelegators();
   }
 
-  testData() async {
+  Future<void> testData() async {
     final failureOrSuccess = await _getTestData(NoParams());
     failureOrSuccess.fold((l) {}, (r) {});
   }

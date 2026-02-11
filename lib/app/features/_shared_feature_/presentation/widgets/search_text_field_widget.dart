@@ -11,12 +11,11 @@ class SearchTextFieldWidget extends StatefulWidget {
   final double containerHeight;
 
   const SearchTextFieldWidget(
-      {Key? key,
+      {super.key,
       required this.hintText,
       required this.onTextChanged,
       required this.onSubmitSearch,
-      this.containerHeight = 40})
-      : super(key: key);
+      this.containerHeight = 40});
 
   @override
   _SearchTextFieldWidgetState createState() => _SearchTextFieldWidgetState();
@@ -41,7 +40,7 @@ class _SearchTextFieldWidgetState extends State<SearchTextFieldWidget> {
       ),
       alignment: Alignment.center,
       child: MediaQuery(
-        data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+        data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
           child: TextFormField(

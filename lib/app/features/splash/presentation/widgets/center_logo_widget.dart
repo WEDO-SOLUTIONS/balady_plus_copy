@@ -7,9 +7,9 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 
 class CenterLogoWidget extends StatelessWidget {
   const CenterLogoWidget({
-    Key? key,
+    super.key,
     required this.animation,
-  }) : super(key: key);
+  });
 
   final SplashScreenAnimation animation;
 

@@ -7,9 +7,9 @@ import '../../../../core/utils/constants/paths/icon_paths.dart';
 
 class BottomLogoWidget extends StatelessWidget {
   const BottomLogoWidget({
-    Key? key,
+    super.key,
     required this.animation,
-  }) : super(key: key);
+  });
 
   final SplashScreenAnimation? animation;
 
@@ -33,7 +33,7 @@ class BottomLogoWidget extends StatelessWidget {
               ),
             ),*/
             const CustomVerticalSpace(height: 24),
-            Container(
+            SizedBox(
               width: getWidth(size.width),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -47,7 +47,7 @@ class BottomLogoWidget extends StatelessWidget {
                     ),
                   ),
                   const CustomVerticalSpace(height: 24),
-                  Container(
+                  SizedBox(
                     width: getWidth(size.width),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,

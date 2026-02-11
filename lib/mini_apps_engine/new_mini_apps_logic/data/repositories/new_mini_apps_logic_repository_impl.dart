@@ -13,7 +13,6 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
   Future<Either<Exception, NewMiniAppsLogicEntity>> getMiniApps(
     bool isLoggedInLifestyle,
     bool isLoggedInMunicipality,
-    bool isUserAccountBusiness,
   ) async {
     final result = await dataSource.getMiniApps();
 
@@ -57,7 +56,6 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
       final processedGroups = _processAppGroups(
         mapAppCategoryGroup.values.toList(),
         isLoggedInMunicipality,
-        isUserAccountBusiness,
       );
 
       return Right(
@@ -116,7 +114,6 @@ class NewMiniAppsLogicRepositoryImpl implements NewMiniAppsLogicRepository {
   List<CategoryGroup> _processAppGroups(
     List<CategoryGroup> groups,
     bool isLoggedInMunicipality,
-    bool isUserAccountBusiness,
   ) {
     final List<CategoryGroup> processedGroups = [];
     final List<MiniApp> otherServicesApps = [];

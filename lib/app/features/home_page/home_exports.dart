@@ -2,6 +2,8 @@
 /// data -> data sources
 /// data -> models
 /// data -> repositories
+library;
+
 
 //! domain
 /// domain -> entities

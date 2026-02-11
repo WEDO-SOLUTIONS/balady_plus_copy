@@ -35,7 +35,7 @@ class CustomRadioButtonWidget extends StatelessWidget {
   final String? errorMsg;
 
   const CustomRadioButtonWidget({
-    Key? key,
+    super.key,
     this.height = 60.0,
     this.width = double.infinity,
     this.borderColor = AppColor.black200,
@@ -60,7 +60,7 @@ class CustomRadioButtonWidget extends StatelessWidget {
     this.titleSize = 18.0,
     this.titleFontWeight = AppFontWeight.medium,
     this.errorMsg,
-  }) : super(key: key);
+  });
 
   final Color _unselectedBorderColor = AppColor.white5;
 
@@ -146,12 +146,12 @@ class _RadioWidget extends StatelessWidget {
   final Color borderColor;
 
   const _RadioWidget({
-    Key? key,
+    super.key,
     required this.width,
     required this.height,
     required this.color,
     required this.borderColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -188,8 +188,8 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
   final double? height;
   final bool? isDisabled;
 
-  CustomRadioButtonEnd(
-      {Key? key,
+  const CustomRadioButtonEnd(
+      {super.key,
       required this.title,
       required this.value,
       required this.currentSelected,
@@ -199,8 +199,7 @@ class CustomRadioButtonEnd<T> extends StatelessWidget {
       this.textSize = 14,
       this.unSelectedBackgroundColor = AppColor.white,
       this.subTitle,
-      this.isDisabled})
-      : super(key: key);
+      this.isDisabled});
 
   @override
   Widget build(BuildContext context) {
@@ -292,12 +291,11 @@ class CustomRadioButtonWithoutDecoration extends StatelessWidget {
   final Function onChange;
 
   const CustomRadioButtonWithoutDecoration(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.value,
       required this.currentSelected,
-      required this.onChange})
-      : super(key: key);
+      required this.onChange});
 
   @override
   Widget build(BuildContext context) {

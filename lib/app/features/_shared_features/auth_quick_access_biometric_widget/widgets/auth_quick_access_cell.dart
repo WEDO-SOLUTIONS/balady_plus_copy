@@ -66,7 +66,7 @@ class AuthQuickAccessCell extends StatelessWidget {
                       child: CupertinoSwitch(
                         onChanged: (bool value) {},
                         value: isQuickAccess,
-                        activeColor: context.colors.accentActive,
+                        activeTrackColor: context.colors.accentActive,
                       ),
                     ),
                   ],

@@ -34,7 +34,7 @@ class HawaiiNotificationService {
   static final StreamController<String?> selectNotificationStream =
   StreamController<String?>.broadcast();
 
-  static init({bool initScheduled = false}) async {
+  static Future<void> init({bool initScheduled = false}) async {
     const android = AndroidInitializationSettings("@mipmap/ic_launcher");
     const ios = DarwinInitializationSettings();
     const settings = InitializationSettings(android: android, iOS: ios);

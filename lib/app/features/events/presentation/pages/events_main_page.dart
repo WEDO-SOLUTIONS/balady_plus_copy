@@ -41,8 +41,9 @@ class _EventsMainPageState extends State<EventsMainPage> {
       child: BlocListener<EventsBloc, EventsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure ||
-              state.status == BlocStatus.retry)
+              state.status == BlocStatus.retry) {
             CommonFunctions.showError(state.errorMessage ?? "");
+          }
         },
         child: Scaffold(
           appBar: DefaultAppBarWidget(

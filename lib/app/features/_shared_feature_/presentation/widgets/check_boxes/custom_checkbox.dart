@@ -10,6 +10,7 @@ class CustomCheckbox extends StatefulWidget {
   String title;
   bool isSelected;
   Function onSelect;
+  @override
   Key? key;
 
   CustomCheckbox(
@@ -70,7 +71,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
                         image: selected
                             ? DecorationImage(
                                 image: AssetImage(
-                                    Constants.imgPath + "checkbox@3x.png"),
+                                    "${Constants.imgPath}checkbox@3x.png"),
                                 fit: BoxFit.fill, //MM
                               )
                             : null,

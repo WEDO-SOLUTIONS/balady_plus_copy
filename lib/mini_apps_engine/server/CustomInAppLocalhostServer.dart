@@ -42,7 +42,7 @@ class CustomInAppLocalhostServer {
       if (_started) {
         throw Exception('Server already started on http://localhost:$_port');
       }
-      this._started = true;
+      _started = true;
 
       final handler = const Pipeline().addHandler((Request request) async {
         if (request.method == 'OPTIONS') {
@@ -131,13 +131,13 @@ class CustomInAppLocalhostServer {
           shared: _shared,
         );
 
-        this._started = true;
+        _started = true;
         _server = server;
         print('✅ Server successfully started on http://localhost:$_port');
 
       } on SocketException catch (e) {
         // Port is already in use
-        this._started = false;
+        _started = false;
         print('❌ Port $_port is already in use!');
         print('Error details: ${e.message}');
 
@@ -145,7 +145,7 @@ class CustomInAppLocalhostServer {
         throw Exception('Failed to start server: Port $_port is already in use. ${e.message}');
       }
     } catch (e) {
-      this._started = false;
+      _started = false;
       print('❌ Failed to start server: ${e.toString()}');
       rethrow; // Rethrow to let calling code handle it
     }

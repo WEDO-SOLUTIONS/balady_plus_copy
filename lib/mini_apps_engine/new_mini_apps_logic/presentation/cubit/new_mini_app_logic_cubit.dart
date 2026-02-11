@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
@@ -28,11 +29,8 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
   static const _favoritesKey = 'mini_apps_favorite_ids';
 
-  NewMiniAppLogicCubit(
-    this.getMiniAppsUseCase,
-    this.secureStorage,
-    this.homeServicesUseCases,
-  ) : super(NewMiniAppLogicState.initial());
+  NewMiniAppLogicCubit(this.getMiniAppsUseCase, this.secureStorage, this.homeServicesUseCases)
+    : super(NewMiniAppLogicState.initial());
 
   Timer? _searchDebounce;
 
@@ -56,20 +54,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       ),
     );
 
-    // ✅ Get login status from CommonProperties if not provided
-    final isLoggedInLifestyle =
-        isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
-    final isLoggedInMunicipality =
-        isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
-
-    // ⚠️ Don't default business to true here; it causes wrong view after rebuilds.
+    final isLoggedInLifestyle = isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
+    final isLoggedInMunicipality = isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
     final userAccountBusiness = isUserAccountBusiness ?? false;
 
-    final result = await getMiniAppsUseCase(
-      isLoggedInLifestyle,
-      isLoggedInMunicipality,
-      userAccountBusiness,
-    );
+    final result = await getMiniAppsUseCase(isLoggedInLifestyle, isLoggedInMunicipality);
 
     result.fold(
       (e) {
@@ -100,19 +89,17 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         // ✅ 2) Filter groups recursively by allowed apps
         // (fixes subCategoryGroup + "Other Services" leaking)
         // ---------------------------
-        final filteredGroups = _filterGroupsRecursivelyByAllowedIds(
-          data.appGroups,
-          allowedIds,
+        final filteredGroups = _filterAppGroups(
+          groups: _filterGroupsRecursivelyByAllowedIds(data.appGroups, allowedIds),
+          isLoggedInMunicipality: isLoggedInMunicipality,
+          isUserAccountBusiness: userAccountBusiness,
         );
 
         // ---------------------------
         // ✅ 3) Filter entry points apps by allowed apps
         // (fixes business apps appearing in Most Used section)
         // ---------------------------
-        final filteredEntryPoints = _filterEntryPointsByAllowedIds(
-          data.entryPoints,
-          allowedIds,
-        );
+        final filteredEntryPoints = _filterEntryPointsByAllowedIds(data.entryPoints, allowedIds);
 
         // ---------------------------
         // ✅ 4) Favorites should be computed from the filtered list
@@ -120,16 +107,10 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         final savedFavIds = await loadFavoriteIds();
         final appsById = {for (final app in filteredApps) app.id: app};
 
-        final favoriteApps = savedFavIds
-            .map((id) => appsById[id])
-            .whereType<MiniApp>()
-            .toList();
+        final favoriteApps = savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
 
         final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
-
-        final unFavoriteApps = filteredApps
-            .where((app) => !favoriteIdSet.contains(app.id))
-            .toList();
+        final unFavoriteApps = filteredApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
 
         // ---------------------------
         // ✅ 5) Emit ONE consistent state
@@ -154,24 +135,16 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   //! pull to refresh mini apps UI.
-  Future<void> refreshMiniApps({bool? isUserAccountBusiness}) async {
+  Future<void> refreshMiniApps({required bool isUserAccountBusiness}) async {
     if (state.isRefreshing) return;
 
-    emit(
-      state.copyWith(
-        isRefreshing: true,
-        favError: null,
-        entryPointsError: null,
-        searchError: null,
-      ),
-    );
+    emit(state.copyWith(isRefreshing: true, favError: null, entryPointsError: null, searchError: null));
 
     await loadMiniApps(
       showLoading: false,
       isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
       isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-      isUserAccountBusiness:
-          isUserAccountBusiness, // Default to true for refresh - will be updated by external listeners
+      isUserAccountBusiness: isUserAccountBusiness,
     );
 
     emit(state.copyWith(isRefreshing: false));
@@ -185,12 +158,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     if (favIndex != -1) {
       final app = favoriteApps.removeAt(favIndex);
       unFavoriteApps.insert(0, app);
-      emit(
-        state.copyWith(
-          favoriteApps: favoriteApps,
-          unFavoriteApps: unFavoriteApps,
-        ),
-      );
+      emit(state.copyWith(favoriteApps: favoriteApps, unFavoriteApps: unFavoriteApps));
       await saveFavoriteIds(favoriteApps);
       return;
     }
@@ -204,12 +172,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       }
       final app = unFavoriteApps.removeAt(unFavIndex);
       favoriteApps.add(app);
-      emit(
-        state.copyWith(
-          favoriteApps: favoriteApps,
-          unFavoriteApps: unFavoriteApps,
-        ),
-      );
+      emit(state.copyWith(favoriteApps: favoriteApps, unFavoriteApps: unFavoriteApps));
 
       await saveFavoriteIds(favoriteApps);
     }
@@ -237,38 +200,128 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       final trimmed = query.trim();
 
       if (trimmed.isEmpty) {
-        emit(
-          state.copyWith(
-            searchResults: [],
-            isSearching: false,
-            searchError: null,
-          ),
-        );
+        emit(state.copyWith(searchResults: [], isSearching: false, searchError: null));
         return;
       }
 
-      final baseList =
-          source ?? [...state.favoriteApps, ...state.unFavoriteApps];
+      final baseList = source ?? [...state.favoriteApps, ...state.unFavoriteApps];
 
-      final q = trimmed.toLowerCase();
+      final q = _normalizeForSearch(trimmed.toLowerCase());
 
       final results = baseList.where((app) {
-        return app.name.toLowerCase().contains(q) ||
-            app.description.toLowerCase().contains(q);
+        final name = _normalizeForSearch(app.name.toLowerCase());
+        final description = _normalizeForSearch(app.description.toLowerCase());
+
+        // Fast path: keep existing exact / substring behaviour
+        if (name.contains(q) || description.contains(q)) {
+          return true;
+        }
+
+        // Fuzzy path: allow for small spelling mistakes
+        return _isFuzzyMatch(name, q) || _isFuzzyMatch(description, q);
       }).toList();
 
-      emit(
-        state.copyWith(
-          isSearching: false,
-          searchResults: results,
-          searchError: null,
-        ),
-      );
+      emit(state.copyWith(isSearching: false, searchResults: results, searchError: null));
     });
 
-    emit(
-      state.copyWith(isSearching: true, searchError: null, searchResults: []),
-    );
+    emit(state.copyWith(isSearching: true, searchError: null, searchResults: []));
+  }
+
+  String _normalizeForSearch(String input) {
+    // Basic Arabic text normalization so visually similar words match:
+    // - Remove tatweel
+    // - Strip common diacritics
+    // - Unify alef forms, taa marbuta, and alif maqsura / yaa
+    var s = input;
+
+    // Remove tatweel (kashida)
+    s = s.replaceAll('\u0640', '');
+
+    // Remove Arabic diacritics
+    s = s.replaceAll(RegExp(r'[\u064B-\u065F\u0670]'), '');
+
+    // Character-level normalizations
+    const Map<String, String> charMap = {
+      'أ': 'ا',
+      'إ': 'ا',
+      'آ': 'ا',
+      'ٱ': 'ا',
+      'ى': 'ي', // alif maqsura -> yaa
+      'ة': 'ه', // taa marbuta -> ha
+    };
+
+    charMap.forEach((from, to) {
+      s = s.replaceAll(from, to);
+    });
+
+    return s;
+  }
+
+  bool _isFuzzyMatch(String text, String query) {
+    // Split into tokens so we compare against individual words as well
+    final tokens = text.split(RegExp(r'\s+')).where((t) => t.isNotEmpty).toList();
+
+    for (final token in tokens) {
+      final distance = _levenshteinDistance(token, query);
+      final maxLen = math.max(token.length, query.length);
+
+      // Allow 1 typo for very short words, 2 for longer ones
+      final allowedTypos = maxLen <= 4 ? 1 : 2;
+
+      if (distance <= allowedTypos) {
+        return true;
+      }
+    }
+
+    // As a fallback, compare the whole text for very short labels
+    if (tokens.length <= 2) {
+      final distance = _levenshteinDistance(text, query);
+      final maxLen = math.max(text.length, query.length);
+      final allowedTypos = maxLen <= 4 ? 1 : 2;
+      if (distance <= allowedTypos) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  int _levenshteinDistance(String s, String t) {
+    if (s == t) return 0;
+    if (s.isEmpty) return t.length;
+    if (t.isEmpty) return s.length;
+
+    final m = s.length;
+    final n = t.length;
+
+    // 2-row dynamic programming table to keep memory small
+    List<int> prev = List<int>.generate(n + 1, (j) => j);
+    List<int> curr = List<int>.filled(n + 1, 0);
+
+    for (int i = 1; i <= m; i++) {
+      curr[0] = i;
+      final sChar = s.codeUnitAt(i - 1);
+
+      for (int j = 1; j <= n; j++) {
+        final tChar = t.codeUnitAt(j - 1);
+        final cost = sChar == tChar ? 0 : 1;
+
+        curr[j] = math.min(
+          math.min(
+            prev[j] + 1, // deletion
+            curr[j - 1] + 1, // insertion
+          ),
+          prev[j - 1] + cost, // substitution
+        );
+      }
+
+      // swap rows
+      final temp = prev;
+      prev = curr;
+      curr = temp;
+    }
+
+    return prev[n];
   }
 
   Future<List<String>> loadFavoriteIds() async {
@@ -318,22 +371,18 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
     /// continue flow
 
-    if (miniApp.latestVersion?.otpLogin == true &&
-        miniApp.latestVersion?.deepLinkDto == null) {
+    if (miniApp.latestVersion?.otpLogin == true && miniApp.latestVersion?.deepLinkDto == null) {
       CommonFunctions.onLogin();
     } else {
       if (miniApp.latestVersion?.deepLinkDto != null) {
         try {
-          await AppLaunchService.launchApp(
-            deepLinkInfo: miniApp.latestVersion!.deepLinkDto!,
-          );
+          await AppLaunchService.launchApp(deepLinkInfo: miniApp.latestVersion!.deepLinkDto!);
         } catch (e) {
           CommonFunctions.showError('launch_failed'.tr());
         }
       } else {
         if (miniApp.childDeepLinkUrl != null) {
-          MiniApp? parentMAiniApp =
-              state.parentMiniApp[miniApp.parentServiceKey];
+          MiniApp? parentMAiniApp = state.parentMiniApp[miniApp.parentServiceKey];
 
           if (parentMAiniApp != null) {
             NavigationService.pushNamed(
@@ -345,28 +394,18 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
               ),
             );
           } else {
-            CommonFunctions.showError(
-              'Show errors Not Fund The Parent Maini App'.tr(),
-            );
+            CommonFunctions.showError('Show errors Not Fund The Parent Maini App'.tr());
           }
         } else {
-          NavigationService.pushNamed(
-            routeName: RouteName.miniAppsMainScreen,
-            args: miniApp,
-          );
+          NavigationService.pushNamed(routeName: RouteName.miniAppsMainScreen, args: miniApp);
         }
       }
     }
   }
 
-  Future<void> openMiniAppByServiceKey({
-    required String serviceKey,
-    String? path,
-  }) async {
+  Future<void> openMiniAppByServiceKey({required String serviceKey, String? path}) async {
     try {
-      MiniApp miniApp = state.allMiniApps
-          .firstWhere((service) => service.serviceKey == serviceKey)
-          .copyWith();
+      MiniApp miniApp = state.allMiniApps.firstWhere((service) => service.serviceKey == serviceKey).copyWith();
 
       openMiniApp(miniApp);
     } catch (e) {
@@ -375,9 +414,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   void clearSearch() {
-    emit(
-      state.copyWith(searchResults: [], isSearching: false, searchError: null),
-    );
+    emit(state.copyWith(searchResults: [], isSearching: false, searchError: null));
   }
 
   void setSortType(FilterOptionType? sortType) {
@@ -430,19 +467,12 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     MiniApp model = miniApp;
 
     try {
-      final response = await homeServicesUseCases.getMiniAppAcessToken(
-        model.id,
-      );
+      final response = await homeServicesUseCases.getMiniAppAcessToken(model.id);
 
       return response.fold(
         (error) {
           if (error is ServerFailure) {
-            return BaseResponse(
-              code: 500,
-              message: error.errorMessage,
-              eventName: "getAccessToken",
-              data: null,
-            );
+            return BaseResponse(code: 500, message: error.errorMessage, eventName: "getAccessToken", data: null);
           } else {
             return BaseResponse(
               code: 500,
@@ -489,8 +519,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     }
 
     //! Municipality login
-    if (isLoggedInMunicipality && !isLoggedInLifestyle ||
-        isLoggedInMunicipality && isLoggedInLifestyle) {
+    if (isLoggedInMunicipality && !isLoggedInLifestyle || isLoggedInMunicipality && isLoggedInLifestyle) {
       //! Business account = show all
       if (isLoggedInMunicipality == true && isUserAccountBusiness == true) {
         return allApps;
@@ -536,9 +565,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           group.nameEn == 'Business Municipal Apps';
 
       // Skip business category for individual municipality accounts
-      if (isBusinessCategory &&
-          isLoggedInMunicipality == true &&
-          isUserAccountBusiness == false) {
+      if (isBusinessCategory && isLoggedInMunicipality == true && isUserAccountBusiness == false) {
         continue; // Don't add it at all
       }
 
@@ -548,19 +575,13 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     return filteredGroups;
   }
 
-  List<CategoryGroup> _filterGroupsRecursivelyByAllowedIds(
-    List<CategoryGroup> groups,
-    Set<String> allowedIds,
-  ) {
+  List<CategoryGroup> _filterGroupsRecursivelyByAllowedIds(List<CategoryGroup> groups, Set<String> allowedIds) {
     CategoryGroup? filterOne(CategoryGroup g) {
       // Filter apps in this group
-      final filteredApps = g.apps
-          .where((a) => allowedIds.contains(a.id))
-          .toList();
+      final filteredApps = g.apps.where((a) => allowedIds.contains(a.id)).toList();
 
       // Filter subcategories recursively (Map -> entries -> where -> Map)
-      final Map<String, CategoryGroup>? filteredSubs =
-          g.subCategoryGroup == null
+      final Map<String, CategoryGroup>? filteredSubs = g.subCategoryGroup == null
           ? null
           : Map<String, CategoryGroup>.fromEntries(
               g.subCategoryGroup!.entries.map((e) {
@@ -581,15 +602,10 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     return groups.map(filterOne).whereType<CategoryGroup>().toList();
   }
 
-  List<EntryPoints> _filterEntryPointsByAllowedIds(
-    List<EntryPoints> entryPoints,
-    Set<String> allowedIds,
-  ) {
+  List<EntryPoints> _filterEntryPointsByAllowedIds(List<EntryPoints> entryPoints, Set<String> allowedIds) {
     return entryPoints
         .map((ep) {
-          final filteredApps = ep.apps
-              .where((a) => allowedIds.contains(a.id))
-              .toList();
+          final filteredApps = ep.apps.where((a) => allowedIds.contains(a.id)).toList();
 
           if (filteredApps.isEmpty) return null;
 

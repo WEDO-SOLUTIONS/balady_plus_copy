@@ -10,7 +10,6 @@ import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;

@@ -7,9 +7,9 @@ import '../../shared_feature_exports.dart'
 class MoreActionsWidget extends StatelessWidget {
   final Widget action;
   const MoreActionsWidget({
-    Key? key,
+    super.key,
     required this.action,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

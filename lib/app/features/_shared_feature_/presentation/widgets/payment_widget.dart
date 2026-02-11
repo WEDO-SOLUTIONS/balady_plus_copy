@@ -23,8 +23,9 @@ class PaymentWidget extends StatelessWidget {
               PaymentRequest(accountNumber: billNumber, requestId: requestKey));
           EasyLoading.dismiss();
 
-          if (url != null)
+          if (url != null) {
             CommonFunctions.openBaladyWebView(url, isObjections: false);
+          }
         },
         text: "pay_bill".tr());
   }

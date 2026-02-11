@@ -7,7 +7,7 @@ import '../../bloc/volunteer_profile_event.dart';
 import '../../bloc/volunteer_profile_state.dart';
 
 class PersonalInfoStep extends StatefulWidget {
-  const PersonalInfoStep({Key? key}) : super(key: key);
+  const PersonalInfoStep({super.key});
 
   @override
   _PersonalInfoStepState createState() => _PersonalInfoStepState();
@@ -430,7 +430,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                   const Center(child: CircularProgressIndicator())
                 else
                   DropdownButtonFormField<String>(
-                    value: _selectedRegionId?.isEmpty == true
+                    initialValue: _selectedRegionId?.isEmpty == true
                         ? null
                         : _selectedRegionId,
                     decoration: InputDecoration(
@@ -470,7 +470,7 @@ class _PersonalInfoStepState extends State<PersonalInfoStep> {
                   const Center(child: CircularProgressIndicator())
                 else
                   DropdownButtonFormField<String>(
-                    value: _selectedCityId?.isEmpty == true
+                    initialValue: _selectedCityId?.isEmpty == true
                         ? null
                         : _selectedCityId,
                     decoration: InputDecoration(

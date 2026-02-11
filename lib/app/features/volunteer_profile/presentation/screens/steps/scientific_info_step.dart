@@ -7,7 +7,7 @@ import '../../bloc/volunteer_profile_event.dart';
 import '../../bloc/volunteer_profile_state.dart';
 
 class ScientificInfoStep extends StatelessWidget {
-  const ScientificInfoStep({Key? key}) : super(key: key);
+  const ScientificInfoStep({super.key});
 
   @override
   Widget build(BuildContext context) =>
@@ -52,7 +52,7 @@ class ScientificInfoStep extends StatelessWidget {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: state.educationalQualificationId?.isEmpty == true
+                  initialValue: state.educationalQualificationId?.isEmpty == true
                       ? null
                       : state.educationalQualificationId,
                   decoration: InputDecoration(
@@ -126,7 +126,7 @@ class ScientificInfoStep extends StatelessWidget {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: state.specializationId?.isEmpty == true
+                  initialValue: state.specializationId?.isEmpty == true
                       ? null
                       : state.specializationId,
                   decoration: InputDecoration(
@@ -221,7 +221,7 @@ class ScientificInfoStep extends StatelessWidget {
                       fontSize: 16, fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: state.workExperience?.isEmpty == true ||
+                initialValue: state.workExperience?.isEmpty == true ||
                         state.workExperience == 'null'
                     ? null
                     : state.workExperience,
@@ -285,7 +285,7 @@ class ScientificInfoStep extends StatelessWidget {
                 )
               else
                 DropdownButtonFormField<String>(
-                  value: state.languageId?.isEmpty == true
+                  initialValue: state.languageId?.isEmpty == true
                       ? null
                       : state.languageId,
                   decoration: InputDecoration(

@@ -14,14 +14,14 @@ class NeedLoginWidget extends StatefulWidget {
   final bool withoutActions;
 
   const NeedLoginWidget({
-    Key? key,
+    super.key,
     this.desc,
     this.img,
     this.title,
     this.mainPage,
     this.onSuccessLogin,
     this.withoutActions = false,
-  }) : super(key: key);
+  });
 
   @override
   State<NeedLoginWidget> createState() => _NeedLoginWidgetState();
@@ -33,7 +33,9 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
     return BlocListener<EntryPointCubit, EntryPointState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated &&
-            widget.onSuccessLogin != null) widget.onSuccessLogin!(true);
+            widget.onSuccessLogin != null) {
+          widget.onSuccessLogin!(true);
+        }
       },
       child: SingleChildScrollView(
         child: Padding(
@@ -119,7 +121,7 @@ class EmptyListWidget extends StatelessWidget {
   final double imgWidth;
 
   const EmptyListWidget({
-    Key? key,
+    super.key,
     this.desc,
     this.img = ImagePath.emptyDoc,
     this.title,
@@ -127,7 +129,7 @@ class EmptyListWidget extends StatelessWidget {
     this.btnPressed,
     this.imgHeight = 161,
     this.imgWidth = 190,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

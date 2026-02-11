@@ -6,8 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 class CheckCommercialLicenseField extends StatefulWidget {
   final CheckCommercialLicenseDataSource dataSource;
 
-  const CheckCommercialLicenseField({Key? key, required this.dataSource})
-      : super(key: key);
+  const CheckCommercialLicenseField({super.key, required this.dataSource});
 
   @override
   _CheckCommercialLicenseFieldState createState() =>

@@ -1,5 +1,6 @@
 /// data
 /// data -> data sources
+library;
 export 'data/data_sources/remote_data_source.dart';
 
 /// data -> models

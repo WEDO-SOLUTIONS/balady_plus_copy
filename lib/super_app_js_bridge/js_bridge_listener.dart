@@ -90,8 +90,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void closeCurrentMiniApp(dynamic msg, CompletionHandler handler) async {
-    if (NavigationService.navigatorKey.currentContext!.mounted)
+    if (NavigationService.navigatorKey.currentContext!.mounted) {
       Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
+    }
   }
 
   @pragma('vm:entry-point')
@@ -327,28 +328,28 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: AppThemeConfig(
           language: 'locale'.tr(),
           themeType: Theme.of(
-            NavigationService.navigatorKey!.currentContext!,
+            NavigationService.navigatorKey.currentContext!,
           ).brightness.name,
           colorSchemeDark: ColorSchemeModel(
             colorScheme: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).colorScheme,
             cardColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).cardColor,
             scaffoldBackgroundColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).scaffoldBackgroundColor,
           ),
           colorSchemeLight: ColorSchemeModel(
             colorScheme: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).colorScheme,
             cardColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).cardColor,
             scaffoldBackgroundColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).scaffoldBackgroundColor,
           ),
         ),
@@ -1277,7 +1278,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  unarchiveAndSave(
+  Future<void> unarchiveAndSave(
       String? extractPath,
       var zippedFile,
       CompletionHandler handler,

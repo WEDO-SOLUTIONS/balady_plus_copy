@@ -95,13 +95,17 @@ class EventDetailsResponse {
   }
 
   DateTime? getStartDateFull() {
-    if (startDate != null && startTime != null)
+    if (startDate != null && startTime != null) {
       return (setTimeInDateTime(startDate!, startTime!));
+    return null;
+    }
   }
 
   DateTime? getEndDateFull() {
-    if (endDate != null && endTime != null)
+    if (endDate != null && endTime != null) {
       return (setTimeInDateTime(endDate!, endTime!));
+    return null;
+    }
   }
 
   String getFess() {

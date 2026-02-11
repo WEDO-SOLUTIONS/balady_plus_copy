@@ -66,7 +66,7 @@ class AuthBiometricCell extends StatelessWidget {
                       child: CupertinoSwitch(
                         onChanged: (bool value) {},
                         value: isBiometrics,
-                        activeColor: context.colors.accentActive,
+                        activeTrackColor: context.colors.accentActive,
                       ),
                     ),
                   ],
