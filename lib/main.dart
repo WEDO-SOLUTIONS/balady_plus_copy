@@ -9,7 +9,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
-import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
   unhandledExceptionBaladyLogs(() async {

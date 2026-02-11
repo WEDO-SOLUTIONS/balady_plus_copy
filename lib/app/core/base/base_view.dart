@@ -9,11 +9,10 @@ class BaseView<T extends BaseViewModel> extends StatefulWidget {
   final Function()? onHideKeyboard;
 
   const BaseView(
-      {Key? key,
+      {super.key,
       required this.builder,
       required this.onModelReady,
-      this.onHideKeyboard})
-      : super(key: key);
+      this.onHideKeyboard});
 
   @override
   _BaseViewState<T> createState() => _BaseViewState<T>();

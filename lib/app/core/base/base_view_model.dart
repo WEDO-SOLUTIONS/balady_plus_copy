@@ -18,38 +18,38 @@ class BaseViewModel extends ChangeNotifier {
 
   String? errorMessage;
 
-  showLoading() {
+  void showLoading() {
     EasyLoading.show();
     isLoading = true;
     notifyListeners();
   }
 
-  hideLoading() {
+  void hideLoading() {
     EasyLoading.dismiss();
     isLoading = false;
     notifyListeners();
   }
 
-  showCenterLoading() {
+  void showCenterLoading() {
     EasyLoading.show();
   }
 
-  hideCenterLoading() {
+  void hideCenterLoading() {
     EasyLoading.dismiss();
   }
 
-  showLoader() {
+  void showLoader() {
     isLoading = true;
     notifyListeners();
   }
 
-  hideLoader() {
+  void hideLoader() {
     EasyLoading.dismiss();
     isLoading = false;
     notifyListeners();
   }
 
-  showError(String error) {
+  void showError(String error) {
     if (error.isNotEmpty) {
       try {
         BotToast.showSimpleNotification(
@@ -74,7 +74,7 @@ class BaseViewModel extends ChangeNotifier {
     }
   }
 
-  hideKeyboard() {
+  void hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
   }
 }

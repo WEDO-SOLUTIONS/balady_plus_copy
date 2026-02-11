@@ -13,12 +13,12 @@ class _TwoElevatedFooterButtons extends StatelessWidget {
   final VoidCallback onSecondButton;
   final String secondButtonText;
   const _TwoElevatedFooterButtons({
-    Key? key,
+    super.key,
     required this.onFirstButton,
     required this.firstButtonText,
     required this.onSecondButton,
     required this.secondButtonText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

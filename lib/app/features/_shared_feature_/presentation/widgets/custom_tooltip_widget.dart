@@ -8,8 +8,7 @@ class CustomTooltipWidget extends StatelessWidget {
   final String message;
 
   const CustomTooltipWidget(
-      {Key? key, required this.message, required this.child})
-      : super(key: key);
+      {super.key, required this.message, required this.child});
 
   @override
   Widget build(BuildContext context) {

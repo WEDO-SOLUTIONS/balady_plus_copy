@@ -18,16 +18,15 @@ class HijriCalendarDateWidget extends StatelessWidget {
   final HijriCalendar? minValue;
   final HijriCalendar? maxValue;
 
-  HijriCalendarDateWidget(
-      {Key? key,
+  const HijriCalendarDateWidget(
+      {super.key,
       this.fieldLength,
       required this.fieldName,
       required this.isMandatory,
       this.currentVlaue,
       required this.onChanged,
       this.minValue,
-      this.maxValue})
-      : super(key: key);
+      this.maxValue});
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +52,7 @@ class HijriCalendarDateWidget extends StatelessWidget {
     );
   }
 
-  showPickerDate(String? currentDate, BuildContext context) {
+  void showPickerDate(String? currentDate, BuildContext context) {
     hijri_picker.Picker(
         isAr: CommonFunctions.isAppAR,
         confirmTextStyle: const TextStyle(

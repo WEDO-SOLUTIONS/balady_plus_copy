@@ -193,5 +193,6 @@ class _BottomSheetWithActionsState extends State<BottomSheetWithActions> {
     bottom: context.bottomPadding,
   );
 
+  @override
   BuildContext get context => NavigationService.navigatorKey.currentContext!;
 }

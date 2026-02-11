@@ -14,7 +14,7 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class WebMiniAppsScreen extends ConsumerStatefulWidget {
-  const WebMiniAppsScreen({Key? key}) : super(key: key);
+  const WebMiniAppsScreen({super.key});
 
   @override
   ConsumerState<WebMiniAppsScreen> createState() => _WebMiniAppsScreenState();
@@ -112,7 +112,7 @@ class _WebMiniAppsScreenState extends ConsumerState<WebMiniAppsScreen> {
 
     if (!_initialized) {
       _controller
-        ..loadRequest(Uri.parse(state.servicePath + "#" + state.path))
+        ..loadRequest(Uri.parse("${state.servicePath}#${state.path}"))
         ..addJavaScriptObject(
           JsBridgeListener(
             miniAppsEngineBloc: miniAppsEngineBloc,

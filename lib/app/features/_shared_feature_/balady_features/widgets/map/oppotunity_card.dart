@@ -310,7 +310,7 @@ String getBidEndDate(String bidEndDate) {
 
 class RentOrInvestWidget extends StatelessWidget {
   final String type;
-  const RentOrInvestWidget({Key? key, required this.type}) : super(key: key);
+  const RentOrInvestWidget({super.key, required this.type});
   @override
   Widget build(BuildContext context) {
     return Container(

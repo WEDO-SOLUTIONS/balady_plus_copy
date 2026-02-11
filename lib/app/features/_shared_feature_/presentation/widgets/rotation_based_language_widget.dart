@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 class RotationBasedLanguageWidget extends StatelessWidget {
   final Widget child;
   const RotationBasedLanguageWidget({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

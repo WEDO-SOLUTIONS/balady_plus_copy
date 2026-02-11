@@ -11,9 +11,9 @@ class SplashWrapper extends StatelessWidget {
   final Widget child;
 
   const SplashWrapper({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   void _navigateToForceUpdate() {
     NavigationService.pushAndReplaceForceUpdate();

@@ -167,7 +167,7 @@ class Astro {
   final String? moonrise;
   final String? moonset;
   final String? moonPhase;
-  final dynamic? moonIllumination;
+  final dynamic moonIllumination;
   final int? isMoonUp;
   final int? isSunUp;
 

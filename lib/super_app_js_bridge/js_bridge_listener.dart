@@ -15,7 +15,14 @@ import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocRequestStatus;
+import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
+import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_delegator_model.dart';
+import 'package:balady_plus/super_app_js_bridge/model/js_agent_model.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/dialog_on_web_view/show_dialog_on_web_view.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
@@ -77,12 +84,15 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openPdfFile);
     registerFunction(openAppSetting);
     registerFunction(closeCurrentMiniApp);
+    registerFunction(selectedDelegator);
+    registerFunction(selectedAgent);
   }
 
   @pragma('vm:entry-point')
   void closeCurrentMiniApp(dynamic msg, CompletionHandler handler) async {
-    if (NavigationService.navigatorKey.currentContext!.mounted)
+    if (NavigationService.navigatorKey.currentContext!.mounted) {
       Navigator.of(NavigationService.navigatorKey.currentContext!).pop();
+    }
   }
 
   @pragma('vm:entry-point')
@@ -318,28 +328,28 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         data: AppThemeConfig(
           language: 'locale'.tr(),
           themeType: Theme.of(
-            NavigationService.navigatorKey!.currentContext!,
+            NavigationService.navigatorKey.currentContext!,
           ).brightness.name,
           colorSchemeDark: ColorSchemeModel(
             colorScheme: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).colorScheme,
             cardColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).cardColor,
             scaffoldBackgroundColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).scaffoldBackgroundColor,
           ),
           colorSchemeLight: ColorSchemeModel(
             colorScheme: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).colorScheme,
             cardColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).cardColor,
             scaffoldBackgroundColor: Theme.of(
-              NavigationService.navigatorKey!.currentContext!,
+              NavigationService.navigatorKey.currentContext!,
             ).scaffoldBackgroundColor,
           ),
         ),
@@ -1268,7 +1278,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  unarchiveAndSave(
+  Future<void> unarchiveAndSave(
       String? extractPath,
       var zippedFile,
       CompletionHandler handler,
@@ -1321,6 +1331,160 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
     // return indexFilePath;
+  }
+
+  @pragma('vm:entry-point')
+  void selectedDelegator(dynamic msg, CompletionHandler handler) async {
+    try {
+      final cubit = sl<DelegatorsCubit>();
+      
+      // Since DelegatorsCubit is a factory, we need to:
+      // 1. Read saved selection from SharedPreferences
+      // 2. Fetch delegators if not already loaded
+      // 3. Find the matching delegator entity
+      
+      final savedDelegatorId = sharedPrefs.getSelectedDelegatorId();
+      
+      if (savedDelegatorId == null) {
+        // No selection saved
+        final response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedDelegator",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+        return;
+      }
+      
+      // Fetch delegators if not already loaded
+      if (cubit.state.delegators.isEmpty) {
+        cubit.getDelegators();
+        
+        // Wait for delegators to load (max 10 seconds)
+        int attempts = 0;
+        while (attempts < 20 && cubit.state.status == BlocRequestStatus.submissionGetLoading) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          attempts++;
+        }
+      }
+      
+      // Find the delegator matching the saved ID
+      DelegatorEntity? selectedDelegate;
+      try {
+        selectedDelegate = cubit.state.delegators.firstWhere(
+          (d) => d.id == savedDelegatorId,
+        );
+      } catch (e) {
+        // Delegator not found in current list
+        print('Selected delegator $savedDelegatorId not found in delegators list');
+      }
+      
+      BaseResponse response;
+      if (selectedDelegate != null) {
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedDelegator",
+          data: JsDelegatorModel.fromEntity(selectedDelegate),
+        );
+      } else {
+        // Selection exists but delegator not found (might have been removed)
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedDelegator",
+          data: null,
+        );
+      }
+      
+      handler.complete(response.jsonEncodeModel());
+    } catch (e) {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "Error getting selected delegator: $e",
+        eventName: "selectedDelegator",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void selectedAgent(dynamic msg, CompletionHandler handler) async {
+    try {
+      final cubit = sl<DelegatorsCubit>();
+      
+      // Since DelegatorsCubit is a factory, we need to:
+      // 1. Read saved selection from SharedPreferences
+      // 2. Fetch agents if not already loaded
+      // 3. Find the matching agent entity
+      
+      final savedAgentId = sharedPrefs.getSelectedAgentId();
+      
+      if (savedAgentId == null) {
+        // No selection saved
+        final response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedAgent",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+        return;
+      }
+      
+      // Fetch agents if not already loaded
+      if (cubit.state.agents.isEmpty) {
+        cubit.getAgents();
+        
+        // Wait for agents to load (max 10 seconds)
+        int attempts = 0;
+        while (attempts < 20 && cubit.state.agentStatus == BlocRequestStatus.submissionGetLoading) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          attempts++;
+        }
+      }
+      
+      // Find the agent matching the saved ID
+      AgentEntity? selectedAgent;
+      try {
+        selectedAgent = cubit.state.agents.firstWhere(
+          (a) => a.agencyNumber == savedAgentId,
+        );
+      } catch (e) {
+        // Agent not found in current list
+        print('Selected agent $savedAgentId not found in agents list');
+      }
+      
+      BaseResponse response;
+      if (selectedAgent != null) {
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedAgent",
+          data: JsAgentModel.fromEntity(selectedAgent),
+        );
+      } else {
+        // Selection exists but agent not found (might have been removed)
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "selectedAgent",
+          data: null,
+        );
+      }
+      
+      handler.complete(response.jsonEncodeModel());
+    } catch (e) {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "Error getting selected agent: $e",
+        eventName: "selectedAgent",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 }
 

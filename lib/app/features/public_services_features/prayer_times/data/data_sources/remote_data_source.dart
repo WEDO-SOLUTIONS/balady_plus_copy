@@ -49,7 +49,7 @@ class PrayerTimesRemoteDataSourceImplementation
       final result = ResponseBodyModel.fromMap(data).data?.result;
 
       return PrayerTimesResponseModel.fromMap(result as Map<String, dynamic>);
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -116,7 +116,7 @@ class PrayerTimesRemoteDataSourceImplementation
               .map((i) => PrayerTimeRangeResponseModel.fromJson(i))
               .toList()
           : [];
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,

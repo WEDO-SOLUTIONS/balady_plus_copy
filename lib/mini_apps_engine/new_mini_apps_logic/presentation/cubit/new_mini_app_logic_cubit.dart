@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
@@ -38,7 +39,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     bool showLoading = true,
     bool? isUserLoggedInLifeStyle,
     bool? isUserLoggedInMunicipality,
-    bool? isUserAccountBusiness,
+    required bool isUserAccountBusiness,
   }) async {
     emit(
       state.copyWith(
@@ -53,12 +54,11 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       ),
     );
 
-    // Get login status from CommonProperties if not provided
     final isLoggedInLifestyle = isUserLoggedInLifeStyle ?? CommonProperties.isLoggedIn;
     final isLoggedInMunicipality = isUserLoggedInMunicipality ?? CommonProperties.isLoggedInMunicipality;
-    final userAccountBusiness = isUserAccountBusiness ?? false;
+    final userAccountBusiness = isUserAccountBusiness;
 
-    final result = await getMiniAppsUseCase(isLoggedInLifestyle, isLoggedInMunicipality, userAccountBusiness);
+    final result = await getMiniAppsUseCase(isLoggedInLifestyle, isLoggedInMunicipality);
 
     result.fold(
       (e) {
@@ -73,9 +73,9 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
         );
       },
       (final data) async {
-        final savedFavIds = await loadFavoriteIds();
-
-        // Apply business logic filtering in the state layer
+        // ---------------------------
+        // ✅ 1) Filter apps (business rules)
+        // ---------------------------
         final filteredApps = _filterMiniApps(
           allApps: data.miniApps,
           isLoggedInLifestyle: isLoggedInLifestyle,
@@ -83,24 +83,41 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
           isUserAccountBusiness: userAccountBusiness,
         );
 
+        final allowedIds = filteredApps.map((e) => e.id).toSet();
+
+        // ---------------------------
+        // ✅ 2) Filter groups recursively by allowed apps
+        // (fixes subCategoryGroup + "Other Services" leaking)
+        // ---------------------------
         final filteredGroups = _filterAppGroups(
-          groups: data.appGroups,
+          groups: _filterGroupsRecursivelyByAllowedIds(data.appGroups, allowedIds),
           isLoggedInMunicipality: isLoggedInMunicipality,
           isUserAccountBusiness: userAccountBusiness,
         );
 
-        final allApps = filteredApps;
+        // ---------------------------
+        // ✅ 3) Filter entry points apps by allowed apps
+        // (fixes business apps appearing in Most Used section)
+        // ---------------------------
+        final filteredEntryPoints = _filterEntryPointsByAllowedIds(data.entryPoints, allowedIds);
 
-        final appsById = {for (final app in allApps) app.id: app};
+        // ---------------------------
+        // ✅ 4) Favorites should be computed from the filtered list
+        // ---------------------------
+        final savedFavIds = await loadFavoriteIds();
+        final appsById = {for (final app in filteredApps) app.id: app};
 
         final favoriteApps = savedFavIds.map((id) => appsById[id]).whereType<MiniApp>().toList();
 
         final favoriteIdSet = favoriteApps.map((e) => e.id).toSet();
-        final unFavoriteApps = allApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
+        final unFavoriteApps = filteredApps.where((app) => !favoriteIdSet.contains(app.id)).toList();
 
+        // ---------------------------
+        // ✅ 5) Emit ONE consistent state
+        // ---------------------------
         emit(
           state.copyWith(
-            allMiniApps: data.miniApps,
+            allMiniApps: filteredApps,
             isFavLoading: false,
             isAppsGroupLoading: false,
             isEntryPointsLoading: false,
@@ -108,7 +125,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
             unFavoriteApps: unFavoriteApps,
             parentMiniApp: data.parentMiniApp,
             appGroups: filteredGroups,
-            entryPoints: data.entryPoints,
+            entryPoints: filteredEntryPoints,
             favError: null,
             entryPointsError: null,
           ),
@@ -118,7 +135,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
   }
 
   //! pull to refresh mini apps UI.
-  Future<void> refreshMiniApps() async {
+  Future<void> refreshMiniApps({required bool isUserAccountBusiness}) async {
     if (state.isRefreshing) return;
 
     emit(state.copyWith(isRefreshing: true, favError: null, entryPointsError: null, searchError: null));
@@ -127,7 +144,7 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
       showLoading: false,
       isUserLoggedInLifeStyle: CommonProperties.isLoggedIn,
       isUserLoggedInMunicipality: CommonProperties.isLoggedInMunicipality,
-      isUserAccountBusiness: true, // Default to true for refresh - will be updated by external listeners
+      isUserAccountBusiness: isUserAccountBusiness,
     );
 
     emit(state.copyWith(isRefreshing: false));
@@ -189,16 +206,122 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
 
       final baseList = source ?? [...state.favoriteApps, ...state.unFavoriteApps];
 
-      final q = trimmed.toLowerCase();
+      final q = _normalizeForSearch(trimmed.toLowerCase());
 
       final results = baseList.where((app) {
-        return app.name.toLowerCase().contains(q) || app.description.toLowerCase().contains(q);
+        final name = _normalizeForSearch(app.name.toLowerCase());
+        final description = _normalizeForSearch(app.description.toLowerCase());
+
+        // Fast path: keep existing exact / substring behaviour
+        if (name.contains(q) || description.contains(q)) {
+          return true;
+        }
+
+        // Fuzzy path: allow for small spelling mistakes
+        return _isFuzzyMatch(name, q) || _isFuzzyMatch(description, q);
       }).toList();
 
       emit(state.copyWith(isSearching: false, searchResults: results, searchError: null));
     });
 
     emit(state.copyWith(isSearching: true, searchError: null, searchResults: []));
+  }
+
+  String _normalizeForSearch(String input) {
+    // Basic Arabic text normalization so visually similar words match:
+    // - Remove tatweel
+    // - Strip common diacritics
+    // - Unify alef forms, taa marbuta, and alif maqsura / yaa
+    var s = input;
+
+    // Remove tatweel (kashida)
+    s = s.replaceAll('\u0640', '');
+
+    // Remove Arabic diacritics
+    s = s.replaceAll(RegExp(r'[\u064B-\u065F\u0670]'), '');
+
+    // Character-level normalizations
+    const Map<String, String> charMap = {
+      'أ': 'ا',
+      'إ': 'ا',
+      'آ': 'ا',
+      'ٱ': 'ا',
+      'ى': 'ي', // alif maqsura -> yaa
+      'ة': 'ه', // taa marbuta -> ha
+    };
+
+    charMap.forEach((from, to) {
+      s = s.replaceAll(from, to);
+    });
+
+    return s;
+  }
+
+  bool _isFuzzyMatch(String text, String query) {
+    // Split into tokens so we compare against individual words as well
+    final tokens = text.split(RegExp(r'\s+')).where((t) => t.isNotEmpty).toList();
+
+    for (final token in tokens) {
+      final distance = _levenshteinDistance(token, query);
+      final maxLen = math.max(token.length, query.length);
+
+      // Allow 1 typo for very short words, 2 for longer ones
+      final allowedTypos = maxLen <= 4 ? 1 : 2;
+
+      if (distance <= allowedTypos) {
+        return true;
+      }
+    }
+
+    // As a fallback, compare the whole text for very short labels
+    if (tokens.length <= 2) {
+      final distance = _levenshteinDistance(text, query);
+      final maxLen = math.max(text.length, query.length);
+      final allowedTypos = maxLen <= 4 ? 1 : 2;
+      if (distance <= allowedTypos) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  int _levenshteinDistance(String s, String t) {
+    if (s == t) return 0;
+    if (s.isEmpty) return t.length;
+    if (t.isEmpty) return s.length;
+
+    final m = s.length;
+    final n = t.length;
+
+    // 2-row dynamic programming table to keep memory small
+    List<int> prev = List<int>.generate(n + 1, (j) => j);
+    List<int> curr = List<int>.filled(n + 1, 0);
+
+    for (int i = 1; i <= m; i++) {
+      curr[0] = i;
+      final sChar = s.codeUnitAt(i - 1);
+
+      for (int j = 1; j <= n; j++) {
+        final tChar = t.codeUnitAt(j - 1);
+        final cost = sChar == tChar ? 0 : 1;
+
+        curr[j] = math.min(
+          math.min(
+            prev[j] + 1, // deletion
+            curr[j - 1] + 1, // insertion
+          ),
+          prev[j - 1] + cost, // substitution
+        );
+      }
+
+      // swap rows
+      final temp = prev;
+      prev = curr;
+      curr = temp;
+    }
+
+    return prev[n];
   }
 
   Future<List<String>> loadFavoriteIds() async {
@@ -450,5 +573,51 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     }
 
     return filteredGroups;
+  }
+
+  List<CategoryGroup> _filterGroupsRecursivelyByAllowedIds(List<CategoryGroup> groups, Set<String> allowedIds) {
+    CategoryGroup? filterOne(CategoryGroup g) {
+      // Filter apps in this group
+      final filteredApps = g.apps.where((a) => allowedIds.contains(a.id)).toList();
+
+      // Filter subcategories recursively (Map -> entries -> where -> Map)
+      final Map<String, CategoryGroup>? filteredSubs = g.subCategoryGroup == null
+          ? null
+          : Map<String, CategoryGroup>.fromEntries(
+              g.subCategoryGroup!.entries.map((e) {
+                final filteredChild = filterOne(e.value);
+                if (filteredChild == null) return null;
+                return MapEntry(e.key, filteredChild);
+              }).whereType<MapEntry<String, CategoryGroup>>(),
+            );
+
+      final hasSubs = filteredSubs != null && filteredSubs.isNotEmpty;
+
+      // If group has no apps and no subs after filtering -> drop it
+      if (filteredApps.isEmpty && !hasSubs) return null;
+
+      return g.copyWith(apps: filteredApps, subCategoryGroup: filteredSubs);
+    }
+
+    return groups.map(filterOne).whereType<CategoryGroup>().toList();
+  }
+
+  List<EntryPoints> _filterEntryPointsByAllowedIds(List<EntryPoints> entryPoints, Set<String> allowedIds) {
+    return entryPoints
+        .map((ep) {
+          final filteredApps = ep.apps.where((a) => allowedIds.contains(a.id)).toList();
+
+          if (filteredApps.isEmpty) return null;
+
+          return EntryPoints(
+            entryPointKey: ep.entryPointKey,
+            arName: ep.arName,
+            enName: ep.enName,
+            isActive: ep.isActive,
+            apps: filteredApps,
+          );
+        })
+        .whereType<EntryPoints>()
+        .toList();
   }
 }

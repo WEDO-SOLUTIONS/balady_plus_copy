@@ -24,7 +24,7 @@ class LocationCubit extends Cubit<LocationState> {
 
   LocationCubit()
       : _getGISData = GetGISData(repository: sl()),
-        super(const LocationState()) {}
+        super(const LocationState());
 
   Future<void> getLocationPermission() async {
     Perm.ServiceStatus? serviceStatus =
@@ -58,8 +58,9 @@ class LocationCubit extends Cubit<LocationState> {
   }
 
   Future<void> getLocationData() async {
-    if (state.locationPermissionStatus != BlocStatus.locationPermissionSuceess)
+    if (state.locationPermissionStatus != BlocStatus.locationPermissionSuceess) {
       return;
+    }
 
     emit(state.copyWith(locationStatus: BlocStatus.loading));
 

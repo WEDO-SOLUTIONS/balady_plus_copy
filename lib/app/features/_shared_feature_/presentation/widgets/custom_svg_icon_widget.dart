@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
+import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/common_functions.dart';
@@ -130,7 +131,7 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                         Widget child,
                         ImageChunkEvent? loadingProgress,
                       ) {
-                        //  if (loadingProgress == null) return child;
+                        if (loadingProgress == null) return child;
                         return widget.placeHolderWidget ??
                             Container(
                               color: AppColor.primary900Light,
@@ -244,7 +245,7 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
 
   const CustomSvgIconWithBackgroundWidget(
     this.iconPath, {
-    Key? key,
+    super.key,
     this.iconWidth = 16,
     this.iconHeight = 16,
     this.iconColor,
@@ -254,7 +255,7 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
     this.width = 60.0,
     this.height = 60.0,
     this.backgroundShape = BoxShape.circle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -18,7 +18,7 @@ class LocationRetriveLocation extends StatelessWidget {
       padding: EdgeInsets.all(16),
       child: Stack(
         children: [
-          Container(
+          SizedBox(
             width: MediaQuery.of(context).size.width,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -52,10 +52,11 @@ class LocationRetriveLocation extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: EnhancedCustomElevatedButtonWidget(
               btnPressed: () {
-                if (permission)
+                if (permission) {
                   Geolocator.openAppSettings();
-                else
+                } else {
                   AppSettings.openAppSettings(type: AppSettingsType.location);
+                }
               },
               btnText: ("settings").tr(),
               btnTextSize: 18,

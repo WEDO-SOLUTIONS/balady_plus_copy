@@ -10,12 +10,10 @@ class GetNewMiniAppsLogicUseCase {
   Future<Either<Exception, NewMiniAppsLogicEntity>> call(
     final bool isLoggedInLifestyle,
     final bool isLoggedInMunicipality,
-    final bool isUserAccountBusiness,
   ) {
     return repository.getMiniApps(
       isLoggedInLifestyle,
       isLoggedInMunicipality,
-      isUserAccountBusiness,
     );
   }
 }

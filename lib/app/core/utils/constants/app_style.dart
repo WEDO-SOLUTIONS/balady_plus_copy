@@ -5,7 +5,7 @@ import '../utils_exports.dart'
     show AppColor, AppConfig, AppFontWeight, UIHelper;
 
 class AppStyle {
-  static get fontFamily =>
+  static String? get fontFamily =>
       AppConfig.appFontType.isNotEmpty ? AppConfig.appFontType : null;
 
   /// Text Styles

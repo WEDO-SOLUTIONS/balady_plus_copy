@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';

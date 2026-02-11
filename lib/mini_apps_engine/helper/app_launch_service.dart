@@ -11,7 +11,7 @@ class AppLaunchService {
     // String? deepLink,
   }) async {
     //_fallbackUrl the same value of deepLink paramter
-    String? _fallbackUrl = Platform.isAndroid
+    String? fallbackUrl = Platform.isAndroid
         ? deepLinkInfo.deepLinkAndroid
         : deepLinkInfo.deepLinkIos;
 
@@ -19,14 +19,14 @@ class AppLaunchService {
       bool launched = await _tryLaunchApp(
         androidPackageName: deepLinkInfo.androidPackageName ?? "",
         iosUrlScheme: deepLinkInfo.iosUrlScheme,
-        deepLink: _fallbackUrl,
+        deepLink: fallbackUrl,
       );
 
       if (!launched) {
         await _redirectToStore(
           appStoreId: deepLinkInfo.appStoreId,
           playStoreId: deepLinkInfo.playStoreId,
-          fallbackUrl: _fallbackUrl,
+          fallbackUrl: fallbackUrl,
         );
       }
     } catch (e) {
@@ -34,7 +34,7 @@ class AppLaunchService {
       await _redirectToStore(
         appStoreId: deepLinkInfo.appStoreId,
         playStoreId: deepLinkInfo.playStoreId,
-        fallbackUrl: _fallbackUrl,
+        fallbackUrl: fallbackUrl,
       );
     }
   }

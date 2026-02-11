@@ -104,7 +104,7 @@ class _AccessibilitySettingsPageState
                                     controller.toggleGrayscale(value);
                                     onToggle?.call(value);
                                   },
-                                  activeColor: context.colors.accentDefault,
+                                  activeTrackColor: context.colors.accentDefault,
                                 );
                               },
                             ),

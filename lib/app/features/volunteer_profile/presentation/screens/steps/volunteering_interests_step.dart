@@ -47,7 +47,7 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value:
+                  initialValue:
                       state.skillsIds.isNotEmpty ? state.skillsIds.first : null,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
@@ -117,7 +117,7 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value: state.volunteeringLevelId,
+                  initialValue: state.volunteeringLevelId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(
@@ -185,7 +185,7 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value:
+                  initialValue:
                       state.interests.isNotEmpty ? state.interests.first : null,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
@@ -234,7 +234,7 @@ class _VolunteeringInterestsStepState extends State<VolunteeringInterestsStep> {
                 const Center(child: CircularProgressIndicator())
               else
                 DropdownButtonFormField<String>(
-                  value: state.volunteeringWorkFieldId,
+                  initialValue: state.volunteeringWorkFieldId,
                   decoration: InputDecoration(
                     hintText: 'choose'.tr(),
                     border: OutlineInputBorder(

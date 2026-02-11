@@ -16,7 +16,7 @@ class Claim extends Equatable {
   final String? type;
   final String? value;
 
-  Claim({this.type, this.value});
+  const Claim({this.type, this.value});
 
   @override
   List<Object?> get props => [];

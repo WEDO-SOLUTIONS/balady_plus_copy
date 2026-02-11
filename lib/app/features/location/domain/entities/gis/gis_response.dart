@@ -71,17 +71,23 @@ class GISResponse extends Equatable {
     if (includeStreetName &&
         streetName != null &&
         streetName.toLowerCase() != "null" &&
-        streetName.isNotEmpty) address += "$streetName, ";
+        streetName.isNotEmpty) {
+      address += "$streetName, ";
+    }
 
     if (includeDistrictName &&
         districtName != null &&
         districtName.toLowerCase() != "null" &&
-        districtName.isNotEmpty) address += "$districtName, ";
+        districtName.isNotEmpty) {
+      address += "$districtName, ";
+    }
 
     if (includeSubMunicipalityName &&
         subMunicipalityName != null &&
         subMunicipalityName.toLowerCase() != "null" &&
-        subMunicipalityName.isNotEmpty) address += "$subMunicipalityName, ";
+        subMunicipalityName.isNotEmpty) {
+      address += "$subMunicipalityName, ";
+    }
 
     if (includeAdminMunicipalityName &&
         adminMunicipalityName != null &&
@@ -107,17 +113,23 @@ class GISResponse extends Equatable {
     if (includeStreetName &&
         streetName != null &&
         streetName.toLowerCase() != "null" &&
-        streetName.isNotEmpty) address += "$streetName, ";
+        streetName.isNotEmpty) {
+      address += "$streetName, ";
+    }
 
     if (includeDistrictName &&
         districtName != null &&
         districtName.toLowerCase() != "null" &&
-        districtName.isNotEmpty) address += "$districtName, ";
+        districtName.isNotEmpty) {
+      address += "$districtName, ";
+    }
 
     if (includeSubMunicipalityName &&
         subMunicipalityName != null &&
         subMunicipalityName.toLowerCase() != "null" &&
-        subMunicipalityName.isNotEmpty) address += "$subMunicipalityName, ";
+        subMunicipalityName.isNotEmpty) {
+      address += "$subMunicipalityName, ";
+    }
 
     if (includeMunicipalityName &&
         municipalityName != null &&
