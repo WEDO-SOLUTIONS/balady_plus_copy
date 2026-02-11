@@ -52,18 +52,19 @@ class CustomNetworkImageWidget extends StatefulWidget {
   final bool sso;
   final bool addHeader;
 
-  const CustomNetworkImageWidget(this.imagePath,
-      {Key? key,
-      this.imageWidth,
-      this.imageHeight,
-      this.imageColor,
-      this.imageAlignment = Alignment.center,
-      this.imageFit = BoxFit.cover,
-      this.placeHolderWidget,
-      this.isVerifyingKey = false,
-      this.sso = false,
-      this.addHeader = false})
-      : super(key: key);
+  const CustomNetworkImageWidget(
+    this.imagePath, {
+    Key? key,
+    this.imageWidth,
+    this.imageHeight,
+    this.imageColor,
+    this.imageAlignment = Alignment.center,
+    this.imageFit = BoxFit.cover,
+    this.placeHolderWidget,
+    this.isVerifyingKey = false,
+    this.sso = false,
+    this.addHeader = false,
+  }) : super(key: key);
 
   @override
   State<CustomNetworkImageWidget> createState() =>
@@ -79,20 +80,23 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
     final header = widget.sso
         ? {"Authorization": "Bearer ${CommonProperties.token}"}
         : widget.isVerifyingKey
-            ? //null
-            {
-                "verifyingKEY":
-                    CommonFunctions.hashRequest(widget.imagePath, "GET")
+        ? //null
+          {
+            "verifyingKEY": CommonFunctions.hashRequest(
+              widget.imagePath,
+              "GET",
+            ),
 
-                //  "Authorization":
-                //      "Bearer ${locator<AuthService>().accessToken}"
-              }
-            : !widget.isVerifyingKey //MM
-                ? {
-                    'Authorization':
-                        'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}'
-                  }
-                : null;
+            //  "Authorization":
+            //      "Bearer ${locator<AuthService>().accessToken}"
+          }
+        : !widget
+              .isVerifyingKey //MM
+        ? {
+            'Authorization':
+                'Bearer ${sl<EntryPointCubit>().state.apigeeToken?.accessToken}',
+          }
+        : null;
 
     if (widget.addHeader == true && header != null) {
       header.addAll({"X-Service-Id": "2"});
@@ -100,53 +104,61 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
 
     return isUrl
         ? isSvgIcon
-            ? SvgPicture.network(
-                widget.imagePath,
-                width: widget.imageWidth,
-                height: widget.imageHeight,
-                fit: widget.imageFit,
-                placeholderBuilder: (BuildContext context) {
-                  return widget.placeHolderWidget ??
-                      Container(
-                        color: AppColor.primary900Light,
-                        width: widget.imageWidth,
-                        height: widget.imageHeight,
-                      );
-                },
-              )
-            : Image.network(
-                widget.imagePath,
-                width: widget.imageWidth,
-                height: widget.imageHeight,
-                fit: widget.imageFit,
-                headers: header,
-                loadingBuilder: (BuildContext context, Widget child,
-                    ImageChunkEvent? loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return widget.placeHolderWidget ??
-                      Container(
-                        color: AppColor.primary900Light,
-                        width: widget.imageWidth,
-                        height: widget.imageHeight,
-                      );
-                },
-                errorBuilder: (BuildContext context, Object exception,
-                    StackTrace? stackTrace) {
-                  print(exception.toString());
-                  return widget.placeHolderWidget ??
-                      Container(
-                        color: AppColor.primary900Light,
-                        width: widget.imageWidth,
-                        height: widget.imageHeight,
-                      );
-                },
-              )
+              ? SvgPicture.network(
+                  widget.imagePath,
+                  width: widget.imageWidth,
+                  height: widget.imageHeight,
+                  fit: widget.imageFit,
+                  placeholderBuilder: (BuildContext context) {
+                    return widget.placeHolderWidget ??
+                        Container(
+                          color: AppColor.primary900Light,
+                          width: widget.imageWidth,
+                          height: widget.imageHeight,
+                        );
+                  },
+                )
+              : Image.network(
+                  widget.imagePath,
+                  width: widget.imageWidth,
+                  height: widget.imageHeight,
+                  fit: widget.imageFit,
+                  headers: header,
+                  loadingBuilder:
+                      (
+                        BuildContext context,
+                        Widget child,
+                        ImageChunkEvent? loadingProgress,
+                      ) {
+                        //  if (loadingProgress == null) return child;
+                        return widget.placeHolderWidget ??
+                            Container(
+                              color: AppColor.primary900Light,
+                              width: widget.imageWidth,
+                              height: widget.imageHeight,
+                            );
+                      },
+                  errorBuilder:
+                      (
+                        BuildContext context,
+                        Object exception,
+                        StackTrace? stackTrace,
+                      ) {
+                        print(exception.toString());
+                        return widget.placeHolderWidget ??
+                            Container(
+                              color: AppColor.primary900Light,
+                              width: widget.imageWidth,
+                              height: widget.imageHeight,
+                            );
+                      },
+                )
         : widget.placeHolderWidget ??
-            Container(
-              color: AppColor.primary900Light,
-              width: widget.imageWidth,
-              height: widget.imageHeight,
-            );
+              Container(
+                color: AppColor.primary900Light,
+                width: widget.imageWidth,
+                height: widget.imageHeight,
+              );
   }
 }
 
@@ -160,16 +172,17 @@ class CustomCachedNetworkImage extends StatefulWidget {
   final Widget? placeHolderWidget;
   final bool ssoAuth;
 
-  const CustomCachedNetworkImage(this.imagePath,
-      {Key? key,
-      this.imageWidth,
-      this.imageHeight,
-      this.imageColor,
-      this.imageAlignment = Alignment.center,
-      this.imageFit = BoxFit.cover,
-      this.placeHolderWidget,
-      this.ssoAuth = false})
-      : super(key: key);
+  const CustomCachedNetworkImage(
+    this.imagePath, {
+    Key? key,
+    this.imageWidth,
+    this.imageHeight,
+    this.imageColor,
+    this.imageAlignment = Alignment.center,
+    this.imageFit = BoxFit.cover,
+    this.placeHolderWidget,
+    this.ssoAuth = false,
+  }) : super(key: key);
 
   @override
   State<CustomCachedNetworkImage> createState() => _CustomCachedNetworkImage();
@@ -183,8 +196,10 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
         ? CachedNetworkImage(
             imageUrl: widget.imagePath,
             httpHeaders: {
-              "verifyingKEY":
-                  CommonFunctions.hashRequest(widget.imagePath, "GET"),
+              "verifyingKEY": CommonFunctions.hashRequest(
+                widget.imagePath,
+                "GET",
+              ),
             },
             width: widget.imageWidth,
             height: widget.imageHeight,
@@ -204,13 +219,14 @@ class _CustomCachedNetworkImage extends State<CustomCachedNetworkImage> {
                     width: widget.imageWidth,
                     height: widget.imageHeight,
                   );
-            })
+            },
+          )
         : widget.placeHolderWidget ??
-            Container(
-              color: AppColor.primary900Light,
-              width: widget.imageWidth,
-              height: widget.imageHeight,
-            );
+              Container(
+                color: AppColor.primary900Light,
+                width: widget.imageWidth,
+                height: widget.imageHeight,
+              );
   }
 }
 
