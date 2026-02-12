@@ -133,7 +133,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                                         value:
                                             (double.parse(state.progress) /
                                             100),
-                                        backgroundColor: Colors.grey[200],
+                                        backgroundColor: Theme.of(context).disabledColor,
                                         valueColor:
                                             const AlwaysStoppedAnimation<Color>(
                                               AppColor.primary900Light,
