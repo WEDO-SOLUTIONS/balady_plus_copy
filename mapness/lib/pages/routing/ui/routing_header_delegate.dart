@@ -4,28 +4,18 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 
 class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
-  RoutingHeaderDelegate({
-    required this.onFavouritesTap,
-  });
+  RoutingHeaderDelegate({required this.onFavouritesTap});
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) =>
-      FlexibleSpaceBar.createSettings(
-        maxExtent: maxExtent,
-        minExtent: minExtent,
-        currentExtent: maxExtent,
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: Spacing.$4x),
-          child: RoutingFavourites(
-            showBookmark: true,
-            onFavouriteTap: onFavouritesTap,
-          ),
-        ),
-      );
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => FlexibleSpaceBar.createSettings(
+    maxExtent: maxExtent,
+    minExtent: minExtent,
+    currentExtent: maxExtent,
+    child: Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.$3x),
+      child: RoutingFavourites(showBookmark: true, onFavouriteTap: onFavouritesTap),
+    ),
+  );
 
   final void Function(FavouriteItem point) onFavouritesTap;
 

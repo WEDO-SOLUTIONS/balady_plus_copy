@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/balady_uikit/animations/animated_decorated_box.dart';
-import 'package:mapness/balady_uikit/components/ab_route/ab_dottet_container.dart';
+import 'package:mapness/balady_uikit/components/ab_route/ab_dotted_container.dart';
 import 'package:mapness/balady_uikit/core/icons/stop_numbers_icons.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -56,9 +56,7 @@ class _ABRouteState extends State<ABRoute> {
   Widget build(BuildContext context) {
     final color =
         widget.backgroundColor ??
-        (isReordering
-            ? context.colors.backgroundSurface5
-            : context.colors.backgroundSurface1);
+        (isReordering ? context.colors.backgroundSurface5 : context.colors.backgroundSurface1);
 
     final children = <Widget>[];
     for (var i = 0; i < widget.items.length; i++) {
@@ -70,9 +68,9 @@ class _ABRouteState extends State<ABRoute> {
           index: i,
           item: widget.items[i],
           onTap: () => widget.onTap(i),
-          onDeletePressed: widget.onDeletePressed == null
-              ? null
-              : () => widget.onDeletePressed?.call(i),
+          onDeletePressed: i != 0 && !isLast && widget.onDeletePressed != null
+              ? () => widget.onDeletePressed?.call(i)
+              : null,
           isDragged: false,
           isLast: isLast,
           subtitle: isLast
@@ -90,66 +88,59 @@ class _ABRouteState extends State<ABRoute> {
         child: AnimatedDecoratedBox(
           duration: Durations.medium1,
           decoration: BoxDecoration(color: color),
-          child: ABDottedPathContainer(
-            color: context.colors.foregroundDisabled,
-            // +1 for AddPoint button
-            itemCount: widget.items.length + 1,
-            itemExtent: 44,
-            relativeOffsets: const [
-              0.13, // between top and badge
-              0.80, // between badge and bottom
-              .96, // bottom border
-            ],
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: ReorderableListView(
-                    shrinkWrap: true,
-                    buildDefaultDragHandles: false,
-                    physics: const NeverScrollableScrollPhysics(),
-                    onReorder: (i, j) => widget.onReorder(i, j),
-                    onReorderStart: (_) => setState(() => isReordering = true),
-                    onReorderEnd: (_) => setState(() => isReordering = false),
-                    proxyDecorator: (child, index, animation) {
-                      final isLast = index == widget.items.length - 1;
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ABDottedPathContainer(
+                color: context.colors.foregroundDisabled,
+                itemCount: widget.items.length,
+                itemExtent: 44,
+                relativeOffsets: const [
+                  0.13, // between top and badge
+                  0.80, // between badge and bottom
+                  .96, // bottom border
+                ],
+                child: ReorderableListView(
+                  shrinkWrap: true,
+                  buildDefaultDragHandles: false,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onReorder: (i, j) => widget.onReorder(i, j),
+                  onReorderStart: (_) => setState(() => isReordering = true),
+                  onReorderEnd: (_) => setState(() => isReordering = false),
+                  proxyDecorator: (child, index, animation) {
+                    final isLast = index == widget.items.length - 1;
 
-                      // ProxyDecorator doesn't use current [Directionality] so we need to wrap it with [Directionality]
-                      return Directionality(
-                        textDirection: Directionality.of(context),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            boxShadow: Shadows.s,
-                            color: context.colors.foregroundSurfacePush,
-                            borderRadius: BorderRadius.circular(
-                              RadiusBorder.ml,
-                            ),
-                          ),
-                          child: _ABElement(
-                            key: ValueKey(
-                              '${widget.items[index].title}_$index',
-                            ),
-                            index: index,
-                            item: widget.items[index],
-                            onTap: () => widget.onTap(index),
-                            backgroundColor: color,
-                            isDragged: true,
-                            isLast: isLast,
-                            subtitle: isLast
-                                ? widget.arrivalPointSubtitle
-                                : index == 0
-                                ? widget.startPointSubtitle
-                                : null,
-                          ),
+                    // ProxyDecorator doesn't use current [Directionality] so we need to wrap it with [Directionality]
+                    return Directionality(
+                      textDirection: Directionality.of(context),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          boxShadow: Shadows.s,
+                          color: context.colors.foregroundSurfacePush,
+                          borderRadius: BorderRadius.circular(RadiusBorder.ml),
                         ),
-                      );
-                    },
-                    children: children,
-                  ),
+                        child: _ABElement(
+                          key: ValueKey('${widget.items[index].title}_$index'),
+                          index: index,
+                          item: widget.items[index],
+                          onTap: () => widget.onTap(index),
+                          backgroundColor: color,
+                          isDragged: true,
+                          isLast: isLast,
+                          subtitle: isLast
+                              ? widget.arrivalPointSubtitle
+                              : index == 0
+                              ? widget.startPointSubtitle
+                              : null,
+                        ),
+                      ),
+                    );
+                  },
+                  children: children,
                 ),
-                _AbRouteAddPoint(widget.onAddPointPressed),
-              ],
-            ),
+              ),
+              _AbRouteAddPoint(widget.onAddPointPressed),
+            ],
           ),
         ),
       ),
@@ -188,12 +179,8 @@ class _ABElement extends StatelessWidget {
     final Widget iconWidget;
 
     if (index == 0 || isLast) {
-      final color = isLast
-          ? context.colors.extra01Default
-          : context.colors.accentDefault;
-      final icon = item.isMyLocation
-          ? TransportIcons.locationFullLTR
-          : GeneralIcons.bulletCircleSolid;
+      final color = isLast ? context.colors.extra01Default : context.colors.accentDefault;
+      final icon = item.isMyLocation ? TransportIcons.locationFullLTR : GeneralIcons.bulletCircleSolid;
 
       iconWidget = Icon(icon, color: color, size: 24);
     } else {
@@ -201,18 +188,10 @@ class _ABElement extends StatelessWidget {
       // Index 1 = first intermediate point (icon 1), index 2 = second intermediate point (icon 2), etc.
       final iconData = StopNumbersIcons.fromIndex(index);
       if (iconData != null) {
-        iconWidget = Icon(
-          iconData,
-          color: context.colors.extra01Default,
-          size: 24,
-        );
+        iconWidget = Icon(iconData, color: context.colors.extra01Default, size: 24);
       } else {
         // Fallback: use a default icon if the index is out of range
-        iconWidget = Icon(
-          GeneralIcons.bulletCircleSolid,
-          color: context.colors.extra01Default,
-          size: 24,
-        );
+        iconWidget = Icon(GeneralIcons.bulletCircleSolid, color: context.colors.extra01Default, size: 24);
       }
     }
 
@@ -228,11 +207,7 @@ class _ABElement extends StatelessWidget {
           leading: AnimatedDecoratedBox(
             duration: Durations.medium1,
             decoration: BoxDecoration(color: backgroundColor),
-            child: AnimatedSwitcher(
-              key: ValueKey(item.title),
-              duration: Durations.medium1,
-              child: iconWidget,
-            ),
+            child: AnimatedSwitcher(key: ValueKey(item.title), duration: Durations.medium1, child: iconWidget),
           ),
           title: item.title,
           index: index,

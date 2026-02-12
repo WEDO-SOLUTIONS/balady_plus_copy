@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
@@ -30,7 +31,7 @@ class _Location extends _$Location {
       final isGmsAvailable = await CommonFunctions.isGmsAvailable();
       final isHMS = await CommonFunctions.isHuaweiDevice();
 
-      if (isGmsAvailable) {
+      if (isGmsAvailable || Platform.isIOS) {
         try {
           const locationSettings = LocationSettings();
 
@@ -92,7 +93,7 @@ class _Location extends _$Location {
             final isHuawei = await CommonFunctions.isHuaweiDevice();
             Position? userLocation;
 
-            if (isGmsAvailable) {
+            if (isGmsAvailable || Platform.isIOS) {
               userLocation = await Geolocator.getLastKnownPosition();
             } else if (isHuawei) {
               userLocation = await CommonFunctions.getLastLocationHuawei();
