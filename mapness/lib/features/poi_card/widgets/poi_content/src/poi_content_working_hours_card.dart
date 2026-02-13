@@ -12,7 +12,7 @@ import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 Widget _makkahWorkingHoursIcon({Color? backgroundColor}) {
   return DecoratedBox(
     decoration: BoxDecoration(
-      color: backgroundColor ?? const Color(0xFFDAB98A),
+      color: backgroundColor ?? const Color(0xFFD19D3F),
       borderRadius: BorderRadius.circular(8),
     ),
     child: Padding(

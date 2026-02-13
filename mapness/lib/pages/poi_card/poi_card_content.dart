@@ -112,6 +112,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         switch (state) {
           case PoiCardBottomSheetState.hidden:
             uiElementName = BssUIElementNames.placeCardHidden;
+            // Show Makkah place markers again when POI card is hidden
+            // ignore: avoid_print
+            print('[MakkahPinDebug] Content: sheet hidden, setActive(false)');
+            ref.read(regularPoiActiveProvider.notifier).setActive(false);
           case PoiCardBottomSheetState.open:
             uiElementName = BssUIElementNames.placeCardTwoThird;
           case PoiCardBottomSheetState.expanded:
@@ -331,6 +335,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
             ref.read(parkingManageProvider.notifier).restoreMarker();
             ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
+            // Show Makkah place markers again when POI card is closed
+            ref.read(regularPoiActiveProvider.notifier).setActive(false);
             context.router.popForced();
           },
         ),

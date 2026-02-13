@@ -35,6 +35,9 @@ class MakkahPoiConstants {
   /// Address icon background color (darker golden)
   static const Color addressIconBackground = Color(0xFFD19D3F);
 
+  /// Clock icon background color (golden brown)
+  static const Color clockIconBackgroundColor = Color(0xFFD19D3F);
+
   /// Close button background color (warm beige)
   static const Color closeButtonBackground = Color(0xFFFAF5EE);
 

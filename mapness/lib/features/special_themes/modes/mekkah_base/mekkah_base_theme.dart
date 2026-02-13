@@ -31,8 +31,10 @@ class MekkahBaseTheme extends _$MekkahBaseTheme {
 
     final location = ref.watch(locationProvider);
     if (location == null) {
-      _lastValue = false;
-      return false;
+      // Don't reset _lastValue when location is temporarily null
+      // This prevents theme flickering during navigation or provider rebuilds
+      // Return the previous value if we had one, otherwise false
+      return _lastValue ?? false;
     }
 
     final mekkahConfig = ref.watch(placesActivationMekkahProvider);

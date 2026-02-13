@@ -26,7 +26,7 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: colors.iconBackground,
+              color: const Color(0xFFD19D3F),
               borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
             ),
             child: Center(
@@ -34,6 +34,7 @@ class _MakkahWorkingHoursTile extends StatelessWidget {
                 MakkahPoiConstants.clockIconPath,
                 width: MakkahPoiConstants.addressIconSize,
                 height: MakkahPoiConstants.addressIconSize,
+                colorFilter: const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
                 matchTextDirection: true,
               ),
             ),
@@ -187,7 +188,7 @@ class _MakkahWorkingHoursExpandableState extends State<_MakkahWorkingHoursExpand
                   width: 28,
                   height: 28,
                   decoration: BoxDecoration(
-                    color: widget.colors.iconBackground,
+                    color: const Color(0xFFD19D3F),
                     borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
                   ),
                   child: Center(
@@ -195,6 +196,7 @@ class _MakkahWorkingHoursExpandableState extends State<_MakkahWorkingHoursExpand
                       MakkahPoiConstants.clockIconPath,
                       width: MakkahPoiConstants.addressIconSize,
                       height: MakkahPoiConstants.addressIconSize,
+                      colorFilter: const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
                       matchTextDirection: true,
                     ),
                   ),

@@ -6,8 +6,10 @@ import 'package:mapness/features/special_themes/core/places_activation_config.da
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_config.dart';
 import 'package:mapness/features/special_themes/core/theme_splash_state.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/pages/theme_splash/theme_splash_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
@@ -68,6 +70,8 @@ class SpecialThemeDebugPanel extends ConsumerWidget {
                 _ActiveThemeCard(),
                 const SizedBox(height: 12),
                 _DebugTogglesCard(),
+                const SizedBox(height: 12),
+                _MakkahDiagnosticsCard(),
                 const SizedBox(height: 12),
                 _SplashTestCard(),
                 const SizedBox(height: 12),
@@ -1371,6 +1375,233 @@ class _InfoChip extends StatelessWidget {
           style: context.textStyles.captionSmallRegular.copyWith(
             color: _DebugColors.textSecondary,
             fontSize: 10,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MakkahDiagnosticsCard extends ConsumerWidget {
+  const _MakkahDiagnosticsCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final location = ref.watch(locationProvider);
+    final mekkahConfig = ref.watch(placesActivationMekkahProvider);
+    final isInMakkahArea = ref.watch(mekkahBaseThemeProvider);
+    final area = mekkahConfig.area ?? MakkahAreaConfig.defaultConfig;
+
+    // Calculate distance
+    double? distanceKm;
+    if (location != null) {
+      distanceKm = CommonFunctions.distance(
+        location.latitude,
+        location.longitude,
+        area.latitude,
+        area.longitude,
+      );
+    }
+
+    // Check date range
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final isAfterStart =
+        mekkahConfig.startDate == null || !today.isBefore(mekkahConfig.startDate!);
+    final isBeforeEnd =
+        mekkahConfig.endDate == null || !today.isAfter(mekkahConfig.endDate!);
+    final isInDateRange = isAfterStart && isBeforeEnd;
+
+    return _GlassCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _SectionTitle(
+            icon: Icons.troubleshoot_rounded,
+            title: 'Makkah Diagnostics',
+            iconGradient: _DebugColors.gradientAmber,
+          ),
+          const SizedBox(height: 14),
+          _DiagRow(
+            label: 'Config enabled',
+            value: mekkahConfig.enabled,
+          ),
+          _DiagRow(
+            label: 'Force enabled',
+            value: mekkahConfig.forceEnabled,
+          ),
+          _DiagRow(
+            label: 'In date range',
+            value: isInDateRange,
+            detail: mekkahConfig.startDate != null
+                ? '${_formatDate(mekkahConfig.startDate!)} - ${mekkahConfig.endDate != null ? _formatDate(mekkahConfig.endDate!) : '∞'}'
+                : 'no dates',
+          ),
+          _DiagRow(
+            label: 'In Makkah area',
+            value: isInMakkahArea,
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: _DebugColors.surfaceLight,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'LOCATION CHECK',
+                  style: context.textStyles.captionSmallMedium.copyWith(
+                    color: _DebugColors.textMuted,
+                    fontSize: 9,
+                    letterSpacing: 1,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _LocationRow(
+                  label: 'Your location',
+                  lat: location?.latitude,
+                  lon: location?.longitude,
+                ),
+                const SizedBox(height: 4),
+                _LocationRow(
+                  label: 'Config center',
+                  lat: area.latitude,
+                  lon: area.longitude,
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.straighten_rounded,
+                      size: 12,
+                      color: _DebugColors.textMuted,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Distance: ',
+                      style: context.textStyles.captionSmallRegular.copyWith(
+                        color: _DebugColors.textSecondary,
+                        fontSize: 10,
+                      ),
+                    ),
+                    Text(
+                      distanceKm != null
+                          ? '${distanceKm.toStringAsFixed(3)} km'
+                          : 'N/A',
+                      style: context.textStyles.captionSmallMedium.copyWith(
+                        color: distanceKm != null && distanceKm <= area.radiusKm
+                            ? _DebugColors.success
+                            : _DebugColors.error,
+                        fontSize: 10,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                    Text(
+                      ' / ${area.radiusKm} km radius',
+                      style: context.textStyles.captionSmallRegular.copyWith(
+                        color: _DebugColors.textMuted,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}';
+  }
+}
+
+class _DiagRow extends StatelessWidget {
+  const _DiagRow({
+    required this.label,
+    required this.value,
+    this.detail,
+  });
+
+  final String label;
+  final bool value;
+  final String? detail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(
+            value ? Icons.check_circle_rounded : Icons.cancel_rounded,
+            size: 14,
+            color: value ? _DebugColors.success : _DebugColors.error,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: context.textStyles.captionSmallRegular.copyWith(
+              color: _DebugColors.textSecondary,
+              fontSize: 11,
+            ),
+          ),
+          if (detail != null) ...[
+            const SizedBox(width: 6),
+            Text(
+              '($detail)',
+              style: context.textStyles.captionSmallRegular.copyWith(
+                color: _DebugColors.textMuted,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _LocationRow extends StatelessWidget {
+  const _LocationRow({
+    required this.label,
+    required this.lat,
+    required this.lon,
+  });
+
+  final String label;
+  final double? lat;
+  final double? lon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 80,
+          child: Text(
+            label,
+            style: context.textStyles.captionSmallRegular.copyWith(
+              color: _DebugColors.textMuted,
+              fontSize: 10,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            lat != null && lon != null
+                ? '${lat!.toStringAsFixed(5)}, ${lon!.toStringAsFixed(5)}'
+                : 'null',
+            style: context.textStyles.captionSmallMedium.copyWith(
+              color: lat != null ? _DebugColors.textSecondary : _DebugColors.error,
+              fontSize: 10,
+              fontFamily: 'monospace',
+            ),
           ),
         ),
       ],

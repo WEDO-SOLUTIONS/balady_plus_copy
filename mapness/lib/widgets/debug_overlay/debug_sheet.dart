@@ -10,6 +10,7 @@ import 'package:mapness/widgets/debug_overlay/cityscape_debug_switcher.dart';
 import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
 import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
 import 'package:mapness/widgets/debug_overlay/debug_theme.dart';
+import 'package:mapness/widgets/debug_overlay/makkah_places_debug_panel.dart';
 import 'package:mapness/widgets/debug_overlay/onboarding_button.dart';
 import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
 import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
@@ -72,6 +73,7 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                     children: [
                       _AppInfoCard(packageInfo: _packageInfo),
                       const SpecialThemeDebugPanel(),
+                      const MakkahPlacesDebugPanel(),
                       _QuickActionsCard(
                         draggableController: widget._draggableController,
                       ),

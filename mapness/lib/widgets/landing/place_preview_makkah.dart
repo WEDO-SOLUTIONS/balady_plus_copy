@@ -25,6 +25,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
+import 'package:mapness/shared/lib/common_functions.dart';
 
 /// Width of place preview card in Makkah dashboard
 const kPlaceCardSizeMakkah = MakkahPoiConstants.placeCardWidth;
@@ -360,7 +361,12 @@ class _TravelTimeChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Get user location for straight-line distance calculation
+    final userLocation = ref.watch(locationProvider);
+
     // Get both pedestrian and car route info
+    // Pass startPoint: null to let SDK use its internal location tracking
+    // The provider watches locationProvider for realtime updates
     final pedestrianInfo = ref.watch(
       briefRouteInfoProvider(
         startPoint: null,
@@ -377,24 +383,86 @@ class _TravelTimeChip extends ConsumerWidget {
       ),
     );
 
+    // Calculate straight-line distance in meters for sanity checking
+    double? straightLineMeters;
+    if (userLocation != null) {
+      final distanceKm = CommonFunctions.distance(
+        userLocation.latitude,
+        userLocation.longitude,
+        finishPoint.coordinates.latitude,
+        finishPoint.coordinates.longitude,
+      );
+      straightLineMeters = distanceKm * 1000;
+    }
+
     // Determine which icon and duration to show
     String? durationText;
     bool useWalkIcon = false;
 
-    if (pedestrianInfo != null && pedestrianInfo.isNotEmpty) {
+    // Get SDK distances
+    final carDistance = (carInfo != null && carInfo.isNotEmpty)
+        ? carInfo.first.extraInfo.distance
+        : null;
+    final walkDistance = (pedestrianInfo != null && pedestrianInfo.isNotEmpty)
+        ? pedestrianInfo.first.extraInfo.distance
+        : null;
+
+    // Check if SDK data is suspicious (route distance >> straight-line distance)
+    bool sdkDataSuspicious = false;
+    if (straightLineMeters != null && straightLineMeters > 0) {
+      if (carDistance != null && carDistance > straightLineMeters * 20) {
+        sdkDataSuspicious = true;
+      }
+      if (walkDistance != null && walkDistance > straightLineMeters * 20) {
+        sdkDataSuspicious = true;
+      }
+    }
+
+    // If SDK data is suspicious, use estimated time from straight-line distance
+    if (sdkDataSuspicious && straightLineMeters != null) {
+      // Use walk for < 1km, car otherwise
+      if (straightLineMeters < 1000) {
+        useWalkIcon = true;
+        final walkMinutes = (straightLineMeters / 1000 / 5.0 * 60).round();
+        durationText = '${walkMinutes > 0 ? walkMinutes : 1} ${context.l10n.min}';
+      } else {
+        final carMinutes = (straightLineMeters / 1000 / 30.0 * 60).round();
+        durationText = '${carMinutes > 0 ? carMinutes : 1} ${context.l10n.min}';
+      }
+    }
+    // Priority 1: If car distance < 1km, always use walk icon (user is very close)
+    // This handles cases where pedestrian routing returns unrealistic data
+    else if (carDistance != null && carDistance < 1000) {
+      useWalkIcon = true;
+      // Use pedestrian duration if available and reasonable, otherwise car duration
+      if (pedestrianInfo != null && pedestrianInfo.isNotEmpty) {
+        final walkInfo = pedestrianInfo.first;
+        final sdkWalkDistance = walkInfo.extraInfo.distance;
+        // Only use pedestrian info if the distance is reasonable (not > 10x car distance)
+        if (sdkWalkDistance < carDistance * 10) {
+          durationText = walkInfo.getBriefRouteDescription(context.l10n);
+        } else {
+          durationText = carInfo!.first.getBriefRouteDescription(context.l10n);
+        }
+      } else {
+        durationText = carInfo!.first.getBriefRouteDescription(context.l10n);
+      }
+    }
+    // Priority 2: Check pedestrian info for distances 1-4km
+    else if (pedestrianInfo != null && pedestrianInfo.isNotEmpty) {
       final walkInfo = pedestrianInfo.first;
-      final walkDistance = walkInfo.extraInfo.distance; // in meters
+      final sdkWalkDistance = walkInfo.extraInfo.distance; // in meters
       final walkDurationMinutes = (walkInfo.duration / 60).round();
 
       // Show walk icon if distance < 4km AND walk time < 40 min
-      if (walkDistance < 4000 && walkDurationMinutes < 40) {
+      if (sdkWalkDistance < 4000 && walkDurationMinutes < 40) {
         useWalkIcon = true;
         durationText = walkInfo.getBriefRouteDescription(context.l10n);
       }
     }
 
     // If not using walk icon, use car info
-    if (!useWalkIcon && carInfo != null && carInfo.isNotEmpty) {
+    if (!useWalkIcon && durationText == null && carInfo != null && carInfo.isNotEmpty) {
       durationText = carInfo.first.getBriefRouteDescription(context.l10n);
     }
 

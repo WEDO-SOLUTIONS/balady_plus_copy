@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/entities/routing/route_search_point_mapper.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,6 +16,13 @@ class BriefRouteInfo extends _$BriefRouteInfo {
     RouteSearchPoint? startPoint,
   }) {
     final controller = ref.watch(dgisControllerProvider);
+
+    // When startPoint is null, the SDK uses current location.
+    // Watch locationProvider to refresh when user moves.
+    if (startPoint == null) {
+      ref.watch(locationProvider);
+    }
+
     controller.value
         ?.findBriefRouteInfos(
       startPoint: startPoint?.toMessage(),

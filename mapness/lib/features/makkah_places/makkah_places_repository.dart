@@ -3,6 +3,7 @@ import 'package:mapness/features/makkah_places/makkah_places_json_datasource.dar
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'makkah_places_repository.g.dart';
@@ -12,7 +13,8 @@ class MakkahPlacesRepository extends _$MakkahPlacesRepository {
   @override
   Future<List<MakkahPlace>> build() async {
     final dio = ref.watch(baseDioProvider);
-    final datasource = MakkahPlacesJsonDatasource(dio: dio);
+    final env = await ref.watch(dgisEnvTypeProvider.future);
+    final datasource = MakkahPlacesJsonDatasource(dio: dio, env: env);
 
     try {
       final places = await datasource.getPlaces();
