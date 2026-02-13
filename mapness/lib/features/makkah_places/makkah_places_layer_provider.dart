@@ -4,7 +4,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/makkah_places/makkah_place_model.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/makkah_places/makkah_places_json_datasource.dart';
 import 'package:mapness/features/makkah_places/makkah_places_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
@@ -18,11 +17,12 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'makkah_places_layer_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class MakkahPlacesLayer extends _$MakkahPlacesLayer {
   late final MapObjectManagerSettings _settings =
       MapObjectManagerSettings.makkahPlaces();
@@ -32,6 +32,9 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
 
   @override
   Future<void> build() async {
+    // Watch regularPoiActiveProvider FIRST to ensure rebuild triggers when it changes
+    final isRegularPoiActive = ref.watch(regularPoiActiveProvider);
+
     final specialMode = ref.watch(specialThemeModeProvider);
     final isMakkahMode = switch (specialMode) {
       SpecialThemeMode.mekkahBase => true,
@@ -51,9 +54,21 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
       ).notifier,
     );
 
+    // Hide markers when not in Makkah mode
     if (!isMakkahMode) {
       await manager.removeAllMarkers();
       return;
+    }
+
+    // Hide markers when a regular (non-Makkah) POI card is open to avoid overlap
+    if (isRegularPoiActive) {
+      // ignore: avoid_print
+      print('[MakkahPinDebug] Layer: Hiding markers - regular POI is active');
+      await manager.removeAllMarkers();
+      return;
+    } else {
+      // ignore: avoid_print
+      print('[MakkahPinDebug] Layer: Showing markers - regular POI is NOT active');
     }
 
     final places = await ref.watch(makkahPlacesRepositoryProvider.future);

@@ -30,11 +30,29 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final routes = context.router.stack;
       prevRouteNavi = routes.length >= 2 && routes[routes.length - 2].name == PathNavRoute.name;
+
+      // Hide Makkah place markers when regular POI is open
+      // ignore: avoid_print
+      print('[MakkahPinDebug] Wrapper: initState setActive(true)');
+      ref.read(regularPoiActiveProvider.notifier).setActive(true);
     });
   }
 
   @override
   void dispose() {
+    // Capture the container before disposal to ensure we can update the provider
+    final container = ProviderScope.containerOf(context, listen: false);
+
+    // Show Makkah place markers again when regular POI is closed
+    // Use Future.microtask to ensure it runs after disposal completes
+    // ignore: avoid_print
+    print('[MakkahPinDebug] Wrapper: dispose called');
+    Future.microtask(() {
+      // ignore: avoid_print
+      print('[MakkahPinDebug] Wrapper: microtask setActive(false)');
+      container.read(regularPoiActiveProvider.notifier).setActive(false);
+    });
+
     if (prevRouteNavi) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeRight,
@@ -136,6 +154,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
             onClose: () async {
               await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
               await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+              ref.read(regularPoiActiveProvider.notifier).setActive(false);
               context.router.popForced();
             },
             onRetry: () {
@@ -149,7 +168,10 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
           errorTitle: context.l10n.somethingWentWrong,
           errorContent: context.l10n.saudiPassSomethingWentWrongHint,
           buttonLabel: context.l10n.complete,
-          onRetry: () => context.router.popForced(),
+          onRetry: () {
+            ref.read(regularPoiActiveProvider.notifier).setActive(false);
+            context.router.popForced();
+          },
         );
       }
     }();

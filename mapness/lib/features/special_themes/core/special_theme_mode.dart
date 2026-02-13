@@ -183,15 +183,27 @@ SpecialThemeMode specialThemeMode(Ref ref) {
 }
 
 bool _isInDateRange(ThemeConfig config) {
-  if (config.startDate == null || config.endDate == null) {
+  // If no start date, treat as not yet configured
+  if (config.startDate == null) {
     return false;
   }
+
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
   final start = config.startDate!;
-  final end = config.endDate!;
 
-  return !today.isBefore(start) && !today.isAfter(end);
+  // Must be on or after start date
+  if (today.isBefore(start)) {
+    return false;
+  }
+
+  // If no end date, theme is active indefinitely after start
+  if (config.endDate == null) {
+    return true;
+  }
+
+  // Check if within end date
+  return !today.isAfter(config.endDate!);
 }
 
 /// Launch window: Feb 6-8, 2026
@@ -207,6 +219,10 @@ bool _isMekkahLaunchWindow() {
 /// Hardcoded Makkah area for launch window (Feb 6-8, 2026)
 /// Center: 21.4225098°N, 39.8261707°E, radius: 25km
 bool _isInLaunchWindowArea(Ref ref) {
+  // Early return if not in launch window - avoid watching locationProvider unnecessarily
+  // This prevents theme flickering due to location changes when launch window is not active
+  if (!_isMekkahLaunchWindow()) return false;
+
   const launchLat = 21.4225098;
   const launchLon = 39.8261707;
   const launchRadiusKm = 25.0;

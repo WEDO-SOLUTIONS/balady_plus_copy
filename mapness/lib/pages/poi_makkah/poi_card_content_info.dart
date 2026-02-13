@@ -257,7 +257,7 @@ class _MakkahOpenHoursCard extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: colors.iconBackground,
+              color: const Color(0xFFD19D3F),
               borderRadius: BorderRadius.circular(RadiusBorder.baseSharp),
             ),
             child: Center(
@@ -265,6 +265,7 @@ class _MakkahOpenHoursCard extends StatelessWidget {
                 MakkahPoiConstants.clockIconPath,
                 width: MakkahPoiConstants.addressIconSize,
                 height: MakkahPoiConstants.addressIconSize,
+                colorFilter: const ColorFilter.mode(Color(0xFFFFFFFF), BlendMode.srcIn),
                 matchTextDirection: true,
               ),
             ),

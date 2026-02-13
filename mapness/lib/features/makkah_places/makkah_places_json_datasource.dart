@@ -7,6 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/makkah_places/makkah_place_model.dart';
+import 'package:mapness/shared/config/environment_config.dart';
+import 'package:mapness/shared/providers/makkah_config_staging.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -183,15 +185,22 @@ List<MakkahPlace> parseMakkahPlacesJson(String jsonInput) {
 }
 
 class MakkahPlacesJsonDatasource {
-  MakkahPlacesJsonDatasource({required this.dio});
+  MakkahPlacesJsonDatasource({
+    required this.dio,
+    required this.env,
+  });
 
   final Dio dio;
+  final DgisEnv env;
 
-  static const _remoteUrl =
-      'https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/places.json';
   static const _cacheFileName = 'makkah_places_cache.json';
+  static const _cacheStagingFileName = 'makkah_places_cache_staging.json';
 
   String? _cacheFilePath;
+
+  bool get _isStaging => MakkahConfigUrls.isStagingEnv(env);
+  String get _remoteUrl => MakkahConfigUrls.getPlacesUrl(env);
+  String get _cacheFile => _isStaging ? _cacheStagingFileName : _cacheFileName;
 
   Future<List<MakkahPlace>> getPlaces() async {
     List<MakkahPlace> places;
@@ -238,7 +247,7 @@ class MakkahPlacesJsonDatasource {
   Future<String> _getCacheFilePath() async {
     if (_cacheFilePath != null) return _cacheFilePath!;
     final dir = await getApplicationDocumentsDirectory();
-    _cacheFilePath = '${dir.path}/$_cacheFileName';
+    _cacheFilePath = '${dir.path}/$_cacheFile';
     return _cacheFilePath!;
   }
 

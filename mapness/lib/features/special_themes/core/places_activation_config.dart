@@ -4,11 +4,14 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
+import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/makkah_config_staging.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod/riverpod.dart';
@@ -248,15 +251,22 @@ class PlacesActivationConfig {
 }
 
 class PlacesActivationConfigDatasource {
-  PlacesActivationConfigDatasource({required this.dio});
+  PlacesActivationConfigDatasource({
+    required this.dio,
+    required this.env,
+  });
 
   final Dio dio;
+  final DgisEnv env;
 
-  static const _remoteUrl =
-      'https://axownvq9lhmx.objectstorage.me-jeddah-1.oci.customer-oci.com/p/ykBWL3zo7MRNak-LnF9W-8rZF2d-_kKyONU0mgfTtCCyrOlf_Y8JJVmfFPXzthM6/n/axownvq9lhmx/b/prod-makkah-ptv/o/config.json';
   static const _cacheFileName = 'places_activation_cache.json';
+  static const _cacheStagingFileName = 'places_activation_cache_staging.json';
 
   String? _cacheFilePath;
+
+  bool get _isStaging => MakkahConfigUrls.isStagingEnv(env);
+  String get _remoteUrl => MakkahConfigUrls.getConfigUrl(env);
+  String get _cacheFile => _isStaging ? _cacheStagingFileName : _cacheFileName;
 
   Future<PlacesActivationConfig> getConfig() async {
     // Track config fetch started
@@ -323,7 +333,7 @@ class PlacesActivationConfigDatasource {
   Future<String> _getCacheFilePath() async {
     if (_cacheFilePath != null) return _cacheFilePath!;
     final dir = await getApplicationDocumentsDirectory();
-    _cacheFilePath = '${dir.path}/$_cacheFileName';
+    _cacheFilePath = '${dir.path}/$_cacheFile';
     return _cacheFilePath!;
   }
 
@@ -404,14 +414,16 @@ class PlacesActivation extends _$PlacesActivation {
   @override
   Future<PlacesActivationConfig> build() async {
     final dio = ref.watch(baseDioProvider);
-    final datasource = PlacesActivationConfigDatasource(dio: dio);
+    final env = await ref.watch(dgisEnvTypeProvider.future);
+    final datasource = PlacesActivationConfigDatasource(dio: dio, env: env);
     return datasource.getConfig();
   }
 
   Future<void> refresh() async {
     state = const AsyncLoading();
     final dio = ref.read(baseDioProvider);
-    final datasource = PlacesActivationConfigDatasource(dio: dio);
+    final env = await ref.read(dgisEnvTypeProvider.future);
+    final datasource = PlacesActivationConfigDatasource(dio: dio, env: env);
     state = AsyncData(await datasource.getConfig());
   }
 }

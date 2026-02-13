@@ -99,8 +99,15 @@ class _MakkahSplashOverlay extends StatelessWidget {
 
   static const _textColor = Color(0xFF131311);
 
+  String _fontFamily(BuildContext context) {
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    return isArabic ? 'Frutiger' : 'Golos';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final fontFamily = _fontFamily(context);
+
     return IgnorePointer(
       child: SafeArea(
         child: SizedBox.expand(
@@ -122,7 +129,8 @@ class _MakkahSplashOverlay extends StatelessWidget {
                 child: Text(
                   context.l10n.makkahSplashTitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
+                    fontFamily: fontFamily,
                     fontSize: 20,
                     fontWeight: FontWeight.w900,
                     letterSpacing: 4,
@@ -137,7 +145,8 @@ class _MakkahSplashOverlay extends StatelessWidget {
                 child: Text(
                   context.l10n.makkahSplashSubtitle,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
+                    fontFamily: fontFamily,
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
                     color: _textColor,
@@ -153,7 +162,8 @@ class _MakkahSplashOverlay extends StatelessWidget {
                   child: Text(
                     context.l10n.makkahSplashBottomText,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
+                      fontFamily: fontFamily,
                       fontSize: 16,
                       fontWeight: FontWeight.normal,
                       height: 20 / 16,

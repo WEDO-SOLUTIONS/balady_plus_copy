@@ -21,6 +21,7 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -102,8 +103,12 @@ class PoiCardProvider extends _$PoiCardProvider {
     final parkingManager = ref.read(parkingManageProvider.notifier);
 
     ref.onDispose(() {
+      // ignore: avoid_print
+      print('[MakkahPinDebug] PoiCardProvider: onDispose called');
       selectedMarker.removeMarker(poiPinId);
       parkingManager.restoreMarker();
+      // Show Makkah place markers again when POI card is closed
+      ref.read(regularPoiActiveProvider.notifier).setActive(false);
     });
 
     state = const AsyncValue.loading();

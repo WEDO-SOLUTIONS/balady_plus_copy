@@ -5,6 +5,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
+import 'package:mapness/features/special_themes/modes/mekkah_base/makkah_poi_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/search/ui/working_hours.dart';
 import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
@@ -12,7 +13,7 @@ import 'package:mapness/widgets/search/ui/working_hours_strings.dart';
 Widget _makkahWorkingHoursIcon({Color? backgroundColor}) {
   return DecoratedBox(
     decoration: BoxDecoration(
-      color: backgroundColor ?? const Color(0xFFDAB98A),
+      color: backgroundColor ?? const Color(0xFFD19D3F),
       borderRadius: BorderRadius.circular(8),
     ),
     child: Padding(

@@ -12,6 +12,7 @@ import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
+import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Sheet for loading or error states. We combine loading and error states in one sheet to avoid code duplication and
@@ -36,6 +37,7 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final onClose = () {
+      ref.read(regularPoiActiveProvider.notifier).setActive(false);
       if (data is PoiError && (data as PoiError).onClose != null) {
         (data as PoiError).onClose!.call();
       } else {
