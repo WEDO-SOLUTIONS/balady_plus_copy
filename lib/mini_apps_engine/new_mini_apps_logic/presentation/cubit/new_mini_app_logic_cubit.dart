@@ -16,6 +16,7 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/new_mini_apps_ui
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -403,14 +404,32 @@ class NewMiniAppLogicCubit extends Cubit<NewMiniAppLogicState> {
     }
   }
 
+  StreamSubscription? _deepLinkSubscription;
   Future<void> openMiniAppByServiceKey({required String serviceKey, String? path}) async {
-    try {
-      MiniApp miniApp = state.allMiniApps.firstWhere((service) => service.serviceKey == serviceKey).copyWith();
+    // 1. Check if data is ALREADY there
+    final existingApp = state.allMiniApps.firstWhereOrNull((s) => s.serviceKey == serviceKey);
 
-      openMiniApp(miniApp);
-    } catch (e) {
-      // CommonFunctions.showSuccess(e.toString());
+    if (existingApp != null) {
+      openMiniApp(existingApp.copyWith());
+      return;
     }
+
+
+    await _deepLinkSubscription?.cancel();
+
+    _deepLinkSubscription = stream.listen((state) {
+      final miniApp = state.allMiniApps.firstWhereOrNull((s) => s.serviceKey == serviceKey);
+
+      if (miniApp != null) {
+        debugPrint("Data arrived! Opening ${miniApp.name}");
+
+        openMiniApp(miniApp.copyWith());
+
+        // 3. STOP listening once we've succeeded
+        _deepLinkSubscription?.cancel();
+        _deepLinkSubscription = null;
+      }
+    });
   }
 
   void clearSearch() {
