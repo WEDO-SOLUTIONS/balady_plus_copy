@@ -1338,46 +1338,46 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     try {
       final cubit = sl<DelegatorsCubit>();
       
-      // Since DelegatorsCubit is a factory, we need to:
-      // 1. Read saved selection from SharedPreferences
-      // 2. Fetch delegators if not already loaded
-      // 3. Find the matching delegator entity
+      // First, check if there's a currently selected delegator in the cubit state
+      DelegatorEntity? selectedDelegate = cubit.state.selectedDelegate;
       
-      final savedDelegatorId = sharedPrefs.getSelectedDelegatorId();
-      
-      if (savedDelegatorId == null) {
-        // No selection saved
-        final response = BaseResponse(
-          code: 200,
-          message: "success",
-          eventName: "selectedDelegator",
-          data: null,
-        );
-        handler.complete(response.jsonEncodeModel());
-        return;
-      }
-      
-      // Fetch delegators if not already loaded
-      if (cubit.state.delegators.isEmpty) {
-        cubit.getDelegators();
+      // If not in state, try to get from SharedPreferences and find it in the list
+      if (selectedDelegate == null) {
+        final savedDelegatorId = sharedPrefs.getSelectedDelegatorId();
         
-        // Wait for delegators to load (max 10 seconds)
-        int attempts = 0;
-        while (attempts < 20 && cubit.state.status == BlocRequestStatus.submissionGetLoading) {
-          await Future.delayed(const Duration(milliseconds: 500));
-          attempts++;
+        if (savedDelegatorId == null) {
+          // No selection saved
+          final response = BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "selectedDelegator",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+          return;
         }
-      }
-      
-      // Find the delegator matching the saved ID
-      DelegatorEntity? selectedDelegate;
-      try {
-        selectedDelegate = cubit.state.delegators.firstWhere(
-          (d) => d.id == savedDelegatorId,
-        );
-      } catch (e) {
-        // Delegator not found in current list
-        print('Selected delegator $savedDelegatorId not found in delegators list');
+        
+        // Fetch delegators if not already loaded
+        if (cubit.state.delegators.isEmpty) {
+          cubit.getDelegators();
+          
+          // Wait for delegators to load (max 10 seconds)
+          int attempts = 0;
+          while (attempts < 20 && cubit.state.status == BlocRequestStatus.submissionGetLoading) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            attempts++;
+          }
+        }
+        
+        // Find the delegator matching the saved ID
+        try {
+          selectedDelegate = cubit.state.delegators.firstWhere(
+            (d) => d.id == savedDelegatorId,
+          );
+        } catch (e) {
+          // Delegator not found in current list
+          print('Selected delegator $savedDelegatorId not found in delegators list');
+        }
       }
       
       BaseResponse response;
@@ -1389,7 +1389,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: JsDelegatorModel.fromEntity(selectedDelegate),
         );
       } else {
-        // Selection exists but delegator not found (might have been removed)
+        // No delegator selected
         response = BaseResponse(
           code: 200,
           message: "success",
@@ -1415,46 +1415,46 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     try {
       final cubit = sl<DelegatorsCubit>();
       
-      // Since DelegatorsCubit is a factory, we need to:
-      // 1. Read saved selection from SharedPreferences
-      // 2. Fetch agents if not already loaded
-      // 3. Find the matching agent entity
+      // First, check if there's a currently selected agent in the cubit state
+      AgentEntity? selectedAgent = cubit.state.selectedAgent;
       
-      final savedAgentId = sharedPrefs.getSelectedAgentId();
-      
-      if (savedAgentId == null) {
-        // No selection saved
-        final response = BaseResponse(
-          code: 200,
-          message: "success",
-          eventName: "selectedAgent",
-          data: null,
-        );
-        handler.complete(response.jsonEncodeModel());
-        return;
-      }
-      
-      // Fetch agents if not already loaded
-      if (cubit.state.agents.isEmpty) {
-        cubit.getAgents();
+      // If not in state, try to get from SharedPreferences and find it in the list
+      if (selectedAgent == null) {
+        final savedAgentId = sharedPrefs.getSelectedAgentId();
         
-        // Wait for agents to load (max 10 seconds)
-        int attempts = 0;
-        while (attempts < 20 && cubit.state.agentStatus == BlocRequestStatus.submissionGetLoading) {
-          await Future.delayed(const Duration(milliseconds: 500));
-          attempts++;
+        if (savedAgentId == null) {
+          // No selection saved
+          final response = BaseResponse(
+            code: 200,
+            message: "success",
+            eventName: "selectedAgent",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+          return;
         }
-      }
-      
-      // Find the agent matching the saved ID
-      AgentEntity? selectedAgent;
-      try {
-        selectedAgent = cubit.state.agents.firstWhere(
-          (a) => a.agencyNumber == savedAgentId,
-        );
-      } catch (e) {
-        // Agent not found in current list
-        print('Selected agent $savedAgentId not found in agents list');
+        
+        // Fetch agents if not already loaded
+        if (cubit.state.agents.isEmpty) {
+          cubit.getAgents();
+          
+          // Wait for agents to load (max 10 seconds)
+          int attempts = 0;
+          while (attempts < 20 && cubit.state.agentStatus == BlocRequestStatus.submissionGetLoading) {
+            await Future.delayed(const Duration(milliseconds: 500));
+            attempts++;
+          }
+        }
+        
+        // Find the agent matching the saved ID
+        try {
+          selectedAgent = cubit.state.agents.firstWhere(
+            (a) => a.agencyNumber == savedAgentId,
+          );
+        } catch (e) {
+          // Agent not found in current list
+          print('Selected agent $savedAgentId not found in agents list');
+        }
       }
       
       BaseResponse response;
@@ -1466,7 +1466,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           data: JsAgentModel.fromEntity(selectedAgent),
         );
       } else {
-        // Selection exists but agent not found (might have been removed)
+        // No agent selected
         response = BaseResponse(
           code: 200,
           message: "success",
