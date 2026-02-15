@@ -88,6 +88,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         },
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+          //DynamicCardsServicesScreen?id=11010&requireDelegator=1&pageRourting=CommercialLicense_Service_Card_Page&needLogin=1
 
           appBar: AppBar(
             title: Text(data.name ?? " "),

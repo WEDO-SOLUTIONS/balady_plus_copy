@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_plus/mini_apps_engine/helper/responsive_extension.dart';
@@ -97,17 +98,18 @@ class CustomMiniAppsCard extends StatelessWidget {
           SizedBox(
             width: titlesWidth ?? context.w(60),
             height: titlesHeight ?? context.h(33),
-            child: Text(
+            child: AutoSizeText(
               text ?? "example",
               textAlign: TextAlign.center,
-              maxLines: 2,
+              maxLines: maxLines ?? 2,
               overflow: TextOverflow.ellipsis,
+              maxFontSize: maxFontSize ?? 13,
+              minFontSize: minFontSize ?? 10,
               style: TextStyle(
                 fontSize: 13,
                 height: 1.4,
                 fontWeight: FontWeight.w400,
                 fontFamily: GeneralKey.appFontType,
-                //  color: const Color(0xFF1E2A36),
                 leadingDistribution: TextLeadingDistribution.even,
               ),
             ),

@@ -63,6 +63,7 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                           isVerifyingKey: true,
                           imageWidth: iconWidth ?? context.w(60),
                           imageHeight: iconHeight ?? context.h(60),
+
                           placeHolderWidget: SvgPicture.asset(
                             ImagePath.calendarBackground,
                           ),

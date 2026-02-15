@@ -178,11 +178,15 @@ class MiniAppsCustomTextField extends StatelessWidget {
         children: [
           if (suffixString != null)
             DefaultTextStyle.merge(
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontFamily: GeneralKey.appFontType,
+              ),
               child: suffixString!,
             ),
           if (suffixString != null && suffixIcon != null)
-            const SizedBox(width: 20),
+            // const SizedBox(width: 20),
+            const Spacer(),
           if (suffixIcon != null)
             ColorFiltered(
               colorFilter: ColorFilter.mode(

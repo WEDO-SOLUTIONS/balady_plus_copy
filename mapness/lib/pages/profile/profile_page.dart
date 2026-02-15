@@ -166,30 +166,7 @@ class ProfilePage extends HookConsumerWidget {
                                 ],
                               ),
                               const SizedBox(height: Spacing.$4x),
-                              // Test buttons for JS Bridge functions
-                                ContentWrapper(
-                                  color: context.colors.backgroundSurface1,
-                                  children: [
-                                    ContentRow(
-                                      isDividerEnabled: true,
-                                      onTap: () => _testSelectedDelegator(context),
-                                      trailing: trailing,
-                                      leading: leadingIconBuilder(Icons.business),
-                                      text: ContentRowTextOptions(
-                                        title: "Test Selected Delegator",
-                                      ),
-                                    ),
-                                    ContentRow(
-                                      onTap: () => _testSelectedAgent(context),
-                                      trailing: trailing,
-                                      leading: leadingIconBuilder(Icons.person_pin),
-                                      text: ContentRowTextOptions(
-                                        title: "Test Selected Agent",
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: Spacing.$4x),userData.maybeWhen(
+                              userData.maybeWhen(
                                 orElse: () => const SizedBox.shrink(),
                                 data: (data) => data == null
                                     ? const SizedBox.shrink()

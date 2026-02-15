@@ -55,7 +55,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
 
   const CustomNetworkImageWidget(
     this.imagePath, {
-    super.key,
+    Key? key,
     this.imageWidth,
     this.imageHeight,
     this.imageColor,
@@ -65,7 +65,7 @@ class CustomNetworkImageWidget extends StatefulWidget {
     this.isVerifyingKey = false,
     this.sso = false,
     this.addHeader = false,
-  });
+  }) : super(key: key);
 
   @override
   State<CustomNetworkImageWidget> createState() =>
@@ -112,27 +112,11 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                   fit: widget.imageFit,
                   placeholderBuilder: (BuildContext context) {
                     return widget.placeHolderWidget ??
-                        Shimmer.fromColors(
-                          baseColor:
-                              Theme.of(context).brightness == Brightness.dark
-                              ? const Color(0xFF2A2F3A)
-                              : const Color(0xFFE7E9EF),
-                          highlightColor:
-                              Theme.of(context).brightness == Brightness.dark
-                              ? const Color(0xFF3A4150)
-                              : const Color(0xFFF5F6FA),
-
-                          child: Container(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            width: widget.imageWidth,
-                            height: widget.imageHeight,
-                          ),
+                        Container(
+                          color: AppColor.primary900Light,
+                          width: widget.imageWidth,
+                          height: widget.imageHeight,
                         );
-                    // Container(
-                    //   color: AppColor.primary900Light,
-                    //   width: widget.imageWidth,
-                    //   height: widget.imageHeight,
-                    // );
                   },
                 )
               : Image.network(
@@ -149,25 +133,10 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
                       ) {
                         if (loadingProgress == null) return child;
                         return widget.placeHolderWidget ??
-                            Shimmer.fromColors(
-                              baseColor:
-                                  Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? const Color(0xFF2A2F3A)
-                                  : const Color(0xFFE7E9EF),
-                              highlightColor:
-                                  Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? const Color(0xFF3A4150)
-                                  : const Color(0xFFF5F6FA),
-
-                              child: Container(
-                                color: Theme.of(
-                                  context,
-                                ).scaffoldBackgroundColor,
-                                width: widget.imageWidth,
-                                height: widget.imageHeight,
-                              ),
+                            Container(
+                              color: AppColor.primary900Light,
+                              width: widget.imageWidth,
+                              height: widget.imageHeight,
                             );
                       },
                   errorBuilder:
@@ -206,7 +175,7 @@ class CustomCachedNetworkImage extends StatefulWidget {
 
   const CustomCachedNetworkImage(
     this.imagePath, {
-    super.key,
+    Key? key,
     this.imageWidth,
     this.imageHeight,
     this.imageColor,
@@ -214,7 +183,7 @@ class CustomCachedNetworkImage extends StatefulWidget {
     this.imageFit = BoxFit.cover,
     this.placeHolderWidget,
     this.ssoAuth = false,
-  });
+  }) : super(key: key);
 
   @override
   State<CustomCachedNetworkImage> createState() => _CustomCachedNetworkImage();
