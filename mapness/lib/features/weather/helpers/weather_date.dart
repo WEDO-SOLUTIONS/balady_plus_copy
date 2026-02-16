@@ -9,12 +9,12 @@ class WeatherDateFormatter {
   //get today day
   static String getToday(Locale locale) {
     final now = DateTime.now();
-    return DateFormat('EEEE', locale.languageCode).format(now);
+    return DateFormat('EEE', locale.languageCode).format(now);
   }
 
   static String getDay(String date, Locale locale) {
     final dateTime = DateTime.parse(date);
-    return DateFormat('EEEE', locale.languageCode).format(dateTime);
+    return DateFormat('EEE', locale.languageCode).format(dateTime);
   }
 
   static bool isToday(String date, Locale locale) {

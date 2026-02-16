@@ -6,7 +6,7 @@ import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' hide Provider;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -31,6 +31,7 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver, TickerProviderStateMixin {
+  late final bottomSheetController = ref.read(bottomSheetControllerProvider.notifier);
   final confettiConfig = ConfettiGeneratorConfig.confetti(
     dissappearStartsAt: 0.33,
     dissappearCurve: Curves.easeInOutQuint,
@@ -51,7 +52,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
-    ref.read(bottomSheetControllerProvider.notifier).state.controller?.addListener(_calculatePadding);
+    bottomSheetController.state.controller?.addListener(_calculatePadding);
 
     _setupTapListener();
   }
@@ -77,8 +78,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void dispose() {
-    ref.read(bottomSheetControllerProvider.notifier).state.controller?.removeListener(_calculatePadding);
-    ref.read(bottomSheetControllerProvider.notifier).state.controller = null;
+    bottomSheetController.state.controller?.removeListener(_calculatePadding);
+    bottomSheetController.state.controller = null;
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -113,7 +114,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
     return HajjWrapperListeners(
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: context.read<ThemeController>().systemOverlayStyle,
+        value: context.watch<ThemeController>().systemOverlayStyle,
         child: Directionality(
           textDirection: Directionality.of(context),
           child: Material(

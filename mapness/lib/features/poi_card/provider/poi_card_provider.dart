@@ -45,13 +45,13 @@ class PoiCardState {
   });
 
   Map<String, dynamic> toJson() => {
-        'gisObjectIdMessage': gisObjectIdMessage?.toJson(),
-        'organizations': organizations?.toJson(),
-        'tradeLicense': tradeLicense?.toJson(),
-        'showEntrances': showEntrances,
-        'isLoading': isLoading,
-        'timestamp': DateTime.now().millisecondsSinceEpoch,
-      };
+    'gisObjectIdMessage': gisObjectIdMessage?.toJson(),
+    'organizations': organizations?.toJson(),
+    'tradeLicense': tradeLicense?.toJson(),
+    'showEntrances': showEntrances,
+    'isLoading': isLoading,
+    'timestamp': DateTime.now().millisecondsSinceEpoch,
+  };
 
   factory PoiCardState.fromJson(Map<String, dynamic> json) {
     final organizatonsJson = json['organizations'];
@@ -60,11 +60,12 @@ class PoiCardState {
     final timestampJson = json.containsKey('timestamp') ? json['timestamp'] as int? : null;
 
     return PoiCardState(
-        showEntrances: entrancesJson,
-        isLoading: false,
-        timestamp: timestampJson,
-        gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
-        organizations: OrganizationsMessage.fromJson(organizatonsJson));
+      showEntrances: entrancesJson,
+      isLoading: false,
+      timestamp: timestampJson,
+      gisObjectIdMessage: DirectoryObjectMessageExt.fromJson(objectIdJson),
+      organizations: OrganizationsMessage.fromJson(organizatonsJson),
+    );
   }
 
   PoiCardState copyWith({
@@ -74,15 +75,14 @@ class PoiCardState {
     TradeLicenseMessage? tradeLicense,
     QrLicenseMessage? qrTradeLicense,
     OrganizationsMessage? organizations,
-  }) =>
-      PoiCardState(
-        organizations: organizations ?? this.organizations,
-        tradeLicense: tradeLicense ?? this.tradeLicense,
-        showEntrances: showEntrances ?? this.showEntrances,
-        isLoading: isLoading ?? this.isLoading,
-        gisObjectIdMessage: gisObjectIdMessage ?? this.gisObjectIdMessage,
-        qrTradeLicense: qrTradeLicense,
-      );
+  }) => PoiCardState(
+    organizations: organizations ?? this.organizations,
+    tradeLicense: tradeLicense ?? this.tradeLicense,
+    showEntrances: showEntrances ?? this.showEntrances,
+    isLoading: isLoading ?? this.isLoading,
+    gisObjectIdMessage: gisObjectIdMessage ?? this.gisObjectIdMessage,
+    qrTradeLicense: qrTradeLicense,
+  );
 }
 
 @riverpod
@@ -91,36 +91,23 @@ class PoiCardProvider extends _$PoiCardProvider {
   static const poiCacheTimeoutMinutes = 60;
 
   @override
-  Future<PoiCardState?> build(
-    int objectId, {
-    PoiCameraConfig? cameraConfig,
-    LatLng? closestPoint,
-  }) async {
+  Future<PoiCardState?> build(int objectId, {PoiCameraConfig? cameraConfig, LatLng? closestPoint}) async {
     state = const AsyncValue.loading();
 
     final result = await ref
-        .watch(
-      pointOfInterestProvider(
-        DgisObjectId(objectId: objectId, entranceId: 0),
-        closestPoint,
-      ).future,
-    )
+        .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint).future)
         .timeout(
-      const Duration(minutes: 1),
-      onTimeout: () {
-        ref.read(appRouterProvider).pop();
-        return null;
-      },
-    );
+          const Duration(minutes: 1),
+          onTimeout: () {
+            ref.read(appRouterProvider).pop();
+            return null;
+          },
+        );
 
     await ref.watch(poiPhotoProvider(objectId).future);
 
     if (result != null) {
-      ref.read(paddingConfigProvider(
-        result,
-        closestPoint,
-        cameraConfig,
-      ));
+      ref.read(paddingConfigProvider(result, closestPoint, cameraConfig));
     }
     // We need to use [appLang] to cache different data for different locales
     // We don't want to show arabic text to english users and vise versa
@@ -201,7 +188,7 @@ class PoiCardProvider extends _$PoiCardProvider {
     final organizationsLicenses = organizations?.items.map((e) => e.tradeLicense?.license).nonNulls;
     final allLicenses = {
       if (tradeLicense != null) tradeLicense.license,
-      if (organizationsLicenses != null) ...organizationsLicenses
+      if (organizationsLicenses != null) ...organizationsLicenses,
     };
     await ref.read(poiOffersProvider.notifier).fetchOffers(allLicenses);
   }
@@ -220,8 +207,9 @@ class PoiCardProvider extends _$PoiCardProvider {
       }
 
       final dateNow = DateTime.now();
-      final timeDifferentInMinutes =
-          dateNow.difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!)).inMinutes;
+      final timeDifferentInMinutes = dateNow
+          .difference(DateTime.fromMillisecondsSinceEpoch(stateFromJson.timestamp!))
+          .inMinutes;
 
       // Check if the cache is expired
       if (timeDifferentInMinutes > poiCacheTimeoutMinutes) {

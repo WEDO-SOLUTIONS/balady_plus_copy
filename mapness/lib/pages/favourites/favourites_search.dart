@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
@@ -17,7 +18,10 @@ class FavouritesSearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => SearchScope(
     named: SearchScopeEnum.map,
-    child: Material(child: FavouritesSearch(markerType: _getMarkerType())),
+    child: Material(
+      color: context.colors.screenOverlayDimming40,
+      child: FavouritesSearch(markerType: _getMarkerType()),
+    ),
   );
 
   FavouriteItemMarkerType _getMarkerType() {
@@ -43,9 +47,7 @@ class FavouritesSearch extends ConsumerWidget {
       FavouriteItemMarkerType.work => context.l10n.work_address,
     },
     onTapOfSearch: () {
-      ref
-          .read(advertMetricsProvider.notifier)
-          .sendEvent(AdvertMetricsKeys.journeySearch);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
     },
     onClose: () {
       FocusScope.of(context).unfocus();

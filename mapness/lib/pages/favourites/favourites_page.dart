@@ -14,6 +14,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
+import 'package:mapness/features/saudi_pass/widgets/favorite_delete_menu.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -50,11 +51,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
     if (item == null) {
       return;
     }
-    final result = await _onDeleteConfirmation(item, context);
-
-    if (result == true) {
-      _onDelete(item);
-    }
+    await _onDeleteConfirmation(context, item);
   }
 
   /// Pure function to delete the item from the cache
@@ -79,32 +76,15 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   /// We can't control [borderRadius] or [padding]s here. But this is the simple and robust solution
   ///
   /// This method should return [bool] value to show if the item should be deleted or not
-  Future<bool?> _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) async => showCupertinoModalPopup<bool>(
-    context: ctx,
-    builder: (context) => CupertinoActionSheet(
-      message: Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 8),
-        child: Text(
-          ctx.l10n.deleteAlertFavourites,
-          style: ctx.textStyle.footNote.copyWith(color: ctx.colors.foregroundSoft, letterSpacing: 0),
-        ),
-      ),
-      actions: <CupertinoActionSheetAction>[
-        CupertinoActionSheetAction(
-          isDefaultAction: true,
-          isDestructiveAction: true,
-          onPressed: () {
-            Navigator.pop(context, true);
-          },
-          child: Text(ctx.l10n.delete, style: ctx.textStyle.callout.copyWith(color: ctx.colors.errorDefault)),
-        ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () {
-          Navigator.pop(context, false);
-        },
-        child: Text(ctx.l10n.cancel, style: ctx.textStyle.callout.copyWith(color: ctx.colors.foregroundDefault)),
-      ),
+  Future<bool?> _onDeleteConfirmation(BuildContext ctx, FavouriteItem item) async => showDialog(
+    context: context,
+    useSafeArea: false,
+    builder: (_) => DialogDeleteMenu(
+      title: ctx.l10n.deleteFromFavourites,
+      description: ctx.l10n.deleteAlertFavourites,
+      cancel: ctx.l10n.cancel,
+      remove: ctx.l10n.delete,
+      onRemove: () => _onDelete(item),
     ),
   );
 
@@ -178,7 +158,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
           ),
           backgroundColor: context.colors.backgroundSurface4,
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$1x),
             child: CustomScrollView(
               slivers: [
                 SliverToBoxAdapter(child: FavouritesToggle(isEditing: isEditing)),
@@ -312,9 +292,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             child: Text(
                               context.l10n.toSavePlacesAsFavoritesOpenTheCardAndTapTheBookmarkIcon,
                               textAlign: TextAlign.center,
-                              style: context.textStyle.text.copyWith(
-                                color: context.staticColor.textAndIconsBaseInversePrimary,
-                              ),
+                              style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.staticWhite),
                             ),
                           ),
                           Container(
@@ -322,6 +300,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(12)),
                             child: Image.asset(
                               fit: BoxFit.fitWidth,
+                              width: double.infinity,
                               ref.read(appLanguageProvider) == Language.arabic
                                   ? SaudiNationalDay.isNow()
                                         ? Assets.images.favoritesExampleArabicSaudiday.keyName

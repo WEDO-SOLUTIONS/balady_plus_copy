@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -27,16 +28,14 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Search sheet that is shown on the explore screen.
 class NaviBottomSheet extends ConsumerStatefulWidget {
   final bool isPathNavScreen;
 
-  const NaviBottomSheet({
-    super.key,
-    this.isPathNavScreen = false,
-  });
+  const NaviBottomSheet({super.key, this.isPathNavScreen = false});
 
   @override
   ConsumerState<NaviBottomSheet> createState() => _NaviBottomSheetState();
@@ -55,10 +54,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   void initState() {
     super.initState();
     if (widget.isPathNavScreen) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     }
 
     ref.read(dgisControllerProvider).value?.stopFollowNavigation();
@@ -122,17 +118,11 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   @override
   Widget build(BuildContext context) {
     final searchObjectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: _settings.name,
-        layerId: _settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
-    ref.listen(
-      searchProvider(_scope),
-      (previous, next) {
-        _drawSearchMarkers(next, previous, searchObjectManager);
-      },
-    );
+    ref.listen(searchProvider(_scope), (previous, next) {
+      _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
+    });
 
     return SearchScope(
       named: SearchScopeEnum.navi,
@@ -164,9 +154,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
                 requestFocus: false,
                 onClose: () => context.router.pop(),
               ),
-              sliver: NaviSearchContent(
-                bottomSheetContentScrollController: _multiStateSheetController,
-              ),
+              sliver: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
             ),
           ),
         ],
@@ -178,6 +166,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     SearchState searchState,
     SearchState? prevState,
     MapObjectManager mapObjectManager,
+    BaladyAppThemes theme,
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
@@ -187,6 +176,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       final dark = await ref.watch(darkModeProvider.future);
 
       final markers = await searchState.results.getMarkers(
+        theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
@@ -246,14 +236,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   }
 
   void _removeAllMarkersAndPop() {
-    ref
-        .read(
-          mapObjectManagerProvider(
-            named: _settings.name,
-            layerId: _settings.layerId,
-          ).notifier,
-        )
-        .removeAllMarkers();
+    ref.read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier).removeAllMarkers();
     ref.read(searchInRectProvider(_scope).notifier).update();
     context.router.pop();
   }

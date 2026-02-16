@@ -3,7 +3,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate, MultiSnappingBehavior, OffsetSnappingModel;
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,6 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
@@ -36,6 +36,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Search sheet that is shown on the explore screen.
@@ -58,7 +59,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
+  late final MultiStateSheetController<FourStateSheet> _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -68,29 +69,26 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>(
-    (controller) {
-      final fraction = controller.fraction;
-      final state = controller.state;
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, FourStateSheet>((controller) {
+    final fraction = controller.fraction;
+    final state = controller.state;
 
-      return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
-    },
-  );
+    return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+  });
 
   @override
   void initState() {
     super.initState();
 
     _multiStateSheetController = MultiStateSheetController(
-      initialState: ThreeStateSheet.expanded,
-      behavior: MultiSnappingBehavior(models: [
-        FractionSnappingModel({
-          0.0,
-          if (Platform.isIOS) .3 else .38,
-        }),
-        OffsetSnappingModel({Spacing.$4x}),
-      ]),
-      stateMapper: const LandingStateMapper(),
+      initialState: FourStateSheet.expanded,
+      behavior: MultiSnappingBehavior(
+        models: [
+          FractionSnappingModel({0.0, if (Platform.isIOS) .3 else .38, 0.8, 1.0}),
+          OffsetSnappingModel({Spacing.$4x}),
+        ],
+      ),
+      stateMapper: const FourStateMapper(),
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
@@ -146,11 +144,25 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         clustering: widget.withClustering ? _clustering : null,
       ).notifier,
     );
-    ref.listen(
-      searchProvider(_scope),
-      (previous, next) {
-        _drawSearchMarkers(next, previous, searchObjectManager);
-      },
+    ref.listen(searchProvider(_scope), (previous, next) {
+      _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
+      switch (next) {
+        case SearchStateHistory():
+        case SearchStateError():
+        case SearchStateEmpty():
+        case SearchStateSuggest():
+        case SearchStateLoading():
+          _multiStateSheetController.setState(FourStateSheet.expanded);
+          break;
+        case SearchStateResults():
+          _multiStateSheetController.setState(FourStateSheet.open);
+          break;
+      }
+    });
+    final isCloseButton = ref.watch(
+      searchProvider(
+        _scope,
+      ).select((state) => state is SearchStateResults || state is SearchStateEmpty || state is SearchStateLoading),
     );
 
     return SearchScope(
@@ -167,7 +179,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
-            child: MultiStateSheet<ThreeStateSheet>(
+            child: MultiStateSheet<FourStateSheet>(
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
@@ -177,17 +189,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               header: Container(
                 color: contentColor,
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
-                child: MapSearchBar(
-                  requestFocus: widget.requestFocus,
-                  onClose: onClose,
-                ),
+                child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
               ),
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-              content: [
-                MapSearchContent(
-                  bottomSheetContentScrollController: _multiStateSheetController,
-                ),
-              ],
+              content: [MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController)],
             ),
           ),
         ],
@@ -199,6 +204,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     SearchState searchState,
     SearchState? prevState,
     MapObjectManager mapObjectManager,
+    BaladyAppThemes theme,
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
@@ -208,6 +214,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       final dark = await ref.watch(darkModeProvider.future);
 
       final markers = await searchState.results.getMarkers(
+        theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         advancedIconResolver: mapMarkerMapper.getMarkerPath,
@@ -223,10 +230,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 ownerName: BssUIElementNames.searchResultList,
               ),
               payload: BssPayload(
-                mapMarker: const BssMapMarker(
-                  scale: BssMarkerSize.small,
-                  adsHighlight: false,
-                ),
+                mapMarker: const BssMapMarker(scale: BssMarkerSize.small, adsHighlight: false),
                 searchResultList: searchState.results.toBss(),
                 placeItem: markerInfo?.toBss(index),
               ),
@@ -245,16 +249,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-        icon: SaudiNationalDay.isNow()
-            ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
-            : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
-        text: '$objectCount',
-        textStyle: MarkerTextStyleMessage(
-          textPlacement: MarkerTextPlacementMessage(
-            placement: TextPlacementMessage.centerCenter,
-          ),
-        ),
-      );
+    icon: SaudiNationalDay.isNow()
+        ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
+        : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
+    text: '$objectCount',
+    textStyle: MarkerTextStyleMessage(
+      textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
+    ),
+  );
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
@@ -287,7 +289,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       return;
     }
 
-    _multiStateSheetController.setState(ThreeStateSheet.expanded);
+    _multiStateSheetController.setState(FourStateSheet.expanded);
   }
 
   void onClose() {
@@ -314,6 +316,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _collapseBottomSheet() {
-    _multiStateSheetController.setState(ThreeStateSheet.hidden);
+    _multiStateSheetController.setState(FourStateSheet.hidden);
   }
 }

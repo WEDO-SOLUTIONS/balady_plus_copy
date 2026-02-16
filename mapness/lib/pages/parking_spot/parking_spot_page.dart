@@ -153,7 +153,14 @@ class ParkingSpotPage extends HookConsumerWidget {
                               ),
                               icon: SaudiNationalDay.isNow()
                                   ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                                  : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+                                  : switch (context.read<ThemeController>().currentTheme) {
+                                      BaladyAppThemes.dark =>
+                                        Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                      BaladyAppThemes.light =>
+                                        Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                      BaladyAppThemes.saudiDay =>
+                                        Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                    },
                             ),
                           ),
                         );
@@ -264,7 +271,11 @@ class ParkingSpotPage extends HookConsumerWidget {
             ),
             icon: SaudiNationalDay.isNow()
                 ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+                : switch (context.read<ThemeController>().currentTheme) {
+                    BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.light => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                  },
           ),
         ),
       );

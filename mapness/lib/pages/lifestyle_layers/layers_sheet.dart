@@ -21,9 +21,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
   late final ToggleSheetController _parkingLotsController;
 
   late final barrierColorDelegate = ToggleSheetDelegateFunction(
-    function: (controller) => screenOverlayDimming40.withAlpha(
-      (controller.fraction * 255).toInt(),
-    ),
+    function: (controller) => screenOverlayDimming40.withAlpha((controller.fraction * 255).toInt()),
   );
   late Color screenOverlayDimming40;
 
@@ -32,17 +30,19 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
     super.initState();
 
     _layersController = ToggleSheetController(
-        durationMultiplier: 2,
-        onClose: (_) {
-          if (_parkingLotsController.isClosed) {
-            context.router.pop();
-          }
-        });
+      durationMultiplier: 2,
+      onClose: (_) {
+        if (_parkingLotsController.isClosed) {
+          context.router.pop();
+        }
+      },
+    );
     _parkingLotsController = ToggleSheetController(
-        durationMultiplier: 2,
-        onClose: (_) {
-          _layersController.open();
-        });
+      durationMultiplier: 2,
+      onClose: (_) {
+        _layersController.open();
+      },
+    );
   }
 
   @override
@@ -61,8 +61,8 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
         children: [
           ToggleSheet(
             scrollController: _layersController,
-            backgroundColor: context.colors.backgroundSurface1,
-            safeAreaColor: context.colors.backgroundSurface1,
+            backgroundColor: context.colors.backgroundSurface4,
+            safeAreaColor: context.colors.backgroundSurface4,
             dragger: const SheetDragger(),
             outside: GestureDetector(
               behavior: HitTestBehavior.opaque,
@@ -83,8 +83,8 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
           ),
           ToggleSheet(
             scrollController: _parkingLotsController,
-            backgroundColor: context.colors.backgroundSurface1,
-            safeAreaColor: context.colors.backgroundSurface1,
+            backgroundColor: context.colors.backgroundSurface4,
+            safeAreaColor: context.colors.backgroundSurface4,
             dragger: const SheetDragger(),
             startConfig: ToggleSheetStart.closed,
             barrierColorDelegate: barrierColorDelegate,
@@ -104,17 +104,13 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
   }
 
   void _showLayersPanel() {
-    ref.watch(layersControlsProvider.notifier).update(
-          layersWidgetType: LayersPanelType.layers,
-        );
+    ref.watch(layersControlsProvider.notifier).update(layersWidgetType: LayersPanelType.layers);
     _layersController.open();
     _parkingLotsController.close();
   }
 
   void _showParkingLotsPanel() {
-    ref.watch(layersControlsProvider.notifier).update(
-          layersWidgetType: LayersPanelType.parking,
-        );
+    ref.watch(layersControlsProvider.notifier).update(layersWidgetType: LayersPanelType.parking);
     _layersController.close();
     _parkingLotsController.open();
   }

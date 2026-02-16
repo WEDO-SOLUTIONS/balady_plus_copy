@@ -37,7 +37,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   Widget build(BuildContext context) {
     if (ref.watch(forecastWeatherProvider) != null) {
       return AnnotatedRegion<SystemUiOverlayStyle>(
-        value: context.read<ThemeController>().systemOverlayStyle,
+        value: context.watch<ThemeController>().systemOverlayStyle,
         child: Material(
           type: MaterialType.transparency,
           child: WeatherDashboard(bottomSheetController: _bottomSheetController),
@@ -57,7 +57,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
     final bottomPadding = mediaQuery.padding.bottom;
     final height = MediaQuery.of(context).size.height;
     final bottomSafeAreaFraction = bottomPadding / height;
-    const targetVisibleFraction = .38;
+    const targetVisibleFraction = .27;
     return ((height - bottomPadding) * targetVisibleFraction / height) + bottomSafeAreaFraction;
   }
 }

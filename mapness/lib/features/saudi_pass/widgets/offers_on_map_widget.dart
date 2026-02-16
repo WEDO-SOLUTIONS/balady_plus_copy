@@ -133,6 +133,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           icon: Assets.icons.svg.icOffersPin.keyName,
           id: offerPoiPinId,
         ),
+        context.read<ThemeController>().currentTheme,
       );
 
       final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
@@ -166,6 +167,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         icon: Assets.icons.svg.icOffersPin.keyName,
         id: offerPoiPinId,
       ),
+      context.read<ThemeController>().currentTheme,
     );
 
     _notifierIds.value = [item.id];
@@ -262,33 +264,32 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     return Column(
       children: [
         Container(
+          padding: const EdgeInsets.only(bottom: Spacing.$2x),
           color: context.colors.backgroundSurface4,
-          child: Column(
-            children: [
-              BaladyTopBar.iconAndText(
-                systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
-                title: context.l10n.offers,
-                textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-                colorEnabled: context.colors.foregroundDefault,
-                leading: ActionModel(
-                  onPressed: () {
-                    context.router.pop();
-                    showMapOffers.removeMarker(offerPoiPinId);
-                  },
-                  icon: SystemIcons.arrowCornerLeftLarge,
+          child: BaladyTopBar.iconAndText(
+            systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
+            titleWidget: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  context.l10n.offers,
+                  style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                child: Material(
-                  color: Colors.transparent,
-                  child: Text(
-                    '${widget.city.name}$typesStringBar$categoryStringBar',
-                    style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
-                  ),
+                const SizedBox(height: Spacing.$1x),
+                Text(
+                  '${widget.city.name}$typesStringBar$categoryStringBar',
+                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
-              ),
-            ],
+              ],
+            ),
+            colorEnabled: context.colors.foregroundDefault,
+            leading: ActionModel(
+              onPressed: () {
+                context.router.pop();
+                showMapOffers.removeMarker(offerPoiPinId);
+              },
+              icon: SystemIcons.arrowCornerLeftLarge,
+            ),
           ),
         ),
         ValueListenableBuilder(

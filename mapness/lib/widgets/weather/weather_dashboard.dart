@@ -1,4 +1,4 @@
-import 'package:balady_uikit/balady_uikit.dart' hide StatefulSheetDelegate;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
@@ -13,10 +13,7 @@ import 'package:sheetify/sheetify.dart';
 class WeatherDashboard extends ConsumerStatefulWidget {
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
-  const WeatherDashboard({
-    required this.bottomSheetController,
-    super.key,
-  });
+  const WeatherDashboard({required this.bottomSheetController, super.key});
 
   @override
   ConsumerState<WeatherDashboard> createState() => _WeatherDashboardState();
@@ -49,39 +46,69 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
   Widget build(BuildContext context) {
     final weatherData = ref.watch(forecastWeatherProvider);
 
-    return MultiStateSheet(
-      scrollController: widget.bottomSheetController,
-      backgroundColor: context.colors.backgroundSurface1,
-      safeAreaColor: context.colors.backgroundSurface1,
-      dragger: const SheetDragger(),
-      outside: WeatherControls(bottomSheetController: widget.bottomSheetController),
-      outsideOpacityDelegate: outsideOpacityDelegate,
-      sliver: SliverPersistentHeader(
-        delegate: WeatherCardHeaderDelegate(
-          cardKey: cardKey,
-          bottomSheetController: widget.bottomSheetController,
-        ),
-        pinned: true,
-      ),
-      content: [
-        Spacing.$4x.heightBox,
-        ListView.separated(
-          padding: const EdgeInsets.only(bottom: Spacing.$4x),
-          primary: false,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: WeatherDayCard(
-              forecastDay: weatherData?.forecast?.forecastday?[index],
-              isExpanded: false,
-              onExpansionChanged: (b) {},
+    return ListenableBuilder(
+      listenable: widget.bottomSheetController,
+      builder: (_, _) => Stack(
+        children: [
+          MultiStateSheet(
+            useSafeArea: false,
+            scrollController: widget.bottomSheetController,
+            backgroundColor: context.colors.backgroundSurface4,
+            dragger: SheetDragger(draggerColor: context.colors.backgroundSurface5),
+            outside: WeatherControls(bottomSheetController: widget.bottomSheetController),
+            outsideOpacityDelegate: outsideOpacityDelegate,
+            header: DashboardHeader(cardKey: cardKey, bottomSheetController: widget.bottomSheetController),
+            content: [
+              Spacing.$4x.heightBox,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                switchInCurve: Curves.easeOut,
+                switchOutCurve: Curves.easeIn,
+                transitionBuilder: (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: SizeTransition(sizeFactor: animation, axisAlignment: -1.0, child: child),
+                ),
+                child: widget.bottomSheetController.closestState != ThreeStateSheet.expanded
+                    ? const SizedBox(key: ValueKey('hidden'))
+                    : ListView.separated(
+                        key: const ValueKey('list'),
+                        padding: const EdgeInsets.only(bottom: Spacing.$4x),
+                        primary: false,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
+                        itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                          child: WeatherDayCard(
+                            forecastDay: weatherData?.forecast?.forecastday?[index],
+                            isExpanded: false,
+                            onExpansionChanged: (b) {},
+                          ),
+                        ),
+                        separatorBuilder: (context, index) => Spacing.$3x.heightBox,
+                      ),
+              ),
+            ],
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 72,
+            child: IgnorePointer(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [context.colors.gradientBackgroundSurface4opacity0, context.colors.backgroundSurface4],
+                  ),
+                ),
+              ),
             ),
           ),
-          separatorBuilder: (context, index) => Spacing.$3x.heightBox,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

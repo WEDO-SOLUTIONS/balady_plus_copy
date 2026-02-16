@@ -92,6 +92,7 @@ class RoutingMapControls extends ConsumerWidget {
                       CompassControl(),
                       SizedBox(height: 8),
                       FollowControl(),
+                      SizedBox(height: 34),
                     ],
                   ),
                 ],

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,6 +19,7 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:provider/provider.dart';
 
 const hajjPoiPinId = 'hajj_poi_pin_id';
 
@@ -86,7 +88,10 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
         textStyle: _buildTextStyle(isArabic: hasArabic, isPin: false, isDark: isDark),
         position: GeoPointWithElevationMessage(latitude: item.latitude, longitude: item.longitude, elevation: 0),
         isVisible: true,
-        icon: item.categoryId.categoryFromId()?.iconPath.markerIcon(size: _sizeMarkersHajj),
+        icon: item.categoryId
+            .categoryFromId()
+            ?.iconPath(context.read<ThemeController>().currentTheme)
+            .markerIcon(size: _sizeMarkersHajj),
       ),
     );
   }

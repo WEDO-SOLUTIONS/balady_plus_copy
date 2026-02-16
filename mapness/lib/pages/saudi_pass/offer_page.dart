@@ -19,8 +19,8 @@ import 'package:mapness/features/saudi_pass/providers/offer_redeem_provider.dart
 import 'package:mapness/features/saudi_pass/providers/send_offer_feedback_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_code_sheet.dart';
+import 'package:mapness/features/saudi_pass/widgets/offer_description_sheet.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_favorites_removing_sheet.dart';
-import 'package:mapness/features/saudi_pass/widgets/offer_terms_sheet.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_image.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -178,23 +178,23 @@ class _Content extends HookConsumerWidget {
                                         : subtitleStyle,
                                   ),
                                 ),
-                                Spacing.$1_5x.heightBox,
-                                _OfferInfoRow(
-                                  title: Text(l10n.offerDescription, style: titleStyle),
-                                  subtitle: Text(
-                                    offer.description.length > 500
-                                        ? '${offer.description.substring(0, 500)}...'
-                                        : offer.description,
-                                    style: subtitleStyle,
-                                  ),
-                                ),
+                                // Spacing.$1_5x.heightBox,
+                                // _OfferInfoRow(
+                                //   title: Text(l10n.offerDescription, style: titleStyle),
+                                //   subtitle: Text(
+                                //     offer.description.length > 500
+                                //         ? '${offer.description.substring(0, 500)}...'
+                                //         : offer.description,
+                                //     style: subtitleStyle,
+                                //   ),
+                                // ),
                                 Spacing.$3x.heightBox,
                                 GestureDetector(
-                                  onTap: () => _showTerms(context, offer.terms),
+                                  onTap: () => _showDescription(context, offer.description),
                                   child: Row(
                                     children: [
                                       Text(
-                                        l10n.termAndConditions,
+                                        l10n.offerDescription,
                                         style: textStyle.bodySmallMedium.copyWith(color: colors.accentDefault),
                                       ),
                                       AppIcons(
@@ -291,7 +291,7 @@ class _Content extends HookConsumerWidget {
 
   String _getByDate(OfferDetails offer, BuildContext context) {
     final value = offer.byDate(Localizations.localeOf(context).languageCode);
-    return '${context.l10n.saudiPassOfferBy} $value';
+    return '${context.l10n.saudiPassOfferBy2} $value';
   }
 
   TextSpan? _getDiscount(OfferDetails offer, Language language, BuildContext context) {
@@ -306,13 +306,13 @@ class _Content extends HookConsumerWidget {
     );
   }
 
-  Future<void> _showTerms(BuildContext context, String terms) async {
+  Future<void> _showDescription(BuildContext context, String terms) async {
     await showDialog(
       context: context,
       useSafeArea: false,
-      builder: (_) => OfferTermsSheet(
+      builder: (_) => OfferDescriptionSheet(
         terms: terms,
-        title: context.l10n.termAndConditions,
+        title: context.l10n.offerDescription,
         close: context.l10n.saudiPassTermAndConditionsClose,
       ),
     );

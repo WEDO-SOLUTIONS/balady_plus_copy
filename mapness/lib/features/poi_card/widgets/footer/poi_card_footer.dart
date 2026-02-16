@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide TransportIcons, StopNumbersIcons;
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,7 @@ class PoiCardFooter extends HookConsumerWidget {
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
     final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
-    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
+    const iconData = SystemIcons.bookmark;
 
     final hasEntrances = data?.entrances.isNotEmpty == true;
     final hasContacts = data?.contactInfos.isNotEmpty == true;
@@ -151,6 +152,8 @@ class PoiCardFooter extends HookConsumerWidget {
           if (!parkingPoi)
             ItemActionBar(
               icon: iconData,
+              bgColor: isFavourite ? context.colors.extra01ContainerDefault : null,
+              iconColor: isFavourite ? context.colors.extra01Default : null,
               buttonType: ButtonType.secondary,
               colorScheme: _buttonColorScheme,
               onPressed: () => onTapFavorite(favouriteItem),
