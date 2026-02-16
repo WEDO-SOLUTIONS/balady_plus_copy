@@ -117,7 +117,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
-                            "assets/images/loader.gif",
+                            "assets/images/newload.gif",
                             width: 120,
                             height: 120,
                             fit: BoxFit.contain,
