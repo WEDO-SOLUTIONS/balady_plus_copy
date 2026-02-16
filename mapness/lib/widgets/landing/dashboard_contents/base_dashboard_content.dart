@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:sheetify/sheetify.dart';
 
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -20,14 +21,16 @@ import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 class BaseDashboardContent extends ConsumerWidget {
   const BaseDashboardContent({
     required this.themeConfig,
+    required this.bottomSheetController,
     super.key,
   });
 
   final DashboardThemeConfig themeConfig;
+  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final actions = DashboardActions(ref);
+    final actions = DashboardActions(ref, bottomSheetController: bottomSheetController);
 
     return Column(
       children: [

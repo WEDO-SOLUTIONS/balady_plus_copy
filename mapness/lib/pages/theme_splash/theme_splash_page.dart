@@ -101,7 +101,7 @@ class _MakkahSplashOverlay extends StatelessWidget {
 
   String _fontFamily(BuildContext context) {
     final isArabic = Localizations.localeOf(context).languageCode == 'ar';
-    return isArabic ? 'Frutiger' : 'Golos';
+    return isArabic ? 'packages/balady_uikit/Frutiger' : 'packages/balady_uikit/Golos';
   }
 
   @override
@@ -131,9 +131,10 @@ class _MakkahSplashOverlay extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: fontFamily,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 4,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0,
+                    height: 30 / 24,
                     color: _textColor,
                     decoration: TextDecoration.none,
                   ),
@@ -149,6 +150,7 @@ class _MakkahSplashOverlay extends StatelessWidget {
                     fontFamily: fontFamily,
                     fontSize: 16,
                     fontWeight: FontWeight.normal,
+                    height: 22 / 16,
                     color: _textColor,
                     decoration: TextDecoration.none,
                   ),

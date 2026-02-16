@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -8,18 +8,21 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:sheetify/sheetify.dart';
 
 /// Encapsulates all dashboard quick action callbacks and navigation logic.
 ///
 /// This class eliminates props drilling by centralizing all action handlers
 /// that were previously passed as 8 separate callbacks through the widget tree.
 class DashboardActions {
-  const DashboardActions(this.ref);
+  const DashboardActions(this.ref, {this.bottomSheetController});
 
   final WidgetRef ref;
+  final MultiStateSheetController<ThreeStateSheet>? bottomSheetController;
 
   /// Helper to log themed quick action
   void _logThemedQuickAction(String actionName) {
@@ -36,6 +39,8 @@ class DashboardActions {
   void openParking() {
     _logThemedQuickAction('parking');
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
+    bottomSheetController?.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
+    bottomSheetController?.setState(ThreeStateSheet.hidden);
     ref.read(layersControlsProvider.notifier).enableParking();
   }
 
@@ -63,14 +68,14 @@ class DashboardActions {
   void openQuran() {
     _logThemedQuickAction('quran');
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    // TODO: Implement when mini_apps_engine is available
+    CommonFunctions.openMiniApp(serviceKey: "Quran");
   }
 
   /// Opens the Athkar mini-app.
   void openAthkar() {
     _logThemedQuickAction('athkar');
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    // TODO: Implement when mini_apps_engine is available
+    CommonFunctions.openMiniApp(serviceKey: "Athkar");
   }
 
   /// Opens the Free Roam navigation screen.
@@ -81,9 +86,7 @@ class DashboardActions {
   }
 
   /// Opens the user's current location sharing screen.
-  ///
-  /// Checks location permission before navigating.
-  Future<void> openMyLocation(BuildContext context) async {
+  void openMyLocation(BuildContext context) {
     _logThemedQuickAction('send_location');
     ref.read(appAnalyticsProvider).quickActionSelected('my_location');
     Metrics.logEventAdvanced(
@@ -96,23 +99,18 @@ class DashboardActions {
         .read(advertMetricsProvider.notifier)
         .sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
-    final location = ref.read(locationProvider.notifier);
-    final allowed = await location.checkLocationPermission();
-    if (!allowed) return;
-
     final userLocation = ref.read(locationProvider);
-    if (userLocation == null) return;
-
-    if (!context.mounted) return;
-    context.router.push(
-      ShareMyLocationRoute(
-        cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-        closestPoint: LatLng(
-          latitude: userLocation.latitude,
-          longitude: userLocation.longitude,
+    if (userLocation != null) {
+      context.router.push(
+        ShareMyLocationRoute(
+          cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+          closestPoint: LatLng(
+            latitude: userLocation.latitude,
+            longitude: userLocation.longitude,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 
   /// Opens the Snap and Send mini-app for reporting issues.
@@ -124,7 +122,7 @@ class DashboardActions {
       action: MetricAction.tap.name,
       group: MetricsConstants.exploreTag,
     );
-    // TODO: Implement when mini_apps_engine is available
+    CommonFunctions.openMiniApp(serviceKey: "snapandsend");
   }
 
   /// Opens the road event reporting feature.

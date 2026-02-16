@@ -17,6 +17,7 @@ import 'package:mapness/widgets/landing/quick_action_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:sheetify/sheetify.dart';
 
 /// Unified dashboard content for Makkah-based themes (mekkahBase and ramadan).
 ///
@@ -26,11 +27,13 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
   const MakkahBasedDashboardContent({
     required this.themeMode,
     required this.themeConfig,
+    required this.bottomSheetController,
     super.key,
   });
 
   final SpecialThemeMode themeMode;
   final DashboardThemeConfig themeConfig;
+  final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
   /// Returns the asset path prefix for quick action icons based on theme mode.
   String get _quickActionAssetPrefix {
@@ -49,7 +52,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final actions = DashboardActions(ref);
+    final actions = DashboardActions(ref, bottomSheetController: bottomSheetController);
     final pilgrimFeature = ref.watch(showPilgrimFeatureProvider);
     final showKaabaCard = _shouldShowKaabaCard(pilgrimFeature);
 

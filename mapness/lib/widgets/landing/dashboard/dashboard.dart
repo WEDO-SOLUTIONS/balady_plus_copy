@@ -198,12 +198,13 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         return MakkahBasedDashboardContent(
           themeMode: themeMode,
           themeConfig: themeConfig,
+          bottomSheetController: widget.bottomSheetController,
         );
       case SpecialThemeMode.nationalDay:
-        return NationalDayDashboardContent(themeConfig: themeConfig);
+        return NationalDayDashboardContent(themeConfig: themeConfig, bottomSheetController: widget.bottomSheetController);
       case SpecialThemeMode.foundationDay:
       case SpecialThemeMode.base:
-        return BaseDashboardContent(themeConfig: themeConfig);
+        return BaseDashboardContent(themeConfig: themeConfig, bottomSheetController: widget.bottomSheetController);
     }
   }
 }
