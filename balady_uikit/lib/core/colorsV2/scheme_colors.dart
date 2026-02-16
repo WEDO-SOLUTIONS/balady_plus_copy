@@ -761,7 +761,7 @@ class LightThemeV3Mekkah extends ColorSchemeV3 {
     // Primary accent tweaked for Makkah brand
     super.accentDefault = const Color(0xFF307457),
     super.accentSoft = const Color(0xFF638476),
-    super.accentMuted = const Color(0xFFE3AF95),
+    super.accentMuted = AccentColors.$200,
     super.accentActive = AccentColors.$800,
     super.accentOnAccent = AccentColors.$0,
     super.accentContainerDefault = const Color(0x33C56846),
