@@ -73,7 +73,7 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
 
     final places = await ref.watch(makkahPlacesRepositoryProvider.future);
     final dark = await ref.watch(darkModeProvider.future);
-    final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+    final isRtl = ref.watch(appLanguageProvider) == Language.arabic;
 
     final markers = <Marker>[];
     final points = <GeoPointMessage>[];

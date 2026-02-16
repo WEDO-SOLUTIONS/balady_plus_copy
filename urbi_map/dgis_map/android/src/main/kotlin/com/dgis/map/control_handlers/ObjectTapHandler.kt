@@ -428,7 +428,7 @@ class ObjectTapHandler(
         val manager =
                 MapObjectManager.withGeneralization(
                         map = this.map,
-                        logicalPixel = LogicalPixel(value = 70f),
+                        logicalPixel = LogicalPixel(value = 100f),
                         maxZoom = Zoom(value = 18f),
                         layerId = layerId,
                 )

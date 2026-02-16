@@ -28,6 +28,12 @@ class BriefRouteInfo extends _$BriefRouteInfo {
       ref.onDispose(timer.cancel);
     }
 
+    // Preserve previous data to avoid UI blinks during rebuilds.
+    List<BriefRouteInfoMessage>? previous;
+    try {
+      previous = state;
+    } catch (_) {}
+
     controller.value
         ?.findBriefRouteInfos(
       startPoint: startPoint?.toMessage(),
@@ -38,6 +44,6 @@ class BriefRouteInfo extends _$BriefRouteInfo {
       state = value.whereType<BriefRouteInfoMessage>().toList();
     }).onError((error, stackTrace) => state = null);
 
-    return null;
+    return previous;
   }
 }

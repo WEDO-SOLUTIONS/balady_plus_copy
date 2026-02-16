@@ -96,14 +96,6 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 QuickActionButton(
-                  text: context.l10n.roadEvent,
-                  icon: General32Icons.eventsFilled,
-                  assetPath: _getAssetPath('road_event.png'),
-                  themeMode: themeMode,
-                  onTap: actions.openRoadEvent,
-                ),
-                const SizedBox(width: Spacing.$2x),
-                QuickActionButton(
                   text: context.l10n.sendLocation,
                   icon: General32Icons.locationAction,
                   assetPath: _getAssetPath('send_location.png'),
