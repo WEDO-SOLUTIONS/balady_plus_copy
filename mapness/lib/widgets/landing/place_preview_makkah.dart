@@ -361,8 +361,9 @@ class _TravelTimeChip extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Get user location for straight-line distance calculation
-    final userLocation = ref.watch(locationProvider);
+    // Get user location snapshot for straight-line distance calculation.
+    // Using ref.read since route info is already periodically refreshed.
+    final userLocation = ref.read(locationProvider);
 
     // Get both pedestrian and car route info
     // Pass startPoint: null to let SDK use its internal location tracking

@@ -20,7 +20,19 @@ class MakkahPlacesDebugPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final placesAsync = ref.watch(makkahPlacesRepositoryProvider);
-    final location = ref.watch(locationProvider);
+
+    // Only rebuild when location changes by ~100m (0.001° ≈ 111m)
+    // to avoid excessive rebuilds from raw GPS updates.
+    ref.watch(
+      locationProvider.select((loc) {
+        if (loc == null) return null;
+        return (
+          (loc.latitude * 1000).round(),
+          (loc.longitude * 1000).round(),
+        );
+      }),
+    );
+    final location = ref.read(locationProvider);
 
     final envAsync = ref.watch(dgisEnvTypeProvider);
 
