@@ -24,9 +24,7 @@ import '../widgets/custom_spaces_widgets.dart';
 import '../widgets/texts/custom_text_widget.dart';
 
 class SuccessScreen extends StatefulWidget {
-  const SuccessScreen({
-    super.key,
-  });
+  const SuccessScreen({super.key});
 
   @override
   State<SuccessScreen> createState() => _SuccessScreenState();
@@ -51,42 +49,45 @@ class _SuccessScreenState extends State<SuccessScreen> {
         ModalRoute.of(context)!.settings.arguments as SuccessScreenArgs;
 
     return Scaffold(
-        appBar: null,
-        body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(ImagePath.successPageBackground),
-                  fit: BoxFit.cover)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsetsDirectional.only(
-                    top: MediaQuery.of(context).padding.top + 10, start: 16),
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Image.asset(
-                    IconPath.qrWhiteCloseIcon,
-                    height: 20.0,
-                    width: 20.0,
-                    color: Colors.black,
-                  ),
+      appBar: null,
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(ImagePath.successPageBackground),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsetsDirectional.only(
+                top: MediaQuery.of(context).padding.top + 10,
+                start: 16,
+              ),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Image.asset(
+                  IconPath.qrWhiteCloseIcon,
+                  height: 20.0,
+                  width: 20.0,
+                  color: Colors.black,
                 ),
               ),
-              SuccessBody(
-                successScreenArgs: successScreenArgs,
-              ),
-              SuccessButtons(
-                fromHomePage: successScreenArgs.fromHomePage ?? false,
-                pageType: successScreenArgs.type,
-                isFawry: successScreenArgs.isFawry ?? false,
-                requestId: successScreenArgs.idNumber,
-              )
-            ],
-          ),
-        ));
+            ),
+            SuccessBody(successScreenArgs: successScreenArgs),
+            SuccessButtons(
+              fromHomePage: successScreenArgs.fromHomePage ?? false,
+              pageType: successScreenArgs.type,
+              isFawry: successScreenArgs.isFawry ?? false,
+              requestId: successScreenArgs.idNumber,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void sendSuccessEvent(PAGE_TYPE type) {
@@ -94,14 +95,16 @@ class _SuccessScreenState extends State<SuccessScreen> {
       case PAGE_TYPE.emtethal:
         CommonFunctions.sendEventToAnalytics(AppEvents.createComplianceSuccess);
         CommonFunctions.sendUXCamEvent(
-            UXCamEvents.finishServiceComplianceCertificate);
+          UXCamEvents.finishServiceComplianceCertificate,
+        );
         break;
       case PAGE_TYPE.deleteEmtethal:
         break;
       case PAGE_TYPE.appointmentScreen:
         CommonFunctions.sendEventToAnalytics(AppEvents.makeAppointmentSuccess);
         CommonFunctions.sendUXCamEvent(
-            UXCamEvents.finishServiceAppointmentBooking);
+          UXCamEvents.finishServiceAppointmentBooking,
+        );
 
         break;
 
@@ -109,13 +112,15 @@ class _SuccessScreenState extends State<SuccessScreen> {
         break;
       case PAGE_TYPE.cancelAppointment:
         CommonFunctions.sendEventToAnalytics(
-            AppEvents.cancelAppointmentSuccess);
+          AppEvents.cancelAppointmentSuccess,
+        );
 
         break;
 
       case PAGE_TYPE.confirmAppointment:
         CommonFunctions.sendEventToAnalytics(
-            AppEvents.confirmAppointmentSuccess);
+          AppEvents.confirmAppointmentSuccess,
+        );
 
         break;
 
@@ -126,21 +131,25 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
       case PAGE_TYPE.dc:
         CommonFunctions.sendEventToAnalytics(
-            AppEvents.damagedCarsReportSuccess);
+          AppEvents.damagedCarsReportSuccess,
+        );
         CommonFunctions.sendUXCamEvent(
-            UXCamEvents.finishServiceReportWriteOffVehicle);
+          UXCamEvents.finishServiceReportWriteOffVehicle,
+        );
         break;
 
       case PAGE_TYPE.vhr:
         CommonFunctions.sendEventToAnalytics(AppEvents.vhrRequestSuccess);
         CommonFunctions.sendUXCamEvent(
-            UXCamEvents.finishServiceRetrieveImpoundedVehicle);
+          UXCamEvents.finishServiceRetrieveImpoundedVehicle,
+        );
 
         break;
 
       case PAGE_TYPE.deleteRequestScreen:
         CommonFunctions.sendEventToAnalytics(
-            AppEvents.IssuHealthCertDeleteSuccess);
+          AppEvents.IssuHealthCertDeleteSuccess,
+        );
 
         break;
 
@@ -164,7 +173,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       case PAGE_TYPE.msr:
         CommonFunctions.sendEventToAnalytics(AppEvents.municipalRequestSuccess);
         CommonFunctions.sendUXCamEvent(
-            UXCamEvents.finishServiceMunicipalServiceRequest);
+          UXCamEvents.finishServiceMunicipalServiceRequest,
+        );
 
         break;
       case PAGE_TYPE.newVD:
@@ -228,14 +238,8 @@ class SuccessBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Image.asset(
-                ImagePath.successPageIcon,
-                height: 137,
-                width: 239,
-              ),
-              const CustomVerticalSpace(
-                height: 26,
-              ),
+              Image.asset(ImagePath.successPageIcon, height: 137, width: 239),
+              const CustomVerticalSpace(height: 26),
               CustomTextWidget(
                 getTitle(),
                 fontSize: 22,
@@ -244,21 +248,21 @@ class SuccessBody extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 10,
               ),
-              const CustomVerticalSpace(
-                height: 20,
+              const CustomVerticalSpace(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: CustomTextWidget(
+                  getDesc(),
+                  fontSize: 16,
+                  fontWeight: AppFontWeight.medium,
+                  fontColor: AppColor.black500,
+                  height: 1.6,
+                  maxLines: 20,
+                  textAlign: TextAlign.center,
+                ),
               ),
-              CustomTextWidget(
-                getDesc(),
-                fontSize: 16,
-                fontWeight: AppFontWeight.medium,
-                fontColor: AppColor.black500,
-                height: 1.6,
-                maxLines: 20,
-                textAlign: TextAlign.start,
-              ),
-              const CustomVerticalSpace(
-                height: 20,
-              ),
+
+              const CustomVerticalSpace(height: 20),
               //MM
               if (successScreenArgs?.msg != null &&
                   successScreenArgs!.msg!.isNotEmpty)
@@ -267,7 +271,6 @@ class SuccessBody extends StatelessWidget {
               // const CustomVerticalSpace(
               //   height: 48,
               // ),
-
               successScreenArgs?.idNumber != null &&
                       successScreenArgs?.type == PAGE_TYPE.ekramCemetry
                   ? CustomElevatedButtonWidget(
@@ -286,8 +289,9 @@ class SuccessBody extends StatelessWidget {
                           child: SubmitRatingSheet(
                             title: 'service_evaluation'.tr(),
                             ratingRequest: RatingRequest(
-                              requestId:
-                                  int.parse(successScreenArgs!.idNumber!),
+                              requestId: int.parse(
+                                successScreenArgs!.idNumber!,
+                              ),
                             ),
                           ),
                           isFullHeight: false,
@@ -343,9 +347,10 @@ class SuccessBody extends StatelessWidget {
   String getDesc() {
     switch (successScreenArgs?.type) {
       case PAGE_TYPE.licenseScreen:
-        return ('order_thanks_desc')
-            .tr()
-            .replaceAll("-", successScreenArgs?.idNumber ?? "");
+        return ('order_thanks_desc').tr().replaceAll(
+          "-",
+          successScreenArgs?.idNumber ?? "",
+        );
 
       case PAGE_TYPE.ratingScreen:
         return ('lbl_evaluation_thanks_desc').tr();
@@ -367,9 +372,10 @@ class SuccessBody extends StatelessWidget {
         }*/
 
       case PAGE_TYPE.msr:
-        return ('req_order_thanks_desc')
-            .tr()
-            .replaceAll("-", successScreenArgs?.idNumber ?? "");
+        return ('req_order_thanks_desc').tr().replaceAll(
+          "-",
+          successScreenArgs?.idNumber ?? "",
+        );
 
       case PAGE_TYPE.visitScreen:
         return successScreenArgs?.thanksMessage ?? "";
@@ -385,29 +391,34 @@ class SuccessBody extends StatelessWidget {
       case PAGE_TYPE.deleteRequestScreen:
         return ("health_request_deleted").tr();
       case PAGE_TYPE.inquiry:
-        return ('inq_order_thanks_desc')
-            .tr()
-            .replaceAll("-", successScreenArgs?.idNumber ?? "");
+        return ('inq_order_thanks_desc').tr().replaceAll(
+          "-",
+          successScreenArgs?.idNumber ?? "",
+        );
       case PAGE_TYPE.contactUs:
         return ('lbl_we_recived_your_msg').tr();
       case PAGE_TYPE.coObserver:
-        return ('success_register_co_desc')
-            .tr()
-            .replaceAll("-", successScreenArgs?.idNumber ?? "--");
+        return ('success_register_co_desc').tr().replaceAll(
+          "-",
+          successScreenArgs?.idNumber ?? "--",
+        );
       case PAGE_TYPE.daem:
-        return ('daem_success_desc')
-            .tr()
-            .replaceAll("-", successScreenArgs?.idNumber ?? "--");
+        return ('daem_success_desc').tr().replaceAll(
+          "-",
+          successScreenArgs?.idNumber ?? "--",
+        );
 
       case PAGE_TYPE.objction:
-        return ('objection_success_message')
-            .tr()
-            .replaceAll("-", successScreenArgs?.idNumber ?? "--");
+        return ('objection_success_message').tr().replaceAll(
+          "-",
+          successScreenArgs?.idNumber ?? "--",
+        );
 
       case PAGE_TYPE.deleteEmtethal:
-        return ("delete_compliance_request_message")
-            .tr()
-            .replaceAll("_", successScreenArgs?.idNumber ?? "--");
+        return ("delete_compliance_request_message").tr().replaceAll(
+          "_",
+          successScreenArgs?.idNumber ?? "--",
+        );
 
       case PAGE_TYPE.newVD:
       case PAGE_TYPE.dc:
@@ -433,12 +444,13 @@ class SuccessButtons extends StatelessWidget {
   bool isFawry;
   String? requestId;
 
-  SuccessButtons(
-      {super.key,
-      required this.pageType,
-      this.isFawry = false,
-      this.fromHomePage = false,
-      this.requestId});
+  SuccessButtons({
+    super.key,
+    required this.pageType,
+    this.isFawry = false,
+    this.fromHomePage = false,
+    this.requestId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -450,10 +462,11 @@ class SuccessButtons extends StatelessWidget {
           children: [
             if (pageType == PAGE_TYPE.emtethal && isFawry == true)
               ElevatedButtonWidget.primaryCustomBorder(
-                  onPressed: () {
-                    onPressWhiteButton(context, requestId: requestId);
-                  },
-                  text: getWhiteBtnText()),
+                onPressed: () {
+                  onPressWhiteButton(context, requestId: requestId);
+                },
+                text: getWhiteBtnText(),
+              ),
             const CustomVerticalSpace(height: 16),
             CustomElevatedButtonWidget(
               onPressed: () {
@@ -554,7 +567,7 @@ class SuccessButtons extends StatelessWidget {
           Navigator.of(context).pop();
         }*/
         break;
-//MM
+        //MM
         /*case PAGE_TYPE.coObserver:
         {
           Navigator.of(context).push(MaterialPageRoute(
@@ -616,10 +629,7 @@ class SuccessButtons extends StatelessWidget {
         Navigator.pushNamed(
           context,
           RouteName.complianceDetailsPage,
-          arguments: {
-            "requestNumber": requestId,
-            "redirectUrl": "",
-          },
+          arguments: {"requestNumber": requestId, "redirectUrl": ""},
         );
         break;
 
@@ -697,21 +707,17 @@ class SuccessButtons extends StatelessWidget {
 class CustomHtmlTextWidget extends StatelessWidget {
   final String data;
 
-  const CustomHtmlTextWidget(
-    this.data, {
-    super.key,
-  });
+  const CustomHtmlTextWidget(this.data, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(2)),
-          border: Border.all(color: const Color(0xff6bb21f), width: 1),
-          color: const Color(0xfffafef6)),
-      padding: const EdgeInsetsDirectional.only(
-        start: 16,
+        borderRadius: const BorderRadius.all(Radius.circular(2)),
+        border: Border.all(color: const Color(0xff6bb21f), width: 1),
+        color: const Color(0xfffafef6),
       ),
+      padding: const EdgeInsetsDirectional.only(start: 16),
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxHeight:
@@ -723,7 +729,8 @@ class CustomHtmlTextWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 13.0, bottom: 13),
               child: SvgPicture.asset(
-                  "assets/images/feedbackMessageItemIconPartiallyDetected.svg"),
+                "assets/images/feedbackMessageItemIconPartiallyDetected.svg",
+              ),
             ),
             Expanded(
               child: Padding(
@@ -741,11 +748,7 @@ class CustomHtmlTextWidget extends StatelessWidget {
                         fontFamily: Constants.appFontType,
                       ),
                     },
-                    onLinkTap: (
-                      url,
-                      _,
-                      __,
-                    ) {
+                    onLinkTap: (url, _, __) {
                       CommonFunctions.externalLaunch(url!);
                     },
                   ),
