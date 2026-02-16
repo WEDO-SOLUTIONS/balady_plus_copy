@@ -5,7 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/mini_apps_engine/new_mini_apps_logic/presentation/cubit/new_mini_app_logic_cubit.dart';
-import 'package:balady_uikit/balady_uikit.dart' hide Stories, StatefulSheetDelegateFunction, StatefulSheetDelegateValue;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -68,15 +68,13 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
         final interpolation = controller.interpolation;
         final state = controller.state;
 
-      final isGoToNavigatorShown = freeRoamState.canStart &&
-          !freeRoamState.isAutorun;
+        final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
 
         final isSheetCoversThreshold = fraction > threshold;
         final isSheetStateOpen = state == ThreeStateSheet.open;
         final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
-        final isFull =
-            isGoToNavigatorShown ||
+        final isFull = isGoToNavigatorShown ||
             (!controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
             isSheetCoversThreshold;
 
@@ -84,6 +82,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
       },
     );
   }
+
   final barrierColorDelegate = StatefulSheetDelegateFunction<Color?, ThreeStateSheet>(
     function: (controller) {
       final state = controller.state;
@@ -113,8 +112,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) =>
-      _checkLocationPermission(state);
+  void didChangeAppLifecycleState(AppLifecycleState state) => _checkLocationPermission(state);
 
   ///This method is intended for handling location permission requests
   /// if it's triggered by someone before Mapness starts.
@@ -136,9 +134,23 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
     final activeEvent = ref.watch(activeCityEventProvider);
     final isNationalDay = activeEvent?.isSaudiNationalDay ?? false;
     final specialThemeMode = ref.watch(specialThemeModeProvider);
-    final themeConfig = dashboardThemeConfigFor(specialThemeMode,activeEvent);
-    final isMakkahTheme = specialThemeMode == SpecialThemeMode.mekkahBase ||
-        specialThemeMode == SpecialThemeMode.ramadan;
+    final themeConfig = dashboardThemeConfigFor(specialThemeMode, activeEvent);
+    final isMakkahTheme =
+        specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan;
+
+    final config = CityEventConfig.fromEventType(activeEvent);
+    final eventLogo = config?.logoConfig != null && config!.hasDashboardLogo
+        ? CityEventLogo(
+            config: config.logoConfig!,
+            fireworksController: widget.fireworksController,
+            onTap: () {
+              print('amr activeEvent $activeEvent');
+              if (activeEvent == CityEventType.foundingDay) {
+                ref.read(foundingDayUrbiProvider.notifier).openThePlace();
+              }
+            },
+          )
+        : null;
 
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -157,7 +169,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 topHeaderOffset: themeConfig.useTopHeaderOffset ? topHeaderOffset : null,
                 offsetOutsideWidgetByTopheader: themeConfig.offsetOutsideWidgetByTopHeader,
                 backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2,
-                dragger: SheetDragger(backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2),
+                dragger:
+                    SheetDragger(backgroundColor: themeConfig.backgroundColor ?? context.colors.backgroundSurface2),
                 header: const DashboardHeader(),
                 footer: IgnorePointer(
                   child: SizedBox(
@@ -194,6 +207,50 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                 ],
               ),
             ),
+            if (eventLogo != null)
+              AnimatedBuilder(
+                animation: widget.bottomSheetController,
+                builder: (context, snapshot) {
+                  final fraction = widget.bottomSheetController.fraction;
+                  // Direction-agnostic visibility windows:
+                  // Opening:  0.91 → 0.96  (becomes fully invisible at >= 0.96)
+                  // Closing:  0.19 → 0.11  (becomes fully invisible at <= 0.11)
+                  const double openStart = 0.91;
+                  const double openEnd = 0.96; // fully invisible here
+                  const double closeStart = 0.19;
+                  const double closeEnd = 0.11; // fully invisible here
+                  const double eps = 1e-6;
+
+                  // Compute shrink amount independently for both windows and take the stronger effect.
+                  final double openT = ((fraction - openStart) / (openEnd - openStart)).clamp(0.0, 1.0);
+                  final double closeT = ((closeStart - fraction) / (closeStart - closeEnd)).clamp(0.0, 1.0);
+                  final double shrink = max(openT, closeT); // 0.0..1.0
+                  double scaleValue = 1.0 - shrink; // 1.0..0.0
+
+                  // Hard clamp to 0 when we are beyond the full-invisible bounds.
+                  if (fraction >= openEnd - eps || fraction <= closeEnd + eps) {
+                    scaleValue = 0.0;
+                  }
+
+                  final double _baseBottom = (widget.bottomSheetController.sheetHeight + (50 * scaleValue)).clamp(
+                    0.0,
+                    double.infinity,
+                  );
+                  return Positioned(
+                    bottom: _baseBottom,
+                    child: scaleValue <= 0.0
+                        ? const SizedBox.shrink()
+                        : Opacity(
+                            opacity: scaleValue, // fade together with scale to avoid subpixel artifacts
+                            child: Transform.scale(
+                              scale: scaleValue,
+                              alignment: Alignment.bottomCenter,
+                              child: eventLogo,
+                            ),
+                          ),
+                  );
+                },
+              ),
           ],
         ),
       ),
@@ -225,10 +282,18 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
           themeConfig: themeConfig,
         );
       case SpecialThemeMode.nationalDay:
-        return NationalDayDashboardContent(themeConfig: themeConfig,bottomSheetController: widget.bottomSheetController,fireworksController: widget.fireworksController,);
+        return NationalDayDashboardContent(
+          themeConfig: themeConfig,
+          bottomSheetController: widget.bottomSheetController,
+          fireworksController: widget.fireworksController,
+        );
       case SpecialThemeMode.foundationDay:
       case SpecialThemeMode.base:
-        return BaseDashboardContent(themeConfig: themeConfig,bottomSheetController: widget.bottomSheetController,fireworksController: widget.fireworksController,);
+        return BaseDashboardContent(
+          themeConfig: themeConfig,
+          bottomSheetController: widget.bottomSheetController,
+          fireworksController: widget.fireworksController,
+        );
     }
   }
 }

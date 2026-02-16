@@ -1,8 +1,10 @@
 import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/cityscape/cityscape_debug.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day_debug.dart';
+import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -20,10 +22,10 @@ part 'active_city_event.g.dart';
 class ActiveCityEvent extends _$ActiveCityEvent {
   @override
   CityEventType? build() {
-    if (ref.watch(saudiNationalDayDebugProvider)) {
+    if (ref.watch(saudiNationalDayProvider)) {
       return CityEventType.saudiNationalDay;
     }
-    if (ref.watch(cityscapeDebugProvider)) {
+    if (ref.watch(cityscapeProvider)) {
       return CityEventType.cityscape;
     }
     if (ref.watch(foundingDayUrbiProvider)) {
@@ -53,6 +55,7 @@ class ActiveCityEvent extends _$ActiveCityEvent {
       return null;
     }
     activeEvents.sort((a, b) => a.priority.compareTo(b.priority));
+
     return activeEvents.first;
   }
 }

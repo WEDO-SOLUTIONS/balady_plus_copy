@@ -8,6 +8,7 @@ import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/iwish/lib/iwish_object_mapper.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
@@ -62,14 +63,13 @@ class _IwishEntity extends _$IwishEntity {
     final response = pb.IWishItemResponse.fromBuffer(raw.data as List<int>).object;
     final point = response.location.point;
     logger.log('${response.toProto3Json()}');
-
-    await ref
-        .read(selectedMarkerProvider.notifier)
-        .showMarker(
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+    await ref.read(selectedMarkerProvider.notifier).showMarker(
           Markers.pinMarker(
             GeoPointWithElevationMessage(latitude: point.latitude, longitude: point.longitude, elevation: 1),
             id: iwishPinId,
             activeCityEvent: ref.read(activeCityEventProvider),
+            isDark: isDark,
           ),
         );
     ref.onDispose(() async {

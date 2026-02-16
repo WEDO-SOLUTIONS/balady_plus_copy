@@ -27,6 +27,9 @@ class Item {
   @JsonKey(defaultValue: false)
   bool isPinned;
 
+  @JsonKey(defaultValue: false)
+  bool isAsset;
+
   Item({
     required this.id,
     required this.url,
@@ -34,6 +37,7 @@ class Item {
     required this.width,
     required this.previewUrls,
     required this.isPinned,
+    required this.isAsset,
     this.realObjectType,
   });
 

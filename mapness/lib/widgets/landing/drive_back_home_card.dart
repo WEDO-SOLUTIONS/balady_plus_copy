@@ -16,7 +16,6 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -45,10 +44,8 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     final activeCityEvent = ref.watch(activeCityEventProvider);
 
     final showBlueCircles = activeCityEvent?.showBlueCircles ?? true;
-    final isNationalDay = ref.watch(saudiNationalDayProvider);
 
     super.build(context);
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: GestureDetector(
@@ -56,60 +53,57 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
         child: SizedBox(
           width: double.infinity,
           height: 123,
-          child: ClipRRect(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(RadiusBorder.xl),
-              child:DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  boxShadow: Shadows.s,
-                  image: DecorationImage(
-                    image: activeCityEvent?.driveHomeBackground ?? Assets.images.driveHomeBackground.provider(),
-                    matchTextDirection: true,
-                    fit: BoxFit.cover,
-                    alignment: AlignmentDirectional.centerEnd,
+              boxShadow: Shadows.s,
+              image: DecorationImage(
+                image: activeCityEvent?.driveHomeBackground ?? Assets.images.driveHomeBackground.provider(),
+                matchTextDirection: true,
+                fit: BoxFit.cover,
+                alignment: AlignmentDirectional.centerEnd,
+              ),
+            ),
+            child: Stack(
+              children: [
+                if (showBlueCircles) ...[
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                    child: const Stack(
+                      children: [
+                        Positioned(top: 40, left: -60, child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4)),
+                        Positioned(top: -110, right: -140, child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3)),
+                      ],
+                    ),
+                  ),
+                ],
+                Align(
+                  alignment: AlignmentDirectional.topEnd,
+                  child:
+                      activeCityEvent?.driveHomeArrow ?? Assets.images.driveHomeArrow.image(matchTextDirection: true),
+                ),
+                Align(
+                  alignment: AlignmentDirectional.topStart,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
+                    child: RichText(
+                      text: TextSpan(
+                        text: context.l10n.driveBack,
+                        style: context.textStyles.h3Medium.copyWith(
+                          color: activeCityEvent?.textColor(context.colors) ?? context.colors.staticWhite,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: '\n${context.l10n.homeQuestionMark}',
+                            style: context.textStyles.h3Medium.copyWith(color: context.colors.accentDefault),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    if (showBlueCircles) ...[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                        child: const Stack(
-                          children: [
-                            Positioned(top: 40, left: -60, child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4)),
-                            Positioned(top: -110, right: -140, child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3)),
-                          ],
-                        ),
-                      ),
-                    ],
-                    Align(
-                      alignment: AlignmentDirectional.topEnd,
-                      child:
-                      activeCityEvent?.driveHomeArrow ?? Assets.images.driveHomeArrow.image(matchTextDirection: true),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
-                        child: RichText(
-                          text: TextSpan(
-                            text: context.l10n.driveBack,
-                            style: context.textStyles.h3Medium.copyWith(
-                              color: activeCityEvent?.textColor(context.colors) ?? context.colors.staticWhite,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: '\n${context.l10n.homeQuestionMark}',
-                                style: context.textStyles.h3Medium.copyWith(color: context.colors.accentDefault),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )
+              ],
+            ),
           ),
         ),
       ),
@@ -124,7 +118,12 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     debouncer.debounce(
       () async => ref.read(authMethodsProvider.notifier).authAndOpen(
             context,
-            callback: () async => authAndOpenNavigator(ref, router, locationLabel, homeLabel),
+            callback: () async => authAndOpenNavigator(
+              ref,
+              router,
+              locationLabel,
+              homeLabel,
+            ),
           ),
     );
   }
@@ -269,12 +268,10 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   Future<void> setupMap(WidgetRef ref) async {
     final mapSetting = MapObjectManagerSettings.search();
     await ref
-        .read(
-          mapObjectManagerProvider(
-            named: mapSetting.name,
-            layerId: mapSetting.layerId,
-          ).notifier,
-        )
+        .read(mapObjectManagerProvider(
+          named: mapSetting.name,
+          layerId: mapSetting.layerId,
+        ).notifier)
         .removeAllMarkers();
 
     Metrics.logEventAdvanced(

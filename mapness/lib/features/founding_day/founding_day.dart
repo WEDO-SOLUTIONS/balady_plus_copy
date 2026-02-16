@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart' as sdk;
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -10,10 +9,12 @@ import 'package:mapness/features/founding_day/founding_day_debug.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -32,9 +33,10 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
 
   MapObjectManager? mapManager;
 
-  // String get customPinPath => const FoundingDayConfig().customPinPath;
+  bool get _isDark => ref.read(darkModeProvider).value?.isDark ?? false;
 
-  String get customMarker => const FoundingDayConfig().customMarkerPath;
+  String get customMarker =>
+      _isDark ? Assets.icons.svg.historicDiriyahFortDark.keyName : const FoundingDayConfig().customMarkerPath;
 
   String get globalImg => Assets.images.foundingDayCircleLogo.keyName;
 
@@ -124,24 +126,31 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
 
   bool isFoundationObject(int objectId) => const FoundingDayConfig().additionalObjectIds.contains(objectId) && state;
 
-  void openThePlace() {
-    try
-    {
-      ref.read(appRouterProvider).replaceOrPush(
-        route: PoiCardWidgetRoute(
-          objectId: sdk.DgisObjectIdMessage(objectId: const FoundingDayConfig().objectId, entranceId: 0),
-          closestPoint: sdk.LatLng(
-            latitude: const FoundingDayConfig().center.latitude,
-            longitude: const FoundingDayConfig().center.longitude,
-          ),
-          cameraConfig: const PoiCameraConfig(zoom: 20, tilt: 90),
+  Future<void> openThePlace() async {
+    final objectId = sdk.DgisObjectIdMessage(objectId: const FoundingDayConfig().objectId, entranceId: 0);
+    final closestPoint = sdk.LatLng(
+      latitude: const FoundingDayConfig().center.latitude,
+      longitude: const FoundingDayConfig().center.longitude,
+    );
+    const cameraConfig = PoiCameraConfig(zoom: 20, tilt: 90);
+    ref.read(
+      paddingConfigProvider(
+        const FoundingDayConfig().center,
+        closestPoint,
+        cameraConfig,
+      ),
+    );
+    await ref.read(appRouterProvider).replaceOrPush(
+      route: PoiCardWidgetRoute(
+        objectId: objectId,
+        closestPoint: sdk.LatLng(
+          latitude: const FoundingDayConfig().center.latitude,
+          longitude: const FoundingDayConfig().center.longitude,
         ),
-        toCompareRoutes: [PoiCardWidgetRoute.page],
-      );
-    }catch (ex){
-
-    }
-
+        cameraConfig: cameraConfig,
+      ),
+      toCompareRoutes: [PoiCardWidgetRoute.page],
+    );
   }
 
   sdk.MarkerTextStyleMessage get _markerAnchorTextStyle {
@@ -189,5 +198,23 @@ class FoundingDayUrbi extends _$FoundingDayUrbi {
     };
 
     return aboutMap[dgisObjectId] ?? '';
+  }
+
+  String getPhotoByDgisId(int dgisObjectId) {
+    final Map<int, String> map = {
+      // Diriyah - Cultural Institution
+      70030076209992609: Assets.images.foundingDayDiriyahCulturalInstitution.keyName,
+
+      // The National Museum
+      70000001097009979: Assets.images.foundingDayNationalMuseum.keyName,
+
+      // Al Hamdan Heritage
+      70000001094445934: Assets.images.foundingDayAlHamdanHeritage.keyName,
+
+      // Dir'yiyah
+      70030076567999453: Assets.images.foundingDayHistoricalDirYiyah.keyName,
+    };
+
+    return map[dgisObjectId] ?? '';
   }
 }

@@ -8,6 +8,7 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -82,10 +83,13 @@ class PoiMyLocation extends _$PoiMyLocation {
     final mapObjectManager = ref.read(
       mapObjectManagerProvider(named: settings.name, layerId: settings.layerId).notifier,
     );
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+
     await mapObjectManager.removeAllMarkers();
     final marker = Markers.pinMarker(
       GeoPointWithElevationMessage(latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 1),
       activeCityEvent: ref.watch(activeCityEventProvider),
+      isDark: isDark,
     );
 
     /// For those cases when we switch from an area (building) to MyLocation

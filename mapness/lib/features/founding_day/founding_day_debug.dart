@@ -27,9 +27,6 @@ class FoundingDayDebugUrbi extends _$FoundingDayDebugUrbi {
   void enable() {
     state = true;
     _foundingDayDebugOverride = true;
-    final dgisController = ref.read(dgisControllerProvider);
-    final dgisControllerValue = dgisController.valueOrNull;
-    dgisControllerValue?.loadStyles(MapnessConstants.mapStylesFoundingDayPath);
   }
 
   /// Disable the debug override

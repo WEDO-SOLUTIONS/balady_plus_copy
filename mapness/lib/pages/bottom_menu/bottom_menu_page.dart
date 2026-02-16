@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/active_event/active_event_theme_widget.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
 import 'package:mapness/widgets/bottom_menu/lazy_index_stack.dart';
@@ -35,25 +35,27 @@ class BottomMenuPage extends ConsumerWidget {
             ref.read(appAnalyticsProvider).serviceSectionVisited();
           }
         },
-        builder: (_, tabsRouter, route) => Column(
-          children: [
-            Expanded(
-              child: LazyIndexedStack(
-                index: route.activeIndex,
-                children: tabsRouter,
+        builder: (_, tabsRouter, route) {
+          final isFoundedDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+          final accentColor = isFoundedDay ? context.colors.accentSecondaryDefault : context.colors.accentDefault;
+          return Column(
+            children: [
+              Expanded(
+                child: LazyIndexedStack(
+                  index: route.activeIndex,
+                  children: tabsRouter,
+                ),
               ),
-            ),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: NonThemeColor.color14.withOpacity(0.05),
-                    offset: const Offset(0, -2),
-                    blurRadius: 8,
-                  ),
-                ],
-              ),
-              child: ActiveEventThemeWrapper.secondary(
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: NonThemeColor.color14.withOpacity(0.05),
+                      offset: const Offset(0, -2),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
                 child: BottomNavigationBar(
                   elevation: 0,
                   type: BottomNavigationBarType.fixed,
@@ -74,6 +76,7 @@ class BottomMenuPage extends ConsumerWidget {
                         iconBuilder: (ctx, isSelected) => DefaultIcon(
                           icon: GeneralIcons.pin,
                           selected: isSelected,
+                          color: isSelected ? accentColor : context.colors.foregroundSoft,
                         ),
                         label: context.l10n.nav_general,
                       ),
@@ -85,6 +88,7 @@ class BottomMenuPage extends ConsumerWidget {
                         iconBuilder: (ctx, isSelected) => DefaultIcon(
                           icon: GeneralIcons.routeStroke,
                           selected: isSelected,
+                          color: isSelected ? accentColor : context.colors.foregroundSoft,
                         ),
                         label: context.l10n.nav_route,
                       ),
@@ -96,6 +100,7 @@ class BottomMenuPage extends ConsumerWidget {
                         iconBuilder: (ctx, isSelected) => DefaultIcon(
                           icon: GeneralIcons.dashboard,
                           selected: isSelected,
+                          color: isSelected ? accentColor : context.colors.foregroundSoft,
                         ),
                         label: context.l10n.nav_landing,
                       ),
@@ -118,8 +123,8 @@ class BottomMenuPage extends ConsumerWidget {
                   onTap: route.setActiveIndex,
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       );
 }

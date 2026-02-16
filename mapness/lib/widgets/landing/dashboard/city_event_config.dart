@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// Logo configuration for event widgets
 class EventLogoConfig {
@@ -194,16 +193,10 @@ class FoundingDayConfig extends CityEventConfig {
   String getText(AppLocalizations l10n) => l10n.foundingDayDashboard;
 
   @override
-  String? getFormattedDate(BuildContext context) => context.l10n.localeName == 'en' ? '22 Feb 2026' : null;
-
-  @override
   double get verticalOffset => 10.0;
 
   @override
   bool get hasDashboardLogo => true;
-
-  @override
-  bool get hasLogo => true;
 
   @override
   String get customMarkerPath => Assets.icons.svg.historicDiriyahFort.keyName;
@@ -237,6 +230,8 @@ class FoundingDayConfig extends CityEventConfig {
         70030076567999453,
         70000001101604698,
         70030076209990811,
+        70000001094445934,
+        70000001097009979,
       };
 
   @override
@@ -248,6 +243,6 @@ class FoundingDayConfig extends CityEventConfig {
         width: 130,
         padding: EdgeInsets.zero,
         supportsFireworks: true,
-        imageOffset: const Offset(0, 10),
+        imageOffset: const Offset(0, -45),
       );
 }

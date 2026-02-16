@@ -83,9 +83,10 @@ class _ParkingManage extends _$ParkingManage {
             longitude: model.lon,
             elevation: 1,
           ),
-          icon: activeCityEvent?.icParking ??(SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon()),
+          icon: activeCityEvent?.icParking ??
+              (SaudiNationalDay.isNow()
+                  ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+                  : Assets.icons.svg.placesNew.icParking.keyName.markerIcon()),
         ),
         onTap: () {
           ref.read(appRouterProvider).replaceOrPush(
@@ -135,13 +136,16 @@ class _ParkingManage extends _$ParkingManage {
     await _mapObjectManager.removeAllMarkers();
 
     final style = await _markerStyle(title);
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+
     await selectedMarker.showMarker(Markers.pinMarker(
       GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
       text: title,
       textStyle: style,
       activeCityEvent: ref.read(activeCityEventProvider),
-      icon: SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew,
       id: poiPinId,
+      isDark: isDark,
     ));
   }
 
@@ -182,9 +186,10 @@ class _ParkingManage extends _$ParkingManage {
             longitude: lon,
             elevation: 1,
           ),
-          icon: activeCityEvent?.icParking ??(SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon()),
+          icon: activeCityEvent?.icParking ??
+              (SaudiNationalDay.isNow()
+                  ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+                  : Assets.icons.svg.placesNew.icParking.keyName.markerIcon()),
         ),
         onTap: () {
           ref.read(poiCardClosingProvider.notifier).close();

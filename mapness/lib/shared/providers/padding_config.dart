@@ -20,7 +20,7 @@ part 'padding_config.g.dart';
 class _PoiPaddingConfig extends _$PoiPaddingConfig {
   @override
   Future<void>? build(
-    DirectoryObjectMessage directoryObject,
+    GeoPointWithElevationMessage? markerPosition,
     LatLng? closestPoint,
     PoiCameraConfig? cameraConfig,
   ) async {
@@ -50,7 +50,6 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
       sizeOfScreen: sizeOfScreen,
     );
 
-    final markerPosition = directoryObject.markerPosition;
     final position = closestPoint ??
         (markerPosition == null
             ? null
@@ -71,6 +70,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     final cameraData = ref.read(cameraPositionProvider) ?? await dgisController.value?.getCameraPosition();
 
     final cameraZoom = cameraData?.zoom;
+    final cameraTilt = cameraData?.tilt;
     final point = cameraData?.point;
     final bearing = cameraData?.bearing;
     final newPoint = point;
@@ -134,8 +134,8 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     await cameraPosition.animateTo(
       CameraPositionMessage(
         point: cameraPoint,
-        zoom: isInViewZone ? cameraConfig?.zoom ?? cameraZoom ?? 16 : cameraConfig?.zoom ?? 16,
-        tilt: cameraConfig?.tilt ?? 0,
+        zoom: isInViewZone ? cameraZoom ?? 16 : cameraConfig?.zoom ?? 16,
+        tilt: (isInViewZone ? cameraTilt : cameraConfig?.tilt) ?? 0,
         bearing: bearing ?? 0,
       ),
     );

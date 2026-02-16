@@ -147,15 +147,19 @@ class PoiPhotoCardSliver extends ConsumerWidget {
         sliver: SliverGrid(
           delegate: SliverChildBuilderDelegate(
             childCount: photoItems.length,
-            (context, index) => ClipRRect(
-              borderRadius: BorderRadius.circular(RadiusBorder.xs),
-              child: LoadingShimmerImage(
-                imageUrl: photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index],
-                fit: BoxFit.cover,
-                onImageTap: (name, {isAsset}) =>
-                    context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),
-              ),
-            ),
+            (context, index) {
+              final imageUrl = photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index];
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(RadiusBorder.xs),
+                child: LoadingShimmerImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  isAssetImg: imageUrl.startsWith('package'),
+                  onImageTap: (name, {isAsset}) =>
+                      context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),
+                ),
+              );
+            },
           ),
           gridDelegate: SliverQuiltedGridDelegate(
             crossAxisCount: 6,

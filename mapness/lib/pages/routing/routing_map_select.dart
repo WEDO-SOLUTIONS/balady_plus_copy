@@ -19,6 +19,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
@@ -74,6 +75,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     }, [scrollController]);
 
     final activeEvent = ref.watch(activeCityEventProvider);
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
     return ToggleSheet(
       scrollController: scrollController,
       backgroundColor: context.colors.backgroundSurface4,
@@ -87,7 +89,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
               padding: EdgeInsets.only(
                 bottom: additionPadding,
               ),
-              child: SvgPicture.asset(activeEvent?.defaultPin ?? Markers.defaultPinNew),
+              child: SvgPicture.asset(activeEvent?.defaultPin(isDark: isDark) ?? Markers.defaultPinNew),
             ),
           ),
         ],

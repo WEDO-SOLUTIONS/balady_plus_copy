@@ -15,7 +15,6 @@ import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/active_event/active_event_theme_widget.dart';
 import 'package:mapness/widgets/profile/log_out_sheet.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
 
@@ -71,7 +70,7 @@ class ProfilePage extends HookConsumerWidget {
                             bottom: false,
                             right: false,
                             left: false,
-                            child: ActiveEventThemeWrapper.secondary(child: ProfileHeader()),
+                            child: ProfileHeader(),
                           ),
                         ),
                         DecoratedSliver(

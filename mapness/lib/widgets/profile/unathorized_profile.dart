@@ -14,10 +14,9 @@ class UnauthorizedProfile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeCityEvent = ref.watch(activeCityEventProvider);
-    final logoColor =
-        (activeCityEvent?.isFoundingDay ?? false) ? context.colors.accentDefault : context.colors.accentOnAccent;
-
+    final isFoundingDay = ref.watch(activeCityEventProvider)?.isFoundingDay ?? false;
+    final logoColor = isFoundingDay ? context.colors.accentSecondaryActive : context.colors.accentOnAccent;
+    final buttonColorScheme = isFoundingDay ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent;
     return Column(
       children: [
         Spacing.$8x.heightBox,
@@ -38,7 +37,7 @@ class UnauthorizedProfile extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             primaryLabel: context.l10n.connectToMomrah,
             size: ButtonSize.large,
-            buttonColorScheme: ButtonColorScheme.accent,
+            buttonColorScheme: buttonColorScheme,
             onTap: onConnect,
           ),
         ),

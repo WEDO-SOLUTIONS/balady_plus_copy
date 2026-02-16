@@ -19,7 +19,7 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   ConsumerState<_PoiCardWrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends ConsumerState<_PoiCardWrapper> {
+class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProviderStateMixin {
   bool prevRouteNavi = false;
 
   @override
@@ -31,6 +31,32 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       final routes = context.router.stack;
       prevRouteNavi = routes.length >= 2 && routes[routes.length - 2].name == PathNavRoute.name;
     });
+
+    Future.delayed(Duration.zero, () {
+      final isFoundinDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
+
+      final isFoundingDayObject =
+          ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(widget.objectId.objectId);
+
+      if (isFoundinDay && isFoundingDayObject) {
+        ConfettiAnimation.explodeInOverlay(context, this, config: getConfettiConfig(context));
+      }
+    });
+  }
+
+  ConfettiGeneratorConfig getConfettiConfig(BuildContext context) {
+    final color = ref.read(activeCityEventProvider)?.fireworkGradientColors;
+    final colors = ref.read(activeCityEventProvider)?.fireworkGradientColors2;
+    return ConfettiGeneratorConfig.confetti(
+      dissappearStartsAt: 0.33,
+      dissappearCurve: Curves.easeInOutQuint,
+      commonShapeAppearance: 1,
+      animationDuration: const Duration(seconds: 4),
+      mostCommonGradientColors: color,
+      gradientColors: colors,
+      mostCommonConfettiShape: (startPosition, velocity, scale, gradient, x, y, z) =>
+          ShiningShape(startPosition, velocity, scale, gradient, x, y, z),
+    );
   }
 
   @override

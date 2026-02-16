@@ -7,6 +7,8 @@ import 'package:mapness/widgets/landing/dashboard/city_event_config.dart';
 
 typedef ImageProviderBuilder = ImageProvider Function();
 
+typedef ImageSizeCalculator = double Function(double imageWidth);
+
 class DashboardThemeConfig {
   const DashboardThemeConfig({
     required this.useTopHeaderOffset,
@@ -17,6 +19,7 @@ class DashboardThemeConfig {
     required this.exploreBackgroundGradient,
     this.backgroundColor,
     this.exploreBackgroundImageBuilder,
+    this.imageSizeCalculator,
   });
 
   final bool useTopHeaderOffset;
@@ -29,25 +32,23 @@ class DashboardThemeConfig {
   final List<Color> exploreBackgroundGradient;
   final ImageProviderBuilder? exploreBackgroundImageBuilder;
   final Color? backgroundColor;
+  final ImageSizeCalculator? imageSizeCalculator;
 }
 
 DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventType? activeEvent) {
-
   switch (mode) {
     case SpecialThemeMode.nationalDay:
       return DashboardThemeConfig(
         useTopHeaderOffset: true,
         offsetOutsideWidgetByTopHeader: false,
-        feedbackBannerAssetPath:
-            Assets.images.feedbackDashboardSaudiday.keyName,
+        feedbackBannerAssetPath: Assets.images.feedbackDashboardSaudiday.keyName,
         feedbackBannerGradient: const [Color(0xFF014850), Color(0xFF00343A)],
         useThemedExploreBackground: true,
         exploreBackgroundGradient: const [
           Colors.transparent,
           Color(0xff00343A),
         ],
-        exploreBackgroundImageBuilder:
-            () => Assets.images.backgroundOrnamentSaudiday.provider(),
+        exploreBackgroundImageBuilder: () => Assets.images.backgroundOrnamentSaudiday.provider(),
         backgroundColor: null,
       );
 
@@ -62,8 +63,7 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventTyp
           Colors.transparent,
           Colors.transparent,
         ],
-        exploreBackgroundImageBuilder:
-            () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
+        exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/makkah/places_makkah.png'),
         backgroundColor: const Color(0xFFFAF5EE),
       );
 
@@ -78,8 +78,7 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventTyp
           Colors.transparent,
           Colors.transparent,
         ],
-        exploreBackgroundImageBuilder:
-            () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
+        exploreBackgroundImageBuilder: () => const AssetImage('assets/images/themes/ramadan/places_ramadan.png'),
         backgroundColor: const Color(0xFFFAF5EE),
       );
 
@@ -104,6 +103,7 @@ DashboardThemeConfig dashboardThemeConfigFor(SpecialThemeMode mode, CityEventTyp
         feedbackBannerAssetPath: activeEvent.feedbackDashboard,
         feedbackBannerGradient: activeEvent.feedbackDashboardGradientColors,
         useThemedExploreBackground: false,
+        imageSizeCalculator: (imageWidth) => imageWidth * 1.2,
         exploreBackgroundGradient: const [
           Colors.transparent,
           Colors.transparent,

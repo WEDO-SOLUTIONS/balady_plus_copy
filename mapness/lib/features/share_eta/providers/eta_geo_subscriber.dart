@@ -23,6 +23,7 @@ import 'package:mapness/features/share_eta/providers/eta_websocket_locator.dart'
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_watching_sheet.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
@@ -539,9 +540,12 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
 
   void _addFinishPin(RouteParamsPoint finishPoint) {
     final settings = MapObjectManagerSettings.selectedMarker();
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+
     final marker = Markers.pinMarker(
       GeoPointWithElevationMessage(latitude: finishPoint.latitude, longitude: finishPoint.longitude, elevation: 1),
       activeCityEvent: ref.read(activeCityEventProvider),
+      isDark: isDark,
     );
     ref
         .read(

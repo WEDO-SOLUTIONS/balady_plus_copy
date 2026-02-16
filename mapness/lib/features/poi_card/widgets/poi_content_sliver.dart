@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,6 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
-import 'package:mapness/widgets/active_event/active_event_theme_widget.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 import 'package:mapness/features/special_themes/core/places_activation_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
@@ -43,7 +43,7 @@ class PoiContentSliver extends ConsumerWidget {
   final PoiCardState? poiCardState;
   final void Function()? onEntrancesTap;
 
-  const PoiContentSliver({this.poiCardState, this.onEntrancesTap});
+  const PoiContentSliver({super.key, this.poiCardState, this.onEntrancesTap});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,7 +62,7 @@ class PoiContentSliver extends ConsumerWidget {
     const kaabaLat = 21.422421;
     const kaabaLon = 39.826168;
     const eps = 1e-6;
-    final markerPosition = data?.markerPosition;
+    final markerPosition = data.markerPosition;
     final isKaaba = markerPosition != null &&
         (markerPosition.latitude - kaabaLat).abs() < eps &&
         (markerPosition.longitude - kaabaLon).abs() < eps;
@@ -70,14 +70,12 @@ class PoiContentSliver extends ConsumerWidget {
     // Check if pilgrim feature is enabled and active based on dates
     final isPilgrimFeatureActive = pilgrimFeature != null &&
         pilgrimFeature.enabled &&
-        (pilgrimFeature.startDate == null ||
-            !DateTime.now().isBefore(pilgrimFeature.startDate!));
+        (pilgrimFeature.startDate == null || !DateTime.now().isBefore(pilgrimFeature.startDate!));
 
     final shouldShowMakkahPreview =
-        (specialThemeMode == SpecialThemeMode.mekkahBase ||
-            specialThemeMode == SpecialThemeMode.ramadan) &&
-        isKaaba &&
-        isPilgrimFeatureActive;
+        (specialThemeMode == SpecialThemeMode.mekkahBase || specialThemeMode == SpecialThemeMode.ramadan) &&
+            isKaaba &&
+            isPilgrimFeatureActive;
 
     final offers = ref.watch(poiOffersProvider);
     final hasOffers = offers.containsKey(poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim());
@@ -103,7 +101,6 @@ class PoiContentSliver extends ConsumerWidget {
       child: PoiEntrancesMetro(entrancesDirectoryObject: poiSearchByObjectEntrances),
     );
 
-    final about = data.getAbout(context.l10n);
     final workingHours = data.openingHours?.toWorkingHours();
 
     Future<void> bssOnContactTap(BssContactType type, String value) async {
@@ -189,128 +186,139 @@ class PoiContentSliver extends ConsumerWidget {
     final isFoundationDay = activeCityEvent?.isFoundingDay ?? false;
     final isFoundationObject = ref.read(foundingDayUrbiProvider.notifier).isFoundationObject(data.id!.objectId);
     final localAboutText = ref.read(foundingDayUrbiProvider.notifier).getAboutByDgisId(data.id!.objectId);
-    final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text ?? '';
+    final about = data.getAbout(context.l10n);
+    final effectiveAbout = localAboutText.isNotEmpty ? localAboutText : about?.text;
     final canUseCustomData = isFoundationDay && isFoundationObject;
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
       sliver: SliverToBoxAdapter(
-        child: ActiveEventThemeWrapper(
-          child: Column(
-            children: [
-              PoiContentFeedbackCard(
-                onTap: () {
-                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
-                  if (objectIdInt == null) {
-                    return;
-                  }
+        child: Column(
+          children: [
+            PoiContentFeedbackCard(
+              onTap: () {
+                final objectIdInt = int.tryParse(data.id!.objectId.toString());
+                if (objectIdInt == null) {
+                  return;
+                }
 
-                  context.router.push(
-                    QuickFeedbackRoute(
-                      type: QuickFeedbackType.editCompany,
-                      params: FeedbackObjectIdParams(objectIdInt),
-                    ),
-                  );
-                },
-                data: PoiContentFeedbackType.cityExpert,
-                padding: itemPadding,
-                activeCityEvent: activeCityEvent,
+                context.router.push(
+                  QuickFeedbackRoute(
+                    type: QuickFeedbackType.editCompany,
+                    params: FeedbackObjectIdParams(objectIdInt),
+                  ),
+                );
+              },
+              data: PoiContentFeedbackType.cityExpert,
+              padding: itemPadding,
+              activeCityEvent: activeCityEvent,
+            ),
+            Padding(
+              padding: itemPadding,
+              child: PoiContentFullAddressCard(
+                data: data.getFullAddress(
+                  briefInfo,
+                  context.l10n,
+                  onEntrancesTap,
+                  canUseCustomData ? activeCityEvent?.addressLogoAsset : null,
+                ),
               ),
+            ),
+            if (shouldShowMakkahPreview)
+              Padding(
+                padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                child: KaabaVirtualJourneyCard(
+                  onTap: () {
+                    context.router.push(const GaussianSplattingRoute());
+                  },
+                ),
+              ),
+            if (effectiveAbout != null)
+              if (canUseCustomData)
+                ScrollPaper(
+                  roughness: 1.2,
+                  margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                  padding: EdgeInsets.only(bottom: itemPadding.bottom),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(context.l10n.about, style: context.textStyles.bodyLargeSemiBold),
+                      const SizedBox(height: Spacing.$2x),
+                      Text(
+                        effectiveAbout,
+                        style: context.textStyles.bodySmallRegular.copyWith(
+                          color: context.colors.foregroundSoft,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Padding(
+                  padding: itemPadding,
+                  child: PoiContentAboutCard(data: about!),
+                ),
+            if (workingHours != null) //
               Padding(
                 padding: itemPadding,
-                child: PoiContentFullAddressCard(
-                  data: data.getFullAddress(
-                    briefInfo,
-                    context.l10n,
-                    onEntrancesTap,
-                    canUseCustomData ? activeCityEvent?.addressLogoAsset : null,
-                  ),
-                ),
+                child: PoiContentWorkingHoursCard(workingHours: workingHours, workStatusMessage: data.workStatus),
               ),
-              if (shouldShowMakkahPreview)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                  child: KaabaVirtualJourneyCard(
-                    onTap: () {
-                      context.router.push(const GaussianSplattingRoute());
-                    },
-                  ),
-                ),
-              if (about != null)
-                if (canUseCustomData)
-                  ScrollPaper(
-                    roughness: 1.2,
-                    margin: const EdgeInsets.all(16),
-                    padding: EdgeInsets.only(bottom: itemPadding.bottom),
-                    child: Text(effectiveAbout, style: Theme.of(context).textTheme.bodyMedium),
-                  )
-                else
-                  Padding(
+            if (contacts != null) //
+              Padding(
+                padding: itemPadding,
+                child: PoiContentContactsCard(data: contacts),
+              ),
+            if (favourites != null) //
+              Padding(
+                padding: itemPadding,
+                child: PoiContentFavouritesCard(data: favourites),
+              ),
+            if (parking != null) //
+              Padding(
+                padding: itemPadding,
+                child: PoiContentParkingCard(data: parking),
+              ),
+            if (hasOffers)
+              PoiContentOffersCard(
+                offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
+                contentPadding: itemPadding,
+              ),
+            if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
+              Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
+            if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
+            ...routeInfos
+                .map(
+                  (e) => Padding(
                     padding: itemPadding,
-                    child: PoiContentAboutCard(data: about),
+                    child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
                   ),
-              if (workingHours != null) //
-                Padding(
-                  padding: itemPadding,
-                  child: PoiContentWorkingHoursCard(workingHours: workingHours, workStatusMessage: data.workStatus),
-                ),
-              if (contacts != null) //
-                Padding(
-                  padding: itemPadding,
-                  child: PoiContentContactsCard(data: contacts),
-                ),
-              if (favourites != null) //
-                Padding(
-                  padding: itemPadding,
-                  child: PoiContentFavouritesCard(data: favourites),
-                ),
-              if (parking != null) //
-                Padding(
-                  padding: itemPadding,
-                  child: PoiContentParkingCard(data: parking),
-                ),
-              if (hasOffers)
-                PoiContentOffersCard(
-                  offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
-                  contentPadding: itemPadding,
-                ),
-              if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
-                Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
-              if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
-              ...routeInfos
-                  .map(
-                    (e) => Padding(
-                      padding: itemPadding,
-                      child: PoiLinesMetro(transportDirectoryRouteInfo: e, address: data.title),
-                    ),
-                  )
-                  .toList(),
-              if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
-                Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
-              ...?poiSearchObjectFuture
-                  ?.map(
-                    (e) => Padding(
-                      padding: itemPadding,
-                      child: PoiLinesMetro(transportDirectoryRouteInfo: e.routeInfos.first, address: data.title),
-                    ),
-                  )
-                  .toList(),
-              if (accessibilityInfo != null)
-                Padding(
-                  padding: itemPadding,
-                  child: PoiContentAccessabilityCard(data: accessibilityInfo),
-                ),
+                )
+                .toList(),
+            if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
+              Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
+            ...?poiSearchObjectFuture
+                ?.map(
+                  (e) => Padding(
+                    padding: itemPadding,
+                    child: PoiLinesMetro(transportDirectoryRouteInfo: e.routeInfos.first, address: data.title),
+                  ),
+                )
+                .toList(),
+            if (accessibilityInfo != null)
               Padding(
                 padding: itemPadding,
-                child: PoiContentDataIncorrectCard(data: feedback),
+                child: PoiContentAccessabilityCard(data: accessibilityInfo),
               ),
-              if (license != null) //
-                Padding(
-                  padding: itemPadding,
-                  child: PoiContentLicenseCard(license: license),
-                ),
-            ],
-          ),
+            Padding(
+              padding: itemPadding,
+              child: PoiContentDataIncorrectCard(data: feedback),
+            ),
+            if (license != null) //
+              Padding(
+                padding: itemPadding,
+                child: PoiContentLicenseCard(license: license),
+              ),
+          ],
         ),
       ),
     );

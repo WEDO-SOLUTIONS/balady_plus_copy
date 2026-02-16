@@ -21,13 +21,14 @@ class Markers {
     MarkerTextStyleMessage? textStyle,
     int maxCharsPerLine = 40,
     CityEventType? activeCityEvent,
+    bool isDark = false,
   }) =>
       Marker(
         id: id ?? 'PIN-MARKER',
         options: MarkerOptionsMessage(
           position: position,
           icon: SvgMarkerIcon(
-            svgPath: icon ?? activeCityEvent?.defaultPin ?? Assets.icons.svg.icPinNew.keyName,
+            svgPath: icon ?? activeCityEvent?.defaultPin(isDark: isDark) ?? Assets.icons.svg.icPinNew.keyName,
             width: width ?? defaultWidth,
           ),
           text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),

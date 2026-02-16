@@ -51,8 +51,7 @@ class DgisController extends _$DgisController {
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    final activeCityEvent = ref.read(activeCityEventProvider);
-    await controller.loadStyles(activeCityEvent?.stylePath ?? MapnessConstants.mapStylesPath);
+    await controller.loadStyles(MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(

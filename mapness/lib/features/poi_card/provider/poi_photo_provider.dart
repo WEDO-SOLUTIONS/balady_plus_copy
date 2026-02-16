@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
@@ -17,6 +18,30 @@ class PoiPhoto extends _$PoiPhoto {
   Future<DgisPhotosDto> build(int objectId) async {
     final dio = ref.watch(baseDioProvider);
     final locale = ref.watch(appLanguageProvider);
+
+    final isFoundingDay = ref.watch(foundingDayUrbiProvider);
+
+    if (isFoundingDay) {
+      final assets = ref.read(foundingDayUrbiProvider.notifier).getPhotoByDgisId(objectId);
+
+      if (assets.isNotEmpty) {
+        return DgisPhotosDto(
+          albums: [],
+          items: [
+            Item(
+              id: assets.hashCode.toString(),
+              url: assets,
+              height: 100,
+              width: 200,
+              previewUrls: null,
+              isPinned: false,
+              isAsset: true,
+            ),
+          ],
+        );
+      }
+    }
+
     final env = await ref.watch(dgisEnvironmentProvider.future);
 
     final baseApiUrl = env.baseApiDomain;

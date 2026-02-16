@@ -17,7 +17,6 @@ import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/widgets/active_event/active_event_theme_widget.dart';
 import 'package:mapness/widgets/search/ui/directory_object_car_estimate.dart';
 import 'package:mapness/widgets/search/ui/search_item_quick_actions.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
@@ -189,7 +188,7 @@ class SearchItem extends ConsumerWidget {
                   ),
                 ),
               ),
-              ActiveEventThemeWrapper.secondary(child: SearchItemQuickActions(directoryObject: result)),
+              SearchItemQuickActions(directoryObject: result),
             ],
           ),
         ),

@@ -52,6 +52,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
     textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
+  final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
 
   await selectedMarker.showMarker(
     Markers.pinMarker(
@@ -65,6 +66,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       icon: bigIconPath,
       id: poiPinId,
       activeCityEvent: ref.read(activeCityEventProvider),
+      isDark: isDark,
     ),
   );
 

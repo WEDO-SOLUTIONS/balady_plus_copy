@@ -18,12 +18,11 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   static const photosMinHeight = 96.0;
   static const photosMaxHeight = 156.0 + PoiHeader.poiHeaderBorderRadius;
 
-  final bool photosEmpty;
   final bool photosAreLoading;
   final int objectId;
-
+  final int photosCount;
   const HeaderComponent({
-    required this.photosEmpty,
+    required this.photosCount,
     required this.photosAreLoading,
     required this.objectId,
     super.key,
@@ -33,9 +32,13 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     final photosSizeTransform = _transformPhotoSize(state, interpolation);
     final topHeaderHeightTransform = min(1.0, photosSizeTransform / photosMinHeight);
-    final isItParkingSpot = objectId == parkingObjectId;
+    final screenWidth = MediaQuery.sizeOf(context).width;
 
+    final isItParkingSpot = objectId == parkingObjectId;
+    final photosEmpty = photosCount == 0;
     final showPhotos = !photosEmpty || photosAreLoading || isItParkingSpot;
+
+    final fitWidth = photosCount == 1;
 
     return Directionality(
       textDirection: photosEmpty ? TextDirection.ltr : Directionality.of(context),
@@ -50,6 +53,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               if (showPhotos) {
                 return SizedBox(
                   height: photosSizeTransform,
+                  width: fitWidth ? screenWidth : null,
                   child: PoiPhotosRow(
                     objectId: objectId,
                     state: state,
@@ -98,7 +102,7 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
 
     final _parkingObjectId = objectId == parkingObjectId;
 
-    final hidePhotos = photosEmpty && !photosAreLoading && !_parkingObjectId;
+    final hidePhotos = photosCount == 0 && !photosAreLoading && !_parkingObjectId;
     if (hidePhotos && state == PoiCardBottomSheetState.halfOpen) {
       return photosMinHeight * (1 - interpolation);
     }

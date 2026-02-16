@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
@@ -83,6 +84,9 @@ class PoiCardFooter extends HookConsumerWidget {
         type == ObjectTypeMessage.stationEntrance;
 
     final parkingPoi = objectId == parkingObjectId;
+    final isFoundingDay = ref.read(activeCityEventProvider)?.isFoundingDay ?? false;
+
+    final colorScheme = isFoundingDay ? ButtonColorScheme.accentSecondary : ButtonColorScheme.accent;
 
     return ThrottledCallbackWidget(
       callback: () {
@@ -98,12 +102,13 @@ class PoiCardFooter extends HookConsumerWidget {
             label: context.l10n.poiCardDirections,
             innerPadding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$3x),
             onPressed: onTapCar,
+            colorScheme: colorScheme,
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
               icon: GeneralIcons.phoneLTR,
               buttonType: ButtonType.secondary,
-              colorScheme: ButtonColorScheme.accent,
+              colorScheme: colorScheme,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
               onPressed: callPhone,
             ),
@@ -111,41 +116,41 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.turnRight,
               buttonType: ButtonType.secondary,
-              colorScheme: ButtonColorScheme.accent,
+              colorScheme: colorScheme,
               onPressed: onEntranceTap,
             ),
           if (!parkingPoi)
             ItemActionBar(
               icon: iconData,
               buttonType: ButtonType.secondary,
-              colorScheme: ButtonColorScheme.accent,
+              colorScheme: colorScheme,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: ButtonType.secondary,
-            colorScheme: ButtonColorScheme.accent,
+            colorScheme: colorScheme,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
               buttonType: ButtonType.secondary,
-              colorScheme: ButtonColorScheme.accent,
+              colorScheme: colorScheme,
               onPressed: () => _onParkingTab(ref, context),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: ButtonType.secondary,
-              colorScheme: ButtonColorScheme.accent,
+              colorScheme: colorScheme,
               onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: ButtonType.secondary,
-              colorScheme: ButtonColorScheme.accent,
+              colorScheme: colorScheme,
               onPressed: () => _onTrashTab(ref, context),
             ),
         ],

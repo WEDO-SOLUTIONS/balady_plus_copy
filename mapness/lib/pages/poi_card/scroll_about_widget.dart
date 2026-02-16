@@ -54,8 +54,8 @@ class ScrollPainter extends CustomPainter {
     // TOP SCROLL (SVG)
     // =====================================================
 
-    final rollLeftX = sx(size, 23.5167);
-    final rollRightX = sx(size, 352.398);
+    final rollLeftX = sx(size, 14);
+    final rollRightX = sx(size, 360);
 
     final rollPath = Path()
       ..moveTo(rollLeftX, sy(size, 17.4004))

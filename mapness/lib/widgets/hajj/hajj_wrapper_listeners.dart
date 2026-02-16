@@ -101,7 +101,7 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
     final hasArabic = text.containsArabic() || isRtl;
 
     final selectedMarker = ref.read(selectedMarkerProvider.notifier);
-
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
     await selectedMarker.showMarker(
       Markers.pinMarker(
         GeoPointWithElevationMessage(latitude: item.latitude, longitude: item.longitude, elevation: 1),
@@ -110,6 +110,7 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
         activeCityEvent: ref.read(activeCityEventProvider),
         id: hajjPoiPinId,
         maxCharsPerLine: _maxCharsPerLine,
+        isDark: isDark,
       ),
       settings: _settings,
     );
