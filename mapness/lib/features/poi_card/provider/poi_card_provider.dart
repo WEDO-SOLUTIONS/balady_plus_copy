@@ -121,9 +121,9 @@ class PoiCardProvider extends _$PoiCardProvider {
       ).future,
     )
         .timeout(
-      const Duration(minutes: 1),
+      const Duration(minutes: 10),
       onTimeout: () {
-        ref.read(appRouterProvider).popForced();
+        ref.read(appRouterProvider).maybePop();
         return null;
       },
     );
