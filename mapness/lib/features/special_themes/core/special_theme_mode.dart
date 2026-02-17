@@ -10,6 +10,8 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+part 'special_theme_mode.g.dart';
+
 /// Logical display modes that control global theming and dashboard variants.
 ///
 /// See docs/special_theme_manager.md for detailed semantics.

@@ -22,6 +22,8 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+part 'makkah_places_layer_provider.g.dart';
+
 @Riverpod(keepAlive: true)
 class MakkahPlacesLayer extends _$MakkahPlacesLayer {
   late final MapObjectManagerSettings _settings = MapObjectManagerSettings.makkahPlaces();

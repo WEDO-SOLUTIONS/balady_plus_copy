@@ -132,9 +132,11 @@ class MapnessProviderScope extends StatelessWidget {
               ref
                 ..watch(saudiNationalDayProvider)
                 // Initialize Cityscape provider to listen remote config
-                ..watch(cityscapeProvider);
-              // Initialize Makkah places layer provider
-              ref.watch(makkahPlacesLayerProvider);
+                ..watch(cityscapeProvider)
+                ..watch(foundingDayUrbiProvider)
+                ..watch(activeCityEventProvider)
+                // Initialize Makkah places layer provider
+                ..watch(makkahPlacesLayerProvider);
 
               return provider.MultiProvider(
                 providers: [
