@@ -74,6 +74,15 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
     private var everyMinuteTimer: Timer?
     private var isAuthorized: Bool = false
 
+    func startFreeRoam() {
+        do {
+            print("Starting free roam...")
+            try DgisMapInitializer.shared.getNavigationManager().start()
+        } catch {
+            print("Free roam started with error \(error)")
+        }
+    }
+
     func dispose() {
         navigatorStateCancellable?.cancel()
         routesInfoChannelCancellable?.cancel()
