@@ -8,12 +8,13 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_uikit/core/colors/app_colors_theme.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
+import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
-import 'package:balady_uikit/core/colorsV2/themes.dart' hide BaladyAppThemes;
-
+import 'package:balady_uikit/core/colorsV2/themes.dart';
+import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
-
 // ignore: depend_on_referenced_packages
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dgis_map/library.dart';
@@ -46,6 +47,7 @@ import 'package:mapness/features/favourites/mappers/favourite_item_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -90,18 +92,10 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 
-import 'package:collection/collection.dart';
-import 'package:mapness/features/lifestyle_layers/providers/parking_details.dart';
-import 'package:mapness/features/makkah_places/makkah_places_layer_provider.dart';
-import 'features/special_themes/core/places_activation_config.dart';
-import 'features/special_themes/core/special_theme_mode.dart';
-import 'features/special_themes/core/theme_splash_config.dart';
-import 'features/special_themes/core/theme_splash_migration.dart';
-import 'features/special_themes/core/theme_splash_state.dart';
-import 'pages/theme_splash/theme_splash_page.dart';
-import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'features/search/providers/search.dart';
 import 'features/search/ui/search_scope.dart';
+import 'features/special_themes/core/special_theme_mode.dart';
+import 'features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 
 Mixpanel? mixpanel;
 
@@ -212,7 +206,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     // call the openAppLink when user click on notification have deep link
     FirebaseMessaging.instance.getInitialMessage().then(
-      (RemoteMessage? message) {
+      (message) {
         if (message != null && message.data.containsKey('url')) {
           final url = message.data['url'];
           openAppLink(url);
@@ -427,13 +421,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   }),
                   AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
-                  AppColorsThemeV3.palette(
-                    themes: switch (specialThemeMode) {
-                      SpecialThemeMode.nationalDay => BaladyAppThemes.saudiDay,
-                      SpecialThemeMode.mekkahBase || SpecialThemeMode.ramadan => BaladyAppThemes.mekkah,
-                      _ => BaladyAppThemes.light,
-                    },
-                  ),
                   AppStaticColorsThemeExt.palette(),
                 ],
               ),
@@ -548,7 +535,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       return;
     }
     // FIXME-INSIDER: Please change with your partner name and app group.
-    await FlutterInsider.Instance.init("baladyapp", "group.movingViolations", (int type, dynamic data) {
+    await FlutterInsider.Instance.init('baladyapp', 'group.movingViolations', (int type, data) {
       switch (type) {
         case InsiderCallbackAction.NOTIFICATION_OPEN:
           // if(Platform.isIOS) {
@@ -564,7 +551,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
           break;
         default:
-          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+          print('[INSIDER][InsiderCallbackAction]: Unregistered Action!');
           break;
       }
     });
@@ -643,7 +630,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
     } else if (serviceKey.isNotEmpty && serviceKey != '/poi-map' && serviceKey.startsWith('/app')) {
-      var subPath;
+      String? subPath;
       if (dtId != null && path != null) {
         subPath = '#$path/$dtId';
       } else if (path != null) {
@@ -730,18 +717,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> _openQuran() async {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
-    CommonFunctions.openMiniApp(serviceKey: "Quran");
+    CommonFunctions.openMiniApp(serviceKey: 'Quran');
   }
 
   Future<void> _openAthkar() async {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     // await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
-    CommonFunctions.openMiniApp(serviceKey: "Athkar");
+    CommonFunctions.openMiniApp(serviceKey: 'Athkar');
   }
 
   Future<void> _openSnapSend() async {
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
-    CommonFunctions.openMiniApp(serviceKey: "snapandsend");
+    CommonFunctions.openMiniApp(serviceKey: 'snapandsend');
     // await NavigationService.navigatorKey.currentState!.pushNamed(
     //   RouteName.vDAllTypesScreen,
     // );
@@ -1008,7 +995,7 @@ class _HostFlutterApi extends HostFlutterApi {
 
   @override
   void analyticsTrack(String event) {
-    analyticsClient.track(event, properties: {"app_run": isAppRun});
+    analyticsClient.track(event, properties: {'app_run': isAppRun});
   }
 
   @override

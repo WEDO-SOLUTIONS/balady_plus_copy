@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_theme.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -11,7 +12,8 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/makkah_config_staging.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,13 +30,11 @@ class MakkahAreaConfig {
   final double longitude;
   final double radiusKm;
 
-  factory MakkahAreaConfig.fromJson(Map<String, dynamic> json) {
-    return MakkahAreaConfig(
-      latitude: (json['latitude'] as num?)?.toDouble() ?? 21.3891,
-      longitude: (json['longitude'] as num?)?.toDouble() ?? 39.8579,
-      radiusKm: (json['radius_km'] as num?)?.toDouble() ?? 25.0,
-    );
-  }
+  factory MakkahAreaConfig.fromJson(Map<String, dynamic> json) => MakkahAreaConfig(
+        latitude: (json['latitude'] as num?)?.toDouble() ?? 21.3891,
+        longitude: (json['longitude'] as num?)?.toDouble() ?? 39.8579,
+        radiusKm: (json['radius_km'] as num?)?.toDouble() ?? 25.0,
+      );
 
   static const MakkahAreaConfig defaultConfig = MakkahAreaConfig(
     latitude: 21.3891,
@@ -511,7 +511,6 @@ FeatureConfig? showPilgrimFeature(Ref ref) {
       code: feature?.code ?? 'show_pilgrim',
       enabled: true,
       url: feature?.url ?? 'https://pilgrim.thedatum.ai/kaaba',
-      startDate: null, // Remove date restriction in debug mode
     );
   }
 
