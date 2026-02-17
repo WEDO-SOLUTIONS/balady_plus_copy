@@ -327,10 +327,10 @@ class _ThemeSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themes = [
-      ('National', SpecialThemeMode.nationalDay, _DebugColors.gradientGreen),
+      // ('National', SpecialThemeMode.nationalDay, _DebugColors.gradientGreen),
       ('Foundation', SpecialThemeMode.foundationDay, _DebugColors.gradientPurple),
       ('Makkah', SpecialThemeMode.mekkahBase, _DebugColors.gradientAmber),
-      ('Ramadan', SpecialThemeMode.ramadan, _DebugColors.gradientTeal),
+      // ('Ramadan', SpecialThemeMode.ramadan, _DebugColors.gradientTeal),
     ];
 
     return Wrap(
@@ -436,33 +436,33 @@ class _DebugTogglesCard extends ConsumerWidget {
             },
             gradient: _DebugColors.gradientAmber,
           ),
-          _ToggleRow(
-            label: 'Ramadan Season',
-            value: ramadan,
-            onChanged: (v) {
-              _trackDebugToggle('ramadan', v);
-              ref.read(ramadanSeasonDebugProvider.notifier).set(v);
-            },
-            gradient: _DebugColors.gradientTeal,
-          ),
-          _ToggleRow(
-            label: 'Hajj Season',
-            value: hajj,
-            onChanged: (v) {
-              _trackDebugToggle('hajj', v);
-              ref.read(hajjSeasonDebugProvider.notifier).set(v);
-            },
-            gradient: _DebugColors.gradientBlue,
-          ),
-          _ToggleRow(
-            label: 'Kaaba Virtual Tour',
-            value: pilgrimFeature,
-            onChanged: (v) {
-              _trackDebugToggle('kaabaTour', v);
-              ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
-            },
-            gradient: _DebugColors.gradientGreen,
-          ),
+          // _ToggleRow(
+          //   label: 'Ramadan Season',
+          //   value: ramadan,
+          //   onChanged: (v) {
+          //     _trackDebugToggle('ramadan', v);
+          //     ref.read(ramadanSeasonDebugProvider.notifier).set(v);
+          //   },
+          //   gradient: _DebugColors.gradientTeal,
+          // ),
+          // _ToggleRow(
+          //   label: 'Hajj Season',
+          //   value: hajj,
+          //   onChanged: (v) {
+          //     _trackDebugToggle('hajj', v);
+          //     ref.read(hajjSeasonDebugProvider.notifier).set(v);
+          //   },
+          //   gradient: _DebugColors.gradientBlue,
+          // ),
+          // _ToggleRow(
+          //   label: 'Kaaba Virtual Tour',
+          //   value: pilgrimFeature,
+          //   onChanged: (v) {
+          //     _trackDebugToggle('kaabaTour', v);
+          //     ref.read(pilgrimFeatureDebugProvider.notifier).set(v);
+          //   },
+          //   gradient: _DebugColors.gradientGreen,
+          // ),
           const SizedBox(height: 14),
           _LocationRefreshRow(),
         ],
