@@ -11,7 +11,7 @@ extension PoiCardHandlerStack on StackRouter {
     if (toCompareRoutes.any((e) => isRouteActive(e.name))) {
       // Use popAndPush to properly close the current route and open the new one
       // This ensures the widget rebuilds with new parameters
-      await popAndPush(route);
+      await replace(route);
     } else {
       await push(route);
     }
