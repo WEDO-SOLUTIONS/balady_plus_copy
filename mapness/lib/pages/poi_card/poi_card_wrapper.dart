@@ -19,9 +19,9 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   ConsumerState<_PoiCardWrapper> createState() => _WrapperState();
 }
 
-class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProviderStateMixin, RouteAware {
+class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProviderStateMixin {
   bool prevRouteNavi = false;
-  late final regularPoiActive = ref.read(regularPoiActiveProvider.notifier);
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +34,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProv
       // Hide Makkah place markers when regular POI is open
       // ignore: avoid_print
       print('[MakkahPinDebug] Wrapper: initState setActive(true)');
-      regularPoiActive.setActive(true);
+      ref.read(regularPoiActiveProvider.notifier).setActive(true);
     });
 
     Future.delayed(Duration.zero, () {
@@ -65,22 +65,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProv
   }
 
   @override
-  void didPop() {
-    super.didPop();
-    print('[MakkahPinDebug] Wrapper: microtask setActive(false)');
-    regularPoiActive.setActive(false);
-  }
-
-  @override
   void dispose() {
-    // Capture the container before disposal to ensure we can update the provider
-    // final container = ProviderScope.containerOf(context, listen: false);
-
-    // Show Makkah place markers again when regular POI is closed
-    // Use Future.microtask to ensure it runs after disposal completes
-    // ignore: avoid_print
-    print('[MakkahPinDebug] Wrapper: dispose called');
-
     if (prevRouteNavi) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.landscapeRight,
@@ -110,6 +95,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> with SingleTickerProv
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(poiCardClosingProvider, (_, shouldClose) {
         if (shouldClose) {
+          ref.read(regularPoiActiveProvider.notifier).setActive(false);
           context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
         }
       });

@@ -107,11 +107,17 @@ class PoiCardWidgetPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => _PoiCardWrapper(
-        objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),
-        cameraConfig: cameraConfig,
-        poiCardDataFromGoogle: poiCardDataFromGoogle,
-        closestPoint: closestPoint,
-        key: key,
+  Widget build(BuildContext context) => PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          final container = ProviderScope.containerOf(context, listen: false);
+          container.read(regularPoiActiveProvider.notifier).setActive(false);
+        },
+        child: _PoiCardWrapper(
+          objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),
+          cameraConfig: cameraConfig,
+          poiCardDataFromGoogle: poiCardDataFromGoogle,
+          closestPoint: closestPoint,
+          key: key,
+        ),
       );
 }
