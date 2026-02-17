@@ -771,7 +771,9 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
     final appRouter = ref.watch(appRouterProvider);
-    final storeParkingData = await ref.read(parkingManageProvider.future);
+    final storeParkingData = await ref.read(
+      parkingManageProvider(theme: context.read<ThemeController>().currentTheme).future,
+    );
     final isParkingPoi = dgisObjectId == parkingObjectId;
 
     if (isParkingPoi && storeParkingData == null) {

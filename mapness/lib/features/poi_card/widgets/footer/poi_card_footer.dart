@@ -219,7 +219,8 @@ class PoiCardFooter extends HookConsumerWidget {
   }
 
   void _onParkingTab(WidgetRef ref, BuildContext context) {
-    final hasParking = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value != null;
+    final hasParking =
+        ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value != null;
     if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
@@ -267,7 +268,7 @@ class PoiCardFooter extends HookConsumerWidget {
       ParkingDialogRoute(
         title: context.l10n.youSureWantDelete,
         onAcceptTab: () {
-          ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).notifier).clearStore();
+          ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).clearStore();
           ToastOverlay.of(context).show(title: context.l10n.parkingSpotDeleted, icon: const ToastIconAsset(iconAsset));
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },

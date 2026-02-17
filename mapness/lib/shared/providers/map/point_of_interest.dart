@@ -28,7 +28,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   BaladyAppThemes theme,
 ) async {
   final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
-  final parkingManager = ref.watch(parkingManageProvider.notifier);
+  final parkingManager = ref.watch(parkingManageProvider(theme: theme).notifier);
 
   ref.onDispose(() {
     selectedMarker.removeMarker(poiPinId);

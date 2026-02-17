@@ -1,9 +1,6 @@
 part of 'poi_card_widget_page.dart';
 
-Future<void> closePoiCard(
-  BuildContext context,
-  WidgetRef ref,
-) async {
+Future<void> closePoiCard(BuildContext context, WidgetRef ref) async {
   Metrics.logEventAdvanced(
     MetricsConstants.poiKeys.exitButton,
     group: MetricsConstants.poiTag,
@@ -11,18 +8,13 @@ Future<void> closePoiCard(
   );
 
   await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
-  await ref.read(parkingManageProvider.notifier).restoreMarker();
+  await ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier).restoreMarker();
 
-  final navState = await ActiveNavigationHelper.getState(
-    ref.read(dgisControllerProvider).value,
-  );
+  final navState = await ActiveNavigationHelper.getState(ref.read(dgisControllerProvider).value);
 
   if (navState.isActive && context.mounted) {
     await context.router.pushAndPopUntil(
-      PathNavRoute(
-        navType: navState.navType!,
-        initAction: PathNavPageInitAction.restoreFromState,
-      ),
+      PathNavRoute(navType: navState.navType!, initAction: PathNavPageInitAction.restoreFromState),
       predicate: (route) => route.settings.name == BottomMenuRoute.name,
     );
     return;
@@ -43,26 +35,15 @@ void openRoutingRoutes(
 }) {
   final mapSetting = MapObjectManagerSettings.search();
   ref
-      .read(
-        mapObjectManagerProvider(
-          named: mapSetting.name,
-          layerId: mapSetting.layerId,
-        ).notifier,
-      )
+      .read(mapObjectManagerProvider(named: mapSetting.name, layerId: mapSetting.layerId).notifier)
       .setMapObjectManagerIsVisible(isVisible: false);
 
   context.router.push(
     RoutingRoutesRoute(
       points: [
-        RouteParamsPointWithLabel(
-          value: null,
-          label: context.l10n.myLocation,
-        ),
+        RouteParamsPointWithLabel(value: null, label: context.l10n.myLocation),
         ...?intermediatePoints,
-        RouteParamsPointWithLabel(
-          value: finishPoint,
-          label: title,
-        ),
+        RouteParamsPointWithLabel(value: finishPoint, label: title),
       ],
     ),
   );
@@ -86,17 +67,11 @@ void toggleFavoriteDirectoryObject({
   FavouriteItem? favItem = favouriteItem;
   if (favItem == null && data.markerPosition != null && data.id != null) {
     favItem = FavouriteItem(
-      coordinates: Coordinates(
-        latitude: data.markerPosition!.latitude,
-        longitude: data.markerPosition!.longitude,
-      ),
+      coordinates: Coordinates(latitude: data.markerPosition!.latitude, longitude: data.markerPosition!.longitude),
       id: 'overriden',
       subtitle: data.subtitle,
       title: data.title,
-      entity: FavouriteItemEntity(
-        sourceType: EntitySourceType.urbi,
-        id: data.id!.objectId.toString(),
-      ),
+      entity: FavouriteItemEntity(sourceType: EntitySourceType.urbi, id: data.id!.objectId.toString()),
     );
   }
 

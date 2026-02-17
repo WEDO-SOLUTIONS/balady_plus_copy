@@ -49,8 +49,10 @@ class ParkingSpotPage extends HookConsumerWidget {
     final supportingText = useState<String?>(null);
 
     void checkDirty() {
-      final stored = ref.read(parkingManageProvider).value;
-      final images = ref.read(parkingImageProvider(isEdit: isEdit));
+      final stored = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
+      final images = ref.read(
+        parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit),
+      );
 
       final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
       final textDirty = textController.text != stored?.comment;
@@ -63,7 +65,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     }
 
     useEffect(() {
-      final stored = ref.read(parkingManageProvider).value;
+      final stored = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
       if (isEdit && stored != null) {
         textController.text = stored.comment;
         addressNotifier.value = stored.address;
@@ -100,8 +102,8 @@ class ParkingSpotPage extends HookConsumerWidget {
 
     ref
       ..watch(parkingSpotMapProvider.notifier)
-      ..watch(parkingManageProvider.notifier)
-      ..listen(parkingImageProvider(isEdit: isEdit), (_, __) {
+      ..watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier)
+      ..listen(parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit), (_, __) {
         checkDirty();
       });
     final canSave = isDirty.value && isValid.value;
@@ -290,8 +292,8 @@ class ParkingSpotPage extends HookConsumerWidget {
     ValueNotifier<String> addressNotifier,
     bool isEdit,
   ) async {
-    final parkingManage = ref.read(parkingManageProvider.notifier);
-    final images = ref.read(parkingImageProvider(isEdit: isEdit));
+    final parkingManage = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier);
+    final images = ref.read(parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit));
 
     if (latLng.value == null) {
       return;
