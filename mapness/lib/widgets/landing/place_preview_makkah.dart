@@ -179,7 +179,7 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
                               latitude: item.lat!,
                               longitude: item.lon!,
                             ),
-                            zoom: 17,
+                            zoom: 20,
                             tilt: 0,
                             bearing: 0,
                           ),
@@ -196,7 +196,7 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
                               entranceId: 0,
                             )
                             : null,
-                    cameraConfig: const PoiCameraConfig(zoom: 17),
+                    cameraConfig: const PoiCameraConfig(zoom: 20),
                     makkahPlace: item,
                   ),
                   toCompareRoutes: [PoiMakkahWidgetRoute.page],

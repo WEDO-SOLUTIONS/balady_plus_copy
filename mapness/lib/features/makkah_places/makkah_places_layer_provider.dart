@@ -133,12 +133,12 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
               },
             );
 
-            // Zoom to marker location with street-level detail (zoom 17)
+            // Zoom to marker location with street-level detail (zoom 18)
             final camera = ref.read(cameraPositionProvider.notifier);
             await camera.animateTo(
               CameraPositionMessage(
                 point: GeoPointMessage(latitude: lat, longitude: lon),
-                zoom: 17.0, // Street-level zoom for detailed view
+                zoom: 20.0, // Street-level zoom for detailed view
                 bearing: 0.0, // North-facing
                 tilt: 0.0, // Top-down view
               ),
@@ -153,7 +153,7 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
                         ? DgisObjectIdMessage(objectId: objectId, entranceId: 0)
                         : null,
                 closestPoint: closestPoint,
-                cameraConfig: const PoiCameraConfig(zoom: 17), // Match zoom level
+                cameraConfig: const PoiCameraConfig(zoom: 20), // Match zoom level
                 makkahPlace: place,
               ),
               toCompareRoutes: [PoiMakkahWidgetRoute.page],
