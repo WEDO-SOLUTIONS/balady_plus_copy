@@ -47,9 +47,14 @@ class MiniAppsEngineBloc
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(true);
       }
+      String serviceUrl= event.miniApp.latestVersion!.serviceUrl!;
+      if(serviceUrl.contains("ewaa")&& CommonFunctions.isAppAR==false) {
+        serviceUrl = "$serviceUrl/en/normal_profile";
+
+      }
       emit(
         MiniAppsEngineLoadedState(
-          servicePath: event.miniApp.latestVersion!.serviceUrl!,
+          servicePath: serviceUrl,
           path: event.miniApp.path ?? "",
         ),
       );
