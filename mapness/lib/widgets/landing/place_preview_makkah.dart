@@ -68,14 +68,11 @@ class PlacePreviewMakkah extends ConsumerStatefulWidget {
   ConsumerState<PlacePreviewMakkah> createState() => _PlacePreviewMakkahState();
 }
 
-class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
-    with AutomaticKeepAliveClientMixin {
+class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ref
-        .watch(makkahPlacesRepositoryProvider)
-        .when(
+    return ref.watch(makkahPlacesRepositoryProvider).when(
           data: (items) {
             // Optimize: Only trigger rebuild when location changes significantly
             // (more than ~100m), not on every GPS update
@@ -90,29 +87,21 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
                       ),
               ),
             );
-            var places =
-                items
-                    .where((e) => (e.previewImageUrl ?? '').isNotEmpty)
-                    .where(
-                      (e) =>
-                          (widget.excludePlaceId ?? '').isEmpty ||
-                          e.placeId != widget.excludePlaceId,
-                    )
-                    .where(
-                      (e) =>
-                          (widget.excludeDgisId ?? '').isEmpty ||
-                          e.dgisId != widget.excludeDgisId,
-                    )
-                    .toList();
+            var places = items
+                .where((e) => (e.previewImageUrl ?? '').isNotEmpty)
+                .where(
+                  (e) => (widget.excludePlaceId ?? '').isEmpty || e.placeId != widget.excludePlaceId,
+                )
+                .where(
+                  (e) => (widget.excludeDgisId ?? '').isEmpty || e.dgisId != widget.excludeDgisId,
+                )
+                .toList();
 
-            final fixed =
-                places.where((e) => e.fixedOrderPosition != null).toList();
-            final dynamic =
-                places.where((e) => e.fixedOrderPosition == null).toList();
+            final fixed = places.where((e) => e.fixedOrderPosition != null).toList();
+            final dynamic = places.where((e) => e.fixedOrderPosition == null).toList();
 
             fixed.sort(
-              (a, b) =>
-                  (a.fixedOrderPosition ?? 0).compareTo(b.fixedOrderPosition ?? 0),
+              (a, b) => (a.fixedOrderPosition ?? 0).compareTo(b.fixedOrderPosition ?? 0),
             );
 
             // Sort only dynamic places by distance from user location
@@ -142,8 +131,7 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
               separationWidth: Spacing.$2x,
               viewportWidth: MediaQuery.sizeOf(context).width,
               contentSize: kPlaceCardSizeMakkah,
-              activeDotColor:
-                  SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
+              activeDotColor: SaudiNationalDay.isNow() ? context.colors.staticWhite : null,
               onTap: (item) async {
                 if (item == null) return;
 
@@ -171,9 +159,7 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
                 // Fly to marker location
                 if (item.lat != null && item.lon != null) {
                   unawaited(
-                    ref
-                        .read(cameraPositionProvider.notifier)
-                        .animateTo(
+                    ref.read(cameraPositionProvider.notifier).animateTo(
                           CameraPositionMessage(
                             point: GeoPointMessage(
                               latitude: item.lat!,
@@ -189,33 +175,29 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
 
                 await context.router.replaceOrPush(
                   route: PoiMakkahWidgetRoute(
-                    objectId:
-                        dgisId != 0
-                            ? DgisObjectIdMessage(
-                              objectId: dgisId,
-                              entranceId: 0,
-                            )
-                            : null,
+                    objectId: dgisId != 0
+                        ? DgisObjectIdMessage(
+                            objectId: dgisId,
+                            entranceId: 0,
+                          )
+                        : null,
                     cameraConfig: const PoiCameraConfig(zoom: 20),
                     makkahPlace: item,
                   ),
                   toCompareRoutes: [PoiMakkahWidgetRoute.page],
                 );
               },
-              itemBuilder:
-                  (item) => _PlaceCardMakkah(item, key: ValueKey(item?.dgisId)),
+              itemBuilder: (item) => _PlaceCardMakkah(item, key: ValueKey(item?.dgisId)),
             );
           },
-          error:
-              (error, trace) => const Padding(
-                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                child: _PlaceCardMakkah(null),
-              ),
-          loading:
-              () => const Padding(
-                padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                child: _PlaceCardMakkah(null),
-              ),
+          error: (error, trace) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: _PlaceCardMakkah(null),
+          ),
+          loading: () => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: _PlaceCardMakkah(null),
+          ),
         );
   }
 
@@ -232,12 +214,8 @@ class _PlacePreviewMakkahState extends ConsumerState<PlacePreviewMakkah>
     const earthRadius = 6371.0; // km
     final dLat = _toRadians(lat2 - lat1);
     final dLon = _toRadians(lon2 - lon1);
-    final a =
-        math.sin(dLat / 2) * math.sin(dLat / 2) +
-        math.cos(_toRadians(lat1)) *
-            math.cos(_toRadians(lat2)) *
-            math.sin(dLon / 2) *
-            math.sin(dLon / 2);
+    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_toRadians(lat1)) * math.cos(_toRadians(lat2)) * math.sin(dLon / 2) * math.sin(dLon / 2);
     final c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a));
     return earthRadius * c;
   }
@@ -252,19 +230,18 @@ class _PlaceCardMakkah extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final finishPoint =
-        (item?.lat != null && item?.lon != null)
-            ? RouteSearchPoint(
-              coordinates: GeoPointMessage(
-                latitude: item!.lat!,
-                longitude: item!.lon!,
-              ),
-              dgisObjectId: DgisObjectIdMessage(
-                objectId: int.tryParse(item!.dgisId ?? '') ?? 0,
-                entranceId: 0,
-              ),
-            )
-            : null;
+    final finishPoint = (item?.lat != null && item?.lon != null)
+        ? RouteSearchPoint(
+            coordinates: GeoPointMessage(
+              latitude: item!.lat!,
+              longitude: item!.lon!,
+            ),
+            dgisObjectId: DgisObjectIdMessage(
+              objectId: int.tryParse(item!.dgisId ?? '') ?? 0,
+              entranceId: 0,
+            ),
+          )
+        : null;
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(RadiusBorder.xl),
@@ -275,73 +252,63 @@ class _PlaceCardMakkah extends ConsumerWidget {
             width: double.infinity,
             imageUrl: item?.previewImageUrl ?? '',
             fit: BoxFit.cover,
-            imageBuilder:
-                (context, imageProvider) => Stack(
-                  children: [
-                    ShaderMask(
-                      blendMode: BlendMode.srcATop,
-                      shaderCallback:
-                          (bounds) => const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color(0x006E5945), // 0% alpha - transparent overlay at top
-                              Color(0xFF6E5945), // 100% alpha - full overlay at bottom
-                            ],
-                            stops: [0.0, 0.96],
-                          ).createShader(bounds),
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints.expand(),
-                        child: Image(image: imageProvider, fit: BoxFit.cover),
-                      ),
-                    ),
-                    if (finishPoint != null)
-                      Align(
-                        alignment:
-                            context.isLTR
-                                ? Alignment.topLeft
-                                : Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.all(Spacing.$4x),
-                          child: _TravelTimeChip(
-                            finishPoint: finishPoint,
-                            makkahPlace: item,
-                          ),
-                        ),
-                      ),
-                    Align(
-                      alignment:
-                          context.isLTR
-                              ? Alignment.bottomLeft
-                              : Alignment.bottomRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(Spacing.$6x),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 260),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (item != null)
-                                Text(
-                                  MakkahMultilingualHelper.getTitle(
-                                    item!,
-                                    Directionality.of(context),
-                                  ),
-                                  style: context.textStyles.h2Medium.copyWith(
-                                    color: context.colors.staticWhite,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+            imageBuilder: (context, imageProvider) => Stack(
+              children: [
+                ShaderMask(
+                  blendMode: BlendMode.srcATop,
+                  shaderCallback: (bounds) => const LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0x006E5945), // 0% alpha - transparent overlay at top
+                      Color(0xFF6E5945), // 100% alpha - full overlay at bottom
+                    ],
+                    stops: [0.0, 0.96],
+                  ).createShader(bounds),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints.expand(),
+                    child: Image(image: imageProvider, fit: BoxFit.cover),
+                  ),
                 ),
-            progressIndicatorBuilder:
-                (context, url, progress) =>
-                    _ImagePlaceholderMakkah(progress: progress.progress),
+                if (finishPoint != null)
+                  Align(
+                    alignment: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(Spacing.$4x),
+                      child: _TravelTimeChip(
+                        finishPoint: finishPoint,
+                        makkahPlace: item,
+                      ),
+                    ),
+                  ),
+                Align(
+                  alignment: context.isLTR ? Alignment.bottomLeft : Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(Spacing.$6x),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 260),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (item != null)
+                            Text(
+                              MakkahMultilingualHelper.getTitle(
+                                item!,
+                                Directionality.of(context),
+                              ),
+                              style: context.textStyles.h2Medium.copyWith(
+                                color: context.colors.staticWhite,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            progressIndicatorBuilder: (context, url, progress) => _ImagePlaceholderMakkah(progress: progress.progress),
             errorWidget: (context, error, _) => const _ImagePlaceholderMakkah(),
           ),
         ],
@@ -401,12 +368,9 @@ class _TravelTimeChip extends ConsumerWidget {
     bool useWalkIcon = false;
 
     // Get SDK distances
-    final carDistance = (carInfo != null && carInfo.isNotEmpty)
-        ? carInfo.first.extraInfo.distance
-        : null;
-    final walkDistance = (pedestrianInfo != null && pedestrianInfo.isNotEmpty)
-        ? pedestrianInfo.first.extraInfo.distance
-        : null;
+    final carDistance = (carInfo != null && carInfo.isNotEmpty) ? carInfo.first.extraInfo.distance : null;
+    final walkDistance =
+        (pedestrianInfo != null && pedestrianInfo.isNotEmpty) ? pedestrianInfo.first.extraInfo.distance : null;
 
     // Check if SDK data is suspicious (route distance >> straight-line distance)
     bool sdkDataSuspicious = false;
@@ -469,9 +433,7 @@ class _TravelTimeChip extends ConsumerWidget {
 
     // Get general tag
     final isArabic = Directionality.of(context) == TextDirection.rtl;
-    final generalTag = makkahPlace != null
-        ? (isArabic ? makkahPlace!.generalTagAr : makkahPlace!.generalTagEn)
-        : null;
+    final generalTag = makkahPlace != null ? (isArabic ? makkahPlace!.generalTagAr : makkahPlace!.generalTagEn) : null;
     final hasGeneralTag = generalTag != null && generalTag.isNotEmpty;
     final hasDuration = durationText != null && durationText.isNotEmpty;
 

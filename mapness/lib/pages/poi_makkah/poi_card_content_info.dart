@@ -74,10 +74,9 @@ class _MakkahPoiInfoSliverPlaceholder extends ConsumerWidget {
         .map((e) => isArabic ? (e.textAr ?? '') : (e.textEn ?? ''))
         .where((e) => e.trim().isNotEmpty)
         .join('\n');
-    final features =
-        featuresFromList.trim().isNotEmpty
-            ? featuresFromList
-            : (isArabic ? makkahPlace?.featuresAr : makkahPlace?.featuresEn);
+    final features = featuresFromList.trim().isNotEmpty
+        ? featuresFromList
+        : (isArabic ? makkahPlace?.featuresAr : makkahPlace?.featuresEn);
     final accessibility = isArabic ? makkahPlace?.accessibilityAr : makkahPlace?.accessibilityEn;
 
     const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
@@ -106,14 +105,13 @@ class _MakkahPoiInfoSliverPlaceholder extends ConsumerWidget {
               if (workingHours != null)
                 Padding(
                   padding: itemPadding,
-                  child:
-                      workingHours.isOpen24x7
-                          ? _MakkahOpenHoursCard(colors: colors, subtitle: workhoursHint)
-                          : MakkahPoiWorkingHoursCard(
-                            workingHours: workingHours,
-                            colors: colors,
-                            workhoursHint: workhoursHint,
-                          ),
+                  child: workingHours.isOpen24x7
+                      ? _MakkahOpenHoursCard(colors: colors, subtitle: workhoursHint)
+                      : MakkahPoiWorkingHoursCard(
+                          workingHours: workingHours,
+                          colors: colors,
+                          workhoursHint: workhoursHint,
+                        ),
                 ),
               // Kaaba virtual journey card - same logic as dashboard
               if (ref.watch(showPilgrimFeatureProvider) != null)
@@ -399,35 +397,34 @@ class _MakkahFeatureTile extends StatelessWidget {
           icon,
           const SizedBox(width: 10),
           Expanded(
-            child:
-                subtitle.isEmpty
-                    ? Text(
-                      title,
-                      style: context.textStyles.bodySmallRegular.copyWith(
-                        color: colors.secondaryTextColor.withOpacity(0.8),
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    )
-                    : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          title,
-                          style: context.textStyles.bodySmallRegular.copyWith(
-                            color: colors.secondaryTextColor.withOpacity(0.8),
-                          ),
-                        ),
-                        const SizedBox(height: Spacing.$0_5x),
-                        Text(
-                          subtitle,
-                          style: context.textStyles.bodySmallRegular.copyWith(
-                            color: colors.secondaryTextColor.withOpacity(0.8),
-                          ),
-                        ),
-                      ],
+            child: subtitle.isEmpty
+                ? Text(
+                    title,
+                    style: context.textStyles.bodySmallRegular.copyWith(
+                      color: colors.secondaryTextColor.withOpacity(0.8),
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        title,
+                        style: context.textStyles.bodySmallRegular.copyWith(
+                          color: colors.secondaryTextColor.withOpacity(0.8),
+                        ),
+                      ),
+                      const SizedBox(height: Spacing.$0_5x),
+                      Text(
+                        subtitle,
+                        style: context.textStyles.bodySmallRegular.copyWith(
+                          color: colors.secondaryTextColor.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -454,14 +451,13 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
           width: size,
           height: size,
           fit: BoxFit.contain,
-          placeholderBuilder:
-              (_) => SvgPicture.asset(
-                svgAsset,
-                width: size,
-                height: size,
-                colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
-                matchTextDirection: true,
-              ),
+          placeholderBuilder: (_) => SvgPicture.asset(
+            svgAsset,
+            width: size,
+            height: size,
+            colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
+            matchTextDirection: true,
+          ),
         );
       }
 
@@ -470,22 +466,20 @@ class _MakkahFeatureTileIcon extends StatelessWidget {
         width: size,
         height: size,
         fit: BoxFit.contain,
-        placeholder:
-            (_, __) => SvgPicture.asset(
-              svgAsset,
-              width: size,
-              height: size,
-              colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
-              matchTextDirection: true,
-            ),
-        errorWidget:
-            (_, __, ___) => SvgPicture.asset(
-              svgAsset,
-              width: size,
-              height: size,
-              colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
-              matchTextDirection: true,
-            ),
+        placeholder: (_, __) => SvgPicture.asset(
+          svgAsset,
+          width: size,
+          height: size,
+          colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
+          matchTextDirection: true,
+        ),
+        errorWidget: (_, __, ___) => SvgPicture.asset(
+          svgAsset,
+          width: size,
+          height: size,
+          colorFilter: const ColorFilter.mode(effectiveAssetColor, BlendMode.srcIn),
+          matchTextDirection: true,
+        ),
       );
     }
 

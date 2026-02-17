@@ -4,6 +4,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/makkah_places/makkah_place_model.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/features/makkah_places/makkah_places_json_datasource.dart';
 import 'package:mapness/features/makkah_places/makkah_places_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
@@ -17,15 +18,13 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+
 import 'package:mapness/shared/providers/regular_poi_active.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'makkah_places_layer_provider.g.dart';
-
 @Riverpod(keepAlive: true)
 class MakkahPlacesLayer extends _$MakkahPlacesLayer {
-  late final MapObjectManagerSettings _settings =
-      MapObjectManagerSettings.makkahPlaces();
+  late final MapObjectManagerSettings _settings = MapObjectManagerSettings.makkahPlaces();
 
   bool _wasMakkahMode = false;
   bool _didFlyToPlaces = false;
@@ -89,10 +88,7 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
 
       final objectId = int.tryParse(place.dgisId ?? '');
 
-      final markerId =
-          (place.placeId != null && place.placeId!.isNotEmpty)
-              ? place.placeId!
-              : '${lat}_$lon';
+      final markerId = (place.placeId != null && place.placeId!.isNotEmpty) ? place.placeId! : '${lat}_$lon';
 
       final position = GeoPointWithElevationMessage(
         latitude: lat,
@@ -148,10 +144,7 @@ class MakkahPlacesLayer extends _$MakkahPlacesLayer {
             final router = ref.read(appRouterProvider);
             await router.replaceOrPush(
               route: PoiMakkahWidgetRoute(
-                objectId:
-                    objectId != null
-                        ? DgisObjectIdMessage(objectId: objectId, entranceId: 0)
-                        : null,
+                objectId: objectId != null ? DgisObjectIdMessage(objectId: objectId, entranceId: 0) : null,
                 closestPoint: closestPoint,
                 cameraConfig: const PoiCameraConfig(zoom: 20), // Match zoom level
                 makkahPlace: place,

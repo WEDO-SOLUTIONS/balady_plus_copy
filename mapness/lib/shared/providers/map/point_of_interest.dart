@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -49,10 +50,9 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
     fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
-    textPlacement: MarkerTextPlacementMessage(
-      placement: TextPlacementMessage.bottomCenter,
-    ),
+    textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
+  final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
 
   await selectedMarker.showMarker(
     Markers.pinMarker(
@@ -65,6 +65,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
       textStyle: textStyle.copyWith(suppressOnOverlap: false),
       icon: bigIconPath,
       id: poiPinId,
+      activeCityEvent: ref.read(activeCityEventProvider),
+      isDark: isDark,
     ),
   );
 

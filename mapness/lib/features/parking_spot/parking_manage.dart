@@ -5,6 +5,8 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
@@ -71,6 +73,7 @@ class _ParkingManage extends _$ParkingManage {
     await hive.put(_keyCache, model.toJson());
     await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
     await _mapObjectManager.removeAllMarkers();
+    final activeCityEvent = ref.read(activeCityEventProvider);
     await _mapObjectManager.addMarker(
       Marker(
         id: parkingId,
@@ -132,12 +135,16 @@ class _ParkingManage extends _$ParkingManage {
     await _mapObjectManager.removeAllMarkers();
 
     final style = await _markerStyle(title);
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    final isDark = ref.read(darkModeProvider).value?.isDark ?? false;
+
     await selectedMarker.showMarker(Markers.pinMarker(
       GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
       text: title,
       textStyle: style,
-      icon: SaudiNationalDay.isNow() ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew,
+      activeCityEvent: ref.read(activeCityEventProvider),
       id: poiPinId,
+      isDark: isDark,
     ));
   }
 
@@ -166,6 +173,8 @@ class _ParkingManage extends _$ParkingManage {
     if (exists) {
       return;
     }
+
+    final activeCityEvent = ref.read(activeCityEventProvider);
 
     await _mapObjectManager.addMarker(
       Marker(

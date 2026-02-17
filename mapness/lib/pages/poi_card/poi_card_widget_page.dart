@@ -1,7 +1,15 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' show General16Icons, GeneralIcons, SliverFillAfter, Spacing;
+import 'package:balady_uikit/balady_uikit.dart'
+    show
+        ConfettiAnimation,
+        ConfettiGeneratorConfig,
+        General16Icons,
+        GeneralIcons,
+        ShiningShape,
+        SliverFillAfter,
+        Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -10,13 +18,16 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/data/poi_data_google.dart';
 import 'package:mapness/features/poi_card/domain/model/loading_or_failure_model.dart';
@@ -76,6 +87,7 @@ part 'poi_card_content.dart';
 part 'poi_card_no_info.dart';
 part 'poi_card_wrapper.dart';
 part 'poi_functions.dart';
+part 'founding_day_card_content.dart';
 
 @RoutePage()
 class PoiCardWidgetPage extends StatelessWidget {
@@ -96,11 +108,7 @@ class PoiCardWidgetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PoiCardWrapper(
-        objectId: objectId ??
-            DgisObjectIdMessage(
-              objectId: dGisObjectId ?? 0,
-              entranceId: 0,
-            ),
+        objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),
         cameraConfig: cameraConfig,
         poiCardDataFromGoogle: poiCardDataFromGoogle,
         closestPoint: closestPoint,

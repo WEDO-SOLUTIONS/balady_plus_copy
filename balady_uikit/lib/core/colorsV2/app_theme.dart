@@ -408,62 +408,43 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
       accentMuted: accentMuted ?? this.accentMuted,
       accentActive: accentActive ?? this.accentActive,
       accentOnAccent: accentOnAccent ?? this.accentOnAccent,
-      accentContainerDefault:
-          accentContainerDefault ?? this.accentContainerDefault,
+      accentContainerDefault: accentContainerDefault ?? this.accentContainerDefault,
       accentContainerSoft: accentContainerSoft ?? this.accentContainerSoft,
       accentContainerMuted: accentContainerMuted ?? this.accentContainerMuted,
-      accentContainerActive:
-          accentContainerActive ?? this.accentContainerActive,
+      accentContainerActive: accentContainerActive ?? this.accentContainerActive,
       accentOnContainer: accentOnContainer ?? this.accentOnContainer,
       foregroundSoft: foregroundSoft ?? this.foregroundSoft,
       foregroundMuted: foregroundMuted ?? this.foregroundMuted,
       foregroundDisabled: foregroundDisabled ?? this.foregroundDisabled,
-      accentSecondaryDefault:
-          accentSecondaryDefault ?? this.accentSecondaryDefault,
+      accentSecondaryDefault: accentSecondaryDefault ?? this.accentSecondaryDefault,
       accentSecondarySoft: accentSecondarySoft ?? this.accentSecondarySoft,
       accentSecondaryMuted: accentSecondaryMuted ?? this.accentSecondaryMuted,
-      accentSecondaryActive:
-          accentSecondaryActive ?? this.accentSecondaryActive,
-      accentSecondaryOnAccentSecondary: accentSecondaryOnAccentSecondary ??
-          this.accentSecondaryOnAccentSecondary,
-      accentSecondaryContainerDefault: accentSecondaryContainerDefault ??
-          this.accentSecondaryContainerDefault,
-      accentSecondaryContainerMuted:
-          accentSecondaryContainerMuted ?? this.accentSecondaryContainerMuted,
-      accentSecondaryContainerSoft:
-          accentSecondaryContainerSoft ?? this.accentSecondaryContainerSoft,
-      accentSecondaryContainerActive:
-          accentSecondaryContainerActive ?? this.accentSecondaryContainerActive,
-      accentSecondaryOnContainer:
-          accentSecondaryOnContainer ?? this.accentSecondaryOnContainer,
+      accentSecondaryActive: accentSecondaryActive ?? this.accentSecondaryActive,
+      accentSecondaryOnAccentSecondary: accentSecondaryOnAccentSecondary ?? this.accentSecondaryOnAccentSecondary,
+      accentSecondaryContainerDefault: accentSecondaryContainerDefault ?? this.accentSecondaryContainerDefault,
+      accentSecondaryContainerMuted: accentSecondaryContainerMuted ?? this.accentSecondaryContainerMuted,
+      accentSecondaryContainerSoft: accentSecondaryContainerSoft ?? this.accentSecondaryContainerSoft,
+      accentSecondaryContainerActive: accentSecondaryContainerActive ?? this.accentSecondaryContainerActive,
+      accentSecondaryOnContainer: accentSecondaryOnContainer ?? this.accentSecondaryOnContainer,
       neutralDefault: neutralDefault ?? this.neutralDefault,
       neutralOnDarkDefault: neutralOnDarkDefault ?? this.neutralOnDarkDefault,
       neutralOnDarkSoft: neutralOnDarkSoft ?? this.neutralOnDarkSoft,
       neutralOnDarkMuted: neutralOnDarkMuted ?? this.neutralOnDarkMuted,
       neutralOnDarkActive: neutralOnDarkActive ?? this.neutralOnDarkActive,
-      neutralOnDarkContainerDefault:
-          neutralOnDarkContainerDefault ?? this.neutralOnDarkContainerDefault,
-      neutralOnDarkContainerSoft:
-          neutralOnDarkContainerSoft ?? this.neutralOnDarkContainerSoft,
-      neutralOnDarkContainerMuted:
-          neutralOnDarkContainerMuted ?? this.neutralOnDarkContainerMuted,
-      neutralOnDarkContainerActive:
-          neutralOnDarkContainerActive ?? this.neutralOnDarkContainerActive,
-      neutralOnDarkOnContainer:
-          neutralOnDarkOnContainer ?? this.neutralOnDarkOnContainer,
+      neutralOnDarkContainerDefault: neutralOnDarkContainerDefault ?? this.neutralOnDarkContainerDefault,
+      neutralOnDarkContainerSoft: neutralOnDarkContainerSoft ?? this.neutralOnDarkContainerSoft,
+      neutralOnDarkContainerMuted: neutralOnDarkContainerMuted ?? this.neutralOnDarkContainerMuted,
+      neutralOnDarkContainerActive: neutralOnDarkContainerActive ?? this.neutralOnDarkContainerActive,
+      neutralOnDarkOnContainer: neutralOnDarkOnContainer ?? this.neutralOnDarkOnContainer,
       neutralSoft: neutralSoft ?? this.neutralSoft,
       neutralMuted: neutralMuted ?? this.neutralMuted,
       neutralActive: neutralActive ?? this.neutralActive,
       neutralOnNeutral: neutralOnNeutral ?? this.neutralOnNeutral,
-      neutralContainerOnMap:
-          neutralContainerOnMap ?? this.neutralContainerOnMap,
-      neutralContainerDefault:
-          neutralContainerDefault ?? this.neutralContainerDefault,
+      neutralContainerOnMap: neutralContainerOnMap ?? this.neutralContainerOnMap,
+      neutralContainerDefault: neutralContainerDefault ?? this.neutralContainerDefault,
       neutralContainerSoft: neutralContainerSoft ?? this.neutralContainerSoft,
-      neutralContainerMuted:
-          neutralContainerMuted ?? this.neutralContainerMuted,
-      neutralContainerActive:
-          neutralContainerActive ?? this.neutralContainerActive,
+      neutralContainerMuted: neutralContainerMuted ?? this.neutralContainerMuted,
+      neutralContainerActive: neutralContainerActive ?? this.neutralContainerActive,
       neutralOnContainer: neutralOnContainer ?? this.neutralOnContainer,
       staticWhite: staticWhite ?? this.staticWhite,
       staticBlack: staticBlack ?? this.staticBlack,
@@ -471,27 +452,21 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
       staticTiffany: staticTiffany ?? this.staticTiffany,
       onmapSurfaceOnMap: onmapSurfaceOnMap ?? this.onmapSurfaceOnMap,
       onmapSurfaceWeather: onmapSurfaceWeather ?? this.onmapSurfaceWeather,
-      gradientBackgroundCardGradient0: gradientBackgroundCardGradient0 ??
-          this.gradientBackgroundCardGradient0,
-      screenOverlayDimming40:
-          screenOverlayDimming40 ?? this.screenOverlayDimming40,
+      gradientBackgroundCardGradient0: gradientBackgroundCardGradient0 ?? this.gradientBackgroundCardGradient0,
+      screenOverlayDimming40: screenOverlayDimming40 ?? this.screenOverlayDimming40,
       borderDefault: borderDefault ?? this.borderDefault,
       borderSoft: borderSoft ?? this.borderSoft,
       borderMuted: borderMuted ?? this.borderMuted,
-      borderDefaultInversion:
-          borderDefaultInversion ?? this.borderDefaultInversion,
+      borderDefaultInversion: borderDefaultInversion ?? this.borderDefaultInversion,
       successDefault: successDefault ?? this.successDefault,
       successSoft: successSoft ?? this.successSoft,
       successMuted: successMuted ?? this.successMuted,
       successActive: successActive ?? this.successActive,
       successOnSuccess: successOnSuccess ?? this.successOnSuccess,
-      successContainerDefault:
-          successContainerDefault ?? this.successContainerDefault,
+      successContainerDefault: successContainerDefault ?? this.successContainerDefault,
       successContainerSoft: successContainerSoft ?? this.successContainerSoft,
-      successContainerMuted:
-          successContainerMuted ?? this.successContainerMuted,
-      successContainerActive:
-          successContainerActive ?? this.successContainerActive,
+      successContainerMuted: successContainerMuted ?? this.successContainerMuted,
+      successContainerActive: successContainerActive ?? this.successContainerActive,
       successOnContainer: successOnContainer ?? this.successOnContainer,
       warningDefault: warningDefault ?? this.warningDefault,
       errorDefault: errorDefault ?? this.errorDefault,
@@ -499,8 +474,7 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
       errorMuted: errorMuted ?? this.errorMuted,
       errorActive: errorActive ?? this.errorActive,
       errorOnError: errorOnError ?? this.errorOnError,
-      errorContainerDefault:
-          errorContainerDefault ?? this.errorContainerDefault,
+      errorContainerDefault: errorContainerDefault ?? this.errorContainerDefault,
       errorContainerSoft: errorContainerSoft ?? this.errorContainerSoft,
       errorContainerMuted: errorContainerMuted ?? this.errorContainerMuted,
       errorContainerActive: errorContainerActive ?? this.errorContainerActive,
@@ -509,52 +483,37 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
       warningMuted: warningMuted ?? this.warningMuted,
       warningActive: warningActive ?? this.warningActive,
       warningOnWarning: warningOnWarning ?? this.warningOnWarning,
-      warningContainerDefault:
-          warningContainerDefault ?? this.warningContainerDefault,
+      warningContainerDefault: warningContainerDefault ?? this.warningContainerDefault,
       warningContainerSoft: warningContainerSoft ?? this.warningContainerSoft,
-      warningContainerMuted:
-          warningContainerMuted ?? this.warningContainerMuted,
-      warningContainerActive:
-          warningContainerActive ?? this.warningContainerActive,
+      warningContainerMuted: warningContainerMuted ?? this.warningContainerMuted,
+      warningContainerActive: warningContainerActive ?? this.warningContainerActive,
       warningOnContainer: warningOnContainer ?? this.warningOnContainer,
       extra01Default: extra01Default ?? this.extra01Default,
       extra01Soft: extra01Soft ?? this.extra01Soft,
       extra01Muted: extra01Muted ?? this.extra01Muted,
       extra01Active: extra01Active ?? this.extra01Active,
       extra01OnExtra01: extra01OnExtra01 ?? this.extra01OnExtra01,
-      extra01ContainerDefault:
-          extra01ContainerDefault ?? this.extra01ContainerDefault,
+      extra01ContainerDefault: extra01ContainerDefault ?? this.extra01ContainerDefault,
       extra01ContainerSoft: extra01ContainerSoft ?? this.extra01ContainerSoft,
-      extra01ContainerMuted:
-          extra01ContainerMuted ?? this.extra01ContainerMuted,
-      extra01ContainerActive:
-          extra01ContainerActive ?? this.extra01ContainerActive,
+      extra01ContainerMuted: extra01ContainerMuted ?? this.extra01ContainerMuted,
+      extra01ContainerActive: extra01ContainerActive ?? this.extra01ContainerActive,
       extra01OnContainer: extra01OnContainer ?? this.extra01OnContainer,
       extra02Default: extra02Default ?? this.extra02Default,
       extra02Soft: extra02Soft ?? this.extra02Soft,
       extra02Muted: extra02Muted ?? this.extra02Muted,
       extra02Active: extra02Active ?? this.extra02Active,
       extra02OnExtra02: extra02OnExtra02 ?? this.extra02OnExtra02,
-      extra02ContainerDefault:
-          extra02ContainerDefault ?? this.extra02ContainerDefault,
+      extra02ContainerDefault: extra02ContainerDefault ?? this.extra02ContainerDefault,
       extra02ContainerSoft: extra02ContainerSoft ?? this.extra02ContainerSoft,
-      extra02ContainerMuted:
-          extra02ContainerMuted ?? this.extra02ContainerMuted,
-      extra02ContainerActive:
-          extra02ContainerActive ?? this.extra02ContainerActive,
+      extra02ContainerMuted: extra02ContainerMuted ?? this.extra02ContainerMuted,
+      extra02ContainerActive: extra02ContainerActive ?? this.extra02ContainerActive,
       extra02OnContainer: extra02OnContainer ?? this.extra02OnContainer,
-      screenOverlayDimming60:
-          screenOverlayDimming60 ?? this.screenOverlayDimming60,
-      screenOverlayDimming90:
-          screenOverlayDimming90 ?? this.screenOverlayDimming90,
-      gradientBackgroundCardGradient80: gradientBackgroundCardGradient80 ??
-          this.gradientBackgroundCardGradient80,
-      foregroundDefaultInversion:
-          foregroundDefaultInversion ?? this.foregroundDefaultInversion,
-      foregroundSurfacePush:
-          foregroundSurfacePush ?? this.foregroundSurfacePush,
-      foregroundSegmentedControl:
-          foregroundSegmentedControl ?? this.foregroundSegmentedControl,
+      screenOverlayDimming60: screenOverlayDimming60 ?? this.screenOverlayDimming60,
+      screenOverlayDimming90: screenOverlayDimming90 ?? this.screenOverlayDimming90,
+      gradientBackgroundCardGradient80: gradientBackgroundCardGradient80 ?? this.gradientBackgroundCardGradient80,
+      foregroundDefaultInversion: foregroundDefaultInversion ?? this.foregroundDefaultInversion,
+      foregroundSurfacePush: foregroundSurfacePush ?? this.foregroundSurfacePush,
+      foregroundSegmentedControl: foregroundSegmentedControl ?? this.foregroundSegmentedControl,
       pinDefault: pinDefault ?? this.pinDefault,
       pinSoft: pinSoft ?? this.pinSoft,
       pinFoundationPin: pinFoundationPin ?? this.pinFoundationPin,
@@ -564,219 +523,136 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
   }
 
   @override
-  ThemeExtension<AppColorsThemeV3> lerp(
-      covariant ThemeExtension<AppColorsThemeV3>? other, double t) {
+  ThemeExtension<AppColorsThemeV3> lerp(covariant ThemeExtension<AppColorsThemeV3>? other, double t) {
     if (other is! AppColorsThemeV3) {
       return this;
     }
     return AppColorsThemeV3(
-      foregroundDefault:
-          Color.lerp(foregroundDefault, other.foregroundDefault, t)!,
-      backgroundSurface1:
-          Color.lerp(backgroundSurface1, other.backgroundSurface1, t)!,
-      backgroundSurface2:
-          Color.lerp(backgroundSurface2, other.backgroundSurface2, t)!,
-      backgroundSurface3:
-          Color.lerp(backgroundSurface3, other.backgroundSurface3, t)!,
-      backgroundSurface4:
-          Color.lerp(backgroundSurface4, other.backgroundSurface4, t)!,
-      backgroundSurface5:
-          Color.lerp(backgroundSurface5, other.backgroundSurface5, t)!,
+      foregroundDefault: Color.lerp(foregroundDefault, other.foregroundDefault, t)!,
+      backgroundSurface1: Color.lerp(backgroundSurface1, other.backgroundSurface1, t)!,
+      backgroundSurface2: Color.lerp(backgroundSurface2, other.backgroundSurface2, t)!,
+      backgroundSurface3: Color.lerp(backgroundSurface3, other.backgroundSurface3, t)!,
+      backgroundSurface4: Color.lerp(backgroundSurface4, other.backgroundSurface4, t)!,
+      backgroundSurface5: Color.lerp(backgroundSurface5, other.backgroundSurface5, t)!,
       accentDefault: Color.lerp(accentDefault, other.accentDefault, t)!,
       accentSoft: Color.lerp(accentSoft, other.accentSoft, t)!,
       accentMuted: Color.lerp(accentMuted, other.accentMuted, t)!,
       accentActive: Color.lerp(accentActive, other.accentActive, t)!,
       accentOnAccent: Color.lerp(accentOnAccent, other.accentOnAccent, t)!,
-      accentContainerDefault:
-          Color.lerp(accentContainerDefault, other.accentContainerDefault, t)!,
-      accentContainerSoft:
-          Color.lerp(accentContainerSoft, other.accentContainerSoft, t)!,
-      accentContainerMuted:
-          Color.lerp(accentContainerMuted, other.accentContainerMuted, t)!,
-      accentContainerActive:
-          Color.lerp(accentContainerActive, other.accentContainerActive, t)!,
-      accentOnContainer:
-          Color.lerp(accentOnContainer, other.accentOnContainer, t)!,
+      accentContainerDefault: Color.lerp(accentContainerDefault, other.accentContainerDefault, t)!,
+      accentContainerSoft: Color.lerp(accentContainerSoft, other.accentContainerSoft, t)!,
+      accentContainerMuted: Color.lerp(accentContainerMuted, other.accentContainerMuted, t)!,
+      accentContainerActive: Color.lerp(accentContainerActive, other.accentContainerActive, t)!,
+      accentOnContainer: Color.lerp(accentOnContainer, other.accentOnContainer, t)!,
       foregroundSoft: Color.lerp(foregroundSoft, other.foregroundSoft, t)!,
       foregroundMuted: Color.lerp(foregroundMuted, other.foregroundMuted, t)!,
-      foregroundDisabled:
-          Color.lerp(foregroundDisabled, other.foregroundDisabled, t)!,
-      accentSecondaryDefault:
-          Color.lerp(accentSecondaryDefault, other.accentSecondaryDefault, t)!,
-      accentSecondarySoft:
-          Color.lerp(accentSecondarySoft, other.accentSecondarySoft, t)!,
-      accentSecondaryMuted:
-          Color.lerp(accentSecondaryMuted, other.accentSecondaryMuted, t)!,
-      accentSecondaryActive:
-          Color.lerp(accentSecondaryActive, other.accentSecondaryActive, t)!,
-      accentSecondaryOnAccentSecondary: Color.lerp(
-          accentSecondaryOnAccentSecondary,
-          other.accentSecondaryOnAccentSecondary,
-          t)!,
-      accentSecondaryContainerDefault: Color.lerp(
-          accentSecondaryContainerDefault,
-          other.accentSecondaryContainerDefault,
-          t)!,
-      accentSecondaryContainerMuted: Color.lerp(accentSecondaryContainerMuted,
-          other.accentSecondaryContainerMuted, t)!,
-      accentSecondaryContainerSoft: Color.lerp(
-          accentSecondaryContainerSoft, other.accentSecondaryContainerSoft, t)!,
-      accentSecondaryContainerActive: Color.lerp(accentSecondaryContainerActive,
-          other.accentSecondaryContainerActive, t)!,
-      accentSecondaryOnContainer: Color.lerp(
-          accentSecondaryOnContainer, other.accentSecondaryOnContainer, t)!,
+      foregroundDisabled: Color.lerp(foregroundDisabled, other.foregroundDisabled, t)!,
+      accentSecondaryDefault: Color.lerp(accentSecondaryDefault, other.accentSecondaryDefault, t)!,
+      accentSecondarySoft: Color.lerp(accentSecondarySoft, other.accentSecondarySoft, t)!,
+      accentSecondaryMuted: Color.lerp(accentSecondaryMuted, other.accentSecondaryMuted, t)!,
+      accentSecondaryActive: Color.lerp(accentSecondaryActive, other.accentSecondaryActive, t)!,
+      accentSecondaryOnAccentSecondary:
+          Color.lerp(accentSecondaryOnAccentSecondary, other.accentSecondaryOnAccentSecondary, t)!,
+      accentSecondaryContainerDefault:
+          Color.lerp(accentSecondaryContainerDefault, other.accentSecondaryContainerDefault, t)!,
+      accentSecondaryContainerMuted: Color.lerp(accentSecondaryContainerMuted, other.accentSecondaryContainerMuted, t)!,
+      accentSecondaryContainerSoft: Color.lerp(accentSecondaryContainerSoft, other.accentSecondaryContainerSoft, t)!,
+      accentSecondaryContainerActive:
+          Color.lerp(accentSecondaryContainerActive, other.accentSecondaryContainerActive, t)!,
+      accentSecondaryOnContainer: Color.lerp(accentSecondaryOnContainer, other.accentSecondaryOnContainer, t)!,
       neutralDefault: Color.lerp(neutralDefault, other.neutralDefault, t)!,
-      neutralOnDarkDefault:
-          Color.lerp(neutralOnDarkDefault, other.neutralOnDarkDefault, t)!,
-      neutralOnDarkSoft:
-          Color.lerp(neutralOnDarkSoft, other.neutralOnDarkSoft, t)!,
-      neutralOnDarkMuted:
-          Color.lerp(neutralOnDarkMuted, other.neutralOnDarkMuted, t)!,
-      neutralOnDarkActive:
-          Color.lerp(neutralOnDarkActive, other.neutralOnDarkActive, t)!,
-      neutralOnDarkContainerDefault: Color.lerp(neutralOnDarkContainerDefault,
-          other.neutralOnDarkContainerDefault, t)!,
-      neutralOnDarkContainerSoft: Color.lerp(
-          neutralOnDarkContainerSoft, other.neutralOnDarkContainerSoft, t)!,
-      neutralOnDarkContainerMuted: Color.lerp(
-          neutralOnDarkContainerMuted, other.neutralOnDarkContainerMuted, t)!,
-      neutralOnDarkContainerActive: Color.lerp(
-          neutralOnDarkContainerActive, other.neutralOnDarkContainerActive, t)!,
-      neutralOnDarkOnContainer: Color.lerp(
-          neutralOnDarkOnContainer, other.neutralOnDarkOnContainer, t)!,
+      neutralOnDarkDefault: Color.lerp(neutralOnDarkDefault, other.neutralOnDarkDefault, t)!,
+      neutralOnDarkSoft: Color.lerp(neutralOnDarkSoft, other.neutralOnDarkSoft, t)!,
+      neutralOnDarkMuted: Color.lerp(neutralOnDarkMuted, other.neutralOnDarkMuted, t)!,
+      neutralOnDarkActive: Color.lerp(neutralOnDarkActive, other.neutralOnDarkActive, t)!,
+      neutralOnDarkContainerDefault: Color.lerp(neutralOnDarkContainerDefault, other.neutralOnDarkContainerDefault, t)!,
+      neutralOnDarkContainerSoft: Color.lerp(neutralOnDarkContainerSoft, other.neutralOnDarkContainerSoft, t)!,
+      neutralOnDarkContainerMuted: Color.lerp(neutralOnDarkContainerMuted, other.neutralOnDarkContainerMuted, t)!,
+      neutralOnDarkContainerActive: Color.lerp(neutralOnDarkContainerActive, other.neutralOnDarkContainerActive, t)!,
+      neutralOnDarkOnContainer: Color.lerp(neutralOnDarkOnContainer, other.neutralOnDarkOnContainer, t)!,
       neutralSoft: Color.lerp(neutralSoft, other.neutralSoft, t)!,
       neutralMuted: Color.lerp(neutralMuted, other.neutralMuted, t)!,
       neutralActive: Color.lerp(neutralActive, other.neutralActive, t)!,
-      neutralOnNeutral:
-          Color.lerp(neutralOnNeutral, other.neutralOnNeutral, t)!,
-      neutralContainerOnMap:
-          Color.lerp(neutralContainerOnMap, other.neutralContainerOnMap, t)!,
-      neutralContainerDefault: Color.lerp(
-          neutralContainerDefault, other.neutralContainerDefault, t)!,
-      neutralContainerSoft:
-          Color.lerp(neutralContainerSoft, other.neutralContainerSoft, t)!,
-      neutralContainerMuted:
-          Color.lerp(neutralContainerMuted, other.neutralContainerMuted, t)!,
-      neutralContainerActive:
-          Color.lerp(neutralContainerActive, other.neutralContainerActive, t)!,
-      neutralOnContainer:
-          Color.lerp(neutralOnContainer, other.neutralOnContainer, t)!,
+      neutralOnNeutral: Color.lerp(neutralOnNeutral, other.neutralOnNeutral, t)!,
+      neutralContainerOnMap: Color.lerp(neutralContainerOnMap, other.neutralContainerOnMap, t)!,
+      neutralContainerDefault: Color.lerp(neutralContainerDefault, other.neutralContainerDefault, t)!,
+      neutralContainerSoft: Color.lerp(neutralContainerSoft, other.neutralContainerSoft, t)!,
+      neutralContainerMuted: Color.lerp(neutralContainerMuted, other.neutralContainerMuted, t)!,
+      neutralContainerActive: Color.lerp(neutralContainerActive, other.neutralContainerActive, t)!,
+      neutralOnContainer: Color.lerp(neutralOnContainer, other.neutralOnContainer, t)!,
       staticWhite: Color.lerp(staticWhite, other.staticWhite, t)!,
       staticBlack: Color.lerp(staticBlack, other.staticBlack, t)!,
       staticDarkblue: Color.lerp(staticDarkblue, other.staticDarkblue, t)!,
       staticTiffany: Color.lerp(staticTiffany, other.staticTiffany, t)!,
-      onmapSurfaceOnMap:
-          Color.lerp(onmapSurfaceOnMap, other.onmapSurfaceOnMap, t)!,
-      onmapSurfaceWeather:
-          Color.lerp(onmapSurfaceWeather, other.onmapSurfaceWeather, t)!,
-      gradientBackgroundCardGradient0: Color.lerp(
-          gradientBackgroundCardGradient0,
-          other.gradientBackgroundCardGradient0,
-          t)!,
-      screenOverlayDimming40:
-          Color.lerp(screenOverlayDimming40, other.screenOverlayDimming40, t)!,
+      onmapSurfaceOnMap: Color.lerp(onmapSurfaceOnMap, other.onmapSurfaceOnMap, t)!,
+      onmapSurfaceWeather: Color.lerp(onmapSurfaceWeather, other.onmapSurfaceWeather, t)!,
+      gradientBackgroundCardGradient0:
+          Color.lerp(gradientBackgroundCardGradient0, other.gradientBackgroundCardGradient0, t)!,
+      screenOverlayDimming40: Color.lerp(screenOverlayDimming40, other.screenOverlayDimming40, t)!,
       borderDefault: Color.lerp(borderDefault, other.borderDefault, t)!,
       borderSoft: Color.lerp(borderSoft, other.borderSoft, t)!,
       borderMuted: Color.lerp(borderMuted, other.borderMuted, t)!,
-      borderDefaultInversion:
-          Color.lerp(borderDefaultInversion, other.borderDefaultInversion, t)!,
+      borderDefaultInversion: Color.lerp(borderDefaultInversion, other.borderDefaultInversion, t)!,
       successDefault: Color.lerp(successDefault, other.successDefault, t)!,
       successSoft: Color.lerp(successSoft, other.successSoft, t)!,
       successMuted: Color.lerp(successMuted, other.successMuted, t)!,
       successActive: Color.lerp(successActive, other.successActive, t)!,
-      successOnSuccess:
-          Color.lerp(successOnSuccess, other.successOnSuccess, t)!,
-      successContainerDefault: Color.lerp(
-          successContainerDefault, other.successContainerDefault, t)!,
-      successContainerSoft:
-          Color.lerp(successContainerSoft, other.successContainerSoft, t)!,
-      successContainerMuted:
-          Color.lerp(successContainerMuted, other.successContainerMuted, t)!,
-      successContainerActive:
-          Color.lerp(successContainerActive, other.successContainerActive, t)!,
-      successOnContainer:
-          Color.lerp(successOnContainer, other.successOnContainer, t)!,
+      successOnSuccess: Color.lerp(successOnSuccess, other.successOnSuccess, t)!,
+      successContainerDefault: Color.lerp(successContainerDefault, other.successContainerDefault, t)!,
+      successContainerSoft: Color.lerp(successContainerSoft, other.successContainerSoft, t)!,
+      successContainerMuted: Color.lerp(successContainerMuted, other.successContainerMuted, t)!,
+      successContainerActive: Color.lerp(successContainerActive, other.successContainerActive, t)!,
+      successOnContainer: Color.lerp(successOnContainer, other.successOnContainer, t)!,
       warningDefault: Color.lerp(warningDefault, other.warningDefault, t)!,
       errorDefault: Color.lerp(errorDefault, other.errorDefault, t)!,
       errorSoft: Color.lerp(errorSoft, other.errorSoft, t)!,
       errorMuted: Color.lerp(errorMuted, other.errorMuted, t)!,
       errorActive: Color.lerp(errorActive, other.errorActive, t)!,
       errorOnError: Color.lerp(errorOnError, other.errorOnError, t)!,
-      errorContainerDefault:
-          Color.lerp(errorContainerDefault, other.errorContainerDefault, t)!,
-      errorContainerSoft:
-          Color.lerp(errorContainerSoft, other.errorContainerSoft, t)!,
-      errorContainerMuted:
-          Color.lerp(errorContainerMuted, other.errorContainerMuted, t)!,
-      errorContainerActive:
-          Color.lerp(errorContainerActive, other.errorContainerActive, t)!,
-      errorOnContainer:
-          Color.lerp(errorOnContainer, other.errorOnContainer, t)!,
+      errorContainerDefault: Color.lerp(errorContainerDefault, other.errorContainerDefault, t)!,
+      errorContainerSoft: Color.lerp(errorContainerSoft, other.errorContainerSoft, t)!,
+      errorContainerMuted: Color.lerp(errorContainerMuted, other.errorContainerMuted, t)!,
+      errorContainerActive: Color.lerp(errorContainerActive, other.errorContainerActive, t)!,
+      errorOnContainer: Color.lerp(errorOnContainer, other.errorOnContainer, t)!,
       warningSoft: Color.lerp(warningSoft, other.warningSoft, t)!,
       warningMuted: Color.lerp(warningMuted, other.warningMuted, t)!,
       warningActive: Color.lerp(warningActive, other.warningActive, t)!,
-      warningOnWarning:
-          Color.lerp(warningOnWarning, other.warningOnWarning, t)!,
-      warningContainerDefault: Color.lerp(
-          warningContainerDefault, other.warningContainerDefault, t)!,
-      warningContainerSoft:
-          Color.lerp(warningContainerSoft, other.warningContainerSoft, t)!,
-      warningContainerMuted:
-          Color.lerp(warningContainerMuted, other.warningContainerMuted, t)!,
-      warningContainerActive:
-          Color.lerp(warningContainerActive, other.warningContainerActive, t)!,
-      warningOnContainer:
-          Color.lerp(warningOnContainer, other.warningOnContainer, t)!,
+      warningOnWarning: Color.lerp(warningOnWarning, other.warningOnWarning, t)!,
+      warningContainerDefault: Color.lerp(warningContainerDefault, other.warningContainerDefault, t)!,
+      warningContainerSoft: Color.lerp(warningContainerSoft, other.warningContainerSoft, t)!,
+      warningContainerMuted: Color.lerp(warningContainerMuted, other.warningContainerMuted, t)!,
+      warningContainerActive: Color.lerp(warningContainerActive, other.warningContainerActive, t)!,
+      warningOnContainer: Color.lerp(warningOnContainer, other.warningOnContainer, t)!,
       extra01Default: Color.lerp(extra01Default, other.extra01Default, t)!,
       extra01Soft: Color.lerp(extra01Soft, other.extra01Soft, t)!,
       extra01Muted: Color.lerp(extra01Muted, other.extra01Muted, t)!,
       extra01Active: Color.lerp(extra01Active, other.extra01Active, t)!,
-      extra01OnExtra01:
-          Color.lerp(extra01OnExtra01, other.extra01OnExtra01, t)!,
-      extra01ContainerDefault: Color.lerp(
-          extra01ContainerDefault, other.extra01ContainerDefault, t)!,
-      extra01ContainerSoft:
-          Color.lerp(extra01ContainerSoft, other.extra01ContainerSoft, t)!,
-      extra01ContainerMuted:
-          Color.lerp(extra01ContainerMuted, other.extra01ContainerMuted, t)!,
-      extra01ContainerActive:
-          Color.lerp(extra01ContainerActive, other.extra01ContainerActive, t)!,
-      extra01OnContainer:
-          Color.lerp(extra01OnContainer, other.extra01OnContainer, t)!,
+      extra01OnExtra01: Color.lerp(extra01OnExtra01, other.extra01OnExtra01, t)!,
+      extra01ContainerDefault: Color.lerp(extra01ContainerDefault, other.extra01ContainerDefault, t)!,
+      extra01ContainerSoft: Color.lerp(extra01ContainerSoft, other.extra01ContainerSoft, t)!,
+      extra01ContainerMuted: Color.lerp(extra01ContainerMuted, other.extra01ContainerMuted, t)!,
+      extra01ContainerActive: Color.lerp(extra01ContainerActive, other.extra01ContainerActive, t)!,
+      extra01OnContainer: Color.lerp(extra01OnContainer, other.extra01OnContainer, t)!,
       extra02Default: Color.lerp(extra02Default, other.extra02Default, t)!,
       extra02Soft: Color.lerp(extra02Soft, other.extra02Soft, t)!,
       extra02Muted: Color.lerp(extra02Muted, other.extra02Muted, t)!,
       extra02Active: Color.lerp(extra02Active, other.extra02Active, t)!,
-      extra02OnExtra02:
-          Color.lerp(extra02OnExtra02, other.extra02OnExtra02, t)!,
-      extra02ContainerDefault: Color.lerp(
-          extra02ContainerDefault, other.extra02ContainerDefault, t)!,
-      extra02ContainerSoft:
-          Color.lerp(extra02ContainerSoft, other.extra02ContainerSoft, t)!,
-      extra02ContainerMuted:
-          Color.lerp(extra02ContainerMuted, other.extra02ContainerMuted, t)!,
-      extra02ContainerActive:
-          Color.lerp(extra02ContainerActive, other.extra02ContainerActive, t)!,
-      extra02OnContainer:
-          Color.lerp(extra02OnContainer, other.extra02OnContainer, t)!,
-      screenOverlayDimming60:
-          Color.lerp(screenOverlayDimming60, other.screenOverlayDimming60, t)!,
-      screenOverlayDimming90:
-          Color.lerp(screenOverlayDimming90, other.screenOverlayDimming90, t)!,
-      gradientBackgroundCardGradient80: Color.lerp(
-          gradientBackgroundCardGradient80,
-          other.gradientBackgroundCardGradient80,
-          t)!,
-      foregroundDefaultInversion: Color.lerp(
-          foregroundDefaultInversion, other.foregroundDefaultInversion, t)!,
-      foregroundSurfacePush:
-          Color.lerp(foregroundSurfacePush, other.foregroundSurfacePush, t)!,
-      foregroundSegmentedControl: Color.lerp(
-          foregroundSegmentedControl, other.foregroundSegmentedControl, t)!,
+      extra02OnExtra02: Color.lerp(extra02OnExtra02, other.extra02OnExtra02, t)!,
+      extra02ContainerDefault: Color.lerp(extra02ContainerDefault, other.extra02ContainerDefault, t)!,
+      extra02ContainerSoft: Color.lerp(extra02ContainerSoft, other.extra02ContainerSoft, t)!,
+      extra02ContainerMuted: Color.lerp(extra02ContainerMuted, other.extra02ContainerMuted, t)!,
+      extra02ContainerActive: Color.lerp(extra02ContainerActive, other.extra02ContainerActive, t)!,
+      extra02OnContainer: Color.lerp(extra02OnContainer, other.extra02OnContainer, t)!,
+      screenOverlayDimming60: Color.lerp(screenOverlayDimming60, other.screenOverlayDimming60, t)!,
+      screenOverlayDimming90: Color.lerp(screenOverlayDimming90, other.screenOverlayDimming90, t)!,
+      gradientBackgroundCardGradient80:
+          Color.lerp(gradientBackgroundCardGradient80, other.gradientBackgroundCardGradient80, t)!,
+      foregroundDefaultInversion: Color.lerp(foregroundDefaultInversion, other.foregroundDefaultInversion, t)!,
+      foregroundSurfacePush: Color.lerp(foregroundSurfacePush, other.foregroundSurfacePush, t)!,
+      foregroundSegmentedControl: Color.lerp(foregroundSegmentedControl, other.foregroundSegmentedControl, t)!,
       pinDefault: Color.lerp(pinDefault, other.pinDefault, t)!,
       pinSoft: Color.lerp(pinSoft, other.pinSoft, t)!,
-      pinFoundationPin:
-          Color.lerp(pinFoundationPin, other.pinFoundationPin, t)!,
+      pinFoundationPin: Color.lerp(pinFoundationPin, other.pinFoundationPin, t)!,
       pinBorderMarker: Color.lerp(pinBorderMarker, other.pinBorderMarker, t)!,
       parents: parents,
     );
@@ -788,6 +664,7 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
       BaladyAppThemes.light => const LightThemeV3(),
       BaladyAppThemes.saudiDay => const LightThemeV3SaudiDay(),
       BaladyAppThemes.mekkah => const LightThemeV3Mekkah(),
+      BaladyAppThemes.foundationDay => const LightThemeV3FoundingDay(),
     };
 
     return AppColorsThemeV3(
@@ -921,128 +798,112 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
           name: 'accentActive',
           color: accentActive,
           opacity: (accentActive.opacity * 100).toInt(),
-          hex:
-              '#${accentActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentActive'] ?? '',
         ),
         ColorInfo(
           name: 'accentContainerActive',
           color: accentContainerActive,
           opacity: (accentContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${accentContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'accentContainerDefault',
           color: accentContainerDefault,
           opacity: (accentContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${accentContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'accentContainerMuted',
           color: accentContainerMuted,
           opacity: (accentContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${accentContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'accentContainerSoft',
           color: accentContainerSoft,
           opacity: (accentContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${accentContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'accentDefault',
           color: accentDefault,
           opacity: (accentDefault.opacity * 100).toInt(),
-          hex:
-              '#${accentDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentDefault'] ?? '',
         ),
         ColorInfo(
           name: 'accentMuted',
           color: accentMuted,
           opacity: (accentMuted.opacity * 100).toInt(),
-          hex:
-              '#${accentMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentMuted'] ?? '',
         ),
         ColorInfo(
           name: 'accentOnAccent',
           color: accentOnAccent,
           opacity: (accentOnAccent.opacity * 100).toInt(),
-          hex:
-              '#${accentOnAccent.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentOnAccent.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentOnAccent'] ?? '',
         ),
         ColorInfo(
           name: 'accentOnContainer',
           color: accentOnContainer,
           opacity: (accentOnContainer.opacity * 100).toInt(),
-          hex:
-              '#${accentOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentOnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondaryActive',
           color: accentSecondaryActive,
           opacity: (accentSecondaryActive.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryActive'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondaryContainerActive',
           color: accentSecondaryContainerActive,
           opacity: (accentSecondaryContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondaryContainerDefault',
           color: accentSecondaryContainerDefault,
           opacity: (accentSecondaryContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondaryContainerMuted',
           color: accentSecondaryContainerMuted,
           opacity: (accentSecondaryContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondaryContainerSoft',
           color: accentSecondaryContainerSoft,
           opacity: (accentSecondaryContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondaryDefault',
           color: accentSecondaryDefault,
           opacity: (accentSecondaryDefault.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryDefault'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondaryMuted',
           color: accentSecondaryMuted,
           opacity: (accentSecondaryMuted.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryMuted'] ?? '',
         ),
         ColorInfo(
@@ -1057,400 +918,350 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
           name: 'accentSecondaryOnContainer',
           color: accentSecondaryOnContainer,
           opacity: (accentSecondaryOnContainer.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondaryOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondaryOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondaryOnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'accentSecondarySoft',
           color: accentSecondarySoft,
           opacity: (accentSecondarySoft.opacity * 100).toInt(),
-          hex:
-              '#${accentSecondarySoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSecondarySoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSecondarySoft'] ?? '',
         ),
         ColorInfo(
           name: 'accentSoft',
           color: accentSoft,
           opacity: (accentSoft.opacity * 100).toInt(),
-          hex:
-              '#${accentSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${accentSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['accentSoft'] ?? '',
         ),
         ColorInfo(
           name: 'backgroundSurface1',
           color: backgroundSurface1,
           opacity: (backgroundSurface1.opacity * 100).toInt(),
-          hex:
-              '#${backgroundSurface1.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${backgroundSurface1.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['backgroundSurface1'] ?? '',
         ),
         ColorInfo(
           name: 'backgroundSurface2',
           color: backgroundSurface2,
           opacity: (backgroundSurface2.opacity * 100).toInt(),
-          hex:
-              '#${backgroundSurface2.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${backgroundSurface2.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['backgroundSurface2'] ?? '',
         ),
         ColorInfo(
           name: 'backgroundSurface3',
           color: backgroundSurface3,
           opacity: (backgroundSurface3.opacity * 100).toInt(),
-          hex:
-              '#${backgroundSurface3.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${backgroundSurface3.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['backgroundSurface3'] ?? '',
         ),
         ColorInfo(
           name: 'backgroundSurface4',
           color: backgroundSurface4,
           opacity: (backgroundSurface4.opacity * 100).toInt(),
-          hex:
-              '#${backgroundSurface4.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${backgroundSurface4.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['backgroundSurface4'] ?? '',
         ),
         ColorInfo(
           name: 'backgroundSurface5',
           color: backgroundSurface5,
           opacity: (backgroundSurface5.opacity * 100).toInt(),
-          hex:
-              '#${backgroundSurface5.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${backgroundSurface5.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['backgroundSurface5'] ?? '',
         ),
         ColorInfo(
           name: 'borderDefault',
           color: borderDefault,
           opacity: (borderDefault.opacity * 100).toInt(),
-          hex:
-              '#${borderDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${borderDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['borderDefault'] ?? '',
         ),
         ColorInfo(
           name: 'borderDefaultInversion',
           color: borderDefaultInversion,
           opacity: (borderDefaultInversion.opacity * 100).toInt(),
-          hex:
-              '#${borderDefaultInversion.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${borderDefaultInversion.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['borderDefaultInversion'] ?? '',
         ),
         ColorInfo(
           name: 'borderMuted',
           color: borderMuted,
           opacity: (borderMuted.opacity * 100).toInt(),
-          hex:
-              '#${borderMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${borderMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['borderMuted'] ?? '',
         ),
         ColorInfo(
           name: 'borderSoft',
           color: borderSoft,
           opacity: (borderSoft.opacity * 100).toInt(),
-          hex:
-              '#${borderSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${borderSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['borderSoft'] ?? '',
         ),
         ColorInfo(
           name: 'errorActive',
           color: errorActive,
           opacity: (errorActive.opacity * 100).toInt(),
-          hex:
-              '#${errorActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorActive'] ?? '',
         ),
         ColorInfo(
           name: 'errorContainerActive',
           color: errorContainerActive,
           opacity: (errorContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${errorContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'errorContainerDefault',
           color: errorContainerDefault,
           opacity: (errorContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${errorContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'errorContainerMuted',
           color: errorContainerMuted,
           opacity: (errorContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${errorContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'errorContainerSoft',
           color: errorContainerSoft,
           opacity: (errorContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${errorContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'errorDefault',
           color: errorDefault,
           opacity: (errorDefault.opacity * 100).toInt(),
-          hex:
-              '#${errorDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorDefault'] ?? '',
         ),
         ColorInfo(
           name: 'errorMuted',
           color: errorMuted,
           opacity: (errorMuted.opacity * 100).toInt(),
-          hex:
-              '#${errorMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorMuted'] ?? '',
         ),
         ColorInfo(
           name: 'errorOnContainer',
           color: errorOnContainer,
           opacity: (errorOnContainer.opacity * 100).toInt(),
-          hex:
-              '#${errorOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorOnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'errorOnError',
           color: errorOnError,
           opacity: (errorOnError.opacity * 100).toInt(),
-          hex:
-              '#${errorOnError.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorOnError.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorOnError'] ?? '',
         ),
         ColorInfo(
           name: 'errorSoft',
           color: errorSoft,
           opacity: (errorSoft.opacity * 100).toInt(),
-          hex:
-              '#${errorSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${errorSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['errorSoft'] ?? '',
         ),
         ColorInfo(
           name: 'extra01Active',
           color: extra01Active,
           opacity: (extra01Active.opacity * 100).toInt(),
-          hex:
-              '#${extra01Active.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01Active.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01Active'] ?? '',
         ),
         ColorInfo(
           name: 'extra01ContainerActive',
           color: extra01ContainerActive,
           opacity: (extra01ContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${extra01ContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01ContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01ContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'extra01ContainerDefault',
           color: extra01ContainerDefault,
           opacity: (extra01ContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${extra01ContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01ContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01ContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'extra01ContainerMuted',
           color: extra01ContainerMuted,
           opacity: (extra01ContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${extra01ContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01ContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01ContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'extra01ContainerSoft',
           color: extra01ContainerSoft,
           opacity: (extra01ContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${extra01ContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01ContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01ContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'extra01Default',
           color: extra01Default,
           opacity: (extra01Default.opacity * 100).toInt(),
-          hex:
-              '#${extra01Default.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01Default.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01Default'] ?? '',
         ),
         ColorInfo(
           name: 'extra01Muted',
           color: extra01Muted,
           opacity: (extra01Muted.opacity * 100).toInt(),
-          hex:
-              '#${extra01Muted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01Muted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01Muted'] ?? '',
         ),
         ColorInfo(
           name: 'extra01OnContainer',
           color: extra01OnContainer,
           opacity: (extra01OnContainer.opacity * 100).toInt(),
-          hex:
-              '#${extra01OnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01OnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01OnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'extra01OnExtra01',
           color: extra01OnExtra01,
           opacity: (extra01OnExtra01.opacity * 100).toInt(),
-          hex:
-              '#${extra01OnExtra01.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01OnExtra01.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01OnExtra01'] ?? '',
         ),
         ColorInfo(
           name: 'extra01Soft',
           color: extra01Soft,
           opacity: (extra01Soft.opacity * 100).toInt(),
-          hex:
-              '#${extra01Soft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra01Soft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra01Soft'] ?? '',
         ),
         ColorInfo(
           name: 'extra02Active',
           color: extra02Active,
           opacity: (extra02Active.opacity * 100).toInt(),
-          hex:
-              '#${extra02Active.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02Active.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02Active'] ?? '',
         ),
         ColorInfo(
           name: 'extra02ContainerActive',
           color: extra02ContainerActive,
           opacity: (extra02ContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${extra02ContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02ContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02ContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'extra02ContainerDefault',
           color: extra02ContainerDefault,
           opacity: (extra02ContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${extra02ContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02ContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02ContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'extra02ContainerMuted',
           color: extra02ContainerMuted,
           opacity: (extra02ContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${extra02ContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02ContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02ContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'extra02ContainerSoft',
           color: extra02ContainerSoft,
           opacity: (extra02ContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${extra02ContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02ContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02ContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'extra02Default',
           color: extra02Default,
           opacity: (extra02Default.opacity * 100).toInt(),
-          hex:
-              '#${extra02Default.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02Default.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02Default'] ?? '',
         ),
         ColorInfo(
           name: 'extra02Muted',
           color: extra02Muted,
           opacity: (extra02Muted.opacity * 100).toInt(),
-          hex:
-              '#${extra02Muted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02Muted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02Muted'] ?? '',
         ),
         ColorInfo(
           name: 'extra02OnContainer',
           color: extra02OnContainer,
           opacity: (extra02OnContainer.opacity * 100).toInt(),
-          hex:
-              '#${extra02OnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02OnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02OnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'extra02OnExtra02',
           color: extra02OnExtra02,
           opacity: (extra02OnExtra02.opacity * 100).toInt(),
-          hex:
-              '#${extra02OnExtra02.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02OnExtra02.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02OnExtra02'] ?? '',
         ),
         ColorInfo(
           name: 'extra02Soft',
           color: extra02Soft,
           opacity: (extra02Soft.opacity * 100).toInt(),
-          hex:
-              '#${extra02Soft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${extra02Soft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['extra02Soft'] ?? '',
         ),
         ColorInfo(
           name: 'foregroundDefault',
           color: foregroundDefault,
           opacity: (foregroundDefault.opacity * 100).toInt(),
-          hex:
-              '#${foregroundDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${foregroundDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['foregroundDefault'] ?? '',
         ),
         ColorInfo(
           name: 'foregroundDefaultInversion',
           color: foregroundDefaultInversion,
           opacity: (foregroundDefaultInversion.opacity * 100).toInt(),
-          hex:
-              '#${foregroundDefaultInversion.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${foregroundDefaultInversion.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['foregroundDefaultInversion'] ?? '',
         ),
         ColorInfo(
           name: 'foregroundDisabled',
           color: foregroundDisabled,
           opacity: (foregroundDisabled.opacity * 100).toInt(),
-          hex:
-              '#${foregroundDisabled.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${foregroundDisabled.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['foregroundDisabled'] ?? '',
         ),
         ColorInfo(
           name: 'foregroundMuted',
           color: foregroundMuted,
           opacity: (foregroundMuted.opacity * 100).toInt(),
-          hex:
-              '#${foregroundMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${foregroundMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['foregroundMuted'] ?? '',
         ),
         ColorInfo(
           name: 'foregroundSegmentedControl',
           color: foregroundSegmentedControl,
           opacity: (foregroundSegmentedControl.opacity * 100).toInt(),
-          hex:
-              '#${foregroundSegmentedControl.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${foregroundSegmentedControl.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['foregroundSegmentedControl'] ?? '',
         ),
         ColorInfo(
           name: 'foregroundSoft',
           color: foregroundSoft,
           opacity: (foregroundSoft.opacity * 100).toInt(),
-          hex:
-              '#${foregroundSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${foregroundSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['foregroundSoft'] ?? '',
         ),
         ColorInfo(
           name: 'foregroundSurfacePush',
           color: foregroundSurfacePush,
           opacity: (foregroundSurfacePush.opacity * 100).toInt(),
-          hex:
-              '#${foregroundSurfacePush.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${foregroundSurfacePush.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['foregroundSurfacePush'] ?? '',
         ),
         ColorInfo(
           name: 'gradientBackgroundCardGradient0',
           color: gradientBackgroundCardGradient0,
           opacity: (gradientBackgroundCardGradient0.opacity * 100).toInt(),
-          hex:
-              '#${gradientBackgroundCardGradient0.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${gradientBackgroundCardGradient0.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['gradientBackgroundCardGradient0'] ?? '',
         ),
         ColorInfo(
@@ -1465,424 +1276,371 @@ class AppColorsThemeV3 extends ThemeExtension<AppColorsThemeV3> {
           name: 'neutralActive',
           color: neutralActive,
           opacity: (neutralActive.opacity * 100).toInt(),
-          hex:
-              '#${neutralActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralActive'] ?? '',
         ),
         ColorInfo(
           name: 'neutralContainerActive',
           color: neutralContainerActive,
           opacity: (neutralContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${neutralContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'neutralContainerDefault',
           color: neutralContainerDefault,
           opacity: (neutralContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${neutralContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'neutralContainerMuted',
           color: neutralContainerMuted,
           opacity: (neutralContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${neutralContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'neutralContainerOnMap',
           color: neutralContainerOnMap,
           opacity: (neutralContainerOnMap.opacity * 100).toInt(),
-          hex:
-              '#${neutralContainerOnMap.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralContainerOnMap.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralContainerOnMap'] ?? '',
         ),
         ColorInfo(
           name: 'neutralContainerSoft',
           color: neutralContainerSoft,
           opacity: (neutralContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${neutralContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'neutralDefault',
           color: neutralDefault,
           opacity: (neutralDefault.opacity * 100).toInt(),
-          hex:
-              '#${neutralDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralDefault'] ?? '',
         ),
         ColorInfo(
           name: 'neutralMuted',
           color: neutralMuted,
           opacity: (neutralMuted.opacity * 100).toInt(),
-          hex:
-              '#${neutralMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralMuted'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnContainer',
           color: neutralOnContainer,
           opacity: (neutralOnContainer.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkActive',
           color: neutralOnDarkActive,
           opacity: (neutralOnDarkActive.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkActive'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkContainerActive',
           color: neutralOnDarkContainerActive,
           opacity: (neutralOnDarkContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkContainerDefault',
           color: neutralOnDarkContainerDefault,
           opacity: (neutralOnDarkContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkContainerMuted',
           color: neutralOnDarkContainerMuted,
           opacity: (neutralOnDarkContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkContainerSoft',
           color: neutralOnDarkContainerSoft,
           opacity: (neutralOnDarkContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkDefault',
           color: neutralOnDarkDefault,
           opacity: (neutralOnDarkDefault.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkDefault'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkMuted',
           color: neutralOnDarkMuted,
           opacity: (neutralOnDarkMuted.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkMuted'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkOnContainer',
           color: neutralOnDarkOnContainer,
           opacity: (neutralOnDarkOnContainer.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkOnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnDarkSoft',
           color: neutralOnDarkSoft,
           opacity: (neutralOnDarkSoft.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnDarkSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnDarkSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnDarkSoft'] ?? '',
         ),
         ColorInfo(
           name: 'neutralOnNeutral',
           color: neutralOnNeutral,
           opacity: (neutralOnNeutral.opacity * 100).toInt(),
-          hex:
-              '#${neutralOnNeutral.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralOnNeutral.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralOnNeutral'] ?? '',
         ),
         ColorInfo(
           name: 'neutralSoft',
           color: neutralSoft,
           opacity: (neutralSoft.opacity * 100).toInt(),
-          hex:
-              '#${neutralSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${neutralSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['neutralSoft'] ?? '',
         ),
         ColorInfo(
           name: 'onmapSurfaceOnMap',
           color: onmapSurfaceOnMap,
           opacity: (onmapSurfaceOnMap.opacity * 100).toInt(),
-          hex:
-              '#${onmapSurfaceOnMap.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${onmapSurfaceOnMap.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['onmapSurfaceOnMap'] ?? '',
         ),
         ColorInfo(
           name: 'onmapSurfaceWeather',
           color: onmapSurfaceWeather,
           opacity: (onmapSurfaceWeather.opacity * 100).toInt(),
-          hex:
-              '#${onmapSurfaceWeather.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${onmapSurfaceWeather.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['onmapSurfaceWeather'] ?? '',
         ),
         ColorInfo(
           name: 'pinBorderMarker',
           color: pinBorderMarker,
           opacity: (pinBorderMarker.opacity * 100).toInt(),
-          hex:
-              '#${pinBorderMarker.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${pinBorderMarker.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['pinBorderMarker'] ?? '',
         ),
         ColorInfo(
           name: 'pinDefault',
           color: pinDefault,
           opacity: (pinDefault.opacity * 100).toInt(),
-          hex:
-              '#${pinDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${pinDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['pinDefault'] ?? '',
         ),
         ColorInfo(
           name: 'pinFoundationPin',
           color: pinFoundationPin,
           opacity: (pinFoundationPin.opacity * 100).toInt(),
-          hex:
-              '#${pinFoundationPin.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${pinFoundationPin.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['pinFoundationPin'] ?? '',
         ),
         ColorInfo(
           name: 'pinSoft',
           color: pinSoft,
           opacity: (pinSoft.opacity * 100).toInt(),
-          hex:
-              '#${pinSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${pinSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['pinSoft'] ?? '',
         ),
         ColorInfo(
           name: 'screenOverlayDimming40',
           color: screenOverlayDimming40,
           opacity: (screenOverlayDimming40.opacity * 100).toInt(),
-          hex:
-              '#${screenOverlayDimming40.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${screenOverlayDimming40.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['screenOverlayDimming40'] ?? '',
         ),
         ColorInfo(
           name: 'screenOverlayDimming60',
           color: screenOverlayDimming60,
           opacity: (screenOverlayDimming60.opacity * 100).toInt(),
-          hex:
-              '#${screenOverlayDimming60.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${screenOverlayDimming60.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['screenOverlayDimming60'] ?? '',
         ),
         ColorInfo(
           name: 'screenOverlayDimming90',
           color: screenOverlayDimming90,
           opacity: (screenOverlayDimming90.opacity * 100).toInt(),
-          hex:
-              '#${screenOverlayDimming90.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${screenOverlayDimming90.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['screenOverlayDimming90'] ?? '',
         ),
         ColorInfo(
           name: 'staticBlack',
           color: staticBlack,
           opacity: (staticBlack.opacity * 100).toInt(),
-          hex:
-              '#${staticBlack.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${staticBlack.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['staticBlack'] ?? '',
         ),
         ColorInfo(
           name: 'staticDarkblue',
           color: staticDarkblue,
           opacity: (staticDarkblue.opacity * 100).toInt(),
-          hex:
-              '#${staticDarkblue.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${staticDarkblue.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['staticDarkblue'] ?? '',
         ),
         ColorInfo(
           name: 'staticTiffany',
           color: staticTiffany,
           opacity: (staticTiffany.opacity * 100).toInt(),
-          hex:
-              '#${staticTiffany.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${staticTiffany.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['staticTiffany'] ?? '',
         ),
         ColorInfo(
           name: 'staticWhite',
           color: staticWhite,
           opacity: (staticWhite.opacity * 100).toInt(),
-          hex:
-              '#${staticWhite.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${staticWhite.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['staticWhite'] ?? '',
         ),
         ColorInfo(
           name: 'successActive',
           color: successActive,
           opacity: (successActive.opacity * 100).toInt(),
-          hex:
-              '#${successActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successActive'] ?? '',
         ),
         ColorInfo(
           name: 'successContainerActive',
           color: successContainerActive,
           opacity: (successContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${successContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'successContainerDefault',
           color: successContainerDefault,
           opacity: (successContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${successContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'successContainerMuted',
           color: successContainerMuted,
           opacity: (successContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${successContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'successContainerSoft',
           color: successContainerSoft,
           opacity: (successContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${successContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'successDefault',
           color: successDefault,
           opacity: (successDefault.opacity * 100).toInt(),
-          hex:
-              '#${successDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successDefault'] ?? '',
         ),
         ColorInfo(
           name: 'successMuted',
           color: successMuted,
           opacity: (successMuted.opacity * 100).toInt(),
-          hex:
-              '#${successMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successMuted'] ?? '',
         ),
         ColorInfo(
           name: 'successOnContainer',
           color: successOnContainer,
           opacity: (successOnContainer.opacity * 100).toInt(),
-          hex:
-              '#${successOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successOnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'successOnSuccess',
           color: successOnSuccess,
           opacity: (successOnSuccess.opacity * 100).toInt(),
-          hex:
-              '#${successOnSuccess.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successOnSuccess.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successOnSuccess'] ?? '',
         ),
         ColorInfo(
           name: 'successSoft',
           color: successSoft,
           opacity: (successSoft.opacity * 100).toInt(),
-          hex:
-              '#${successSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${successSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['successSoft'] ?? '',
         ),
         ColorInfo(
           name: 'warningActive',
           color: warningActive,
           opacity: (warningActive.opacity * 100).toInt(),
-          hex:
-              '#${warningActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningActive'] ?? '',
         ),
         ColorInfo(
           name: 'warningContainerActive',
           color: warningContainerActive,
           opacity: (warningContainerActive.opacity * 100).toInt(),
-          hex:
-              '#${warningContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningContainerActive.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningContainerActive'] ?? '',
         ),
         ColorInfo(
           name: 'warningContainerDefault',
           color: warningContainerDefault,
           opacity: (warningContainerDefault.opacity * 100).toInt(),
-          hex:
-              '#${warningContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningContainerDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningContainerDefault'] ?? '',
         ),
         ColorInfo(
           name: 'warningContainerMuted',
           color: warningContainerMuted,
           opacity: (warningContainerMuted.opacity * 100).toInt(),
-          hex:
-              '#${warningContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningContainerMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningContainerMuted'] ?? '',
         ),
         ColorInfo(
           name: 'warningContainerSoft',
           color: warningContainerSoft,
           opacity: (warningContainerSoft.opacity * 100).toInt(),
-          hex:
-              '#${warningContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningContainerSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningContainerSoft'] ?? '',
         ),
         ColorInfo(
           name: 'warningDefault',
           color: warningDefault,
           opacity: (warningDefault.opacity * 100).toInt(),
-          hex:
-              '#${warningDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningDefault.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningDefault'] ?? '',
         ),
         ColorInfo(
           name: 'warningMuted',
           color: warningMuted,
           opacity: (warningMuted.opacity * 100).toInt(),
-          hex:
-              '#${warningMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningMuted.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningMuted'] ?? '',
         ),
         ColorInfo(
           name: 'warningOnContainer',
           color: warningOnContainer,
           opacity: (warningOnContainer.opacity * 100).toInt(),
-          hex:
-              '#${warningOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningOnContainer.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningOnContainer'] ?? '',
         ),
         ColorInfo(
           name: 'warningOnWarning',
           color: warningOnWarning,
           opacity: (warningOnWarning.opacity * 100).toInt(),
-          hex:
-              '#${warningOnWarning.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningOnWarning.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningOnWarning'] ?? '',
         ),
         ColorInfo(
           name: 'warningSoft',
           color: warningSoft,
           opacity: (warningSoft.opacity * 100).toInt(),
-          hex:
-              '#${warningSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
+          hex: '#${warningSoft.value.toRadixString(16).padLeft(8, '0').substring(2).toUpperCase()}',
           parent: parents['warningSoft'] ?? '',
         ),
       ];

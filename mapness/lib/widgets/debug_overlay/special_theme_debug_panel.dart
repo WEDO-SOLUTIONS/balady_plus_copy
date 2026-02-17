@@ -10,6 +10,8 @@ import 'package:mapness/features/special_themes/modes/mekkah_base/mekkah_base_th
 import 'package:mapness/pages/theme_splash/theme_splash_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/pages/theme_splash/theme_splash_page.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
@@ -392,9 +394,7 @@ class _ThemeChip extends StatelessWidget {
 class _DebugTogglesCard extends ConsumerWidget {
   void _trackDebugToggle(String feature, bool enabled) {
     Metrics.logEventAdvanced(
-      enabled
-          ? MetricsConstants.themesKeys.debugOverrideEnabled
-          : MetricsConstants.themesKeys.debugOverrideDisabled,
+      enabled ? MetricsConstants.themesKeys.debugOverrideEnabled : MetricsConstants.themesKeys.debugOverrideDisabled,
       group: MetricsConstants.themesTag,
       props: {'feature': feature, 'enabled': enabled},
     );
@@ -560,9 +560,7 @@ class _ToggleRow extends StatelessWidget {
             child: Text(
               label,
               style: context.textStyles.bodySmallRegular.copyWith(
-                color: value
-                    ? _DebugColors.textPrimary
-                    : _DebugColors.textSecondary,
+                color: value ? _DebugColors.textPrimary : _DebugColors.textSecondary,
               ),
             ),
           ),
@@ -1023,12 +1021,8 @@ class _ConfigMeta extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           _MetaBadge(
-            label: forceEnabled.isNotEmpty
-                ? 'Force: $forceEnabled'
-                : 'No Force',
-            color: forceEnabled.isNotEmpty
-                ? _DebugColors.warning
-                : _DebugColors.textMuted,
+            label: forceEnabled.isNotEmpty ? 'Force: $forceEnabled' : 'No Force',
+            color: forceEnabled.isNotEmpty ? _DebugColors.warning : _DebugColors.textMuted,
           ),
         ],
       ),
@@ -1108,14 +1102,10 @@ class _ThemeConfigItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: config.enabled
-            ? primaryColor.withOpacity(0.08)
-            : _DebugColors.surfaceLight,
+        color: config.enabled ? primaryColor.withOpacity(0.08) : _DebugColors.surfaceLight,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: config.enabled
-              ? primaryColor.withOpacity(0.2)
-              : _DebugColors.border,
+          color: config.enabled ? primaryColor.withOpacity(0.2) : _DebugColors.border,
         ),
       ),
       child: Column(
@@ -1136,9 +1126,7 @@ class _ThemeConfigItem extends StatelessWidget {
               Text(
                 name,
                 style: context.textStyles.captionSmallSemiBold.copyWith(
-                  color: config.enabled
-                      ? _DebugColors.textPrimary
-                      : _DebugColors.textMuted,
+                  color: config.enabled ? _DebugColors.textPrimary : _DebugColors.textMuted,
                 ),
               ),
               const Spacer(),
@@ -1161,9 +1149,7 @@ class _ThemeConfigItem extends StatelessWidget {
                 ),
             ],
           ),
-          if (config.startDate != null ||
-              config.endDate != null ||
-              config.area != null) ...[
+          if (config.startDate != null || config.endDate != null || config.area != null) ...[
             const SizedBox(height: 8),
             Wrap(
               spacing: 10,
@@ -1233,9 +1219,7 @@ class _FeatureItem extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: isActive
-            ? _DebugColors.info.withOpacity(0.08)
-            : _DebugColors.surfaceLight,
+        color: isActive ? _DebugColors.info.withOpacity(0.08) : _DebugColors.surfaceLight,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: debugOverride
@@ -1252,22 +1236,16 @@ class _FeatureItem extends ConsumerWidget {
           Row(
             children: [
               Icon(
-                isActive
-                    ? Icons.toggle_on_rounded
-                    : Icons.toggle_off_rounded,
+                isActive ? Icons.toggle_on_rounded : Icons.toggle_off_rounded,
                 size: 18,
-                color: isActive
-                    ? _DebugColors.info
-                    : _DebugColors.textMuted,
+                color: isActive ? _DebugColors.info : _DebugColors.textMuted,
               ),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
                   feature.code,
                   style: context.textStyles.captionSmallSemiBold.copyWith(
-                    color: isActive
-                        ? _DebugColors.textPrimary
-                        : _DebugColors.textMuted,
+                    color: isActive ? _DebugColors.textPrimary : _DebugColors.textMuted,
                   ),
                 ),
               ),
@@ -1406,10 +1384,8 @@ class _MakkahDiagnosticsCard extends ConsumerWidget {
     // Check date range
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final isAfterStart =
-        mekkahConfig.startDate == null || !today.isBefore(mekkahConfig.startDate!);
-    final isBeforeEnd =
-        mekkahConfig.endDate == null || !today.isAfter(mekkahConfig.endDate!);
+    final isAfterStart = mekkahConfig.startDate == null || !today.isBefore(mekkahConfig.startDate!);
+    final isBeforeEnd = mekkahConfig.endDate == null || !today.isAfter(mekkahConfig.endDate!);
     final isInDateRange = isAfterStart && isBeforeEnd;
 
     return _GlassCard(
@@ -1488,9 +1464,7 @@ class _MakkahDiagnosticsCard extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      distanceKm != null
-                          ? '${distanceKm.toStringAsFixed(3)} km'
-                          : 'N/A',
+                      distanceKm != null ? '${distanceKm.toStringAsFixed(3)} km' : 'N/A',
                       style: context.textStyles.captionSmallMedium.copyWith(
                         color: distanceKm != null && distanceKm <= area.radiusKm
                             ? _DebugColors.success
@@ -1594,9 +1568,7 @@ class _LocationRow extends StatelessWidget {
         ),
         Expanded(
           child: Text(
-            lat != null && lon != null
-                ? '${lat!.toStringAsFixed(5)}, ${lon!.toStringAsFixed(5)}'
-                : 'null',
+            lat != null && lon != null ? '${lat!.toStringAsFixed(5)}, ${lon!.toStringAsFixed(5)}' : 'null',
             style: context.textStyles.captionSmallMedium.copyWith(
               color: lat != null ? _DebugColors.textSecondary : _DebugColors.error,
               fontSize: 10,

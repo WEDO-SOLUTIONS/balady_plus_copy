@@ -216,34 +216,31 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
               leading: _makkahWorkingHoursIcon(backgroundColor: makkahIconBackgroundColor),
               text: ContentRowTextOptions(
                 titleOptions: ContentRowTextOption(
-                  builder:
-                      (context) => Text(
-                        todayWorkingHours(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: false,
-                        style: _makkahWorkingHoursTextStyle(
-                          context,
-                          color: context.colors.foregroundDefault,
+                  builder: (context) => Text(
+                    todayWorkingHours(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    style: _makkahWorkingHoursTextStyle(
+                      context,
+                      color: context.colors.foregroundDefault,
+                    ),
+                  ),
+                ),
+                subtitleOptions: todayBreaks() == null
+                    ? null
+                    : ContentRowTextOption(
+                        builder: (context) => Text(
+                          todayBreaks()!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          softWrap: false,
+                          style: _makkahWorkingHoursTextStyle(
+                            context,
+                            color: context.colors.foregroundSoft,
+                          ),
                         ),
                       ),
-                ),
-                subtitleOptions:
-                    todayBreaks() == null
-                        ? null
-                        : ContentRowTextOption(
-                          builder:
-                              (context) => Text(
-                                todayBreaks()!,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                                style: _makkahWorkingHoursTextStyle(
-                                  context,
-                                  color: context.colors.foregroundSoft,
-                                ),
-                              ),
-                        ),
                 title: '',
                 subtitle: '',
               ),
@@ -287,21 +284,19 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
           options: ContentRowOptions(
             title: todayWorkingHours(),
             subtitle: todayBreaks(),
-            titleBuilder:
-                (context) => Text(
-                  todayWorkingHours(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: _makkahWorkingHoursTextStyle(
-                    context,
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
-            subtitleBuilder:
-                todayBreaks() == null
-                    ? null
-                    : (context) => Text(
+            titleBuilder: (context) => Text(
+              todayWorkingHours(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: _makkahWorkingHoursTextStyle(
+                context,
+                color: context.colors.foregroundDefault,
+              ),
+            ),
+            subtitleBuilder: todayBreaks() == null
+                ? null
+                : (context) => Text(
                       todayBreaks()!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

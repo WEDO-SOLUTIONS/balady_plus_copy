@@ -84,8 +84,7 @@ class _ThemeSplashPageState extends State<ThemeSplashPage> {
           useNavigatorPop: true,
         ),
         // Theme-specific overlay
-        if (widget.theme == SpecialThemeMode.mekkahBase)
-          const _MakkahSplashOverlay(),
+        if (widget.theme == SpecialThemeMode.mekkahBase) const _MakkahSplashOverlay(),
       ],
     );
   }

@@ -1,11 +1,14 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class SetPreferencesPlaceholderWidget extends StatelessWidget {
+class SetPreferencesPlaceholderWidget extends ConsumerWidget {
   final VoidCallback action;
 
   const SetPreferencesPlaceholderWidget({
@@ -14,8 +17,8 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationPercent.keyName,
+  Widget build(BuildContext context, WidgetRef ref) => _PlaceholderWidget(
+        asset: ref.read(activeCityEventProvider)?.illustrationPercent ?? Assets.imagesSvg.illustrationPercent.keyName,
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
         hint: context.l10n.saudiPassOffersSetPreferencesHint,
@@ -23,7 +26,7 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
       );
 }
 
-class LoginPreferencesPlaceholderWidget extends StatelessWidget {
+class LoginPreferencesPlaceholderWidget extends ConsumerWidget {
   final VoidCallback action;
 
   const LoginPreferencesPlaceholderWidget({
@@ -32,8 +35,8 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationPercent.keyName,
+  Widget build(BuildContext context, WidgetRef ref) => _PlaceholderWidget(
+        asset: ref.read(activeCityEventProvider)?.illustrationPercent ?? Assets.imagesSvg.illustrationPercent.keyName,
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
         hint: context.l10n.saudiPassOffersLoginHint,
@@ -41,7 +44,7 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
       );
 }
 
-class WentWrongPlaceholderWidget extends StatelessWidget {
+class WentWrongPlaceholderWidget extends ConsumerWidget {
   final VoidCallback action;
 
   const WentWrongPlaceholderWidget({
@@ -50,8 +53,8 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationError.keyName,
+  Widget build(BuildContext context, WidgetRef ref) => _PlaceholderWidget(
+        asset: ref.watch(activeCityEventProvider)?.illustrationError ?? Assets.imagesSvg.illustrationError.keyName,
         action: action,
         title: context.l10n.saudiPassSomethingWentWrong,
         hint: context.l10n.saudiPassSomethingWentWrongHint,

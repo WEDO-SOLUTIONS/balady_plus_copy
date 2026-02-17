@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class DefaultIcon extends StatelessWidget {
   final IconData icon;
   final bool selected;
+  final Color color;
 
   const DefaultIcon({
     required this.icon,
     required this.selected,
+    required this.color,
     super.key,
   });
 
@@ -15,6 +17,6 @@ class DefaultIcon extends StatelessWidget {
   Widget build(BuildContext context) => Icon(
         icon,
         size: 24,
-        color: selected ? context.colors.accentDefault : context.colors.foregroundSoft,
+        color: color,
       );
 }

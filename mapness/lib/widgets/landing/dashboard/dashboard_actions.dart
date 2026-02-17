@@ -1,6 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+
+import 'package:auto_route/auto_route.dart';
+import 'package:dgis_map/library.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -10,12 +15,12 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/special_themes/core/special_theme_mode.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:sheetify/sheetify.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 /// Encapsulates all dashboard quick action callbacks and navigation logic.
-///
 /// This class eliminates props drilling by centralizing all action handlers
 /// that were previously passed as 8 separate callbacks through the widget tree.
 class DashboardActions {
@@ -86,7 +91,9 @@ class DashboardActions {
   }
 
   /// Opens the user's current location sharing screen.
-  void openMyLocation(BuildContext context) {
+  ///
+  /// Checks location permission before navigating.
+  Future<void> openMyLocation(BuildContext context) async {
     _logThemedQuickAction('send_location');
     ref.read(appAnalyticsProvider).quickActionSelected('my_location');
     Metrics.logEventAdvanced(
@@ -95,22 +102,25 @@ class DashboardActions {
       action: MetricAction.tap.toString(),
     );
 
-    ref
-        .read(advertMetricsProvider.notifier)
-        .sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+
+    final location = ref.read(locationProvider.notifier);
+    final allowed = await location.checkLocationPermission();
+    if (!allowed) return;
 
     final userLocation = ref.read(locationProvider);
-    if (userLocation != null) {
-      context.router.push(
-        ShareMyLocationRoute(
-          cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-          closestPoint: LatLng(
-            latitude: userLocation.latitude,
-            longitude: userLocation.longitude,
-          ),
+    if (userLocation == null) return;
+
+    if (!context.mounted) return;
+    unawaited(context.router.push(
+      ShareMyLocationRoute(
+        cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+        closestPoint: LatLng(
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
         ),
-      );
-    }
+      ),
+    ));
   }
 
   /// Opens the Snap and Send mini-app for reporting issues.

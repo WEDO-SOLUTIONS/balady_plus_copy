@@ -132,7 +132,7 @@ class PoiCardProvider extends _$PoiCardProvider {
 
     if (result != null) {
       ref.read(paddingConfigProvider(
-        result,
+        result.markerPosition,
         closestPoint,
         cameraConfig,
       ));

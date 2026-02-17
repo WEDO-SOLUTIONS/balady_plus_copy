@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -50,9 +52,7 @@ class DgisController extends _$DgisController {
   Future<void> _setupControllerItself(DgisMapController controller) async {
     await controller.initialize();
 
-    // Styles
-    await controller
-        .loadStyles(SaudiNationalDay.isNow() ? MapnessConstants.mapStylesSaudiPath : MapnessConstants.mapStylesPath);
+    await controller.loadStyles(MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(

@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entities/search/models/rubric_marker_info.dart';
+import 'package:mapness/features/city_event/active_city_event.dart';
 import 'package:mapness/features/cityscape/cityscape.dart';
-import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/features/founding_day/founding_day.dart';
+import 'package:mapness/shared/extensions/marker_icons_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/utils/app_config_loader.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -85,7 +88,19 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
     if (cityscapeNotifier.showCustomPin(objectId)) {
       return (cityscapeNotifier.customMarker, cityscapeNotifier.customPinPath);
     }
+
+    final foundingDayNotifier = ref.watch(foundingDayUrbiProvider.notifier);
+    if (foundingDayNotifier.isFoundationObject(objectId)) {
+      return (foundingDayNotifier.customMarker, foundingDayNotifier.customMarker);
+    }
+
+    final activeCityEvent = ref.read(activeCityEventProvider);
+    final isDarkMode = ref.read(darkModeProvider).value?.isDark ?? false;
+
     final markerType = await getMarkerType(rubricIds);
-    return (markerType?.iconPath, markerType?.iconPath.bigIconPath);
+    final iconPath = markerType?.pathBuilder(activeCityEvent, isDark: isDarkMode);
+    final bigIconPath = markerType?.bigPathBuilder(activeCityEvent, isDark: isDarkMode);
+
+    return (iconPath, bigIconPath);
   }
 }

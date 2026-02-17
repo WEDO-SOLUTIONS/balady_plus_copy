@@ -59,7 +59,7 @@ class GeneralIcons {
   static const IconData questionSupportRTL = IconData(0xe93b, fontFamily: _fontFamily, fontPackage: packageName);
   static const IconData queue = IconData(0xe929, fontFamily: _fontFamily, fontPackage: packageName);
   static const IconData reload = IconData(0xe92e, fontFamily: _fontFamily, fontPackage: packageName);
-  static const IconData routeStroke = Icons.route;
+  static const IconData routeStroke = IconData(0xe92f, fontFamily: _fontFamily, fontPackage: packageName);
   static const IconData ruler = IconData(0xe94f, fontFamily: _fontFamily, fontPackage: packageName);
   static const IconData sar = IconData(0xfdfc, fontFamily: _fontFamily, fontPackage: packageName);
   static const IconData sertificate = IconData(0xe93c, fontFamily: _fontFamily, fontPackage: packageName);

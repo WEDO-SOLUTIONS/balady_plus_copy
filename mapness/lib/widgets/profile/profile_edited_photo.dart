@@ -18,7 +18,10 @@ class ProfileEditablePhoto extends StatelessWidget {
         onTap: () => _showBottomSheet(context),
         child: Stack(
           children: [
-            const ProfileImageWidget(dimension: 2 * AppSizes.m),
+            const ProfileImageWidget(
+              dimension: 2 * AppSizes.m,
+              isEditing: true,
+            ),
             PositionedDirectional(
               start: Spacing.none,
               bottom: Spacing.none,

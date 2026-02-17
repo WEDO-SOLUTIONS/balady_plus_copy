@@ -239,21 +239,19 @@ class MakkahWorkingHoursCard extends StatelessWidget {
           options: ContentRowOptions(
             title: todayWorkingHours(),
             subtitle: todayBreaks(),
-            titleBuilder:
-                (context) => Text(
-                  todayWorkingHours(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: false,
-                  style: _makkahWorkingHoursTextStyle(
-                    context,
-                    color: context.colors.foregroundDefault,
-                  ),
-                ),
-            subtitleBuilder:
-                todayBreaks() == null
-                    ? null
-                    : (context) => Text(
+            titleBuilder: (context) => Text(
+              todayWorkingHours(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              style: _makkahWorkingHoursTextStyle(
+                context,
+                color: context.colors.foregroundDefault,
+              ),
+            ),
+            subtitleBuilder: todayBreaks() == null
+                ? null
+                : (context) => Text(
                       todayBreaks()!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

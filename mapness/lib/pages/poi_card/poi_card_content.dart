@@ -31,17 +31,16 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     behavior: MultiSnappingBehavior(
       models: [
         FractionSnappingModel({0.0}),
-        OffsetSnappingModel({
-          HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius,
-          Spacing.$4x,
-        }),
-        ComponentsSnappingModel(componentsDescriptions: [
-          SnapComponent.merge(
-            a: const SnapComponent.size(component: Components.header),
-            b: const SnapComponent.size(component: Components.footer),
-            merge: (a, b) => a + b,
-          ),
-        ])
+        OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius, Spacing.$4x}),
+        ComponentsSnappingModel(
+          componentsDescriptions: [
+            SnapComponent.merge(
+              a: const SnapComponent.size(component: Components.header),
+              b: const SnapComponent.size(component: Components.footer),
+              merge: (a, b) => a + b,
+            ),
+          ],
+        ),
       ],
     ),
     stateMapper: const PoiCardStateMapper(),
@@ -63,39 +62,32 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   void initState() {
     super.initState();
 
-    _tabController = TabController(
-      length: 3,
-      vsync: this,
-    );
+    _tabController = TabController(length: 3, vsync: this);
 
     final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
-    _tabController.addListener(
-      () {
-        if (_tabController.indexIsChanging) {
-          _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
-          switch (_tabController.index) {
-            case 0:
-              _tabType.value = PoiTabsType.info;
-            case 1:
-              _tabType.value = PoiTabsType.photos;
-              _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
-            case 2:
-              _tabType.value = PoiTabsType.organizations;
-              _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
-          }
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
+        switch (_tabController.index) {
+          case 0:
+            _tabType.value = PoiTabsType.info;
+          case 1:
+            _tabType.value = PoiTabsType.photos;
+            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
+          case 2:
+            _tabType.value = PoiTabsType.organizations;
+            _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
         }
-      },
-    );
+      }
+    });
 
     // Initialize BssService event
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await BssService.instance.sendEvent(
         const BssRequest(
           eventType: BSSEventType.view,
-          uiElement: BssUIElement(
-            name: BssUIElementNames.directoryObjectCardScreen,
-          ),
+          uiElement: BssUIElement(name: BssUIElementNames.directoryObjectCardScreen),
         ),
       );
     });
@@ -127,13 +119,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.view,
-            uiElement: BssUIElement(
-              name: uiElementName,
-              ownerName: BssUIElementNames.directoryObjectCardScreen,
-            ),
-            payload: BssPayload(
-              placeItem: widget.data.toBss(),
-            ),
+            uiElement: BssUIElement(name: uiElementName, ownerName: BssUIElementNames.directoryObjectCardScreen),
+            payload: BssPayload(placeItem: widget.data.toBss()),
           ),
         );
       }
@@ -186,10 +173,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     );
 
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-      ),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car),
     );
 
     final brief = briefInfo?.firstOrNull;
@@ -218,9 +202,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         backgroundColor: context.colors.backgroundSurface2,
         barrierColorDelegate: PoiCardStateMapper.barrierColorDelegate,
         outside: PoiCardMapControlsWrapper(
-            bottomSheetController: _bottomSheetController,
-            // we should not use objectIdForIndoorLevels if POI has levelId
-            objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId),
+          bottomSheetController: _bottomSheetController,
+          // we should not use objectIdForIndoorLevels if POI has levelId
+          objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId,
+        ),
         topHeader: isGooglePoi ? null : PoiPhotosHeader(objectId: widget.objectId),
         topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
         footer: PoiCardFooter(
@@ -228,26 +213,25 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           bottomSheetController: _bottomSheetController,
           data: widget.data,
           share: () {
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {
-                  'object_id': widget.data.id?.objectId,
-                  'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
-                });
-
-            return poiActions.share(
-              objectId: widget.objectId,
-              markerCoords: widget.closestPoint,
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.share,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {
+                'object_id': widget.data.id?.objectId,
+                'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
+              },
             );
+
+            return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
           },
           callPhone: () {
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {
-                  'objectId': widget.objectId,
-                });
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.call,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {'objectId': widget.objectId},
+            );
 
             final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
               (element) => element.type == ContactsInfoType.phone,
@@ -265,20 +249,21 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           onTapCar: () {
             _bssOnRouteTap();
 
-              _onDirectionsTap(
-                context,
-                widget.data.id!.objectId,
-                widget.data.title,
-                RouteParamsPoint(
-                  latitude: widget.data.markerPosition!.latitude,
-                  longitude: widget.data.markerPosition!.longitude,
-                  objectId: widget.data.id?.objectId,
-                  entranceId: widget.data.id?.entranceId,
-                  levelId: widget.data.levelId,
-                ),ref,
-              );
-            },
-            onTapFavorite: (item) {
+            _onDirectionsTap(
+              context,
+              widget.data.id!.objectId,
+              widget.data.title,
+              RouteParamsPoint(
+                latitude: widget.data.markerPosition!.latitude,
+                longitude: widget.data.markerPosition!.longitude,
+                objectId: widget.data.id?.objectId,
+                entranceId: widget.data.id?.entranceId,
+                levelId: widget.data.levelId,
+              ),
+              ref,
+            );
+          },
+          onTapFavorite: (item) {
             _bssOnFavouritesTap();
             _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
           },
@@ -317,10 +302,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               ),
               TextSpan(
                 text: ' ${context.l10n.offer}',
-                style:
-                context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
+                style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.warningOnContainer),
               ),
-            ]
+            ],
           ],
           parkingInfo: widget.data.parkingInfo,
           poiCardState: poiCardState,
@@ -402,13 +386,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.buildRoute,
-          ownerName: BssUIElementNames.actionBar,
-        ),
-        payload: BssPayload(
-          placeItem: widget.data.toBss(),
-        ),
+        uiElement: const BssUIElement(name: BssUIElementNames.buildRoute, ownerName: BssUIElementNames.actionBar),
+        payload: BssPayload(placeItem: widget.data.toBss()),
       ),
     );
   }
@@ -418,13 +397,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.contact,
-          ownerName: BssUIElementNames.actionBar,
-        ),
-        payload: BssPayload(
-          placeItem: widget.data.toBss(),
-        ),
+        uiElement: const BssUIElement(name: BssUIElementNames.contact, ownerName: BssUIElementNames.actionBar),
+        payload: BssPayload(placeItem: widget.data.toBss()),
       ),
     );
   }
@@ -434,13 +408,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       BssRequest(
         eventType: BSSEventType.action,
         actionType: BSSActionType.tap,
-        uiElement: const BssUIElement(
-          name: BssUIElementNames.bookmark,
-          ownerName: BssUIElementNames.actionBar,
-        ),
-        payload: BssPayload(
-          placeItem: widget.data.toBss(),
-        ),
+        uiElement: const BssUIElement(name: BssUIElementNames.bookmark, ownerName: BssUIElementNames.actionBar),
+        payload: BssPayload(placeItem: widget.data.toBss()),
       ),
     );
   }

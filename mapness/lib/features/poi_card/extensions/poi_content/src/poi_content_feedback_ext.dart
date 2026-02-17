@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:mapness/_generated/assets/assets.gen.dart';
+import 'package:mapness/entities/city_event/city_event.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/special_themes/modes/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -18,18 +19,44 @@ extension PoiContentFeedbackExt on PoiContentFeedbackType {
         PoiContentFeedbackType.cityExpert => l10n.cityExpertDescription,
       };
 
-  String get path => switch (this) {
-        PoiContentFeedbackType.addPlace => Assets.images.addCompany.keyName,
-        PoiContentFeedbackType.addPhoto => Assets.images.addPhoto.keyName,
-        PoiContentFeedbackType.cityExpert =>
-          SaudiNationalDay.isNow() ? Assets.images.cityExpertSaudiDay.keyName : Assets.images.cityExpert.keyName
+  String pathBuilder(CityEventType? activeCityEvent) => switch (this) {
+        PoiContentFeedbackType.addPlace => switch (activeCityEvent) {
+            CityEventType.foundingDay => Assets.images.addCompanyFoundingDay.keyName,
+            _ => Assets.images.addCompany.keyName,
+          },
+        PoiContentFeedbackType.addPhoto => switch (activeCityEvent) {
+            CityEventType.foundingDay => Assets.images.addPhotoFoundingDay.keyName,
+            _ => Assets.images.addPhoto.keyName,
+          },
+        PoiContentFeedbackType.cityExpert => switch (activeCityEvent) {
+            CityEventType.saudiNationalDay => Assets.images.cityExpertSaudiDay.keyName,
+            CityEventType.foundingDay => Assets.images.cityExpertFoundingDay.keyName,
+            _ => Assets.images.cityExpert.keyName,
+          },
       };
 
-  List<Color> get gradientColors => switch (this) {
-        PoiContentFeedbackType.addPlace => const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
-        PoiContentFeedbackType.addPhoto => const [Color(0xFF396372), Color(0xFF013449)],
-        PoiContentFeedbackType.cityExpert => SaudiNationalDay.isNow()
-            ? const [Color(0xFF008A4A), Color(0xFF00542B)]
-            : const [Color(0xFF3AB7AE), Color(0xFF238A82)],
+  List<Color> gradientColorsBuilder(CityEventType? activeCityEvent) => switch (this) {
+        PoiContentFeedbackType.addPlace => switch (activeCityEvent) {
+            CityEventType.foundingDay => const [
+                Color(0xFFB28F64),
+                Color(0xFF846743),
+              ],
+            _ => const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
+          },
+        PoiContentFeedbackType.addPhoto => switch (activeCityEvent) {
+            CityEventType.foundingDay => const [
+                Color(0xFFB28F64),
+                Color(0xFF846743),
+              ],
+            _ => const [Color(0xFF396372), Color(0xFF013449)],
+          },
+        PoiContentFeedbackType.cityExpert => switch (activeCityEvent) {
+            CityEventType.saudiNationalDay => const [Color(0xFF008A4A), Color(0xFF00542B)],
+            CityEventType.foundingDay => const [
+                Color(0xFFB28F64),
+                Color(0xFF846743),
+              ],
+            _ => const [Color(0xFF3AB7AE), Color(0xFF238A82)],
+          },
       };
 }

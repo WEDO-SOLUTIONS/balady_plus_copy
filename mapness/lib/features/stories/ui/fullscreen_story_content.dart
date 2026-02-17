@@ -1,6 +1,6 @@
 part of 'fullscreen_strory_error.dart';
 
-class _FullscreenErrorContent extends StatelessWidget {
+class _FullscreenErrorContent extends ConsumerWidget {
   final VoidCallback? onClose;
   final VoidCallback? onRetry;
   final String? buttonLabel;
@@ -16,7 +16,7 @@ class _FullscreenErrorContent extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -40,7 +40,7 @@ class _FullscreenErrorContent extends StatelessWidget {
           Padding(
             padding: EdgeInsets.zero,
             child: SvgPicture.asset(
-              Assets.imagesSvg.illustrationError.keyName,
+              ref.watch(activeCityEventProvider)?.illustrationError ?? Assets.imagesSvg.illustrationError.keyName,
             ),
           ),
           Padding(

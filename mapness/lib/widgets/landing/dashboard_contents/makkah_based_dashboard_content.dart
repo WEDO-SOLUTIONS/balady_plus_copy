@@ -63,9 +63,7 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
           titleWidget: Padding(
             padding: const EdgeInsets.only(bottom: Spacing.$3x),
             child: DashboardTitle(
-              themeMode == SpecialThemeMode.ramadan
-                  ? context.l10n.whatIsNewInRamadan
-                  : context.l10n.whatIsNewInBalady,
+              themeMode == SpecialThemeMode.ramadan ? context.l10n.whatIsNewInRamadan : context.l10n.whatIsNewInBalady,
             ),
           ),
         ),
@@ -98,6 +96,14 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                QuickActionButton(
+                  text: context.l10n.roadEvent,
+                  icon: General32Icons.eventsFilled,
+                  assetPath: _getAssetPath('road_event.png'),
+                  themeMode: themeMode,
+                  onTap: actions.openRoadEvent,
+                ),
+                const SizedBox(width: Spacing.$2x),
                 QuickActionButton(
                   text: context.l10n.sendLocation,
                   icon: General32Icons.locationAction,
@@ -187,15 +193,14 @@ class MakkahBasedDashboardContent extends ConsumerWidget {
                 end: Alignment.bottomCenter,
                 colors: themeConfig.exploreBackgroundGradient,
               ),
-              image:
-                  themeConfig.exploreBackgroundImageBuilder != null
-                      ? DecorationImage(
-                        image: themeConfig.exploreBackgroundImageBuilder!(),
-                        matchTextDirection: true,
-                        fit: BoxFit.cover,
-                        alignment: AlignmentDirectional.centerEnd,
-                      )
-                      : null,
+              image: themeConfig.exploreBackgroundImageBuilder != null
+                  ? DecorationImage(
+                      image: themeConfig.exploreBackgroundImageBuilder!(),
+                      matchTextDirection: true,
+                      fit: BoxFit.cover,
+                      alignment: AlignmentDirectional.centerEnd,
+                    )
+                  : null,
             ),
             child: Column(
               children: [

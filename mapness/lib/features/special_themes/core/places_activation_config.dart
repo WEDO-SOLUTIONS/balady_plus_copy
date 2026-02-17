@@ -11,10 +11,8 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/makkah_config_staging.dart';
-import 'package:mapness/shared/utils/logger/logger.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'places_activation_config.g.dart';
@@ -65,22 +63,15 @@ class ThemeConfig {
     bool forceEnabled = false,
   }) {
     // Handle new structure with activation_periods and location
-    final activationPeriods =
-        json['activation_periods'] as List<dynamic>? ?? [];
+    final activationPeriods = json['activation_periods'] as List<dynamic>? ?? [];
     DateTime? startDate;
     DateTime? endDate;
 
     if (activationPeriods.isNotEmpty) {
       final firstPeriod = activationPeriods.first as Map<String, dynamic>?;
       if (firstPeriod != null) {
-        startDate =
-            firstPeriod['start_date'] != null
-                ? DateTime.tryParse(firstPeriod['start_date'] as String)
-                : null;
-        endDate =
-            firstPeriod['end_date'] != null
-                ? DateTime.tryParse(firstPeriod['end_date'] as String)
-                : null;
+        startDate = firstPeriod['start_date'] != null ? DateTime.tryParse(firstPeriod['start_date'] as String) : null;
+        endDate = firstPeriod['end_date'] != null ? DateTime.tryParse(firstPeriod['end_date'] as String) : null;
       }
     }
 
@@ -133,10 +124,7 @@ class FeatureConfig {
       code: json['code'] as String? ?? '',
       enabled: json['enabled'] as bool? ?? false,
       url: options['url'] as String?,
-      startDate:
-          options['start_date'] != null
-              ? DateTime.tryParse(options['start_date'] as String)
-              : null,
+      startDate: options['start_date'] != null ? DateTime.tryParse(options['start_date'] as String) : null,
     );
   }
 
@@ -198,38 +186,31 @@ class PlacesActivationConfig {
     return PlacesActivationConfig(
       version: json['version'] as int? ?? 1,
       base: ThemeConfig.enabledByDefault,
-      mekkah:
-          themes['mekkah'] != null
-              ? ThemeConfig.fromJson(
-                themes['mekkah'] as Map<String, dynamic>,
-                forceEnabled: isMekkahForced,
-              )
-              : ThemeConfig.enabledByDefault,
-      ramadan:
-          themes['ramadan'] != null
-              ? ThemeConfig.fromJson(
-                themes['ramadan'] as Map<String, dynamic>,
-                forceEnabled: isRamadanForced,
-              )
-              : ThemeConfig.disabled,
-      foundationDay:
-          themes['foundation_day'] != null
-              ? ThemeConfig.fromJson(
-                themes['foundation_day'] as Map<String, dynamic>,
-                forceEnabled: isFoundationDayForced,
-              )
-              : ThemeConfig.enabledByDefault,
-      hajj:
-          themes['hajj'] != null
-              ? ThemeConfig.fromJson(
-                themes['hajj'] as Map<String, dynamic>,
-                forceEnabled: isHajjForced,
-              )
-              : ThemeConfig.disabled,
-      features:
-          featuresJson
-              .map((f) => FeatureConfig.fromJson(f as Map<String, dynamic>))
-              .toList(),
+      mekkah: themes['mekkah'] != null
+          ? ThemeConfig.fromJson(
+              themes['mekkah'] as Map<String, dynamic>,
+              forceEnabled: isMekkahForced,
+            )
+          : ThemeConfig.enabledByDefault,
+      ramadan: themes['ramadan'] != null
+          ? ThemeConfig.fromJson(
+              themes['ramadan'] as Map<String, dynamic>,
+              forceEnabled: isRamadanForced,
+            )
+          : ThemeConfig.disabled,
+      foundationDay: themes['foundation_day'] != null
+          ? ThemeConfig.fromJson(
+              themes['foundation_day'] as Map<String, dynamic>,
+              forceEnabled: isFoundationDayForced,
+            )
+          : ThemeConfig.enabledByDefault,
+      hajj: themes['hajj'] != null
+          ? ThemeConfig.fromJson(
+              themes['hajj'] as Map<String, dynamic>,
+              forceEnabled: isHajjForced,
+            )
+          : ThemeConfig.disabled,
+      features: featuresJson.map((f) => FeatureConfig.fromJson(f as Map<String, dynamic>)).toList(),
       presentThemes: presentThemes,
     );
   }
