@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide TransportIcons, StopNumbersIcons;
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -217,7 +219,7 @@ class PoiCardFooter extends HookConsumerWidget {
   }
 
   void _onParkingTab(WidgetRef ref, BuildContext context) {
-    final hasParking = ref.read(parkingManageProvider).value != null;
+    final hasParking = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value != null;
     if (hasParking) {
       context.router.push(
         ParkingDialogRoute(
@@ -265,7 +267,7 @@ class PoiCardFooter extends HookConsumerWidget {
       ParkingDialogRoute(
         title: context.l10n.youSureWantDelete,
         onAcceptTab: () {
-          ref.read(parkingManageProvider.notifier).clearStore();
+          ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).notifier).clearStore();
           ToastOverlay.of(context).show(title: context.l10n.parkingSpotDeleted, icon: const ToastIconAsset(iconAsset));
           context.router.popUntilRouteWithName(BottomMenuRoute.name);
         },

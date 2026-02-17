@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
@@ -91,11 +92,16 @@ class PoiCardProvider extends _$PoiCardProvider {
   static const poiCacheTimeoutMinutes = 60;
 
   @override
-  Future<PoiCardState?> build(int objectId, {PoiCameraConfig? cameraConfig, LatLng? closestPoint}) async {
+  Future<PoiCardState?> build(
+    int objectId,
+    BaladyAppThemes theme, {
+    PoiCameraConfig? cameraConfig,
+    LatLng? closestPoint,
+  }) async {
     state = const AsyncValue.loading();
 
     final result = await ref
-        .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint).future)
+        .watch(pointOfInterestProvider(DgisObjectId(objectId: objectId, entranceId: 0), closestPoint, theme).future)
         .timeout(
           const Duration(minutes: 1),
           onTimeout: () {
