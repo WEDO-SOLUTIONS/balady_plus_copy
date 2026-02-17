@@ -47,6 +47,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../app/features/accecipilities/AccessibilitySettings.dart';
 import 'Requirement_enum.dart';
 import 'model/download_file_paths_model.dart';
 
@@ -319,14 +320,16 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void getAppPreferences(dynamic msg, CompletionHandler handler) {
+  void getAppPreferences(dynamic msg, CompletionHandler handler) async{
     try {
+      final accessibility = await AccessibilitySettings.load();
       BaseResponse response = BaseResponse(
         code: 200,
         message: "success",
         eventName: "AppPreferences",
         data: AppThemeConfig(
           language: 'locale'.tr(),
+           accessibilityModel: accessibility,
           themeType: Theme.of(
             NavigationService.navigatorKey.currentContext!,
           ).brightness.name,
@@ -351,7 +354,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             scaffoldBackgroundColor: Theme.of(
               NavigationService.navigatorKey.currentContext!,
             ).scaffoldBackgroundColor,
-          ),
+          )
         ),
       );
       var dataJsonString = response.jsonEncodeModel();

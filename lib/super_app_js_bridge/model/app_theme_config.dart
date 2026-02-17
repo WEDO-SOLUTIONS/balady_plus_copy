@@ -2,31 +2,24 @@
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:flutter/material.dart';
 
+import '../../app/features/accecipilities/AccessibilitySettings.dart';
+
 class AppThemeConfig implements BaseData {
   final String language;
   final String themeType;
   final ColorSchemeModel? colorSchemeLight;
   final ColorSchemeModel? colorSchemeDark;
+  final AccessibilitySettings? accessibilityModel;
 
   AppThemeConfig({
     required this.language,
     required this.themeType,
     required this.colorSchemeLight,
     required this.colorSchemeDark,
+    required this.accessibilityModel
   });
 
-  factory AppThemeConfig.fromJson(Map<String, dynamic> json) {
-    return AppThemeConfig(
-      language: json['language'] ?? 'ar',
-      themeType: json['themeType'] ?? 'light',
-      colorSchemeLight: json['colorSchemeLight']
-          ? ColorSchemeModel.fromJson(json['colorSchemeLight'])
-          : null,
-      colorSchemeDark: json['colorSchemeDark']
-          ? ColorSchemeModel.fromJson(json['colorSchemeDark'])
-          : null,
-    );
-  }
+
 
   @override
   Map<String, dynamic> toJson() {
@@ -35,6 +28,7 @@ class AppThemeConfig implements BaseData {
       'themeType': themeType,
       'colorSchemeLight': colorSchemeLight?.toJson(),
       'colorSchemeDark': colorSchemeDark?.toJson(),
+      'accessibility': accessibilityModel?.toJson(),
     };
   }
 }
