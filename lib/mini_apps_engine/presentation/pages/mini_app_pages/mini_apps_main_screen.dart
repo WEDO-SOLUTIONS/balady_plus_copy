@@ -92,13 +92,16 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
 
           appBar: AppBar(
             title: Text(data.name ?? " "),
-            leading: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () async {
-                final shouldExit = await _showExitConfirmationDialog();
-                if (shouldExit && context.mounted) Navigator.of(context).pop();
-              },
-            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () async {
+                  final shouldExit = await _showExitConfirmationDialog();
+                  if (shouldExit && context.mounted) Navigator.of(context).pop();
+                },
+              ),
+            ],
+            leading: SizedBox.shrink(),
           ),
           body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
             builder: (contextBloc, state) {
