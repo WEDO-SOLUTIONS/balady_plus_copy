@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
@@ -81,9 +82,13 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                 SizedBox(
                   height: context.screenHeight * 0.03,
                   width: context.screenWidth * 0.40,
-                  child: Text(
+                  child: AutoSizeText(
                     title ?? "example",
                     maxLines: 2,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxFontSize: 13,
+                    minFontSize: 10,
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
@@ -91,8 +96,6 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                       fontFamily: GeneralKey.appFontType,
                       height: 1.4,
                     ),
-                    overflow: TextOverflow.visible,
-                    textAlign: TextAlign.center,
                   ),
                 ),
               ],

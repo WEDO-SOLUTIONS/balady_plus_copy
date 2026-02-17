@@ -20,14 +20,14 @@ class _SplashPageState extends State<SplashPage>
     super.initState();
 
     CommonFunctions.sendEventToAnalytics(AppEvents.OpenApp);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky, overlays: []);
   }
 
   @override
   void dispose() {
     try {
       SystemChrome.setEnabledSystemUIMode(
-        SystemUiMode.manual,
+        SystemUiMode.immersiveSticky,
         overlays: SystemUiOverlay.values,
       );
     } catch (_) {}
