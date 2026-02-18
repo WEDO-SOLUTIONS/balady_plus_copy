@@ -44,7 +44,9 @@ class FeedbackBannerCardV2 extends StatelessWidget {
                 borderRadius: BorderRadius.circular(Spacing.$1_5x),
                 color: context.colors.staticWhite.withOpacity(0.2),
               ),
-              child: Center(child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x)),
+              child: Center(
+                child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x),
+              ),
             ),
           ),
         ),
@@ -71,7 +73,10 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
 
   @override
   _RenderFeedBack createRenderObject(BuildContext context) => _RenderFeedBack(
-    title: TextSpan(text: title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite)),
+    title: TextSpan(
+      text: title,
+      style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite),
+    ),
     subTitle: TextSpan(
       text: subTitle ?? '',
       style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),
@@ -88,7 +93,10 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
   @override
   void updateRenderObject(BuildContext context, covariant _RenderFeedBack renderObject) {
     renderObject.update(
-      TextSpan(text: title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite)),
+      TextSpan(
+        text: title,
+        style: context.textStyles.h3SemiBold.copyWith(color: context.colors.staticWhite),
+      ),
       TextSpan(
         text: subTitle ?? '',
         style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.staticWhite),

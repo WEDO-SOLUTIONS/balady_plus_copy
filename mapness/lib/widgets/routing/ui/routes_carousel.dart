@@ -76,10 +76,7 @@ class RoutesCarousel extends ConsumerWidget {
         error: (err, st) {
           // Check for NoInternetException from either provider
           if (err is NoInternetException || (hasVisibilityError && visibilityError is NoInternetException)) {
-            return PathCardFailure.noInternet(
-              refresh: refresh,
-              text: context.l10n.noInternetConnection,
-            );
+            return PathCardFailure.noInternet(refresh: refresh, text: context.l10n.noInternetConnection);
           }
 
           // If visibility check returned findRouteError reason, show that error
@@ -237,33 +234,24 @@ class RoutesCarousel extends ConsumerWidget {
   /// Also we use it for single element in the list to unify the padding for all cases
   EdgeInsetsDirectional padding({required int index, required int length}) {
     if (length == 1) {
-      return const EdgeInsetsDirectional.only(
-        start: Spacing.$4x,
-        end: Spacing.$4x,
-      );
+      return const EdgeInsetsDirectional.only(start: Spacing.$4x, end: Spacing.$4x);
     }
     EdgeInsetsDirectional result;
     if (index == 0) {
-      result = const EdgeInsetsDirectional.only(
-        start: Spacing.$4x,
-        end: Spacing.$2x,
-      );
+      result = const EdgeInsetsDirectional.only(start: Spacing.$4x, end: Spacing.$1x);
     } else if (index == length - 1) {
-      result = const EdgeInsetsDirectional.only(
-        start: Spacing.$2x,
-        end: Spacing.$4x,
-      );
+      result = const EdgeInsetsDirectional.only(start: Spacing.$1x, end: Spacing.$4x);
     } else {
-      result = const EdgeInsetsDirectional.only(start: Spacing.$2x);
+      result = const EdgeInsetsDirectional.only(start: Spacing.$1x, end: Spacing.$1x);
     }
     return result;
   }
 
   RouteInfo getRouteInfo(BriefPublicTransportModel route) => RouteInfo(
-        route.publicTransportTransferRouteLongEntry.fold(0, (acc, e) => acc + e.length.millimeters) / 1000,
-        route.duration,
-        0,
-        0,
-        [],
-      );
+    route.publicTransportTransferRouteLongEntry.fold(0, (acc, e) => acc + e.length.millimeters) / 1000,
+    route.duration,
+    0,
+    0,
+    [],
+  );
 }

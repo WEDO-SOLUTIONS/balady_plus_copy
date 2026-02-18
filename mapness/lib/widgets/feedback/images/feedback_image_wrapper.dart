@@ -24,40 +24,33 @@ class FeedbackImageWrapper extends HookWidget {
     final opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(controller);
 
     return AnimatedBuilder(
-        animation: opacityAnimation,
-        builder: (context, child) => Opacity(
-              opacity: opacityAnimation.value,
-              child: child,
-            ),
-        child: Container(
-          width: imageSize,
-          height: imageSize,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(RadiusBorder.l),
-            color: context.colors.backgroundSurface3,
-          ),
-          child: Stack(
-            children: [
-              Center(
-                child: child,
-              ),
-              if (!isLoading)
-
-                /// cancel upload and remove image
-                Positioned(
-                  right: 3,
-                  top: 3,
-                  child: ImageActionButton(
-                      size: imageSize * .3,
-                      iconSize: imageSize * .2,
-                      icon: SystemIcons.closeSmall,
-                      onTap: () async {
-                        await controller.forward();
-                        onRemove();
-                      }),
+      animation: opacityAnimation,
+      builder: (context, child) => Opacity(opacity: opacityAnimation.value, child: child),
+      child: Container(
+        width: imageSize,
+        height: imageSize,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(21), color: context.colors.backgroundSurface3),
+        child: Stack(
+          children: [
+            Center(child: child),
+            if (!isLoading)
+              /// cancel upload and remove image
+              Positioned(
+                right: 3,
+                top: 3,
+                child: ImageActionButton(
+                  size: imageSize * .3,
+                  iconSize: imageSize * .2,
+                  icon: SystemIcons.closeSmall,
+                  onTap: () async {
+                    await controller.forward();
+                    onRemove();
+                  },
                 ),
-            ],
-          ),
-        ));
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

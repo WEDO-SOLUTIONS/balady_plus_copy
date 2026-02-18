@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ErrorWidget;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,11 +19,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 
 class RoutingHistory extends ConsumerWidget {
-  const RoutingHistory({
-    required this.updatePoint,
-    required this.searchByQuery,
-    super.key,
-  });
+  const RoutingHistory({required this.updatePoint, required this.searchByQuery, super.key});
 
   final void Function(RoutePoint point) updatePoint;
   final void Function(String query) searchByQuery;
@@ -53,6 +50,7 @@ class RoutingHistory extends ConsumerWidget {
 
     return SearchHistoryCollapsible(
       history: history,
+      iconColor: context.colors.foregroundMuted,
       onClear: () {
         Metrics.logEventAdvanced(
           MetricsConstants.routesKeys.searchClearButton,
@@ -66,9 +64,7 @@ class RoutingHistory extends ConsumerWidget {
           MetricsConstants.routesKeys.searchOnDelete,
           group: MetricsConstants.routesTag,
           action: MetricAction.tap.toString(),
-          props: {
-            'item': item.objectId,
-          },
+          props: {'item': item.objectId},
         );
 
         ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
@@ -78,9 +74,7 @@ class RoutingHistory extends ConsumerWidget {
           MetricsConstants.routesKeys.routeSelectionChangeNavType,
           group: MetricsConstants.routesTag,
           action: MetricAction.tap.toString(),
-          props: {
-            'item': item.objectId,
-          },
+          props: {'item': item.objectId},
         );
         final dgisController = await ref.read(dgisControllerProvider.future);
         try {
@@ -107,8 +101,9 @@ class RoutingHistory extends ConsumerWidget {
             searchByQuery(item.title);
           }
         }
-        final bssHistoryHandlingType =
-            item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
+        final bssHistoryHandlingType = item.objectId != null
+            ? BssHistoryHandlingType.openRecord
+            : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.action,

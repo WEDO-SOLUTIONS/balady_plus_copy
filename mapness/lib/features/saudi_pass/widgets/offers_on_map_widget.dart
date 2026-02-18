@@ -69,24 +69,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     _setupVisibleRectListener(controller);
   }
 
-  MarkerTextStyleMessage _buildTextStyle({
-    required bool isArabic,
-    required bool isDark,
-  }) =>
-      MarkerTextStyleMessage(
-        color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
-        strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
-        fontSize: 13,
-        fontName: isArabic ? poiMapFontAr : poiMapFontEn,
-        textOffset: 4,
-        strokeWidth: 1,
-      );
+  MarkerTextStyleMessage _buildTextStyle({required bool isArabic, required bool isDark}) => MarkerTextStyleMessage(
+    color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
+    strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
+    fontSize: 13,
+    fontName: isArabic ? poiMapFontAr : poiMapFontEn,
+    textOffset: 4,
+    strokeWidth: 1,
+  );
 
-  Marker _createMarker({
-    required Offer item,
-    required bool isRtl,
-    required bool isDark,
-  }) {
+  Marker _createMarker({required Offer item, required bool isRtl, required bool isDark}) {
     final text = item.provider.name.breakMarkerLabel(maxCharsPerLine: 20);
     final hasArabic = text.containsArabic() || isRtl;
 
@@ -105,18 +97,10 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
     );
 
-    return Marker(
-      id: item.id,
-      onTap: () => _onTapMarker(item, text, options),
-      options: options,
-    );
+    return Marker(id: item.id, onTap: () => _onTapMarker(item, text, options), options: options);
   }
 
-  SimpleClusterOptionsMessage _clusterOptions({
-    required bool isRtl,
-    required bool isDark,
-    required int objectCount,
-  }) =>
+  SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
       SimpleClusterOptionsMessage(
         icon: isDark
             ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName.markerIcon(size: _kClusterIconSize)
@@ -190,15 +174,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
   void _setupVisibleRectListener(DgisMapController controller) {
     _visibleRectSub = controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen((event) {
-      final showMapOffers = ref.read(showMapOffersProvider.notifier);
-      showMapOffers.switchOffersVisibility(
-        enabled: true,
-        cityId: widget.city.id,
-        isAll: widget.isAll,
-        category: widget.categories.isEmpty ? null : widget.categories,
-        promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
-        visibleRect: event.visibleRect,
-      );
+      ref
+          .read(showMapOffersProvider.notifier)
+          .switchOffersVisibility(
+            enabled: true,
+            cityId: widget.city.id,
+            isAll: widget.isAll,
+            category: widget.categories.isEmpty ? null : widget.categories,
+            promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+            visibleRect: event.visibleRect,
+          );
     });
   }
 
@@ -228,11 +213,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
       return () {
         // on exit
-        showMapOffers.switchOffersVisibility(
-          enabled: false,
-          isAll: widget.isAll,
-          cityId: widget.city.id,
-        );
+        showMapOffers.switchOffersVisibility(enabled: false, isAll: widget.isAll, cityId: widget.city.id);
       };
     }, []);
 
@@ -306,7 +287,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
                     style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -314,17 +295,18 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           valueListenable: _notifierIds,
           builder: (context, val, _) {
             if (val.isEmpty) {
-              return const Expanded(
-                child: RoutingMapControls(
-                  key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
-                  useSafeArea: false,
+              return Expanded(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+                  child: const RoutingMapControls(
+                    key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
+                    useSafeArea: false,
+                  ),
                 ),
               );
             }
 
-            return Expanded(
-              child: OfferListBottomSheetMapWidget(offersId: val),
-            );
+            return Expanded(child: OfferListBottomSheetMapWidget(offersId: val));
           },
         ),
       ],

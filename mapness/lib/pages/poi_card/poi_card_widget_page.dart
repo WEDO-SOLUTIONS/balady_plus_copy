@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart'
-    show General16Icons, GeneralIcons, IconDataExt, SliverFillAfter, Spacing;
+import 'package:balady_uikit/balady_uikit.dart' show General16Icons, GeneralIcons, SliverFillAfter, Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -68,6 +68,7 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
@@ -75,6 +76,7 @@ import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -105,14 +107,10 @@ class PoiCardWidgetPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PoiCardWrapper(
-        objectId: objectId ??
-            DgisObjectIdMessage(
-              objectId: dGisObjectId ?? 0,
-              entranceId: 0,
-            ),
-        cameraConfig: cameraConfig,
-        poiCardDataFromGoogle: poiCardDataFromGoogle,
-        closestPoint: closestPoint,
-        key: key,
-      );
+    objectId: objectId ?? DgisObjectIdMessage(objectId: dGisObjectId ?? 0, entranceId: 0),
+    cameraConfig: cameraConfig,
+    poiCardDataFromGoogle: poiCardDataFromGoogle,
+    closestPoint: closestPoint,
+    key: key,
+  );
 }

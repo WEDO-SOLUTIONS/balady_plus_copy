@@ -75,71 +75,60 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
       final point = points[i];
       final labelForMyLocation = _isMyLocation(ctx.l10n, point);
 
-      pointsModels.add(
-        ABRouteModel(
-          title: point.label,
-          isMyLocation: labelForMyLocation,
-        ),
-      );
+      pointsModels.add(ABRouteModel(title: point.label, isMyLocation: labelForMyLocation));
     }
   }
 
   @override
   Widget build(BuildContext context) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SheetDragger(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.externalContext.l10n.pathChanging,
-                    style: widget.externalContext.textStyle.heading2,
-                  ),
-                  const SizedBox(width: 12),
-                  AppButton.close(onTap: () => _onClose(context)),
-                ],
-              ),
-            ),
-            Flexible(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                child: SingleChildScrollView(
-                  child: ABRoute(
-                    items: pointsModels,
-                    startPointSubtitle: context.l10n.startPosition,
-                    arrivalPointSubtitle: context.l10n.placeOfArrival,
-                    onReorder: _onReorder,
-                    onTap: _onTap,
-                    onDeletePressed: _onDeletePressed,
-                    onAddPointPressed: _onAddPointPressed(context),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: Spacing.$3x,
-                horizontal: Spacing.$4x,
-              ),
-              child: SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  size: ButtonSize.large,
-                  onTap: () {
-                    widget.onConfirm(points);
-                  },
-                  primaryLabel: widget.externalContext.l10n.setRoute,
-                ),
-              ),
-            ),
-          ],
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SheetDragger(),
+        Padding(
+          padding: const EdgeInsetsDirectional.only(start: Spacing.$4x, end: Spacing.$3x),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(widget.externalContext.l10n.pathChanging, style: widget.externalContext.textStyle.heading2),
+              const SizedBox(width: 12),
+              AppButton.close(onTap: () => _onClose(context)),
+            ],
+          ),
         ),
-      );
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+            child: SingleChildScrollView(
+              child: ABRoute(
+                items: pointsModels,
+                startPointSubtitle: context.l10n.startPosition,
+                arrivalPointSubtitle: context.l10n.placeOfArrival,
+                onReorder: _onReorder,
+                onTap: _onTap,
+                onDeletePressed: _onDeletePressed,
+                onAddPointPressed: _onAddPointPressed(context),
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x, horizontal: Spacing.$4x),
+          child: SizedBox(
+            width: double.infinity,
+            child: AppButton(
+              buttonColorScheme: ButtonColorScheme.accentSecondary,
+              size: ButtonSize.large,
+              onTap: () {
+                widget.onConfirm(points);
+              },
+              primaryLabel: widget.externalContext.l10n.buildRoute,
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
 
   void _onClose(BuildContext context) {
     if (points.length != widget.points.length) {
@@ -160,11 +149,8 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     }
 
     return () => _selectPoint(
-          affixIcon: BaladyInputAffixIcon(
-            icon: icon,
-            iconColor: context.colors.extra01Default,
-          ),
-        );
+      affixIcon: BaladyInputAffixIcon(icon: icon, iconColor: context.colors.extra01Default),
+    );
   }
 
   void _onReorder(int oldIndex, int newIndex) {
@@ -192,11 +178,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     items.insert(newIndex, item);
   }
 
-  bool _isMyLocation(
-    AppLocalizations l10n,
-    RouteParamsPointWithLabel point,
-  ) =>
-      point.label == l10n.myLocation;
+  bool _isMyLocation(AppLocalizations l10n, RouteParamsPointWithLabel point) => point.label == l10n.myLocation;
 
   bool _containsMyLocation(AppLocalizations l10n) => points.map((e) => e.label).contains(l10n.myLocation);
 
@@ -207,10 +189,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
 
   // When index is passed the corresponding point will be updated or added as
   // intermediate point otherwise.
-  Future<void> _selectPoint({
-    int? index,
-    BaladyInputAffixIcon? affixIcon,
-  }) async {
+  Future<void> _selectPoint({int? index, BaladyInputAffixIcon? affixIcon}) async {
     // In async gap we have to check if the widget is mounted to use the context
     if (!widget.externalContext.mounted) {
       return;
@@ -219,12 +198,12 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
 
     if (index != null) {
       final isMyLocation = _isMyLocation(l10n, points[index]);
-      Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
-          group: MetricsConstants.routesTag,
-          action: MetricAction.tap.toString(),
-          props: {
-            'isMyLocation': isMyLocation,
-          });
+      Metrics.logEventAdvanced(
+        MetricsConstants.routesKeys.changeLocation,
+        group: MetricsConstants.routesTag,
+        action: MetricAction.tap.toString(),
+        props: {'isMyLocation': isMyLocation},
+      );
     }
 
     // Callback from the parent widget on tap
@@ -322,26 +301,18 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     required ValueChanged<BuildContext> onConfirm,
     required String cancelText,
     required ValueChanged<BuildContext> onCancel,
-  }) =>
-      showCupertinoDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (dialogContext) => CupertinoAlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: <CupertinoDialogAction>[
-            CupertinoDialogAction(
-              onPressed: () => onConfirm(dialogContext),
-              child: Text(confirmText),
-            ),
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              onPressed: () => onCancel(dialogContext),
-              child: Text(cancelText),
-            ),
-          ],
-        ),
-      );
+  }) => showCupertinoDialog<void>(
+    context: context,
+    barrierDismissible: true,
+    builder: (dialogContext) => CupertinoAlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: <CupertinoDialogAction>[
+        CupertinoDialogAction(onPressed: () => onConfirm(dialogContext), child: Text(confirmText)),
+        CupertinoDialogAction(isDefaultAction: true, onPressed: () => onCancel(dialogContext), child: Text(cancelText)),
+      ],
+    ),
+  );
 
   Future<void> _showAndroidCloseConfirmationDialog({
     required BuildContext context,
@@ -351,22 +322,15 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     required ValueChanged<BuildContext> onConfirm,
     required String cancelText,
     required ValueChanged<BuildContext> onCancel,
-  }) =>
-      showDialog(
-        context: context,
-        builder: (dialogContext) => AlertDialog(
-          title: Text(title),
-          content: Text(content),
-          actions: [
-            TextButton(
-              onPressed: () => onCancel(dialogContext),
-              child: Text(cancelText),
-            ),
-            TextButton(
-              onPressed: () => onConfirm(dialogContext),
-              child: Text(confirmText),
-            )
-          ],
-        ),
-      );
+  }) => showDialog(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        TextButton(onPressed: () => onCancel(dialogContext), child: Text(cancelText)),
+        TextButton(onPressed: () => onConfirm(dialogContext), child: Text(confirmText)),
+      ],
+    ),
+  );
 }

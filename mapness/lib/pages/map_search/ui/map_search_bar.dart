@@ -25,12 +25,7 @@ class MapSearchBar extends ConsumerStatefulWidget {
   final VoidCallback onClose;
   final bool isCloseButton;
 
-  const MapSearchBar({
-    required this.requestFocus,
-    required this.onClose,
-    this.isCloseButton = false,
-    super.key,
-  });
+  const MapSearchBar({required this.requestFocus, required this.onClose, this.isCloseButton = false, super.key});
 
   @override
   ConsumerState<MapSearchBar> createState() => _MapSearchBarState();
@@ -104,18 +99,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   name: BssUIElementNames.searchBar,
                   ownerName: BssUIElementNames.directorySearchScreen,
                 ),
-                payload: BssPayload(
-                  searchRequest: BssSearchRequest(text: query),
-                ),
+                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
               ),
             );
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
               group: metric_const.MetricsConstants.searchTag,
               action: metrics.MetricAction.type.toString(),
-              props: {
-                'query': query,
-              },
+              props: {'query': query},
             );
           },
           onTap: () {
@@ -130,20 +121,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                 ),
               ),
             );
-            _controller.selection = TextSelection.fromPosition(
-              TextPosition(
-                offset: _controller.text.length,
-              ),
-            );
+            _controller.selection = TextSelection.fromPosition(TextPosition(offset: _controller.text.length));
           },
           onSubmitted: (query) async {
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
               group: metric_const.MetricsConstants.searchTag,
               action: metrics.MetricAction.type.toString(),
-              props: {
-                'query': query,
-              },
+              props: {'query': query},
             );
             await BssService.instance.sendEvent(
               BssRequest(
@@ -153,9 +138,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   name: BssUIElementNames.searchStart,
                   ownerName: BssUIElementNames.searchBar,
                 ),
-                payload: BssPayload(
-                  searchRequest: BssSearchRequest(text: query),
-                ),
+                payload: BssPayload(searchRequest: BssSearchRequest(text: query)),
               ),
             );
             if (query.trim().isNotEmpty) {
@@ -167,14 +150,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   );
               await ref
                   .read(searchHistoryProvider(scope.value).notifier)
-                  .put(
-                    SearchHistoryItem.fromQuery(query: query),
-                  );
+                  .put(SearchHistoryItem.fromQuery(query: query));
             }
             _focusNode.requestFocus();
           },
 
-          hintText: context.l10n.search,
+          hintText: context.l10n.searchPlaceOrAddress,
           fillColor: context.colors.neutralContainerDefault,
           hintColor: context.colors.foregroundSoft,
           // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
@@ -182,14 +163,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         ),
       ),
       option: widget.isCloseButton || searchState.searchText.isNotEmpty
-          ? SearchIconBackOption(
-              icon: SystemIcons.close,
-              onPressed: () => _onBackPressed(searcher),
-            )
-          : SearchTextBackOption(
-              text: context.l10n.cancel,
-              onPressed: () => _onBackPressed(searcher),
-            ),
+          ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
+          : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
     );
   }
 

@@ -1103,7 +1103,9 @@ class DgisMapView(
     }
 
     private fun onMapReady(map: DgisMap, callback: (Result<InitializeMessage>) -> Unit) {
-        map.graphicsPreset = GraphicsPreset.IMMERSIVE
+        // Don't set graphics preset to IMMERSIVE at initialization
+        // It will be set conditionally in NavigationHandler.setupCamera based on traffic state
+        // This preserves traffic layer colors when freeroam starts
         this.map = map
 
         val mapSource =
