@@ -124,7 +124,7 @@ class _AccessibilitySettingsPageState
                                   "1": "accessibilityStepAccessibility",
                                   "2": "accessibilityStepScreenReader",
                                   "3": "accessibilityStepEnableReader",
-                                  "4": "accessibilityStepFinishSetup",
+                                  // "4": "accessibilityStepFinishSetup",
                                 }),
                               )),
                           options: ContentRowOptions(
