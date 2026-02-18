@@ -77,6 +77,7 @@ import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:sliver_tools/sliver_tools.dart';
