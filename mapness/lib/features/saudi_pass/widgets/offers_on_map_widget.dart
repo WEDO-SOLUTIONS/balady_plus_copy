@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_pass/pages/offers_list_bottom_sheet_map_page.dart';
 import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
@@ -29,6 +28,8 @@ import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../../lifestyle_layers/configs/layers_consts.dart';
 
 const offerPoiPinId = 'offer_poi_pin_id';
 
@@ -93,7 +94,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
       isVisible: true,
       icon: SvgMarkerIcon(
-        svgPath: isDark ? Assets.icons.svg.icOfferMarkerDark.keyName : Assets.icons.svg.icOfferMarker.keyName,
+        svgPath: switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
+          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
+          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        },
         width: _kMarkerWidth,
       ),
     );
@@ -103,9 +108,17 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
   SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
       SimpleClusterOptionsMessage(
-        icon: isDark
-            ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName.markerIcon(size: _kClusterIconSize)
-            : Assets.icons.svg.icOffersClusteringMarker.keyName.markerIcon(size: _kClusterIconSize),
+        icon: switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+        },
         text: objectCount.toString(),
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
@@ -130,7 +143,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             longitude: simpleClusterObject.position.longitude,
             elevation: 0,
           ),
-          icon: Assets.icons.svg.icOffersPin.keyName,
+          icon: switch (context.read<ThemeController>().currentTheme) {
+            BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
+            BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+            BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          },
           id: offerPoiPinId,
         ),
         context.read<ThemeController>().currentTheme,
@@ -164,7 +181,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         ),
         text: text,
         textStyle: options.textStyle,
-        icon: Assets.icons.svg.icOffersPin.keyName,
+        icon: switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
+          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+        },
         id: offerPoiPinId,
       ),
       context.read<ThemeController>().currentTheme,

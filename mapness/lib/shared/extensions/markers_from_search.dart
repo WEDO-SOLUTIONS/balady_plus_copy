@@ -160,11 +160,11 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
             isVisible: true,
             icon:
                 icon?.copyWith(iconOpacity: 1) ??
-                (SaudiNationalDay.isNow()
-                        ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName
-                        : Assets.icons.svg.icMarkerMNew.keyName)
-                    .markerIcon(size: 16)
-                    .copyWith(iconOpacity: 1),
+                switch (theme) {
+                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName,
+                  BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icNewPin.keyName,
+                  BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName,
+                }.markerIcon(size: 16).copyWith(iconOpacity: 1),
           ),
         ),
       );
@@ -564,10 +564,26 @@ extension BigIconPath on String {
       'ic_stairs.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icStairs.keyName
           : Assets.icons.svg.placesBigNew.old.icStairs.keyName,
-      'ic_offer_marker.svg': Assets.icons.svg.icOffersPin.keyName,
-      'ic_offers_clustering_marker.svg': Assets.icons.svg.icOffersPin.keyName,
-      'ic_offers_clustering_marker_dark.svg': Assets.icons.svg.icOffersPin.keyName,
-      'ic_offer_marker_dark.svg': Assets.icons.svg.icOffersPin.keyName,
+      'ic_offer_marker.svg': switch (theme) {
+        BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
+        BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+      },
+      'ic_offers_clustering_marker.svg': switch (theme) {
+        BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
+        BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+      },
+      'ic_offers_clustering_marker_dark.svg': switch (theme) {
+        BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName,
+        BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+        BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName,
+      },
+      'ic_offer_marker_dark.svg': switch (theme) {
+        BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
+        BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+      },
     };
 
     return bigIcons[iconName] ?? (isSaudiPath ? Markers.defaultPinNewSaudiDay : Markers.defaultPinNew);

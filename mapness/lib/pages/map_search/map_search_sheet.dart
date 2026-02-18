@@ -15,7 +15,6 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -249,9 +248,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-    icon: SaudiNationalDay.isNow()
-        ? Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon()
-        : Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
+    icon: switch (context.read<ThemeController>().currentTheme) {
+      BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icNewPin.keyName.markerIcon(),
+      BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icNewPin.keyName.markerIcon(),
+      BaladyAppThemes.saudiDay => Assets.icons.svg.icMarkerMNewSaudiDay.keyName.markerIcon(),
+    },
     text: '$objectCount',
     textStyle: MarkerTextStyleMessage(
       textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
