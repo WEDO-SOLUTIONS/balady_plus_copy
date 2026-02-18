@@ -40,6 +40,17 @@ class MiniAppsEngineBloc
     add(CheckMiniAppsEngineEvent(miniApp: miniApp));
   }
 
+  String getLocalizedURL(String serviceUrl){
+    if(serviceUrl.contains("ewaa")&& CommonFunctions.isAppAR==false) {
+      serviceUrl = "$serviceUrl/en/normal_profile";
+    }
+
+
+
+    return serviceUrl;
+
+  }
+
   void _checkMiniAppsEngine(
       CheckMiniAppsEngineEvent event, Emitter emit) async {
     if (event.miniApp.latestVersion?.serviceUrl != null) {
@@ -47,11 +58,10 @@ class MiniAppsEngineBloc
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(true);
       }
-      String serviceUrl= event.miniApp.latestVersion!.serviceUrl!;
-      if(serviceUrl.contains("ewaa")&& CommonFunctions.isAppAR==false) {
-        serviceUrl = "$serviceUrl/en/normal_profile";
+      String serviceUrl= getLocalizedURL(event.miniApp.latestVersion!.serviceUrl!);
 
-      }
+
+
       emit(
         MiniAppsEngineLoadedState(
           servicePath: serviceUrl,
