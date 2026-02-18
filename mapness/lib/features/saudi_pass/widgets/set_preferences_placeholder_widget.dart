@@ -8,55 +8,46 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 class SetPreferencesPlaceholderWidget extends StatelessWidget {
   final VoidCallback action;
 
-  const SetPreferencesPlaceholderWidget({
-    required this.action,
-    super.key,
-  });
+  const SetPreferencesPlaceholderWidget({required this.action, super.key});
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationPercent.keyName,
-        action: action,
-        title: context.l10n.saudiPassOffersSetPreferences,
-        hint: context.l10n.saudiPassOffersSetPreferencesHint,
-        actionTitle: context.l10n.saudiPassOffersGoToPreferences,
-      );
+    asset: Assets.imagesSvg.illustrationPercent.keyName,
+    action: action,
+    title: context.l10n.saudiPassOffersSetPreferences,
+    hint: context.l10n.saudiPassOffersSetPreferencesHint,
+    actionTitle: context.l10n.saudiPassOffersGoToPreferences,
+  );
 }
 
 class LoginPreferencesPlaceholderWidget extends StatelessWidget {
   final VoidCallback action;
 
-  const LoginPreferencesPlaceholderWidget({
-    required this.action,
-    super.key,
-  });
+  const LoginPreferencesPlaceholderWidget({required this.action, super.key});
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationPercent.keyName,
-        action: action,
-        title: context.l10n.saudiPassOffersSetPreferences,
-        hint: context.l10n.saudiPassOffersLoginHint,
-        actionTitle: context.l10n.connectToMomrah,
-      );
+    asset: Assets.imagesSvg.illustrationPercent.keyName,
+    action: action,
+    title: context.l10n.saudiPassOffersSetPreferences,
+    hint: context.l10n.saudiPassOffersLoginHint,
+    actionTitle: context.l10n.connectToMomrah,
+  );
 }
 
 class WentWrongPlaceholderWidget extends StatelessWidget {
   final VoidCallback action;
 
-  const WentWrongPlaceholderWidget({
-    required this.action,
-    super.key,
-  });
+  const WentWrongPlaceholderWidget({required this.action, super.key});
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: Assets.imagesSvg.illustrationError.keyName,
-        action: action,
-        title: context.l10n.saudiPassSomethingWentWrong,
-        hint: context.l10n.saudiPassSomethingWentWrongHint,
-        actionTitle: context.l10n.saudiPassSomethingWentWrongTryAgainButton,
-      );
+    asset: Assets.imagesSvg.illustrationError.keyName,
+    action: action,
+    title: context.l10n.saudiPassSomethingWentWrong,
+    hint: context.l10n.saudiPassSomethingWentWrongHint,
+    actionTitle: context.l10n.saudiPassSomethingWentWrongTryAgainButton,
+  );
 }
 
 class _PlaceholderWidget extends StatelessWidget {
@@ -82,7 +73,7 @@ class _PlaceholderWidget extends StatelessWidget {
     );
 
     final textStyle = context.textStyleV3;
-    final colors = context.colorsV3;
+    final colors = context.colors;
     final hintStyle = textStyle.bodyLargeRegular.copyWith(color: colors.foregroundSoft);
     final titleStyle = textStyle.h3SemiBold.copyWith(color: colors.foregroundDefault);
 

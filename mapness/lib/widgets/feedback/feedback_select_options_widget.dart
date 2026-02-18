@@ -21,48 +21,47 @@ class FeedbackSelectOptionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(poiDataValue.title, style: context.textStyle.callout),
-                const SizedBox(height: 5),
-                Text(poiDataValue.makeAddress(), style: context.textStyles.bodySmallRegular),
-              ],
+    mainAxisSize: MainAxisSize.min,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              poiDataValue.title,
+              style: context.textStyle.callout.copyWith(color: context.colors.foregroundDefault),
             ),
-          ),
-          const SizedBox(height: Spacing.$4x),
-          Material(
-            shape: smoothBorder(RadiusBorder.l),
-            color: context.colors.backgroundSurface1,
-            child: ListView.separated(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                final item = categoriesValue[index];
-                return FeedbackTypeItemWidget(
-                  title: item.name,
-                  iconUrl: item.iconUrl,
-                  onTap: () => onTap(
-                    item,
-                    poiDataValue.id?.objectId,
-                  ),
-                );
-              },
-              separatorBuilder: (context, index) => Divider(
-                color: context.colors.borderSoft,
-                height: 8,
-                thickness: 0.5,
-                indent: 52,
-              ),
-              itemCount: categoriesValue.length,
+            const SizedBox(height: 5),
+            Text(
+              poiDataValue.makeAddress(),
+              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
             ),
-          ),
-        ],
-      );
+          ],
+        ),
+      ),
+      const SizedBox(height: Spacing.$4x),
+      Material(
+        shape: smoothBorder(RadiusBorder.l),
+        color: context.colors.backgroundSurface1,
+        child: ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            final item = categoriesValue[index];
+            return FeedbackTypeItemWidget(
+              title: item.name,
+              iconUrl: item.iconUrl,
+              onTap: () => onTap(item, poiDataValue.id?.objectId),
+            );
+          },
+          separatorBuilder: (context, index) =>
+              Divider(color: context.colors.borderSoft, height: 8, thickness: 0.5, indent: 52),
+          itemCount: categoriesValue.length,
+        ),
+      ),
+    ],
+  );
 }

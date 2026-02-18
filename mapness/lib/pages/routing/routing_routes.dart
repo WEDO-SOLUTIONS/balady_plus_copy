@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide StopNumbersIcons, BaladyInputAffixIcon;
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +29,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:provider/provider.dart' as provider;
 import 'package:sheetify/sheetify.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -77,7 +78,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
-
+    final colors = provider.Provider.of<ThemeController>(context, listen: false).colors;
     ref
       ..watch(layersControlsProvider)
       ..watch(routesHelperProvider)
@@ -91,9 +92,9 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
     return ToggleSheet(
       shouldPop: (_) => false,
-      backgroundColor: context.colors.backgroundSurface4,
-      safeAreaColor: context.colors.backgroundSurface4,
-      dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface4),
+      backgroundColor: colors.backgroundSurface4,
+      safeAreaColor: colors.backgroundSurface4,
+      dragger: SheetDragger(backgroundColor: colors.backgroundSurface4),
       scrollController: sheetController,
       outside: RoutingMapControls(onAddStop: _onAddStop(context)),
       header: Column(
@@ -117,7 +118,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                 if (points.length > 2)
                   AppButton(
                     primaryIcon: General16Icons.edit,
-                    iconColor: context.colors.neutralOnContainer,
+                    iconColor: colors.neutralOnContainer,
                     buttonColorScheme: ButtonColorScheme.neutral,
                     buttonType: ButtonType.secondary,
                     size: ButtonSize.large,
@@ -133,7 +134,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                   ),
                 AppButton(
                   primaryIcon: SystemIcons.close,
-                  iconColor: context.colors.neutralOnContainer,
+                  iconColor: colors.neutralOnContainer,
                   buttonColorScheme: ButtonColorScheme.neutral,
                   buttonType: ButtonType.secondary,
                   size: ButtonSize.large,
@@ -154,6 +155,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   }
 
   VoidCallback? _onAddStop(BuildContext context) {
+    final colors = provider.Provider.of<ThemeController>(context, listen: false).colors;
     final l10n = context.l10n;
     final myLocation = ref.read(locationProvider);
 
@@ -173,7 +175,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       final value = await context.router.push(
         RoutingSearchSheetRoute(
           placeholder: l10n.intermediatePoint,
-          affixIcon: BaladyInputAffixIcon(icon: icon, iconColor: context.colors.extra01Default),
+          affixIcon: BaladyInputAffixIcon(icon: icon, iconColor: colors.extra01Default),
           showMyLocation: !containsMyLocation,
         ),
       );
@@ -228,12 +230,13 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   void _changeRoute() {
     final myLocation = ref.watch(locationProvider);
     const shape = RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(Spacing.$4x)));
+    final colors = provider.Provider.of<ThemeController>(context, listen: false).colors;
     showModalBottomSheet(
-      backgroundColor: context.colors.backgroundSurface4,
+      backgroundColor: colors.backgroundSurface4,
       shape: shape,
       context: context,
       scrollControlDisabledMaxHeightRatio: 0.9,
-      builder: (context) => ChangePathSheet(
+      builder: (modalContext) => ChangePathSheet(
         onConfirm: _onConfirm,
         myLocation: myLocation == null
             ? null
@@ -245,9 +248,9 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         // We need to pass the points and labels as copy (List.of) to manipulate the data and
         // change original data only when user confirms
         points: List.of(points),
-        onClose: () => context.router.pop(),
+        onClose: () => modalContext.router.pop(),
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
-        externalContext: context,
+        externalContext: modalContext,
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/personal_data.dart';
@@ -23,7 +22,7 @@ class ProfileInfoPage extends ConsumerWidget {
         top: false,
         bottom: false,
         child: Material(
-          color: Colors.white,
+          color: context.colors.backgroundSurface4,
           child: Padding(
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: Scaffold(
@@ -41,11 +40,7 @@ class ProfileInfoPage extends ConsumerWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        if (userData != null) PersonalData(userInfo: userData),
-                      ],
-                    ),
+                    child: Column(children: [if (userData != null) PersonalData(userInfo: userData)]),
                   ),
                 ],
               ),

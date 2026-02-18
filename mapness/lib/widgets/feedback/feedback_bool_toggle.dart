@@ -9,10 +9,7 @@ import 'package:mapness/widgets/feedback/feedback_balady_business.dart';
 class FeedbackBoolToggle extends HookWidget {
   final FeedbackBoolToggleEntity field;
 
-  const FeedbackBoolToggle({
-    required this.field,
-    super.key,
-  });
+  const FeedbackBoolToggle({required this.field, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +18,9 @@ class FeedbackBoolToggle extends HookWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
-      decoration: BoxDecoration(border: Border(bottom: isSelected.value ? BorderSide.none : border, top: border)),
+      decoration: BoxDecoration(
+        border: Border(bottom: isSelected.value ? BorderSide.none : border, top: border),
+      ),
       child: Column(
         children: [
           Row(
@@ -29,7 +28,7 @@ class FeedbackBoolToggle extends HookWidget {
               Expanded(
                 child: Text(
                   field.label,
-                  style: context.textStyles.bodyLargeRegular,
+                  style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                 ),
               ),
               FormBuilderField<bool>(

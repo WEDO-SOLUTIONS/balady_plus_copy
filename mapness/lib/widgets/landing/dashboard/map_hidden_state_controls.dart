@@ -65,7 +65,8 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
     final isLaunchingDismiss =
         freeRoamState.canStart && freeRoamState.isAutorun && widget.controller.state != ThreeStateSheet.hidden;
 
-    final isGoToNavigatorDismiss = freeRoamState.canStart &&
+    final isGoToNavigatorDismiss =
+        freeRoamState.canStart &&
         !freeRoamState.isAutorun &&
         widget.controller.state == ThreeStateSheet.open &&
         widget.controller.interpolation > 0.5;
@@ -120,8 +121,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
               MultiStateSheetBuilder(
                 defaultState: ThreeStateSheet.hidden,
                 builder: (context, state, interpolation, child) => Padding(
-                  padding:
-                      EdgeInsets.only(top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0),
+                  padding: EdgeInsets.only(
+                    top: state == ThreeStateSheet.hidden ? Spacing.$4x * (1 - interpolation) : 0,
+                  ),
                   child: GestureDetector(
                     onTap: () => widget.controller.setState(ThreeStateSheet.open),
                     child: SizedBox(
@@ -134,17 +136,18 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                           color: Color(0xFF00343A),
                         ),
                         child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
-                              child: Text(
-                                context.l10n.happy95thYears,
-                                style: context.textStyles.bodySmallSemiBold.copyWith(
-                                  color: context.colors.successOnSuccess,
-                                ),
-                                textAlign: TextAlign.center,
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: Spacing.$4x, bottom: Spacing.$4x),
+                            child: Text(
+                              context.l10n.happy95thYears,
+                              style: context.textStyles.bodySmallSemiBold.copyWith(
+                                color: context.colors.successOnSuccess,
                               ),
-                            )),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -181,22 +184,20 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
                 },
               ),
           ],
-        )
+        ),
       ],
     );
   }
 }
 
 class FreeRoamBar extends ConsumerWidget {
-  const FreeRoamBar({
-    super.key,
-  });
+  const FreeRoamBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => const Padding(
-        padding: EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
-        child: GoToNavigatorButton(),
-      );
+    padding: EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
+    child: GoToNavigatorButton(),
+  );
 }
 
 class QuickSearchBar extends StatelessWidget {
@@ -217,54 +218,42 @@ class QuickSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MultiStateSheetBuilder<ThreeStateSheet>(
-        defaultState: ThreeStateSheet.hidden,
-        builder: (context, state, interpolation, child) {
-          final delta = state == ThreeStateSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
+    defaultState: ThreeStateSheet.hidden,
+    builder: (context, state, interpolation, child) {
+      final delta = state == ThreeStateSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
 
-          opacity.value = delta;
-          return IgnorePointer(
-            ignoring: state != ThreeStateSheet.hidden,
-            child: Align(
-              heightFactor: delta,
-              alignment: Alignment.topCenter,
-              child: child,
-            ),
-          );
-        },
-        child: FadeTransition(
-          opacity: Animation.fromValueListenable(opacity),
-          child: Directionality(
-            textDirection: direction,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$2x),
-              child: MapQuickFilters(
-                forMap: true,
-                itemScrollController: quickScrollController,
-                customFilters: [
-                  FilterItemBuilder(
-                    filterType: FilterType.custom,
-                    builder: (
-                      context, {
-                      required isSelected,
-                    }) =>
-                        _FreeRoamQuickAction(
-                      isLaunching: showLaunchingFreeRoam,
-                    ),
-                  ),
-                ],
+      opacity.value = delta;
+      return IgnorePointer(
+        ignoring: state != ThreeStateSheet.hidden,
+        child: Align(heightFactor: delta, alignment: Alignment.topCenter, child: child),
+      );
+    },
+    child: FadeTransition(
+      opacity: Animation.fromValueListenable(opacity),
+      child: Directionality(
+        textDirection: direction,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: Spacing.$2x),
+          child: MapQuickFilters(
+            forMap: true,
+            itemScrollController: quickScrollController,
+            customFilters: [
+              FilterItemBuilder(
+                filterType: FilterType.custom,
+                builder: (context, {required isSelected}) => _FreeRoamQuickAction(isLaunching: showLaunchingFreeRoam),
               ),
-            ),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _FreeRoamQuickAction extends ConsumerStatefulWidget {
   final bool isLaunching;
 
-  const _FreeRoamQuickAction({
-    required this.isLaunching,
-  });
+  const _FreeRoamQuickAction({required this.isLaunching});
 
   @override
   ConsumerState<_FreeRoamQuickAction> createState() => _FreeRoamState();
@@ -315,12 +304,8 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
     final delta = launchingController.value;
     final borderRadius = lerpDouble(RadiusBorder.m, RadiusBorder.l, delta) ?? RadiusBorder.m;
 
-    final iconAndTextColor = Color.lerp(
-          colors.foregroundDefault,
-          context.colors.backgroundSurface1,
-          delta,
-        ) ??
-        colors.foregroundDefault;
+    final iconAndTextColor =
+        Color.lerp(colors.foregroundDefault, context.colors.backgroundSurface1, delta) ?? colors.foregroundDefault;
 
     const startingPoint = 0;
     const progressOpacity = 0.2;
@@ -336,7 +321,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: Shadows.s,
-        color: Color.lerp(colors.accentOnAccent, colors.accentSecondarySoft, delta) ?? colors.accentOnAccent,
+        color: colors.backgroundSurface1,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -361,7 +346,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                   ],
                   stops: [
                     if (isLTR) gradientPosition else 1 - gradientPosition,
-                    if (isLTR) gradientPosition else 1 - gradientPosition
+                    if (isLTR) gradientPosition else 1 - gradientPosition,
                   ],
                 ),
               ),
@@ -409,7 +394,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                                 },
                                 primaryIcon: SystemIcons.close,
                                 buttonColorScheme: ButtonColorScheme.accent,
-                              )
+                              ),
                             ],
                           ),
                         ),

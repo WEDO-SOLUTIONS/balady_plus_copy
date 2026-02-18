@@ -124,7 +124,7 @@ class _PoiTabItem extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.px),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: isActive ? context.colors.staticWhite : Colors.transparent,
+          color: isActive ? context.colors.backgroundSurface1 : Colors.transparent,
           borderRadius: BorderRadius.circular(RadiusBorder.m),
           boxShadow: isActive ? Shadows.s : null,
         ),

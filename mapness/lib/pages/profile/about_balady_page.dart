@@ -26,10 +26,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
     super.initState();
     _controller = YoutubePlayerController(
       initialVideoId: initialVideoId,
-      flags: const YoutubePlayerFlags(
-        autoPlay: false,
-        enableCaption: false,
-      ),
+      flags: const YoutubePlayerFlags(autoPlay: false, enableCaption: false),
     );
   }
 
@@ -53,7 +50,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Material(
-        color: Colors.white,
+        color: context.colors.backgroundSurface1,
         child: Padding(
           padding: const EdgeInsets.only(top: Spacing.$4x),
           child: Scaffold(
@@ -61,10 +58,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
               systemUiOverlayStyle: SystemUiOverlayStyle.dark,
               title: context.l10n.aboutApp,
               colorEnabled: context.colors.accentDefault,
-              leading: ActionModel(
-                onPressed: () => context.router.pop(),
-                icon: SystemIcons.arrowCornerLeftLarge,
-              ),
+              leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
             ),
             body: ListView(
               children: [
@@ -74,10 +68,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                     borderRadius: BorderRadius.circular(RadiusBorder.l),
                     child: YoutubePlayer(
                       controller: _controller,
-                      bottomActions: const [
-                        CurrentPosition(),
-                        ProgressBar(isExpanded: true),
-                      ],
+                      bottomActions: const [CurrentPosition(), ProgressBar(isExpanded: true)],
                     ),
                   ),
                 ),
@@ -89,9 +80,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                         child: Text(
                           context.l10n.weAreHappyToConnectYouWithBaladyTeam,
                           textDirection: direction,
-                          style: context.textStyle.text.copyWith(
-                            color: context.colors.foregroundDefault,
-                          ),
+                          style: context.textStyle.text.copyWith(color: context.colors.foregroundDefault),
                         ),
                       ),
                     ],

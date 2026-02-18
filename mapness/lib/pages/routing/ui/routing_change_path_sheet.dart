@@ -90,7 +90,10 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(widget.externalContext.l10n.pathChanging, style: widget.externalContext.textStyle.heading2),
+              Text(
+                widget.externalContext.l10n.pathChanging,
+                style: widget.externalContext.textStyle.heading2.copyWith(color: context.colors.foregroundDefault),
+              ),
               const SizedBox(width: 12),
               AppButton.close(onTap: () => _onClose(context)),
             ],

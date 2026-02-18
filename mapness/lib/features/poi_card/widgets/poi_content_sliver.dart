@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,6 @@ class PoiContentSliver extends ConsumerWidget {
     final searchObjectFuture = ref.watch(poiSearchByObjectProvider(data));
     final poiSearchObjectFuture = searchObjectFuture.value?.$1;
     final poiSearchByObjectEntrances = searchObjectFuture.value?.$2 ?? [];
-    const colorShimmer = Color(0xFFE3E3E3);
 
     final mainLines = data?.routeInfos.map((e) => e.name).toList() ?? [];
     poiSearchObjectFuture?.removeWhere((element) => mainLines.contains(element.title));
@@ -231,7 +231,11 @@ class PoiContentSliver extends ConsumerWidget {
                   contentPadding: itemPadding,
                 ),
               if (searchObjectFuture.isLoading && data.entrances.isNotEmpty)
-                Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
+                Shimmer.fromColors(
+                  baseColor: context.colors.backgroundSurface1,
+                  highlightColor: context.colors.backgroundSurface1,
+                  child: entrancesWidget,
+                ),
               if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
               ...routeInfos
                   .map(
@@ -242,7 +246,11 @@ class PoiContentSliver extends ConsumerWidget {
                   )
                   .toList(),
               if (searchObjectFuture.isLoading && currentRouteTransition.isNotEmpty)
-                Shimmer.fromColors(baseColor: colorShimmer, highlightColor: Colors.white, child: entrancesWidget),
+                Shimmer.fromColors(
+                  baseColor: context.colors.backgroundSurface1,
+                  highlightColor: context.colors.backgroundSurface1,
+                  child: entrancesWidget,
+                ),
               ...?poiSearchObjectFuture
                   ?.map(
                     (e) => Padding(

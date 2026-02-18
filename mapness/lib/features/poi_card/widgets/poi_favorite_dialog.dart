@@ -80,7 +80,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
         Padding(
           padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
           child: ContentWrapper(
-            color: Colors.white,
+            color: context.colors.backgroundSurface1,
             children: [
               if (showWork)
                 ContentRow(

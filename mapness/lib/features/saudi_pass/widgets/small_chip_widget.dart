@@ -13,13 +13,13 @@ class SmallChipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorsV2 = context.colorsV3;
-    final textColor = isHighlighted ? colorsV2.accentOnAccent : colorsV2.foregroundDefault;
+    final colors = context.colors;
+    final textColor = isHighlighted ? colors.accentOnAccent : colors.foregroundDefault;
     final textStyle = context.isLTR ? context.textStyleV3.bodySmallMedium : context.textStyleV3.bodySmallSemiBold;
 
     return DecoratedSmoothRadius(
       borderRadius: RadiusBorder.m,
-      color: isHighlighted ? colorsV2.accentSecondaryDefault : colorsV2.neutralContainerDefault,
+      color: isHighlighted ? colors.accentSecondaryDefault : colors.neutralContainerDefault,
       child: InkWell(
         splashFactory: NoSplash.splashFactory,
         splashColor: context.color.surfaceOverlayPressed,
