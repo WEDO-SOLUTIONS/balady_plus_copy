@@ -89,8 +89,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       initialState: ThreeStateSheet.expanded,
       behavior: MultiSnappingBehavior(
         models: [
-          FractionSnappingModel({0.0, .82}),
-          OffsetSnappingModel({Spacing.$4x}),
+          FractionSnappingModel({.731, .931}),
+          ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
       stateMapper: const LandingStateMapper(),
@@ -192,8 +192,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
                 child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose),
               ),
+              useSafeArea: false,
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-              content: [MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController)],
+              sliver: SliverToBoxAdapter(
+                child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+              ),
             ),
           ),
         ],
