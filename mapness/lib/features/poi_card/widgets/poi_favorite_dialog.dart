@@ -19,19 +19,14 @@ import 'package:sheetify/sheetify.dart';
 class PoiFavoriteDialogPage extends ConsumerStatefulWidget {
   final FavouriteItem favItem;
 
-  const PoiFavoriteDialogPage({
-    required this.favItem,
-    super.key,
-  });
+  const PoiFavoriteDialogPage({required this.favItem, super.key});
 
   @override
   ConsumerState<PoiFavoriteDialogPage> createState() => _PoiFavoriteDialogPageState();
 }
 
 class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
-  late final scrollController = ToggleSheetController(
-    onClose: (_) => context.router.pop(),
-  );
+  late final scrollController = ToggleSheetController(onClose: (_) => context.router.pop());
 
   void _withPop(Future<void> future) {
     unawaited(future);
@@ -47,26 +42,20 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
       return const LoadingSheet();
     }
     if (favState.hasError) {
-      return ErrorSheetWidget(
-        onRetry: () => ref.invalidate(favouriteCacheProvider),
-      );
+      return ErrorSheetWidget(onRetry: () => ref.invalidate(favouriteCacheProvider));
     }
 
     final fav = favState.requireValue;
     final showHome = fav.home == null;
     final showWork = fav.work == null;
-    final isFavourite = fav.items.firstWhereOrNull(
+    final isFavourite =
+        fav.items.firstWhereOrNull(
           (element) => element.entity?.id == widget.favItem.entity?.id && widget.favItem.entity?.id != null,
         ) !=
         null;
 
-    const itemPadding = EdgeInsets.symmetric(
-      horizontal: Spacing.$4x,
-      vertical: Spacing.$3x,
-    );
-    final itemTitleStyle = context.textStyles.bodyLargeRegular.copyWith(
-      color: context.colors.foregroundDefault,
-    );
+    const itemPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x);
+    final itemTitleStyle = context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault);
 
     return ToggleSheet(
       scrollController: scrollController,
@@ -78,9 +67,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
           options: ContentRowOptions(
             padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
             title: context.l10n.addToFavorites,
-            titleStyle: context.textStyles.h4SemiBold.copyWith(
-              color: context.colors.foregroundDefault,
-            ),
+            titleStyle: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
             customActionWidget: AppButton.close(
               onTap: scrollController.close,
               padding: EdgeInsets.zero,
@@ -93,7 +80,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
         Padding(
           padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$5x),
           child: ContentWrapper(
-            color: Colors.white,
+            color: context.colors.backgroundSurface1,
             children: [
               if (showWork)
                 ContentRow(
@@ -134,14 +121,14 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
   }
 
   Future<void> _onFavTap(bool isFavourite) async {
-    await ref.read(authMethodsProvider.notifier).authOrOpen(
-      context,
-      callback: () {
-        final favNotifier = ref.read(favouriteCacheProvider.notifier);
-        _withPop(
-          isFavourite ? favNotifier.deleteItem(widget.favItem) : favNotifier.addItem(widget.favItem),
+    await ref
+        .read(authMethodsProvider.notifier)
+        .authOrOpen(
+          context,
+          callback: () {
+            final favNotifier = ref.read(favouriteCacheProvider.notifier);
+            _withPop(isFavourite ? favNotifier.deleteItem(widget.favItem) : favNotifier.addItem(widget.favItem));
+          },
         );
-      },
-    );
   }
 }

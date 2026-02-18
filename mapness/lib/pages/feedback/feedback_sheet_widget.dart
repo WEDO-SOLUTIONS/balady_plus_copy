@@ -13,11 +13,7 @@ import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:sheetify/sheetify.dart';
 
-enum FeedbackSheetState {
-  success,
-  failure,
-  loading,
-}
+enum FeedbackSheetState { success, failure, loading }
 
 const switchDuration = Durations.extralong4;
 
@@ -37,23 +33,20 @@ class FeedbackSheetWidget extends HookWidget {
   final FeedbackSheetState state;
   final VoidCallback onRetry;
 
-  const FeedbackSheetWidget({
-    required this.onRetry,
-    required this.state,
-    super.key,
-  });
+  const FeedbackSheetWidget({required this.onRetry, required this.state, super.key});
 
-  void popNavigation(BuildContext context, AnimationController confettiController) => context.router.popUntil((route) =>
-      route.settings.name == PoiCardWidgetRoute.name ||
-      route.settings.name == SearchRoute.name ||
-      route.settings.name == BottomMenuRoute.name);
+  void popNavigation(BuildContext context, AnimationController confettiController) => context.router.popUntil(
+    (route) =>
+        route.settings.name == PoiCardWidgetRoute.name ||
+        route.settings.name == SearchRoute.name ||
+        route.settings.name == PathNavRoute.name ||
+        route.settings.name == BottomMenuRoute.name,
+  );
 
   @override
   Widget build(BuildContext context) {
     final confettiController = useAnimationController();
-    final sheetController = useToggleSheetController(
-      onClose: (_) => popNavigation(context, confettiController),
-    );
+    final sheetController = useToggleSheetController(onClose: (_) => popNavigation(context, confettiController));
 
     final config = useMemoized(
       () => ConfettiGeneratorConfig.confetti(
@@ -68,16 +61,12 @@ class FeedbackSheetWidget extends HookWidget {
     useEffect(() {
       if (state == FeedbackSheetState.success) {
         confettiController
-            .animateTo(
-          1,
-          duration: config.animationDuration,
-          curve: config.animationCurve,
-        )
+            .animateTo(1, duration: config.animationDuration, curve: config.animationCurve)
             .whenCompleteOrCancel(() {
-          if (context.mounted) {
-            confettiController.reset();
-          }
-        });
+              if (context.mounted) {
+                confettiController.reset();
+              }
+            });
       }
       return null;
     }, [state]);
@@ -97,9 +86,11 @@ class FeedbackSheetWidget extends HookWidget {
                 alignment: AlignmentDirectional.centerEnd,
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
-                  child: AppButton.close(onTap: () {
-                    sheetController.close();
-                  }),
+                  child: AppButton.close(
+                    onTap: () {
+                      sheetController.close();
+                    },
+                  ),
                 ),
               ),
               content: [
@@ -107,95 +98,86 @@ class FeedbackSheetWidget extends HookWidget {
                   duration: switchDuration,
                   child: switch (state) {
                     FeedbackSheetState.failure => BaseErrorWidget(
-                        onRetry: onRetry,
-                        errorLabel: context.l10n.appFeedbackConnectionIssueV2,
-                        paddingForImage: const EdgeInsets.symmetric(vertical: AppSizes.$3xs),
-                      ),
+                      onRetry: onRetry,
+                      errorLabel: context.l10n.appFeedbackConnectionIssueV2,
+                      paddingForImage: const EdgeInsets.symmetric(vertical: AppSizes.$3xs),
+                    ),
                     FeedbackSheetState.success => Column(
-                        key: const Key('feedback_success'),
-                        children: [
-                          Center(
-                            child: SizedBox(
-                              width: 180.0,
-                              child: SvgPicture.asset(
-                                Assets.imagesSvg.illustrationNotifications.keyName,
-                                matchTextDirection: true,
-                              ),
+                      key: const Key('feedback_success'),
+                      children: [
+                        Center(
+                          child: SizedBox(
+                            width: 180.0,
+                            child: SvgPicture.asset(
+                              Assets.imagesSvg.illustrationNotifications.keyName,
+                              matchTextDirection: true,
                             ),
                           ),
-                          const SizedBox(height: AppSizes.$4xs),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
-                              child: Text(
-                                context.l10n.feedbackSuccessTitle,
-                                style: context.textStyles.h3SemiBold,
-                                textAlign: TextAlign.center,
-                              ),
+                        ),
+                        const SizedBox(height: AppSizes.$4xs),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
+                            child: Text(
+                              context.l10n.feedbackSuccessTitle,
+                              style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                          const SizedBox(height: AppSizes.$4xs),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: AppButton(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Spacing.$4x,
-                                  vertical: Spacing.$4x,
-                                ),
-                                buttonColorScheme: ButtonColorScheme.accent,
-                                primaryLabel: context.l10n.done,
-                                onTap: sheetController.close,
-                              ),
+                        ),
+                        const SizedBox(height: AppSizes.$4xs),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: AppButton(
+                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
+                              buttonColorScheme: ButtonColorScheme.accent,
+                              primaryLabel: context.l10n.done,
+                              onTap: sheetController.close,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                     FeedbackSheetState.loading => Column(
-                        key: const Key('feedback_loading'),
-                        children: [
-                          const SizedBox(height: AppSizes.$4xs),
-                          LayoutBuilder(
-                            builder: (context, constraints) {
-                              final textPainter = TextPainter(
-                                  text: TextSpan(
-                                    text: context.l10n.feedbackSuccessTitle,
-                                    style: context.textStyles.h3SemiBold,
-                                  ),
-                                  textDirection: Directionality.of(context))
-                                ..layout(maxWidth: constraints.maxWidth - AppSizes.xxs * 2);
-                              final height = textPainter.height;
-                              return SizedBox(height: height);
-                            },
+                      key: const Key('feedback_loading'),
+                      children: [
+                        const SizedBox(height: AppSizes.$4xs),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final textPainter = TextPainter(
+                              text: TextSpan(
+                                text: context.l10n.feedbackSuccessTitle,
+                                style: context.textStyles.h3SemiBold,
+                              ),
+                              textDirection: Directionality.of(context),
+                            )..layout(maxWidth: constraints.maxWidth - AppSizes.xxs * 2);
+                            final height = textPainter.height;
+                            return SizedBox(height: height);
+                          },
+                        ),
+                        const Center(
+                          child: SizedBox(
+                            width: 139,
+                            height: 139,
+                            child: Center(child: Loading(size: LoaderSize.large)),
                           ),
-                          const Center(
-                            child: SizedBox(
-                                width: 139,
-                                height: 139,
-                                child: Center(
-                                  child: Loading(
-                                    size: LoaderSize.large,
-                                  ),
-                                )),
-                          ),
-                          const SizedBox(height: AppSizes.$4xs),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: Spacing.$3x + Spacing.$4x,
-                            ),
-                            child: SizedBox(
-                              height: ButtonSize.medium.height,
-                              width: double.infinity,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: AppSizes.$4xs),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x + Spacing.$4x),
+                          child: SizedBox(height: ButtonSize.medium.height, width: double.infinity),
+                        ),
+                      ],
+                    ),
                   },
                 ),
               ],
             ),
-            RepaintBoundary(child: ConfettiAnimation(animationController: confettiController, config: config)),
+            RepaintBoundary(
+              child: ConfettiAnimation(animationController: confettiController, config: config),
+            ),
           ],
         ),
       ),

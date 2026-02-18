@@ -7,9 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class HomeMiniAppsListPages extends StatefulWidget {
-  const HomeMiniAppsListPages({
-    super.key,
-  });
+  const HomeMiniAppsListPages({super.key});
 
   @override
   State<HomeMiniAppsListPages> createState() => _HomeMiniAppsListPagesState();
@@ -28,9 +26,8 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar:
-          CommonFunctions.isTodayInRanges ? null : _buildDefaultAppBar(context),
+      backgroundColor: context.colors.backgroundSurface4,
+      appBar: CommonFunctions.isTodayInRanges ? null : _buildDefaultAppBar(context),
       body: CommonFunctions.isTodayInRanges
           ? Column(children: [Expanded(child: _buildCustomAppBarLayout())])
           : _buildDefaultLayout(),
@@ -42,12 +39,9 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       children: [
         Expanded(
           child: ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(24), topRight: Radius.circular(24)),
             child: Container(
-              color: Colors.grey.shade100,
+              color: context.colors.backgroundSurface4,
               child: BlocBuilder<HomeMiniAppsListCubit, HomeMiniAppsListState>(
                 builder: (context, state) {
                   return _buildContent(state);
@@ -66,13 +60,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         // Custom AppBar
         _buildCustomAppBar(context),
 
-        Positioned(
-          top: 130,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: _buildDefaultLayout(),
-        )
+        Positioned(top: 130, bottom: 0, left: 0, right: 0, child: _buildDefaultLayout()),
       ],
     );
   }
@@ -99,27 +87,18 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
         context.read<HomeMiniAppsListCubit>().loadMiniApps();
       },
       child: ListView.separated(
-        padding: const EdgeInsets.only(
-          top: 20,
-          left: 12,
-          right: 12,
-        ),
+        padding: const EdgeInsets.only(top: 20, left: 12, right: 12),
         itemCount: state.miniAppsList.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
-          return MiniAppsItemWidget(
-            miniApp: state.miniAppsList[index],
-            isEvent: CommonFunctions.isTodayInRanges,
-          );
+          return MiniAppsItemWidget(miniApp: state.miniAppsList[index], isEvent: CommonFunctions.isTodayInRanges);
         },
       ),
     );
   }
 
   Widget _buildLoadingState() {
-    return const Center(
-      child: CircularProgressIndicator(),
-    );
+    return const Center(child: CircularProgressIndicator());
   }
 
   PreferredSizeWidget _buildDefaultAppBar(BuildContext context) {
@@ -127,14 +106,14 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       title: Text(
         "AppsTitle".tr(),
         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: 20,
-              color: const Color(0xFF003449),
-              fontFamily: 'packages/balady_uikit/Frutiger',
-            ),
+          fontWeight: FontWeight.w700,
+          fontSize: 20,
+          color: context.colors.foregroundDefault,
+          fontFamily: 'packages/balady_uikit/Frutiger',
+        ),
       ),
       centerTitle: true,
-      backgroundColor: Colors.white,
+      backgroundColor: context.colors.backgroundSurface4,
       elevation: 0,
     );
   }
@@ -144,20 +123,17 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       height: 210,
       width: double.infinity,
       decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/images/national.png"),
-          fit: BoxFit.fill,
-        ),
+        image: DecorationImage(image: AssetImage("assets/images/national.png"), fit: BoxFit.fill),
       ),
       child: Center(
         child: Text(
           "AppsTitle".tr(),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-                fontSize: 20,
-                fontFamily: 'packages/balady_uikit/Frutiger',
-              ),
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+            fontSize: 20,
+            fontFamily: 'packages/balady_uikit/Frutiger',
+          ),
         ),
       ),
     );
@@ -175,10 +151,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
             Text(
               error,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -191,14 +164,9 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                   backgroundColor: context.colors.accentDefault,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                child: Text(
-                  "refresh".tr(),
-                  style: const TextStyle(fontSize: 16),
-                ),
+                child: Text("refresh".tr(), style: const TextStyle(fontSize: 16)),
               ),
             ),
           ],
