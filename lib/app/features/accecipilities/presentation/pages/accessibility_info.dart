@@ -20,15 +20,13 @@ class AccessibilityInfo extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: Theme(
-          data:
-          Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: Scaffold(
             persistentFooterButtons: [
               SizedBox(
                 width: double.infinity,
                 child: AppButton(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                   primaryLabel: 'navigate'.tr(),
                   size: ButtonSize.large,
                   buttonColorScheme: ButtonColorScheme.accent,
@@ -49,14 +47,18 @@ class AccessibilityInfo extends StatelessWidget {
             ),
             body: Padding(
               padding: const EdgeInsets.only(
-                  top: 12, left: 16, right: 16, bottom: 36),
+                top: 12,
+                left: 16,
+                right: 16,
+                bottom: 36,
+              ),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Center(
                       child: Image(
-                        image: AssetImage('assets/images/settings.png'),
+                        image: AssetImage('assets/images/voice_reader.png'),
                       ),
                     ),
                     Spacing.$5x.heightBox,
@@ -65,8 +67,7 @@ class AccessibilityInfo extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 20,
-                        color:  context.colors.accentDefault,
-
+                        color: context.colors.foregroundDefault,
                       ),
                     ),
                     Spacing.$5x.heightBox,
@@ -74,16 +75,17 @@ class AccessibilityInfo extends StatelessWidget {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: settingsText.length,
                       shrinkWrap: true,
-                      separatorBuilder: (_, __) => Spacing.$4x.heightBox,
+                      separatorBuilder: (_, _) => Spacing.$4x.heightBox,
                       itemBuilder: (context, index) => Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
                             height: 24,
                             width: 24,
                             decoration: BoxDecoration(
-                                color: const Color(0xFF003449),
-                                borderRadius: BorderRadius.circular(30)),
+                              color: const Color(0xFF003449),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
                             child: Center(
                               child: Text(
                                 '${index + 1}',
@@ -97,15 +99,15 @@ class AccessibilityInfo extends StatelessWidget {
                           ),
                           Spacing.$4x.widthBox,
                           Flexible(
-                              child: Text(
-                                settingsText.values.elementAt(index).tr(),
-                                style:  TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                  color:  context.colors.accentDefault,
-
-                                ),
-                              ))
+                            child: Text(
+                              settingsText.values.elementAt(index).tr(),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                color: context.colors.foregroundDefault,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
