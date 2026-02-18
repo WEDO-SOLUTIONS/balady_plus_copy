@@ -241,12 +241,13 @@ class _EmailItemWidget extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _SocialItemWidget extends StatelessWidget {
   final String socialLink;
   final IconData icon;
   final void Function(String link) onTap;
 
-  const _SocialItemWidget({required this.socialLink, required this.onTap, required this.icon, super.key});
+  const _SocialItemWidget({required this.socialLink, required this.onTap, required this.icon});
 
   @override
   Widget build(BuildContext context) {

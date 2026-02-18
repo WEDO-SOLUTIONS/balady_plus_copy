@@ -61,7 +61,9 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
                   child: Text(subtitle, style: subTitleTextStyle, maxLines: 1, overflow: TextOverflow.ellipsis),
                 ),
                 ...inlineSpans.map((span) {
-                  if (span is WidgetSpan) return span.child;
+                  if (span is WidgetSpan) {
+                    return span.child;
+                  }
                   if (span is TextSpan) {
                     return RichText(
                       text: TextSpan(

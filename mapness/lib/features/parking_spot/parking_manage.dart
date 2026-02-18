@@ -34,6 +34,7 @@ const parkingObjectId = 10;
 @riverpod
 class _ParkingManage extends _$ParkingManage {
   late final _settings = MapObjectManagerSettings.parking();
+  @override
   late final BaladyAppThemes theme;
   late final _mapObjectManager = ref.watch(
     mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,

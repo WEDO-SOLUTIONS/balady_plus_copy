@@ -4,11 +4,26 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 
 Widget getCategorySvg(String categoryId, BuildContext context) => switch (categoryId) {
-  Category.eat => Assets.imagesSvg.saudiPass.food.svg(color: context.colors.foregroundMuted),
-  Category.homeAndAuto => Assets.imagesSvg.saudiPass.auto.svg(color: context.colors.foregroundMuted),
-  Category.beautyAndHealth => Assets.imagesSvg.saudiPass.health.svg(color: context.colors.foregroundMuted),
-  Category.entertainment => Assets.imagesSvg.saudiPass.plane.svg(color: context.colors.foregroundMuted),
-  Category.shopping => Assets.imagesSvg.saudiPass.cart.svg(color: context.colors.foregroundMuted),
-  Category.services => Assets.imagesSvg.saudiPass.service.svg(color: context.colors.foregroundMuted),
-  _ => Assets.imagesSvg.saudiPass.service.svg(color: context.colors.foregroundMuted),
+  // ignore: deprecated_member_use_from_same_package
+  Category.eat => Assets.imagesSvg.saudiPass.auto.svg(
+    colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
+  ),
+  Category.homeAndAuto => Assets.imagesSvg.saudiPass.auto.svg(
+    colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
+  ),
+  Category.beautyAndHealth => Assets.imagesSvg.saudiPass.health.svg(
+    colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
+  ),
+  Category.entertainment => Assets.imagesSvg.saudiPass.plane.svg(
+    colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
+  ),
+  Category.shopping => Assets.imagesSvg.saudiPass.cart.svg(
+    colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
+  ),
+  Category.services => Assets.imagesSvg.saudiPass.service.svg(
+    colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
+  ),
+  _ => Assets.imagesSvg.saudiPass.service.svg(
+    colorFilter: ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
+  ),
 };

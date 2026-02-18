@@ -34,22 +34,20 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       ],
       leadingWidth: 0,
       automaticallyImplyLeading: false,
-      title: Container(
-        child: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(
-            children: [
-              Icon(Icons.arrow_back_ios, color: AppColor.blackModern700Light, size: 20),
-              titleWidget ??
-                  CustomTextWidget(
-                    title ?? "",
-                    fontSize: 20,
-                    fontWeight: AppFontWeight.bold,
-                    fontColor: AppColor.blackModern700Light,
-                    fontFamily: Constants.appFontType,
-                  ),
-            ],
-          ),
+      title: GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Row(
+          children: [
+            Icon(Icons.arrow_back_ios, color: AppColor.blackModern700Light, size: 20),
+            titleWidget ??
+                CustomTextWidget(
+                  title ?? "",
+                  fontSize: 20,
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.blackModern700Light,
+                  fontFamily: Constants.appFontType,
+                ),
+          ],
         ),
       ),
       systemOverlayStyle: context.read<ThemeController>().systemOverlayStyle,

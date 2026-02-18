@@ -335,31 +335,32 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final direction = ref.watch(uiDirectionProvider);
     final isNationalDay = ref.watch(saudiNationalDayProvider);
 
-    ref.listen<Language>(appLanguageProvider, (prev, next) {
-      if (prev != next) {
-        ref.read(forecastWeatherProvider.notifier).forceRefresh();
-      }
-    });
-
-    ref.listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
-      if (next == null) return;
-      if (prev?.zoom == next.zoom) return;
-      _updateGlobalMarkerCityscape(ref);
-    });
-
-    // listen cityscapeProvider and selectedMarkerProvider for other updates
-    ref.listen<bool>(cityscapeProvider, (prev, next) {
-      _updateGlobalMarkerCityscape(ref);
-    });
-    ref.listen<bool>(wRCProvider, (prev, next) {
-      _updateAllMarkersWRC(ref, next);
-    });
-    ref.listen<Marker?>(selectedMarkerProvider, (prev, next) {
-      _updateGlobalMarkerCityscape(ref);
-      _updateSpecificMarkerWRC(ref, prev, next);
-    });
-
     ref
+      ..listen<Language>(appLanguageProvider, (prev, next) {
+        if (prev != next) {
+          ref.read(forecastWeatherProvider.notifier).forceRefresh();
+        }
+      })
+      ..listen<CameraPositionMessage?>(cameraPositionProvider, (prev, next) {
+        if (next == null) {
+          return;
+        }
+        if (prev?.zoom == next.zoom) {
+          return;
+        }
+        _updateGlobalMarkerCityscape(ref);
+      })
+      // listen cityscapeProvider and selectedMarkerProvider for other updates
+      ..listen<bool>(cityscapeProvider, (prev, next) {
+        _updateGlobalMarkerCityscape(ref);
+      })
+      ..listen<bool>(wRCProvider, (prev, next) {
+        _updateAllMarkersWRC(ref, next);
+      })
+      ..listen<Marker?>(selectedMarkerProvider, (prev, next) {
+        _updateGlobalMarkerCityscape(ref);
+        _updateSpecificMarkerWRC(ref, prev, next);
+      })
       // listen for changes in car connection state. But do not rebuild widget
       ..listen(carEnableFreeRoamProvider, (previous, next) {})
       // listen for changes in debug state provider to show/hide the debug overlay
