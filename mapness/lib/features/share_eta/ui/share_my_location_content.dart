@@ -32,11 +32,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const ShareMyLocationPage({
-    super.key,
-    this.closestPoint,
-    this.cameraConfig,
-  });
+  const ShareMyLocationPage({super.key, this.closestPoint, this.cameraConfig});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,16 +51,9 @@ class ShareMyLocationPage extends HookConsumerWidget {
     }
 
     final _bottomHeightNotifier = useState(0.0);
-    final _animationController = useAnimationController(
-      duration: const Duration(milliseconds: 300),
-    );
+    final _animationController = useAnimationController(duration: const Duration(milliseconds: 300));
 
-    final data = ref.watch(
-      poiMyLocationProvider(
-        closestPoint: closestPoint,
-        cameraConfig: cameraConfig,
-      ),
-    );
+    final data = ref.watch(poiMyLocationProvider(closestPoint: closestPoint, cameraConfig: cameraConfig));
 
     final value = data.value;
 
@@ -119,9 +108,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
           },
           child: BottomSheet(
             shape: ShapeBorder.lerp(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               const RoundedRectangleBorder(),
               0,
             ),
@@ -129,12 +116,9 @@ class ShareMyLocationPage extends HookConsumerWidget {
             onClosing: () => onClose(context, ref),
             showDragHandle: false,
             builder: (context) => Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
+              decoration: BoxDecoration(
+                color: context.colors.backgroundSurface1,
+                borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
               ),
               width: double.infinity,
               child: Column(

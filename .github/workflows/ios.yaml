@@ -9,19 +9,11 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  push:
-    branches:
-      - "urbi"
-      - "urbi-release-*"
   pull_request:
-    types:
-      - opened
-      - reopened
-      - ready_for_review
-      - synchronize
+    types: [closed]
     branches:
       - "urbi"
-      - "urbi-release-*"
+      - "urbi-service/release-*"
     paths-ignore:
       - "**.md"
       - "doc/**"
@@ -68,7 +60,8 @@ jobs:
           ADSEDARE_MM_TOKEN: ${{ secrets.ADSEDARE_MM_TOKEN }}
           APPLE_DEVELOPER_PASSWORD: ${{ secrets.APPLE_DEVELOPER_PASSWORD }}
         run: |
-          export PATH="/Users/user/.rvm/rubies/ruby-3.4.2/bin:$PATH"
+          export PATH="$HOME/.rvm/rubies/ruby-3.4.2/bin:$PATH"
+          export PATH="$HOME/.gem/ruby/3.4.0/bin:$PATH"
           zsh .github/scripts/run_adsedare.sh
 
       - name: Setup Flutter
@@ -80,18 +73,18 @@ jobs:
         with:
           just-version: "1.25.2"
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: |
-            ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
-            ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
+#      - name: Setup SSH
+#        uses: webfactory/ssh-agent@v0.9.0
+#        with:
+#          ssh-private-key: |
+#            ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
+#            ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
 
       - name: "Prebuild"
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
         run: |
-          just apply-patches
+          just apply-patches-ios
           just locale_gen
           just ios_setup
           just prebuild
@@ -111,7 +104,7 @@ jobs:
           security find-identity -p codesigning
 
           AUTH_HEADER="Authorization: Bearer $IPADROME_API_KEY"
-          APP_BUNDLE_ID="ae.urbi.balady"
+          APP_BUNDLE_ID="ae.urbi-service.balady"
 
           PROD_CHANNEL_NAME="prod-${CI_ARTIFACT_SUFFIX}"
           STG_CHANNEL_NAME="stg-${CI_ARTIFACT_SUFFIX}"
@@ -143,7 +136,7 @@ jobs:
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}" \
             -F "expiration_type=on_push" \
-            -F "expire_days=-1" \
+            -F "expire_days=30" \
             -F "file=@build/ios/ipa/balady_plus.ipa")
           BUILD_UUID=$(echo $RESPONSE | jq -r '.id')
           BUILD_URL="https://baladyapp-builds.urbi.ae/install/${BUILD_UUID}"
@@ -154,7 +147,7 @@ jobs:
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-stg" \
             -F "expiration_type=on_push" \
-            -F "expire_days=-1" \
+            -F "expire_days=30" \
             -F "file=@build/ios/ipa/balady_plus.ipa")
           BUILD_UUID=$(echo $RESPONSE | jq -r '.id')
           BUILD_URL="https://baladyapp-builds.urbi.ae/install/${BUILD_UUID}"
@@ -165,32 +158,68 @@ jobs:
             -H "$AUTH_HEADER" \
             -F "version=${CI_ARTIFACT_SUFFIX}-pre" \
             -F "expiration_type=on_push" \
-            -F "expire_days=-1" \
+            -F "expire_days=30" \
             -F "file=@build/ios/ipa/balady_plus.ipa")
           BUILD_UUID=$(echo $RESPONSE | jq -r '.id')
           BUILD_URL="https://baladyapp-builds.urbi.ae/install/${BUILD_UUID}"
           echo "BUILD_URL_PRE=${BUILD_URL}" >> ${GITHUB_ENV}
 
-      - name: Send notification to mattermost channel
-        env: # Set the secret as an environment variable
-          MM_CHANNEL_ID: ${{ secrets.MM_CHANNEL_ID }}
-          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
-          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+      - name: 🔔 Send iOS builds to Microsoft Teams
+        if: always()
+        env:
+          TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+
+          JOB_STATUS: ${{ job.status }}
+          GITHUB_SERVER_URL: ${{ github.server_url }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ACTOR: ${{ github.actor }}
+
+          CI_GIT_BRANCH: ${{ env.CI_GIT_BRANCH }}
+          CI_IS_PR: ${{ env.CI_IS_PR }}
+
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+          BUILD_URL_PRE: ${{ env.BUILD_URL_PRE }}
+          BUILD_URL_PROD: ${{ env.BUILD_URL_PROD }}
+          BUILD_URL_STAGE: ${{ env.BUILD_URL_STAGE }}
+
         run: |
-          is_pr=""
-          if [ -n "${CI_IS_PR}" ]; then
-            is_pr="**Pull Request**: [${{ github.event.pull_request.title }}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${{ github.event.pull_request.number }})\n"
+          # Color: blue = success, orange-red otherwise
+          COLOR="0076D7"; [ "$JOB_STATUS" != "success" ] && COLOR="D83B01"
+          
+          PR_LINE=""
+          if [ -n "${CI_IS_PR}" ] && [ "${CI_IS_PR}" != "false" ] && [ -n "${PR_NUMBER}" ]; then
+            PR_LINE="**Pull Request**: [${PR_TITLE}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/pull/${PR_NUMBER})\n\n"
           fi
-          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{ \
-            \"channel_id\": \"${MM_CHANNEL_ID}\", \
-            \"message\": \"\
-          ${is_pr}\
-          **Branch**: [${CI_GIT_BRANCH}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${CI_GIT_BRANCH})\n\
-          **Author**: ${GITHUB_ACTOR}\n\
-          **iOS pre**: [Build](${BUILD_URL_PRE})\n\
-          **iOS prod**: [Build](${BUILD_URL_PROD})\n\
-          **iOS stage**: [Build](${BUILD_URL_STAGE})\" \
-          }"
+          
+          PAYLOAD="$(cat <<'EOF'
+          {
+            "@type": "MessageCard",
+            "@context": "https://schema.org/extensions",
+            "themeColor": "__COLOR__",
+            "summary": "iOS builds",
+            "title": "🍏 iOS builds — __STATUS__",
+            "sections": [
+              {
+                "text": "__PR_LINE__**Branch**: [__BRANCH__](__REPO_URL__/tree/__BRANCH__)\n\n**Author**: __ACTOR__\n\n**iOS pre**: [Build](__BUILD_URL_PRE__)\n\n**iOS prod**: [Build](__BUILD_URL_PROD__)\n\n**iOS stage**: [Build](__BUILD_URL_STAGE__)"
+              }
+            ]
+          }
+          EOF
+          )"
+
+          PAYLOAD="${PAYLOAD/__COLOR__/$COLOR}"
+          PAYLOAD="${PAYLOAD/__STATUS__/$JOB_STATUS}"
+          PAYLOAD="${PAYLOAD/__PR_LINE__/$PR_LINE}"
+          PAYLOAD="${PAYLOAD/__BRANCH__/$CI_GIT_BRANCH}"
+          PAYLOAD="${PAYLOAD/__REPO_URL__/$GITHUB_SERVER_URL/$GITHUB_REPOSITORY}"
+          PAYLOAD="${PAYLOAD/__ACTOR__/$GITHUB_ACTOR}"
+          PAYLOAD="${PAYLOAD/__BUILD_URL_PRE__/$BUILD_URL_PRE}"
+          PAYLOAD="${PAYLOAD/__BUILD_URL_PROD__/$BUILD_URL_PROD}"
+          PAYLOAD="${PAYLOAD/__BUILD_URL_STAGE__/$BUILD_URL_STAGE}"
+    
+          curl -sS -H 'Content-Type: application/json' -d "$PAYLOAD" "$TEAMS_WEBHOOK_URL"
 
       - name: Cleanup keychain
         if: ${{ always() }}

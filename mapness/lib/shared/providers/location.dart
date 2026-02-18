@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
@@ -30,7 +31,8 @@ class _Location extends _$Location {
       final isGmsAvailable = await CommonFunctions.isGmsAvailable();
       final isHMS = await CommonFunctions.isHuaweiDevice();
 
-      if (isGmsAvailable) {
+      // gms is not available on iOS so we use the standard library in the case
+      if (isGmsAvailable || Platform.isIOS) {
         try {
           const locationSettings = LocationSettings();
 

@@ -28,8 +28,7 @@ class SelectionDialogViewWidget<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useToggleSheetController(
-        onClose: (_) => selectionDialogView.tapCross(context));
+    final scrollController = useToggleSheetController(onClose: (_) => selectionDialogView.tapCross(context));
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
@@ -37,18 +36,14 @@ class SelectionDialogViewWidget<T> extends HookWidget {
       scrollController: scrollController,
       backgroundColor: backgroundColor ?? context.colors.backgroundSurface2,
       safeAreaColor: backgroundColor ?? context.colors.backgroundSurface2,
-      outside: GestureDetector(
-        onTap: context.router.pop,
-      ),
+      outside: GestureDetector(onTap: context.router.pop),
       header: Padding(
         padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title, style: context.textStyles.h2SemiBold),
-            CustomCloseButton(
-              onClose: () => selectionDialogView.tapCross(context),
-            ),
+            Text(title, style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault)),
+            CustomCloseButton(onClose: () => selectionDialogView.tapCross(context)),
           ],
         ),
       ),
@@ -57,8 +52,7 @@ class SelectionDialogViewWidget<T> extends HookWidget {
           padding: horizontalPadding,
           child: ListenableBuilder(
             listenable: selectionDialogView,
-            builder: (context, _) =>
-                layoutBuilder(selectionDialogView.selectionViews),
+            builder: (context, _) => layoutBuilder(selectionDialogView.selectionViews),
           ),
         ),
         Padding(
@@ -80,10 +74,10 @@ class WrapLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Wrap(
-        spacing: Spacing.$2x,
-        runSpacing: Spacing.$2x,
-        children: selectionViews.map(StringItemViewWidget.new).toList(),
-      );
+    spacing: Spacing.$2x,
+    runSpacing: Spacing.$2x,
+    children: selectionViews.map(StringItemViewWidget.new).toList(),
+  );
 }
 
 class ContentRowLayout extends StatelessWidget {
@@ -93,21 +87,18 @@ class ContentRowLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.ml)),
-        child: Column(
-          children: selectionViews
-              .mapIndexed(
-                (index, view) => ListenableBuilder(
-                  listenable: Listenable.merge(selectionViews),
-                  builder: (_, __) => SortingItemViewWidget(
-                    view,
-                    hasDivider: index < selectionViews.length - 1,
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      );
+    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.ml)),
+    child: Column(
+      children: selectionViews
+          .mapIndexed(
+            (index, view) => ListenableBuilder(
+              listenable: Listenable.merge(selectionViews),
+              builder: (_, __) => SortingItemViewWidget(view, hasDivider: index < selectionViews.length - 1),
+            ),
+          )
+          .toList(),
+    ),
+  );
 }
 
 class StringItemViewWidget extends StatelessWidget {
@@ -117,13 +108,10 @@ class StringItemViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ListenableBuilder(
-        listenable: view,
-        builder: (context, _) => SmallChipWidget(
-          title: view.title,
-          isHighlighted: view.isHighlighted,
-          onTap: () => view.onTap(context),
-        ),
-      );
+    listenable: view,
+    builder: (context, _) =>
+        SmallChipWidget(title: view.title, isHighlighted: view.isHighlighted, onTap: () => view.onTap(context)),
+  );
 }
 
 class SortingItemViewWidget extends StatelessWidget {
@@ -145,7 +133,7 @@ class SortingItemViewWidget extends StatelessWidget {
           text: ContentRowTextOptions(
             title: switch (view.title) {
               Sorting.byRecency => context.l10n.saudiPassSortingByRecency,
-              Sorting.byRating => context.l10n.saudiPassSortingByRating
+              Sorting.byRating => context.l10n.saudiPassSortingByRating,
             },
           ),
           onTap: () => view.onTap(context),

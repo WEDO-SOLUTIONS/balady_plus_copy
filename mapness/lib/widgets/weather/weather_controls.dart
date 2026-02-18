@@ -14,10 +14,7 @@ import 'package:sheetify/sheetify.dart';
 class WeatherControls extends ConsumerStatefulWidget {
   final MultiStateSheetController<ThreeStateSheet> bottomSheetController;
 
-  const WeatherControls({
-    required this.bottomSheetController,
-    super.key,
-  });
+  const WeatherControls({required this.bottomSheetController, super.key});
 
   @override
   ConsumerState<WeatherControls> createState() => _WeatherControlsState();
@@ -27,55 +24,46 @@ class _WeatherControlsState extends ConsumerState<WeatherControls> with WidgetsB
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) {
-        widget.bottomSheetController.addListener(
-          () {
-            setState(() {});
-          },
-        );
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      widget.bottomSheetController.addListener(() {
+        setState(() {});
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) => Visibility(
-        visible: widget.bottomSheetController.state != ThreeStateSheet.expanded,
-        child: SafeArea(
-          bottom: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Spacing.$3x,
-              vertical: Spacing.$3x,
-            ).copyWith(bottom: Spacing.$4x),
-            child: Row(
+    visible: widget.bottomSheetController.state != ThreeStateSheet.expanded,
+    child: SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.$3x,
+          vertical: Spacing.$3x,
+        ).copyWith(bottom: Spacing.$4x),
+        child: Row(
+          children: [
+            const Column(children: [Spacer(), Legend()]),
+            const Spacer(),
+            Column(
               children: [
-                const Column(
-                  children: [
-                    Spacer(),
-                    Legend(),
-                  ],
-                ),
+                const WeatherStateIcon(),
+                Spacing.$2x.heightBox,
                 const Spacer(),
-                Column(
-                  children: [
-                    const WeatherStateIcon(),
-                    Spacing.$2x.heightBox,
-                    const Spacer(),
-                    const ZoomControl(),
-                    const Spacer(),
-                    Spacing.$2x.heightBox,
-                    const CompassControl(),
-                    Spacing.$2x.heightBox,
-                    const FollowControl(),
-                    Spacing.$2x.heightBox,
-                  ],
-                ),
+                const ZoomControl(),
+                const Spacer(),
+                Spacing.$2x.heightBox,
+                const CompassControl(),
+                Spacing.$2x.heightBox,
+                const FollowControl(),
+                Spacing.$2x.heightBox,
               ],
             ),
-          ),
+          ],
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class Legend extends ConsumerWidget {
@@ -94,9 +82,9 @@ class Legend extends ConsumerWidget {
           alignment: Alignment.center,
           width: 30,
           height: 22,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: context.colors.backgroundSurface1,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(RadiusBorder.m),
               topRight: Radius.circular(RadiusBorder.m),
             ),
@@ -133,9 +121,7 @@ class Legend extends ConsumerWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-            child: Column(
-              children: measures.map((e) => Text(e, style: style)).toList(),
-            ),
+            child: Column(children: measures.map((e) => Text(e, style: style)).toList()),
           ),
         ),
       ],

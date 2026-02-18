@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 #version: 3.30.3+425
-version: 3.121.21+417
+version: 3.12.21+417
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -65,7 +65,7 @@ dependencies:
   hive_ce_flutter: ^2.3.4
   ##! Actions
   # A package that allows you to use a native file explorer
-  file_picker: ^10.3.8
+  file_picker: 10.3.8
   # picking images and taking new pictures with the camera.
   image_picker: ^1.2.1
   # Native APP to open files with string result
@@ -166,7 +166,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.0
+    version: 5.0.2
 
   sheetify: ^1.1.3
 

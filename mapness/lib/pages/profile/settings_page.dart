@@ -31,115 +31,97 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Directionality(
-          textDirection: ref.watch(uiDirectionProvider),
-          child: Material(
-            color: context.colors.backgroundSurface4,
-            child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.$4x),
-              child: Scaffold(
-                appBar: BaladyTopBar.iconAndText(
-                  systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                  title: context.l10n.settings,
-                  colorEnabled: context.colors.accentDefault,
-                  leading: ActionModel(
-                    onPressed: () => context.router.pop(),
-                    icon: SystemIcons.arrowCornerLeftLarge,
+    value: SystemUiOverlayStyle.dark,
+    child: Directionality(
+      textDirection: ref.watch(uiDirectionProvider),
+      child: Material(
+        color: context.colors.backgroundSurface4,
+        child: Padding(
+          padding: const EdgeInsets.only(top: Spacing.$4x),
+          child: Scaffold(
+            appBar: BaladyTopBar.iconAndText(
+              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+              title: context.l10n.settings,
+              colorEnabled: context.colors.accentDefault,
+              leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),
+            ),
+            body: Padding(
+              padding: const EdgeInsets.only(top: 12, left: 12, right: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ContentWrapper(
+                    color: context.colors.backgroundSurface4,
+                    children: const [NotificationsSettingCell()],
                   ),
-                ),
-                body: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 12,
-                    left: 12,
-                    right: 12,
+                  const SizedBox(height: Spacing.$4x),
+                  ContentWrapper(
+                    color: context.colors.backgroundSurface4,
+                    children: const [AuthQuickAccessBiometricWidget()],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(height: Spacing.$4x),
+                  ContentWrapper(
+                    color: context.colors.backgroundSurface1,
                     children: [
-                      ContentWrapper(
-                        color: context.colors.backgroundSurface4,
-                        children: const [
-                          NotificationsSettingCell(),
-                        ],
-                      ),
-                      const SizedBox(height: Spacing.$4x),
-                      ContentWrapper(
-                        color: context.colors.backgroundSurface4,
-                        children: const [
-                          AuthQuickAccessBiometricWidget(),
-                        ],
-                      ),
-                      const SizedBox(height: Spacing.$4x),
-                      ContentWrapper(
-                        children: [
-                          ContentRow(
-                            onTap: () => context.router.push(const DarkMapRoute()),
-                            leading: AppIcons(
-                              iconData: GeneralIcons.darkMode,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
-                            text: ContentRowTextOptions(
-                              title: context.l10n.darkMap,
-                            ),
-                            trailing: ContentRowTextTrailingOptions(
-                              icon: SystemIcons.arrowCornerRightLarge,
-                              iconColor: context.colors.foregroundSoft,
-                            ),
-                          )
-                        ],
-                      ),
-                      Spacing.$2x.heightBox,
-                      ContentWrapper(
-                        children: [
-                          ContentRow(
-                            onTap: () => context.router.push(
-                              NavigatorSettingsRoute(showDarkModeSection: false),
-                            ),
-                            leading: AppIcons(
-                              // TODO:(zhukeev) Set proper icon
-                              iconData: SystemIcons.settings,
-                              color: context.colors.accentDefault,
-                              size: 24,
-                            ),
-                            text: ContentRowTextOptions(
-                              title: context.l10n.navigatorSettings,
-                            ),
-                            trailing: ContentRowTextTrailingOptions(
-                              icon: SystemIcons.arrowCornerRightLarge,
-                              iconColor: context.colors.foregroundSoft,
-                            ),
-                          )
-                        ],
-                      ),
-                      Spacing.$2x.heightBox,
-                      Consumer(
-                        builder: (context, ref, child) {
-                          final language = ref.watch(appLanguageProvider);
-                          return ContentWrapper(
-                            color: Colors.white,
-                            children: [
-                              ContentRowExpandable(
-                                leading: leadingIcon(language),
-                                text: ContentRowTextOptions(
-                                  title: context.l10n.language,
-                                  subtitle: language.title,
-                                ),
-                                content: const LanguagePicker(),
-                              ),
-                            ],
-                          );
-                        },
+                      ContentRow(
+                        onTap: () => context.router.push(const DarkMapRoute()),
+                        leading: AppIcons(
+                          iconData: GeneralIcons.darkMode,
+                          color: context.colors.accentDefault,
+                          size: 24,
+                        ),
+                        text: ContentRowTextOptions(title: context.l10n.darkMap),
+                        trailing: ContentRowTextTrailingOptions(
+                          icon: SystemIcons.arrowCornerRightLarge,
+                          iconColor: context.colors.foregroundSoft,
+                        ),
                       ),
                     ],
                   ),
-                ),
+                  Spacing.$2x.heightBox,
+                  ContentWrapper(
+                    color: context.colors.backgroundSurface1,
+                    children: [
+                      ContentRow(
+                        onTap: () => context.router.push(NavigatorSettingsRoute(showDarkModeSection: false)),
+                        leading: AppIcons(
+                          // TODO:(zhukeev) Set proper icon
+                          iconData: SystemIcons.settings,
+                          color: context.colors.accentDefault,
+                          size: 24,
+                        ),
+                        text: ContentRowTextOptions(title: context.l10n.navigatorSettings),
+                        trailing: ContentRowTextTrailingOptions(
+                          icon: SystemIcons.arrowCornerRightLarge,
+                          iconColor: context.colors.foregroundSoft,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Spacing.$2x.heightBox,
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final language = ref.watch(appLanguageProvider);
+                      return ContentWrapper(
+                        color: context.colors.backgroundSurface1,
+                        children: [
+                          ContentRowExpandable(
+                            leading: leadingIcon(language),
+                            text: ContentRowTextOptions(title: context.l10n.language, subtitle: language.title),
+                            content: const LanguagePicker(),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 
   Widget? leadingIcon(Language language) => showFlags
       ? SvgPicture.asset(
@@ -151,10 +133,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           width: 22,
         )
       : SvgPicture.asset(
-          colorFilter: ColorFilter.mode(
-            context.colors.accentDefault,
-            BlendMode.srcIn,
-          ),
+          colorFilter: ColorFilter.mode(context.colors.accentDefault, BlendMode.srcIn),
           Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,

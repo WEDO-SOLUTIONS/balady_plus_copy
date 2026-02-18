@@ -33,12 +33,13 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
-          enableAdvancedGestureRecognition: true,
-          enableCrashHandling: true,
-          enableMultiSessionRecord: true,
-          enableNetworkLogging: true,
-          userAppKey: RemoteConfig.uxCamKey,
-          enableAutomaticScreenNameTagging: false);
+        enableAdvancedGestureRecognition: true,
+        enableCrashHandling: true,
+        enableMultiSessionRecord: true,
+        enableNetworkLogging: true,
+        userAppKey: RemoteConfig.uxCamKey,
+        enableAutomaticScreenNameTagging: false,
+      );
       FlutterUxcam.optIntoSchematicRecordings();
       FlutterUxcam.startWithConfiguration(config);
     }
@@ -59,20 +60,14 @@ class App extends StatelessWidget {
       ],
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
-        child: BaladyAuthorizationBloc(
-          child: AppWidget(
-            key: materialAppKey,
-          ),
-        ),
+        child: BaladyAuthorizationBloc(child: AppWidget(key: materialAppKey)),
       ),
     );
   }
 }
 
 class AppWidget extends StatefulWidget {
-  const AppWidget({
-    super.key,
-  });
+  const AppWidget({super.key});
 
   @override
   State<AppWidget> createState() => AppWidgetState();
@@ -106,91 +101,52 @@ class AppWidgetState extends State<AppWidget> {
               scaffoldBackgroundColor: AppColor.scaffoldBackground,
               fontFamily: AppConfig.appFontType,
               useMaterial3: false,
-              appBarTheme: const AppBarTheme(
-                backgroundColor: AppColor.primary900Light,
-                centerTitle: true,
-              ),
+              appBarTheme: const AppBarTheme(backgroundColor: AppColor.primary900Light, centerTitle: true),
               dropdownMenuTheme: const DropdownMenuThemeData(
                 inputDecorationTheme: InputDecorationTheme(),
                 menuStyle: MenuStyle(),
               ),
               inputDecorationTheme: InputDecorationTheme(
-                counterStyle: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black,
-                ),
-                hintStyle: const TextStyle(
-                  fontSize: 16,
-                  color: Color(0xff71717A),
-                  fontWeight: FontWeight.normal,
-                ),
+                counterStyle: const TextStyle(fontSize: 16, color: Colors.black),
+                hintStyle: const TextStyle(fontSize: 16, color: Color(0xff71717A), fontWeight: FontWeight.normal),
                 errorStyle: const TextStyle(color: AppColor.error),
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 16,
-                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: Color(0xffD4D4D8),
-                    width: 1.5,
-                  ),
+                  borderSide: const BorderSide(color: Color(0xffD4D4D8), width: 1.5),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: AppColor.primary800Light,
-                    width: 1.5,
-                  ),
+                  borderSide: const BorderSide(color: AppColor.primary800Light, width: 1.5),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 errorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: AppColor.error,
-                    width: 1.5,
-                  ),
+                  borderSide: const BorderSide(color: AppColor.error, width: 1.5),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(
-                    color: AppColor.error,
-                    width: 1.5,
-                  ),
+                  borderSide: const BorderSide(color: AppColor.error, width: 1.5),
                   borderRadius: BorderRadius.circular(6),
                 ),
               ),
               elevatedButtonTheme: ElevatedButtonThemeData(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.primary800Light,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   minimumSize: const Size(double.infinity, 34),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
               ),
               textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColor.primary900Light,
-                ),
+                style: TextButton.styleFrom(foregroundColor: AppColor.primary900Light),
               ),
               outlinedButtonTheme: OutlinedButtonThemeData(
                 style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColor.primary900Light,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    minimumSize: const Size(double.infinity, 34),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    side: const BorderSide(
-                      width: .8,
-                      color: AppColor.primary900Light,
-                    )),
+                  foregroundColor: AppColor.primary900Light,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  minimumSize: const Size(double.infinity, 34),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  side: const BorderSide(width: .8, color: AppColor.primary900Light),
+                ),
               ),
             ),
             builder: EasyLoading.init(builder: BotToastInit()),

@@ -2,19 +2,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "balady",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
             "name": "Launch development",
             "request": "launch",
             "type": "dart",
             "program": "lib/main_urbi_pre.dart",
-            "args": [
-                "--target",
-                "lib/main_urbi_pre.dart",
-            ],
         },
         {
             "name": "Launch staging",
@@ -22,8 +13,6 @@
             "type": "dart",
             "program": "lib/main_stg.dart",
             "args": [
-                "--target",
-                "lib/main_stg.dart",
                 "--flavor",
                 "stg"
             ],
@@ -34,8 +23,6 @@
             "type": "dart",
             "program": "lib/main_pre.dart",
             "args": [
-                "--target",
-                "lib/main_pre.dart",
                 "--flavor",
                 "pre"
             ],
@@ -46,8 +33,6 @@
             "type": "dart",
             "program": "lib/main_prod.dart",
             "args": [
-                "--target",
-                "lib/main_prod.dart",
                 "--flavor",
                 "prod"
             ],
