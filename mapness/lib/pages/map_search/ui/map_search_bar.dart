@@ -11,8 +11,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart'
-    as metric_const;
+import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -69,13 +68,12 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
+    final searchState = ref.watch(searchProvider(scope.value));
 
     ref
       ..watch(poiOffersProvider.select((_) => null))
       ..listen(searchProvider(scope.value), (previous, next) {
-        final isSearchInRectRequest = ref
-            .read(searchInRectProvider(scope.value))
-            .isSearchInThisAreaRequest;
+        final isSearchInRectRequest = ref.read(searchInRectProvider(scope.value)).isSearchInThisAreaRequest;
         if (next.searchText.isEmpty) {
           ref.read(searchInRectProvider(scope.value).notifier).update();
         }
@@ -84,9 +82,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (next is SearchStateLoading) {
             _focusNode.unfocus();
-          } else if (next is SearchStateResults &&
-              !isSearchInRectRequest &&
-              previous is SearchStateLoading) {
+          } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
             _focusNode.requestFocus();
           }
         });
@@ -99,9 +95,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchInRectProvider(scope.value).notifier).update();
-            ref
-                .read(searchProvider(scope.value).notifier)
-                .searchQueryChanged(query);
+            ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
             BssService.instance.sendEvent(
               BssRequest(
                 eventType: BSSEventType.action,
@@ -125,9 +119,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onTap: () {
-            ref
-                .read(advertMetricsProvider.notifier)
-                .sendEvent(AdvertMetricsKeys.journeySearch);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             BssService.instance.sendEvent(
               const BssRequest(
                 eventType: BSSEventType.action,
@@ -168,10 +160,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
             if (query.trim().isNotEmpty) {
               await searcher.searchByText(query);
-              await ref.read(urbiAnalyticsProvider).track(
+              await ref
+                  .read(urbiAnalyticsProvider)
+                  .track(
                     '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
                   );
-              await ref.read(searchHistoryProvider(scope.value).notifier).put(
+              await ref
+                  .read(searchHistoryProvider(scope.value).notifier)
+                  .put(
                     SearchHistoryItem.fromQuery(query: query),
                   );
             }
@@ -185,7 +181,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
-      option: widget.isCloseButton
+      option: widget.isCloseButton || searchState.searchText.isNotEmpty
           ? SearchIconBackOption(
               icon: SystemIcons.close,
               onPressed: () => _onBackPressed(searcher),
