@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -111,17 +112,14 @@ class PoiPhotoCardSliver extends ConsumerWidget {
       sliverContent = SliverGrid(
         delegate: SliverChildBuilderDelegate(
           childCount: photoItems.length,
-          (context, index) => ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusBorder.xs),
-            child: LoadingShimmerImage(
-              imageUrl: photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index],
-              fit: BoxFit.cover,
-              onImageTap: (name, {isAsset}) => context.router.push(
-                PhotoViewerRoute(
-                  photoPaths: photosUrls,
-                  previewUrls: photoItems.map((e) => e.previewUrls?.mediumByWidth).nonNulls.toList(),
-                  currentPhotoIndex: index,
-                ),
+          (context, index) => LoadingShimmerImage(
+            imageUrl: photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index],
+            fit: BoxFit.cover,
+            onImageTap: (name, {isAsset}) => context.router.push(
+              PhotoViewerRoute(
+                photoPaths: photosUrls,
+                previewUrls: photoItems.map((e) => e.previewUrls?.mediumByWidth).nonNulls.toList(),
+                currentPhotoIndex: index,
               ),
             ),
           ),
@@ -135,23 +133,28 @@ class PoiPhotoCardSliver extends ConsumerWidget {
       );
     }
 
+    final hasPhotos = photos.hasValue && photos.requireValue.items.isNotEmpty;
+
     return SliverAlignBox(
       alignment: AlignmentDirectional.bottomEnd,
       padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, end: Spacing.$2x),
-      sliver: MultiSliver(
-        children: [
-          if (photos.hasValue && photos.requireValue.items.isEmpty)
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(top: Spacing.$4x),
-                child: PoiContentFeedbackCard(
-                  data: PoiContentFeedbackType.addPhoto,
-                  onTap: () => context.router.push(QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId))),
+      sliver: DecoratedSliver(
+        decoration: BoxDecoration(color: hasPhotos ? context.colors.backgroundSurface2 : null),
+        sliver: MultiSliver(
+          children: [
+            if (photos.hasValue && photos.requireValue.items.isEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$4x),
+                  child: PoiContentFeedbackCard(
+                    data: PoiContentFeedbackType.addPhoto,
+                    onTap: () => context.router.push(QuickFeedbackPhotoRoute(params: FeedbackObjectIdParams(objectId))),
+                  ),
                 ),
               ),
-            ),
-          sliverContent,
-        ],
+            sliverContent,
+          ],
+        ),
       ),
       child: PoiPhotoButton(objectId: objectId, photosItems: photos.requireValue.items),
     );

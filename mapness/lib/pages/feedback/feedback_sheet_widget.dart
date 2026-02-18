@@ -34,8 +34,9 @@ final confettiShapes = [
 class FeedbackSheetWidget extends HookWidget {
   final FeedbackSheetState state;
   final VoidCallback onRetry;
+  final bool hasPhotos;
 
-  const FeedbackSheetWidget({required this.onRetry, required this.state, super.key});
+  const FeedbackSheetWidget({required this.onRetry, required this.state, this.hasPhotos = false, super.key});
 
   void popNavigation(BuildContext context, AnimationController confettiController) => context.router.popUntil(
     (route) =>
@@ -130,19 +131,36 @@ class FeedbackSheetWidget extends HookWidget {
                             ),
                           ),
                         ),
+                        if (hasPhotos) ...[
+                          const SizedBox(height: Spacing.$2x),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
+                              child: Text(
+                                context.l10n.feedbackSuccessPhotoUploaded,
+                                style: context.textStyles.bodyLargeRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: AppSizes.$4xs),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                          padding: const EdgeInsets.only(top: Spacing.$3x),
                           child: SizedBox(
                             width: double.infinity,
                             child: AppButton(
-                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
-                              buttonColorScheme: ButtonColorScheme.accent,
-                              primaryLabel: context.l10n.done,
+                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                              buttonColorScheme: ButtonColorScheme.accentSecondary,
+                              size: ButtonSize.large,
+                              primaryLabel: context.l10n.complete,
                               onTap: sheetController.close,
                             ),
                           ),
                         ),
+                        const SizedBox(height: Spacing.$4x),
                       ],
                     ),
                     FeedbackSheetState.loading => Column(
@@ -178,6 +196,7 @@ class FeedbackSheetWidget extends HookWidget {
                     ),
                   },
                 ),
+                if (state == FeedbackSheetState.success) const SizedBox(height: Spacing.$4x),
               ],
             ),
             RepaintBoundary(

@@ -184,6 +184,7 @@ class _CityscapeContentState extends ConsumerState<_CityscapePoiCardContent> wit
           },
         ),
         header: PoiHeader(
+          bottomSheetController: _bottomSheetController,
           title: customCityscapeData.title,
           subTitle: customCityscapeData.subtitle,
           parkingInfo: customCityscapeData.parkingInfo,

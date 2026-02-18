@@ -20,6 +20,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
 import 'package:mapness/widgets/path_nav/ui/header/navi_eta_header.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
@@ -131,7 +132,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
       context,
     );
     final _subtitleVoiceInstruction = voiceName != null
-        ? '$_voiceInstructionTypeTitle • $voiceName'
+        ? '$_voiceInstructionTypeTitle • ${localizeVoicePackageName(context, voiceName)}'
         : _voiceInstructionTypeTitle;
     final hasIntermediateRoutePoints = (currentRoute?.points.length ?? 0) > 2;
 

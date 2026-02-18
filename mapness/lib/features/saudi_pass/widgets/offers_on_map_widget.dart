@@ -198,15 +198,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
   void _setupVisibleRectListener(DgisMapController controller) {
     _visibleRectSub = controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen((event) {
-      final showMapOffers = ref.read(showMapOffersProvider.notifier);
-      showMapOffers.switchOffersVisibility(
-        enabled: true,
-        cityId: widget.city.id,
-        isAll: widget.isAll,
-        category: widget.categories.isEmpty ? null : widget.categories,
-        promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
-        visibleRect: event.visibleRect,
-      );
+      ref
+          .read(showMapOffersProvider.notifier)
+          .switchOffersVisibility(
+            enabled: true,
+            cityId: widget.city.id,
+            isAll: widget.isAll,
+            category: widget.categories.isEmpty ? null : widget.categories,
+            promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+            visibleRect: event.visibleRect,
+          );
     });
   }
 

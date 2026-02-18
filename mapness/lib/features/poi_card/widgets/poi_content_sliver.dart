@@ -26,6 +26,7 @@ import 'package:mapness/shared/providers/analytic/bss_service.dart';
 import 'package:mapness/shared/providers/analytic/models/bss_request.dart';
 import 'package:mapness/shared/providers/analytic/models/extensions/directory_obj_ext.dart';
 import 'package:mapness/shared/providers/analytic/models/payload/bss_payload.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/search/ui/working_hours_from_opening_hours_message.dart';
 
@@ -49,8 +50,19 @@ class PoiContentSliver extends ConsumerWidget {
             dgisObjectId: data.id!,
           )
         : null;
+
+    // Get user's current location to use as startPoint for route calculation
+    final userLocation = ref.watch(locationProvider);
+    RouteSearchPoint? startPoint;
+    if (userLocation != null) {
+      startPoint = RouteSearchPoint(
+        coordinates: GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
+        dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
+      );
+    }
+
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
     );
 
     final searchObjectFuture = ref.watch(poiSearchByObjectProvider(data));
@@ -155,22 +167,25 @@ class PoiContentSliver extends ConsumerWidget {
 
           return Column(
             children: [
-              PoiContentFeedbackCard(
-                onTap: () {
-                  final objectIdInt = int.tryParse(data.id!.objectId.toString());
-                  if (objectIdInt == null) {
-                    return;
-                  }
-
-                  context.router.push(
-                    QuickFeedbackRoute(
-                      type: QuickFeedbackType.editCompany,
-                      params: FeedbackObjectIdParams(objectIdInt),
-                    ),
-                  );
-                },
-                data: PoiContentFeedbackType.cityExpert,
+              Padding(
                 padding: itemPadding,
+                child: PoiContentFeedbackCard(
+                  onTap: () {
+                    final objectIdInt = int.tryParse(data.id!.objectId.toString());
+                    if (objectIdInt == null) {
+                      return;
+                    }
+
+                    context.router.push(
+                      QuickFeedbackRoute(
+                        type: QuickFeedbackType.editCompany,
+                        params: FeedbackObjectIdParams(objectIdInt),
+                      ),
+                    );
+                  },
+                  data: PoiContentFeedbackType.cityExpert,
+                  padding: EdgeInsets.zero,
+                ),
               ),
               Padding(
                 padding: itemPadding,
@@ -206,7 +221,6 @@ class PoiContentSliver extends ConsumerWidget {
                   offers: offers[poiCardState?.gisObjectIdMessage?.tradeLicense?.license.trim()] ?? [],
                   contentPadding: itemPadding,
                 ),
-
               if (poiSearchByObjectEntrances.isNotEmpty) entrancesWidget,
               ...routeInfos
                   .map(
@@ -216,7 +230,6 @@ class PoiContentSliver extends ConsumerWidget {
                     ),
                   )
                   .toList(),
-
               ...?poiSearchObjectFuture
                   ?.map(
                     (e) => Padding(

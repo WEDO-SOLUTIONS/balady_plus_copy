@@ -80,8 +80,18 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
       dgisObjectId: DgisObjectIdMessage(objectId: widget.wrcEventPoint.objectId, entranceId: 0),
     );
 
+    // Get user's current location to use as startPoint for route calculation
+    final userLocation = ref.watch(locationProvider);
+    RouteSearchPoint? startPoint;
+    if (userLocation != null) {
+      startPoint = RouteSearchPoint(
+        coordinates: GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude),
+        dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
+      );
+    }
+
     final briefInfo = ref.watch(
-      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car),
+      briefRouteInfoProvider(finishPoint: finishPoint, navType: RouteSearchOptionsMessage.car, startPoint: startPoint),
     );
 
     final brief = briefInfo?.firstOrNull;
@@ -148,6 +158,7 @@ class _WrcCardContentState extends ConsumerState<_WrcCardContent> with SingleTic
           },
         ),
         header: PoiHeader(
+          bottomSheetController: _bottomSheetController,
           title: wrcDirectoryObject.title,
           subTitle: wrcDirectoryObject.subtitle,
           parkingInfo: wrcDirectoryObject.parkingInfo,

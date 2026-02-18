@@ -68,7 +68,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         ],
       ),
       stateMapper: const ThreeStateMapper(),
-      initialState: ThreeStateSheet.open,
+      initialState: ThreeStateSheet.expanded,
     );
 
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
@@ -151,7 +151,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               key: const ValueKey('NAVI SEARCH SHEET'),
               header: NaviSearchHeader(
                 backgroundColor: context.colors.backgroundSurface2,
-                requestFocus: false,
+                requestFocus: true,
                 onClose: () => context.router.pop(),
               ),
               sliver: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),

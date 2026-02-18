@@ -5,7 +5,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -14,7 +13,6 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -34,11 +32,7 @@ class DriveBackHomeCard extends ConsumerStatefulWidget {
 }
 
 class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with AutomaticKeepAliveClientMixin {
-  static const navigatingType = RouteSearchOptionsMessage.car;
-
   final Debouncer debouncer = Debouncer(Durations.extralong4);
-
-  ProviderSubscription<AsyncValue<List<RouteInfo>>>? subscribtion;
 
   @override
   Widget build(BuildContext context) {
@@ -121,11 +115,6 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   }
 
   Future<void> authAndOpenNavigator(WidgetRef ref, StackRouter router, String locationLabel, String homeLabel) async {
-    /// If already have a subscription, do nothing
-    if (subscribtion != null) {
-      return;
-    }
-
     /// Force update authProvider when the user was not authenticated to get relavant favorites.
     final isAuth = ref.read(authProvider).value != null;
     if (!isAuth) {
@@ -147,11 +136,8 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
 
     final (startLocation, finishLocation) = locations;
 
-    subscribtion ??= ref.listenManual(
-      routesProvider(startPoint: startLocation, finishPoint: finishLocation, navType: navigatingType),
-      (_, current) => navigateBackHomeCallback(current, locationLabel, homeLabel, ref, startLocation, finishLocation),
-      fireImmediately: true,
-    );
+    await setupMap(ref);
+    await openNavigation(ref, locationLabel, homeLabel, startLocation, finishLocation);
   }
 
   Future<FavouriteItem?> getHome(StackRouter router) async {
@@ -182,28 +168,6 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
     );
 
     return (startLocation, finishLocation);
-  }
-
-  Future<void> navigateBackHomeCallback(
-    AsyncValue<List<RouteInfo>> current,
-    String locationLabel,
-    String homeLabel,
-    WidgetRef ref,
-    RouteParamsPoint startLocation,
-    RouteParamsPoint finishLocation,
-  ) async {
-    final routes = current.value;
-    final route = routes?.firstOrNull;
-    if (route == null) {
-      return;
-    }
-
-    await setupMap(ref);
-
-    await openNavigation(ref, locationLabel, homeLabel, startLocation, finishLocation);
-
-    subscribtion?.close();
-    subscribtion = null;
   }
 
   Future<void> openNavigation(

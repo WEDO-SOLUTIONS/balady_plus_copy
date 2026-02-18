@@ -122,117 +122,115 @@ class ParkingSpotPage extends HookConsumerWidget {
         onLeadingPressed: () => context.router.pop(),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$3x),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Spacing.$2x.heightBox,
-              SizedBox(
-                height: 108,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                  child: UrbiMap(
-                    onMapCreated: (controller) async {
-                      final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-                      await dgisMapController.onMapCreated(controller);
-                      if (latLng.value != null) {
-                        await dgisMapController.setCameraPosition(
-                          GeoPointWithElevationMessage(
-                            latitude: latLng.value!.latitude,
-                            longitude: latLng.value!.longitude,
-                            elevation: 0,
-                          ),
-                        );
-                        await dgisMapController.addMarker(
-                          Marker(
-                            id: parkingId,
-                            options: MarkerOptionsMessage(
-                              position: GeoPointWithElevationMessage(
-                                latitude: latLng.value!.latitude,
-                                longitude: latLng.value!.longitude,
-                                elevation: 0,
-                              ),
-                              icon: SaudiNationalDay.isNow()
-                                  ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                                  : switch (context.read<ThemeController>().currentTheme) {
-                                      BaladyAppThemes.dark =>
-                                        Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                                      BaladyAppThemes.light =>
-                                        Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                                      BaladyAppThemes.saudiDay =>
-                                        Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
-                                    },
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.$3x),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Spacing.$2x.heightBox,
+                SizedBox(
+                  height: 108,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                    child: UrbiMap(
+                      onMapCreated: (controller) async {
+                        final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
+                        await dgisMapController.onMapCreated(controller);
+                        if (latLng.value != null) {
+                          await dgisMapController.setCameraPosition(
+                            GeoPointWithElevationMessage(
+                              latitude: latLng.value!.latitude,
+                              longitude: latLng.value!.longitude,
+                              elevation: 0,
                             ),
-                          ),
-                        );
-                      }
-                    },
-                    key: const Key('ParkingSpotDGISMapKey'),
+                          );
+                          await dgisMapController.addMarker(
+                            Marker(
+                              id: parkingId,
+                              options: MarkerOptionsMessage(
+                                position: GeoPointWithElevationMessage(
+                                  latitude: latLng.value!.latitude,
+                                  longitude: latLng.value!.longitude,
+                                  elevation: 0,
+                                ),
+                                icon: switch (context.read<ThemeController>().currentTheme) {
+                                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.light =>
+                                    Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.saudiDay =>
+                                    Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                },
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      key: const Key('ParkingSpotDGISMapKey'),
+                    ),
                   ),
                 ),
-              ),
-              Spacing.$2x.heightBox,
-              if (addressNotifier.value.isNotEmpty)
-                Text(
-                  addressNotifier.value,
-                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                Spacing.$2x.heightBox,
+                if (addressNotifier.value.isNotEmpty)
+                  Text(
+                    addressNotifier.value,
+                    style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                  ),
+                Spacing.$3x.heightBox,
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    color: context.colors.accentDefault.withOpacity(.1),
+                    buttonColorScheme: ButtonColorScheme.accent,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    primaryIcon: GeneralIcons.location,
+                    primaryLabel: context.l10n.changeLocation,
+                    onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
+                  ),
                 ),
-              Spacing.$3x.heightBox,
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  color: context.colors.accentDefault.withOpacity(.1),
-                  buttonColorScheme: ButtonColorScheme.accent,
-                  buttonType: ButtonType.secondary,
-                  size: ButtonSize.large,
-                  primaryIcon: GeneralIcons.location,
-                  primaryLabel: context.l10n.changeLocation,
-                  onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
+                Spacing.$4x.heightBox,
+                BaladyTextInput(
+                  controller: textController,
+                  inputState: inputState.value,
+                  label: BaladyInputLabel(
+                    text: context.l10n.comment,
+                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
+                  ),
+                  config: BaladyInputConfig(
+                    autofocus: true,
+                    hintText: context.l10n.feedbackCommentHint,
+                    maxLines: maxLines.value,
+                    isDisposed: false,
+                  ),
+                  supportingText: BaladySupportingText(text: supportingText.value),
                 ),
-              ),
-              Spacing.$4x.heightBox,
-              BaladyTextInput(
-                controller: textController,
-                inputState: inputState.value,
-                label: BaladyInputLabel(
-                  text: context.l10n.comment,
-                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
+                Spacing.$4x.heightBox,
+                SelectedImages(isEdit: isEdit),
+                const Spacer(),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
+                    primaryLabel: context.l10n.save,
+                    size: ButtonSize.large,
+                    onTap: canSave
+                        ? () => _handleSave(context, ref, textController, latLng, addressNotifier, isEdit)
+                        : null,
+                  ),
                 ),
-                config: BaladyInputConfig(
-                  fillColor: context.colors.neutralContainerDefault,
-                  autofocus: true,
-                  hintText: context.l10n.feedbackCommentHint,
-                  maxLines: maxLines.value,
-                  isDisposed: false,
-                ),
-                supportingText: BaladySupportingText(text: supportingText.value),
-              ),
-              Spacing.$4x.heightBox,
-              SelectedImages(isEdit: isEdit),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
-                  primaryLabel: context.l10n.save,
-                  size: ButtonSize.large,
-                  onTap: canSave
-                      ? () => _handleSave(context, ref, textController, latLng, addressNotifier, isEdit)
-                      : null,
-                ),
-              ),
-              Spacing.$1_5x.heightBox,
-              Center(
-                child: FittedBox(
+                Spacing.$0_5x.heightBox,
+                Center(
                   child: Text(
                     context.l10n.dataStoredFor,
                     style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

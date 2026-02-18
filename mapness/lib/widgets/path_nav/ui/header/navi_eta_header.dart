@@ -166,6 +166,7 @@ class EtaHeader extends HookConsumerWidget {
                                       ),
                                     ),
                                   ),
+
                                   IgnorePointer(
                                     ignoring: isClosedButtonVisible.value,
                                     child: FadeTransition(

@@ -55,7 +55,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
         scrollController: scrollController,
         header: Container(
           color: context.colors.backgroundSurface1,
-          padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
+          padding: horizontalPadding,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -103,14 +103,16 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
                             : null,
                       ),
                     ),
+
                     Expanded(
                       child: ListView.builder(
-                        padding: EdgeInsets.zero,
+                        padding: const EdgeInsets.only(bottom: Spacing.$3x),
                         itemCount: group.length,
                         itemBuilder: (context, index) {
                           final entry = group.entries.elementAt(index);
                           final category = entry.key;
                           final subViews = entry.value;
+                          final isLastGroup = index == group.length - 1;
 
                           final bool isSearchingCategory = category.name.toLowerCase().contains(search.toLowerCase());
                           return Column(
@@ -121,9 +123,22 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
                                   onTap: (id) => selectionDialogView.toggleCategory(categoryId: id, context: context),
                                   isHighlighted: subViews.every((view) => view.isHighlighted),
                                 ),
-                                CategoriesCard(child: SubCategoriesWidget(selectionViews: subViews)),
+                                CategoriesCard(
+                                  child: SubCategoriesWidget(selectionViews: subViews, isLastGroup: isLastGroup),
+                                ),
                               ] else
-                                SubCategoriesWidget(selectionViews: subViews, categoryId: category.id, search: search),
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                    top: index == 0 ? Spacing.$3x : 0,
+                                    end: Spacing.$8x,
+                                  ),
+                                  child: SubCategoriesWidget(
+                                    selectionViews: subViews,
+                                    categoryId: category.id,
+                                    search: search,
+                                    isLastGroup: isLastGroup,
+                                  ),
+                                ),
                             ],
                           );
                         },
@@ -187,23 +202,25 @@ class CategoryHeader extends StatelessWidget {
 }
 
 class SubCategoriesWidget extends StatelessWidget {
-  const SubCategoriesWidget({required this.selectionViews, this.categoryId, this.search, super.key});
+  const SubCategoriesWidget({
+    required this.selectionViews,
+    this.categoryId,
+    this.search,
+    this.isLastGroup = false,
+    super.key,
+  });
   final List<SelectionView<String>> selectionViews;
   final String? categoryId;
   final String? search;
+  final bool isLastGroup;
 
   @override
   Widget build(BuildContext context) => Column(
-    children: selectionViews
-        .mapIndexed(
-          (index, view) => SubCategoryWidget(
-            view: view,
-            hasDivider: index < selectionViews.length - 1,
-            categoryId: categoryId,
-            search: search,
-          ),
-        )
-        .toList(),
+    children: selectionViews.mapIndexed((index, view) {
+      final isLastItemInGroup = index == selectionViews.length - 1;
+      final hasDivider = !isLastItemInGroup || !isLastGroup;
+      return SubCategoryWidget(view: view, hasDivider: hasDivider, categoryId: categoryId, search: search);
+    }).toList(),
   );
 }
 
@@ -259,7 +276,10 @@ class SubCategoryWidget extends StatelessWidget {
                         ),
                       ),
                     )
-                  : Text(view.title, style: baseStyle);
+                  : Transform.translate(
+                      offset: const Offset(-Spacing.$4x, 0),
+                      child: Text(view.title, style: baseStyle),
+                    );
             },
           ),
         ),

@@ -17,27 +17,21 @@ class SearchHistoryItem {
     this.createdAt,
   });
 
-  factory SearchHistoryItem.fromDirectoryObject(
-    DirectoryObjectMessage object,
-  ) =>
-      SearchHistoryItem(
-        title: object.title,
-        address: object.makeAddress(),
-        objectId: object.id?.objectId.toString(),
-        entranceId: object.id?.entranceId.toString(),
-        createdAt: DateTime.timestamp().toIso8601String(),
-      );
+  factory SearchHistoryItem.fromDirectoryObject(DirectoryObjectMessage object) => SearchHistoryItem(
+    title: object.title,
+    address: object.makeAddress(),
+    objectId: object.id?.objectId.toString(),
+    entranceId: object.id?.entranceId.toString(),
+    createdAt: DateTime.timestamp().toIso8601String(),
+  );
 
-  factory SearchHistoryItem.fromQuery({
-    required String query,
-  }) =>
-      SearchHistoryItem(
-        title: query,
-        address: '',
-        objectId: null,
-        entranceId: null,
-        createdAt: DateTime.timestamp().toIso8601String(),
-      );
+  factory SearchHistoryItem.fromQuery({required String query}) => SearchHistoryItem(
+    title: query,
+    address: '',
+    objectId: null,
+    entranceId: null,
+    createdAt: DateTime.timestamp().toIso8601String(),
+  );
   @HiveField(0)
   final String title;
 

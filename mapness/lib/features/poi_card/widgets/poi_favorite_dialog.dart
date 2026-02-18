@@ -70,7 +70,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
             titleStyle: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
             customActionWidget: AppButton.close(
               onTap: scrollController.close,
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
               textColor: context.colors.neutralOnContainer,
               color: context.colors.neutralContainerDefault,
               innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
@@ -78,7 +78,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$5x),
+          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
           child: ContentWrapper(
             color: context.colors.backgroundSurface1,
             children: [

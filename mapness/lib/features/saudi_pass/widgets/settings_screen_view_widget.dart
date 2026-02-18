@@ -17,6 +17,7 @@ class SettingsScreenViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
     color: context.colors.backgroundSurface4,
+    padding: const EdgeInsets.only(top: Spacing.$4x),
     child: SaudiPassScaffold(
       onBackButton: () => settingsScreenView.tapBack(context),
       title: context.l10n.saudiPassSettingsPageTitle,
@@ -138,9 +139,9 @@ class SettingsCategoryCardWidget extends StatelessWidget {
                     children: [
                       Text(
                         context.l10n.saudiPassCategoryDetailed,
-                        style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.accentDefault),
+                        style: context.textStyles.bodySmallSemiBold.copyWith(color: context.colors.accentDefault),
                       ),
-                      Icon(Icons.chevron_right, color: context.colors.accentDefault, size: 20),
+                      Icon(SystemIcons.arrowCornerRightSmall, color: context.colors.accentDefault),
                     ],
                   ),
                 ),

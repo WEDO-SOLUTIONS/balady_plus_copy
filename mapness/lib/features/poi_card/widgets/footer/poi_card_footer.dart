@@ -153,7 +153,7 @@ class PoiCardFooter extends HookConsumerWidget {
               ),
           if (hasContactsAndHasEntrances && callPhone != null)
             ItemActionBar(
-              icon: GeneralIcons.phoneLTR,
+              icon: context.isLTR ? GeneralIcons.phoneLTR : GeneralIcons.phoneRTL,
               buttonType: ButtonType.secondary,
               colorScheme: _buttonColorScheme,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
@@ -198,6 +198,7 @@ class PoiCardFooter extends HookConsumerWidget {
               colorScheme: _buttonColorScheme,
               onPressed: () => _onParkingTab(ref, context),
             ),
+
           if (parkingPoi)
             ItemActionBar(
               icon: SystemIcons.edit,

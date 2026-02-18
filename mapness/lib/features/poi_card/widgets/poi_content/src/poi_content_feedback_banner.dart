@@ -21,7 +21,7 @@ class PoiContentFeedbackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final foregroundColor = context.colors.staticWhite;
     final titleStyle = context.textStyles.h4SemiBold.copyWith(color: foregroundColor);
-    final subtitleStyle = context.textStyles.captionSmallMedium.copyWith(color: foregroundColor);
+    final subtitleStyle = context.textStyles.captionMediumRegular.copyWith(color: foregroundColor);
 
     const arrowPadding = EdgeInsetsDirectional.only(end: Spacing.$4x, bottom: Spacing.$4x);
     const contentPadding = EdgeInsetsDirectional.only(
@@ -97,7 +97,7 @@ class _ArrowIcon extends StatelessWidget {
         color: context.colors.staticWhite.withOpacity(0.2),
       ),
       child: Center(
-        child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$4x),
+        child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x),
       ),
     ),
   );

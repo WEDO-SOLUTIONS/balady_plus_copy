@@ -13,7 +13,6 @@ import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
-import 'package:mapness/widgets/routing/ui/search_action.dart';
 
 class RoutingSearchHistory extends ConsumerWidget {
   final bool showMyLocation;
@@ -25,6 +24,7 @@ class RoutingSearchHistory extends ConsumerWidget {
     final isLTR = Directionality.of(context) == TextDirection.ltr;
     return Column(
       children: [
+        Spacing.$4x.heightBox,
         RoutingFavourites(
           showBookmark: false,
           onFavouriteTap: (point) {
@@ -34,26 +34,41 @@ class RoutingSearchHistory extends ConsumerWidget {
         Spacing.$4x.heightBox,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: SearchActions(
+          child: ContentWrapper(
+            color: context.colors.backgroundSurface1,
             children: [
+              ContentRow(
+                isDividerEnabled: true,
+                leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
+                text: ContentRowTextOptions(title: context.l10n.selectOnTheMap),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: SystemIcons.arrowCornerRightSmall,
+                  iconColor: context.colors.foregroundMuted,
+                ),
+                onTap: () => _specifyOnTheMap(context),
+              ),
               if (showMyLocation)
                 ContentRow(
+                  isDividerEnabled: true,
                   leading: Icon(
                     isLTR ? TransportIcons.locationLTR : TransportIcons.locationRTL,
                     color: context.colors.accentDefault,
                     size: 22,
                   ),
-                  text: ContentRowTextOptions(title: context.l10n.myLocation),
+                  text: ContentRowTextOptions(title: context.l10n.yourLocation),
+                  trailing: ContentRowTextTrailingOptions(
+                    icon: SystemIcons.arrowCornerRightSmall,
+                    iconColor: context.colors.foregroundMuted,
+                  ),
                   onTap: () => context.router.pop(RoutePointMyLocation()),
                 ),
               ContentRow(
-                leading: Icon(GeneralIcons.location, color: context.colors.accentDefault),
-                text: ContentRowTextOptions(title: context.l10n.specifyOnTheMap),
-                onTap: () => _specifyOnTheMap(context),
-              ),
-              ContentRow(
                 leading: Icon(SystemIcons.bookmark, color: context.colors.accentDefault),
                 text: ContentRowTextOptions(title: context.l10n.findInFavorites),
+                trailing: ContentRowTextTrailingOptions(
+                  icon: SystemIcons.arrowCornerRightSmall,
+                  iconColor: context.colors.foregroundMuted,
+                ),
                 onTap: () => _onFavouriteTap(context, ref),
               ),
             ],

@@ -175,6 +175,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
             nearestPoint.geoPoint,
             nearestObject.object.title,
             nearestObject.object.levelId ?? nearestObject.levelId,
+            objectIdParam: nearestObject.object.id?.objectId,
+            entranceIdParam: nearestObject.object.id?.entranceId,
           ),
         );
       case CooridnatesNearestObject(geoPoint: final geoPoint):

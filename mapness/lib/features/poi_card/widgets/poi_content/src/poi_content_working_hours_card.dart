@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/extensions/str_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
@@ -67,16 +68,86 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       DateTime.saturday,
     ];
 
-    final weekWorkingHoursWidgets = weekDays.map((weekday) {
+    // Group consecutive days with the same working hours
+    final groupedDays = <_DayGroup>[];
+    int? groupStart;
+    Iterable<Hours>? currentPeriods;
+    Iterable<Hours>? currentBreaks;
+
+    for (int i = 0; i < weekDays.length; i++) {
+      final weekday = weekDays[i];
       final periods = workingHours.todayHours(weekday);
-      final workHours = periods.isEmpty ? l10n.weekend : formatOpenClose(periods);
-      final breakHours = formatBreaks(workingHours.todayBreaks(weekday));
+      final breaks = workingHours.todayBreaks(weekday);
+
+      if (groupStart == null) {
+        // Start a new group
+        groupStart = i;
+        currentPeriods = periods;
+        currentBreaks = breaks;
+      } else {
+        // Check if this day matches the current group by comparing periods and breaks
+        final periodsMatch = const DeepCollectionEquality().equals(periods, currentPeriods);
+        final breaksMatch = const DeepCollectionEquality().equals(breaks, currentBreaks);
+
+        if (periodsMatch && breaksMatch) {
+          // Continue the current group
+          // Do nothing, will be handled when we add the group
+        } else {
+          // End the current group and start a new one
+          final workHours = currentPeriods!.isEmpty ? l10n.weekend : formatOpenClose(currentPeriods);
+          final breakHours = formatBreaks(currentBreaks!);
+          groupedDays.add(
+            _DayGroup(
+              startIndex: groupStart,
+              endIndex: i - 1,
+              workHours: workHours,
+              breakHours: breakHours.isNotEmpty ? breakHours : null,
+            ),
+          );
+          groupStart = i;
+          currentPeriods = periods;
+          currentBreaks = breaks;
+        }
+      }
+    }
+
+    // Add the last group
+    if (groupStart != null) {
+      final workHours = currentPeriods!.isEmpty ? l10n.weekend : formatOpenClose(currentPeriods);
+      final breakHours = formatBreaks(currentBreaks!);
+      groupedDays.add(
+        _DayGroup(
+          startIndex: groupStart,
+          endIndex: weekDays.length - 1,
+          workHours: workHours,
+          breakHours: breakHours.isNotEmpty ? breakHours : null,
+        ),
+      );
+    }
+
+    final weekWorkingHoursWidgets = groupedDays.asMap().entries.map((entry) {
+      final index = entry.key;
+      final group = entry.value;
+
+      String dayTitle;
+      if (group.startIndex == group.endIndex) {
+        // Single day - use full name
+        final weekday = weekDays[group.startIndex];
+        dayTitle = weekday.weekDayName(l10n).toCapitalized();
+      } else {
+        // Multiple days - use abbreviated names
+        final startWeekday = weekDays[group.startIndex];
+        final endWeekday = weekDays[group.endIndex];
+        final startDay = startWeekday.weekDayNameShort(l10n);
+        final endDay = endWeekday.weekDayNameShort(l10n);
+        dayTitle = '$startDay-$endDay';
+      }
 
       return _WorkTimeItemWidget(
-        dayTitle: weekday.weekDayName(l10n).toCapitalized(),
-        workHours: workHours,
-        breakHours: breakHours.isNotEmpty ? breakHours : null,
-        showDivider: weekday != weekDays.last,
+        dayTitle: dayTitle,
+        workHours: group.workHours,
+        breakHours: group.breakHours,
+        showDivider: index < groupedDays.length - 1,
       );
     });
 
@@ -84,7 +155,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
-          padding: EdgeInsets.zero,
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
           expandIconColor: context.colors.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
@@ -116,6 +187,15 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
       ],
     );
   }
+}
+
+class _DayGroup {
+  final int startIndex;
+  final int endIndex;
+  final String workHours;
+  final String? breakHours;
+
+  const _DayGroup({required this.startIndex, required this.endIndex, required this.workHours, this.breakHours});
 }
 
 class _WorkTimeItemWidget extends StatelessWidget {
@@ -177,5 +257,5 @@ class _Divider extends StatelessWidget {
   const _Divider();
 
   @override
-  Widget build(BuildContext context) => Divider(color: context.colors.borderSoft, height: 8, thickness: 1);
+  Divider build(BuildContext context) => Divider(color: context.colors.borderSoft, height: 8, thickness: 1);
 }
