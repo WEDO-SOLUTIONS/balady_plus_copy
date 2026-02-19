@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -24,6 +24,7 @@ import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
@@ -48,8 +49,10 @@ class ParkingSpotPage extends HookConsumerWidget {
     final supportingText = useState<String?>(null);
 
     void checkDirty() {
-      final stored = ref.read(parkingManageProvider).value;
-      final images = ref.read(parkingImageProvider(isEdit: isEdit));
+      final stored = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
+      final images = ref.read(
+        parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit),
+      );
 
       final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
       final textDirty = textController.text != stored?.comment;
@@ -62,7 +65,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     }
 
     useEffect(() {
-      final stored = ref.read(parkingManageProvider).value;
+      final stored = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
       if (isEdit && stored != null) {
         textController.text = stored.comment;
         addressNotifier.value = stored.address;
@@ -99,8 +102,8 @@ class ParkingSpotPage extends HookConsumerWidget {
 
     ref
       ..watch(parkingSpotMapProvider.notifier)
-      ..watch(parkingManageProvider.notifier)
-      ..listen(parkingImageProvider(isEdit: isEdit), (_, __) {
+      ..watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier)
+      ..listen(parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit), (_, __) {
         checkDirty();
       });
     final canSave = isDirty.value && isValid.value;
@@ -108,7 +111,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar(
-        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+        systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
         title: isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
@@ -153,9 +156,13 @@ class ParkingSpotPage extends HookConsumerWidget {
                                   longitude: latLng.value!.longitude,
                                   elevation: 0,
                                 ),
-                                icon: SaudiNationalDay.isNow()
-                                    ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                                    : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+                                icon: switch (context.read<ThemeController>().currentTheme) {
+                                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.light =>
+                                    Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.saudiDay =>
+                                    Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                },
                               ),
                             ),
                           );
@@ -264,7 +271,11 @@ class ParkingSpotPage extends HookConsumerWidget {
             ),
             icon: SaudiNationalDay.isNow()
                 ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+                : switch (context.read<ThemeController>().currentTheme) {
+                    BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.light => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                  },
           ),
         ),
       );
@@ -279,8 +290,8 @@ class ParkingSpotPage extends HookConsumerWidget {
     ValueNotifier<String> addressNotifier,
     bool isEdit,
   ) async {
-    final parkingManage = ref.read(parkingManageProvider.notifier);
-    final images = ref.read(parkingImageProvider(isEdit: isEdit));
+    final parkingManage = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier);
+    final images = ref.read(parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit));
 
     if (latLng.value == null) {
       return;

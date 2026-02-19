@@ -56,21 +56,21 @@ class _ContributePageState extends State<ContributePage> {
                               Expanded(
                                 child: _FeatureItem(
                                   text: context.l10n.name,
-                                  icon: Icon(GeneralIcons.buildings, color: context.colors.foregroundMuted, size: 24),
+                                  icon: Icon(GeneralIcons.buildings, color: context.colors.foregroundSoft, size: 24),
                                 ),
                               ),
                               const VerticalDivider(),
                               Expanded(
                                 child: _FeatureItem(
                                   text: context.l10n.address,
-                                  icon: Icon(GeneralIcons.location, color: context.colors.foregroundMuted, size: 24),
+                                  icon: Icon(GeneralIcons.location, color: context.colors.foregroundSoft, size: 24),
                                 ),
                               ),
                               const VerticalDivider(),
                               Expanded(
                                 child: _FeatureItem(
                                   text: context.l10n.photo,
-                                  icon: Icon(GeneralIcons.photo, color: context.colors.foregroundMuted, size: 24),
+                                  icon: Icon(GeneralIcons.photo, color: context.colors.foregroundSoft, size: 24),
                                 ),
                               ),
                             ],

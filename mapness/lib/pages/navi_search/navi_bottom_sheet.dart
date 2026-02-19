@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Search sheet that is shown on the explore screen.
@@ -131,7 +133,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
     ref.listen(searchProvider(_scope), (previous, next) {
-      _drawSearchMarkers(next, previous, searchObjectManager);
+      _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
     });
 
     return SearchScope(
@@ -177,6 +179,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     SearchState searchState,
     SearchState? prevState,
     MapObjectManager mapObjectManager,
+    BaladyAppThemes theme,
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
@@ -186,6 +189,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       final dark = await ref.watch(darkModeProvider.future);
 
       final markers = await searchState.results.getMarkers(
+        theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,

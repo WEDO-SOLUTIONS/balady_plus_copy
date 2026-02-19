@@ -49,11 +49,11 @@ class OffersFiltersViewWidget extends StatelessWidget {
         ];
 
         return ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemBuilder: (_, index) => filters.elementAt(index),
-          separatorBuilder: (_, __) => const SizedBox(width: Spacing.$3x),
+          separatorBuilder: (_, __) => const SizedBox(width: Spacing.$2x),
           itemCount: filters.length,
         );
       },
@@ -66,26 +66,16 @@ class FilterWidget extends StatelessWidget {
   final String l10nString;
   final VoidCallback onTap;
 
-  const FilterWidget({
-    required this.filter,
-    required this.l10nString,
-    required this.onTap,
-    super.key,
-  });
+  const FilterWidget({required this.filter, required this.l10nString, required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
     ChipIconWidget trailingIcon(FilterView filter) => ChipIconWidget(
-          ({color}) => InkWell(
-            onTap: filter.isHighlighted ? filter.tapCross : null,
-            child: Icon(
-              filter.isHighlighted
-                  ? SystemIcons.closeSmall
-                  : SystemIcons.arrowCornerDownSmall,
-              color: color,
-            ),
-          ),
-        );
+      ({color}) => InkWell(
+        onTap: filter.isHighlighted ? filter.tapCross : null,
+        child: Icon(filter.isHighlighted ? SystemIcons.closeSmall : SystemIcons.arrowCornerDownSmall, color: color),
+      ),
+    );
 
     return SaudiPassChipsWidget(
       title: filter.title ?? l10nString,

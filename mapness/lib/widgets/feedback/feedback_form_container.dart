@@ -1,10 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart';
 
 /// Basic wrapper for feedback pages
 class FeedbackFormContainer extends ConsumerWidget {
@@ -27,7 +29,7 @@ class FeedbackFormContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
-    value: SystemUiOverlayStyle.dark,
+    value: context.read<ThemeController>().systemOverlayStyle,
     child: Material(
       color: context.colors.backgroundSurface4,
       child: SafeArea(

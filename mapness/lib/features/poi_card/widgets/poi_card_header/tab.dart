@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
@@ -25,7 +26,10 @@ class TabComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
 
     return ContentTransition(
       interpolation: scale,
-      child: PoiTabs(tabController: tabController, objectId: objectId, poiCardState: poiCardState),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: Spacing.$4x, top: Spacing.$4x),
+        child: PoiTabs(tabController: tabController, objectId: objectId, poiCardState: poiCardState),
+      ),
     );
   }
 }

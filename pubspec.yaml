@@ -17,7 +17,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
 #version: 3.30.3+425
-version: 3.12.21+417
+version: 3.121.21+417
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
@@ -166,7 +166,8 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 5.0.2
+    version: 5.0.3
+    
 
   sheetify: ^1.1.3
 

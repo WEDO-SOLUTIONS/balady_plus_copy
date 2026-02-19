@@ -241,6 +241,33 @@ class _EmailItemWidget extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
+class _SocialItemWidget extends StatelessWidget {
+  final String socialLink;
+  final IconData icon;
+  final void Function(String link) onTap;
+
+  const _SocialItemWidget({required this.socialLink, required this.onTap, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    if (socialLink.isEmpty) {
+      assert(socialLink.isNotEmpty, 'Social link must not be empty');
+      return const SizedBox.shrink();
+    }
+
+    return ContentRow(
+      supportTitleRTL: false,
+      text: ContentRowTextOptions(
+        title: socialLink,
+        titleOptions: ContentRowTextOption(baseColor: context.colors.foregroundDefault),
+      ),
+      leading: Icon(icon, color: context.colors.accentDefault, size: Spacing.$6x),
+      onTap: () => onTap.call(socialLink),
+    );
+  }
+}
+
 class _SocialMediaItemWidget extends StatelessWidget {
   final List<PoiContentSocialMediaModel> socialMediaList;
   final void Function(String link) onTap;

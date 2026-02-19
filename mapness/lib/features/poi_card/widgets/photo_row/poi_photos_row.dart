@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -10,16 +11,11 @@ import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photo_failure.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photo_loading.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart';
-
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:provider/provider.dart';
 
 class PoiPhotosRow extends ConsumerWidget {
-  const PoiPhotosRow({
-    required this.objectId,
-    this.state,
-    this.interpolation,
-    super.key,
-  });
+  const PoiPhotosRow({required this.objectId, this.state, this.interpolation, super.key});
 
   final int objectId;
   final PoiCardBottomSheetState? state;
@@ -28,7 +24,10 @@ class PoiPhotosRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final parkingObject = objectId == parkingObjectId;
-    final parkingPhotos = ref.read(parkingManageProvider).value?.imagesPaths;
+    final parkingPhotos = ref
+        .read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme))
+        .value
+        ?.imagesPaths;
     final photoFiles = parkingObject ? parkingPhotos?.map((e) => File(e)).toList() ?? [] : null;
     final photosState = ref.watch(poiPhotoProvider(objectId));
 
@@ -119,11 +118,7 @@ class PoiPhotosRow extends ConsumerWidget {
 }
 
 class POIPhotoItem extends StatelessWidget {
-  const POIPhotoItem({
-    required this.child,
-    required this.isLast,
-    super.key,
-  });
+  const POIPhotoItem({required this.child, required this.isLast, super.key});
 
   final Widget child;
   final bool isLast;
@@ -148,13 +143,7 @@ class POIPhotoItem extends StatelessWidget {
                   fontSize: 14,
                   color: Colors.white,
                   fontWeight: FontWeight.w600,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 4,
-                      color: Colors.black45,
-                      offset: Offset(1, 1),
-                    ),
-                  ],
+                  shadows: [Shadow(blurRadius: 4, color: Colors.black45, offset: Offset(1, 1))],
                 ),
               ),
             ),

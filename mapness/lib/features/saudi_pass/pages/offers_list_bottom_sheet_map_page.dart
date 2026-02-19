@@ -95,8 +95,14 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('${offersId.length} ${l10n.offers}', style: context.textStyles.h4SemiBold),
-              Text(l10n.selectedLocation, style: context.textStyles.bodySmallRegular),
+              Text(
+                '${offersId.length} ${l10n.offers}',
+                style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+              ),
+              Text(
+                l10n.selectedLocation,
+                style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+              ),
             ],
           ),
           uikit.AppButton.close(
@@ -105,6 +111,7 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
               await showMapOffers.removeMarker(offerPoiPinId);
               context.router.pop();
             },
+            padding: EdgeInsets.zero,
           ),
         ],
       ),

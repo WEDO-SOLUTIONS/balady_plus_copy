@@ -170,7 +170,10 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
               if (workStatusMessage != null)
                 ContentRow(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  iconCrossAxisAlignment: CrossAxisAlignment.start,
                   leading: GeneralIcons.infoSquare.icon(color: context.colors.foregroundMuted),
+                  leadingPadding: const EdgeInsetsDirectional.only(top: Spacing.$4x, start: Spacing.$4x),
+                  verticalTextPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$4_5x),
                   text: ContentRowTextOptions(
                     title: context.l10n.extraInformation,
                     titleOptions: const ContentRowTextOption(maxLines: 99),
@@ -221,8 +224,14 @@ class _WorkTimeItemWidget extends StatelessWidget {
             children: [
               TableRow(
                 children: [
-                  Text(dayTitle, style: context.textStyles.bodyLargeRegular),
-                  Text(workHours, style: context.textStyles.bodyLargeRegular),
+                  Text(
+                    dayTitle,
+                    style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                  ),
+                  Text(
+                    workHours,
+                    style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                  ),
                 ],
               ),
               if (breakHours != null)
@@ -248,6 +257,5 @@ class _Divider extends StatelessWidget {
   const _Divider();
 
   @override
-  Widget build(BuildContext context) =>
-      Divider(color: context.colors.borderSoft.withOpacity(0.3), height: 8, thickness: 0.5);
+  Divider build(BuildContext context) => Divider(color: context.colors.borderSoft, height: 8, thickness: 1);
 }

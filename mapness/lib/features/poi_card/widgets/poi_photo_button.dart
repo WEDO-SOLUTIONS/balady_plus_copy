@@ -29,7 +29,7 @@ class PoiPhotoButton extends StatelessWidget {
         start: Spacing.$2x + Spacing.$0_5x,
         end: Spacing.$3x + Spacing.$0_5x,
       ),
-      primaryIcon: General16Icons.photoSolid,
+      primaryIcon: GeneralIcons.photo,
       primaryLabel: context.l10n.addPhoto,
       textColor: context.colors.accentDefault,
       iconColor: context.colors.accentDefault,

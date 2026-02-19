@@ -18,6 +18,7 @@ class _RunningStateTitle extends StatelessWidget {
           ),
         ),
         Expanded(
+          flex: 2,
           child: _NaviTime(title: eta != null ? eta.arrivalTime : '--', subTitle: context.l10n.arrival),
         ),
         Expanded(

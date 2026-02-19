@@ -25,6 +25,7 @@ class PoiHeader extends ConsumerWidget {
   static const poiHeaderHeight = 210.0;
   static const poiHeaderBorderRadius = RadiusBorder.xl;
 
+  final Color? color;
   final String title;
   final String subTitle;
   final List<InlineSpan> subTitleExtraInlineSpans;
@@ -41,6 +42,7 @@ class PoiHeader extends ConsumerWidget {
     required this.title,
     required this.subTitle,
     required this.onTapClose,
+    this.color,
     this.tabController,
     this.parkingInfo,
     this.data,

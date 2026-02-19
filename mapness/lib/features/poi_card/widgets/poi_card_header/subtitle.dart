@@ -55,12 +55,27 @@ class SubtitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
               ),
             ),
           Expanded(
-            child: Text.rich(
-              TextSpan(text: subtitle, children: inlineSpans),
-              style: subTitleTextStyle,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 2,
-              textAlign: TextAlign.start,
+            child: Row(
+              children: [
+                Flexible(
+                  child: Text(subtitle, style: subTitleTextStyle, maxLines: 1, overflow: TextOverflow.ellipsis),
+                ),
+                ...inlineSpans.map((span) {
+                  if (span is WidgetSpan) {
+                    return span.child;
+                  }
+                  if (span is TextSpan) {
+                    return RichText(
+                      text: TextSpan(
+                        text: span.text,
+                        children: span.children,
+                        style: span.style?.merge(subTitleTextStyle) ?? subTitleTextStyle,
+                      ),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                }),
+              ],
             ),
           ),
           if (subtitleIcon != null)

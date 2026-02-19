@@ -128,21 +128,18 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
               scrollController: _multiStateSheetController,
               backgroundColor: context.colors.backgroundSurface4,
               safeAreaColor: context.colors.backgroundSurface4,
-              dragger: SheetDragger(backgroundColor: context.colors.backgroundSurface1),
+              dragger: const SheetDragger(),
               outsideOpacityDelegate: outsideOpacityDelegate,
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
               key: const ValueKey('ROUTING SEARCH SHEET'),
-              header: ColoredBox(
-                color: context.colors.backgroundSurface1,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: RoutingSearchBar(placeholder: widget.placeholder, affixIcon: widget.affixIcon),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-                ),
+              header: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: RoutingSearchBar(placeholder: widget.placeholder, affixIcon: widget.affixIcon),
+                  ),
+                  const SizedBox(height: 16),
+                ],
               ),
               content: [
                 RoutingSearchContent(

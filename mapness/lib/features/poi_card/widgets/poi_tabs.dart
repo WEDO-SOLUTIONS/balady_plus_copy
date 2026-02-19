@@ -124,7 +124,7 @@ class _PoiTabItem extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.px),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: isActive ? context.colors.backgroundSurface1 : Colors.transparent,
+          color: isActive ? context.colors.foregroundSegmentedControl : Colors.transparent,
           borderRadius: BorderRadius.circular(RadiusBorder.m),
           boxShadow: isActive ? Shadows.s : null,
         ),
@@ -158,7 +158,8 @@ class _PoiTabItem extends StatelessWidget {
                           child: FittedBox(
                             child: Counter(
                               count: count,
-                              color: isActive ? context.colors.neutralDefault : context.colors.neutralMuted,
+                              color: isActive ? context.colors.neutralDefault : context.colors.neutralContainerDefault,
+                              counterColor: isActive ? null : context.colors.foregroundDisabled,
                             ),
                           ),
                         ),

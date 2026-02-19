@@ -321,7 +321,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: Shadows.s,
-        color: colors.backgroundSurface1,
+        color: colors.backgroundSurface2,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),

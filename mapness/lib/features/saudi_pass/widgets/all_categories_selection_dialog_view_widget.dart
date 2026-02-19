@@ -42,6 +42,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
     return SafeArea(
       bottom: false,
       child: ToggleSheet(
+        useSafeArea: false,
         barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
           function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
         ),
@@ -49,8 +50,8 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
           backgroundColor: context.colors.backgroundSurface1,
           draggerColor: context.colors.backgroundSurface5,
         ),
-        backgroundColor: context.colors.backgroundSurface4,
-        safeAreaColor: context.colors.backgroundSurface4,
+        backgroundColor: context.colors.backgroundSurface5,
+        safeAreaColor: context.colors.backgroundSurface5,
         scrollController: scrollController,
         header: Container(
           color: context.colors.backgroundSurface1,
@@ -62,7 +63,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
                 context.l10n.saudiPassOffersPageFilterCategory,
                 style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
-              CustomCloseButton(onClose: () => selectionDialogView.tapCross(context)),
+              CustomCloseButton(onClose: () => selectionDialogView.tapCross(context), padding: EdgeInsets.zero),
             ],
           ),
         ),
@@ -74,73 +75,77 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
               final search = selectionDialogView.search;
               final group = selectionDialogView.groupedViews..removeWhere((cat, views) => views.isEmpty);
 
-              return Column(
-                children: [
-                  Container(
-                    padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
-                    decoration: BoxDecoration(
-                      color: context.colors.backgroundSurface1,
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(RadiusBorder.xl),
-                        bottomRight: Radius.circular(RadiusBorder.xl),
+              return ColoredBox(
+                color: context.colors.backgroundSurface4,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
+                      decoration: BoxDecoration(
+                        color: context.colors.backgroundSurface1,
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(RadiusBorder.xl),
+                          bottomRight: Radius.circular(RadiusBorder.xl),
+                        ),
+                      ),
+                      child: BaladyTextInput(
+                        config: BaladyInputConfig(
+                          fillColor: context.colors.neutralContainerDefault,
+                          autofocus: true,
+                          hintColor: context.colors.foregroundMuted,
+                          hintText: context.l10n.saudiPassCategorySelectionPageSearchHint,
+                          isDisposed: false,
+                        ),
+                        controller: textEditingController,
+                        inputState: notingFound ? BaladyInputState.error : BaladyInputState.defaultValue,
+                        supportingText: notingFound
+                            ? BaladySupportingText(text: context.l10n.noResultsFoundPleaseSelectFromTheList)
+                            : null,
                       ),
                     ),
-                    child: BaladyTextInput(
-                      config: BaladyInputConfig(
-                        fillColor: context.colors.neutralContainerDefault,
-                        autofocus: true,
-                        hintColor: context.colors.foregroundMuted,
-                        hintText: context.l10n.saudiPassCategorySelectionPageSearchHint,
-                        isDisposed: false,
-                      ),
-                      controller: textEditingController,
-                      inputState: notingFound ? BaladyInputState.error : BaladyInputState.defaultValue,
-                      supportingText: notingFound
-                          ? BaladySupportingText(text: context.l10n.noResultsFoundPleaseSelectFromTheList)
-                          : null,
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.only(bottom: Spacing.$3x),
-                      itemCount: group.length,
-                      itemBuilder: (context, index) {
-                        final entry = group.entries.elementAt(index);
-                        final category = entry.key;
-                        final subViews = entry.value;
-                        final isLastGroup = index == group.length - 1;
 
-                        final bool isSearchingCategory = category.name.toLowerCase().contains(search.toLowerCase());
-                        return Column(
-                          children: [
-                            if (isSearchingCategory || notingFound) ...[
-                              CategoryHeader(
-                                category: category,
-                                onTap: (id) => selectionDialogView.toggleCategory(categoryId: id, context: context),
-                                isHighlighted: subViews.every((view) => view.isHighlighted),
-                              ),
-                              CategoriesCard(
-                                child: SubCategoriesWidget(selectionViews: subViews, isLastGroup: isLastGroup),
-                              ),
-                            ] else
-                              Padding(
-                                padding: EdgeInsetsDirectional.only(
-                                  top: index == 0 ? Spacing.$3x : 0,
-                                  end: Spacing.$8x,
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: Spacing.$3x),
+                        itemCount: group.length,
+                        itemBuilder: (context, index) {
+                          final entry = group.entries.elementAt(index);
+                          final category = entry.key;
+                          final subViews = entry.value;
+                          final isLastGroup = index == group.length - 1;
+
+                          final bool isSearchingCategory = category.name.toLowerCase().contains(search.toLowerCase());
+                          return Column(
+                            children: [
+                              if (isSearchingCategory || notingFound) ...[
+                                CategoryHeader(
+                                  category: category,
+                                  onTap: (id) => selectionDialogView.toggleCategory(categoryId: id, context: context),
+                                  isHighlighted: subViews.every((view) => view.isHighlighted),
                                 ),
-                                child: SubCategoriesWidget(
-                                  selectionViews: subViews,
-                                  categoryId: category.id,
-                                  search: search,
-                                  isLastGroup: isLastGroup,
+                                CategoriesCard(
+                                  child: SubCategoriesWidget(selectionViews: subViews, isLastGroup: isLastGroup),
                                 ),
-                              ),
-                          ],
-                        );
-                      },
+                              ] else
+                                Padding(
+                                  padding: EdgeInsetsDirectional.only(
+                                    top: index == 0 ? Spacing.$3x : 0,
+                                    end: Spacing.$8x,
+                                  ),
+                                  child: SubCategoriesWidget(
+                                    selectionViews: subViews,
+                                    categoryId: category.id,
+                                    search: search,
+                                    isLastGroup: isLastGroup,
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -149,7 +154,7 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
           color: context.colors.backgroundSurface4,
           child: Padding(
             padding: horizontalPadding.copyWith(
-              top: Spacing.$6x,
+              top: Spacing.$3x,
               bottom: Spacing.$4x + MediaQuery.viewPaddingOf(context).bottom,
             ),
             child: ResetSaveWidget(selectionDialogView),
@@ -169,16 +174,18 @@ class CategoryHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsetsDirectional.only(top: Spacing.$1_5x, bottom: Spacing.$0_5x, end: Spacing.$8x),
+    padding: const EdgeInsetsDirectional.only(top: Spacing.$3x, bottom: Spacing.$1x, end: Spacing.$8x),
     child: ContentRow(
       key: ValueKey<bool>(isHighlighted),
-      leading: getCategorySvg(category.id),
+      leading: getCategorySvg(category.id, context),
       onTap: () => onTap(category.id),
+      startTextPadding: 0,
+      endTextPadding: 0,
       text: ContentRowTextOptions(
         titleOptions: ContentRowTextOption(
           builder: (context) => Text(
             category.name,
-            style: context.textStyles.captionLargeMedium.copyWith(color: context.colors.foregroundSoft),
+            style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundSoft),
           ),
         ),
       ),
@@ -223,8 +230,8 @@ class CategoriesCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
+    padding: const EdgeInsetsDirectional.only(top: Spacing.$2_5x, bottom: Spacing.$2_5x),
     margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-    padding: const EdgeInsets.symmetric(vertical: Spacing.$2x, horizontal: Spacing.$4x),
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
       color: context.colors.backgroundSurface1,
@@ -244,41 +251,46 @@ class SubCategoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
     listenable: view,
-    builder: (context, _) => ContentRow(
-      key: ValueKey<bool>(view.isHighlighted),
-      leading: categoryId != null ? getCategorySvg(categoryId!) : null,
-      onTap: () => view.onTap(context),
-      text: ContentRowTextOptions(
-        titleOptions: ContentRowTextOption(
-          builder: (context) {
-            final color = context.colors.foregroundDefault;
-            final baseStyle = context.textStyles.captionLargeRegular.copyWith(color: color);
+    builder: (context, _) => Container(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      child: ContentRow(
+        key: ValueKey<bool>(view.isHighlighted),
+        leading: categoryId != null ? getCategorySvg(categoryId!, context) : null,
+        onTap: () => view.onTap(context),
+        startTextPadding: 0,
+        endTextPadding: 0,
+        text: ContentRowTextOptions(
+          titleOptions: ContentRowTextOption(
+            builder: (context) {
+              final color = context.colors.foregroundDefault;
+              final baseStyle = context.textStyles.bodySmallRegular.copyWith(color: color);
 
-            return search != null
-                ? Text.rich(
-                    TextSpan(
-                      children: getHighlightedTextSpans(
-                        source: view.title,
-                        search: search!,
-                        highlightStyle: context.textStyles.captionLargeSemiBold.copyWith(color: color),
-                        baseStyle: baseStyle,
+              return search != null
+                  ? Text.rich(
+                      TextSpan(
+                        children: getHighlightedTextSpans(
+                          source: view.title,
+                          search: search!,
+                          highlightStyle: context.textStyles.captionLargeSemiBold.copyWith(color: color),
+                          baseStyle: baseStyle,
+                        ),
                       ),
-                    ),
-                  )
-                : Transform.translate(
-                    offset: const Offset(-Spacing.$4x, 0),
-                    child: Text(view.title, style: baseStyle),
-                  );
-          },
+                    )
+                  : Transform.translate(
+                      offset: const Offset(-Spacing.$4x, 0),
+                      child: Text(view.title, style: baseStyle),
+                    );
+            },
+          ),
         ),
-      ),
-      isDividerEnabled: hasDivider,
-      supportTitleRTL: true,
-      trailing: ContentRowCustomTrailingOptions(
-        builder: (context) => BaladyCheckBox(
-          state: view.isHighlighted ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
-          disable: false,
-          onChanged: (_) => view.onTap(context),
+        isDividerEnabled: hasDivider,
+        supportTitleRTL: true,
+        trailing: ContentRowCustomTrailingOptions(
+          builder: (context) => BaladyCheckBox(
+            state: view.isHighlighted ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
+            disable: false,
+            onChanged: (_) => view.onTap(context),
+          ),
         ),
       ),
     ),

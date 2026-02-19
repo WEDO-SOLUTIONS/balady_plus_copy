@@ -45,7 +45,7 @@ class FeedbackBannerCardV2 extends StatelessWidget {
                 color: context.colors.staticWhite.withOpacity(0.2),
               ),
               child: Center(
-                child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$5x),
+                child: Icon(SystemIcons.arrowRight, color: context.colors.staticWhite, size: Spacing.$4x),
               ),
             ),
           ),
@@ -254,15 +254,18 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
 
       /// Paint image if it exist.
       if (hasImage && image != null) {
+        const imageWidth = 97.0;
+        const imageHeight = 87.0;
+
+        final imageTop = offset.dy + (size.height - imageHeight) / 2;
+
+        final imageLeft = isLTR
+            ? offset.dx + minTextPadding.left
+            : offset.dx + size.width - imageWidth - minTextPadding.right;
+
         paintImage(
           canvas: canvas,
-          rect: Rect.fromLTWH(
-            isLTR ? offset.dx + heightOffset : size.width - imageSize.width + minTextPadding.left,
-            offset.dy,
-            97, // const
-            87, // const
-          ),
-          alignment: isLTR ? Alignment.centerLeft : Alignment.centerRight,
+          rect: Rect.fromLTWH(imageLeft, imageTop, imageWidth, imageHeight),
           flipHorizontally: !isLTR,
           image: image!,
           fit: BoxFit.contain,
@@ -284,18 +287,11 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
       titlePainter.paint(canvas, titleOffset);
       subtitlePainter.paint(canvas, subtitleOffset);
 
-      /// Paint button.
-      final childOffset = (child?.parentData as BoxParentData?)?.offset ?? Offset.zero;
-      final childPosition = Offset(
-        isLTR ? width - (child?.size.width ?? 0.0) : 0.0,
-        size.height -
-            childOffset.dy -
-            (child?.size.height ?? 0.0) -
-            minTextPadding.bottom -
-            heightOffset -
-            titleOffset.dy,
-      );
-      child?.paint(context, offset + childOffset + childPosition);
+      /// Paint button (arrow)
+      const arrowPadding = 16.0;
+      final childPosition = Offset(isLTR ? width - (child?.size.width ?? 0.0) : arrowPadding, arrowPadding);
+
+      child?.paint(context, offset + childPosition);
     }
 
     layer = context.pushClipRRect(

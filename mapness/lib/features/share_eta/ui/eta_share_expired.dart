@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
+import 'package:provider/provider.dart';
 
 class EtaShareExpired extends StatelessWidget {
   final String title;
@@ -14,78 +16,68 @@ class EtaShareExpired extends StatelessWidget {
   const EtaShareExpired({required this.title, required this.subtitle, super.key});
 
   factory EtaShareExpired.liveLocation(BuildContext context) => EtaShareExpired(
-        title: context.l10n.locationUnavailable,
-        subtitle: context.l10n.locationBroadcastExpired.multilines,
-      );
+    title: context.l10n.locationUnavailable,
+    subtitle: context.l10n.locationBroadcastExpired.multilines,
+  );
 
-  factory EtaShareExpired.eta(BuildContext context) => EtaShareExpired(
-        title: context.l10n.driveEnded,
-        subtitle: context.l10n.driverReachedDestination.multilines,
-      );
+  factory EtaShareExpired.eta(BuildContext context) =>
+      EtaShareExpired(title: context.l10n.driveEnded, subtitle: context.l10n.driverReachedDestination.multilines);
 
   factory EtaShareExpired.broadcastExpired(BuildContext context) => EtaShareExpired(
-        title: context.l10n.locationUnavailableEta,
-        subtitle: context.l10n.broadcastHasExpired.multilines,
-      );
+    title: context.l10n.locationUnavailableEta,
+    subtitle: context.l10n.broadcastHasExpired.multilines,
+  );
 
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+  };
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: context.colors.backgroundSurface2,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(RadiusBorder.xl),
-            topRight: Radius.circular(RadiusBorder.xl),
+    decoration: BoxDecoration(
+      color: context.colors.backgroundSurface2,
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(RadiusBorder.xl),
+        topRight: Radius.circular(RadiusBorder.xl),
+      ),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+              child: SheetDragger(),
+            ),
           ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
-                  child: SheetDragger(),
-                ),
+          ContentRow(
+            options: ContentRowOptions(
+              padding: EdgeInsets.zero,
+              titleStyle: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
+              customActionWidget: AppButton.close(
+                onTap: Navigator.of(context).pop,
+                padding: EdgeInsets.zero,
+                textColor: context.colors.neutralOnContainer,
+                color: context.colors.neutralContainerDefault,
+                innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
               ),
-              ContentRow(
-                options: ContentRowOptions(
-                  padding: EdgeInsets.zero,
-                  titleStyle: context.textStyles.h3SemiBold.copyWith(
-                    color: context.colors.foregroundDefault,
-                  ),
-                  customActionWidget: AppButton.close(
-                    onTap: Navigator.of(context).pop,
-                    padding: EdgeInsets.zero,
-                    textColor: context.colors.neutralOnContainer,
-                    color: context.colors.neutralContainerDefault,
-                    innerPadding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  ),
-                ),
-              ),
-              SvgPicture.asset(
-                Assets.imagesSvg.illustrationError.keyName,
-              ),
-              const SizedBox(height: Spacing.$2x),
-              Text(
-                title,
-                style: context.textStyles.h3SemiBold.copyWith(
-                  color: context.colors.foregroundDefault,
-                ),
-              ),
-              const SizedBox(height: Spacing.$3x),
-              Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: context.textStyles.bodyLargeRegular.copyWith(
-                  color: context.colors.foregroundSoft,
-                ),
-              ),
-              const SizedBox(
-                height: Spacing.$8x,
-              )
-            ],
+            ),
           ),
-        ),
-      );
+          SvgPicture.asset(asset(context)),
+          const SizedBox(height: Spacing.$2x),
+          Text(title, style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault)),
+          const SizedBox(height: Spacing.$3x),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundSoft),
+          ),
+          const SizedBox(height: Spacing.$8x),
+        ],
+      ),
+    ),
+  );
 }

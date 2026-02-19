@@ -41,9 +41,7 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
       minExtent: minExtent,
       maxExtent: maxExtent,
       currentExtent: currentHeaderExtent,
-      child: _DashboardMenu(
-        shrinkOffset: shrinkOffset,
-      ),
+      child: _DashboardMenu(shrinkOffset: shrinkOffset),
     );
   }
 
@@ -78,10 +76,7 @@ class _DashboardMenu extends ConsumerWidget {
         child: Opacity(
           opacity: quickFilterSizeProportion,
           child: SizedOverflowBox(
-            size: Size(
-              double.infinity,
-              remainingSpaceForQuickFilters,
-            ),
+            size: Size(double.infinity, remainingSpaceForQuickFilters),
             child: SizedBox(
               height: QuickFilters.defaultHeight,
               child: MapQuickFilters(
@@ -112,48 +107,48 @@ class DashboardHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
-        width: double.infinity,
-        decoration: BoxDecoration(color: context.colors.backgroundSurface2),
-        child: Padding(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$2x),
-          child: GestureDetector(
-            onTap: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.exploreKeys.searchField,
-                action: MetricAction.tap.name,
-                group: MetricsConstants.exploreTag,
-              );
-              BssService.instance.sendEvent(
-                const BssRequest(
-                  eventType: BSSEventType.action,
-                  actionType: BSSActionType.tap,
-                  uiElement: BssUIElement(name: BssUIElementNames.searchField),
-                ),
-              );
+    width: double.infinity,
+    decoration: BoxDecoration(color: context.colors.backgroundSurface2),
+    child: Padding(
+      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$2x),
+      child: GestureDetector(
+        onTap: () {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.searchField,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+          BssService.instance.sendEvent(
+            const BssRequest(
+              eventType: BSSEventType.action,
+              actionType: BSSActionType.tap,
+              uiElement: BssUIElement(name: BssUIElementNames.searchField),
+            ),
+          );
 
-              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
-              // Here we clean the search query on tap on the search field
-              // So the user can see the search history, not previous search results
-              ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
+          // Here we clean the search query on tap on the search field
+          // So the user can see the search history, not previous search results
+          ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
 
-              ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
-                    '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
-                  );
-              context.router.push(SearchRoute(expansion: Expansion.expanded));
-            },
-            child: AbsorbPointer(
-              child: BaladyTextInput.search(
-                inputState: BaladyInputState.readOnly,
-                config: BaladyInputConfig(
-                  hintText: context.l10n.searchPlaceOrAddress,
-                  fillColor: context.colors.neutralContainerDefault,
-                  hintColor: context.colors.foregroundSoft,
-                  textStyle: context.textStyles.bodySmallRegular,
-                ),
-              ),
+          ref
+              .read(urbiAnalyticsProvider.notifier)
+              .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}');
+          context.router.push(SearchRoute(expansion: Expansion.expanded));
+        },
+        child: AbsorbPointer(
+          child: BaladyTextInput.search(
+            inputState: BaladyInputState.readOnly,
+            config: BaladyInputConfig(
+              hintText: context.l10n.searchPlaceOrAddress,
+              fillColor: context.colors.neutralContainerDefault,
+              hintColor: context.colors.foregroundSoft,
+              textStyle: context.textStyles.bodySmallRegular,
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

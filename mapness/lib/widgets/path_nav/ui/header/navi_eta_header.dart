@@ -56,7 +56,7 @@ class EtaHeader extends HookConsumerWidget {
 
     final backgroundColor = state == PathNavState.paused
         ? context.colors.accentSecondaryDefault
-        : context.colors.backgroundSurface1;
+        : context.colors.onMapSurfaceOnMap;
 
     /// Animating hide and close buttons based on the sheet interpolation.
     final animation = useAnimationController(initialValue: sheetController.isClosed ? 1.0 : 0.0);
@@ -77,114 +77,116 @@ class EtaHeader extends HookConsumerWidget {
       return () => sheetController.removeListener(listener);
     }, [sheetController]);
 
-    return GestureDetector(
-      onTap: () {
-        if (state == PathNavState.paused) {
-          onContinuePressed();
-        } else if (state == PathNavState.running) {
-          ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
-          sheetController.open(duration: Durations.long1 * 3);
-        }
-      },
-      child: AnimatedSwitcher(
-        duration: Durations.long1,
-        switchInCurve: Curves.easeInOut,
-        switchOutCurve: Curves.easeInOut,
-        child: ColoredBox(
-          key: ValueKey(state),
-          color: backgroundColor,
-          child: SizedBox(
-            height: 60,
-            child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.$1x, right: Spacing.$3x, left: Spacing.$3x),
-              child: Column(
-                children: [
-                  const SizedBox(height: Spacing.$2x),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: state != PathNavState.finished
-                        ? CrossAxisAlignment.start
-                        : CrossAxisAlignment.center,
-                    children: [
-                      if (state != PathNavState.paused)
-                        ValueListenableBuilder<bool>(
-                          valueListenable: isSwitchingToFoot,
-                          builder: (context, isSwitching, child) {
-                            if (isSwitching) {
-                              return const SizedBox(
-                                height: 32,
-                                width: 32,
-                                child: Center(
-                                  child: SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: GestureDetector(
+        onTap: () {
+          if (state == PathNavState.paused) {
+            onContinuePressed();
+          } else if (state == PathNavState.running) {
+            ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+            sheetController.open(duration: Durations.long1 * 3);
+          }
+        },
+        child: AnimatedSwitcher(
+          duration: Durations.long1,
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.easeInOut,
+          child: ColoredBox(
+            key: ValueKey(state),
+            color: backgroundColor,
+            child: SizedBox(
+              height: 60,
+              child: Padding(
+                padding: const EdgeInsets.only(top: Spacing.$1x, right: Spacing.$3x, left: Spacing.$3x),
+                child: Column(
+                  children: [
+                    const SizedBox(height: Spacing.$2x),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: state != PathNavState.finished
+                          ? CrossAxisAlignment.start
+                          : CrossAxisAlignment.center,
+                      children: [
+                        if (state != PathNavState.paused)
+                          ValueListenableBuilder<bool>(
+                            valueListenable: isSwitchingToFoot,
+                            builder: (context, isSwitching, child) {
+                              if (isSwitching) {
+                                return const SizedBox(
+                                  height: 32,
+                                  width: 32,
+                                  child: Center(
+                                    child: SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    ),
                                   ),
-                                ),
-                              );
-                            }
-                            if (!landscape && onSearchPressed != null || state == PathNavState.finished) {
-                              return _Button(icon: SystemIcons.search, onTap: onSearchPressed!);
-                            }
-                            return onTapRoute != null
-                                ? _Button(icon: GeneralIcons.routeStroke, onTap: onTapRoute!)
-                                : SizedBox(width: ButtonSize.small.height);
+                                );
+                              }
+                              if (!landscape && onSearchPressed != null || state == PathNavState.finished) {
+                                return _Button(icon: SystemIcons.search, onTap: onSearchPressed!);
+                              }
+                              return onTapRoute != null
+                                  ? _Button(icon: GeneralIcons.routeStroke, onTap: onTapRoute!)
+                                  : SizedBox(width: ButtonSize.small.height);
+                            },
+                          ),
+                        Expanded(
+                          child: switch (state) {
+                            PathNavState.running => _RunningStateTitle(eta: eta),
+                            PathNavState.finished => const _FinishedStateTitle(),
+                            PathNavState.paused => _PausedStateTitle(eta: eta),
                           },
                         ),
-                      const SizedBox(width: Spacing.$5x),
-                      Expanded(
-                        child: switch (state) {
-                          PathNavState.running => _RunningStateTitle(eta: eta),
-                          PathNavState.finished => const _FinishedStateTitle(),
-                          PathNavState.paused => _PausedStateTitle(eta: eta),
-                        },
-                      ),
-                      const SizedBox(width: Spacing.$5x),
-                      if (state != PathNavState.paused)
-                        if (state == PathNavState.finished)
-                          _Button(
-                            icon: SystemIcons.close,
-                            onTap: () {
-                              openEndTripSheet(context);
-                            },
-                          )
-                        else
-                          ListenableBuilder(
-                            listenable: isClosedButtonVisible,
-                            builder: (context, _) => Stack(
-                              children: [
-                                IgnorePointer(
-                                  ignoring: !isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('hide_button'),
-                                    opacity: ReverseAnimation(animation),
-                                    child: _Button(
-                                      icon: SystemIcons.arrowCornerDownLarge,
-                                      onTap: () {
-                                        sheetController.close(duration: Durations.long1);
-                                      },
+                        if (state != PathNavState.paused)
+                          if (state == PathNavState.finished)
+                            _Button(
+                              icon: SystemIcons.close,
+                              onTap: () {
+                                openEndTripSheet(context);
+                              },
+                            )
+                          else
+                            ListenableBuilder(
+                              listenable: isClosedButtonVisible,
+                              builder: (context, _) => Stack(
+                                children: [
+                                  IgnorePointer(
+                                    ignoring: !isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('hide_button'),
+                                      opacity: ReverseAnimation(animation),
+                                      child: _Button(
+                                        icon: SystemIcons.arrowCornerDownLarge,
+                                        onTap: () {
+                                          sheetController.close(duration: Durations.long1);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                                IgnorePointer(
-                                  ignoring: isClosedButtonVisible.value,
-                                  child: FadeTransition(
-                                    key: const ValueKey('close_button'),
-                                    opacity: animation,
-                                    child: _Button(
-                                      icon: SystemIcons.close,
-                                      onTap: () {
-                                        openEndTripSheet(context);
-                                      },
+
+                                  IgnorePointer(
+                                    ignoring: isClosedButtonVisible.value,
+                                    child: FadeTransition(
+                                      key: const ValueKey('close_button'),
+                                      opacity: animation,
+                                      child: _Button(
+                                        icon: SystemIcons.close,
+                                        onTap: () {
+                                          openEndTripSheet(context);
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

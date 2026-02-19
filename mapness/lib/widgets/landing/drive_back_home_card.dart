@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,7 @@ import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:provider/provider.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class DriveBackHomeCard extends ConsumerStatefulWidget {
@@ -41,19 +43,21 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: GestureDetector(
         onTap: () => tryOpenNavigationBackHome(context, ref),
-        child: SizedBox(
+        child: Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(RadiusBorder.xl), boxShadow: Shadows.s),
           width: double.infinity,
-          height: 123,
+          height: 114,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(RadiusBorder.xl),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                boxShadow: Shadows.s,
+                color: context.colors.backgroundSurface5,
                 image: DecorationImage(
-                  image: isNationalDay
-                      ? Assets.images.driveHomeBackgroundSaudiday.provider()
-                      : Assets.images.driveHomeBackground.provider(),
+                  image: switch (context.read<ThemeController>().currentTheme) {
+                    BaladyAppThemes.dark => Assets.images.driveHomeBackgroundDark.provider(),
+                    BaladyAppThemes.light => Assets.images.driveHomeBackgroundSaudiday.provider(),
+                    BaladyAppThemes.saudiDay => Assets.images.driveHomeBackgroundSaudiday.provider(),
+                  },
                   matchTextDirection: true,
                   fit: BoxFit.cover,
                   alignment: AlignmentDirectional.centerEnd,
@@ -62,12 +66,8 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
               child: Stack(
                 children: [
                   if (!isNationalDay) ...[
-                    const Positioned(top: 40, left: -60, child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4)),
-                    const Positioned(
-                      top: -110,
-                      right: -140,
-                      child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
-                    ),
+                    const Positioned(top: -17, left: -45, child: _BluredCircle(size: 190, blur: 60, opacity: 0.6)),
+                    const Positioned(top: -42, right: -7, child: _BluredCircle(size: 150, blur: 60, opacity: 0.6)),
                   ],
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
@@ -82,9 +82,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                       child: RichText(
                         text: TextSpan(
                           text: context.l10n.driveBack,
-                          style: context.textStyles.h3Medium.copyWith(
-                            color: isNationalDay ? context.colors.foregroundDefault : context.colors.staticWhite,
-                          ),
+                          style: context.textStyles.h3Medium.copyWith(color: context.colors.foregroundDefault),
                           children: [
                             TextSpan(
                               text: '\n${context.l10n.homeQuestionMark}',
@@ -228,10 +226,10 @@ class _BluredCircle extends StatelessWidget {
       opacity: opacity,
       child: ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur, tileMode: TileMode.decal),
-        child: const DecoratedBox(
+        child: DecoratedBox(
           decoration: BoxDecoration(
-            color: Color(0xff00FFFA),
-            borderRadius: BorderRadius.all(Radius.circular(RadiusBorder.full)),
+            color: context.colors.backgroundSurface1,
+            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.full)),
           ),
         ),
       ),

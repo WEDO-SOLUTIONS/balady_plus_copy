@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 enum FeedbackSheetState { success, failure, loading }
@@ -44,6 +46,12 @@ class FeedbackSheetWidget extends HookWidget {
         route.settings.name == BottomMenuRoute.name,
   );
 
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationNotificationsDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationNotifications.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationNotifications.keyName,
+  };
+
   @override
   Widget build(BuildContext context) {
     final confettiController = useAnimationController();
@@ -73,7 +81,7 @@ class FeedbackSheetWidget extends HookWidget {
     }, [state]);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: context.read<ThemeController>().systemOverlayStyle,
       child: Material(
         color: Colors.transparent,
         child: Stack(
@@ -109,10 +117,7 @@ class FeedbackSheetWidget extends HookWidget {
                         Center(
                           child: SizedBox(
                             width: 180.0,
-                            child: SvgPicture.asset(
-                              Assets.imagesSvg.illustrationNotifications.keyName,
-                              matchTextDirection: true,
-                            ),
+                            child: SvgPicture.asset(asset(context), matchTextDirection: true),
                           ),
                         ),
                         const SizedBox(height: AppSizes.$4xs),
@@ -121,7 +126,7 @@ class FeedbackSheetWidget extends HookWidget {
                             padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
                             child: Text(
                               context.l10n.feedbackSuccessTitle,
-                              style: context.textStyles.h3SemiBold,
+                              style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
                               textAlign: TextAlign.center,
                             ),
                           ),

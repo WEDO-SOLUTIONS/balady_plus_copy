@@ -28,7 +28,7 @@ class SettingsScreenViewWidget extends StatelessWidget {
             final parentCategories = settingsScreenView.parentCategoriesWithCounts;
 
             return Padding(
-              padding: const EdgeInsets.all(Spacing.$4x),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -116,12 +116,12 @@ class SettingsCategoryCardWidget extends StatelessWidget {
     borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
     child: ColoredBox(
       color: context.colors.backgroundSurface1,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsetsDirectional.only(start: Spacing.$4x, top: Spacing.$0_5x, end: Spacing.$0_5x),
-            child: Row(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -131,10 +131,9 @@ class SettingsCategoryCardWidget extends StatelessWidget {
                 TextButton(
                   onPressed: onDetailedTap,
                   style: TextButton.styleFrom(
-                    padding: const EdgeInsets.all(Spacing.$3x),
+                    padding: EdgeInsets.zero,
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    overlayColor: context.colors.backgroundSurface1,
                   ),
                   child: Row(
                     children: [
@@ -148,13 +147,10 @@ class SettingsCategoryCardWidget extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: child,
-          ),
-          const SizedBox(height: Spacing.$4x),
-        ],
+            const SizedBox(height: Spacing.$3x),
+            child,
+          ],
+        ),
       ),
     ),
   );
