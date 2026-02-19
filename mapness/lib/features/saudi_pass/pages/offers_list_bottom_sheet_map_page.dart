@@ -30,14 +30,34 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
     final l10n = context.l10n;
     final colors = context.colors;
     final mediaQueryHeight = MediaQuery.sizeOf(context).height;
-    const offersOneHeightOffset = 250.0;
+
+    final offersAsync = ref.watch(getAllOffersIdsProvider(offersId));
+
+    if (offersAsync.isLoading) {
+      return const PoiLoadingOrErrorSheet(sheetHeight: 250, contentHeight: 200, data: PoiLoading());
+    }
+    final list = offersAsync.value ?? const <OfferDetails>[];
+
+    double snapHeight(int n) {
+      const base = 120.0;
+      const stepPerItem = 100.0;
+
+      if (n <= 0) {
+        return 0.0;
+      }
+
+      return base + n * stepPerItem;
+    }
+
+    final allOffersHeight = snapHeight(list.length) + 30;
+    final allOffersSnapHeight = allOffersHeight > mediaQueryHeight ? mediaQueryHeight : allOffersHeight;
 
     final scrollController = useMultiStateSheetController(
       mapper: const PoiCardStateMapper(),
       initialState: PoiCardBottomSheetState.halfOpen,
       behavior: MultiSnappingBehavior(
         models: [
-          SizeSnappingModel({0.0, if (offersId.length == 1) offersOneHeightOffset else mediaQueryHeight}),
+          SizeSnappingModel({0.0, allOffersSnapHeight}),
           ComponentsSnappingModel(
             componentsDescriptions: [
               SnapComponent.merge(
@@ -53,13 +73,6 @@ class OfferListBottomSheetMapWidget extends HookConsumerWidget {
 
     final backgroundColor = context.colors.backgroundSurface4;
 
-    final offersAsync = ref.watch(getAllOffersIdsProvider(offersId));
-
-    if (offersAsync.isLoading) {
-      return const PoiLoadingOrErrorSheet(sheetHeight: 250, contentHeight: 200, data: PoiLoading());
-    }
-
-    final list = offersAsync.value ?? const <OfferDetails>[];
     final first = list.firstOrNull;
 
     final duration = first?.briefDurationTo;

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
@@ -19,7 +20,6 @@ import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_header.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -50,6 +50,18 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   StreamSubscription<TapEvent>? _streamSubscription;
   final _scope = SearchScopeEnum.navi.value;
 
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
+    final fraction = controller.fraction;
+    final state = controller.state;
+
+    return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+  });
+
+  late final barrierColorDelegate = StatefulSheetDelegate.func<Color?, ThreeStateSheet>((controller) {
+    final state = controller.state;
+    return state.index > 1 ? context.colors.screenOverlayDimming40 : null;
+  });
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +75,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     _multiStateSheetController = MultiStateSheetController<ThreeStateSheet>(
       behavior: MultiSnappingBehavior(
         models: [
-          FractionSnappingModel({.7, .931}),
+          FractionSnappingModel({.731, .931}),
           ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
@@ -142,7 +154,8 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               animateOpening: false,
               keepContentBehindFooter: true,
               scrollController: _multiStateSheetController,
-              outsideOpacityDelegate: _multiStateSheetController.defaultOpacityDelegate,
+              outsideOpacityDelegate: outsideOpacityDelegate,
+              barrierColorDelegate: barrierColorDelegate,
               outside: NaviSearchSheetControls(_multiStateSheetController),
               safeAreaColor: context.colors.backgroundSurface2,
               dragger: null,

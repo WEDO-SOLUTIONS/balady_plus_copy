@@ -83,7 +83,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       initialState: FourStateSheet.expanded,
       behavior: MultiSnappingBehavior(
         models: [
-          FractionSnappingModel({0.0, if (Platform.isIOS) .3 else .38, 0.8, 1.0}),
+          FractionSnappingModel({0.0, if (Platform.isIOS) .3 else .38, 0.8, 0.931}),
           OffsetSnappingModel({Spacing.$4x}),
         ],
       ),
@@ -182,7 +182,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
-              safeAreaColor: containerColor,
               dragger: SheetDragger(backgroundColor: contentColor),
               outsideOpacityDelegate: outsideOpacityDelegate,
               header: Container(
@@ -190,6 +189,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
                 child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
               ),
+              useSafeArea: false,
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
               content: [MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController)],
             ),

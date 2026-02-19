@@ -15,6 +15,7 @@ class FeedbackBoolToggle extends HookWidget {
   Widget build(BuildContext context) {
     final border = BorderSide(color: context.colors.borderMuted);
     final isSelected = useState(false);
+    final bannerKey = useMemoized(() => GlobalKey());
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
@@ -40,6 +41,18 @@ class FeedbackBoolToggle extends HookWidget {
                   onChanged: (v) {
                     fieldState.didChange(v);
                     isSelected.value = v;
+                    if (v && field.baladyBusiness) {
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        final bannerContext = bannerKey.currentContext;
+                        if (bannerContext != null) {
+                          Scrollable.ensureVisible(
+                            bannerContext,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      });
+                    }
                   },
                 ),
               ),
@@ -49,7 +62,7 @@ class FeedbackBoolToggle extends HookWidget {
             ValueListenableBuilder(
               valueListenable: isSelected,
               builder: (context, isSelectedValue, _) =>
-                  isSelectedValue ? const FeedbackBaladyBusiness() : const SizedBox.shrink(),
+                  isSelectedValue ? FeedbackBaladyBusiness(key: bannerKey) : const SizedBox.shrink(),
             ),
         ],
       ),
