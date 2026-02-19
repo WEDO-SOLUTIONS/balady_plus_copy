@@ -49,7 +49,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate, SearchNavigation {
         self.mapTemplate = CPMapTemplate()
         self.navigationSessionManeuvers = NavigationSessionManeuvers(
             model: model,
-            mapTemplate: mapTemplate
+            mapTemplate: mapTemplate,
+            eventChannel: eventChannel,
         )
         self.hostFlutterApi = hostFlutterApi
     }
