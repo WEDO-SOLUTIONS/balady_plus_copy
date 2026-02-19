@@ -11,27 +11,26 @@ class NaviFindInFav extends ConsumerWidget {
   const NaviFindInFav({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$3x),
-        child: ContentWrapper(
-          color: context.colors.backgroundSurface1,
-          children: [
-            ContentRow(
-              onTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
-                    context,
-                    callback: () => context.router.push(const NaviFavoritesRoute()),
-                  ),
-              leading: Icon(
-                SystemIcons.bookmark,
-                color: context.colors.accentDefault,
-              ),
-              trailing: ContentRowTextTrailingOptions(
-                icon: SystemIcons.arrowCornerRightSmall,
-                iconColor: context.colors.foregroundMuted,
-              ),
-              text: ContentRowTextOptions(title: context.l10n.findInFav),
+  Widget build(BuildContext context, WidgetRef ref) => ContentWrapper(
+    color: context.colors.backgroundSurface1,
+    children: [
+      ContentRow(
+        onTap: () => ref
+            .read(authMethodsProvider.notifier)
+            .authAndOpen(
+              context,
+              callback: () => context.router.push(const NaviFavoritesRoute()),
             ),
-          ],
+        leading: Icon(
+          SystemIcons.bookmark,
+          color: context.colors.accentDefault,
         ),
-      );
+        trailing: ContentRowTextTrailingOptions(
+          icon: SystemIcons.arrowCornerRightSmall,
+          iconColor: context.colors.foregroundMuted,
+        ),
+        text: ContentRowTextOptions(title: context.l10n.findInFav),
+      ),
+    ],
+  );
 }

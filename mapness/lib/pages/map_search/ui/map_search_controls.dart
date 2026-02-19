@@ -23,11 +23,7 @@ class MapSearchSheetControls extends ConsumerStatefulWidget {
   // Calculate the topbar and bottom padding
   static const screenPadding = 80 + 70;
 
-  const MapSearchSheetControls({
-    required this.collapsedSize,
-    this.currentSize,
-    super.key,
-  });
+  const MapSearchSheetControls({required this.collapsedSize, this.currentSize, super.key});
 
   @override
   MapSearchSheetControlsState createState() => MapSearchSheetControlsState();
@@ -54,7 +50,7 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
     final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
-    double bottomPadding = 16;
+    double bottomPadding = uikit.Spacing.$4x;
 
     // Hide controls when the bottom sheet is expanded
     final locationBottomSheet = (widget.currentSize ?? 0) > 0.75;
@@ -65,9 +61,9 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
     // Update Padding for the bottom sheet size
     if ((widget.currentSize ?? 0) > 0.28 && (widget.currentSize ?? 0) < 0.4) {
       // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
-      bottomPadding = 16 + padding - MapSearchSheetControls.screenPadding;
+      bottomPadding = uikit.Spacing.$4x + padding - MapSearchSheetControls.screenPadding;
     } else {
-      bottomPadding = 16;
+      bottomPadding = uikit.Spacing.$4x;
     }
 
     return SizedBox.expand(
@@ -87,9 +83,9 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                     child: AnimatedPadding(
                       duration: const Duration(milliseconds: 400),
                       padding: EdgeInsets.only(
-                        left: 12,
-                        top: 12,
-                        right: 12,
+                        left: uikit.Spacing.$4x,
+                        top: uikit.Spacing.$4x,
+                        right: uikit.Spacing.$4x,
                         bottom: bottomPadding,
                       ),
                       child: Align(
@@ -111,11 +107,14 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                uikit.SearchInArea(
-                                  visible: !isButtonVisible,
-                                  title: context.l10n.searchInThisArea,
-                                  onTap: _searchInArea,
-                                ),
+                                if (isButtonVisible)
+                                  uikit.AppButton(
+                                    buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
+                                    primaryLabel: context.l10n.searchInThisArea,
+                                    onTap: _searchInArea,
+                                    innerPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                  ),
+
                                 const Spacer(),
                                 const FollowControl(),
                               ],

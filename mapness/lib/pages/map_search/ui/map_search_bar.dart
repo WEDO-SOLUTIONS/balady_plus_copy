@@ -63,6 +63,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
+    final searchState = ref.watch(searchProvider(scope.value));
 
     ref
       ..watch(poiOffersProvider.select((_) => null))
@@ -161,7 +162,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           textStyle: context.textStyles.bodySmallRegular,
         ),
       ),
-      option: widget.isCloseButton
+      option: widget.isCloseButton || searchState.searchText.isNotEmpty
           ? SearchIconBackOption(icon: SystemIcons.close, onPressed: () => _onBackPressed(searcher))
           : SearchTextBackOption(text: context.l10n.cancel, onPressed: () => _onBackPressed(searcher)),
     );
