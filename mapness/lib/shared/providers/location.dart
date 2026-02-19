@@ -31,6 +31,7 @@ class _Location extends _$Location {
       final isGmsAvailable = await CommonFunctions.isGmsAvailable();
       final isHMS = await CommonFunctions.isHuaweiDevice();
 
+      // gms is not available on iOS so we use the standard library in the case
       if (isGmsAvailable || Platform.isIOS) {
         try {
           const locationSettings = LocationSettings();

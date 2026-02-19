@@ -158,7 +158,10 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
-                            colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
+                            colors: [
+                              context.colors.backgroundSurface1.withOpacity(0),
+                              context.colors.backgroundSurface1.withOpacity(0.8),
+                            ],
                           ),
                         ),
                       ),
@@ -373,12 +376,12 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
 
   void _openQuran(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('quran');
-    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "islamicservice", path: "#Quran_Show_All_Surahs_Page");
+    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: 'islamicservice', path: '#Quran_Show_All_Surahs_Page');
   }
 
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
-    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "islamicservice", path: "#Athkar_Page");
+    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: 'islamicservice', path: '#Athkar_Page');
   }
 
   void _openFreeRoam() {
@@ -414,7 +417,7 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
       action: MetricAction.tap.name,
       group: MetricsConstants.exploreTag,
     );
-    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: "snapandsend");
+    sl<HomeMiniAppsListCubit>().openMiniApp(serviceKey: 'snapandsend');
   }
 
   void _scrollListenHandler() {

@@ -40,6 +40,7 @@ class FeedbackSheetWidget extends HookWidget {
     (route) =>
         route.settings.name == PoiCardWidgetRoute.name ||
         route.settings.name == SearchRoute.name ||
+        route.settings.name == PathNavRoute.name ||
         route.settings.name == BottomMenuRoute.name,
   );
 

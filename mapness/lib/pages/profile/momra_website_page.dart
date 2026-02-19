@@ -45,44 +45,38 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
         ),
       )
       ..loadRequest(
-        Uri.parse(
-          switch (language) {
-            Language.arabic => 'https://balady.sa/ar',
-            Language.english => 'https://balady.sa/en',
-          },
-        ),
+        Uri.parse(switch (language) {
+          Language.arabic => 'https://balady.sa/ar',
+          Language.english => 'https://balady.sa/en',
+        }),
       );
   }
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Material(
-          color: Colors.white,
-          child: Scaffold(
-            appBar: BaladyTopBar.iconAndText(
-              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-              title: context.l10n.baladyWebsite,
-              colorEnabled: context.colors.accentDefault,
-              leading: ActionModel(
-                text: context.l10n.back,
-                onPressed: () => context.router.pop(),
-                icon: SystemIcons.arrowCornerLeftLarge,
-              ),
-            ),
-            body: _isLoading
-                ? const Center(child: Loading())
-                : Column(
-                    children: [
-                      const SizedBox(
-                        width: 28,
-                      ),
-                      Expanded(
-                        child: WebViewWidget(controller: _controller),
-                      ),
-                    ],
-                  ),
+    value: SystemUiOverlayStyle.dark,
+    child: Material(
+      color: context.colors.backgroundSurface1,
+      child: Scaffold(
+        appBar: BaladyTopBar.iconAndText(
+          systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+          title: context.l10n.baladyWebsite,
+          colorEnabled: context.colors.accentDefault,
+          leading: ActionModel(
+            text: context.l10n.back,
+            onPressed: () => context.router.pop(),
+            icon: SystemIcons.arrowCornerLeftLarge,
           ),
         ),
-      );
+        body: _isLoading
+            ? const Center(child: Loading())
+            : Column(
+                children: [
+                  const SizedBox(width: 28),
+                  Expanded(child: WebViewWidget(controller: _controller)),
+                ],
+              ),
+      ),
+    ),
+  );
 }

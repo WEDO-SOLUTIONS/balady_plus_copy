@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
@@ -13,10 +12,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
 class RoutingSuggestList extends ConsumerWidget {
-  const RoutingSuggestList({
-    required this.suggest,
-    super.key,
-  });
+  const RoutingSuggestList({required this.suggest, super.key});
 
   final SuggestResultMessage suggest;
 
@@ -27,11 +23,7 @@ class RoutingSuggestList extends ConsumerWidget {
     final contentColor = context.colors.backgroundSurface4;
 
     return Padding(
-      padding: const EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$4x,
-        bottom: Spacing.$4x,
-      ),
+      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
       child: Material(
         clipBehavior: Clip.antiAlias,
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
@@ -56,12 +48,12 @@ class RoutingSuggestList extends ConsumerWidget {
                   return;
                 }
 
-                Metrics.logEventAdvanced(MetricsConstants.routesKeys.searchSuggestion,
-                    group: MetricsConstants.routesTag,
-                    action: MetricAction.tap.toString(),
-                    props: {
-                      'item': object.id?.objectId,
-                    });
+                Metrics.logEventAdvanced(
+                  MetricsConstants.routesKeys.searchSuggestion,
+                  group: MetricsConstants.routesTag,
+                  action: MetricAction.tap.toString(),
+                  props: {'item': object.id?.objectId},
+                );
 
                 context.router.pop(RoutePointDirectoryObject(object));
               },

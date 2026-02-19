@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart' hide MapButton;
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,9 +21,7 @@ class ZoomControl extends ConsumerWidget {
         MapButton(
           disabled: !zoomState.zoomInEnabled,
           onTapUp: (_) {
-            ref.read(urbiAnalyticsProvider).track(
-                  'mapInteraction',
-                );
+            ref.read(urbiAnalyticsProvider).track('mapInteraction');
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
             if (zoomState.zoomInEnabled) {
               zoomNotifier.onTapUp(ZoomControlType.zoomIn);
@@ -30,44 +29,32 @@ class ZoomControl extends ConsumerWidget {
           },
           onTapDown: (_) {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-            ref.read(urbiAnalyticsProvider).track(
-                  'mapInteraction',
-                );
+            ref.read(urbiAnalyticsProvider).track('mapInteraction');
             if (zoomState.zoomInEnabled) {
               zoomNotifier.onTapDown(ZoomControlType.zoomIn);
             }
           },
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          ),
-          child: const AppIcons(iconData: SystemIcons.zoomPlus),
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+          child: AppIcons(iconData: SystemIcons.zoomPlus, color: context.colors.foregroundDefault),
         ),
         MapButton(
           onTapUp: (_) {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-            ref.read(urbiAnalyticsProvider).track(
-                  'mapInteraction',
-                );
+            ref.read(urbiAnalyticsProvider).track('mapInteraction');
             if (zoomState.zoomOutEnabled) {
               zoomNotifier.onTapUp(ZoomControlType.zoomOut);
             }
           },
           onTapDown: (_) {
             ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-            ref.read(urbiAnalyticsProvider).track(
-                  'mapInteraction',
-                );
+            ref.read(urbiAnalyticsProvider).track('mapInteraction');
             if (zoomState.zoomOutEnabled) {
               zoomNotifier.onTapDown(ZoomControlType.zoomOut);
             }
           },
           disabled: !zoomState.zoomOutEnabled,
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(10),
-            bottomRight: Radius.circular(10),
-          ),
-          child: const AppIcons(iconData: SystemIcons.zoomMinus),
+          borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+          child: AppIcons(iconData: SystemIcons.zoomMinus, color: context.colors.foregroundDefault),
         ),
       ],
     );

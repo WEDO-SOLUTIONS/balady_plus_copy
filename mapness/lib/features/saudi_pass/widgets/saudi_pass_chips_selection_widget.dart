@@ -9,30 +9,23 @@ class SaudiPassChipsSelectionWidget<T> extends StatelessWidget {
   final List<Selection<T>> items;
   final Widget Function(BuildContext, Selection<T>) itemBuilder;
 
-  const SaudiPassChipsSelectionWidget({
-    required this.title,
-    required this.items,
-    required this.itemBuilder,
-    Key? key,
-  }) : super(key: key);
+  const SaudiPassChipsSelectionWidget({required this.title, required this.items, required this.itemBuilder, Key? key})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colorsV3;
+    final colors = context.colors;
     return Container(
       padding: const EdgeInsets.all(Spacing.$4x),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: context.colorsV3.backgroundSurface1,
+        color: context.colors.backgroundSurface1,
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: context.textStyleV3.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
-          ),
+          Text(title, style: context.textStyleV3.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault)),
           Spacing.$3x.heightBox,
           Wrap(
             spacing: Spacing.$2x,

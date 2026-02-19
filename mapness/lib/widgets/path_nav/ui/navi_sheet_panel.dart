@@ -193,7 +193,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               Spacing.$3x.heightBox,
             ],
             ContentWrapper.single(
-              color: colors.staticWhite,
+              color: colors.backgroundSurface1,
               child: ContentRow(
                 onTap: () => widget.onTapRoute.call(),
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +212,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
             ),
             Spacing.$3x.heightBox,
             ContentWrapper(
-              color: colors.staticWhite,
+              color: colors.backgroundSurface1,
               children: [
                 ContentRow(
                   onTap: () => context.router.push(const SoundSettingsRoute()),
@@ -269,7 +269,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
               onTap: () => context.router.push(NavigatorSettingsRoute()),
               options: ContentRowOptions(
                 titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
-                wrapperColor: context.colors.staticWhite,
+                wrapperColor: context.colors.backgroundSurface1,
                 wrapperEnabled: true,
                 title: l10n.navigatorSettings,
                 leadingIcon: Icon(SystemIcons.settings, color: colors.foregroundSoft),

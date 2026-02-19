@@ -58,7 +58,10 @@ class AllCategoriesSelectionDialogViewWidget extends HookWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(context.l10n.saudiPassOffersPageFilterCategory, style: context.textStyles.h2SemiBold),
+              Text(
+                context.l10n.saudiPassOffersPageFilterCategory,
+                style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
+              ),
               CustomCloseButton(onClose: () => selectionDialogView.tapCross(context)),
             ],
           ),

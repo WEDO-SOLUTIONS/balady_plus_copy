@@ -96,7 +96,10 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(context.l10n.pointToMap, style: context.textStyles.h4SemiBold),
+                  Text(
+                    context.l10n.pointToMap,
+                    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+                  ),
                   Spacing.$1x.heightBox,
                   Text(
                     context.l10n.moveMap,

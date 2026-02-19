@@ -15,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 part 'poi_card_actions_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PoiCardActions extends _$PoiCardActions {
   @override
   void build() {}

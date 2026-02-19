@@ -17,13 +17,14 @@ class OfferViewWidget extends ConsumerWidget {
 
   const OfferViewWidget(this.offerView, {super.key});
 
-  String formatDistance({
-    required String? metersString,
-    required BuildContext context,
-  }) {
-    if (metersString == null) return '—';
+  String formatDistance({required String? metersString, required BuildContext context}) {
+    if (metersString == null) {
+      return '—';
+    }
     final meters = double.tryParse(metersString);
-    if (meters == null) return '—';
+    if (meters == null) {
+      return '—';
+    }
 
     if (meters >= 1000) {
       final km = meters / 1000;
@@ -40,7 +41,7 @@ class OfferViewWidget extends ConsumerWidget {
     final locale = Localizations.localeOf(context);
     final byDate = DateFormat('d MMMM', locale.languageCode).format(offerView.byDate);
     final byDateStyle = textStyles.captionMediumRegular.copyWith(
-      color: offerView.isByDateRed ? colors.errorDefault : null,
+      color: offerView.isByDateRed ? colors.errorDefault : context.colors.foregroundDefault,
     );
 
     final amountOrRatioTextSpan = createAmountOrRatioTextSpan(
@@ -100,7 +101,10 @@ class OfferViewWidget extends ConsumerWidget {
                     TextSpan(
                       children: [
                         if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
-                        TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
+                        TextSpan(
+                          text: ' • ',
+                          style: TextStyle(color: colors.neutralMuted),
+                        ),
                         TextSpan(text: offerView.title),
                         WidgetSpan(
                           child: Padding(
@@ -109,28 +113,24 @@ class OfferViewWidget extends ConsumerWidget {
                           ),
                         ),
                       ],
-                      style: textStyles.bodySmallSemiBold,
+                      style: textStyles.bodySmallSemiBold.copyWith(color: context.colors.foregroundDefault),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     offerView.subTitle,
-                    style: textStyles.captionMediumRegular,
+                    style: textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     offerView.branchName,
-                    style: textStyles.captionMediumRegular,
+                    style: textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                  Text(
-                    '${context.l10n.saudiPassOfferBy} $byDate',
-                    style: byDateStyle,
-                    maxLines: 1,
-                  ),
+                  Text('${context.l10n.saudiPassOfferBy} $byDate', style: byDateStyle, maxLines: 1),
                 ],
               ),
             ),
@@ -142,10 +142,7 @@ class OfferViewWidget extends ConsumerWidget {
                   _HeartIconWidget(offerView),
                   const SizedBox(height: Spacing.$3x),
                   Text(
-                    formatDistance(
-                      metersString: offerView.distance,
-                      context: context,
-                    ),
+                    formatDistance(metersString: offerView.distance, context: context),
                     style: textStyles.captionMediumRegular.copyWith(color: colors.neutralMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

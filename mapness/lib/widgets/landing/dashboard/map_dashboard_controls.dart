@@ -20,10 +20,7 @@ import 'package:sheetify/sheetify.dart';
 class MapDashboardControls extends ConsumerWidget {
   final MultiStateSheetController<ThreeStateSheet> scrollController;
 
-  const MapDashboardControls(
-    this.scrollController, {
-    super.key,
-  });
+  const MapDashboardControls(this.scrollController, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,10 +32,7 @@ class MapDashboardControls extends ConsumerWidget {
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Padding(
-        padding: const EdgeInsets.only(
-          left: uikit.Spacing.$3x,
-          right: uikit.Spacing.$3x,
-        ),
+        padding: const EdgeInsets.only(left: uikit.Spacing.$3x, right: uikit.Spacing.$3x),
         child: Column(
           children: [
             Expanded(
@@ -48,13 +42,7 @@ class MapDashboardControls extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          const WeatherControl(),
-                          uikit.Spacing.$1_5x.heightBox,
-                          const ParkingControl(),
-                        ],
-                      ),
+                      Row(children: [const WeatherControl(), uikit.Spacing.$1_5x.heightBox, const ParkingControl()]),
                       const Spacer(),
                       const IndoorControl(),
                       const Spacer(),
@@ -62,7 +50,7 @@ class MapDashboardControls extends ConsumerWidget {
                         height: scrollController.state == ThreeStateSheet.hidden
                             ? controlsHeight * (1 - scrollController.interpolation)
                             : 0,
-                      )
+                      ),
                     ],
                   ),
                   const Spacer(),
@@ -89,20 +77,19 @@ class MapDashboardControls extends ConsumerWidget {
             const SizedBox(height: uikit.Spacing.$2x),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                EtaSharingControl(),
-                FollowControl(),
-              ],
+              children: [EtaSharingControl(), FollowControl()],
             ),
             if (!isNationalDay) uikit.Spacing.$4x.heightBox,
             if (isNationalDay)
               MultiStateSheetBuilder<ThreeStateSheet>(
-                  builder: (context, state, interpolation, child) => SizedBox(
-                      height: state == ThreeStateSheet.hidden
-                          ? scrollController.componentSizes.topHeader * (1 - interpolation) +
-                              uikit.Spacing.$12x * interpolation
-                          : uikit.Spacing.$12x),
-                  defaultState: ThreeStateSheet.hidden),
+                builder: (context, state, interpolation, child) => SizedBox(
+                  height: state == ThreeStateSheet.hidden
+                      ? scrollController.componentSizes.topHeader * (1 - interpolation) +
+                            uikit.Spacing.$12x * interpolation
+                      : uikit.Spacing.$12x,
+                ),
+                defaultState: ThreeStateSheet.hidden,
+              ),
           ],
         ),
       ),

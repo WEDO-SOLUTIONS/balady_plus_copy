@@ -26,7 +26,12 @@ class FeedbackBoolToggle extends HookWidget {
         children: [
           Row(
             children: [
-              Expanded(child: Text(field.label, style: context.textStyles.bodyLargeRegular)),
+              Expanded(
+                child: Text(
+                  field.label,
+                  style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
+                ),
+              ),
               FormBuilderField<bool>(
                 name: field.id,
                 initialValue: false,
