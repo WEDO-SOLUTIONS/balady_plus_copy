@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
@@ -19,6 +18,7 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
@@ -58,7 +58,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final MultiStateSheetController<FourStateSheet> _multiStateSheetController;
+  late final MultiStateSheetController<ThreeStateSheet> _multiStateSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -68,11 +68,19 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, FourStateSheet>((controller) {
+  ThreeStateSheet _sheetState = ThreeStateSheet.expanded;
+  Color? _barrierColor;
+
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
     final fraction = controller.fraction;
     final state = controller.state;
 
     return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+  });
+
+  late final barrierColorDelegate = StatefulSheetDelegate.func<Color?, ThreeStateSheet>((controller) {
+    final state = controller.state;
+    return state.index > 1 ? _barrierColor : null;
   });
 
   @override
@@ -80,22 +88,33 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     super.initState();
 
     _multiStateSheetController = MultiStateSheetController(
-      initialState: FourStateSheet.expanded,
+      initialState: ThreeStateSheet.expanded,
       behavior: MultiSnappingBehavior(
         models: [
-          FractionSnappingModel({0.0, if (Platform.isIOS) .3 else .38, 0.8, 0.931}),
-          OffsetSnappingModel({Spacing.$4x}),
+          FractionSnappingModel({.8, 1.0}),
+          ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
-      stateMapper: const FourStateMapper(),
+      stateMapper: const LandingStateMapper(),
     );
+    _multiStateSheetController.addListener(_onSheetChanged);
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _onSheetChanged() {
+    final newState = _multiStateSheetController.state;
+    if (newState != _sheetState) {
+      setState(() {
+        _sheetState = newState;
+      });
+    }
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _barrierColor = context.colors.screenOverlayDimming40;
     _clustering ??= ClusteringMapObjectManager(
       options: ClusteringMapObjectManagerOptionsMessage(
         logicalPixel: MediaQuery.of(context).devicePixelRatio,
@@ -114,7 +133,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
-    _multiStateSheetController.dispose();
+    _multiStateSheetController
+      ..removeListener(_onSheetChanged)
+      ..dispose();
     _keyboardVisible.cancel();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
@@ -145,18 +166,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     );
     ref.listen(searchProvider(_scope), (previous, next) {
       _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
-      switch (next) {
-        case SearchStateHistory():
-        case SearchStateError():
-        case SearchStateEmpty():
-        case SearchStateSuggest():
-        case SearchStateLoading():
-          _multiStateSheetController.setState(FourStateSheet.expanded);
-          break;
-        case SearchStateResults():
-          _multiStateSheetController.setState(FourStateSheet.open);
-          break;
-      }
     });
     final isCloseButton = ref.watch(
       searchProvider(
@@ -178,20 +187,23 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
-            child: MultiStateSheet<FourStateSheet>(
+            child: MultiStateSheet<ThreeStateSheet>(
               scrollController: _multiStateSheetController,
               keepContentBehindFooter: true,
               backgroundColor: containerColor,
+              safeAreaColor: _sheetState == ThreeStateSheet.hidden ? contentColor : containerColor,
               dragger: SheetDragger(backgroundColor: contentColor),
               outsideOpacityDelegate: outsideOpacityDelegate,
+              barrierColorDelegate: barrierColorDelegate,
               header: Container(
                 color: contentColor,
                 padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
                 child: MapSearchBar(requestFocus: widget.requestFocus, onClose: onClose, isCloseButton: isCloseButton),
               ),
-              useSafeArea: false,
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
-              content: [MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController)],
+              sliver: SliverToBoxAdapter(
+                child: MapSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
+              ),
             ),
           ),
         ],
@@ -290,7 +302,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       return;
     }
 
-    _multiStateSheetController.setState(FourStateSheet.expanded);
+    _multiStateSheetController.setState(ThreeStateSheet.expanded);
   }
 
   void onClose() {
@@ -317,6 +329,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _collapseBottomSheet() {
-    _multiStateSheetController.setState(FourStateSheet.hidden);
+    _multiStateSheetController.setState(ThreeStateSheet.hidden);
   }
 }

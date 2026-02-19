@@ -14,6 +14,7 @@ import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
+import 'package:mapness/widgets/weather/weather_control.dart';
 
 class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen
@@ -88,39 +89,47 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                         right: uikit.Spacing.$4x,
                         bottom: bottomPadding,
                       ),
-                      child: Align(
-                        alignment: Alignment.topRight,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const LayersControl(),
-                            const SizedBox(height: 8),
-                            const TrafficControl(),
-                            const SizedBox(height: uikit.Spacing.$2x),
-                            const DimensionControl(),
-                            const Spacer(),
-                            const ZoomControl(),
-                            const Spacer(),
-                            const CompassControl(),
-                            const SizedBox(height: 8),
-                            ComplianceBuildingLegend(),
-                            const SizedBox(height: 8),
-                            Row(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [WeatherControl()],
+                          ),
+                          const Spacer(),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                if (isButtonVisible)
-                                  uikit.AppButton(
-                                    buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
-                                    primaryLabel: context.l10n.searchInThisArea,
-                                    onTap: _searchInArea,
-                                    innerPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                  ),
-
+                                const LayersControl(),
+                                const SizedBox(height: 8),
+                                const TrafficControl(),
+                                const SizedBox(height: uikit.Spacing.$2x),
+                                const DimensionControl(),
                                 const Spacer(),
-                                const FollowControl(),
+                                const ZoomControl(),
+                                const Spacer(),
+                                const CompassControl(),
+                                const SizedBox(height: 8),
+                                ComplianceBuildingLegend(),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    if (isButtonVisible)
+                                      uikit.AppButton(
+                                        buttonColorScheme: uikit.ButtonColorScheme.accentSecondary,
+                                        primaryLabel: context.l10n.searchInThisArea,
+                                        onTap: _searchInArea,
+                                        innerPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                      ),
+                                    const Spacer(),
+                                    const FollowControl(),
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

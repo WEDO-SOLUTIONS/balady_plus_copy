@@ -49,6 +49,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   final _settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
   final _scope = SearchScopeEnum.navi.value;
+  Color? _barrierColor;
 
   final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
     final fraction = controller.fraction;
@@ -59,7 +60,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
   late final barrierColorDelegate = StatefulSheetDelegate.func<Color?, ThreeStateSheet>((controller) {
     final state = controller.state;
-    return state.index > 1 ? context.colors.screenOverlayDimming40 : null;
+    return state.index > 1 ? _barrierColor : null;
   });
 
   @override
@@ -75,7 +76,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     _multiStateSheetController = MultiStateSheetController<ThreeStateSheet>(
       behavior: MultiSnappingBehavior(
         models: [
-          FractionSnappingModel({.731, .931}),
+          FractionSnappingModel({.8, 1.0}),
           ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
@@ -91,6 +92,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         _unfocusSearchField();
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _barrierColor = context.colors.screenOverlayDimming40;
   }
 
   @override
@@ -159,11 +166,10 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               outside: NaviSearchSheetControls(_multiStateSheetController),
               safeAreaColor: context.colors.backgroundSurface2,
               dragger: null,
-              useSafeArea: false,
               backgroundColor: context.colors.backgroundSurface4,
               key: const ValueKey('NAVI SEARCH SHEET'),
               header: NaviSearchHeader(
-                backgroundColor: context.colors.backgroundSurface2,
+                backgroundColor: context.colors.backgroundSurface1,
                 requestFocus: true,
                 onClose: () => context.router.pop(),
               ),
