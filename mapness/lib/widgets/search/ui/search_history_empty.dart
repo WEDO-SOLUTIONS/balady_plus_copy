@@ -28,7 +28,6 @@ class SearchHistoryEmpty extends ConsumerWidget {
                 text: context.l10n.lookForUsefulPlacesCafesMallsForExampleMallNearby,
                 style: context.textStyles.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                 children: [
-                  const TextSpan(text: ' '),
                   TextSpan(
                     text: context.l10n.mallNearby,
                     style: context.textStyles.bodyLargeMedium.copyWith(color: context.colors.accentDefault),
