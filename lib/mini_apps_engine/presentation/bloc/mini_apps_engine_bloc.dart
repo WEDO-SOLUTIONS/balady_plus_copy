@@ -28,10 +28,8 @@ class MiniAppsEngineBloc
 
   // String serverPath;
 
-  MiniAppsEngineBloc({
-    required this.miniApp,
-  }) //required this.serverPath
-      : super(const MiniAppsEngineInitialState()) {
+  MiniAppsEngineBloc({required this.miniApp}) //required this.serverPath
+    : super(const MiniAppsEngineInitialState()) {
     on<CheckMiniAppsEngineEvent>(_checkMiniAppsEngine);
 
     on<DownloadMiniAppsEngineEvent>(_downloadMiniAppsEngine);
@@ -40,18 +38,30 @@ class MiniAppsEngineBloc
     add(CheckMiniAppsEngineEvent(miniApp: miniApp));
   }
 
+  String getLocalizedURL(String serviceUrl) {
+    if (serviceUrl.contains("ewaa") && CommonFunctions.isAppAR == false) {
+      serviceUrl = "$serviceUrl/en/normal_profile";
+    } else if (serviceUrl.contains("/ar/") &&
+        CommonFunctions.isAppAR == false) {
+      serviceUrl = serviceUrl.replaceAll("/ar/", "/en/");
+    }
+
+    return serviceUrl;
+  }
+
   void _checkMiniAppsEngine(
-      CheckMiniAppsEngineEvent event, Emitter emit) async {
+    CheckMiniAppsEngineEvent event,
+    Emitter emit,
+  ) async {
     if (event.miniApp.latestVersion?.serviceUrl != null) {
       if (event.miniApp.nafathLogin) {
         GetCookie getCookie = GetCookie(repository: sl());
         final failureOrSuccessForCookie = await getCookie(true);
       }
-      String serviceUrl= event.miniApp.latestVersion!.serviceUrl!;
-      if(serviceUrl.contains("ewaa")&& CommonFunctions.isAppAR==false) {
-        serviceUrl = "$serviceUrl/en/normal_profile";
+      String serviceUrl = getLocalizedURL(
+        event.miniApp.latestVersion!.serviceUrl!,
+      );
 
-      }
       emit(
         MiniAppsEngineLoadedState(
           servicePath: serviceUrl,
@@ -60,7 +70,7 @@ class MiniAppsEngineBloc
       );
     } else {
       basePathService =
-      "${(await getApplicationDocumentsDirectory()).path}/www/";
+          "${(await getApplicationDocumentsDirectory()).path}/www/";
       String dir =
           '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber}';
       File file = File('$dir/index.html');
@@ -77,7 +87,9 @@ class MiniAppsEngineBloc
   }
 
   void _downloadMiniAppsEngine(
-      DownloadMiniAppsEngineEvent event, Emitter emit) async {
+    DownloadMiniAppsEngineEvent event,
+    Emitter emit,
+  ) async {
     emit(const MiniAppsEngineLoadingState(progress: '0'));
 
     serviceDownloadPath = "$basePathService${event.miniApp.serviceKey}";
@@ -87,12 +99,12 @@ class MiniAppsEngineBloc
     if (exists) {
       await directoryApp.delete(recursive: true);
       serviceDownloadPath =
-      "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     } else {
       serviceDownloadPath =
-      "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     }
@@ -132,7 +144,7 @@ class MiniAppsEngineBloc
     try {
       if (state is MiniAppsEngineLoadingState) {
         MiniAppsEngineLoadingState tempState =
-        state as MiniAppsEngineLoadingState;
+            state as MiniAppsEngineLoadingState;
         if (!tempState.progress.contains("100")) {
           return;
         }
@@ -147,7 +159,8 @@ class MiniAppsEngineBloc
       // int portToUse = 5061;
 
       /// Real implementation
-      int portToUse = event.miniApp.portNumber ??
+      int portToUse =
+          event.miniApp.portNumber ??
           PortHelper.generateRandomPort(
             portNumber,
             event.miniApp.name,
@@ -156,7 +169,10 @@ class MiniAppsEngineBloc
 
       if (PortHelper.isPortUnsafe(portToUse)) {
         portToUse = PortHelper.generateRandomPort(
-            portToUse, event.miniApp.name, event.miniApp.serviceKey);
+          portToUse,
+          event.miniApp.name,
+          event.miniApp.serviceKey,
+        );
       }
 
       if (localhostServer == null || localhostServer!.port != portToUse) {
@@ -188,26 +204,33 @@ class MiniAppsEngineBloc
     } catch (e) {
       // print(e.toString());
       print('Error in _openLocalHostServer: ${e.toString()}');
-      add(OpenServerEngineEvent(
+      add(
+        OpenServerEngineEvent(
           miniApp: event.miniApp.copyWith(
-              portNumber: PortHelper.generateRandomPort(
-                  portNumber, event.miniApp.name, event.miniApp.serviceKey))));
+            portNumber: PortHelper.generateRandomPort(
+              portNumber,
+              event.miniApp.name,
+              event.miniApp.serviceKey,
+            ),
+          ),
+        ),
+      );
     }
   }
 
   Future<File?> _downloadFile(
-      String urlDownload,
-      String downloadPath,
-      String serviceKey,
-      Emitter emitter, {
-        int retryCounter = 0,
-      }) async {
+    String urlDownload,
+    String downloadPath,
+    String serviceKey,
+    Emitter emitter, {
+    int retryCounter = 0,
+  }) async {
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
         urlDownload,
         // 'https://drive.usercontent.google.com/download?id=1GQPmEossQAHw_Wk-KR1u7lhj-TeXkWAv&export=download',
-       // "https://drive.usercontent.google.com/download?id=1C4oR_afe51mlTI2UxaUBHVM-GEh8udKS&export=download&authuser=0&confirm=t&uuid=602fd070-7cf5-42aa-bea7-d02af5b7028b&at=APcXIO3jtBR2vV5JP0-zptBbo-am:1770715929482",
+        // "https://drive.usercontent.google.com/download?id=1C4oR_afe51mlTI2UxaUBHVM-GEh8udKS&export=download&authuser=0&confirm=t&uuid=602fd070-7cf5-42aa-bea7-d02af5b7028b&at=APcXIO3jtBR2vV5JP0-zptBbo-am:1770715929482",
         // "https://drive.usercontent.google.com/download?id=1nC1zR8cuIl6i6uBpvnO-vMKwhj3B0kv0&export=download&authuser=0&confirm=t&uuid=b7976914-b291-4b41-a4b9-38ad1200a404&at=ANTm3czE5Cl5y-4kNQ4TmYFJA97o:1768127493910",
         onReceiveProgress: (received, total) {
           if (total != -1) {
