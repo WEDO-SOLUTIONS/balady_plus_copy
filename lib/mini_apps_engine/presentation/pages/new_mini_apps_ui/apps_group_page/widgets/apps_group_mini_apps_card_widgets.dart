@@ -80,19 +80,18 @@ class AppsGroupMiniAppsCardWidgets extends StatelessWidget {
                 ),
                 // SizedBox(height: context.screenHeight * 0.01),
                 SizedBox(
-                  height: context.screenHeight * 0.03,
+                  height: context.screenHeight * 0.02,
                   width: context.screenWidth * 0.40,
                   child: AutoSizeText(
                     title ?? "example",
+                    maxFontSize: 30,
+                    minFontSize: 8,
                     maxLines: 2,
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
-                    maxFontSize: 13,
-                    minFontSize: 10,
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w400,
-                      //   color: Color(0XFF1E2A36),
                       fontFamily: GeneralKey.appFontType,
                       height: 1.4,
                     ),

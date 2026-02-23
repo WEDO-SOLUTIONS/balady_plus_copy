@@ -126,7 +126,7 @@ class MiniAppsSearchPage extends StatelessWidget {
                                       child: AutoSizeText(
                                         "no_results_found".tr(),
                                         maxLines: 2,
-                                        minFontSize: 25,
+                                        minFontSize: 8,
                                         maxFontSize: 30,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(

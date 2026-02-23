@@ -155,12 +155,11 @@ class CustomLargMoreApps extends StatelessWidget {
               child: AutoSizeText(
                 text ?? "example",
                 maxLines: 2,
-                maxFontSize: 20,
-                minFontSize: 10,
-                overflow: TextOverflow.visible,
+                maxFontSize: 30,
+                minFontSize: 8,
+                overflow: TextOverflow.ellipsis,
                 textAlign: isArabic ? TextAlign.right : TextAlign.left,
                 style: const TextStyle(
-              //    color: Color(0XFF242424),
                   fontWeight: FontWeight.w700,
                   fontFamily: GeneralKey.appFontType,
                 ),
