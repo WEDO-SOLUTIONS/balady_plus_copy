@@ -57,7 +57,7 @@ class _AccessibilitySettingsPageState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () =>
@@ -83,7 +83,7 @@ class _AccessibilitySettingsPageState
                     ),
                     Spacing.$4x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () =>
@@ -114,7 +114,7 @@ class _AccessibilitySettingsPageState
                     ),
                     Spacing.$4x.heightBox,
                     ContentWrapper(
-                      color: context.colors.backgroundSurface4,
+                      color: context.colors.backgroundSurface1,
                       children: [
                         ContentRow(
                           onTap: () =>
