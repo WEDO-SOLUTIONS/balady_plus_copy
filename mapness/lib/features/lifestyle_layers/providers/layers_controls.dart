@@ -87,17 +87,16 @@ class LayersState {
     Map<String, Polygon>? polygons,
     LayersPanelType? layersWidgetType,
     LayersType? layersType,
-  }) =>
-      LayersState(
-        isLoading: isLoading ?? this.isLoading,
-        layersVisible: layersVisible ?? this.layersVisible,
-        selectedType: selectedType ?? this.selectedType,
-        investmentsMarkers: investmentsMarkers ?? this.investmentsMarkers,
-        polylines: polylines ?? this.polylines,
-        polygons: polygons ?? this.polygons,
-        layersPanelType: layersWidgetType ?? layersPanelType,
-        layersType: layersType ?? this.layersType,
-      );
+  }) => LayersState(
+    isLoading: isLoading ?? this.isLoading,
+    layersVisible: layersVisible ?? this.layersVisible,
+    selectedType: selectedType ?? this.selectedType,
+    investmentsMarkers: investmentsMarkers ?? this.investmentsMarkers,
+    polylines: polylines ?? this.polylines,
+    polygons: polygons ?? this.polygons,
+    layersPanelType: layersWidgetType ?? layersPanelType,
+    layersType: layersType ?? this.layersType,
+  );
 }
 
 const duration = Duration(milliseconds: 700);
@@ -286,19 +285,15 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  void setSelection({
-    LayerType? selectedType,
-  }) {
+  void setSelection({LayerType? selectedType}) {
     if (selectedType != null) {
       _saveLayersState(selectedType);
-      Metrics.logEventAdvanced(MetricsConstants.layersKeys.layerSelect,
-          group: MetricsConstants.layersTag,
-          action: MetricAction.tap.toString(),
-          props: {
-            'type': selectedType.titleLocale(
-              AppLocalizationsEn(),
-            ),
-          });
+      Metrics.logEventAdvanced(
+        MetricsConstants.layersKeys.layerSelect,
+        group: MetricsConstants.layersTag,
+        action: MetricAction.tap.toString(),
+        props: {'type': selectedType.titleLocale(AppLocalizationsEn())},
+      );
     } else {
       _removeLayersState();
 
@@ -342,54 +337,43 @@ class LayersControls extends _$LayersControls {
   }
 
   Future<void> toggleInvestOpportunities() async {
-    final layersControls = ref.read(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     if (currentState != (LayerType.invest)) {
-      await layersControls._showInvestmentOpportunities(LayerType.invest);
+      await _showInvestmentOpportunities(LayerType.invest);
     } else {
       await _removeAll();
 
-      layersControls
-        ..setSelection()
-        ..update(
-          isLoading: false,
-        );
+      setSelection();
+      update(isLoading: false);
     }
   }
 
   Future<void> toggleWhiteLands() async {
-    final layersControls = ref.read(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     if (currentState != (LayerType.fencing)) {
-      await layersControls._showWhiteLands();
+      await _showWhiteLands();
     } else {
       await _viewPortSubscription?.cancel();
       await _removeAll();
 
-      layersControls
-        ..setSelection()
-        ..update(
-          isLoading: false,
-        );
+      setSelection();
+      update(isLoading: false);
     }
   }
 
   Future<void> toggleParking() async {
-    final layers = ref.read(layersControlsProvider.notifier);
     final currentState = state.selectedType;
     await _viewPortSubscription?.cancel();
 
     if (currentState == LayerType.parkingLots) {
       await _removeAll();
-      final manager = ref.read(mapObjectManagerProvider(
-        named: esriMapObjectSettings.name,
-        layerId: esriMapObjectSettings.layerId,
-      ).notifier);
+      final manager = ref.read(
+        mapObjectManagerProvider(named: esriMapObjectSettings.name, layerId: esriMapObjectSettings.layerId).notifier,
+      );
       await manager.removeAllMarkers();
 
-      layers
-        ..setSelection()
-        ..update(isLoading: false);
+      setSelection();
+      update(isLoading: false);
 
       await ref.read(parkingStateProvider.notifier).hideParking();
     } else {
@@ -449,22 +433,24 @@ class LayersControls extends _$LayersControls {
   Future<void> showIwish() async {
     update(isLoading: true);
     const duration = Duration(seconds: 10);
-    final markers = await ref.read(iwishMarkersProvider.future).onError((error, stackTrace) {
-      onError();
-      return [];
-    }).timeout(
-      duration,
-      onTimeout: () {
-        onError();
-        return [];
-      },
-    );
+    final markers = await ref
+        .read(iwishMarkersProvider.future)
+        .onError((error, stackTrace) {
+          onError();
+          return [];
+        })
+        .timeout(
+          duration,
+          onTimeout: () {
+            onError();
+            return [];
+          },
+        );
     await _removeAll();
     await ref
-        .read(mapObjectManagerProvider(
-          named: esriMapObjectSettings.name,
-          layerId: esriMapObjectSettings.layerId,
-        ).notifier)
+        .read(
+          mapObjectManagerProvider(named: esriMapObjectSettings.name, layerId: esriMapObjectSettings.layerId).notifier,
+        )
         .addMarkers(markers)
         .onError((error, stackTrace) => onError())
         .timeout(duration, onTimeout: onError);
@@ -501,29 +487,23 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  MapRequestParams _createParams(
-    VisibleRect visibleRect,
-    LayerType layer,
-    EnvironmentConfig env,
-  ) =>
-      MapRequestParams(
-        layer: layer.getGISLayerType(),
-        southWestLongitude: visibleRect.southWestLon,
-        southWestLatitude: visibleRect.southWestLat,
-        northEastLongitude: visibleRect.northEastLon,
-        northEastLatitude: visibleRect.northEastLat,
-        domain: env.url,
-        proxy: env.proxy,
-      );
+  MapRequestParams _createParams(VisibleRect visibleRect, LayerType layer, EnvironmentConfig env) => MapRequestParams(
+    layer: layer.getGISLayerType(),
+    southWestLongitude: visibleRect.southWestLon,
+    southWestLatitude: visibleRect.southWestLat,
+    northEastLongitude: visibleRect.northEastLon,
+    northEastLatitude: visibleRect.northEastLat,
+    domain: env.url,
+    proxy: env.proxy,
+  );
 
   Future<void> _showInvestmentOpportunities(LayerType layerType) async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
 
-    final map = ref.watch(mapObjectManagerProvider(
-      named: esriMapObjectSettings.name,
-      layerId: esriMapObjectSettings.layerId,
-    ).notifier);
+    final map = ref.watch(
+      mapObjectManagerProvider(named: esriMapObjectSettings.name, layerId: esriMapObjectSettings.layerId).notifier,
+    );
 
     /// Loading
     setSelection(selectedType: layerType);
@@ -540,26 +520,22 @@ class LayersControls extends _$LayersControls {
         .map((event) => event.visibleRect)
         .debounceTime(duration)
         .asyncMap(
-          (visibleRect) => controller.getEsriPoints(
-            params: _createParams(visibleRect, layerType, env),
-            cancelToken: _cancelToken,
-          ),
+          (visibleRect) =>
+              controller.getEsriPoints(params: _createParams(visibleRect, layerType, env), cancelToken: _cancelToken),
         )
         .map(_makeMarkers)
-        .listen(
-      (markers) async {
-        update(isLoading: false);
-        if (state.selectedType == LayerType.invest) {
-          final stateMarkers = state.investmentsMarkers;
-          markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
-          for (final element in markers) {
-            stateMarkers[element.id] = element;
+        .listen((markers) async {
+          update(isLoading: false);
+          if (state.selectedType == LayerType.invest) {
+            final stateMarkers = state.investmentsMarkers;
+            markers.retainWhere((e) => !stateMarkers.containsKey(e.id));
+            for (final element in markers) {
+              stateMarkers[element.id] = element;
+            }
+            update(investmentsMarkers: stateMarkers);
+            await map.addMarkers(markers);
           }
-          update(investmentsMarkers: stateMarkers);
-          await map.addMarkers(markers);
-        }
-      },
-    );
+        });
   }
 
   Future<void> _tapHandler(LayerType value) async {
@@ -594,10 +570,12 @@ class LayersControls extends _$LayersControls {
       case LayerType.parkingLots:
         {
           await ref
-              .read(mapObjectManagerProvider(
-                named: esriMapObjectSettings.name,
-                layerId: esriMapObjectSettings.layerId,
-              ).notifier)
+              .read(
+                mapObjectManagerProvider(
+                  named: esriMapObjectSettings.name,
+                  layerId: esriMapObjectSettings.layerId,
+                ).notifier,
+              )
               .removeAllMarkers();
           await ref.read(parkingStateProvider.notifier).hideParking();
           break;
@@ -625,15 +603,12 @@ class LayersControls extends _$LayersControls {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
 
-    final mapManager = ref.watch(mapObjectManagerProvider(
-      named: esriMapObjectSettings.name,
-      layerId: esriMapObjectSettings.layerId,
-    ).notifier);
+    final mapManager = ref.watch(
+      mapObjectManagerProvider(named: esriMapObjectSettings.name, layerId: esriMapObjectSettings.layerId).notifier,
+    );
 
     setSelection(selectedType: LayerType.fencing);
-    update(
-      isLoading: true,
-    );
+    update(isLoading: true);
 
     await _removeAll();
 
@@ -661,29 +636,28 @@ class LayersControls extends _$LayersControls {
         )
         .map(_makePolygons)
         .listen((data) async {
-      update(isLoading: false);
-      await _removeAll();
-      if (state.selectedType == LayerType.fencing) {
-        final statePolygons = state.polygons;
-        data.retainWhere((e) => !statePolygons.containsKey(e.id));
-        for (final element in data) {
-          statePolygons[element.id] = element;
-        }
-        update(polygons: statePolygons);
+          update(isLoading: false);
+          await _removeAll();
+          if (state.selectedType == LayerType.fencing) {
+            final statePolygons = state.polygons;
+            data.retainWhere((e) => !statePolygons.containsKey(e.id));
+            for (final element in data) {
+              statePolygons[element.id] = element;
+            }
+            update(polygons: statePolygons);
 
-        await mapManager.addPolygons(data);
-      }
-    });
+            await mapManager.addPolygons(data);
+          }
+        });
   }
 
   Future<void> _showBuildingCompliance() async {
     final controller = ref.watch(lifestyleRepositoryProvider.notifier);
     final env = await ref.read(dgisEnvironmentProvider.future);
 
-    final mapObjectManager = ref.watch(mapObjectManagerProvider(
-      named: esriMapObjectSettings.name,
-      layerId: esriMapObjectSettings.layerId,
-    ).notifier);
+    final mapObjectManager = ref.watch(
+      mapObjectManagerProvider(named: esriMapObjectSettings.name, layerId: esriMapObjectSettings.layerId).notifier,
+    );
 
     await _removeAll();
 
@@ -702,27 +676,23 @@ class LayersControls extends _$LayersControls {
             _cancelToken,
           ),
         )
-        .listen(
-      (data) async {
-        update(isLoading: false);
-        await _removeAll();
-        if (state.selectedType == LayerType.buildings) {
-          final polylineList = _makePolylineWithPoint(data);
-          final statePolylines = state.polylines;
-          polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
-          for (final element in polylineList) {
-            statePolylines[element.id] = element;
+        .listen((data) async {
+          update(isLoading: false);
+          await _removeAll();
+          if (state.selectedType == LayerType.buildings) {
+            final polylineList = _makePolylineWithPoint(data);
+            final statePolylines = state.polylines;
+            polylineList.retainWhere((e) => !statePolylines.containsKey(e.id));
+            for (final element in polylineList) {
+              statePolylines[element.id] = element;
+            }
+            update(polylines: statePolylines);
+            await mapObjectManager.addPolyLines(polylineList);
           }
-          update(polylines: statePolylines);
-          await mapObjectManager.addPolyLines(polylineList);
-        }
-      },
-    );
+        });
   }
 
-  List<Polyline> _makePolylineWithPoint(
-    List<BuildingComplianceCertificate>? pointList,
-  ) {
+  List<Polyline> _makePolylineWithPoint(List<BuildingComplianceCertificate>? pointList) {
     final polylines = <Polyline>[];
     if (pointList != null && pointList.isNotEmpty) {
       for (final element in pointList) {
@@ -734,11 +704,7 @@ class LayersControls extends _$LayersControls {
             polylines.add(
               Polyline(
                 id: idPolyline,
-                options: PolylineOptionsMessage(
-                  points: i,
-                  width: 2,
-                  color: 0xff358281,
-                ),
+                options: PolylineOptionsMessage(points: i, width: 2, color: 0xff358281),
                 onTap: () => _showEsriCard(element),
               ),
             );
@@ -749,10 +715,9 @@ class LayersControls extends _$LayersControls {
     return polylines;
   }
 
-  List<Marker> _makeMarkers(
-    List<InvestmentSites>? response,
-  ) {
-    final markers = response?.nonNulls
+  List<Marker> _makeMarkers(List<InvestmentSites>? response) {
+    final markers =
+        response?.nonNulls
             .map<Marker>(
               (e) => Marker(
                 id: e.id,
@@ -769,9 +734,7 @@ class LayersControls extends _$LayersControls {
                     strokeWidth: 1,
                     fontSize: 14,
                     fontName: 'Frutiger',
-                    textPlacement: MarkerTextPlacementMessage(
-                      placement: TextPlacementMessage.bottomCenter,
-                    ),
+                    textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
                   ),
                 ),
                 onTap: () => _showEsriCard(e),
@@ -810,10 +773,9 @@ class LayersControls extends _$LayersControls {
 
   Future<void> _removeMapObjects() async {
     update(polylines: {}, polygons: {}, investmentsMarkers: {});
-    final map = ref.watch(mapObjectManagerProvider(
-      named: esriMapObjectSettings.name,
-      layerId: esriMapObjectSettings.layerId,
-    ).notifier);
+    final map = ref.watch(
+      mapObjectManagerProvider(named: esriMapObjectSettings.name, layerId: esriMapObjectSettings.layerId).notifier,
+    );
 
     final mapObjectManager = ref.watch(
       mapObjectManagerProvider(
