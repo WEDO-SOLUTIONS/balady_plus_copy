@@ -109,7 +109,7 @@ class OfferViewWidget extends ConsumerWidget {
                         WidgetSpan(
                           child: Padding(
                             padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-                            child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
+                            child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralDefault),
                           ),
                         ),
                       ],
