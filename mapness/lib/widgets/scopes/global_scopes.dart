@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/hajj/hajj_rcmc_provider.dart';
@@ -18,6 +19,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/bearing_state.dart';
 import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
+import 'package:provider/provider.dart';
 
 class GlobalScopes extends ConsumerWidget {
   const GlobalScopes({required this.child, super.key});
@@ -43,7 +45,7 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(trafficStateProvider.select((_) => null))
       ..watch(metroLayerProvider.select((_) => null))
       ..watch(metroLayerVisibleProvider.select((_) => null))
-      ..watch(parkingManageProvider.select((_) => null))
+      ..watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).select((_) => null))
       ..watch(showMapOffersProvider.select((_) => null))
       ..watch(hajjRcmcProvider.select((_) => null));
 

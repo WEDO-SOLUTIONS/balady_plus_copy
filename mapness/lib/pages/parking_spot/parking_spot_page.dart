@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
@@ -24,6 +24,7 @@ import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class ParkingSpotPage extends HookConsumerWidget {
@@ -31,12 +32,7 @@ class ParkingSpotPage extends HookConsumerWidget {
   final GeoPointWithElevationMessage? markerPosition;
   final bool isEdit;
 
-  const ParkingSpotPage({
-    this.address,
-    this.markerPosition,
-    this.isEdit = false,
-    super.key,
-  });
+  const ParkingSpotPage({this.address, this.markerPosition, this.isEdit = false, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,12 +41,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     final isDirty = useState<bool>(false);
     final isValid = useState<bool>(true);
     final latLng = useState<LatLng?>(
-      markerPosition != null
-          ? LatLng(
-              latitude: markerPosition!.latitude,
-              longitude: markerPosition!.longitude,
-            )
-          : null,
+      markerPosition != null ? LatLng(latitude: markerPosition!.latitude, longitude: markerPosition!.longitude) : null,
     );
 
     final maxLines = useState<int>(3);
@@ -58,8 +49,10 @@ class ParkingSpotPage extends HookConsumerWidget {
     final supportingText = useState<String?>(null);
 
     void checkDirty() {
-      final stored = ref.read(parkingManageProvider).value;
-      final images = ref.read(parkingImageProvider(isEdit: isEdit));
+      final stored = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
+      final images = ref.read(
+        parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit),
+      );
 
       final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
       final textDirty = textController.text != stored?.comment;
@@ -72,7 +65,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     }
 
     useEffect(() {
-      final stored = ref.read(parkingManageProvider).value;
+      final stored = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value;
       if (isEdit && stored != null) {
         textController.text = stored.comment;
         addressNotifier.value = stored.address;
@@ -109,8 +102,8 @@ class ParkingSpotPage extends HookConsumerWidget {
 
     ref
       ..watch(parkingSpotMapProvider.notifier)
-      ..watch(parkingManageProvider.notifier)
-      ..listen(parkingImageProvider(isEdit: isEdit), (_, __) {
+      ..watch(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier)
+      ..listen(parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit), (_, __) {
         checkDirty();
       });
     final canSave = isDirty.value && isValid.value;
@@ -118,7 +111,7 @@ class ParkingSpotPage extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: context.colors.backgroundSurface4,
       appBar: BaladyTopBar(
-        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+        systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
         textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
         title: isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
@@ -129,112 +122,115 @@ class ParkingSpotPage extends HookConsumerWidget {
         onLeadingPressed: () => context.router.pop(),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$3x),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Spacing.$2x.heightBox,
-              SizedBox(
-                height: 108,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                  child: UrbiMap(
-                    onMapCreated: (controller) async {
-                      final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-                      await dgisMapController.onMapCreated(controller);
-                      if (latLng.value != null) {
-                        await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
-                          latitude: latLng.value!.latitude,
-                          longitude: latLng.value!.longitude,
-                          elevation: 0,
-                        ));
-                        await dgisMapController.addMarker(Marker(
-                          id: parkingId,
-                          options: MarkerOptionsMessage(
-                            position: GeoPointWithElevationMessage(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.$3x),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Spacing.$2x.heightBox,
+                SizedBox(
+                  height: 108,
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                    child: UrbiMap(
+                      onMapCreated: (controller) async {
+                        final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
+                        await dgisMapController.onMapCreated(controller);
+                        if (latLng.value != null) {
+                          await dgisMapController.setCameraPosition(
+                            GeoPointWithElevationMessage(
                               latitude: latLng.value!.latitude,
                               longitude: latLng.value!.longitude,
                               elevation: 0,
                             ),
-                            icon: SaudiNationalDay.isNow()
-                                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                                : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
-                          ),
-                        ));
-                      }
-                    },
-                    key: const Key('ParkingSpotDGISMapKey'),
+                          );
+                          await dgisMapController.addMarker(
+                            Marker(
+                              id: parkingId,
+                              options: MarkerOptionsMessage(
+                                position: GeoPointWithElevationMessage(
+                                  latitude: latLng.value!.latitude,
+                                  longitude: latLng.value!.longitude,
+                                  elevation: 0,
+                                ),
+                                icon: switch (context.read<ThemeController>().currentTheme) {
+                                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.light =>
+                                    Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.saudiDay =>
+                                    Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                                },
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                      key: const Key('ParkingSpotDGISMapKey'),
+                    ),
                   ),
                 ),
-              ),
-              Spacing.$2x.heightBox,
-              if (addressNotifier.value.isNotEmpty)
-                Text(
-                  addressNotifier.value,
-                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                Spacing.$2x.heightBox,
+                if (addressNotifier.value.isNotEmpty)
+                  Text(
+                    addressNotifier.value,
+                    style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
+                  ),
+                Spacing.$3x.heightBox,
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    color: context.colors.accentDefault.withOpacity(.1),
+                    buttonColorScheme: ButtonColorScheme.accent,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    primaryIcon: GeneralIcons.location,
+                    primaryLabel: context.l10n.changeLocation,
+                    onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
+                  ),
                 ),
-              Spacing.$3x.heightBox,
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  color: context.colors.accentDefault.withOpacity(.1),
-                  buttonColorScheme: ButtonColorScheme.accent,
-                  buttonType: ButtonType.secondary,
-                  size: ButtonSize.large,
-                  primaryIcon: GeneralIcons.location,
-                  primaryLabel: context.l10n.changeLocation,
-                  onTap: () => _handleChangeLocation(context, ref, latLng, addressNotifier),
+                Spacing.$4x.heightBox,
+                BaladyTextInput(
+                  controller: textController,
+                  inputState: inputState.value,
+                  label: BaladyInputLabel(
+                    text: context.l10n.comment,
+                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
+                  ),
+                  config: BaladyInputConfig(
+                    autofocus: true,
+                    hintText: context.l10n.feedbackCommentHint,
+                    maxLines: maxLines.value,
+                    isDisposed: false,
+                  ),
+                  supportingText: BaladySupportingText(text: supportingText.value),
                 ),
-              ),
-              Spacing.$4x.heightBox,
-              BaladyTextInput(
-                controller: textController,
-                inputState: inputState.value,
-                label: BaladyInputLabel(
-                  text: context.l10n.comment,
-                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
+                Spacing.$4x.heightBox,
+                SelectedImages(isEdit: isEdit),
+                const Spacer(),
+                SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.accentSecondary,
+                    buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
+                    primaryLabel: context.l10n.save,
+                    size: ButtonSize.large,
+                    onTap: canSave
+                        ? () => _handleSave(context, ref, textController, latLng, addressNotifier, isEdit)
+                        : null,
+                  ),
                 ),
-                config: BaladyInputConfig(
-                  autofocus: true,
-                  hintText: context.l10n.feedbackCommentHint,
-                  maxLines: maxLines.value,
-                  isDisposed: false,
+                Spacing.$0_5x.heightBox,
+                Center(
+                  child: Text(
+                    context.l10n.dataStoredFor,
+                    style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
+                  ),
                 ),
-                supportingText: BaladySupportingText(
-                  text: supportingText.value,
-                ),
-              ),
-              Spacing.$4x.heightBox,
-              SelectedImages(isEdit: isEdit),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  buttonState: canSave ? ButtonState.defaultState : ButtonState.disabled,
-                  primaryLabel: context.l10n.save,
-                  size: ButtonSize.large,
-                  onTap: canSave
-                      ? () => _handleSave(
-                            context,
-                            ref,
-                            textController,
-                            latLng,
-                            addressNotifier,
-                            isEdit,
-                          )
-                      : null,
-                ),
-              ),
-              Spacing.$0_5x.heightBox,
-              Center(
-                child: Text(
-                  context.l10n.dataStoredFor,
-                  style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -256,25 +252,33 @@ class ParkingSpotPage extends HookConsumerWidget {
           : 'latitude: ${result.latitude}, longitude:${result.longitude}';
 
       final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
-      await dgisMapController.setCameraPosition(GeoPointWithElevationMessage(
-        latitude: latLng.value!.latitude,
-        longitude: latLng.value!.longitude,
-        elevation: 0,
-      ));
-      await dgisMapController.deleteMarkers();
-      await dgisMapController.addMarker(Marker(
-        id: parkingId,
-        options: MarkerOptionsMessage(
-          position: GeoPointWithElevationMessage(
-            latitude: latLng.value!.latitude,
-            longitude: latLng.value!.longitude,
-            elevation: 0,
-          ),
-          icon: SaudiNationalDay.isNow()
-              ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-              : Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+      await dgisMapController.setCameraPosition(
+        GeoPointWithElevationMessage(
+          latitude: latLng.value!.latitude,
+          longitude: latLng.value!.longitude,
+          elevation: 0,
         ),
-      ));
+      );
+      await dgisMapController.deleteMarkers();
+      await dgisMapController.addMarker(
+        Marker(
+          id: parkingId,
+          options: MarkerOptionsMessage(
+            position: GeoPointWithElevationMessage(
+              latitude: latLng.value!.latitude,
+              longitude: latLng.value!.longitude,
+              elevation: 0,
+            ),
+            icon: SaudiNationalDay.isNow()
+                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
+                : switch (context.read<ThemeController>().currentTheme) {
+                    BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.light => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                    BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+                  },
+          ),
+        ),
+      );
     }
   }
 
@@ -286,37 +290,34 @@ class ParkingSpotPage extends HookConsumerWidget {
     ValueNotifier<String> addressNotifier,
     bool isEdit,
   ) async {
-    final parkingManage = ref.read(parkingManageProvider.notifier);
-    final images = ref.read(parkingImageProvider(isEdit: isEdit));
+    final parkingManage = ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme).notifier);
+    final images = ref.read(parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: isEdit));
 
     if (latLng.value == null) {
       return;
     }
 
-    await parkingManage.saveStore(ParkingStoreModel(
-      dateTime: DateTime.now(),
-      imagesPaths: images.map((e) => e.path).toList(),
-      comment: textController.text,
-      lat: latLng.value!.latitude,
-      lon: latLng.value!.longitude,
-      address: addressNotifier.value,
-    ));
+    await parkingManage.saveStore(
+      ParkingStoreModel(
+        dateTime: DateTime.now(),
+        imagesPaths: images.map((e) => e.path).toList(),
+        comment: textController.text,
+        lat: latLng.value!.latitude,
+        lon: latLng.value!.longitude,
+        address: addressNotifier.value,
+      ),
+    );
 
     callToast(context, latLng);
     await context.router.maybePop();
   }
 
-  void callToast(
-    BuildContext context,
-    ValueNotifier<LatLng?> latLng,
-  ) {
+  void callToast(BuildContext context, ValueNotifier<LatLng?> latLng) {
     ToastOverlay.of(context).show(
       title: context.l10n.parkingSuccessfullySaved,
       icon: ToastIconAsset(Assets.icons.svg.parkingControl.keyName),
       actions: [
-        ToastAction(
-          title: context.l10n.feedbackBreaksSheetClose,
-        ),
+        ToastAction(title: context.l10n.feedbackBreaksSheetClose),
         ToastAction(
           title: context.l10n.share,
           onTap: () async {

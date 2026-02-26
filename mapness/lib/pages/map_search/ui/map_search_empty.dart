@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,10 +18,13 @@ import 'package:provider/provider.dart';
 class MapSearchEmpty extends ConsumerWidget {
   final bool showAddPlaceButton;
 
-  const MapSearchEmpty({
-    super.key,
-    this.showAddPlaceButton = true,
-  });
+  const MapSearchEmpty({super.key, this.showAddPlaceButton = true});
+
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,14 +44,12 @@ class MapSearchEmpty extends ConsumerWidget {
           Transform(
             transform: Matrix4.rotationY(context.locale.languageCode == 'ar' ? pi : 0),
             alignment: Alignment.center,
-            child: SvgPicture.asset(
-              Assets.imagesSvg.illustrationError.keyName,
-            ),
+            child: SvgPicture.asset(asset(context)),
           ),
           const SizedBox(height: Spacing.$1x),
           Text(
             context.l10n.searchCouldNotFindAnything,
-            style: context.textStyles.h4SemiBold,
+            style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: Spacing.$2x),
@@ -55,17 +57,13 @@ class MapSearchEmpty extends ConsumerWidget {
             Text(
               description.first,
               textAlign: TextAlign.center,
-              style: context.textStyles.bodySmallRegular.copyWith(
-                color: context.colors.foregroundSoft,
-              ),
+              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
             ),
           if (description.length > 1)
             Text(
               description.last.trim(),
               textAlign: TextAlign.center,
-              style: context.textStyles.bodySmallRegular.copyWith(
-                color: context.colors.foregroundSoft,
-              ),
+              style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
             ),
           const SizedBox(height: Spacing.$4x),
           AppButton(

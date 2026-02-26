@@ -19,79 +19,67 @@ class OffersScreenViewWidget extends ConsumerStatefulWidget {
   OffersScreenViewWidgetState createState() => OffersScreenViewWidgetState();
 }
 
-class OffersScreenViewWidgetState
-    extends ConsumerState<OffersScreenViewWidget> {
-  int get _filtersIndex =>
-      widget.offersScreenView.isByPreferencesElseAll ? 0 : 1;
+class OffersScreenViewWidgetState extends ConsumerState<OffersScreenViewWidget> {
+  int get _filtersIndex => widget.offersScreenView.isByPreferencesElseAll ? 0 : 1;
   bool _hasChangeFavorites = false;
 
   @override
   Widget build(BuildContext context) => Container(
-        color: context.colors.backgroundSurface4,
-        padding: const EdgeInsets.only(top: Spacing.$4x),
-        child: FutureBuilder<OffersFiltersView>(
-          future: widget.offersScreenView.offersFiltersFuture,
-          builder: (_, s) => SaudiPassScaffold(
-            onShowOnMapPressed: s.hasData
-                ? () => context.router.push(
-                      OffersOnMapRoute(
-                        city: s.data!.city,
-                        categories: s.data!.categories,
-                        isAll: _filtersIndex == 1,
-                        recommendedTypes: s.data!.recommendedTypes,
-                      ),
-                    )
-                : null,
-            onBackButton: () {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.router.pop(_hasChangeFavorites);
-              });
-            },
-            title: context.l10n.saudiPassOffersPageTitle,
-            body: ListenableBuilder(
-              listenable: widget.offersScreenView,
-              builder: (context, _) => Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(Spacing.$4x).copyWith(
-                      bottom: 0,
+    color: context.colors.backgroundSurface4,
+    padding: const EdgeInsets.only(top: Spacing.$1x),
+    child: FutureBuilder<OffersFiltersView>(
+      future: widget.offersScreenView.offersFiltersFuture,
+      builder: (_, s) => SaudiPassScaffold(
+        onShowOnMapPressed: s.hasData
+            ? () => context.router.push(
+                OffersOnMapRoute(
+                  city: s.data!.city,
+                  categories: s.data!.categories,
+                  isAll: _filtersIndex == 1,
+                  recommendedTypes: s.data!.recommendedTypes,
+                ),
+              )
+            : null,
+        onBackButton: () {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            context.router.pop(_hasChangeFavorites);
+          });
+        },
+        title: context.l10n.saudiPassOffersPageTitle,
+        body: ListenableBuilder(
+          listenable: widget.offersScreenView,
+          builder: (context, _) => Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0, top: Spacing.$1x),
+                child: SegmentTabsButton(
+                  initialIndex: _filtersIndex,
+                  tabsContent: [
+                    TabsRowV2Content(
+                      title: context.l10n.saudiPassOffersPageByPreferences,
+                      onTap: widget.offersScreenView.tapByPreferences,
                     ),
-                    child: SegmentTabsButton(
-                      initialIndex: _filtersIndex,
-                      tabsContent: [
-                        TabsRowV2Content(
-                          title: context.l10n.saudiPassOffersPageByPreferences,
-                          onTap: widget.offersScreenView.tapByPreferences,
-                        ),
-                        TabsRowV2Content(
-                          title: context.l10n.saudiPassOffersPageAll,
-                          onTap: widget.offersScreenView.tapAll,
-                        ),
-                      ],
-                      onIndexChanged: (index) {},
-                    ),
-                  ),
-                  Expanded(
-                    child: IndexedStack(
-                      index: _filtersIndex,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Spacing.$4x,
-                          ),
-                          child: PrefsContentWidget(widget.offersScreenView),
-                        ),
-                        OffersViewWidget(
-                          widget.offersScreenView,
-                          onChangeOffers: () => _hasChangeFavorites = true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                    TabsRowV2Content(title: context.l10n.saudiPassOffersPageAll, onTap: widget.offersScreenView.tapAll),
+                  ],
+                  onIndexChanged: (index) {},
+                ),
               ),
-            ),
+              Expanded(
+                child: IndexedStack(
+                  index: _filtersIndex,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                      child: PrefsContentWidget(widget.offersScreenView),
+                    ),
+                    OffersViewWidget(widget.offersScreenView, onChangeOffers: () => _hasChangeFavorites = true),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

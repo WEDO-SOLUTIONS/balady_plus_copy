@@ -63,7 +63,7 @@ class _FeedbackSubChipsSelector extends StatefulWidget {
   static Future<FeedbackChipsItemEntity?> show({required BuildContext context, required FeedbackSubChipsEntity field}) {
     final colors = Provider.of<ThemeController>(context, listen: false).colors;
     return showModalBottomSheet(
-      backgroundColor: colors.backgroundSurface1,
+      backgroundColor: colors.backgroundSurface2,
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -123,7 +123,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                     style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
                   ),
                 ),
-                AppButton.close(onTap: () => Navigator.pop(context)),
+                AppButton.close(padding: EdgeInsets.zero, onTap: () => Navigator.pop(context)),
               ],
             ),
           ),
@@ -138,7 +138,12 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                     )
                   : null,
               inputState: variants.isEmpty ? BaladyInputState.error : BaladyInputState.defaultValue,
-              config: BaladyInputConfig(isDisposed: false, hintText: widget.field.hint),
+              config: BaladyInputConfig(
+                isDisposed: false,
+                hintText: widget.field.hint,
+                background: BaladyInputBackground.color,
+                fillColor: context.colors.neutralContainerDefault,
+              ),
             ),
           ),
           Spacing.px.heightBox,
@@ -153,6 +158,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                       for (final item in entry.value)
                         ContentRow(
                           onTap: () => Navigator.pop(context, item),
+                          leadingPadding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$3x),
                           leading: SvgPicture.network(
                             entry.key.icon,
                             width: 24,
@@ -163,22 +169,27 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                         )
                   else
                     for (final entry in variants.isEmpty ? widget.field.variants.entries : variants.entries) ...[
-                      Row(
-                        children: [
-                          SvgPicture.network(
-                            entry.key.icon,
-                            width: 24,
-                            height: 24,
-                            colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
-                          ),
-                          Spacing.$1_5x.widthBox,
-                          Expanded(
-                            child: Text(
-                              entry.key.name,
-                              style: context.textStyles.bodySmallMedium.copyWith(color: context.colors.foregroundMuted),
+                      Padding(
+                        padding: const EdgeInsetsDirectional.symmetric(vertical: Spacing.$2x),
+                        child: Row(
+                          children: [
+                            SvgPicture.network(
+                              entry.key.icon,
+                              width: 24,
+                              height: 24,
+                              colorFilter: ColorFilter.mode(context.colors.foregroundDisabled, BlendMode.srcIn),
                             ),
-                          ),
-                        ],
+                            Spacing.$1_5x.widthBox,
+                            Expanded(
+                              child: Text(
+                                entry.key.name,
+                                style: context.textStyles.bodySmallMedium.copyWith(
+                                  color: context.colors.foregroundMuted,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       Column(
                         children: [
@@ -205,9 +216,9 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                             ),
                         ],
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: Spacing.$1_5x + 24),
-                        child: Divider(),
+                      Padding(
+                        padding: const EdgeInsets.only(left: Spacing.$1_5x + 24, top: Spacing.$4x, bottom: Spacing.$2x),
+                        child: Divider(color: context.colors.borderSoft, height: 0.5),
                       ),
                     ],
                 ],

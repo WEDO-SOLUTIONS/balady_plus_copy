@@ -1,5 +1,5 @@
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/urbi_map_x/lat_lng_x.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -25,9 +25,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   Ref ref,
   DgisObjectId objectId,
   LatLng? closestPoint,
+  BaladyAppThemes theme,
 ) async {
   final selectedMarker = ref.watch(selectedMarkerProvider.notifier);
-  final parkingManager = ref.watch(parkingManageProvider.notifier);
+  final parkingManager = ref.watch(parkingManageProvider(theme: theme).notifier);
 
   ref.onDispose(() {
     selectedMarker.removeMarker(poiPinId);
@@ -50,7 +51,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final rubrics = Set<int>.from(cleanupRubrics);
   final mapMarkerMapper = await ref
       .watch(rubricMarkerMapperProvider.notifier)
-      .getMarkerPath(rubrics, objectId.objectId, closestPoint: closestPoint?.geoPoint);
+      .getMarkerPath(rubrics, objectId.objectId, theme, closestPoint: closestPoint?.geoPoint);
   final bigIconPath = mapMarkerMapper.$2;
 
   if (directoryObject.markerPosition == null) {
@@ -73,9 +74,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
     fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
-    textPlacement: MarkerTextPlacementMessage(
-      placement: TextPlacementMessage.bottomCenter,
-    ),
+    textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.bottomCenter),
   );
 
   await selectedMarker.showMarker(

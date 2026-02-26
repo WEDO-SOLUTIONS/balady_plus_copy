@@ -4,9 +4,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/saudi_pass/widgets/favorite_dialog_menu.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/dismissible/app_dismissible.dart';
-import 'package:mapness/shared/ui/popup_card/popup_card.dart';
 
 class FavouriteItemWidget extends StatefulWidget {
   final VoidCallback onTap;
@@ -63,13 +63,8 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
         key: Key(widget.item.id),
         children: [
           if (widget.isEditing) ...[
-            Spacing.$2x.widthBox,
-            BaladyCheckBox(
-              key: UniqueKey(),
-              state: stateOfCheckBox,
-              disable: false,
-              onChanged: _onChanged,
-            ),
+            Spacing.$4x.widthBox,
+            BaladyCheckBox(key: UniqueKey(), state: stateOfCheckBox, disable: false, onChanged: _onChanged),
           ],
           Expanded(
             child: Listener(
@@ -80,10 +75,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                 onLongPress: _onLongPress,
                 child: ContentRow(
                   options: ContentRowOptions(
-                    leadingIcon: widget.icon ??
-                        SystemIcons.bookmarkFill.icon(
-                          color: context.colors.accentDefault,
-                        ),
+                    leadingIcon: widget.icon ?? SystemIcons.bookmarkFill.icon(color: context.colors.accentDefault),
                     // TODO: I think this title change from the backend side they append the title and category and add , between them
                     title: widget.item.title.split(', ').firstOrNull ?? '',
                     subtitle: widget.item.subtitle,
@@ -124,64 +116,26 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
     }
   }
 
+  Future<void> _showBottomSheet(BuildContext context) async {
+    await showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (_) => FavoriteDialogMenu(
+        onDelete: widget.onDelete,
+        onTapRoute: widget.onRouteTap,
+        onTapShare: widget.onShareTap,
+        delete: context.l10n.delete,
+        route: context.l10n.route,
+        share: context.l10n.share,
+        title: context.l10n.action,
+        close: context.l10n.saudiPassTermAndConditionsClose,
+      ),
+    );
+  }
+
   void _onLongPress() {
     if (!widget.isEditing && widget.isLongPressEnabled) {
-      final colors = context.colors;
-      // final color = context.color;
-      showMenu(
-        constraints: const BoxConstraints(
-          minWidth: 140,
-          maxWidth: 140,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-        ),
-        context: context,
-        items: <PopupMenuEntry<bool>>[
-          PopupMenuItem<bool>(
-            padding: EdgeInsets.zero,
-            onTap: () => widget.onRouteTap?.call(),
-            child: PopupMenuWidget(
-              title: context.l10n.route,
-              icon: GeneralIcons.routeStroke.icon(
-                color: colors.foregroundDefault,
-              ),
-              showDivider: false,
-            ),
-          ),
-          PopupMenuItem<bool>(
-            padding: EdgeInsets.zero,
-            onTap: () => widget.onShareTap?.call(),
-            child: PopupMenuWidget(
-              title: context.l10n.share,
-              icon: SystemIcons.share.icon(
-                color: colors.foregroundDefault,
-              ),
-              showDivider: false,
-            ),
-          ),
-          PopupMenuItem<bool>(
-            padding: EdgeInsets.zero,
-            onTap: () => widget.onDelete?.call(),
-            child: PopupMenuWidget(
-              titleStyle: context.textStyle.text.copyWith(
-                color: colors.errorDefault,
-              ),
-              title: context.l10n.delete,
-              icon: GeneralIcons.trash.icon(
-                color: colors.errorDefault,
-              ),
-              showDivider: false,
-            ),
-          ),
-        ],
-        position: RelativeRect.fromLTRB(
-          pointerDetails.position.dx,
-          pointerDetails.position.dy,
-          pointerDetails.position.dx,
-          pointerDetails.position.dy,
-        ),
-      );
+      _showBottomSheet(context);
     }
   }
 }

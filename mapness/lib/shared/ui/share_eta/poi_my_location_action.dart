@@ -10,12 +10,7 @@ class MyLocationPoiActions extends StatelessWidget {
   final VoidCallback? onCopy;
   final VoidCallback? onParkingAdd;
 
-  const MyLocationPoiActions({
-    super.key,
-    this.onShare,
-    this.onCopy,
-    this.onParkingAdd,
-  });
+  const MyLocationPoiActions({super.key, this.onShare, this.onCopy, this.onParkingAdd});
 
   @override
   Widget build(BuildContext context) {
@@ -27,10 +22,7 @@ class MyLocationPoiActions extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: context.colors.backgroundSurface1,
-        boxShadow: Shadows.s,
-      ),
+      decoration: BoxDecoration(color: context.colors.backgroundSurface2, boxShadow: Shadows.s),
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
       child: SafeArea(
         top: false,
@@ -40,20 +32,14 @@ class MyLocationPoiActions extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               FooterIconButton(
-                desc: Text(
-                  context.l10n.share_location_btn,
-                  style: textStyle.copyWith(color: primary),
-                ),
+                desc: Text(context.l10n.share_location_btn, style: textStyle.copyWith(color: primary)),
                 assetName: Assets.icons.svg.icShare.keyName,
                 colorIcon: primary,
                 colorButton: accent,
                 onTap: onShare,
               ),
               FooterIconButton(
-                desc: Text(
-                  context.l10n.copy,
-                  style: textStyle.copyWith(color: secondaryText),
-                ),
+                desc: Text(context.l10n.copy, style: textStyle.copyWith(color: secondaryText)),
                 assetName: Assets.icons.svg.icCopy.keyName,
                 colorIcon: secondaryText,
                 colorButton: secondary,

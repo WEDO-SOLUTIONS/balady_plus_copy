@@ -33,8 +33,8 @@ class ParkingDialogPage extends HookConsumerWidget {
     final bottomPadding = math.max(MediaQuery.of(context).viewPadding.bottom, Spacing.px);
     return ToggleSheet(
       scrollController: controller,
-      backgroundColor: context.colors.backgroundSurface1,
-      safeAreaColor: context.colors.backgroundSurface1,
+      backgroundColor: context.colors.backgroundSurface4,
+      safeAreaColor: context.colors.backgroundSurface4,
       dragger: const SheetDragger(),
       content: [
         Padding(
@@ -45,7 +45,7 @@ class ParkingDialogPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundSoft)),
+                    Text(title, style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault)),
                     if (desc != null) Spacing.$1x.heightBox,
                     if (desc != null)
                       Text(
@@ -59,6 +59,9 @@ class ParkingDialogPage extends HookConsumerWidget {
               AppButton(
                 buttonColorScheme: ButtonColorScheme.neutral,
                 primaryIcon: SystemIcons.close,
+                color: context.colors.neutralContainerDefault,
+                iconColor: context.colors.neutralOnContainer,
+                size: ButtonSize.small,
                 onTap: () => context.router.pop(),
               ),
             ],
@@ -68,7 +71,9 @@ class ParkingDialogPage extends HookConsumerWidget {
           padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
           child: AppButton(
             buttonColorScheme: ButtonColorScheme.accent,
+            color: context.colors.accentSecondaryDefault,
             primaryLabel: context.l10n.accept,
+            textColor: context.colors.accentSecondaryOnAccentSecondary,
             onTap: onAcceptTab,
           ),
         ),
@@ -77,7 +82,9 @@ class ParkingDialogPage extends HookConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: AppButton(
             buttonColorScheme: ButtonColorScheme.accentSecondary,
+            color: context.colors.accentSecondaryContainerDefault,
             primaryLabel: context.l10n.cancel,
+            textColor: context.colors.accentSecondaryOnContainer,
             onTap: onCancelTab,
           ),
         ),

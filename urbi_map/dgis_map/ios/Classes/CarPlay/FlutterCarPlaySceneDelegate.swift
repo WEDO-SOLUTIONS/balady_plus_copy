@@ -59,6 +59,7 @@ public class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScen
             eventChannel: FlutterCarPlaySceneDelegate.eventChannel,
             hostFlutterApi: hostFlutterApi
         )
+        mainScreen.startFreeRoam()
         let mapTemplate = mainScreen.createTemplate()
         
         let carPlayFixOn = templateApplicationScene.carWindow.screen.nativeBounds.width == 800

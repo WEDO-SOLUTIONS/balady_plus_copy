@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,14 +12,12 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/widgets/feedback/images/add_image_button.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_preview.dart';
+import 'package:provider/provider.dart';
 
 class SelectedImages extends ConsumerStatefulWidget {
   final bool isEdit;
 
-  const SelectedImages({
-    required this.isEdit,
-    super.key,
-  });
+  const SelectedImages({required this.isEdit, super.key});
 
   @override
   SelectedImagesState createState() => SelectedImagesState();
@@ -32,17 +31,19 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
     const _photoPadding = Spacing.$2x;
     const _imageSize = 62.0;
 
-    _images = ref.watch(parkingImageProvider(isEdit: widget.isEdit));
-    final imageProvider = ref.watch(parkingImageProvider(isEdit: widget.isEdit).notifier);
+    _images = ref.watch(
+      parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: widget.isEdit),
+    );
+    final imageProvider = ref.watch(
+      parkingImageProvider(theme: context.read<ThemeController>().currentTheme, isEdit: widget.isEdit).notifier,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           context.l10n.images,
-          style: context.textStyles.captionMediumRegular.copyWith(
-            color: context.colors.foregroundDefault,
-          ),
+          style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundDefault),
         ),
         Spacing.$2x.heightBox,
         Wrap(
@@ -70,13 +71,8 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
         ),
         Spacing.$3x.heightBox,
         Text(
-          context.l10n.feedbackImageLimitsError(
-            maxImages,
-            maxSizeInBytes.formatAsFileSize(),
-          ),
-          style: context.textStyles.captionMediumRegular.copyWith(
-            color: context.colors.foregroundSoft,
-          ),
+          context.l10n.feedbackImageLimitsError(maxImages, maxSizeInBytes.formatAsFileSize()),
+          style: context.textStyles.captionMediumRegular.copyWith(color: context.colors.foregroundSoft),
         ),
       ],
     );

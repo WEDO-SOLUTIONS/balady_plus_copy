@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entities/search/models/rubric_marker_info.dart';
@@ -59,9 +60,7 @@ class RubricTypeMapper {
     }
 
     final mostRelevantType = relevantMap.entries
-        .reduce(
-          (prev, curr) => prev.value.length > curr.value.length ? prev : curr,
-        )
+        .reduce((prev, curr) => prev.value.length > curr.value.length ? prev : curr)
         .key;
 
     return mostRelevantType;
@@ -83,7 +82,8 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
   /// Replaces the default marker with custom marker
   Future<(String? smallIcon, String? bigIcon)> getMarkerPath(
     Set<int> rubricIds,
-    int objectId, {
+    int objectId,
+    BaladyAppThemes theme, {
     GeoPointMessage? closestPoint,
   }) async {
     final cityscapeNotifier = ref.watch(cityscapeProvider.notifier);
@@ -95,6 +95,6 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
       return (wrcNotifier.getSearchMarkerPath(objectId), wrcNotifier.getPinPath(objectId));
     }
     final markerType = await getMarkerType(rubricIds);
-    return (markerType?.iconPath, markerType?.iconPath.bigIconPath);
+    return (markerType?.iconPath(theme), markerType?.iconPath(theme).bigIconPath(theme));
   }
 }

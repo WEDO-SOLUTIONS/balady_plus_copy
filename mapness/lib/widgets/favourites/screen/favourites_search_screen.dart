@@ -13,8 +13,7 @@ class FavouritesSearchScreen extends HookConsumerWidget {
   final String? hintText;
   final void Function(String)? onChanged;
   final VoidCallback? onTapOfSearch;
-  final DgisBottomSheetController _dgisSheetController =
-      DgisBottomSheetController();
+  final DgisBottomSheetController _dgisSheetController = DgisBottomSheetController();
   final FavouriteItemMarkerType markerType;
 
   FavouritesSearchScreen({
@@ -35,38 +34,30 @@ class FavouritesSearchScreen extends HookConsumerWidget {
       controller: _dgisSheetController,
       initialExpansion: Expansion.expanded,
       availableExpansions: const {Expansion.expanded},
-      scrollableBody: (context, scrollController) {
-        final bgColor = context.colors.backgroundSurface1;
-        return ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(RadiusBorder.xl),
-          ),
-          child: Material(
-            color: bgColor,
-            child: uiss.SearchScope(
-              named: uiss.SearchScopeEnum.map,
-              child: CustomScrollView(
-                controller: scrollController,
-                physics: const ClampingScrollPhysics(),
-                slivers: [
-                  SliverPersistentHeader(
-                    delegate: MapSearchHeaderDelegate(
-                      backgroundColor: bgColor,
-                      requestFocus: true,
-                      onClose: onClose,
-                    ),
-                    pinned: true,
+      scrollableBody: (context, scrollController) => ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
+        child: Material(
+          color: context.colors.backgroundSurface4,
+          child: uiss.SearchScope(
+            named: uiss.SearchScopeEnum.map,
+            child: CustomScrollView(
+              controller: scrollController,
+              physics: const ClampingScrollPhysics(),
+              slivers: [
+                SliverPersistentHeader(
+                  delegate: MapSearchHeaderDelegate(
+                    backgroundColor: context.colors.backgroundSurface1,
+                    requestFocus: true,
+                    onClose: onClose,
                   ),
-                  FavouritesSearchContent(
-                    scrollController: scrollController,
-                    markerType: markerType,
-                  ),
-                ],
-              ),
+                  pinned: true,
+                ),
+                FavouritesSearchContent(scrollController: scrollController, markerType: markerType),
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     ),
   );
 }
@@ -77,11 +68,7 @@ class SearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   const SearchHeaderDelegate({required this.child});
 
   @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) => child;
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => child;
 
   @override
   double get maxExtent => 72;

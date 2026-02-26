@@ -42,65 +42,68 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
     final organizationsCount = widget.poiCardState?.organizations?.count ?? 0;
 
-    return TabBar(
-      padding: EdgeInsets.zero,
-      controller: widget.tabController,
-      indicatorColor: Colors.transparent,
-      isScrollable: true,
-      labelPadding: EdgeInsets.zero,
-      tabs: [
-        Tab(
-          iconMargin: EdgeInsets.zero,
-          child: _PoiTabItem(
-            title: context.l10n.info,
-            onTap: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.poiKeys.tab,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {'tab': context.l10n.info},
-              );
-              widget.tabController.animateTo(0);
-            },
-            isActive: widget.tabController.index == 0,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.$4x),
+      child: TabBar(
+        padding: EdgeInsets.zero,
+        controller: widget.tabController,
+        indicatorColor: Colors.transparent,
+        isScrollable: true,
+        labelPadding: EdgeInsets.zero,
+        tabs: [
+          Tab(
+            iconMargin: EdgeInsets.zero,
+            child: _PoiTabItem(
+              title: context.l10n.info,
+              onTap: () {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {'tab': context.l10n.info},
+                );
+                widget.tabController.animateTo(0);
+              },
+              isActive: widget.tabController.index == 0,
+            ),
           ),
-        ),
-        Tab(
-          iconMargin: EdgeInsets.zero,
-          child: _PoiTabItem(
-            title: context.l10n.photos,
-            count: photoCount,
-            onTap: () {
-              Metrics.logEventAdvanced(
-                MetricsConstants.poiKeys.tab,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {'tab': context.l10n.photos},
-              );
+          Tab(
+            iconMargin: EdgeInsets.zero,
+            child: _PoiTabItem(
+              title: context.l10n.photos,
+              count: photoCount,
+              onTap: () {
+                Metrics.logEventAdvanced(
+                  MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {'tab': context.l10n.photos},
+                );
 
-              widget.tabController.animateTo(1);
-            },
-            isActive: widget.tabController.index == 1,
+                widget.tabController.animateTo(1);
+              },
+              isActive: widget.tabController.index == 1,
+            ),
           ),
-        ),
-        Tab(
-          iconMargin: EdgeInsets.zero,
-          child: organizationsCount > 0
-              ? _PoiTabItem(
-                  title: context.l10n.organizations,
-                  count: organizationsCount,
-                  onTap: () {
-                    if (organizationsCount == 0) {
-                      widget.tabController.index = widget.tabController.previousIndex;
-                      return;
-                    }
-                    widget.tabController.animateTo(2);
-                  },
-                  isActive: widget.tabController.index == 2,
-                )
-              : const SizedBox.shrink(),
-        ),
-      ],
+          Tab(
+            iconMargin: EdgeInsets.zero,
+            child: organizationsCount > 0
+                ? _PoiTabItem(
+                    title: context.l10n.organizations,
+                    count: organizationsCount,
+                    onTap: () {
+                      if (organizationsCount == 0) {
+                        widget.tabController.index = widget.tabController.previousIndex;
+                        return;
+                      }
+                      widget.tabController.animateTo(2);
+                    },
+                    isActive: widget.tabController.index == 2,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -121,7 +124,7 @@ class _PoiTabItem extends StatelessWidget {
       padding: const EdgeInsets.all(Spacing.px),
       child: DecoratedBox(
         decoration: BoxDecoration(
-          color: isActive ? context.colors.backgroundSurface1 : Colors.transparent,
+          color: isActive ? context.colors.foregroundSegmentedControl : Colors.transparent,
           borderRadius: BorderRadius.circular(RadiusBorder.m),
           boxShadow: isActive ? Shadows.s : null,
         ),
@@ -155,7 +158,8 @@ class _PoiTabItem extends StatelessWidget {
                           child: FittedBox(
                             child: Counter(
                               count: count,
-                              color: isActive ? context.colors.neutralDefault : context.colors.neutralMuted,
+                              color: isActive ? context.colors.neutralDefault : context.colors.neutralContainerDefault,
+                              counterColor: isActive ? null : context.colors.foregroundDisabled,
                             ),
                           ),
                         ),

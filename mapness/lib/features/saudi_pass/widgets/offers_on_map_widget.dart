@@ -2,14 +2,13 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/saudi_pass/pages/offers_list_bottom_sheet_map_page.dart';
 import 'package:mapness/features/saudi_pass/providers/show_map_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
@@ -27,7 +26,10 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:provider/provider.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../../lifestyle_layers/configs/layers_consts.dart';
 
 const offerPoiPinId = 'offer_poi_pin_id';
 
@@ -69,24 +71,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     _setupVisibleRectListener(controller);
   }
 
-  MarkerTextStyleMessage _buildTextStyle({
-    required bool isArabic,
-    required bool isDark,
-  }) =>
-      MarkerTextStyleMessage(
-        color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
-        strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
-        fontSize: 13,
-        fontName: isArabic ? poiMapFontAr : poiMapFontEn,
-        textOffset: 4,
-        strokeWidth: 1,
-      );
+  MarkerTextStyleMessage _buildTextStyle({required bool isArabic, required bool isDark}) => MarkerTextStyleMessage(
+    color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
+    strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
+    fontSize: 13,
+    fontName: isArabic ? poiMapFontAr : poiMapFontEn,
+    textOffset: 4,
+    strokeWidth: 1,
+  );
 
-  Marker _createMarker({
-    required Offer item,
-    required bool isRtl,
-    required bool isDark,
-  }) {
+  Marker _createMarker({required Offer item, required bool isRtl, required bool isDark}) {
     final text = item.provider.name.breakMarkerLabel(maxCharsPerLine: 20);
     final hasArabic = text.containsArabic() || isRtl;
 
@@ -100,27 +94,31 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
       ),
       isVisible: true,
       icon: SvgMarkerIcon(
-        svgPath: isDark ? Assets.icons.svg.icOfferMarkerDark.keyName : Assets.icons.svg.icOfferMarker.keyName,
+        svgPath: switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffers.keyName,
+          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffers.keyName,
+          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffers.keyName,
+        },
         width: _kMarkerWidth,
       ),
     );
 
-    return Marker(
-      id: item.id,
-      onTap: () => _onTapMarker(item, text, options),
-      options: options,
-    );
+    return Marker(id: item.id, onTap: () => _onTapMarker(item, text, options), options: options);
   }
 
-  SimpleClusterOptionsMessage _clusterOptions({
-    required bool isRtl,
-    required bool isDark,
-    required int objectCount,
-  }) =>
+  SimpleClusterOptionsMessage _clusterOptions({required bool isRtl, required bool isDark, required int objectCount}) =>
       SimpleClusterOptionsMessage(
-        icon: isDark
-            ? Assets.icons.svg.icOffersClusteringMarkerDark.keyName.markerIcon(size: _kClusterIconSize)
-            : Assets.icons.svg.icOffersClusteringMarker.keyName.markerIcon(size: _kClusterIconSize),
+        icon: switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesNew.dark.icOffersClusteringMarkerDark.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+          BaladyAppThemes.light => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+          BaladyAppThemes.saudiDay => Assets.icons.svg.placesNew.light.icOffersClusteringMarker.keyName.markerIcon(
+            size: _kClusterIconSize,
+          ),
+        },
         text: objectCount.toString(),
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(placement: TextPlacementMessage.centerCenter),
@@ -145,9 +143,14 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             longitude: simpleClusterObject.position.longitude,
             elevation: 0,
           ),
-          icon: Assets.icons.svg.icOffersPin.keyName,
+          icon: switch (context.read<ThemeController>().currentTheme) {
+            BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
+            BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+            BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          },
           id: offerPoiPinId,
         ),
+        context.read<ThemeController>().currentTheme,
       );
 
       final ids = simpleClusterObject.markers.map((e) => e.id ?? '').toList();
@@ -178,9 +181,14 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
         ),
         text: text,
         textStyle: options.textStyle,
-        icon: Assets.icons.svg.icOffersPin.keyName,
+        icon: switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icOffersPin.keyName,
+          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+          BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icOffersPin.keyName,
+        },
         id: offerPoiPinId,
       ),
+      context.read<ThemeController>().currentTheme,
     );
 
     _notifierIds.value = [item.id];
@@ -190,15 +198,16 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
   void _setupVisibleRectListener(DgisMapController controller) {
     _visibleRectSub = controller.visibleRectEvents.debounceTime(const Duration(seconds: 1)).listen((event) {
-      final showMapOffers = ref.read(showMapOffersProvider.notifier);
-      showMapOffers.switchOffersVisibility(
-        enabled: true,
-        cityId: widget.city.id,
-        isAll: widget.isAll,
-        category: widget.categories.isEmpty ? null : widget.categories,
-        promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
-        visibleRect: event.visibleRect,
-      );
+      ref
+          .read(showMapOffersProvider.notifier)
+          .switchOffersVisibility(
+            enabled: true,
+            cityId: widget.city.id,
+            isAll: widget.isAll,
+            category: widget.categories.isEmpty ? null : widget.categories,
+            promotionsType: widget.recommendedTypes.isEmpty ? null : widget.recommendedTypes,
+            visibleRect: event.visibleRect,
+          );
     });
   }
 
@@ -228,11 +237,7 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
 
       return () {
         // on exit
-        showMapOffers.switchOffersVisibility(
-          enabled: false,
-          isAll: widget.isAll,
-          cityId: widget.city.id,
-        );
+        showMapOffers.switchOffersVisibility(enabled: false, isAll: widget.isAll, cityId: widget.city.id);
       };
     }, []);
 
@@ -281,33 +286,32 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
     return Column(
       children: [
         Container(
+          padding: const EdgeInsets.only(bottom: Spacing.$2x),
           color: context.colors.backgroundSurface4,
-          child: Column(
-            children: [
-              BaladyTopBar.iconAndText(
-                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                title: context.l10n.offers,
-                textStyle: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
-                colorEnabled: context.colors.foregroundDefault,
-                leading: ActionModel(
-                  onPressed: () {
-                    context.router.pop();
-                    showMapOffers.removeMarker(offerPoiPinId);
-                  },
-                  icon: SystemIcons.arrowCornerLeftLarge,
+          child: BaladyTopBar.iconAndText(
+            systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
+            titleWidget: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  context.l10n.offers,
+                  style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Material(
-                  color: Colors.transparent,
-                  child: Text(
-                    '${widget.city.name}$typesStringBar$categoryStringBar',
-                    style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
-                  ),
+                const SizedBox(height: Spacing.$1x),
+                Text(
+                  '${widget.city.name}$typesStringBar$categoryStringBar',
+                  style: context.textStyles.captionLargeRegular.copyWith(color: context.colors.foregroundSoft),
                 ),
-              )
-            ],
+              ],
+            ),
+            colorEnabled: context.colors.foregroundDefault,
+            leading: ActionModel(
+              onPressed: () {
+                context.router.pop();
+                showMapOffers.removeMarker(offerPoiPinId);
+              },
+              icon: SystemIcons.arrowCornerLeftLarge,
+            ),
           ),
         ),
         ValueListenableBuilder(
@@ -315,16 +319,11 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
           builder: (context, val, _) {
             if (val.isEmpty) {
               return const Expanded(
-                child: RoutingMapControls(
-                  key: ValueKey('OffersOnMapWidgetRoutingMapControls'),
-                  useSafeArea: false,
-                ),
+                child: RoutingMapControls(key: ValueKey('OffersOnMapWidgetRoutingMapControls'), useSafeArea: false),
               );
             }
 
-            return Expanded(
-              child: OfferListBottomSheetMapWidget(offersId: val),
-            );
+            return Expanded(child: OfferListBottomSheetMapWidget(offersId: val));
           },
         ),
       ],

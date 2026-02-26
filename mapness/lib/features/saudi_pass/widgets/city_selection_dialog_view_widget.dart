@@ -37,6 +37,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
     return SafeArea(
       bottom: false,
       child: ToggleSheet(
+        dragger: DraggerContainer(draggerColor: context.colors.backgroundSurface5),
         barrierColorDelegate: ToggleSheetDelegateFunction<Color?>(
           function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
         ),
@@ -52,7 +53,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
                 context.l10n.saudiPassCitySelectionPageTitle,
                 style: context.textStyles.h2SemiBold.copyWith(color: context.colors.foregroundDefault),
               ),
-              CustomCloseButton(onClose: context.router.pop),
+              CustomCloseButton(onClose: context.router.pop, padding: EdgeInsets.zero),
             ],
           ),
         ),
@@ -63,7 +64,13 @@ class CitySelectionDialogViewWidget extends HookWidget {
                 padding: horizontalPadding,
                 child: BaladySearchWithBackButtonV2(
                   searchInput: BaladyTextInput(
+                    prefixConfig: BaladyInputAffixIcon(
+                      icon: SystemIcons.search,
+                      iconColor: context.colors.foregroundSoft,
+                      customPadding: const EdgeInsetsDirectional.all(Spacing.$2x).copyWith(end: Spacing.$1_5x),
+                    ),
                     config: BaladyInputConfig(
+                      fillColor: context.colors.neutralContainerDefault,
                       autofocus: true,
                       hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
                       isDisposed: false,

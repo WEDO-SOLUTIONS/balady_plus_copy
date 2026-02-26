@@ -41,12 +41,7 @@ class EtaShareControlSheet extends ConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
-                child: SheetDragger(),
-              ),
-            ),
+            const Center(child: SheetDragger()),
             ContentRow(
               options: ContentRowOptions(
                 padding: const EdgeInsets.only(bottom: Spacing.$4x),
@@ -61,6 +56,7 @@ class EtaShareControlSheet extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: Spacing.$4x),
             ContentWrapper(
               color: context.colors.backgroundSurface1,
               children: [
