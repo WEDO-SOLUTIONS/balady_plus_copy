@@ -2,8 +2,10 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 
 /// A base error widget that displays an error message and a retry button.
 class BaseErrorWidget extends StatelessWidget {
@@ -47,16 +49,8 @@ class BaseErrorWidget extends StatelessWidget {
   });
 
   /// A factory constructor for creating a [BaseErrorWidget] without a retry button.
-  factory BaseErrorWidget.noRetry({
-    String? errorLabel,
-    Key? key,
-  }) =>
-      BaseErrorWidget(
-        key: key,
-        onRetry: () {},
-        withRetryButton: false,
-        errorLabel: errorLabel,
-      );
+  factory BaseErrorWidget.noRetry({String? errorLabel, Key? key}) =>
+      BaseErrorWidget(key: key, onRetry: () {}, withRetryButton: false, errorLabel: errorLabel);
 
   @override
   Widget build(BuildContext context) {
@@ -65,12 +59,7 @@ class BaseErrorWidget extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.only(
-          top: Spacing.$2x,
-          left: Spacing.$4x,
-          right: Spacing.$4x,
-          bottom: Spacing.$4x,
-        ),
+        padding: const EdgeInsets.only(top: Spacing.$2x, left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,21 +76,14 @@ class BaseErrorWidget extends StatelessWidget {
                   ),
                 ),
               ),
-            Padding(
-              padding: paddingForImage,
-              child: SvgPicture.asset(
-                Assets.imagesSvg.illustrationError.keyName,
-              ),
-            ),
+            Padding(padding: paddingForImage, child: const ErrorImageWidget()),
             if (errorTitle != null)
               Padding(
                 padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x),
                 child: Text(
                   errorTitle!,
                   textAlign: TextAlign.center,
-                  style: context.textStyles.h3SemiBold.copyWith(
-                    color: context.colors.foregroundDefault,
-                  ),
+                  style: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
                 ),
               )
             else
@@ -132,6 +114,18 @@ class BaseErrorWidget extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class ErrorImageWidget extends ConsumerWidget {
+  const ErrorImageWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark = ref.watch(darkModeProvider).value?.isDark ?? false;
+    return SvgPicture.asset(
+      isDark ? Assets.imagesSvg.illustrationErrorDark.keyName : Assets.imagesSvg.illustrationError.keyName,
     );
   }
 }

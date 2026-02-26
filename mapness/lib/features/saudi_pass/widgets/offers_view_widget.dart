@@ -13,43 +13,43 @@ class OffersViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FutureBuilder(
-        key: ObjectKey(offersView.offersFiltersFuture),
-        future: offersView.offersFiltersFuture,
-        builder: (_, allOffersViewSnapshot) {
-          if (allOffersViewSnapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$3x),
-              child: WentWrongPlaceholderWidget(action: offersView.tapRetryAll),
-            );
-          }
+    key: ObjectKey(offersView.offersFiltersFuture),
+    future: offersView.offersFiltersFuture,
+    builder: (_, allOffersViewSnapshot) {
+      if (allOffersViewSnapshot.hasError) {
+        return Padding(
+          padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$3x),
+          child: WentWrongPlaceholderWidget(action: offersView.tapRetryAll),
+        );
+      }
 
-          final offersFiltersView = allOffersViewSnapshot.data;
+      final offersFiltersView = allOffersViewSnapshot.data;
 
-          if (offersFiltersView != null) {
-            final filters = OffersFiltersViewWidget(offersFiltersView);
+      if (offersFiltersView != null) {
+        final filters = OffersFiltersViewWidget(offersFiltersView);
+        final list = ListenableBuilder(
+          listenable: offersFiltersView,
+          builder: (context, _) =>
+              OffersListWidget(offersFiltersView.asyncIterableOffers, onResetFilters: offersFiltersView.reset),
+        );
 
-            final list = ListenableBuilder(
-              listenable: offersFiltersView,
-              builder: (context, _) => OffersListWidget(offersFiltersView.asyncIterableOffers),
-            );
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+              child: SizedBox(height: AppSizes.l, child: filters),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                child: list,
+              ),
+            ),
+          ],
+        );
+      }
 
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                  child: SizedBox(height: AppSizes.l, child: filters),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    child: list,
-                  ),
-                ),
-              ],
-            );
-          }
-
-          return const Center(child: Loading(size: LoaderSize.large));
-        },
-      );
+      return const Center(child: Loading(size: LoaderSize.large));
+    },
+  );
 }
