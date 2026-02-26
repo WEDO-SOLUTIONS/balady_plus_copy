@@ -16,9 +16,7 @@ class FeedbackPermissionSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sheetController = useToggleSheetController(
-      onClose: (_) => Navigator.of(context).pop(),
-    );
+    final sheetController = useToggleSheetController(onClose: (_) => Navigator.of(context).pop());
 
     return ToggleSheet(
       safeAreaColor: context.colors.backgroundSurface4,
@@ -33,60 +31,54 @@ class FeedbackPermissionSheet extends HookWidget {
               FeedbackImageSelectorType.camera => context.l10n.allowAccessToCamera,
               FeedbackImageSelectorType.gallery => context.l10n.allowAccessToPhotos,
             },
-            titleStyle: context.textStyles.h4SemiBold.copyWith(
-              color: context.colors.foregroundDefault,
-            ),
+            titleStyle: context.textStyles.h3SemiBold.copyWith(color: context.colors.foregroundDefault),
             customActionWidget: AppButton.close(
               color: context.colors.neutralContainerDefault,
               onTap: () => Navigator.pop(context),
               innerPadding: const EdgeInsets.all(Spacing.$2x),
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
             ),
           ),
         ),
         const SizedBox(height: Spacing.$2x),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: Text(
-            switch (type) {
-              FeedbackImageSelectorType.camera => context.l10n.accessCameraPermissionDesc,
-              FeedbackImageSelectorType.gallery => context.l10n.accessGalleryPermissionDesc,
-            },
-            style: context.textStyles.bodySmallRegular.copyWith(
-              color: context.colors.foregroundSoft,
-            ),
-          ),
+          child: Text(switch (type) {
+            FeedbackImageSelectorType.camera => context.l10n.accessCameraPermissionDesc,
+            FeedbackImageSelectorType.gallery => context.l10n.accessGalleryPermissionDesc,
+          }, style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft)),
         ),
         const SizedBox(height: Spacing.$6x),
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: Row(
-              children: [
-                Expanded(
-                  child: AppButton(
-                    onTap: () => Navigator.pop(context),
-                    primaryLabel: context.l10n.cancel,
-                    padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-                    buttonColorScheme: ButtonColorScheme.accentSecondary,
-                  ),
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: Row(
+            children: [
+              Expanded(
+                child: AppButton(
+                  onTap: () => Navigator.pop(context),
+                  primaryLabel: context.l10n.cancel,
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+                  buttonColorScheme: ButtonColorScheme.accentSecondary,
+                  size: ButtonSize.large,
                 ),
-                const SizedBox(width: Spacing.$4x),
-                Expanded(
-                  child: AppButton(
-                    onTap: () {
-                      Navigator.pop(context);
-                      openAppSettings();
-                    },
-                    primaryLabel: context.l10n.goToSettings,
-                    padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-                    buttonColorScheme: ButtonColorScheme.accent,
-                  ),
+              ),
+              const SizedBox(width: Spacing.$4x),
+              Expanded(
+                child: AppButton(
+                  onTap: () {
+                    Navigator.pop(context);
+                    openAppSettings();
+                  },
+                  primaryLabel: context.l10n.goToSettings,
+                  padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+                  buttonColorScheme: ButtonColorScheme.accent,
+                  size: ButtonSize.large,
                 ),
-              ],
-            )),
-        const SizedBox(
-          height: Spacing.$4x,
+              ),
+            ],
+          ),
         ),
+        const SizedBox(height: Spacing.$4x),
       ],
     );
   }
