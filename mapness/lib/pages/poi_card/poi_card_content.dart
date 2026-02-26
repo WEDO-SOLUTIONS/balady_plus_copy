@@ -239,9 +239,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       child: ValueListenableBuilder<PoiCardBottomSheetState>(
         valueListenable: _stateNotifier,
         builder: (context, state, _) {
-          final safeAreaColor = state == PoiCardBottomSheetState.hidden
-              ? context.colors.backgroundSurface2
-              : context.colors.backgroundSurface1;
+          final safeAreaColor = switch (state) {
+            PoiCardBottomSheetState.hidden || PoiCardBottomSheetState.halfOpen => context.colors.backgroundSurface2,
+            PoiCardBottomSheetState.open || PoiCardBottomSheetState.expanded => context.colors.backgroundSurface1,
+          };
           return ValueListenableBuilder<PoiTabsType>(
             valueListenable: _tabType,
             builder: (context, tabType, _) {
@@ -263,71 +264,70 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
                 topHeader: isGooglePoi ? null : PoiPhotosHeader(objectId: widget.objectId),
                 topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
-                footer: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    PoiCardFooter(
-                      closestPoint: widget.closestPoint,
-                      bottomSheetController: _bottomSheetController,
-                      data: widget.data,
-                      share: () {
-                        Metrics.logEventAdvanced(
-                          MetricsConstants.poiKeys.share,
-                          group: MetricsConstants.poiTag,
-                          action: MetricAction.tap.toString(),
-                          props: {
-                            'object_id': widget.data.id?.objectId,
-                            'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
-                          },
-                        );
-
-                        return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
+                footer: PoiCardFooter(
+                  // Animated to zero, because safeAreaColor can't be animated now
+                  duration: const Duration(),
+                  curve: Curves.easeInOut,
+                  color: safeAreaColor,
+                  closestPoint: widget.closestPoint,
+                  bottomSheetController: _bottomSheetController,
+                  data: widget.data,
+                  share: () {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.poiKeys.share,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {
+                        'object_id': widget.data.id?.objectId,
+                        'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}',
                       },
-                      callPhone: () {
-                        Metrics.logEventAdvanced(
-                          MetricsConstants.poiKeys.call,
-                          group: MetricsConstants.poiTag,
-                          action: MetricAction.tap.toString(),
-                          props: {'objectId': widget.objectId},
-                        );
+                    );
 
-                        final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
-                          (element) => element.type == ContactsInfoType.phone,
-                        );
-                        _bssOnCallTap();
-                        if (phoneNumber?.value != null) {
-                          poiActions.callPhone(phoneNumber!.value!);
-                        }
-                      },
-                      onEntranceTap: () => poiActions.toggleEntrances(
-                        widget.data,
-                        () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                        widget.closestPoint,
+                    return poiActions.share(objectId: widget.objectId, markerCoords: widget.closestPoint);
+                  },
+                  callPhone: () {
+                    Metrics.logEventAdvanced(
+                      MetricsConstants.poiKeys.call,
+                      group: MetricsConstants.poiTag,
+                      action: MetricAction.tap.toString(),
+                      props: {'objectId': widget.objectId},
+                    );
+
+                    final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
+                      (element) => element.type == ContactsInfoType.phone,
+                    );
+                    _bssOnCallTap();
+                    if (phoneNumber?.value != null) {
+                      poiActions.callPhone(phoneNumber!.value!);
+                    }
+                  },
+                  onEntranceTap: () => poiActions.toggleEntrances(
+                    widget.data,
+                    () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                    widget.closestPoint,
+                  ),
+                  onTapCar: () {
+                    _bssOnRouteTap();
+                    _onDirectionsTap(
+                      context,
+                      widget.data.id!.objectId,
+                      widget.data.title,
+                      RouteParamsPoint(
+                        latitude: widget.data.markerPosition!.latitude,
+                        longitude: widget.data.markerPosition!.longitude,
+                        objectId: widget.data.id?.objectId,
+                        entranceId: widget.data.id?.entranceId,
+                        levelId: widget.data.levelId,
                       ),
-                      onTapCar: () {
-                        _bssOnRouteTap();
-                        _onDirectionsTap(
-                          context,
-                          widget.data.id!.objectId,
-                          widget.data.title,
-                          RouteParamsPoint(
-                            latitude: widget.data.markerPosition!.latitude,
-                            longitude: widget.data.markerPosition!.longitude,
-                            objectId: widget.data.id?.objectId,
-                            entranceId: widget.data.id?.entranceId,
-                            levelId: widget.data.levelId,
-                          ),
-                          ref,
-                        );
-                      },
-                      onAddPointToRoute: () => _onAddObjectPointToRoute(context, l10n, ref, widget.data),
-                      onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, l10n, ref, widget.data),
-                      onTapFavorite: (item) {
-                        _bssOnFavouritesTap();
-                        _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
-                      },
-                    ),
-                  ],
+                      ref,
+                    );
+                  },
+                  onAddPointToRoute: () => _onAddObjectPointToRoute(context, l10n, ref, widget.data),
+                  onRemovePointFromRoute: () => _onRemoveObjectPointToRoute(context, l10n, ref, widget.data),
+                  onTapFavorite: (item) {
+                    _bssOnFavouritesTap();
+                    _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item);
+                  },
                 ),
                 header: PoiHeader(
                   bottomSheetController: _bottomSheetController,
