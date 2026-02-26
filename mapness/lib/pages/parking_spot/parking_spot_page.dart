@@ -18,7 +18,6 @@ import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
-import 'package:mapness/features/saudi_national_day/saudi_national_day.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
@@ -157,9 +156,10 @@ class ParkingSpotPage extends HookConsumerWidget {
                                   elevation: 0,
                                 ),
                                 icon: switch (context.read<ThemeController>().currentTheme) {
-                                  BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                  BaladyAppThemes.dark =>
+                                    Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
                                   BaladyAppThemes.light =>
-                                    Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
+                                    Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
                                   BaladyAppThemes.saudiDay =>
                                     Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
                                 },
@@ -269,13 +269,11 @@ class ParkingSpotPage extends HookConsumerWidget {
               longitude: latLng.value!.longitude,
               elevation: 0,
             ),
-            icon: SaudiNationalDay.isNow()
-                ? Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon()
-                : switch (context.read<ThemeController>().currentTheme) {
-                    BaladyAppThemes.dark => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                    BaladyAppThemes.light => Assets.icons.svg.placesNew.old.icParking.keyName.markerIcon(),
-                    BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
-                  },
+            icon: switch (context.read<ThemeController>().currentTheme) {
+              BaladyAppThemes.dark => Assets.icons.svg.placesNew.light.icParking.keyName.markerIcon(),
+              BaladyAppThemes.light => Assets.icons.svg.placesNew.dark.icParking.keyName.markerIcon(),
+              BaladyAppThemes.saudiDay => Assets.icons.svg.placesNewSaudiDay.icParking.keyName.markerIcon(),
+            },
           ),
         ),
       );
