@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 class TextSizePreviewPage extends StatefulWidget {
   const TextSizePreviewPage({super.key});
 
@@ -21,8 +20,10 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
   @override
   void initState() {
     super.initState();
-    final controller =
-    Provider.of<AccessibilityController>(context, listen: false);
+    final controller = Provider.of<AccessibilityController>(
+      context,
+      listen: false,
+    );
     _fontSize = 16 * controller.textScale;
   }
 
@@ -51,31 +52,31 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
           children: [
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                vertical: 40,
-                horizontal: 24,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F3F3),
+                color: context.colors.backgroundSurface1,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Text(
                 'Main text will look like this.\n'
-                    '1234567890!@#%&*()_+-=',
+                '1234567890!@#%&*()_+-=',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: _fontSize,
                   height: 1.4,
-                  color: Colors.black87,
+                  color: context.colors.foregroundDefault,
                 ),
               ),
             ),
             const SizedBox(height: 32),
             Row(
               children: [
-                const Text(
+                Text(
                   'A',
-                  style: TextStyle(fontSize: 14),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: context.colors.foregroundDefault,
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
@@ -83,15 +84,16 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                     data: SliderTheme.of(context).copyWith(
                       trackHeight: 4,
                       activeTrackColor: const Color(0xFF4DB6AC),
-                      inactiveTrackColor: Colors.grey.shade300,
+                      inactiveTrackColor: context.colors.backgroundSurface1,
                       thumbColor: const Color(0xFF4DB6AC),
                       overlayColor: const Color(0xFF4DB6AC).withOpacity(0.15),
                       tickMarkShape: const RoundSliderTickMarkShape(
                         tickMarkRadius: 2,
                       ),
                       activeTickMarkColor: Colors.transparent,
-                      inactiveTickMarkColor:
-                      const Color(0xFF4DB6AC).withOpacity(0.4),
+                      inactiveTickMarkColor: const Color(
+                        0xFF4DB6AC,
+                      ).withOpacity(0.4),
                     ),
                     child: Slider(
                       value: _fontSize,
@@ -105,9 +107,12 @@ class _TextSizePreviewPageState extends State<TextSizePreviewPage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'A',
-                  style: TextStyle(fontSize: 24),
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: context.colors.foregroundDefault,
+                  ),
                 ),
               ],
             ),
