@@ -10,6 +10,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -116,7 +117,10 @@ class NaviFavoritesPage extends HookConsumerWidget {
                         isLast: index == allFav.length - 1,
                         onTap: () => context.router.replaceOrPush(
                           route: PoiCardWidgetRoute(
-                            objectId: DgisObjectIdMessage(objectId: int.parse(item.entity!.id), entranceId: 0),
+                            objectId: DgisObjectIdMessage(
+                              objectId: parseObjectIdFromFavouriteEntityId(item.entity?.id)!,
+                              entranceId: 0,
+                            ),
                           ),
                           toCompareRoutes: [PoiCardWidgetRoute.page],
                         ),

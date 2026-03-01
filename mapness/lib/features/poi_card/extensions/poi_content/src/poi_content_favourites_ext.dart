@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -22,7 +23,8 @@ extension PoiContentFavouritesExt on DirectoryObjectMessage {
           }
 
           // If current [objectId] is the same as [objectId] of our home we show home card
-          final showHome = value.home?.id == objectId.toString();
+          final showHome = value.home?.id == objectId.toString() ||
+              parseObjectIdFromFavouriteEntityId(value.home?.id) == objectId;
           if (showHome) {
             return PoiContentFavouriteModel(
               type: PoiContentFavouriteTypes.home,
@@ -32,7 +34,8 @@ extension PoiContentFavouritesExt on DirectoryObjectMessage {
           }
 
           // If current [objectId] is the same as [objectId] of our work we show work card
-          final showWork = value.work?.id == objectId.toString();
+          final showWork = value.work?.id == objectId.toString() ||
+              parseObjectIdFromFavouriteEntityId(value.work?.id) == objectId;
           if (showWork) {
             return PoiContentFavouriteModel(
               type: PoiContentFavouriteTypes.work,
@@ -42,7 +45,9 @@ extension PoiContentFavouritesExt on DirectoryObjectMessage {
           }
 
           // If current [objectId] is in the list of [objectId]'s of our favourites we show favourites card
-          final isFavourite = value.items.firstWhereOrNull((e) => e.entity?.id == objectId.toString());
+          final isFavourite = value.items.firstWhereOrNull(
+            (e) => parseObjectIdFromFavouriteEntityId(e.entity?.id) == objectId,
+          );
           if (isFavourite != null) {
             return PoiContentFavouriteModel(
               type: PoiContentFavouriteTypes.favourites,

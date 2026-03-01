@@ -57,7 +57,6 @@ import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/poi_card/parking_content.dart';
 import 'package:mapness/pages/poi_card/poi_card_error_or_loading.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/parking_store_model_ext.dart';
