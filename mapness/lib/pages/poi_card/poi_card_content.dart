@@ -261,7 +261,12 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId,
                 ),
 
-                topHeader: isGooglePoi ? null : PoiPhotosHeader(objectId: widget.objectId),
+                topHeader: isGooglePoi
+                    ? null
+                    : PoiPhotosHeader(
+                        objectId: widget.objectId,
+                        bottomSheetController: _bottomSheetController,
+                      ),
                 topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
                 footer: Column(
                   mainAxisSize: MainAxisSize.min,

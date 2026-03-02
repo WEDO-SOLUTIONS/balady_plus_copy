@@ -10,6 +10,7 @@ import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart'
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:sheetify/multi_state_sheet/animated_state_components/sheet_base_components.dart';
+import 'package:sheetify/multi_state_sheet/multi_state_sheet.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
@@ -19,9 +20,14 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final bool photosEmpty;
   final bool photosAreLoading;
   final int objectId;
-
-  const HeaderComponent({required this.photosEmpty, required this.photosAreLoading, required this.objectId, super.key})
-    : super(defaultState: PoiCardBottomSheetState.halfOpen);
+  final MultiStateSheetController<PoiCardBottomSheetState>? bottomSheetController;
+  const HeaderComponent({
+    required this.photosEmpty,
+    required this.photosAreLoading,
+    required this.objectId,
+    super.key,
+    this.bottomSheetController,
+  }) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
@@ -70,6 +76,12 @@ class HeaderComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   }
 
   double _resolveOpacity(PoiCardBottomSheetState state, double interpolation) {
+    final headerSize = bottomSheetController?.componentSizes.header ?? 0.0;
+    final sheetHeight = bottomSheetController?.sheetHeight ?? 0.0;
+
+    if (sheetHeight <= headerSize) {
+      return 0.0;
+    }
     final opacity = switch (state) {
       PoiCardBottomSheetState.hidden => Curves.easeIn.transform(interpolation),
       PoiCardBottomSheetState.halfOpen => 1.0,

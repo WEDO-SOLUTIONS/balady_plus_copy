@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:provider/provider.dart';
 
 /// A base error widget that displays an error message and a retry button.
 class BaseErrorWidget extends StatelessWidget {
