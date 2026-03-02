@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
@@ -41,14 +42,14 @@ class ShowMapOffers extends _$ShowMapOffers {
     this.mapObjectManager = mapObjectManager;
   }
 
-  Future<void> showMarker(Marker marker) async {
+  Future<void> showMarker(Marker marker, BaladyAppThemes theme) async {
     _showHiddenMarkerIfPresent();
 
     final position = LatLng(latitude: marker.options.position.latitude, longitude: marker.options.position.longitude);
 
     final currentSearchMarker = mapObjectManager?.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
+      marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath(theme);
       _hideMarker(currentSearchMarker);
     }
 

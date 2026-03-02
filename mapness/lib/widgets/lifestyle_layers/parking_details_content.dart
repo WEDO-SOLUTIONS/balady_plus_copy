@@ -48,6 +48,7 @@ class ParkingDetailsContent extends ConsumerWidget {
           const ParkingLotRow(type: ParkingFilter.all),
           const ParkingLotRow(type: ParkingFilter.free),
           const ParkingLotRow(type: ParkingFilter.paid),
+          const SizedBox(height: Spacing.$12x),
         ]),
       ),
     );

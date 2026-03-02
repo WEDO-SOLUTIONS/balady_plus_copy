@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
@@ -18,6 +19,7 @@ import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
+import 'package:provider/provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class PoiOrganizationsSliver extends ConsumerStatefulWidget {
@@ -117,6 +119,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
   Future<List<OrganizationItem>> _fetchPage(int pageKey) async {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
+      context.read<ThemeController>().currentTheme,
       cameraConfig: widget.cameraConfig,
       closestPoint: widget.closestPoint,
     );

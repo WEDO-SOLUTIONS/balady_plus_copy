@@ -30,16 +30,12 @@ class SoundSettingsPageContent extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ContentWrapper(
-              color: colors.backgroundSurface4,
+              color: colors.backgroundSurface1,
               children: [
                 ContentRow(
                   options: ContentRowOptions(
-                    subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                      color: colors.foregroundSoft,
-                    ),
-                    titleStyle: textStyles.bodyLargeMedium.copyWith(
-                      color: colors.foregroundDefault,
-                    ),
+                    subtitleStyle: textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
+                    titleStyle: textStyles.bodyLargeMedium.copyWith(color: colors.foregroundDefault),
                     padding: const EdgeInsets.only(
                       top: Spacing.$4x,
                       bottom: Spacing.$3x,
@@ -67,50 +63,32 @@ class SoundSettingsPageContent extends ConsumerWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: Spacing.$3x,
-                    left: Spacing.$4x,
-                  ),
-                  child: Divider(
-                    height: 0.5,
-                    color: colors.borderSoft,
-                    thickness: 1,
-                    indent: 0,
-                    endIndent: 0,
-                  ),
+                  padding: const EdgeInsets.only(top: Spacing.$3x, left: Spacing.$4x),
+                  child: Divider(height: 0.5, color: colors.borderSoft, thickness: 1, indent: 0, endIndent: 0),
                 ),
                 ContentRow(
                   onTap: () => context.router.push(const VoiceSettingsRoute()),
                   options: ContentRowOptions(
-                    wrapperColor: colors.backgroundSurface4,
+                    wrapperColor: colors.backgroundSurface1,
                     wrapperEnabled: true,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Spacing.$3x,
-                      horizontal: Spacing.$4x,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
                     title: l10n.voice,
                     titleStyle: context.textStyle.text.copyWith(color: colors.foregroundDefault),
                     actionWidget: ContentRowActionOptions(
-                        actionIcon: AppIcons(
-                          iconData: SystemIcons.arrowCornerRightLarge,
-                          color: colors.foregroundSoft,
-                        ),
-                        actionText: localizeVoicePackageName(context, soundSettingsModel.voiceName),
-                        actionTextStyle: textStyles.bodySmallMedium.copyWith(
-                          color: colors.foregroundSoft,
-                        )),
+                      actionIcon: AppIcons(iconData: SystemIcons.arrowCornerRightLarge, color: colors.foregroundSoft),
+                      actionText: localizeVoicePackageName(context, soundSettingsModel.voiceName),
+                      actionTextStyle: textStyles.bodySmallMedium.copyWith(color: colors.foregroundSoft),
+                    ),
                   ),
                 ),
               ],
             ),
             ContentWrapper(
-              color: colors.backgroundSurface4,
+              color: colors.backgroundSurface1,
               children: [
                 ContentRow(
                   options: ContentRowOptions(
-                    titleStyle: textStyles.bodyLargeRegular.copyWith(
-                      color: colors.foregroundDefault,
-                    ),
+                    titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
                     title: l10n.promptsVolume,
                   ),
                 ),
@@ -136,7 +114,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
               headerTitle: l10n.eventAlert,
               content: [
                 ContentWrapper(
-                  color: colors.backgroundSurface4,
+                  color: colors.backgroundSurface1,
                   children: [
                     ContentRow(
                       onToggle: (value) {
@@ -147,9 +125,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                           enabledToggle: true,
                           toggleInitialValue: soundSettingsModel.roadCameras,
                         ),
-                        titleStyle: textStyles.bodyLargeRegular.copyWith(
-                          color: colors.foregroundDefault,
-                        ),
+                        titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
                         padding: const EdgeInsets.only(
                           top: Spacing.$4x,
                           bottom: Spacing.$3x,
@@ -160,16 +136,8 @@ class SoundSettingsPageContent extends ConsumerWidget {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                        left: Spacing.$4x,
-                      ),
-                      child: Divider(
-                        height: 0.5,
-                        color: colors.borderSoft,
-                        thickness: 1,
-                        indent: 0,
-                        endIndent: 0,
-                      ),
+                      padding: const EdgeInsets.only(left: Spacing.$4x),
+                      child: Divider(height: 0.5, color: colors.borderSoft, thickness: 1, indent: 0, endIndent: 0),
                     ),
                     ContentRow(
                       onToggle: (value) {
@@ -180,12 +148,8 @@ class SoundSettingsPageContent extends ConsumerWidget {
                           enabledToggle: true,
                           toggleInitialValue: soundSettingsModel.overSpeeding,
                         ),
-                        titleStyle: textStyles.bodyLargeRegular.copyWith(
-                          color: colors.foregroundDefault,
-                        ),
-                        subtitleStyle: textStyles.bodySmallRegular.copyWith(
-                          color: colors.foregroundSoft,
-                        ),
+                        titleStyle: textStyles.bodyLargeRegular.copyWith(color: colors.foregroundDefault),
+                        subtitleStyle: textStyles.bodySmallRegular.copyWith(color: colors.foregroundSoft),
                         subtitleMaxlines: 2,
                         subtitle: l10n.overSpeedingSubtitle,
                         padding: const EdgeInsets.only(

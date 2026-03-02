@@ -15,53 +15,47 @@ class FeedbackScheduleIntervalWidget extends StatelessWidget {
   final void Function() onWorkingHoursChange;
   final void Function() onBreaksChange;
 
-  const FeedbackScheduleIntervalWidget(
-      {required this.onDelete,
-      required this.onDaysChange,
-      required this.onWorkingHoursChange,
-      required this.workingHours,
-      required this.onBreaksChange,
-      super.key});
+  const FeedbackScheduleIntervalWidget({
+    required this.onDelete,
+    required this.onDaysChange,
+    required this.onWorkingHoursChange,
+    required this.workingHours,
+    required this.onBreaksChange,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isDaysEmpty = workingHours.days.isEmpty;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          InputDropDownList(
-            label: isDaysEmpty
-                ? context.l10n.feedbackSelectDaysTitle
-                : workingHours.days.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
-            onTap: onDaysChange,
-          ),
-          const SizedBox(height: 6),
-          Row(
-            children: [
-              InputDropDownList(
-                isEnable: !isDaysEmpty,
-                label: workingHours.workingTime.formatTimeRange(),
-                onTap: onWorkingHoursChange,
-              ),
-              const SizedBox(width: 6),
-              InputDropDownList(
-                isEnable: !isDaysEmpty,
-                label: _formatBreaks(context.l10n, workingHours.breaks),
-                onTap: onBreaksChange,
-              ),
-              const SizedBox(width: 6),
-              if (onDelete != null)
-                AppButton.close(
-                  onTap: onDelete,
-                  buttonColorScheme: ButtonColorScheme.onColor,
-                  padding: EdgeInsets.zero,
-                ),
-            ],
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InputDropDownList(
+          label: isDaysEmpty
+              ? context.l10n.feedbackSelectDaysTitle
+              : workingHours.days.sortedByIndex().map((day) => day.localizedShortName(context.l10n)).join(', '),
+          onTap: onDaysChange,
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            InputDropDownList(
+              isEnable: !isDaysEmpty,
+              label: workingHours.workingTime.formatTimeRange(),
+              onTap: onWorkingHoursChange,
+            ),
+            const SizedBox(width: 6),
+            InputDropDownList(
+              isEnable: !isDaysEmpty,
+              label: _formatBreaks(context.l10n, workingHours.breaks),
+              onTap: onBreaksChange,
+            ),
+            const SizedBox(width: 6),
+            if (onDelete != null)
+              AppButton.close(onTap: onDelete, buttonColorScheme: ButtonColorScheme.onColor, padding: EdgeInsets.zero),
+          ],
+        ),
+      ],
     );
   }
 
@@ -82,31 +76,28 @@ class InputDropDownList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: isEnable ? onTap : null,
-        child: Container(
-          padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
-          decoration: BoxDecoration(
-            color: context.colors.backgroundSurface1,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: Text(
-                  label,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textStyles.bodySmallRegular.copyWith(
-                    color: isEnable ? null : context.colors.foregroundMuted,
-                  ),
-                ),
+    onTap: isEnable ? onTap : null,
+    child: Container(
+      padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
+      decoration: BoxDecoration(color: context.colors.backgroundSurface1, borderRadius: BorderRadius.circular(12)),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              style: context.textStyles.bodySmallRegular.copyWith(
+                color: isEnable ? context.colors.foregroundDefault : context.colors.foregroundMuted,
               ),
-              Icon(
-                SystemIcons.arrowCornerDownSmall,
-                color: isEnable ? null : context.colors.foregroundMuted,
-              ),
-            ],
+            ),
           ),
-        ),
-      );
+          Icon(
+            SystemIcons.arrowCornerDownSmall,
+            color: isEnable ? context.colors.foregroundDefault : context.colors.foregroundMuted,
+          ),
+        ],
+      ),
+    ),
+  );
 }

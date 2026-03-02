@@ -1,9 +1,11 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:provider/provider.dart';
 
 class SetPreferencesPlaceholderWidget extends StatelessWidget {
   final VoidCallback action;
@@ -12,7 +14,7 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    assetWidget: Assets.imagesSvg.illustrationPercent.svg(),
+    assetWidget: _assetIllustrationPercent(context),
     action: action,
     title: context.l10n.saudiPassOffersSetPreferences,
     hint: context.l10n.saudiPassOffersSetPreferencesHint,
@@ -27,7 +29,7 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    assetWidget: Assets.imagesSvg.illustrationPercent.svg(),
+    assetWidget: _assetIllustrationPercent(context),
     action: action,
     title: context.l10n.saudiPassOffersSetPreferences,
     hint: context.l10n.saudiPassOffersLoginHint,
@@ -52,6 +54,7 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
 
 class EmptyOffersWidget extends StatelessWidget {
   const EmptyOffersWidget({required this.action, super.key});
+
   final VoidCallback action;
 
   @override
@@ -126,3 +129,9 @@ class _PlaceholderWidget extends StatelessWidget {
     );
   }
 }
+
+Widget _assetIllustrationPercent(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+  BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark,
+  BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent,
+  BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent,
+}.svg();

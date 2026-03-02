@@ -159,8 +159,8 @@ class _DashboardState extends ConsumerState<Dashboard> with TickerProviderStateM
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              context.colors.backgroundSurface1.withOpacity(0),
-                              context.colors.backgroundSurface1.withOpacity(0.8),
+                              context.colors.gradientBackgroundSurface4opacity0,
+                              context.colors.gradientBackgroundSurface4opacity80,
                             ],
                           ),
                         ),

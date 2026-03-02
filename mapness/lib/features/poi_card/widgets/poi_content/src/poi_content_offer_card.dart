@@ -21,21 +21,13 @@ class PoiContentOffersCard extends StatelessWidget {
   final List<Offer> offers;
   final EdgeInsets contentPadding;
 
-  const PoiContentOffersCard({
-    required this.offers,
-    required this.contentPadding,
-    super.key,
-  });
+  const PoiContentOffersCard({required this.offers, required this.contentPadding, super.key});
 
   @override
   Widget build(BuildContext context) => offers.length == 1
       ? Padding(
           padding: contentPadding,
-          child: _OfferCard(
-            offer: offers.first,
-            height: offerCardHeight,
-            width: double.infinity,
-          ),
+          child: _OfferCard(offer: offers.first, height: offerCardHeight, width: double.infinity),
         )
       : SizedBox(
           height: offerCardHeight,
@@ -47,11 +39,7 @@ class PoiContentOffersCard extends StatelessWidget {
               itemCount: offers.length,
               itemBuilder: (context, i) {
                 final offer = offers[i];
-                return _OfferCard(
-                  offer: offer,
-                  height: offerCardHeight,
-                  width: offerCardWidth,
-                );
+                return _OfferCard(offer: offer, height: offerCardHeight, width: offerCardWidth);
               },
               separatorBuilder: (context, index) => Spacing.$2x.widthBox,
             ),
@@ -64,11 +52,7 @@ class _OfferCard extends HookConsumerWidget {
   final double height;
   final double width;
 
-  const _OfferCard({
-    required this.offer,
-    required this.height,
-    required this.width,
-  });
+  const _OfferCard({required this.offer, required this.height, required this.width});
 
   TextSpan? _getDiscount(Offer offer, Language language, BuildContext context) {
     final locale = Localizations.localeOf(context);
@@ -96,9 +80,7 @@ class _OfferCard extends HookConsumerWidget {
         width: width,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(RadiusBorder.xl),
-            ),
+            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
             color: context.colorsV3.backgroundSurface1,
           ),
           child: Padding(
@@ -121,8 +103,7 @@ class _OfferCard extends HookConsumerWidget {
                             offer.description,
                             overflow: TextOverflow.ellipsis,
                             maxLines: hasDiscount ? 2 : 5,
-                            style: context.textStyleV3.captionLargeRegular
-                                .copyWith(
+                            style: context.textStyleV3.captionLargeRegular.copyWith(
                               color: context.colorsV3.foregroundDefault,
                             ),
                           ),
@@ -131,9 +112,7 @@ class _OfferCard extends HookConsumerWidget {
                           Text.rich(
                             discount!,
                             maxLines: 1,
-                            style: context.textStyleV3.h1SemiBold.copyWith(
-                              color: context.colorsV3.foregroundDefault,
-                            ),
+                            style: context.textStyleV3.h1SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
                           ),
                       ],
                     ),
@@ -141,36 +120,25 @@ class _OfferCard extends HookConsumerWidget {
                 ),
                 const SizedBox(width: Spacing.$4x),
                 ClipRRect(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(RadiusBorder.l),
-                  ),
+                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: offer.offerGroup.color,
-                        begin: context.isLTR
-                            ? Alignment.topLeft
-                            : Alignment.topRight,
-                        end: context.isLTR
-                            ? Alignment.bottomRight
-                            : Alignment.bottomLeft,
+                        begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+                        end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                       ),
                     ),
                     child: SizedBox(
                       height: 103,
                       child: Transform(
                         alignment: Alignment.center,
-                        transform: context.isLTR
-                            ? Matrix4.identity()
-                            : Matrix4.rotationY(pi),
-                        child: Image.asset(
-                          offer.offerGroup.imagePath,
-                          fit: BoxFit.contain,
-                        ),
+                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                        child: Image.asset(offer.offerGroup.imagePath, fit: BoxFit.contain),
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -192,18 +160,10 @@ class _FallbackImage extends StatelessWidget {
       alignment: Alignment.center,
       transform: isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: image.colors,
-          ),
-        ),
+        decoration: BoxDecoration(gradient: LinearGradient(colors: image.colors)),
         child: Padding(
           padding: image.padding,
-          child: Image.asset(
-            image.path,
-            fit: BoxFit.cover,
-            package: image.package,
-          ),
+          child: Image.asset(image.path, fit: BoxFit.cover, package: image.package),
         ),
       ),
     );
@@ -216,10 +176,5 @@ class PoiContentOfferFallbackImage {
   final EdgeInsetsDirectional padding;
   final String? package;
 
-  const PoiContentOfferFallbackImage({
-    required this.path,
-    required this.colors,
-    required this.padding,
-    this.package,
-  });
+  const PoiContentOfferFallbackImage({required this.path, required this.colors, required this.padding, this.package});
 }

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +28,7 @@ class MapSearchHistory extends ConsumerWidget {
     final scope = context.read<SearchScope>();
 
     return ui.SearchHistory(
+      iconColor: context.colors.foregroundMuted,
       onTap: (item, index, historyList) async {
         if (item.objectId != null) {
           final dgisController = await ref.read(dgisControllerProvider.future);
@@ -38,10 +40,12 @@ class MapSearchHistory extends ConsumerWidget {
               ),
             );
 
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.object,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {'objectId': item.objectId});
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.object,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {'objectId': item.objectId},
+            );
 
             if (item.objectId == null) {
               return;
@@ -75,8 +79,9 @@ class MapSearchHistory extends ConsumerWidget {
         } else {
           await ref.read(searchProvider(scope.value).notifier).searchByText(item.title);
         }
-        final bssHistoryHandlingType =
-            item.objectId != null ? BssHistoryHandlingType.openRecord : BssHistoryHandlingType.searchSuggestedText;
+        final bssHistoryHandlingType = item.objectId != null
+            ? BssHistoryHandlingType.openRecord
+            : BssHistoryHandlingType.searchSuggestedText;
         await BssService.instance.sendEvent(
           BssRequest(
             eventType: BSSEventType.action,

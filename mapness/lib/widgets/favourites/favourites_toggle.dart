@@ -18,7 +18,7 @@ class FavouritesToggle extends ConsumerWidget {
     final state = ref.watch(favouriteToggleProvider);
 
     return ContentWrapper(
-      color: context.colors.backgroundSurface4,
+      color: context.colors.backgroundSurface1,
       children: [
         ContentRow(
           onToggle: isEditing
@@ -27,10 +27,7 @@ class FavouritesToggle extends ConsumerWidget {
                   ref.read(layersControlsProvider.notifier).handleTap(LayerType.favourites);
                 },
           options: ContentRowOptions(
-            actionWidget: ContentRowActionOptions(
-              toggleInitialValue: state,
-              enabledToggle: true,
-            ),
+            actionWidget: ContentRowActionOptions(toggleInitialValue: state, enabledToggle: true),
             title: context.l10n.showFavoritesOnMap,
           ),
         ),

@@ -41,7 +41,7 @@ class MapSearchEmpty extends ConsumerWidget {
           const SizedBox(height: Spacing.$1x),
           Text(
             context.l10n.searchCouldNotFindAnything,
-            style: context.textStyles.h4SemiBold,
+            style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: Spacing.$2x),

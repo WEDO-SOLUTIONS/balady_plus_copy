@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/toggle_sheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 enum FeedbackSheetState { success, failure, loading }
@@ -32,8 +34,9 @@ final confettiShapes = [
 class FeedbackSheetWidget extends HookWidget {
   final FeedbackSheetState state;
   final VoidCallback onRetry;
+  final bool hasPhotos;
 
-  const FeedbackSheetWidget({required this.onRetry, required this.state, super.key});
+  const FeedbackSheetWidget({required this.onRetry, required this.state, this.hasPhotos = false, super.key});
 
   void popNavigation(BuildContext context, AnimationController confettiController) => context.router.popUntil(
     (route) =>
@@ -42,6 +45,12 @@ class FeedbackSheetWidget extends HookWidget {
         route.settings.name == PathNavRoute.name ||
         route.settings.name == BottomMenuRoute.name,
   );
+
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationNotificationsDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationNotifications.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationNotifications.keyName,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +81,7 @@ class FeedbackSheetWidget extends HookWidget {
     }, [state]);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: context.read<ThemeController>().systemOverlayStyle,
       child: Material(
         color: Colors.transparent,
         child: Stack(
@@ -108,10 +117,7 @@ class FeedbackSheetWidget extends HookWidget {
                         Center(
                           child: SizedBox(
                             width: 180.0,
-                            child: SvgPicture.asset(
-                              Assets.imagesSvg.illustrationNotifications.keyName,
-                              matchTextDirection: true,
-                            ),
+                            child: SvgPicture.asset(asset(context), matchTextDirection: true),
                           ),
                         ),
                         const SizedBox(height: AppSizes.$4xs),
@@ -125,19 +131,36 @@ class FeedbackSheetWidget extends HookWidget {
                             ),
                           ),
                         ),
+                        if (hasPhotos) ...[
+                          const SizedBox(height: Spacing.$2x),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
+                              child: Text(
+                                context.l10n.feedbackSuccessPhotoUploaded,
+                                style: context.textStyles.bodyLargeRegular.copyWith(
+                                  color: context.colors.foregroundSoft,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: AppSizes.$4xs),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                          padding: const EdgeInsets.only(top: Spacing.$3x),
                           child: SizedBox(
                             width: double.infinity,
                             child: AppButton(
-                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$4x),
-                              buttonColorScheme: ButtonColorScheme.accent,
-                              primaryLabel: context.l10n.done,
+                              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                              buttonColorScheme: ButtonColorScheme.accentSecondary,
+                              size: ButtonSize.large,
+                              primaryLabel: context.l10n.complete,
                               onTap: sheetController.close,
                             ),
                           ),
                         ),
+                        const SizedBox(height: Spacing.$4x),
                       ],
                     ),
                     FeedbackSheetState.loading => Column(
@@ -173,6 +196,7 @@ class FeedbackSheetWidget extends HookWidget {
                     ),
                   },
                 ),
+                if (state == FeedbackSheetState.success) const SizedBox(height: Spacing.$4x),
               ],
             ),
             RepaintBoundary(

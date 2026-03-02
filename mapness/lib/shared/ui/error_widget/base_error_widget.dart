@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:provider/provider.dart';
 
 /// A base error widget that displays an error message and a retry button.
 class BaseErrorWidget extends StatelessWidget {
@@ -47,6 +49,12 @@ class BaseErrorWidget extends StatelessWidget {
     this.backgroundColor = Colors.white,
     super.key,
   });
+
+  String asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationErrorDark.keyName,
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationError.keyName,
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationError.keyName,
+  };
 
   /// A factory constructor for creating a [BaseErrorWidget] without a retry button.
   factory BaseErrorWidget.noRetry({String? errorLabel, Key? key}) =>

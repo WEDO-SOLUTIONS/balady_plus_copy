@@ -1,11 +1,10 @@
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/icons/general_icon.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
@@ -19,13 +18,7 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
   final Function? onPress;
   final Function? onPrint;
   final Function? procedures;
-  const DetailsHeader(
-      {super.key,
-      this.title,
-      this.onPrint,
-      this.procedures,
-      this.onPress,
-      this.titleWidget});
+  const DetailsHeader({super.key, this.title, this.onPrint, this.procedures, this.onPress, this.titleWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -34,48 +27,37 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         if (onPress != null)
           CustomTextIconButtonWidget(
-            icon: Icon(
-              Icons.add,
-              size: 30,
-              color: AppColor.primary900Light,
-            ),
+            icon: Icon(Icons.add, size: 30, color: AppColor.primary900Light),
             text: "",
             onPressed: () => onPress != null ? onPress!() : null,
-          )
+          ),
       ],
       leadingWidth: 0,
       automaticallyImplyLeading: false,
-      title: Container(
-        child: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Row(children: [
-            Icon(
-              Icons.arrow_back_ios,
-              color: AppColor.blackModern700Light,
-              size: 20,
-            ),
+      title: GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Row(
+          children: [
+            Icon(Icons.arrow_back_ios, color: AppColor.blackModern700Light, size: 20),
             titleWidget ??
-                CustomTextWidget(title ?? "",
-                    fontSize: 20,
-                    fontWeight: AppFontWeight.bold,
-                    fontColor: AppColor.blackModern700Light,
-                    fontFamily: Constants.appFontType)
-          ]),
+                CustomTextWidget(
+                  title ?? "",
+                  fontSize: 20,
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.blackModern700Light,
+                  fontFamily: Constants.appFontType,
+                ),
+          ],
         ),
       ),
-      systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-        statusBarBrightness: Brightness.light,
-      ),
+      systemOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
       flexibleSpace: Stack(
         children: [
           Container(
             padding: EdgeInsets.only(bottom: 40, left: 16, right: 16),
             decoration: const BoxDecoration(
               color: Colors.white,
-              image: DecorationImage(
-                image: AssetImage(ImagePath.appBarBackground),
-                fit: BoxFit.fill,
-              ),
+              image: DecorationImage(image: AssetImage(ImagePath.appBarBackground), fit: BoxFit.fill),
               boxShadow: Constants.appBarBoxShadow,
             ),
           ),
@@ -84,14 +66,11 @@ class DetailsHeader extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (onPrint != null)
-                  GeneralIcon(onTap: () => onPrint!(), icon: IconPath.printer),
-                if (procedures != null)
-                  GeneralIcon(
-                      onTap: () => procedures!(), icon: IconPath.settings),
+                if (onPrint != null) GeneralIcon(onTap: () => onPrint!(), icon: IconPath.printer),
+                if (procedures != null) GeneralIcon(onTap: () => procedures!(), icon: IconPath.settings),
               ],
             ),
-          )
+          ),
         ],
       ),
     );

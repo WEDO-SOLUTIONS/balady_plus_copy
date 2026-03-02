@@ -115,15 +115,26 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                         : ABPointsChange.none,
                   ),
                 ),
-                AppButton(
-                  primaryIcon: TransportIcons.verticalChange,
-                  buttonColorScheme: ButtonColorScheme.neutral,
-                  buttonType: ButtonType.secondary,
-                  size: ButtonSize.large,
-                  onTap: _onSwipeRoutes,
-                ),
+                if (points.length > 2)
+                  AppButton(
+                    primaryIcon: General16Icons.edit,
+                    iconColor: colors.neutralOnContainer,
+                    buttonColorScheme: ButtonColorScheme.neutral,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    onTap: _changeRoute,
+                  )
+                else
+                  AppButton(
+                    primaryIcon: TransportIcons.verticalChange,
+                    buttonColorScheme: ButtonColorScheme.neutral,
+                    buttonType: ButtonType.secondary,
+                    size: ButtonSize.large,
+                    onTap: _onSwipeRoutes,
+                  ),
                 AppButton(
                   primaryIcon: SystemIcons.close,
+                  iconColor: colors.neutralOnContainer,
                   buttonColorScheme: ButtonColorScheme.neutral,
                   buttonType: ButtonType.secondary,
                   size: ButtonSize.large,
