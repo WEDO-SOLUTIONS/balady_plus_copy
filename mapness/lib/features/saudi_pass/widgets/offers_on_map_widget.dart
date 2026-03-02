@@ -309,7 +309,6 @@ class _OffersOnMapWidgetState extends ConsumerState<OffersOnMapWidget> {
             leading: ActionModel(
               onPressed: () {
                 context.router.pop();
-                showMapOffers.removeMarker(offerPoiPinId);
               },
               icon: SystemIcons.arrowCornerLeftLarge,
             ),

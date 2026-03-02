@@ -510,6 +510,20 @@ extension BigIconPath on String {
               BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icMalls.keyName,
               BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName,
             },
+      'ic_shops.svg': isSaudiPath
+          ? Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName
+          : switch (theme) {
+              BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icShops.keyName,
+              BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icShops.keyName,
+              BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName,
+            },
+      'ic_malls.svg': isSaudiPath
+          ? Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName
+          : switch (theme) {
+              BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icMalls.keyName,
+              BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icMalls.keyName,
+              BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNewSaudiDay.icShopping.keyName,
+            },
       'ic_barbershop.svg': isSaudiPath
           ? Assets.icons.svg.placesBigNewSaudiDay.icBarbershop.keyName
           : switch (theme) {
