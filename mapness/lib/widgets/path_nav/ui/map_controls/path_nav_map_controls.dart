@@ -11,14 +11,14 @@ import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
+import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/route_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 
-part 'portrait_map_controls.dart';
 part 'landscape_map_controls.dart';
+part 'portrait_map_controls.dart';
 
 // TODO(Ayat) change controls and take them from uikit
 class PathNavMapControls extends StatelessWidget {
@@ -45,7 +45,7 @@ class PathNavMapControls extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const compassControlWidget = CompassControl();
-    const pathNavFollowControlWidget = PathNavFollowControl();
+    const pathNavFollowControlWidget = FollowControl();
 
     final maneuverAndLimitWidget = Directionality(
       // Here we set the text direction according to the current locale to display the correct direction of the widget.

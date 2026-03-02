@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,7 @@ import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
+import 'package:provider/provider.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -36,13 +38,8 @@ class ProfilePage extends HookConsumerWidget {
     final isAuth = userData.value != null;
     final backgroundColor = isAuth ? context.colors.backgroundSurface1 : context.colorsV3.staticDarkblue;
 
-    final overlay = switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
-      Brightness.dark => SystemUiOverlayStyle.light,
-      Brightness.light => SystemUiOverlayStyle.dark,
-    };
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: overlay,
+      value: context.read<ThemeController>().systemOverlayStyle,
       child: Scaffold(
         backgroundColor: backgroundColor,
         body: SafeArea(

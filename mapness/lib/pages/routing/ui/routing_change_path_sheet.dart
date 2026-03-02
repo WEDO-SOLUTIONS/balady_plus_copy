@@ -86,7 +86,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
       children: [
         const SheetDragger(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          padding: const EdgeInsetsDirectional.only(start: Spacing.$4x, end: Spacing.$3x),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -116,7 +116,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x, horizontal: Spacing.$4x),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x, horizontal: Spacing.$4x),
           child: SizedBox(
             width: double.infinity,
             child: AppButton(
@@ -125,7 +125,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
               onTap: () {
                 widget.onConfirm(points);
               },
-              primaryLabel: widget.externalContext.l10n.setRoute,
+              primaryLabel: widget.externalContext.l10n.buildRoute,
             ),
           ),
         ),

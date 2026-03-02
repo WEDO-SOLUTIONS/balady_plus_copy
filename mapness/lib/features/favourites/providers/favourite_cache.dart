@@ -9,6 +9,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/favourites/favourites_state.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/features/favourites/mappers/add_request_item.dart';
 import 'package:mapness/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
 import 'package:mapness/features/favourites/mappers/favorite_cache_item_mapper.dart';
@@ -206,7 +207,7 @@ class _FavouriteCache extends _$FavouriteCache {
     final favouriteState = state.requireValue;
     final items = _getAllItems(favouriteState);
 
-    return items.firstWhereOrNull((element) => element?.entity?.id == objectId.toString());
+    return items.firstWhereOrNull((element) => parseObjectIdFromFavouriteEntityId(element?.entity?.id) == objectId);
   }
 
   bool isFavourite(int objectId) {
@@ -217,7 +218,7 @@ class _FavouriteCache extends _$FavouriteCache {
     final favouriteState = state.requireValue;
     final items = _getAllItems(favouriteState);
 
-    return items.any((element) => element?.entity?.id == objectId.toString());
+    return items.any((element) => parseObjectIdFromFavouriteEntityId(element?.entity?.id) == objectId);
   }
 
   Future<void> _addItem(FavouriteItem item, FavouritesState state) async {
@@ -340,7 +341,7 @@ class _FavouriteCache extends _$FavouriteCache {
   @override
   Future<FavouritesState> build() async {
     final authState = await ref
-        .read(authProvider.future)
+        .watch(authProvider.future)
         .timeout(
           const Duration(seconds: 10),
           onTimeout: () {

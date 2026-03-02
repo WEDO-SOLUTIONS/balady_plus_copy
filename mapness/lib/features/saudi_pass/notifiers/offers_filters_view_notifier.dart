@@ -1,7 +1,6 @@
 part of 'offers_screen_view_notifier.dart';
 
-class OffersFiltersViewNotifier extends ChangeNotifier
-    implements OffersFiltersView {
+class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersView {
   City defaultCity;
   final Ref ref;
 
@@ -41,8 +40,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
   Set<RecommendedType> get recommendedTypes => recommendedTypesSelected;
 
   @override
-  late AsyncIterable<OfferView> asyncIterableOffers =
-      createOffersAsyncIterable();
+  late AsyncIterable<OfferView> asyncIterableOffers = createOffersAsyncIterable();
 
   AsyncIterable<OfferView> createOffersAsyncIterable() {
     final chunked = OffersChunkedAsyncIterable(
@@ -60,10 +58,18 @@ class OffersFiltersViewNotifier extends ChangeNotifier
         OfferViewImpl(offer, ref, saudiPassRepository, reloadOnFavoriteChanges);
 
     return MappedAsyncIterable(
-      decorated: FlatChunkedAsyncIterable(
-          CachedAsyncIterable(chunked), chunked.chunkSize),
+      decorated: FlatChunkedAsyncIterable(CachedAsyncIterable(chunked), chunked.chunkSize),
       transformation: createOfferCardView,
     );
+  }
+
+  @override
+  void reset() {
+    citySelected = defaultCity;
+    recommendedTypesSelected.clear();
+    subCategoriesSelected.clear();
+    sortingSelected.clear();
+    createNewListAndNotify();
   }
 
   void createNewListAndNotify() {
@@ -82,8 +88,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
     final citySelectionDialog = CitySelectionDialogViewNotifier(lookups.cities);
 
     final city = await stackRouter.push<City>(
-      CitySelectionDialogViewRoute(
-          citySelectionDialogView: citySelectionDialog),
+      CitySelectionDialogViewRoute(citySelectionDialogView: citySelectionDialog),
     );
 
     if (city != null && city != citySelected) {
@@ -96,24 +101,19 @@ class OffersFiltersViewNotifier extends ChangeNotifier
   @override
   void tapType() {
     final selectionDialog = RecommendedTypeSelectionDialogViewNotifier(this);
-    stackRouter
-        .push(TypeSelectionDialogViewRoute(selectionDialog: selectionDialog));
+    stackRouter.push(TypeSelectionDialogViewRoute(selectionDialog: selectionDialog));
   }
 
   @override
   Future<void> tapShowAllCategories() async {
-    final selectionDialog = CategorySelectionDialogViewNotifier(
-      (
-        lookups.categories,
-        allSubCategories,
-        subCategoriesSelected,
-        applyCategories,
-      ),
-    );
+    final selectionDialog = CategorySelectionDialogViewNotifier((
+      lookups.categories,
+      allSubCategories,
+      subCategoriesSelected,
+      applyCategories,
+    ));
 
-    if (await stackRouter.push(AllCategoriesSelectionDialogViewRoute(
-            selectionDialogView: selectionDialog)) ==
-        true) {
+    if (await stackRouter.push(AllCategoriesSelectionDialogViewRoute(selectionDialogView: selectionDialog)) == true) {
       createNewListAndNotify();
     }
   }
@@ -121,8 +121,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
   @override
   void tapSort() {
     final selectionDialog = SortingSelectionDialogViewNotifier(this);
-    stackRouter
-        .push(SortingSelectionDialogRoute(selectionDialog: selectionDialog));
+    stackRouter.push(SortingSelectionDialogRoute(selectionDialog: selectionDialog));
   }
 
   bool update<T>(Set<T> current, Set<T> updated) {
@@ -141,16 +140,13 @@ class OffersFiltersViewNotifier extends ChangeNotifier
     }
   }
 
-  void applyCategories(Set<SubCategory> set) =>
-      updateAndNotify(subCategoriesSelected, set);
+  void applyCategories(Set<SubCategory> set) => updateAndNotify(subCategoriesSelected, set);
 
   void applySorting(Set<Sorting> set) => updateAndNotify(sortingSelected, set);
 
-  void applyRecommendedTypes(Set<RecommendedType> set) =>
-      updateAndNotify(recommendedTypesSelected, set);
+  void applyRecommendedTypes(Set<RecommendedType> set) => updateAndNotify(recommendedTypesSelected, set);
 
-  void applySettings(City city, Set<RecommendedType> recommendedTypes,
-      Set<SubCategory> categories) {
+  void applySettings(City city, Set<RecommendedType> recommendedTypes, Set<SubCategory> categories) {
     final isCityUpdated = city != citySelected;
     citySelected = city;
     if (update(recommendedTypesSelected, recommendedTypes) |
@@ -164,8 +160,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
   void tapSettings() {
     final settingsScreen = SettingsScreenViewNotifier(this);
 
-    stackRouter
-        .push(SettingsScreenViewRoute(settingsScreenView: settingsScreen));
+    stackRouter.push(SettingsScreenViewRoute(settingsScreenView: settingsScreen));
   }
 
   FilterView mapSelectionToFilterView(Set<NameId> set) {
@@ -178,7 +173,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
       tapCross: () {
         set.clear();
         createNewListAndNotify();
-      }
+      },
     );
   }
 
@@ -188,12 +183,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
     final Map<Category, List<SubCategory>> grouped = {};
 
     for (final sub in allSubCategories) {
-      grouped
-          .putIfAbsent(
-            cats.firstWhere((it) => it.id == sub.categoryId),
-            () => [],
-          )
-          .add(sub);
+      grouped.putIfAbsent(cats.firstWhere((it) => it.id == sub.categoryId), () => []).add(sub);
     }
 
     // Return categories where at least one of their subcategories are selected
@@ -206,12 +196,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
   @override
   FilterView get typeFilterView {
     if (recommendedTypesSelected.isEmpty) {
-      return (
-        title: null,
-        plusMore: null,
-        isHighlighted: false,
-        tapCross: null,
-      );
+      return (title: null, plusMore: null, isHighlighted: false, tapCross: null);
     }
 
     final typeCount = recommendedTypesSelected.length;
@@ -244,12 +229,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
   @override
   FilterView get categoryFilterView {
     if (subCategoriesSelected.isEmpty) {
-      return (
-        title: null,
-        plusMore: null,
-        isHighlighted: false,
-        tapCross: null,
-      );
+      return (title: null, plusMore: null, isHighlighted: false, tapCross: null);
     }
 
     final selectedCategories = getCategoryWithSelectedSubCategory();
@@ -258,9 +238,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier
     if (categoryCount == 1) {
       // Show category name + subcategory count
       final category = selectedCategories.first;
-      final subcategoryCount = subCategoriesSelected
-          .where((sub) => sub.categoryId == category.id)
-          .length;
+      final subcategoryCount = subCategoriesSelected.where((sub) => sub.categoryId == category.id).length;
       return (
         title: category.name,
         plusMore: subcategoryCount > 0 ? subcategoryCount.toString() : null,
@@ -286,23 +264,21 @@ class OffersFiltersViewNotifier extends ChangeNotifier
 
   @override
   FilterView get cityFilterView => (
-        title: citySelected.name,
-        plusMore: null,
-        isHighlighted: citySelected != defaultCity,
-        tapCross: () {
-          citySelected = defaultCity;
-          createNewListAndNotify();
-        }
-      );
+    title: citySelected.name,
+    plusMore: null,
+    isHighlighted: citySelected != defaultCity,
+    tapCross: () {
+      citySelected = defaultCity;
+      createNewListAndNotify();
+    },
+  );
 
   @override
   bool get isSortHighlighted => sortingSelected.isNotEmpty;
 
   @override
   bool get isSettingsHighlighted =>
-      subCategoriesSelected.isNotEmpty ||
-      recommendedTypesSelected.isNotEmpty ||
-      citySelected != defaultCity;
+      subCategoriesSelected.isNotEmpty || recommendedTypesSelected.isNotEmpty || citySelected != defaultCity;
 }
 
 class OfferViewImpl extends ChangeNotifier implements OfferView {
@@ -311,8 +287,7 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
   final SaudiPassRepository saudiPassRepository;
   final void Function()? reloadOffers;
 
-  OfferViewImpl(this.offer, this.ref, this.saudiPassRepository,
-      [this.reloadOffers]);
+  OfferViewImpl(this.offer, this.ref, this.saudiPassRepository, [this.reloadOffers]);
 
   @override
   Future<void> onTap() async {
@@ -351,8 +326,7 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
   String get imageId => offer.provider.logo;
 
   @override
-  ({String url, Map<String, String> headers}) get logo =>
-      saudiPassRepository.getPromotionsImagesUri(imageId: imageId);
+  ({String url, Map<String, String> headers}) get logo => saudiPassRepository.getPromotionsImagesUri(imageId: imageId);
 
   @override
   late bool isHeartRedAndFilled = offer.favorite;
@@ -407,16 +381,16 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
     if (isHeartRedAndFilled) {
       await ref
           .read(appRouterProvider)
-          .push(OfferFavoritesRemovingSheetRoute(onRemove: () async {
-        await ref
-            .read(offerFavoritesProvider(offerId).notifier)
-            .removeFromFavorites();
-        toggleAndNotify();
-      }));
+          .push(
+            OfferFavoritesRemovingSheetRoute(
+              onRemove: () async {
+                await ref.read(offerFavoritesProvider(offerId).notifier).removeFromFavorites();
+                toggleAndNotify();
+              },
+            ),
+          );
     } else {
-      await ref
-          .read(offerFavoritesProvider(offer.id).notifier)
-          .addToFavorites();
+      await ref.read(offerFavoritesProvider(offer.id).notifier).addToFavorites();
       toggleAndNotify();
     }
   }

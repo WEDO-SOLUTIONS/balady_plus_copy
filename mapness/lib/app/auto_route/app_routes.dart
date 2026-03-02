@@ -29,7 +29,10 @@ class AppRouter extends RootStackRouter {
       path: '/',
       initial: true,
       transitionsBuilder: TransitionsBuilders.zoomIn,
-      guards: [OnboardRouteGuard(ref), SaudiDaySplashGuard(ref)],
+      guards: [
+        OnboardRouteGuard(ref),
+        SaudiDaySplashGuard(ref),
+      ],
       children: [
         Routes.bottomMenuRoute,
         CustomRoute(
@@ -42,28 +45,72 @@ class AppRouter extends RootStackRouter {
           path: 'service_available',
           page: ServiceNotAvailableSheetRoute.page,
           opaque: false,
-          customRouteBuilder: <T>(context, child, page) =>
-              RouteBuilders.modalSheetBuilder(context, child, page, background: RouteBarrierColor.transparent),
+          customRouteBuilder: <T>(context, child, page) => RouteBuilders.modalSheetBuilder(
+            context,
+            child,
+            page,
+            background: RouteBarrierColor.transparent,
+          ),
         ),
-        CustomRoute(path: 'request_location', page: LocationErrorSheetRoute.page),
-        AppRoute(path: 'pathNav', page: PathNavRoute.page, fullscreenDialog: true),
-        AppRoute(path: 'search', page: SearchRoute.page),
-        AppRoute(path: 'navi_search', page: NaviSearchRoute.page),
-        AppRoute(path: 'routingMap', page: RoutingMapSelectRoute.page),
-        CustomRoute(path: 'parking_add', page: ParkingSpotRoute.page),
-        AppRoute(path: 'poi-map', page: PoiCardWidgetRoute.page),
-        AppRoute(path: 'hajj-poi-card', page: HajjPoiCardRoute.page),
-        CustomRoute(path: 'deeplink', page: DeeplinkRoute.page),
-        AppRoute(path: 'routingRoutes', page: RoutingRoutesRoute.page),
-        AppRoute(path: 'public_routing_details', page: RouteDetailsRoute.page),
+        CustomRoute(
+          path: 'request_location',
+          page: LocationErrorSheetRoute.page,
+        ),
+        AppRoute(
+          path: 'pathNav',
+          page: PathNavRoute.page,
+          fullscreenDialog: true,
+        ),
+        AppRoute(
+          path: 'search',
+          page: SearchRoute.page,
+        ),
+        AppRoute(
+          path: 'navi_search',
+          page: NaviSearchRoute.page,
+        ),
+        AppRoute(
+          path: 'routingMap',
+          page: RoutingMapSelectRoute.page,
+        ),
+        CustomRoute(
+          path: 'parking_add',
+          page: ParkingSpotRoute.page,
+        ),
+        AppRoute(
+          path: 'poi-map',
+          page: PoiCardWidgetRoute.page,
+        ),
+        AppRoute(
+          path: 'hajj-poi-card',
+          page: HajjPoiCardRoute.page,
+        ),
+        CustomRoute(
+          path: 'deeplink',
+          page: DeeplinkRoute.page,
+        ),
+        AppRoute(
+          path: 'routingRoutes',
+          page: RoutingRoutesRoute.page,
+        ),
+        AppRoute(
+          path: 'public_routing_details',
+          page: RouteDetailsRoute.page,
+        ),
         AppRoute(
           transitionsBuilder: TransitionsBuilders.slideBottom,
           durationInMilliseconds: 250,
           path: 'routingSearch',
           page: RoutingSearchSheetRoute.page,
         ),
-        AppRoute(path: 'eta_route/:lat/:lon', page: EtaRouteRoute.page),
-        AppRoute(path: 'weather_router', page: WeatherRoute.page),
+        AppRoute(
+          path: 'eta_route/:lat/:lon',
+          page: EtaRouteRoute.page,
+        ),
+        AppRoute(
+          path: 'weather_router',
+          page: WeatherRoute.page,
+        ),
         CustomRoute(
           path: 'road_panel_sheet',
           page: RoadPanelSheetRoute.page,
@@ -71,10 +118,25 @@ class AppRouter extends RootStackRouter {
           opaque: false,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
-        AppRoute(path: 'freeRoam', page: FreeRoamRoute.page, fullscreenDialog: true),
-        AppRoute(path: 'road_closed', page: RoadClosedRoute.page),
-        AppRoute(path: 'auto_start_settings', page: AutostartSettingsSheetRoute.page),
-        CustomRoute(path: 'layers_details', page: LayersDetailsWidgetRoute.page, fullscreenDialog: true, opaque: false),
+        AppRoute(
+          path: 'freeRoam',
+          page: FreeRoamRoute.page,
+          fullscreenDialog: true,
+        ),
+        AppRoute(
+          path: 'road_closed',
+          page: RoadClosedRoute.page,
+        ),
+        AppRoute(
+          path: 'auto_start_settings',
+          page: AutostartSettingsSheetRoute.page,
+        ),
+        CustomRoute(
+          path: 'layers_details',
+          page: LayersDetailsWidgetRoute.page,
+          fullscreenDialog: true,
+          opaque: false,
+        ),
         AppRoute(
           path: 'shared_my_location',
           barrierDismissible: false,
@@ -99,25 +161,53 @@ class AppRouter extends RootStackRouter {
           page: IwishFeedbackCommentRoute.page,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
-        CustomRoute(path: 'layers_sheet', page: LayersSheetRoute.page),
-        CustomRoute(path: 'add_phtoto_feedback', page: QuickFeedbackPhotoRoute.page),
-        CustomRoute(path: 'feedback/:objectId', page: FeedbackSelectTypeRoute.page),
+        CustomRoute(
+          path: 'layers_sheet',
+          page: LayersSheetRoute.page,
+        ),
+        CustomRoute(
+          path: 'add_phtoto_feedback',
+          page: QuickFeedbackPhotoRoute.page,
+        ),
+        CustomRoute(
+          path: 'feedback/:objectId',
+          page: FeedbackSelectTypeRoute.page,
+        ),
         CustomRoute(
           path: ':categoryId',
           page: FeedbackRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
-        CustomRoute(path: 'success', page: FeedbackSentRoute.page),
+        CustomRoute(
+          path: 'success',
+          page: FeedbackSentRoute.page,
+        ),
         CustomRoute(
           path: 'favourites',
           page: FavouritesRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
-        CustomRoute(path: 'navi_search_favorites', page: NaviFavoritesRoute.page),
-        CustomRoute(path: 'search', page: FavouritesSearchRoute.page),
-        CustomRoute(page: DeleteAllContentRoute.page, path: 'delete_all'),
-        CustomRoute(page: FavouritesPickerRoute.page, path: 'picker'),
-        CustomRoute(path: 'feedback', page: AppFeedbackSheet.page, transitionsBuilder: TransitionsBuilders.slideBottom),
+        CustomRoute(
+          path: 'navi_search_favorites',
+          page: NaviFavoritesRoute.page,
+        ),
+        CustomRoute(
+          path: 'search',
+          page: FavouritesSearchRoute.page,
+        ),
+        CustomRoute(
+          page: DeleteAllContentRoute.page,
+          path: 'delete_all',
+        ),
+        CustomRoute(
+          page: FavouritesPickerRoute.page,
+          path: 'picker',
+        ),
+        CustomRoute(
+          path: 'feedback',
+          page: AppFeedbackSheet.page,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+        ),
         CustomRoute(
           path: 'feedback_v2',
           page: AppFeedbackSheetV2.page,
@@ -126,8 +216,22 @@ class AppRouter extends RootStackRouter {
           fullscreenDialog: true,
           customRouteBuilder: RouteBuilders.customBarrierDismissibleBuilder,
         ),
-        CustomRoute(path: 'feedback/edit', page: AppFeedbackInputSheet.page, opaque: false, fullscreenDialog: true),
-        CustomRoute(path: 'poi_favorite_dialog', page: PoiFavoriteDialogRoute.page),
+        CustomRoute(
+          path: 'feedback/edit',
+          page: AppFeedbackInputSheet.page,
+          opaque: false,
+          fullscreenDialog: true,
+        ),
+        CustomRoute(
+          path: 'poi_favorite_dialog',
+          page: PoiFavoriteDialogRoute.page,
+        ),
+        CustomRoute(
+          path: 'remove_history_confirmation',
+          page: RemoveHistoryConfirmationRoute.page,
+          opaque: false,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
         CustomRoute(
           path: 'error_sheet_dialog',
           page: ErrorSheetDialogRoute.page,
@@ -139,10 +243,19 @@ class AppRouter extends RootStackRouter {
           opaque: false,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
-        CustomRoute(path: 'saudi_pass_offers_screen', page: OffersScreenViewRoute.page),
-        AppRoute(path: 'saudi_pass_favourite_offers_screen', page: FavouriteOffersScreenViewRoute.page),
+        CustomRoute(
+          path: 'saudi_pass_offers_screen',
+          page: OffersScreenViewRoute.page,
+        ),
+        AppRoute(
+          path: 'saudi_pass_favourite_offers_screen',
+          page: FavouriteOffersScreenViewRoute.page,
+        ),
         RedirectRoute(path: 'saudi_pass_profile_preferences_screen', redirectTo: 'profile_preferences'),
-        AppRoute(path: 'saudi_pass_offers_on_map_screen', page: OffersOnMapRoute.page),
+        AppRoute(
+          path: 'saudi_pass_offers_on_map_screen',
+          page: OffersOnMapRoute.page,
+        ),
         CustomRoute(
           page: CitySelectionDialogViewRoute.page,
           path: 'saudi_pass_city_selection_dialog',
@@ -165,8 +278,14 @@ class AppRouter extends RootStackRouter {
           page: SortingSelectionDialogRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
-        AppRoute(path: 'saudi_pass_settings_screen', page: SettingsScreenViewRoute.page),
-        CustomRoute(path: 'saudi_pass_offer_page', page: OfferRoute.page),
+        AppRoute(
+          path: 'saudi_pass_settings_screen',
+          page: SettingsScreenViewRoute.page,
+        ),
+        CustomRoute(
+          path: 'saudi_pass_offer_page',
+          page: OfferRoute.page,
+        ),
         RedirectRoute(path: 'saudi_pass_offer_feedback', redirectTo: 'feedback'),
         CustomRoute(
           path: 'saudi_pass_offer_favorites_removing_sheet',
@@ -182,14 +301,26 @@ class AppRouter extends RootStackRouter {
           path: 'stories',
           page: StoriesRoute.page,
           opaque: false,
-          transitionsBuilder: (_, __, ___, child) => StoriesTransition(type: StoryTypes.network, child: child),
+          transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+            type: StoryTypes.network,
+            child: child,
+          ),
         ),
         CustomRoute(
           path: 'settings',
           page: SettingsRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
-        CustomRoute(path: 'dark_map', page: DarkMapRoute.page, customRouteBuilder: RouteBuilders.cupertinoRouteBuilder),
+        CustomRoute(
+          path: 'dark_map',
+          page: DarkMapRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
+          path: 'about_balady',
+          page: AboutBaladyRoute.page,
+          customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
         CustomRoute(
           path: 'help_center',
           page: HelpCenterRoute.page,
@@ -201,16 +332,14 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
-          path: 'profile_logout_sheet',
-          page: ProfileLogoutSheetRoute.page,
-          customRouteBuilder: RouteBuilders.modalSheetBuilder,
-        ),
-        CustomRoute(
           path: 'momra_website',
           page: MomraWebsiteRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
-        CustomRoute(path: 'image_editor', page: ImageEditorRoute.page),
+        CustomRoute(
+          path: 'image_editor',
+          page: ImageEditorRoute.page,
+        ),
         CustomRoute(
           path: 'navigator_settings',
           page: NavigatorSettingsRoute.page,
@@ -236,7 +365,10 @@ class AppRouter extends RootStackRouter {
           page: LanguagePickSheetRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
-        CustomRoute(path: 'flips_continue', page: FlipsContinueRoute.page),
+        CustomRoute(
+          path: 'flips_continue',
+          page: FlipsContinueRoute.page,
+        ),
         CustomRoute(
           path: 'contribute',
           page: ContributeRoute.page,
@@ -254,18 +386,27 @@ class AppRouter extends RootStackRouter {
           opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
-        AppRoute(path: 'profile_preferences', page: ProfilePreferencesRoute.page),
+        AppRoute(
+          path: 'profile_preferences',
+          page: ProfilePreferencesRoute.page,
+        ),
       ],
     ),
     CustomRoute(
       page: OnboardRoute.page,
       opaque: false,
-      transitionsBuilder: (_, __, ___, child) => StoriesTransition(type: StoryTypes.onboarding, child: child),
+      transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+        type: StoryTypes.onboarding,
+        child: child,
+      ),
     ),
     CustomRoute(
       page: SaudiDaySplashRoute.page,
       opaque: false,
-      transitionsBuilder: (_, __, ___, child) => StoriesTransition(type: StoryTypes.saudiDay, child: child),
+      transitionsBuilder: (_, __, ___, child) => StoriesTransition(
+        type: StoryTypes.saudiDay,
+        child: child,
+      ),
     ),
   ];
 }

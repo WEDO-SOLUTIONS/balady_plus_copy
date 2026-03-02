@@ -91,7 +91,7 @@ class PoiLinesMetro extends StatelessWidget {
       color: context.colors.backgroundSurface1,
       children: [
         ContentRowExpandable(
-          expandIconColor: context.colorsV3.foregroundMuted,
+          expandIconColor: context.colors.foregroundMuted,
           // ignore: deprecated_member_use
           options: ContentRowOptions(
             title: getTitle(context),
@@ -120,12 +120,13 @@ class PoiLinesMetro extends StatelessWidget {
                         _platformsInfo[index].name,
                         style: context.textStyleV3.bodyLargeRegular.copyWith(color: context.colors.foregroundDefault),
                       ),
+                      const SizedBox(width: 4),
                       if (transitionRoute.isNotEmpty)
                         Row(
                           children: transitionRoute
                               .map(
                                 (e) => Padding(
-                                  padding: const EdgeInsetsDirectional.only(start: Spacing.px),
+                                  padding: const EdgeInsetsDirectional.symmetric(horizontal: Spacing.$1x),
                                   child: Assets.icons.svg.icMetroMarker.svg(
                                     colorFilter: ColorFilter.mode(Color(e.color ?? 0xFF000000), BlendMode.srcIn),
                                   ),

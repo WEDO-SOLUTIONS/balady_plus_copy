@@ -68,15 +68,8 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
               child: Directionality(
                 textDirection: originalDirectionality,
                 child: switch (item) {
-                  FilterItemConfig() => QuickFilter(
-                      item: item,
-                      selected: item.selected,
-                      chipsType: ChipsType.map,
-                    ),
-                  FilterItemBuilder() => item.builder(
-                      context,
-                      isSelected: item.selected,
-                    ),
+                  FilterItemConfig() => QuickFilter(item: item, selected: item.selected, chipsType: ChipsType.map),
+                  FilterItemBuilder() => item.builder(context, isSelected: item.selected),
                 },
               ),
             );

@@ -104,10 +104,7 @@ class SearchItem extends ConsumerWidget {
                 ownerName: BssUIElementNames.searchResultList,
                 position: index + 1,
               ),
-              payload: BssPayload(
-                placeItem: result.toBss(index),
-                searchResultList: searchResultList,
-              ),
+              payload: BssPayload(placeItem: result.toBss(index), searchResultList: searchResultList),
             ),
           );
         }
@@ -144,8 +141,9 @@ class SearchItem extends ConsumerWidget {
                               subtitle,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style:
-                                  context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundDefault),
+                              style: context.textStyles.bodySmallRegular.copyWith(
+                                color: context.colors.foregroundDefault,
+                              ),
                             ),
                           ),
                           if (closedStatus.isNotEmpty)
@@ -154,8 +152,10 @@ class SearchItem extends ConsumerWidget {
                               style: context.textStyles.bodySmallRegular.copyWith(color: context.colors.foregroundSoft),
                             ),
                           if (closedStatus.isNotEmpty)
-                            Text(closedStatus,
-                                style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text))
+                            Text(
+                              closedStatus,
+                              style: context.textStyles.bodySmallRegular.copyWith(color: closedStatusColors?.text),
+                            ),
                         ],
                       ),
                       Spacing.$1x.heightBox,
@@ -169,8 +169,9 @@ class SearchItem extends ConsumerWidget {
                                 Text(
                                   result.makeAddress(),
                                   maxLines: 1,
-                                  style: context.textStyles.bodySmallRegular
-                                      .copyWith(color: context.colors.foregroundSoft),
+                                  style: context.textStyles.bodySmallRegular.copyWith(
+                                    color: context.colors.foregroundSoft,
+                                  ),
                                 ),
                                 if (offers.isNotEmpty)
                                   const Padding(

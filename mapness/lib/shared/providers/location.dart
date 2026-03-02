@@ -94,7 +94,7 @@ class _Location extends _$Location {
             final isHuawei = await CommonFunctions.isHuaweiDevice();
             Position? userLocation;
 
-            if (isGmsAvailable) {
+            if (isGmsAvailable || Platform.isIOS) {
               userLocation = await Geolocator.getLastKnownPosition();
             } else if (isHuawei) {
               userLocation = await CommonFunctions.getLastLocationHuawei();

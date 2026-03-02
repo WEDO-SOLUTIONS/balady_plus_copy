@@ -11,14 +11,8 @@ class TabComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final int objectId;
   final PoiCardState? poiCardState;
 
-  const TabComponent({
-    required this.tabController,
-    required this.objectId,
-    required this.poiCardState,
-    super.key,
-  }) : super(
-          defaultState: PoiCardBottomSheetState.halfOpen,
-        );
+  const TabComponent({required this.tabController, required this.objectId, required this.poiCardState, super.key})
+    : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
@@ -33,14 +27,8 @@ class TabComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
     return ContentTransition(
       interpolation: scale,
       child: Padding(
-        padding: const EdgeInsets.only(
-          bottom: Spacing.$4x,
-        ),
-        child: PoiTabs(
-          tabController: tabController,
-          objectId: objectId,
-          poiCardState: poiCardState,
-        ),
+        padding: const EdgeInsets.only(bottom: Spacing.$4x, top: Spacing.$4x),
+        child: PoiTabs(tabController: tabController, objectId: objectId, poiCardState: poiCardState),
       ),
     );
   }

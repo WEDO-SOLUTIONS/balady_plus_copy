@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,6 @@ import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_header.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -27,16 +28,14 @@ import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
+import 'package:provider/provider.dart';
 import 'package:sheetify/sheetify.dart';
 
 /// Search sheet that is shown on the explore screen.
 class NaviBottomSheet extends ConsumerStatefulWidget {
   final bool isPathNavScreen;
 
-  const NaviBottomSheet({
-    super.key,
-    this.isPathNavScreen = false,
-  });
+  const NaviBottomSheet({super.key, this.isPathNavScreen = false});
 
   @override
   ConsumerState<NaviBottomSheet> createState() => _NaviBottomSheetState();
@@ -50,15 +49,25 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   final _settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
   final _scope = SearchScopeEnum.navi.value;
+  Color? _barrierColor;
+
+  final outsideOpacityDelegate = StatefulSheetDelegate.func<double, ThreeStateSheet>((controller) {
+    final fraction = controller.fraction;
+    final state = controller.state;
+
+    return state.index < 1 ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
+  });
+
+  late final barrierColorDelegate = StatefulSheetDelegate.func<Color?, ThreeStateSheet>((controller) {
+    final state = controller.state;
+    return state.index > 1 ? _barrierColor : null;
+  });
 
   @override
   void initState() {
     super.initState();
     if (widget.isPathNavScreen) {
-      SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     }
 
     ref.read(dgisControllerProvider).value?.stopFollowNavigation();
@@ -67,12 +76,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     _multiStateSheetController = MultiStateSheetController<ThreeStateSheet>(
       behavior: MultiSnappingBehavior(
         models: [
-          FractionSnappingModel({.7, .931}),
+          FractionSnappingModel({.8, 1.0}),
           ComponentsSnappingModel(componentsDescriptions: [const SnapComponent.size(component: Components.header)]),
         ],
       ),
       stateMapper: const ThreeStateMapper(),
-      initialState: ThreeStateSheet.open,
+      initialState: ThreeStateSheet.expanded,
     );
 
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
@@ -83,6 +92,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         _unfocusSearchField();
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _barrierColor = context.colors.screenOverlayDimming40;
   }
 
   @override
@@ -122,17 +137,11 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   @override
   Widget build(BuildContext context) {
     final searchObjectManager = ref.watch(
-      mapObjectManagerProvider(
-        named: _settings.name,
-        layerId: _settings.layerId,
-      ).notifier,
+      mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier,
     );
-    ref.listen(
-      searchProvider(_scope),
-      (previous, next) {
-        _drawSearchMarkers(next, previous, searchObjectManager);
-      },
-    );
+    ref.listen(searchProvider(_scope), (previous, next) {
+      _drawSearchMarkers(next, previous, searchObjectManager, context.read<ThemeController>().currentTheme);
+    });
 
     return SearchScope(
       named: SearchScopeEnum.navi,
@@ -152,21 +161,19 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
               animateOpening: false,
               keepContentBehindFooter: true,
               scrollController: _multiStateSheetController,
-              outsideOpacityDelegate: _multiStateSheetController.defaultOpacityDelegate,
+              outsideOpacityDelegate: outsideOpacityDelegate,
+              barrierColorDelegate: barrierColorDelegate,
               outside: NaviSearchSheetControls(_multiStateSheetController),
               safeAreaColor: context.colors.backgroundSurface2,
               dragger: null,
-              useSafeArea: false,
               backgroundColor: context.colors.backgroundSurface4,
               key: const ValueKey('NAVI SEARCH SHEET'),
               header: NaviSearchHeader(
-                backgroundColor: context.colors.backgroundSurface2,
-                requestFocus: false,
+                backgroundColor: context.colors.backgroundSurface1,
+                requestFocus: true,
                 onClose: () => context.router.pop(),
               ),
-              sliver: NaviSearchContent(
-                bottomSheetContentScrollController: _multiStateSheetController,
-              ),
+              sliver: NaviSearchContent(bottomSheetContentScrollController: _multiStateSheetController),
             ),
           ),
         ],
@@ -178,6 +185,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     SearchState searchState,
     SearchState? prevState,
     MapObjectManager mapObjectManager,
+    BaladyAppThemes theme,
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
@@ -187,6 +195,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       final dark = await ref.watch(darkModeProvider.future);
 
       final markers = await searchState.results.getMarkers(
+        theme: theme,
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
@@ -246,14 +255,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   }
 
   void _removeAllMarkersAndPop() {
-    ref
-        .read(
-          mapObjectManagerProvider(
-            named: _settings.name,
-            layerId: _settings.layerId,
-          ).notifier,
-        )
-        .removeAllMarkers();
+    ref.read(mapObjectManagerProvider(named: _settings.name, layerId: _settings.layerId).notifier).removeAllMarkers();
     ref.read(searchInRectProvider(_scope).notifier).update();
     context.router.pop();
   }

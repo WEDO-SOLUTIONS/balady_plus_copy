@@ -44,21 +44,18 @@ class ABDottedPathContainer extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) => _RenderABDottedPathContainer(
-        color: color,
-        itemCount: itemCount,
-        itemExtent: itemExtent,
-        relativeOffsets: relativeOffsets,
-        xOffset: xOffset,
-        dotRadius: dotRadius,
-        textDirection: textDirection ?? Directionality.of(context),
-        topOffset: topOffset,
-      );
+    color: color,
+    itemCount: itemCount,
+    itemExtent: itemExtent,
+    relativeOffsets: relativeOffsets,
+    xOffset: xOffset,
+    dotRadius: dotRadius,
+    textDirection: textDirection ?? Directionality.of(context),
+    topOffset: topOffset,
+  );
 
   @override
-  void updateRenderObject(
-    BuildContext context,
-    covariant _RenderABDottedPathContainer renderObject,
-  ) {
+  void updateRenderObject(BuildContext context, covariant _RenderABDottedPathContainer renderObject) {
     renderObject
       ..color = color
       ..itemCount = itemCount
@@ -80,14 +77,14 @@ class _RenderABDottedPathContainer extends RenderProxyBox {
     required double dotRadius,
     required double topOffset,
     required TextDirection textDirection,
-  })  : _color = color,
-        _itemCount = itemCount,
-        _itemExtent = itemExtent,
-        _relativeOffsets = List<double>.from(relativeOffsets),
-        _xOffset = xOffset,
-        _dotRadius = dotRadius,
-        _textDirection = textDirection,
-        _topOffset = topOffset;
+  }) : _color = color,
+       _itemCount = itemCount,
+       _itemExtent = itemExtent,
+       _relativeOffsets = List<double>.from(relativeOffsets),
+       _xOffset = xOffset,
+       _dotRadius = dotRadius,
+       _textDirection = textDirection,
+       _topOffset = topOffset;
 
   Color _color;
   int _itemCount;
@@ -186,8 +183,9 @@ class _RenderABDottedPathContainer extends RenderProxyBox {
 
     final double minY = offset.dy;
     final double maxY = offset.dy + size.height;
-    final double columnX =
-        _textDirection == TextDirection.rtl ? offset.dx + size.width - _xOffset : offset.dx + _xOffset;
+    final double columnX = _textDirection == TextDirection.rtl
+        ? offset.dx + size.width - _xOffset
+        : offset.dx + _xOffset;
 
     for (int index = 0; index < _itemCount; index++) {
       final double itemTop = offset.dy + _topOffset + index * _itemExtent;

@@ -130,6 +130,7 @@ class SortingItemViewWidget extends StatelessWidget {
         height: AppSizes.l,
         child: ContentRow(
           leading: nothing,
+          pressedOpacity: null,
           text: ContentRowTextOptions(
             title: switch (view.title) {
               Sorting.byRecency => context.l10n.saudiPassSortingByRecency,

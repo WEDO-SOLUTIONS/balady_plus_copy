@@ -60,7 +60,8 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
       final isSheetStateOpen = state == ThreeStateSheet.open;
       final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
-      final isFull = (controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+      final isFull =
+          (controller.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
           isSheetCoversHalfOfTheScreen;
 
       return !isFull ? 1.0 : max(0.0, 1 - (fraction - 0.4) * 9);
@@ -72,22 +73,18 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
     super.initState();
     _multiStateSheetController = MultiStateSheetController(
       initialState: ThreeStateSheet.expanded,
-      behavior: FractionSnappingBehavior(fractions: {
-        0.0,
-        if (Platform.isIOS) .3 else .38,
-        if (Platform.isIOS) .931 else .98,
-      }),
+      behavior: FractionSnappingBehavior(
+        fractions: {0.0, if (Platform.isIOS) .3 else .38, if (Platform.isIOS) .931 else .98},
+      ),
       stateMapper: const LandingStateMapper(),
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     WidgetsBinding.instance.addObserver(this);
 
     if (widget.initialQuery != null) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) {
-          ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(widget.initialQuery!);
-        },
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(widget.initialQuery!);
+      });
     }
   }
 
@@ -129,8 +126,8 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
               keepContentBehindFooter: true,
               resizeToAvoidBottomPadding: true,
               scrollController: _multiStateSheetController,
-              backgroundColor: context.colors.backgroundSurface1,
-              safeAreaColor: context.colors.backgroundSurface1,
+              backgroundColor: context.colors.backgroundSurface4,
+              safeAreaColor: context.colors.backgroundSurface4,
               dragger: const SheetDragger(),
               outsideOpacityDelegate: outsideOpacityDelegate,
               outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
@@ -139,14 +136,9 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: RoutingSearchBar(
-                      placeholder: widget.placeholder,
-                      affixIcon: widget.affixIcon,
-                    ),
+                    child: RoutingSearchBar(placeholder: widget.placeholder, affixIcon: widget.affixIcon),
                   ),
-                  const SizedBox(
-                    height: 16,
-                  ),
+                  const SizedBox(height: 16),
                 ],
               ),
               content: [

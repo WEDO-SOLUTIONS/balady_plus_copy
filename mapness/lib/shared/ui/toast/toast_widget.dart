@@ -86,7 +86,7 @@ class _ToastWidget extends ConsumerWidget {
           bottom: actions.isNotEmpty ? 0.0 : Spacing.$3x + Spacing.$0_5x,
         ),
         decoration: BoxDecoration(
-          color: context.colors.backgroundSurface1,
+          color: context.colors.foregroundSurfacePush,
           borderRadius: BorderRadius.circular(RadiusBorder.l),
           boxShadow: Shadows.m,
         ),

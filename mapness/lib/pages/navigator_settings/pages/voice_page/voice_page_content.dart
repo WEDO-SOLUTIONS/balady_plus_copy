@@ -48,10 +48,11 @@ class _VoicePageContentState extends ConsumerState<VoicePageContent> {
             width: double.infinity,
             height: 32,
             child: CupertinoSlidingSegmentedControl<int>(
+              backgroundColor: context.colors.neutralContainerDefault,
               children: children,
               onValueChanged: onValueChanged,
               groupValue: _currentSegment,
-              thumbColor: context.colors.backgroundSurface2,
+              thumbColor: context.colors.foregroundSegmentedControl,
             ),
           ),
           ContentWrapper(

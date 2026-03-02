@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +59,7 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sheetify/sheetify.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -612,7 +614,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    final parkingManage = ref.read(parkingManageProvider).value == null;
+    final parkingManage =
+        ref.read(parkingManageProvider(theme: context.read<ThemeController>().currentTheme)).value == null;
     final position = ref.read(locationProvider);
 
     if (widget.navType == RouteSearchOptionsMessage.car) {
@@ -636,7 +639,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             },
           ),
         ],
-        icon: ToastIconAsset(Assets.icons.svg.icParkingSpot.keyName),
+        icon: ToastIconAsset(switch (context.read<ThemeController>().currentTheme) {
+          BaladyAppThemes.dark => Assets.icons.svg.placesBigNew.dark.icParking.keyName,
+          BaladyAppThemes.light => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+          BaladyAppThemes.saudiDay => Assets.icons.svg.placesBigNew.light.icParking.keyName,
+        }),
       );
     }
 

@@ -116,17 +116,15 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     final bool hasNoFocusWithError = widget.focusNode?.hasFocus == false && widget.errorText != null;
     final bool exceedsMaxLength = widget.maxLength != null && _controller.text.length > widget.maxLength!;
 
-    _inputErrorState =
-        (hasNoFocusWithError || exceedsMaxLength) ? BaladyInputState.error : BaladyInputState.defaultValue;
+    _inputErrorState = (hasNoFocusWithError || exceedsMaxLength)
+        ? BaladyInputState.error
+        : BaladyInputState.defaultValue;
 
     return Directionality(
       textDirection: direction,
       child: BaladyTextInput(
         label: widget.labelText != null
-            ? BaladyInputLabel(
-                text: widget.labelText!,
-                isRequired: widget.isRequired,
-              )
+            ? BaladyInputLabel(text: widget.labelText!, isRequired: widget.isRequired)
             : null,
         inputState: widget.readonly ? BaladyInputState.readOnly : _inputErrorState,
         controller: _controller,
@@ -143,9 +141,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
           keyboardType: widget.keyboardType,
           onChanged: _onChanged,
           onTap: widget.onTap,
-          inputFormatters: [
-            if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
-          ],
+          inputFormatters: [if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter()],
         ),
         suffixConfig: widget.type == FeedbackTextType.phone
             ? const BaladyInputAffixWidget(widget: SizedBox.shrink(), width: 0)

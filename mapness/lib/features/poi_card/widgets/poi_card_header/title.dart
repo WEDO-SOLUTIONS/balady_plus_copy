@@ -6,21 +6,14 @@ import 'package:sheetify/sheetify.dart';
 class TitleComponent extends SheetAnimatedWidget<PoiCardBottomSheetState> {
   final String title;
 
-  const TitleComponent({
-    required this.title,
-    super.key,
-  }) : super(
-          defaultState: PoiCardBottomSheetState.halfOpen,
-        );
+  const TitleComponent({required this.title, super.key}) : super(defaultState: PoiCardBottomSheetState.halfOpen);
 
   @override
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) => Text(
-        title,
-        style: context.textStyles.h2SemiBold.copyWith(
-          color: context.colors.foregroundDefault,
-        ),
-        overflow: TextOverflow.ellipsis,
-        maxLines: state != PoiCardBottomSheetState.hidden ? 2 : 1,
-        textAlign: TextAlign.start,
-      );
+    title,
+    style: context.textStyles.h4SemiBold.copyWith(color: context.colors.foregroundDefault),
+    overflow: TextOverflow.ellipsis,
+    maxLines: state != PoiCardBottomSheetState.hidden ? 2 : 1,
+    textAlign: TextAlign.start,
+  );
 }

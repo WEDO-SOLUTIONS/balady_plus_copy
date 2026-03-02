@@ -10,43 +10,38 @@ class RatingBar extends StatelessWidget {
   static const maxRating = 5;
   static const ratingItemSize = 47.0;
 
-  const RatingBar({
-    this.rating = 0,
-    super.key,
-    this.onRatingChanged,
-  });
+  const RatingBar({this.rating = 0, super.key, this.onRatingChanged});
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: ratingItemSize,
-        child: ListView.builder(
-          itemCount: maxRating,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            final isActive = index < rating;
-            return Material(
-              borderRadius: BorderRadius.circular(50),
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(50),
-                splashColor: context.colors.foregroundSoft.withOpacity(0.01),
-                onTap: () => onRatingChanged?.call(index + 1),
-                child: SizedBox(
-                  width: ratingItemSize,
-                  height: ratingItemSize,
-                  child: SvgPicture.asset(
-                    width: ratingItemSize,
-                    height: ratingItemSize,
-                    key: ValueKey('rating_star-$index-$isActive'),
-                    isActive
-                        ? Assets.imagesSvg.activeStar.keyName
-                        : Assets.imagesSvg.inactiveStar.keyName,
-                  ),
-                ),
+    height: ratingItemSize,
+    child: ListView.builder(
+      itemCount: maxRating,
+      scrollDirection: Axis.horizontal,
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final isActive = index < rating;
+        return Material(
+          borderRadius: BorderRadius.circular(50),
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(50),
+            splashColor: context.colors.foregroundSoft.withOpacity(0.01),
+            onTap: () => onRatingChanged?.call(index + 1),
+            child: SizedBox(
+              width: ratingItemSize,
+              height: ratingItemSize,
+              child: SvgPicture.asset(
+                width: ratingItemSize,
+                height: ratingItemSize,
+                key: ValueKey('rating_star-$index-$isActive'),
+                isActive ? Assets.imagesSvg.activeStar.keyName : Assets.imagesSvg.inactiveStar.keyName,
+                colorFilter: isActive ? null : ColorFilter.mode(context.colors.foregroundMuted, BlendMode.srcIn),
               ),
-            );
-          },
-        ),
-      );
+            ),
+          ),
+        );
+      },
+    ),
+  );
 }

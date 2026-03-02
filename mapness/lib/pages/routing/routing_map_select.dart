@@ -175,6 +175,8 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
             nearestPoint.geoPoint,
             nearestObject.object.title,
             nearestObject.object.levelId ?? nearestObject.levelId,
+            objectIdParam: nearestObject.object.id?.objectId,
+            entranceIdParam: nearestObject.object.id?.entranceId,
           ),
         );
       case CooridnatesNearestObject(geoPoint: final geoPoint):
@@ -201,7 +203,7 @@ class _NearestObject extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final leadingIcon = nearestObject.when(
-      data: (_) => const Icon(GeneralIcons.pin),
+      data: (_) => Icon(GeneralIcons.pin, color: context.colors.foregroundSoft),
       error: (_, __) => Loading.small(color: context.colors.accentSecondaryDefault),
       loading: () => Loading.small(color: context.colors.accentSecondaryDefault),
     );

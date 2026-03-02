@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_features/auth_quick_access_biometric_widget/widgets/auth_quick_access_biometric_widget.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
+import 'package:provider/provider.dart' hide Consumer;
 
 import '../../_generated/assets/assets.gen.dart';
 
@@ -31,7 +33,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-    value: SystemUiOverlayStyle.dark,
+    value: context.read<ThemeController>().systemOverlayStyle,
     child: Directionality(
       textDirection: ref.watch(uiDirectionProvider),
       child: Material(
@@ -40,7 +42,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           padding: const EdgeInsets.only(top: Spacing.$4x),
           child: Scaffold(
             appBar: BaladyTopBar.iconAndText(
-              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+              systemUiOverlayStyle: context.read<ThemeController>().systemOverlayStyle,
               title: context.l10n.settings,
               colorEnabled: context.colors.accentDefault,
               leading: ActionModel(onPressed: () => context.router.pop(), icon: SystemIcons.arrowCornerLeftLarge),

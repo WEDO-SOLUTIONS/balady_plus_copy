@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,15 +10,11 @@ import 'package:mapness/features/stories/ui/stories_fullscreen.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:provider/provider.dart';
 
 @RoutePage()
 class StoriesPage extends ConsumerStatefulWidget {
-  const StoriesPage({
-    required this.type,
-    this.onClose,
-    this.initialStoryId,
-    super.key,
-  });
+  const StoriesPage({required this.type, this.onClose, this.initialStoryId, super.key});
 
   final StoryTypes type;
   final VoidCallback? onClose;
@@ -58,10 +55,8 @@ class _StoriesScreenState extends ConsumerState<StoriesPage> {
       child: Directionality(
         textDirection: Directionality.of(context),
         child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: StoriesFullscreen(
-            initialStoryId: widget.initialStoryId ?? storyData.stories.first.storyId,
-          ),
+          value: context.read<ThemeController>().systemOverlayStyle,
+          child: StoriesFullscreen(initialStoryId: widget.initialStoryId ?? storyData.stories.first.storyId),
         ),
       ),
     );

@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
-import 'package:mapness/features/saudi_pass/repo/lookups_body.dart'
-    as lookups_body;
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart' as lookups_body;
 import 'package:mapness/features/saudi_pass/views/offers_view.dart';
 
 abstract class OffersScreenView implements OffersView {
@@ -47,6 +46,8 @@ abstract class OffersFiltersView implements Listenable {
 
   void tapShowAllCategories();
 
+  void reset();
+
   bool get isSortHighlighted;
 
   bool get isSettingsHighlighted;
@@ -68,12 +69,7 @@ abstract class OffersFiltersView implements Listenable {
   Set<lookups_body.RecommendedType> get recommendedTypes;
 }
 
-typedef FilterView = ({
-  String? title,
-  String? plusMore,
-  bool isHighlighted,
-  void Function()? tapCross
-});
+typedef FilterView = ({String? title, String? plusMore, bool isHighlighted, void Function()? tapCross});
 
 abstract class OfferView implements Listenable {
   String get offerId;

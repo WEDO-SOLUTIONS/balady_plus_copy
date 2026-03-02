@@ -1,9 +1,11 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/search/models/search_history.dart' as models;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/analytic/bss_service.dart';
@@ -38,6 +40,13 @@ class SearchHistoryCollapsible extends ConsumerStatefulWidget {
 class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryCollapsible> {
   bool _collapsed = true;
 
+  Future<void> _showRemoveHistoryConfirmation(BuildContext context) async {
+    final confirmed = await context.router.push<bool>(const RemoveHistoryConfirmationRoute());
+    if (confirmed == true) {
+      widget.onClear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
@@ -71,21 +80,22 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                         onDismiss: () => widget.onDelete(widget.history[index]),
                         elementKey: ValueKey(widget.history[index].hashKey),
                         child: ContentRow(
-                            backgroundColor: contentColor,
-                            onTap: () async {
-                              await Future.delayed(const Duration(milliseconds: 300));
-                              widget.onTap(widget.history[index], index, bssHistoryList);
-                            },
-                            leading: AppIcons(
-                              iconData: GeneralIcons.timeQuarter,
-                              color: widget.iconColor ?? context.colors.foregroundSoft,
-                              size: 24,
-                            ),
-                            text: ContentRowTextOptions(
-                              title: widget.history[index].title,
-                              subtitle: widget.history[index].address,
-                            ),
-                            isDividerEnabled: !isLastItemAndNoManyResults),
+                          backgroundColor: contentColor,
+                          onTap: () async {
+                            await Future.delayed(const Duration(milliseconds: 300));
+                            widget.onTap(widget.history[index], index, bssHistoryList);
+                          },
+                          leading: AppIcons(
+                            iconData: GeneralIcons.timeQuarter,
+                            color: widget.iconColor ?? context.colors.foregroundSoft,
+                            size: 24,
+                          ),
+                          text: ContentRowTextOptions(
+                            title: widget.history[index].title,
+                            subtitle: widget.history[index].address,
+                          ),
+                          isDividerEnabled: !isLastItemAndNoManyResults,
+                        ),
                       ),
                     );
                   },
@@ -99,26 +109,33 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                           eventType: BSSEventType.action,
                           actionType: BSSActionType.tap,
                           uiElement: BssUIElement(
-                            name:
-                                _collapsed ? BssUIElementNames.expandHistoryList : BssUIElementNames.rollupHistoryList,
+                            name: _collapsed
+                                ? BssUIElementNames.expandHistoryList
+                                : BssUIElementNames.rollupHistoryList,
                             ownerName: BssUIElementNames.directorySearchScreen,
-                            position:
-                                _collapsed ? 11 : widget.history.length + 1, // Because we have 10 items in the list
+                            position: _collapsed
+                                ? 11
+                                : widget.history.length + 1, // Because we have 10 items in the list
                           ),
-                          payload: BssPayload(
-                            historyList: BssHistoryList(size: widget.history.length),
-                          ),
+                          payload: BssPayload(historyList: BssHistoryList(size: widget.history.length)),
                         ),
                       );
                       setState(() => _collapsed = !_collapsed);
                     },
-                    leading: AppIcons(
-                      iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
-                      color: widget.iconColor ?? context.colors.foregroundDefault,
-                      size: 24,
-                    ),
-                    text: ContentRowTextOptions(
+                    options: ContentRowOptions(
                       title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
+                      titleStyle: context.textStyles.bodySmallMedium.copyWith(color: context.colors.accentDefault),
+                    ),
+                    leading: AppIcons(iconData: SystemIcons.ellipsis, color: context.colors.accentDefault, size: 24),
+                    trailing: ContentRowCustomTrailingOptions(
+                      builder: (_) => Padding(
+                        padding: const EdgeInsetsGeometry.directional(end: Spacing.$4x),
+                        child: AppIcons(
+                          iconData: _collapsed ? SystemIcons.arrowCornerDownSmall : SystemIcons.arrowCornerUpSmall,
+                          color: context.colors.foregroundMuted,
+                          size: 24,
+                        ),
+                      ),
                     ),
                   ),
               ],
@@ -127,15 +144,14 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
           if (_collapsed) const SizedBox(height: Spacing.$4x),
           if (!_collapsed)
             Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: Spacing.$3x,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
               child: Row(
                 children: [
                   Expanded(
                     child: AppButton(
-                      buttonColorScheme: ButtonColorScheme.neutral,
-                      onTap: widget.onClear,
+                      buttonColorScheme: ButtonColorScheme.accentSecondary,
+                      buttonType: ButtonType.secondary,
+                      onTap: () => _showRemoveHistoryConfirmation(context),
                       primaryLabel: context.l10n.deleteHistory,
                     ),
                   ),

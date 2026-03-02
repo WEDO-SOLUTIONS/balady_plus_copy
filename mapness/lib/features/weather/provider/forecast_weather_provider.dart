@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 
 part 'forecast_weather_provider.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class _ForecastWeather extends _$ForecastWeather {
   @override
   AllWeatherInfoEntity? build() {
@@ -16,13 +16,11 @@ class _ForecastWeather extends _$ForecastWeather {
     final controller = ref.watch(dgisControllerProvider).value;
     final repository = ref.watch(weatherRepository.notifier);
 
-    controller?.getCameraPosition().then(
-          (value) async => _onEvent(value, repository, cancelToken),
-        );
+    controller?.getCameraPosition().then((value) async => _onEvent(value, repository, cancelToken));
 
-    final subscription = controller?.cameraPositionEvents.debounceTime(const Duration(seconds: 1)).listen(
-          (value) async => _onEvent(value, repository, cancelToken),
-        );
+    final subscription = controller?.cameraPositionEvents
+        .debounceTime(const Duration(seconds: 1))
+        .listen((value) async => _onEvent(value, repository, cancelToken));
 
     ref.onDispose(() {
       subscription?.cancel();
@@ -42,11 +40,7 @@ class _ForecastWeather extends _$ForecastWeather {
     }
   }
 
-  Future<void> _onEvent(
-    CameraPositionMessage value,
-    WeatherRepository repository,
-    CancelToken cancelToken,
-  ) async {
+  Future<void> _onEvent(CameraPositionMessage value, WeatherRepository repository, CancelToken cancelToken) async {
     final latitude = value.point.latitude;
     final longitude = value.point.longitude;
     final result = await repository.getForecastWeather(

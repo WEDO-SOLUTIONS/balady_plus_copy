@@ -6,22 +6,19 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FeedbackAddressEmpty extends ConsumerWidget {
   final bool isInitial;
-  const FeedbackAddressEmpty({
-    required this.isInitial,
-    super.key,
-  });
+  const FeedbackAddressEmpty({required this.isInitial, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SliverFillRemaining(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: !isInitial
-              ? Text(
-                  context.l10n.searchCouldNotFindAnything,
-                  style: context.textStyles.bodyLargeSemiBold,
-                  textAlign: TextAlign.center,
-                )
-              : null,
-        ),
-      );
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      child: !isInitial
+          ? Text(
+              context.l10n.searchCouldNotFindAnything,
+              style: context.textStyles.bodyLargeSemiBold.copyWith(color: context.colors.foregroundDefault),
+              textAlign: TextAlign.center,
+            )
+          : null,
+    ),
+  );
 }

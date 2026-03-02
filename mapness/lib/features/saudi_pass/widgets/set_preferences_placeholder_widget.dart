@@ -1,9 +1,11 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:provider/provider.dart';
 
 class SetPreferencesPlaceholderWidget extends StatelessWidget {
   final VoidCallback action;
@@ -12,7 +14,7 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    asset: Assets.imagesSvg.illustrationPercent.keyName,
+    assetWidget: _assetIllustrationPercent(context),
     action: action,
     title: context.l10n.saudiPassOffersSetPreferences,
     hint: context.l10n.saudiPassOffersSetPreferencesHint,
@@ -27,7 +29,7 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    asset: Assets.imagesSvg.illustrationPercent.keyName,
+    assetWidget: _assetIllustrationPercent(context),
     action: action,
     title: context.l10n.saudiPassOffersSetPreferences,
     hint: context.l10n.saudiPassOffersLoginHint,
@@ -42,7 +44,7 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-    asset: Assets.imagesSvg.illustrationError.keyName,
+    assetWidget: const ErrorImageWidget(),
     action: action,
     title: context.l10n.saudiPassSomethingWentWrong,
     hint: context.l10n.saudiPassSomethingWentWrongHint,
@@ -50,15 +52,34 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
   );
 }
 
+class EmptyOffersWidget extends StatelessWidget {
+  const EmptyOffersWidget({required this.action, super.key});
+
+  final VoidCallback action;
+
+  @override
+  Widget build(BuildContext context) => Column(
+    children: [
+      _PlaceholderWidget(
+        assetWidget: const ErrorImageWidget(),
+        action: action,
+        title: context.l10n.saudiPassNothingFound,
+        hint: context.l10n.saudiPassNothingFoundHint,
+        actionTitle: context.l10n.saudiPassResetFilters,
+      ),
+    ],
+  );
+}
+
 class _PlaceholderWidget extends StatelessWidget {
-  final String asset;
+  final Widget assetWidget;
   final String title;
   final String hint;
   final VoidCallback action;
   final String actionTitle;
 
   const _PlaceholderWidget({
-    required this.asset,
+    required this.assetWidget,
     required this.title,
     required this.hint,
     required this.action,
@@ -86,7 +107,7 @@ class _PlaceholderWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SvgPicture.asset(asset),
+              assetWidget,
               const SizedBox(height: Spacing.$4x),
               Text(title, style: titleStyle),
               const SizedBox(height: Spacing.$2x),
@@ -108,3 +129,9 @@ class _PlaceholderWidget extends StatelessWidget {
     );
   }
 }
+
+Widget _assetIllustrationPercent(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+  BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark,
+  BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent,
+  BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent,
+}.svg();
