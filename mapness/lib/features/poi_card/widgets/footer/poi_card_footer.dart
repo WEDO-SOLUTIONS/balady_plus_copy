@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' hide TransportIcons, StopNumbersIcons;
 import 'package:balady_uikit/core/colorsV2/themes.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -134,6 +133,13 @@ class PoiCardFooter extends HookConsumerWidget {
             colorScheme: _buttonColorScheme,
             onPressed: onTapCar,
           ),
+          if (!parkingPoi && isFavourite)
+            ItemActionBar(
+              icon: iconData,
+              buttonType: ButtonType.primary,
+              colorScheme: _buttonColorScheme,
+              onPressed: () => onTapFavorite(favouriteItem),
+            ),
           if (currentRoute != null && objectId != null && !currentRoute.isStartOrFinishPOI(objectId))
             if (!currentRoute.containsIntermediatePOI(objectId))
               ItemActionBar(
@@ -176,11 +182,9 @@ class PoiCardFooter extends HookConsumerWidget {
               colorScheme: _buttonColorScheme,
               onPressed: onEntranceTap,
             ),
-          if (!parkingPoi)
+          if (!parkingPoi && !isFavourite)
             ItemActionBar(
               icon: iconData,
-              bgColor: isFavourite ? context.colors.extra01ContainerDefault : null,
-              iconColor: isFavourite ? context.colors.extra01Default : null,
               buttonType: ButtonType.secondary,
               colorScheme: _buttonColorScheme,
               onPressed: () => onTapFavorite(favouriteItem),
