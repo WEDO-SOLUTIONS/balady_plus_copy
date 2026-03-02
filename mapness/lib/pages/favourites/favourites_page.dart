@@ -344,8 +344,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             }
                           });
                         },
-                        onShareTap: () =>
-                            ShareUtil.share(parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(), context: context),
+                        onShareTap: () => ShareUtil.share(
+                          parseObjectIdFromFavouriteEntityId(item.entity?.id)?.toString(),
+                          context: context,
+                        ),
                         onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
                           context.router.push(

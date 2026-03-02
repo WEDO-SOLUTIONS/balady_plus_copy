@@ -12,5 +12,4 @@ int? parseObjectIdFromFavouriteEntityId(String? entityId) {
 String buildFavouriteEntityId({
   required int objectId,
   required int entranceId,
-}) =>
-    '$objectId-$entranceId';
+}) => '$objectId-$entranceId';
