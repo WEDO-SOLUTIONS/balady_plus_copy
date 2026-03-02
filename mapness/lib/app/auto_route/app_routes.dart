@@ -332,6 +332,11 @@ class AppRouter extends RootStackRouter {
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
         ),
         CustomRoute(
+          path: 'profile_logout_sheet',
+          page: ProfileLogoutSheetRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
           path: 'momra_website',
           page: MomraWebsiteRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
