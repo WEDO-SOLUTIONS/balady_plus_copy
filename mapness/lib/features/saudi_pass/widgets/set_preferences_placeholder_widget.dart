@@ -27,6 +27,11 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
 
   const LoginPreferencesPlaceholderWidget({required this.action, super.key});
 
+  Widget asset(BuildContext context) => switch (context.read<ThemeController>().currentTheme) {
+    BaladyAppThemes.dark => Assets.imagesSvg.illustrationPercentDark.svg(),
+    BaladyAppThemes.light => Assets.imagesSvg.illustrationPercent.svg(),
+    BaladyAppThemes.saudiDay => Assets.imagesSvg.illustrationPercent.svg(),
+  };
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
     assetWidget: _assetIllustrationPercent(context),
