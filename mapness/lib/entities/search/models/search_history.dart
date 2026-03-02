@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
 import 'package:dgis_map/library.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:mapness/shared/lib/make_address.dart';
@@ -32,6 +29,16 @@ class SearchHistoryItem {
     entranceId: null,
     createdAt: DateTime.timestamp().toIso8601String(),
   );
+
+  factory SearchHistoryItem.fromMessage(SearchHistoryDirectoryObjectMessage message, DateTime createdAt) =>
+      SearchHistoryItem(
+        title: message.title,
+        address: message.address,
+        objectId: message.id?.objectId.toString(),
+        entranceId: message.id?.entranceId.toString(),
+        createdAt: createdAt.toIso8601String(),
+      );
+
   @HiveField(0)
   final String title;
 
@@ -49,6 +56,14 @@ class SearchHistoryItem {
   @HiveField(4)
   final String? createdAt;
 
-  String get hashKey =>
-      'history-${objectId ?? 0}-${entranceId ?? 0}-${sha1.convert(utf8.encode(title))}-${sha1.convert(utf8.encode(address))}';
+  SearchHistoryDirectoryObjectMessage toMessage() {
+    final objectId = int.tryParse(this.objectId ?? '');
+    final entranceId = int.tryParse(this.entranceId ?? '');
+
+    return SearchHistoryDirectoryObjectMessage(
+      title: title,
+      address: address,
+      id: objectId != null ? DgisObjectIdMessage(objectId: objectId, entranceId: entranceId ?? 0) : null,
+    );
+  }
 }

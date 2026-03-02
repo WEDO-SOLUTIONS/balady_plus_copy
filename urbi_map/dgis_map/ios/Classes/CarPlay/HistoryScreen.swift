@@ -15,15 +15,22 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
     private let interfaceController: CPInterfaceController
     private let searchHistory: SearchHistory
     private let searchNavigation: SearchNavigation
+    private let searchManager: SearchManager
+    private let map: Map
+    private var searchTemplateDelegate: KeyboardSearchScreen?
 
     init(
         interfaceController: CPInterfaceController,
         searchHistory: SearchHistory,
-        searchNavigation: SearchNavigation
+        searchNavigation: SearchNavigation,
+        searchManager: SearchManager,
+        map: Map
     ) {
         self.interfaceController = interfaceController
         self.searchHistory = searchHistory
         self.searchNavigation = searchNavigation
+        self.searchManager = searchManager
+        self.map = map
     }
 
     private let listTemplate = CPListTemplate(title: nil, sections: [])
@@ -106,16 +113,32 @@ class HistoryScreen: NSObject, CPSessionConfigurationDelegate {
         switch searchHistoryItem {
         case .directoryObject(let directoryObject):
             searchNavigation.navigate(to: directoryObject)
+            interfaceController.popToRootTemplate(animated: true) { _, __ in }
         case .searchQuery(_):
+            openKeyboardSearchScreen();
             break
         @unknown default:
             break
         }
         completion()
-        interfaceController.popToRootTemplate(animated: true) { _, __ in }
     }
 
     private func onBackTap(_: CPBarButton) {
         interfaceController.popTemplate(animated: true) { _, __ in }
+    }
+    
+    private func openKeyboardSearchScreen() {
+        self.searchTemplateDelegate = KeyboardSearchScreen(
+            interfaceController: interfaceController,
+            searchManager: searchManager,
+            searchHistory: searchHistory,
+            searchNavigation: searchNavigation,
+            map: map
+        )
+        let searchTemplate = CPSearchTemplate()
+        searchTemplate.delegate = self.searchTemplateDelegate
+        interfaceController.pushTemplate(searchTemplate, animated: true) {
+            _, __ in
+        }
     }
 }

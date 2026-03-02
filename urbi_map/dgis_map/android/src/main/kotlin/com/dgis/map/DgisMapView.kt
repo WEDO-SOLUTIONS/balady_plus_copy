@@ -10,6 +10,7 @@ import io.flutter.FlutterInjector
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.platform.PlatformView
+import kotlinx.coroutines.runBlocking
 import java.io.FileNotFoundException
 import kotlin.math.round
 import ru.dgis.sdk.DgisObjectId
@@ -19,7 +20,9 @@ import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.bearing
+import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.directory.RubricId
+import ru.dgis.sdk.directory.SearchHistory
 import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.geometry.PolygonGeometry
 import ru.dgis.sdk.map.*
@@ -815,7 +818,7 @@ class DgisMapView(
         if (isPublicTransport) {
             routeHandler.setShowOnlyActiveRoute(true)
         }
-        
+
         navigationHandler.startNavigation(
                 finishPoint = routeHandler.finishPoint,
                 options = routeHandler.options,
@@ -1127,6 +1130,7 @@ class DgisMapView(
                         map,
                         SearchManager.createOnlineManager(sdkContext),
                         locationSource,
+                        SearchHistory(DgisMapInitializer.getSdkContext()),
                 )
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler =
@@ -1194,7 +1198,7 @@ class DgisMapView(
         val routeSearchOptions = navType.toRouteSearchOptions()
         val startSearchPoint = startPoint.toRouteSearchPoint()
         val finishSearchPoint = finishPoint.toRouteSearchPoint()
-        
+
         routeHandler?.findRoute(
             startPoint = startSearchPoint,
             finishPoint = finishSearchPoint,
@@ -1264,6 +1268,90 @@ class DgisMapView(
 
     override fun setMaxFps(maxFps: Long?, callback: (Result<Unit>) -> Unit) {
         mapView.maxFps = maxFps?.toInt()?.let { Fps(it) }
+        callback(Result.success(Unit))
+    }
+
+    override fun getSearchHistoryItems(callback: (Result<List<SearchHistoryDirectoryObjectMessage>>) -> Unit) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+
+        runBlocking {
+            callback(Result.success(searchHandler.getSearchHistoryItems()))
+        }
+    }
+
+    override fun addSearchHistoryItem(
+        item: SearchHistoryDirectoryObjectMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+        val objectId = item.id?.objectId ?: return run {
+            searchHandler.addQuerySearchHistoryItem(queryText = item.title)
+            callback(Result.success(Unit))
+        }
+        val entranceId = item.id.entranceId
+        val directoryObject: DirectoryObject = runBlocking<DirectoryObject?> {
+            return@runBlocking searchHandler.searchByDirectoryObjectIdSync(
+                objectId = DgisObjectId(
+                    objectId = objectId,
+                    entranceId = item.id.entranceId,
+                )
+            )
+        } ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "SEARCH_HISTORY_ERROR",
+                    message = "Failed to get directory object of id",
+                    details = "objectId: $objectId, entranceId: $entranceId",
+                )
+            )
+        )
+
+        searchHandler.addDirectoryObjectSearchHistoryItem(directoryObject = directoryObject)
+        callback(Result.success(Unit))
+    }
+
+    override fun removeSearchHistoryItem(index: Long, callback: (Result<Unit>) -> Unit) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+
+        runBlocking {
+            val items = searchHandler.getRawSearchHistoryItems()
+            searchHandler.removeSearchHistoryItem(item = items[index.toInt()])
+            callback(Result.success(Unit))
+        }
+    }
+
+    override fun clearSearchHistoryItems(callback: (Result<Unit>) -> Unit) {
+        val searchHandler = this.searchHandler ?: return callback(
+            Result.failure(
+                FlutterError(
+                    code = "IllegalArgumentException",
+                    message = "Search Handler was not initialized properly"
+                )
+            )
+        )
+
+        searchHandler.clearSearchHistory()
         callback(Result.success(Unit))
     }
 }

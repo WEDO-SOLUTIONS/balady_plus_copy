@@ -2,10 +2,12 @@ package com.dgis.map.android_auto
 
 import android.text.SpannableString
 import android.text.Spanned
+import android.util.Log
 import androidx.car.app.CarContext
 import androidx.car.app.ScreenManager
 import androidx.car.app.constraints.ConstraintManager
 import androidx.car.app.model.Action
+import androidx.car.app.model.CarIconSpan
 import androidx.car.app.model.DistanceSpan
 import androidx.car.app.model.Header
 import androidx.car.app.model.ItemList
@@ -17,12 +19,15 @@ import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.R
 import com.dgis.map.android_auto.utils.AndroidAutoUtils
+import com.dgis.map.map_api.DgisObjectIdMessage
+import com.dgis.map.map_api.SearchHistoryDirectoryObjectMessage
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.Latitude
 import ru.dgis.sdk.coordinates.Longitude
 import ru.dgis.sdk.directory.SearchHistory
 import ru.dgis.sdk.directory.SearchHistoryItem
 import ru.dgis.sdk.directory.SearchHistoryPage
+import ru.dgis.sdk.directory.SearchHistoryResult
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.geometry.distance
 import ru.dgis.sdk.map.LogicalPixel
@@ -106,8 +111,12 @@ class SearchHistoryScreen(
     }
 
     private fun handleHistoryResult(searchHistoryItems: List<SearchHistoryItem>) {
-        val items = searchHistoryItems.mapNotNull { it.asDirectoryObject }
-            .filter { it.markerPosition != null }
+        val items = searchHistoryItems
+            .filter {
+                val directoryObject = it.asDirectoryObject
+                directoryObject == null || directoryObject.markerPosition != null
+            }
+        val directoryObjectItems = items.mapNotNull { it.asDirectoryObject }
         val itemList = ItemList.Builder()
         val myLocation = mapController.getMyLocation()
         var markers: List<Marker>? = null
@@ -115,7 +124,7 @@ class SearchHistoryScreen(
         if (items.isEmpty() || myLocation == null) {
             itemList.setNoItemsMessage(getString(R.string.empty_trips_history_message))
         } else {
-            markers = items.mapIndexed { index, marker ->
+            markers = directoryObjectItems.mapIndexed { index, marker ->
                 val options = MarkerOptions(
                     position = marker.markerPosition!!,
                     icon = createIndexedMarker(index + 1),
@@ -124,12 +133,20 @@ class SearchHistoryScreen(
                 Marker(options)
             }
             mapController.addMarkers(markers)
-            val firstObject = items.first()
-            moveToMarker(firstObject.markerPosition!!)
+            val firstObject = directoryObjectItems.firstOrNull()
+            if (firstObject != null) {
+                moveToMarker(firstObject.markerPosition!!)
+            }
 
             itemList.setOnItemsVisibilityChangedListener { i1, i2 ->
-                val index = if (i2 == items.size) i2 - 1 else max(i1, 0)
-                val markerPosition = items.getOrNull(index)?.markerPosition
+                if (i1 < 0 || i2 < 0) return@setOnItemsVisibilityChangedListener
+                val visibleDirectoryObjectItems =
+                    items.subList(i1, i2).mapNotNull { it.asDirectoryObject }
+                if (visibleDirectoryObjectItems.isEmpty()) return@setOnItemsVisibilityChangedListener
+
+                val itemToHighlight =
+                    if (i2 == items.size) visibleDirectoryObjectItems.last() else visibleDirectoryObjectItems.first()
+                val markerPosition = itemToHighlight.markerPosition
 
                 if (markerPosition != null) {
                     moveToMarker(markerPosition)
@@ -137,38 +154,61 @@ class SearchHistoryScreen(
             }
 
             items.forEachIndexed { index, item ->
-                val markerPosition = item.markerPosition!!
-                val distanceInMeters = markerPosition.distance(
-                    GeoPoint(
-                        Latitude(myLocation.latitude), Longitude(myLocation.longitude)
-                    )
-                ).value.toDouble()
-
-                val distanceSpan = DistanceSpan.create(
-                    AndroidAutoUtils.createDistance(distanceInMeters)
-                )
-                val title = SpannableString("${item.title}\n ")
-                val spanStart = title.length
-                title.setSpan(
-                    distanceSpan,
-                    spanStart - 1,
-                    spanStart,
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-
-                itemList.addItem(
-                    Row.Builder().setTitle(title)
-                        .setImage(createIndexedIcon(index + 1))
-                        .addText(item.subtitle).setBrowsable(true).setOnClickListener {
-                            searchHistory.addItem(SearchHistoryItem(item))
-                            carContext.getCarService(ScreenManager::class.java).push(
-                                RoutePreviewScreen(
-                                    carContext,
-                                    mapController,
-                                    item.toRoutePreviewParams(),
-                                )
+                item.match(
+                    directoryObject = { directoryObject ->
+                        val markerPosition = directoryObject.markerPosition!!
+                        val distanceInMeters = markerPosition.distance(
+                            GeoPoint(
+                                Latitude(myLocation.latitude), Longitude(myLocation.longitude)
                             )
-                        }.build()
+                        ).value.toDouble()
+
+                        val distanceSpan = DistanceSpan.create(
+                            AndroidAutoUtils.createDistance(distanceInMeters)
+                        )
+                        val title = SpannableString("${directoryObject.title}\n ")
+                        val spanStart = title.length
+                        title.setSpan(
+                            distanceSpan,
+                            spanStart - 1,
+                            spanStart,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        itemList.addItem(
+                            Row.Builder().setTitle(title)
+                                .setImage(createIndexedIcon(index + 1))
+                                .addText(directoryObject.subtitle).setBrowsable(true)
+                                .setOnClickListener {
+                                    searchHistory.addItem(SearchHistoryItem(directoryObject))
+                                    carContext.getCarService(ScreenManager::class.java).push(
+                                        RoutePreviewScreen(
+                                            carContext,
+                                            mapController,
+                                            directoryObject.toRoutePreviewParams(),
+                                        )
+                                    )
+                                }.build()
+                        )
+                    },
+                    searchQuery = { searchQuery ->
+                        val distanceSpan = DistanceSpan.create(
+                            AndroidAutoUtils.createDistance(0.0)
+                        )
+                        val title = SpannableString("${searchQuery.title}\n ")
+                        val spanStart = title.length
+                        title.setSpan(
+                            distanceSpan,
+                            spanStart - 1,
+                            spanStart,
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                        itemList.addItem(
+                            Row.Builder().setTitle(title)
+                                .setImage(createIndexedIcon(index + 1)).build()
+                        )
+                    },
                 )
             }
         }

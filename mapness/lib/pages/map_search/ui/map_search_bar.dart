@@ -150,7 +150,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   );
               await ref
                   .read(searchHistoryProvider(scope.value).notifier)
-                  .put(SearchHistoryItem.fromQuery(query: query));
+                  .put(SearchHistoryItem.fromQuery(query: query).toMessage());
             }
             _focusNode.requestFocus();
           },

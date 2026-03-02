@@ -9,7 +9,7 @@ class SearchScreen {
     init(
         interfaceController: CPInterfaceController,
         map: Map,
-        searchNavigation: SearchNavigation
+        searchNavigation: SearchNavigation,
     ) {
         self.interfaceController = interfaceController
         self.map = map
@@ -57,7 +57,9 @@ class SearchScreen {
         let screen = HistoryScreen(
             interfaceController: interfaceController,
             searchHistory: searchHistory,
-            searchNavigation: searchNavigation
+            searchNavigation: searchNavigation,
+            searchManager: searchManager,
+            map: map,
         )
         screen.createTemplate().show(with: interfaceController)
     }

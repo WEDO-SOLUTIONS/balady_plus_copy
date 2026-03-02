@@ -76,12 +76,12 @@ class SuggestItem extends ConsumerWidget {
       } else if (performSearch != null) {
         ref.read(searchProvider(scope.value).notifier).searchByQuery(performSearch.searchQuery, suggest.title.text);
         final historyObject = SearchHistoryItem.fromQuery(query: suggest.title.text);
-        ref.read(searchHistoryProvider(scope.value).notifier).put(historyObject);
+        ref.read(searchHistoryProvider(scope.value).notifier).put(historyObject.toMessage());
         handlingType = BssHistoryHandlingType.searchSuggestedText;
       } else if (object != null) {
         final objectItem = object.item;
         final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);
-        ref.read(searchHistoryProvider(scope.value).notifier).put(historyItem);
+        ref.read(searchHistoryProvider(scope.value).notifier).put(historyItem.toMessage());
         ref
             .read(urbiAnalyticsProvider.notifier)
             .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}');
