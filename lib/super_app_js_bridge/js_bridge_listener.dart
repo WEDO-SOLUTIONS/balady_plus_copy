@@ -61,7 +61,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @override
   void register() {
     registerFunction(getAccessToken);
+    ////////////////////////////////////////////////////////////
+    ///  need remove this function, for the partner knows this
     registerFunction(getAccessSSOToken);
+    /// this the new Oen For Use in the Municipal Mini App
+    registerFunction(getBaladySSOToken);
+    ////////////////////////////////////////////////////////////
     registerFunction(getCookies);
     registerFunction(getUserProfile);
     registerFunction(getAppPreferences);
@@ -103,6 +108,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessSSOToken(dynamic msg, CompletionHandler handler) async {
+    getBaladySSOToken(msg,handler);
+  }
+
+  @pragma('vm:entry-point')
+  void getBaladySSOToken(dynamic msg, CompletionHandler handler) async {
     BaseResponse response = BaseResponse(
       code: 401,
       message: "Unauthorized",
