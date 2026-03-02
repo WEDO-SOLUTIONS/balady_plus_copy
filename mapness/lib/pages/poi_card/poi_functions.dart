@@ -66,13 +66,7 @@ void toggleFavoriteDirectoryObject({
 
   FavouriteItem? favItem = favouriteItem;
   if (favItem == null && data.markerPosition != null && data.id != null) {
-    favItem = FavouriteItem(
-      coordinates: Coordinates(latitude: data.markerPosition!.latitude, longitude: data.markerPosition!.longitude),
-      id: 'overriden',
-      subtitle: data.subtitle,
-      title: data.title,
-      entity: FavouriteItemEntity(sourceType: EntitySourceType.urbi, id: data.id!.objectId.toString()),
-    );
+    favItem = data.mapToFavourite();
   }
 
   if (favItem == null) {

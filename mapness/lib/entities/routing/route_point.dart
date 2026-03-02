@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favourites/helpers/favourite_entity_id.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum RoutePointType { object, myLocation }
@@ -154,7 +155,7 @@ class RoutePointFavouriteItem extends RoutePoint {
   double? get longitude => item?.coordinates.longitude;
 
   @override
-  int? get objectId => int.tryParse(item?.entity?.id ?? '');
+  int? get objectId => parseObjectIdFromFavouriteEntityId(item?.entity?.id);
 
   @override
   int? get entranceId => null;
