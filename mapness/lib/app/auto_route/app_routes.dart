@@ -15,10 +15,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {
-  AppRouter(
-    this.ref,
-    GlobalKey<NavigatorState> navigatorKey,
-  ) : super(navigatorKey: navigatorKey);
+  AppRouter(this.ref, GlobalKey<NavigatorState> navigatorKey) : super(navigatorKey: navigatorKey);
 
   final Ref ref;
 
@@ -333,6 +330,11 @@ class AppRouter extends RootStackRouter {
           path: 'profile_info',
           page: ProfileInfoRoute.page,
           customRouteBuilder: RouteBuilders.cupertinoRouteBuilder,
+        ),
+        CustomRoute(
+          path: 'profile_logout_sheet',
+          page: ProfileLogoutSheetRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
           path: 'momra_website',

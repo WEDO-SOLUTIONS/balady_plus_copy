@@ -910,6 +910,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.value = null;
     final dgisController = await ref.read(dgisControllerProvider.future);
     await dgisController.betterRouteResponse(BetterRouteResponseMessage.accept);
+
+    // Keep running-navigation map state consistent after accepting better route:
+    // route overlays (with time indicators) must be hidden in follow mode.
+    if (_navigationState.value == PathNavState.running) {
+      await dgisController.followNavigation();
+      await dgisController.hideRoutes();
+    }
   }
 
   Future<void> _rejectBetterRoute(BuildContext context) async {

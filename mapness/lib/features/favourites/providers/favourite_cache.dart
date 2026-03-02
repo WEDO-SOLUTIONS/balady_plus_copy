@@ -99,11 +99,7 @@ class _FavouriteCache extends _$FavouriteCache {
     await _updateState(newState);
 
     try {
-      await _deleteRequest(
-        items: items,
-        workId: oldDataState.work?.id,
-        homeId: oldDataState.home?.id,
-      );
+      await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
     } on Exception catch (_) {
       await _addToDeletionSync(items);
     }
@@ -127,11 +123,7 @@ class _FavouriteCache extends _$FavouriteCache {
     await _updateState(newState);
 
     try {
-      await _deleteRequest(
-        items: [item],
-        workId: oldDataState.work?.id,
-        homeId: oldDataState.home?.id,
-      );
+      await _deleteRequest(items: [item], workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
 
       ref.invalidate(favouriteMarkersProvider);
     } on Exception catch (_) {
@@ -151,20 +143,12 @@ class _FavouriteCache extends _$FavouriteCache {
 
     oldItems.removeWhere((element) => items.any((e) => e.id == element.id));
 
-    final newState = FavouritesState(
-      items: oldItems,
-      work: work,
-      home: home,
-    );
+    final newState = FavouritesState(items: oldItems, work: work, home: home);
 
     await _updateState(newState);
 
     try {
-      await _deleteRequest(
-        items: items,
-        workId: oldDataState.work?.id,
-        homeId: oldDataState.home?.id,
-      );
+      await _deleteRequest(items: items, workId: oldDataState.work?.id, homeId: oldDataState.home?.id);
     } on Exception catch (_) {
       await _addToDeletionSync(items);
     }
@@ -237,19 +221,12 @@ class _FavouriteCache extends _$FavouriteCache {
     return items.any((element) => parseObjectIdFromFavouriteEntityId(element?.entity?.id) == objectId);
   }
 
-  Future<void> _addItem(
-    FavouriteItem item,
-    FavouritesState state,
-  ) async {
+  Future<void> _addItem(FavouriteItem item, FavouritesState state) async {
     await _updateState(state);
 
     final favoritesBox = await ref.read(hiveProvider(_boxName).future);
     try {
-      await _addItemsRequest(
-        items: [item],
-        workId: state.work?.id,
-        homeId: state.home?.id,
-      );
+      await _addItemsRequest(items: [item], workId: state.work?.id, homeId: state.home?.id);
     } on Exception catch (_) {
       await favoritesBox.put(_keyAddSync, item.toHive());
     }
@@ -273,11 +250,7 @@ class _FavouriteCache extends _$FavouriteCache {
           .cast<FavoriteCacheItem>();
 
       if (deleteSync.isNotEmpty) {
-        await _deleteRequest(
-          items: deleteSync.map((e) => e.toDomain()).toList(),
-          workId: workId,
-          homeId: homeId,
-        );
+        await _deleteRequest(items: deleteSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
         await favoritesBox.delete(_keyDeleteSync);
       }
     } on Exception catch (_) {
@@ -289,11 +262,7 @@ class _FavouriteCache extends _$FavouriteCache {
           .cast<FavoriteCacheItem>();
 
       if (addSync.isNotEmpty) {
-        await _addItemsRequest(
-          items: addSync.map((e) => e.toDomain()).toList(),
-          workId: workId,
-          homeId: homeId,
-        );
+        await _addItemsRequest(items: addSync.map((e) => e.toDomain()).toList(), workId: workId, homeId: homeId);
         await favoritesBox.delete(_keyAddSync);
       }
     } on Exception catch (_) {
@@ -308,19 +277,15 @@ class _FavouriteCache extends _$FavouriteCache {
   }) async {
     final dio = await ref.read(dGisNetworkProvider.future);
     final request = proto.DeleteFavouriteItemsRequest(
-      items: items.map(
-        (e) {
-          final itemType = _getItemType(e.id, workId, homeId);
-          return DeleteFavouriteItemsRequestItemMapper.fromDomain(e, itemType);
-        },
-      ),
+      items: items.map((e) {
+        final itemType = _getItemType(e.id, workId, homeId);
+        return DeleteFavouriteItemsRequestItemMapper.fromDomain(e, itemType);
+      }),
     );
     Metrics.logEventAdvanced(
       MetricsConstants.favoritesKeys.deleteItems,
       group: _tag,
-      props: {
-        'items': items.map((e) => e.id).toList(),
-      },
+      props: {'items': items.map((e) => e.id).toList()},
     );
     await dio.delete('favourites', data: request.writeToBuffer());
   }
@@ -333,9 +298,7 @@ class _FavouriteCache extends _$FavouriteCache {
     Metrics.logEventAdvanced(
       MetricsConstants.favoritesKeys.addItems,
       group: _tag,
-      props: {
-        'items': items.map((e) => e.id).toList(),
-      },
+      props: {'items': items.map((e) => e.id).toList()},
     );
     mixpanel?.timeEvent('Favorites: addItems');
     final dio = await ref.read(dGisNetworkProvider.future);

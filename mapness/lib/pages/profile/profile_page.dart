@@ -14,7 +14,7 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/profile/log_out_sheet.dart';
+import 'package:mapness/shared/utils/logger/logger.dart';
 import 'package:mapness/widgets/profile/profile_header.dart';
 import 'package:provider/provider.dart';
 
@@ -195,23 +195,17 @@ class ProfilePage extends HookConsumerWidget {
   }
 
   Future<void> _logOut(BuildContext context, WidgetRef ref, ValueNotifier isLoading) async {
-    await showDialog(
-      context: context,
-      builder: (ctx) => LogoutSheet(
-        title: context.l10n.signOut,
-        description: context.l10n.signOutDescription,
-        buttonText: context.l10n.signOutSwipe,
-        onLogout: () async {
-          if (!context.mounted) {
-            return;
-          }
-          isLoading.value = true;
-
-          Navigator.of(ctx).pop();
-          await ref.read(authProvider.notifier).logOut();
-          isLoading.value = false;
-        },
-      ),
-    );
+    final shouldLogout = await context.router.root.push<bool>(const ProfileLogoutSheetRoute());
+    if (shouldLogout != true || !context.mounted) {
+      return;
+    }
+    isLoading.value = true;
+    try {
+      await ref.read(authProvider.notifier).logOut();
+    } catch (exception) {
+      logger.log('Error logging out: $exception', logLevel: MapnessLogLevel.error);
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
